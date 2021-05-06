@@ -48,7 +48,7 @@ class RollGroupTable extends DataTable
         $this->studentGateway = $studentGateway;
     }
 
-    public function build($gibbonRollGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
+    public function build($gibbonFormGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
@@ -70,7 +70,7 @@ class RollGroupTable extends DataTable
             ->newQueryCriteria()
             ->sortBy($sortByArray);
 
-        $students = $this->studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID);
+        $students = $this->studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
         $this->withData($students);
 
         $this->setTitle(__('Students'));
@@ -83,7 +83,7 @@ class RollGroupTable extends DataTable
             $this->addHeaderAction('print', __('Print'))
                 ->setURL('/report.php')
                 ->addParam('q', '/modules/Students/report_students_byRollGroup.php')
-                ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+                ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
                 ->addParam('format', 'print')
                 ->addParam('view', 'Basic')
                 ->addParam('format', 'print')
@@ -94,18 +94,18 @@ class RollGroupTable extends DataTable
         }
 
         if ($canViewConfidential) {
-            $checkbox = (new Checkbox('confidential'.$gibbonRollGroupID))
+            $checkbox = (new Checkbox('confidential'.$gibbonFormGroupID))
                 ->description(__('Show Confidential Data'))
                 ->checked(true)
                 ->inline()
                 ->wrap('<div class="mt-2 text-right text-xxs text-gray-700 italic">', '</div>');
 
             $this->addMetaData('gridHeader', $checkbox->getOutput());
-            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonRollGroupID));
+            $this->addMetaData('gridFooter', $this->getCheckboxScript($gibbonFormGroupID));
 
             $this->addColumn('alerts')
-                ->format(function ($person) use ($guid, $connection2, $gibbonRollGroupID) {
-                    $divExtras = ' data-conf="confidential'.$gibbonRollGroupID.'"';
+                ->format(function ($person) use ($guid, $connection2, $gibbonFormGroupID) {
+                    $divExtras = ' data-conf="confidential'.$gibbonFormGroupID.'"';
                     return getAlertBar($guid, $connection2, $person['gibbonPersonID'], $person['privacy'], $divExtras);
                 });
         }

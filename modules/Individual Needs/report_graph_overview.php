@@ -31,12 +31,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
     $onClickURL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/';
-    $onClickURL .= !empty($gibbonYearGroupID)? 'in_summary.php&gibbonRollGroupID=' : 'report_graph_overview.php&gibbonYearGroupID=';
+    $onClickURL .= !empty($gibbonYearGroupID)? 'in_summary.php&gibbonFormGroupID=' : 'report_graph_overview.php&gibbonYearGroupID=';
 
     // DATA
     $inGateway = $container->get(INGateway::class);
     $criteria = $inGateway->newQueryCriteria()
-        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.name'])
+        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.name'])
         ->fromPOST();
 
     $inCounts = $inGateway->queryINCountsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupID);
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $table->setTitle(__('Individual Needs').': '.($gibbonYearGroupID ? __('Form Group') : __('Year Groups')));
 
     $table->addColumn('labelName', $gibbonYearGroupID ? __('Form Group') : __('Year Groups'))
-        ->sortable(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.name'])
+        ->sortable(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.name'])
         ->format(function ($inData) use ($onClickURL) {
             return Format::link($onClickURL.$inData['labelID'], $inData['labelName']);
         });

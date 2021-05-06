@@ -1527,18 +1527,18 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
 }
 
 //Take a roll group, and return the next one, or false if none
-function getNextRollGroupID($gibbonRollGroupID, $connection2)
+function getNextRollGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;
 
-        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+        $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        if (!is_null($row['gibbonRollGroupIDNext'])) {
-            $output = $row['gibbonRollGroupIDNext'];
+        if (!is_null($row['gibbonFormGroupIDNext'])) {
+            $output = $row['gibbonFormGroupIDNext'];
         }
     }
 

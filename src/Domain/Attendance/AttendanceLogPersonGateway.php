@@ -170,7 +170,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         if ($rollGroups != array('all')) {
             $query
                 ->innerJoin('gibbonStudentEnrolment', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-                ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonRollGroupID, :rollGroups)')
+                ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonFormGroupID, :rollGroups)')
                 ->bindValue('rollGroups', implode(',', $rollGroups))
                 ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
                 ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -199,15 +199,15 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 'gibbonPerson.title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
-                'gibbonRollGroup.name as rollGroupName',
-                'gibbonRollGroup.nameShort as rollGroup',
+                'gibbonFormGroup.name as rollGroupName',
+                'gibbonFormGroup.nameShort as rollGroup',
                 'gibbonAttendanceLogPerson.type',
                 'gibbonAttendanceLogPerson.reason',
                 'gibbonAttendanceLogPerson.comment',
             ])
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
             ->joinSubSelect(
                 'LEFT',
@@ -260,15 +260,15 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 'gibbonPerson.title',
                 'gibbonPerson.preferredName',
                 'gibbonPerson.surname',
-                'gibbonRollGroup.name as rollGroupName',
-                'gibbonRollGroup.nameShort as rollGroup',
+                'gibbonFormGroup.name as rollGroupName',
+                'gibbonFormGroup.nameShort as rollGroup',
                 'gibbonAttendanceLogPerson.type',
                 'gibbonAttendanceLogPerson.reason',
                 'gibbonAttendanceLogPerson.comment',
             ])
             ->from('gibbonPerson')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID = gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID = gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonAttendanceLogPerson', 'gibbonAttendanceLogPerson.gibbonPersonID = gibbonPerson.gibbonPersonID AND gibbonAttendanceLogPerson.date = :date')
             ->leftJoin('gibbonAttendanceCode', 'gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID')
             ->joinSubSelect(
@@ -308,11 +308,11 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonAttendanceLogPerson')
             ->cols([
-                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonRollGroup.nameShort as rollGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
+                'gibbonAttendanceLogPersonID', 'gibbonAttendanceLogPerson.type', 'gibbonAttendanceLogPerson.reason', 'gibbonAttendanceLogPerson.comment', 'gibbonAttendanceLogPerson.date','gibbonAttendanceLogPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.status', 'gibbonFormGroup.nameShort as rollGroup', 'gibbonYearGroup.nameShort as yearGroup', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className'
             ])
             ->innerJoin('gibbonPerson', 'gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonAttendanceLogPerson.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')

@@ -40,13 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     } else {
         $partialFail = false;
 
-        foreach ($syncData as $gibbonRollGroupID => $usersToEnrol) {
+        foreach ($syncData as $gibbonFormGroupID => $usersToEnrol) {
             if (empty($usersToEnrol)) continue;
 
             foreach ($usersToEnrol as $gibbonPersonID => $role) {
 
                 $data = array(
-                    'gibbonRollGroupID' => $gibbonRollGroupID,
+                    'gibbonFormGroupID' => $gibbonFormGroupID,
                     'gibbonPersonID' => $gibbonPersonID,
                     'role' => $role,
                     'dateEnrolled' => date('Y-m-d'),
@@ -56,10 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $sql = "UPDATE gibbonCourseClassPerson 
                         JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                         JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
-                            AND gibbonCourseClassMap.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                            AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                         SET gibbonCourseClassPerson.role=:role, gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                         WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
-                        AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID
+                        AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID
                         AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
                 $pdo->executeQuery($data, $sql);
                 
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
                         LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
-                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID
+                        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
                         AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                 $pdo->executeQuery($data, $sql);
 

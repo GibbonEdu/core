@@ -80,12 +80,12 @@ $classLogCriteria = $attendanceLogGateway->newQueryCriteria()
     ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
 $studentCriteria = $attendanceLogGateway->newQueryCriteria()
-    ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
+    ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
 
 // Get all active students grouped by year group and form group
 $allStudents = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $gibbonSchoolYearID)->toArray();
 $yearGroups = array_reduce($allStudents, function ($group, $item) {
-    $group[$item['gibbonYearGroupID']][$item['gibbonRollGroupID']][] = $item;
+    $group[$item['gibbonYearGroupID']][$item['gibbonFormGroupID']][] = $item;
     return $group;
 }, []);
 
@@ -97,10 +97,10 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
 
     if (empty($yearGroup)) continue;
 
-    foreach ($rollGroups as $gibbonRollGroupID => $students) {
+    foreach ($rollGroups as $gibbonFormGroupID => $students) {
     
         $rollGroupContent = '';
-        $rollGroup = $rollGroupGateway->getByID($gibbonRollGroupID);
+        $rollGroup = $rollGroupGateway->getByID($gibbonFormGroupID);
         
         if (empty($rollGroup)) continue;
 
@@ -127,7 +127,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
         $subject = __('Daily Attendance Summary for {context}', ['context' => $rollGroup['nameShort'].' '.Format::date(date('Y-m-d'))]);
 
         // Add recipients and sender
-        $tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonRollGroupID);
+        $tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID);
         foreach ($tutors as $tutor) {
             $mail->AddAddress($tutor['email'], Format::name('', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true));
         }

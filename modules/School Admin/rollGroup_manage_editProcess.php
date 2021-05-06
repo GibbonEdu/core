@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_edit.php&gibbonRollGroupID=$gibbonRollGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rollGroup_manage_edit.php&gibbonFormGroupID=$gibbonFormGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -29,13 +29,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 } else {
     //Proceed!
     //Check if school year specified
-    if ($gibbonRollGroupID == '' or $gibbonSchoolYearID == '') {
+    if ($gibbonFormGroupID == '' or $gibbonSchoolYearID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
+            $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
+            $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             $gibbonPersonIDEA2 = $_POST['gibbonPersonIDEA2'] ?? '';
             $gibbonPersonIDEA3 = $_POST['gibbonPersonIDEA3'] ?? '';
             $gibbonSpaceID = $_POST['gibbonSpaceID'] ?? '';
-            $gibbonRollGroupIDNext = $_POST['gibbonRollGroupIDNext'] ?? '';
+            $gibbonFormGroupIDNext = $_POST['gibbonFormGroupIDNext'] ?? '';
             $website = $_POST['website'] ?? '';
 
             $attendance = $_POST['attendance'] ?? NULL;
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             } else {
                 //Check unique inputs for uniquness
                 try {
-                    $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                    $sql = 'SELECT * FROM gibbonRollGroup WHERE (name=:name OR nameShort=:nameShort) AND NOT gibbonRollGroupID=:gibbonRollGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
+                    $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
+                    $sql = 'SELECT * FROM gibbonFormGroup WHERE (name=:name OR nameShort=:nameShort) AND NOT gibbonFormGroupID=:gibbonFormGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -85,8 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonPersonIDEA' => $gibbonPersonIDEA, 'gibbonPersonIDEA2' => $gibbonPersonIDEA2, 'gibbonPersonIDEA3' => $gibbonPersonIDEA3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonRollGroupIDNext' => $gibbonRollGroupIDNext, 'attendance' => $attendance, 'website' => $website, 'gibbonRollGroupID' => $gibbonRollGroupID);
-                        $sql = 'UPDATE gibbonRollGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonPersonIDEA=:gibbonPersonIDEA, gibbonPersonIDEA2=:gibbonPersonIDEA2, gibbonPersonIDEA3=:gibbonPersonIDEA3, gibbonSpaceID=:gibbonSpaceID, gibbonRollGroupIDNext=:gibbonRollGroupIDNext, attendance=:attendance, website=:website WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                        $data = array('name' => $name, 'nameShort' => $nameShort, 'gibbonPersonIDTutor' => $gibbonPersonIDTutor, 'gibbonPersonIDTutor2' => $gibbonPersonIDTutor2, 'gibbonPersonIDTutor3' => $gibbonPersonIDTutor3, 'gibbonPersonIDEA' => $gibbonPersonIDEA, 'gibbonPersonIDEA2' => $gibbonPersonIDEA2, 'gibbonPersonIDEA3' => $gibbonPersonIDEA3, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonFormGroupIDNext' => $gibbonFormGroupIDNext, 'attendance' => $attendance, 'website' => $website, 'gibbonFormGroupID' => $gibbonFormGroupID);
+                        $sql = 'UPDATE gibbonFormGroup SET name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonPersonIDEA=:gibbonPersonIDEA, gibbonPersonIDEA2=:gibbonPersonIDEA2, gibbonPersonIDEA3=:gibbonPersonIDEA3, gibbonSpaceID=:gibbonSpaceID, gibbonFormGroupIDNext=:gibbonFormGroupIDNext, attendance=:attendance, website=:website WHERE gibbonFormGroupID=:gibbonFormGroupID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

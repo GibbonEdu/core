@@ -138,14 +138,14 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
         if ($highestActionStudent == 'View Student Profile_myChildren') {
             $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
-                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
-                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
-                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
-                        ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonFormGroup.name, ')' )
+                        ELSE concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ')') END) AS name,
                     NULL as type 
-                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFamilyChild, gibbonFamilyAdult
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup, gibbonFamilyChild, gibbonFamilyAdult
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
+                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID 
                     AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
                     AND gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID 
                     AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID";
@@ -154,39 +154,39 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
         else if ($highestActionStudent == 'View Student Profile_my') {
             $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
-                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
-                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
-                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
-                        ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonFormGroup.name, ')' )
+                        ELSE concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ')') END) AS name,
                     NULL as type
-                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
+                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID 
                     AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
         }
         // Allow searching of all students
         else {
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
-                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.username, ')')
-                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ', ', gibbonPerson.studentID, ')')
-                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonRollGroup.name, ')' )
-                        ELSE concat(surname, ', ', preferredName, ' (', gibbonRollGroup.name, ')') END) AS name,
+                    (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.username, ')')
+                        WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')
+                        WHEN gibbonPerson.firstName LIKE :search AND firstName<>preferredName THEN concat(surname, ', ', firstName, ' \"', preferredName, '\" (', gibbonFormGroup.name, ')' )
+                        ELSE concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ')') END) AS name,
                     NULL as type
-                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup
+                    FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup
                     WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID
+                    AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID
                     AND status='Full'";
         }
 
         $sql.=" AND (dateStart IS NULL OR dateStart<=:today)
                 AND (dateEnd IS NULL OR dateEnd>=:today)
-                AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND (gibbonPerson.surname LIKE :search
                     OR gibbonPerson.firstName LIKE :search
                     OR gibbonPerson.preferredName LIKE :search
                     OR gibbonPerson.username LIKE :search
                     OR gibbonPerson.studentID LIKE :search
-                    OR gibbonRollGroup.name LIKE :search)
+                    OR gibbonFormGroup.name LIKE :search)
                 ORDER BY name";
 
         try {

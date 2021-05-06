@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
         }
 
         $formatTutorsList = function($row) use ($gateway) {
-            $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
+            $tutors = $gateway->selectTutorsByRollGroup($row['gibbonFormGroupID'])->fetchAll();
             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
             return Format::nameList($tutors, 'Staff', false, true);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
         }
         $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
-        $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
+        $actions = $table->addActionColumn()->addParam('gibbonFormGroupID');
         $actions->addAction('view', __('View'))
                 ->setURL('/modules/Form Groups/rollGroups_details.php');
 

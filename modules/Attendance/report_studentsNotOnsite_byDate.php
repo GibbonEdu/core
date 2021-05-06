@@ -92,12 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     switch ($sort) {
         case 'preferredName':
-            $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonRollGroup.nameShort']); break;
+            $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.nameShort']); break;
         case 'rollGroup':
-            $criteria->sortBy(['gibbonRollGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
+            $criteria->sortBy(['gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
         default:
         case 'surname':
-            $criteria->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort']); break;
+            $criteria->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.nameShort']); break;
     }
     $criteria->fromPOST();
 

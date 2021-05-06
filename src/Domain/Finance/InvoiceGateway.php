@@ -57,7 +57,7 @@ class InvoiceGateway extends QueryableGateway
                 'gibbonFinanceInvoice.notes',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
-                'gibbonRollGroup.name AS rollGroup',
+                'gibbonFormGroup.name AS rollGroup',
                 "(CASE 
                     WHEN gibbonFinanceInvoice.status = 'Pending' AND billingScheduleType='Scheduled' THEN gibbonFinanceBillingSchedule.invoiceDueDate 
                     ELSE gibbonFinanceInvoice.invoiceDueDate END
@@ -73,7 +73,7 @@ class InvoiceGateway extends QueryableGateway
             ->innerJoin('gibbonPerson', 'gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->where('gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->groupBy(['gibbonFinanceInvoice.gibbonFinanceInvoiceID']);

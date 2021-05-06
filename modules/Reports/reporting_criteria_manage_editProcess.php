@@ -27,7 +27,7 @@ $urlParams = [
     'gibbonReportingScopeID' => $_POST['gibbonReportingScopeID'] ?? '',
     'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',
     'gibbonYearGroupID' => $_POST['gibbonYearGroupID'] ?? null,
-    'gibbonRollGroupID' => $_POST['gibbonRollGroupID'] ?? null,
+    'gibbonFormGroupID' => $_POST['gibbonFormGroupID'] ?? null,
     'gibbonCourseID' => $_POST['gibbonCourseID'] ?? null,
 ];
 

@@ -152,7 +152,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         ]);
 
         // Get main form tutor email for reply-to
-        $formTutor = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetch();
+        $formTutor = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetch();
         if (!empty($formTutor)) {
             $replyTo = $formTutor['email'];
             $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');

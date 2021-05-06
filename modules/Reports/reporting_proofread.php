@@ -41,13 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     $mode = $_GET['mode'] ?? 'Person';
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $override = $_GET['override'] ?? 'N';
 
     $urlParams = compact('mode', 'gibbonPersonID', 'gibbonRollGroupID', 'override');
 
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
-    if ($mode == 'Roll Group' && !empty($gibbonRollGroupID)) $proofReview = false;
+    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) $proofReview = false;
 
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
@@ -82,8 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     if ($highestAction == 'Proof Read_all') {
         $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required()->selected($gibbonRollGroupID);
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         asort($rollGroups, SORT_NATURAL);
         
         $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelect('gibbonRollGroupID')->fromArray($rollGroups)->required()->placeholder()->selected($gibbonRollGroupID);
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelect('gibbonFormGroupID')->fromArray($rollGroups)->required()->placeholder()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         ->pageSize(25);
 
     // Get criteria that needs or has proof reading
-    if ($mode == 'Roll Group' && !empty($gibbonRollGroupID)) {
+    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) {
         $proofsTotal = $reportingProofGateway->queryProofReadingByRollGroup($totalCriteria, $gibbonSchoolYearID, $gibbonRollGroupID)->toArray();
         $proofsPaginated = $reportingProofGateway->queryProofReadingByRollGroup($criteria, $gibbonSchoolYearID, $gibbonRollGroupID);
         $proofReading = $proofsPaginated->toArray();
@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->setTitle(__('Comments'));
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
-    $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
+    $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('override', $override);
     $form->addHiddenValue('mode', $mode);

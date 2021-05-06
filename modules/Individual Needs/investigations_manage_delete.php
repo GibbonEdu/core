@@ -24,7 +24,7 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_delete.php') == false) {
@@ -52,6 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/investigations_manage_deleteProcess.php?gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/investigations_manage_deleteProcess.php?gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
     echo $form->getOutput();
 }

@@ -89,7 +89,7 @@ class INInvestigationContributionGateway extends QueryableGateway implements Scr
                 'gibbonINInvestigation.gibbonPersonIDStudent',
                 'student.surname',
                 'student.preferredName',
-                'gibbonRollGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS rollGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',
@@ -102,7 +102,7 @@ class INInvestigationContributionGateway extends QueryableGateway implements Scr
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonCourseClassPerson', 'gibbonINInvestigationContribution.gibbonCourseClassPersonID=gibbonCourseClassPerson.gibbonCourseClassPersonID')
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
@@ -130,7 +130,7 @@ class INInvestigationContributionGateway extends QueryableGateway implements Scr
                 'gibbonINInvestigationContribution.*',
                 'student.surname',
                 'student.preferredName',
-                'gibbonRollGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS rollGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',
@@ -143,7 +143,7 @@ class INInvestigationContributionGateway extends QueryableGateway implements Scr
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonCourseClassPerson', 'gibbonINInvestigationContribution.gibbonCourseClassPersonID=gibbonCourseClassPerson.gibbonCourseClassPersonID')
             ->leftJoin('gibbonCourseClass', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->leftJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')

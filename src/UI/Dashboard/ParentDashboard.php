@@ -72,13 +72,13 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         gibbonPerson.gibbonPersonID,image_240, surname,
                         preferredName, dateStart,
                         gibbonYearGroup.nameShort AS yearGroup,
-                        gibbonRollGroup.nameShort AS rollGroup,
-                        gibbonRollGroup.website AS rollGroupWebsite,
-                        gibbonRollGroup.gibbonRollGroupID
+                        gibbonFormGroup.nameShort AS rollGroup,
+                        gibbonFormGroup.website AS rollGroupWebsite,
+                        gibbonFormGroup.gibbonFormGroupID
                         FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                         JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                         WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                         AND gibbonFamilyID=:gibbonFamilyID
                         AND gibbonPerson.status='Full'
@@ -115,7 +115,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';
 
                 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$student['gibbonRollGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
+                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
                 }
                 if ($student['rollGroupWebsite'] != '') {
                     $output .= "<a target='_blank' href='".$student['rollGroupWebsite']."'>".$student['rollGroup'].' '.__('Website').'</a>';

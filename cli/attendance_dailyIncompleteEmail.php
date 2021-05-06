@@ -65,13 +65,13 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
                 // Looks for roll groups with attendance='Y', also grabs primary tutor name
-                $sql = "SELECT gibbonRollGroupID, gibbonRollGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AS studentCount
-                FROM gibbonRollGroup
-                JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
+                $sql = "SELECT gibbonFormGroupID, gibbonFormGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AS studentCount
+                FROM gibbonFormGroup
+                JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID)
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND attendance = 'Y'
                 AND gibbonPerson.status='Full'
-                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name";
+                ORDER BY LENGTH(gibbonFormGroup.name), gibbonFormGroup.name";
 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -84,7 +84,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                 try {
                     $data = array('date' => $currentDate);
-                    $sql = 'SELECT gibbonRollGroupID FROM gibbonAttendanceLogRollGroup WHERE date=:date';
+                    $sql = 'SELECT gibbonFormGroupID FROM gibbonAttendanceLogFormGroupID WHERE date=:date';
                     $resultLog = $connection2->prepare($sql);
                     $resultLog->execute($data);
                 } catch (PDOException $e) {
@@ -94,7 +94,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 // Gather the current Roll Group logs for the day
                 $log = array();
                 while ($row = $resultLog->fetch()) {
-                    $log[$row['gibbonRollGroupID']] = true;
+                    $log[$row['gibbonFormGroupID']] = true;
                 }
 
                 while ($row = $result->fetch()) {
@@ -102,9 +102,9 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     if ($row['studentCount'] <= 0) continue;
 
                     // Check for a current log
-                    if (isset($log[$row['gibbonRollGroupID']]) == false) {
+                    if (isset($log[$row['gibbonFormGroupID']]) == false) {
 
-                        $rollGroupInfo = array( 'gibbonRollGroupID' => $row['gibbonRollGroupID'], 'name' => $row['name'] );
+                        $rollGroupInfo = array( 'gibbonFormGroupID' => $row['gibbonFormGroupID'], 'name' => $row['name'] );
 
                         // Compile info for Admin report
                         $adminReport['rollGroup'][] = '<b>'.$row['name'] .'</b> - '. $row['preferredName'].' '.$row['surname'];

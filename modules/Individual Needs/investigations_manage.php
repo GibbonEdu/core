@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $page->breadcrumbs->add(__('Manage Investigations'));
 
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
         $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -54,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $criteria = $investigationGateway->newQueryCriteria()
             ->sortBy('date', 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonRollGroupID)
+            ->filterBy('rollGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Individual Needs/investigations_manage_add.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->displayLabel();
 
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('gibbonINInvestigationID')
             ->format(function ($person, $actions) use ($highestAction) {

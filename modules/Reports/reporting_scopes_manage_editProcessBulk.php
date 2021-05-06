@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_m
             if ($values['scopeType'] == 'Year Group') {
                 $reportingCriteriaGateway->deleteWhere($data + ['gibbonYearGroupID' => $id]);
             } elseif ($values['scopeType'] == 'Roll Group') {
-                $reportingCriteriaGateway->deleteWhere($data + ['gibbonRollGroupID' => $id]);
+                $reportingCriteriaGateway->deleteWhere($data + ['gibbonFormGroupID' => $id]);
             } elseif ($values['scopeType'] == 'Course') {
                 $reportingCriteriaGateway->deleteWhere($data + ['gibbonCourseID' => $id]);
             }

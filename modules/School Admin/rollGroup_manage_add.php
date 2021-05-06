@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 
     $page->breadcrumbs
         ->add(__('Manage Form Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/rollGroup_manage_edit.php&gibbonRollGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/rollGroup_manage_edit.php&gibbonFormGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -93,11 +93,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
             $row = $form->addRow();
-                $row->addLabel('gibbonRollGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
+                $row->addLabel('gibbonFormGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {
-                    $row->addSelectRollGroup('gibbonRollGroupIDNext', $nextYear);
+                    $row->addSelectRollGroup('gibbonFormGroupIDNext', $nextYear);
                 }
 
             $row = $form->addRow();

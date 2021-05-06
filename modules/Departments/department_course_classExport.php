@@ -54,11 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             //Proceed!
 
             $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d')];
-            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonRollGroup.nameShort as rollGroup
+            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonFormGroup.nameShort as rollGroup
                     FROM gibbonCourseClassPerson 
                     JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' 
                     AND (dateStart IS NULL OR dateStart<=:today) 
                     AND (dateEnd IS NULL  OR dateEnd>=:today) 

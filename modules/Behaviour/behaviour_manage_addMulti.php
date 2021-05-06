@@ -40,16 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     if ($policyLink != '') {
         echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
     }
-    if ($_GET['gibbonPersonID'] != '' or $_GET['gibbonRollGroupID'] != '' or $_GET['gibbonYearGroupID'] != '' or $_GET['type'] != '') {
+    if ($_GET['gibbonPersonID'] != '' or $_GET['gibbonFormGroupID'] != '' or $_GET['gibbonYearGroupID'] != '' or $_GET['type'] != '') {
         if ($policyLink != '') {
             echo ' | ';
         }
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
     }
     echo '</div>';
 
 
-    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
     $form->addRow()->addHeading(__('Step 1'));

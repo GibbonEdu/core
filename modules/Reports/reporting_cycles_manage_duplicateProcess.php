@@ -107,15 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
 
                 foreach ($criteria as $criteriaData) {
                     // Grab the roll group ID by name if it's in a different school year
-                    if (!empty($criteriaData['gibbonRollGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
-                        $rollGroupSource = $rollGroupGateway->getByID($criteriaData['gibbonRollGroupID']);
+                    if (!empty($criteriaData['gibbonFormGroupID']) && $data['gibbonSchoolYearID'] != $values['gibbonSchoolYearID']) {
+                        $rollGroupSource = $rollGroupGateway->getByID($criteriaData['gibbonFormGroupID']);
                         $rollGroupDestination = $rollGroupGateway->selectBy([
                             'gibbonSchoolYearID' => $data['gibbonSchoolYearID'], 
                             'nameShort' => $rollGroupSource['nameShort'],
                         ])->fetch();
 
-                        if (!empty($rollGroupDestination['gibbonRollGroupID'])) {
-                            $criteriaData['gibbonRollGroupID'] = $rollGroupDestination['gibbonRollGroupID'];
+                        if (!empty($rollGroupDestination['gibbonFormGroupID'])) {
+                            $criteriaData['gibbonFormGroupID'] = $rollGroupDestination['gibbonFormGroupID'];
                         } else {
                             $failedCriteria++;
                             continue;

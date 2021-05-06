@@ -82,8 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
             $row->addSelectYearGroup('gibbonYearGroupID')->selectMultiple()->selected($scopeTypeIDs);
     } elseif ($reportingScope['scopeType'] == 'Roll Group') {
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Groups'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $reportingCycle['gibbonSchoolYearID'])->selectMultiple()->selected($scopeTypeIDs);
+            $row->addLabel('gibbonFormGroupID', __('Form Groups'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $reportingCycle['gibbonSchoolYearID'])->selectMultiple()->selected($scopeTypeIDs);
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $row = $form->addRow();
             $row->addLabel('gibbonCourseID', __('Course'));

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 
     $page->breadcrumbs->add(__('Manage Form Groups'));
 
@@ -62,13 +62,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     // QUERY
     $criteria = $rollGroupGateway->newQueryCriteria(true)
-        ->sortBy(['sequenceNumber', 'gibbonRollGroup.name'])
+        ->sortBy(['sequenceNumber', 'gibbonFormGroup.name'])
         ->fromPOST();
 
     $rollGroups = $rollGroupGateway->queryRollGroups($criteria, $gibbonSchoolYearID);
 
     $formatTutorsList = function($row) use ($rollGroupGateway) {
-        $tutors = $rollGroupGateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
+        $tutors = $rollGroupGateway->selectTutorsByRollGroup($row['gibbonFormGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
         return Format::nameList($tutors, 'Staff', false, true);
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         
     // ACTIONS
     $table->addActionColumn()
-        ->addParam('gibbonRollGroupID')
+        ->addParam('gibbonFormGroupID')
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->format(function ($rollGroup, $actions) {
             $actions->addAction('edit', __('Edit'))
