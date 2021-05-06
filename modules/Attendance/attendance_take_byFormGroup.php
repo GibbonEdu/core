@@ -48,7 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $gibbonFormGroupID = '';
         if (isset($_GET['gibbonFormGroupID']) == false) {
-
                 $data = array('gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sql = "SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
                 $result = $connection2->prepare($sql);
@@ -100,7 +99,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
 
                     //Check roll group
-
                         $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $result = $connection2->prepare($sql);
@@ -122,7 +120,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     } else {
 
                         //Show attendance log for the current day
-
                             $dataLog = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate.'%');
                             $sqlLog = 'SELECT * FROM gibbonAttendanceLogFormGroup, gibbonPerson WHERE gibbonAttendanceLogFormGroup.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonFormGroupID=:gibbonFormGroupID AND date LIKE :date ORDER BY timestampTaken';
                             $resultLog = $connection2->prepare($sqlLog);

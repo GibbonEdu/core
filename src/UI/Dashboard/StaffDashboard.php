@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
+use PDOException;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;

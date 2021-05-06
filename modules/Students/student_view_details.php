@@ -340,8 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/gibbonFormGroupups/formGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/gibbonFormGroupups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -670,7 +670,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             return $student['yearGroupName'];
                         });
                         $col->addColumn('gibbonFormGroupID', __('gibbonFormGroupup'))->format(function ($values) use ($student) {
-                            return Format::link('./index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
+                            return Format::link('./index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['rollGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
                             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';

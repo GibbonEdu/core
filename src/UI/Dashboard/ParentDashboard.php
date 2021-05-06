@@ -114,8 +114,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<span style='font-size: 70%'>".
                     "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';
 
-                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/formGroups_details.php')) {
-                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
+                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
+                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['rollGroup'].')</a><br/>';
                 }
                 if ($student['rollGroupWebsite'] != '') {
                     $output .= "<a target='_blank' href='".$student['rollGroupWebsite']."'>".$student['rollGroup'].' '.__('Website').'</a>';
@@ -505,7 +505,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     }
                 }
                 $gradesOutput .= '</tr>';
-                if (strlen($rowEntry['comment']) > 50) {
+                if ($rowEntry['commentOn'] == 'Y' && strlen($rowEntry['comment']) > 50) {
                     $gradesOutput .= "<tr class='comment-$entryCount-$gibbonPersonID' id='comment-$entryCount-$gibbonPersonID'>";
                     $gradesOutput .= '<td colspan=6>';
                     $gradesOutput .= nl2br($rowEntry['comment']);
