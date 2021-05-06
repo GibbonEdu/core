@@ -31,9 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
     $name = $_POST['name'] ?? '';
     $nameShort = $_POST['nameShort'] ?? '';
     $description = $_POST['description'] ?? '';
-    $canLoginRole = isset($_POST['canLoginRole'])? $_POST['canLoginRole'] : 'Y';
-    $futureYearsLogin = isset($_POST['futureYearsLogin'])? $_POST['futureYearsLogin'] : 'N';
-    $pastYearsLogin = isset($_POST['pastYearsLogin'])? $_POST['pastYearsLogin'] : 'N';
+    $canLoginRole = $_POST['canLoginRole'] ?? 'Y';
+    $futureYearsLogin = $_POST['futureYearsLogin'] ?? 'N';
+    $pastYearsLogin = $_POST['pastYearsLogin'] ?? 'N';
     $restriction = $_POST['restriction'] ?? '';
 
     if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
