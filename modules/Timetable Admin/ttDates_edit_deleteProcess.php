@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$dateStamp = $_GET['dateStamp'];
-$gibbonTTDayID = $_GET['gibbonTTDayID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$dateStamp = $_GET['dateStamp'] ?? '';
+$gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
 
 if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading this page!';
 } else {

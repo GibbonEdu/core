@@ -1,6 +1,6 @@
 details:
-    type: rollGroups
-    name: Roll Groups
+    type: formGroups
+    name: Form Groups
     table: gibbonFormGroup
     modes: { update: true, insert: true, export: true }
 access:

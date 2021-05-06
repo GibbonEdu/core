@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
         if (!empty($notify) || !empty($notificationList)) {
             // Create the notification body
             $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false, true);
-            $notificationString = __('{student} {rollGroup} has withdrawn from {school} on {date}.', [
+            $notificationString = __('{student} {formGroup} has withdrawn from {school} on {date}.', [
                 'student'   => $studentName,
-                'rollGroup'   => $student['rollGroup'],
+                'formGroup'   => $student['formGroup'],
                 'school'    => $gibbon->session->get('organisationNameShort'),
                 'date'      => Format::date($data['dateEnd']),
             ]);

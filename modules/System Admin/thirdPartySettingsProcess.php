@@ -26,31 +26,31 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enablePayments = (isset($_POST['enablePayments']))? $_POST['enablePayments'] : '';
-    $paypalAPIUsername = (isset($_POST['paypalAPIUsername']))? $_POST['paypalAPIUsername'] : '';
-    $paypalAPIPassword = (isset($_POST['paypalAPIPassword']))? $_POST['paypalAPIPassword'] : '';
-    $paypalAPISignature = (isset($_POST['paypalAPISignature']))? $_POST['paypalAPISignature'] : '';
-    $googleOAuth = (isset($_POST['googleOAuth']))? $_POST['googleOAuth'] : '';
-    $googleClientName = (isset($_POST['googleClientName']))? $_POST['googleClientName'] : '';
-    $googleClientID = (isset($_POST['googleClientID']))? $_POST['googleClientID'] : '';
-    $googleClientSecret = (isset($_POST['googleClientSecret']))? $_POST['googleClientSecret'] : '';
-    $googleRedirectUri = (isset($_POST['googleRedirectUri']))? $_POST['googleRedirectUri'] : '';
-    $googleDeveloperKey = (isset($_POST['googleDeveloperKey']))? $_POST['googleDeveloperKey'] : '';
-    $calendarFeed = (isset($_POST['calendarFeed']))? $_POST['calendarFeed'] : '';
+    $enablePayments = $_POST['enablePayments'] ?? '';
+    $paypalAPIUsername = $_POST['paypalAPIUsername'] ?? '';
+    $paypalAPIPassword = $_POST['paypalAPIPassword'] ?? '';
+    $paypalAPISignature = $_POST['paypalAPISignature'] ?? '';
+    $googleOAuth = $_POST['googleOAuth'] ?? '';
+    $googleClientName = $_POST['googleClientName'] ?? '';
+    $googleClientID = $_POST['googleClientID'] ?? '';
+    $googleClientSecret = $_POST['googleClientSecret'] ?? '';
+    $googleRedirectUri = $_POST['googleRedirectUri'] ?? '';
+    $googleDeveloperKey = $_POST['googleDeveloperKey'] ?? '';
+    $calendarFeed = $_POST['calendarFeed'] ?? '';
     $smsGateway = $_POST['smsGateway'] ?? '';
     $smsSenderID = $_POST['smsSenderID'] ?? '';
-    $smsUsername = (isset($_POST['smsUsername']))? $_POST['smsUsername'] : '';
-    $smsPassword = (isset($_POST['smsPassword']))? $_POST['smsPassword'] : '';
-    $smsURL = (isset($_POST['smsURL']))? $_POST['smsURL'] : '';
-    $smsURLCredit = (isset($_POST['smsURLCredit']))? $_POST['smsURLCredit'] : '';
+    $smsUsername = $_POST['smsUsername'] ?? '';
+    $smsPassword = $_POST['smsPassword'] ?? '';
+    $smsURL = $_POST['smsURL'] ?? '';
+    $smsURLCredit = $_POST['smsURLCredit'] ?? '';
 
     // SMTP Mail Settings
-    $enableMailerSMTP = (isset($_POST['enableMailerSMTP']))? $_POST['enableMailerSMTP'] : '';
-    $mailerSMTPHost = (isset($_POST['mailerSMTPHost']))? $_POST['mailerSMTPHost'] : '';
-    $mailerSMTPPort = (isset($_POST['mailerSMTPPort']))? $_POST['mailerSMTPPort'] : '';
-    $mailerSMTPSecure = (isset($_POST['mailerSMTPSecure']))? $_POST['mailerSMTPSecure'] : '';
-    $mailerSMTPUsername = (isset($_POST['mailerSMTPUsername']))? $_POST['mailerSMTPUsername'] : '';
-    $mailerSMTPPassword = (isset($_POST['mailerSMTPPassword']))? $_POST['mailerSMTPPassword'] : '';
+    $enableMailerSMTP = $_POST['enableMailerSMTP'] ?? '';
+    $mailerSMTPHost = $_POST['mailerSMTPHost'] ?? '';
+    $mailerSMTPPort = $_POST['mailerSMTPPort'] ?? '';
+    $mailerSMTPSecure = $_POST['mailerSMTPSecure'] ?? '';
+    $mailerSMTPUsername = $_POST['mailerSMTPUsername'] ?? '';
+    $mailerSMTPPassword = $_POST['mailerSMTPPassword'] ?? '';
 
     //Validate Inputs
     if ($enablePayments == '' or $googleOAuth == '') {

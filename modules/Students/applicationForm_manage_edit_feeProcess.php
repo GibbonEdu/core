@@ -23,9 +23,9 @@ use Gibbon\Contracts\Comms\Mailer;
 
 include '../../gibbon.php';
 
-$gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$search = $_GET['search'];
+$gibbonApplicationFormID = $_POST['gibbonApplicationFormID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $URL .= '&return=error1';
         header("Location: {$URL}");
     }
-    
+
     $subject = __('Application Fee');
     $body = __($applicationProcessFeeText);
 

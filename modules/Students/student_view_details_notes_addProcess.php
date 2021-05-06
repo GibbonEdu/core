@@ -24,12 +24,9 @@ use Gibbon\Domain\School\YearGroupGateway;
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$subpage = $_GET['subpage'];
-$allStudents = '';
-if (isset($_GET['allStudents'])) {
-    $allStudents = $_GET['allStudents'];
-}
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$subpage = $_GET['subpage'] ?? '';
+$allStudents = $_GET['allStudents'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
@@ -71,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                 //Proceed!
                 //Validate Inputs
-                $title = $_POST['title'];
-                $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'];
+                $title = $_POST['title'] ?? '';
+                $gibbonStudentNoteCategoryID = $_POST['gibbonStudentNoteCategoryID'] ?? '';
                 if ($gibbonStudentNoteCategoryID == '') {
                     $gibbonStudentNoteCategoryID = null;
                 }
@@ -133,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         }
                         if ($noteCreationNotification == 'Tutors & Teachers') {
-                            
+
                                 $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                                 $sql = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
                                 $result = $connection2->prepare($sql);

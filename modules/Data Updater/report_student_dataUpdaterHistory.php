@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     
     $row = $form->addRow();
         $row->addLabel('members', __('Students'));
-        $row->addSelectStudent('members', $_SESSION[$guid]['gibbonSchoolYearID'], array('byRoll' => true, 'byName' => true))
+        $row->addSelectStudent('members', $_SESSION[$guid]['gibbonSchoolYearID'], array('byForm' => true, 'byName' => true))
             ->selectMultiple()
             ->required()
             ->selected($choices);
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
                 return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
             });
 
-        $table->addColumn('rollGroupName', __('Form Group'));
+        $table->addColumn('formGroupName', __('Form Group'));
 
         $table->addColumn('personalUpdate', __('Personal Data'))
             ->format(function($row) use ($dataChecker) {

@@ -1526,7 +1526,7 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
-//Take a roll group, and return the next one, or false if none
+//Take a form group, and return the next one, or false if none
 function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;

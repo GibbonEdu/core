@@ -99,7 +99,7 @@ class ActivityReportGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS rollGroup'])
+            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS formGroup'])
             ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
             ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
@@ -122,7 +122,7 @@ class ActivityReportGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name as activity', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name as activity', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonFormGroup.nameShort AS formGroup',
                 "(CASE WHEN gibbonActivityAttendance.gibbonActivityAttendanceID IS NULL THEN 'Absent' ELSE 'Present' END) AS attendance"
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')

@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonYearGroupID = (isset($_REQUEST['gibbonYearGroupID']))? $_REQUEST['gibbonYearGroupID'] : null;
-$gibbonSchoolYearID = (isset($_REQUEST['gibbonSchoolYearID']))? $_REQUEST['gibbonSchoolYearID'] : null;
+$gibbonYearGroupID = $_REQUEST['gibbonYearGroupID'] ?? null;
+$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? null;
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_edit.php&gibbonYearGroupID='.$gibbonYearGroupID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $syncEnabled = (isset($_POST['syncEnabled']))? $_POST['syncEnabled'] : null;
     $syncTo = (isset($_POST['syncTo']))? $_POST['syncTo'] : null;
-    
+
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID) || empty($syncTo) || empty($syncEnabled)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

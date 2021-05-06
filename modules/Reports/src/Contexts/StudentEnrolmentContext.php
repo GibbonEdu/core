@@ -35,7 +35,7 @@ class StudentEnrolmentContext implements DataContext
     public function getIdentifiers(Connection $db, string $gibbonReportID, string $gibbonYearGroupID)
     {
         $data = ['gibbonReportID' => $gibbonReportID, 'gibbonYearGroupID' => $gibbonYearGroupID];
-        $sql = "SELECT gibbonStudentEnrolmentID, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonFormGroup.nameShort as rollGroup
+        $sql = "SELECT gibbonStudentEnrolmentID, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonFormGroup.nameShort as formGroup
                 FROM gibbonReport
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)

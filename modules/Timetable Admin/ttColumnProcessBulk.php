@@ -21,7 +21,7 @@ use Gibbon\Domain\Timetable\TimetableColumnGateway;
 
 include '../../gibbon.php';
 
-$action = $_POST['action'];
+$action = $_POST['action'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/ttColumn.php";
 

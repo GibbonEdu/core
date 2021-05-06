@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         echo __('The specified date is in the future: it must be today or earlier.');
         echo '</div>';
     } else {
-        //Produce array of roll groups
+        //Produce array of form groups
         $formGroups = $result->fetchAll();
 
         echo "<div class='linkTop'>";

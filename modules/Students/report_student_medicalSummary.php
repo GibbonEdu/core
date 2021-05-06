@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Students'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byForm" => true))
                 ->isRequired()
                 ->selectMultiple()
                 ->selected($choices);

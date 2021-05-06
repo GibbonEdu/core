@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $resultClassMap = $pdo->executeQuery($data, $sql);
                     $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
 
-                    // Student has a roll group and mapped classes exist
+                    // Student has a form group and mapped classes exist
                     if ($classMapCount > 0) {
                         $autoEnrolStudent = (getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses') == 'Y');
 
@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $resultYearGroup->execute($dataYearGroup);
                 $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
 
-                // Get student's roll group info (if any)
+                // Get student's form group info (if any)
                 $dataFormGroup = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
                 $sqlFormGroup = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $resultFormGroup = $connection2->prepare($sqlFormGroup);

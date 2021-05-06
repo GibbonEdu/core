@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $criteria = $investigationGateway->newQueryCriteria()
             ->sortBy('date', 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonFormGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->format(function ($person) {
                 $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Individual Needs&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))

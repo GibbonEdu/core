@@ -22,9 +22,9 @@ use Gibbon\Domain\System\LogGateway;
 include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$search = $_GET['search'];
+$gibbonApplicationFormID = $_POST['gibbonApplicationFormID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_delete.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
