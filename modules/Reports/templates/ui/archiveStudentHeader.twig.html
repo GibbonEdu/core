@@ -15,7 +15,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="flex-1 text-center sm:text-left sm:pl-6">
             <div class="text-lg text-gray-800 leading-none mb-2 p-0">{{ formatUsing('name', student.title, student.preferredName, student.surname, 'Student', false, true) }}</div>
 
-            <div class="text-sm text-gray-600 mb-0">{{ student.rollGroup }}</div>
+            <div class="text-sm text-gray-600 mb-0">{{ student.formGroup }}</div>
 
             {% if status %}
                 <span class="tag {{ tag|default('success') }} mt-2 mb-0">{{ status }}</span>

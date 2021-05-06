@@ -40,16 +40,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     } else {
         $partialFail = false;
 
-        foreach ($syncTo as $gibbonCourseClassID => $gibbonRollGroupID) {
-            if (!empty($syncEnabled[$gibbonCourseClassID]) && !empty($gibbonRollGroupID)) {
+        foreach ($syncTo as $gibbonCourseClassID => $gibbonFormGroupID) {
+            if (!empty($syncEnabled[$gibbonCourseClassID]) && !empty($gibbonFormGroupID)) {
                 // Enabled and Set: insert or update
                 $data = array(
                     'gibbonCourseClassID' => $gibbonCourseClassID,
-                    'gibbonRollGroupID' => $gibbonRollGroupID,
+                    'gibbonFormGroupID' => $gibbonFormGroupID,
                     'gibbonYearGroupID' => $gibbonYearGroupID,
                 );
 
-                $sql = "INSERT INTO gibbonCourseClassMap SET gibbonCourseClassID=:gibbonCourseClassID, gibbonRollGroupID=:gibbonRollGroupID, gibbonYearGroupID=:gibbonYearGroupID ON DUPLICATE KEY UPDATE gibbonRollGroupID=:gibbonRollGroupID, gibbonYearGroupID=:gibbonYearGroupID";
+                $sql = "INSERT INTO gibbonCourseClassMap SET gibbonCourseClassID=:gibbonCourseClassID, gibbonFormGroupID=:gibbonFormGroupID, gibbonYearGroupID=:gibbonYearGroupID ON DUPLICATE KEY UPDATE gibbonFormGroupID=:gibbonFormGroupID, gibbonYearGroupID=:gibbonYearGroupID";
                 $pdo->executeQuery($data, $sql);
 
                 if (!$pdo->getQuerySuccess()) $partialFail = true;

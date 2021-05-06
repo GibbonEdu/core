@@ -125,10 +125,10 @@ else {
 				echo "<div id='tabs1'>";
 					
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
-						$sql = "SELECT gibbonRollGroup.nameShort AS rollGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
+						$sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
 							FROM gibbonPerson
 							JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-							JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+							JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
 							LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
 							LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID AND parent1Fam.contactPriority=1)
 							LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full' AND NOT parent1.surname IS NULL)
@@ -138,7 +138,7 @@ else {
 							AND gibbonPerson.status='Full'
 							AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
 							GROUP BY gibbonPerson.gibbonPersonID
-							ORDER BY rollGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
+							ORDER BY formGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
 						$result = $connection2->prepare($sql);
 						$result->execute($data);
 
@@ -161,7 +161,7 @@ else {
 						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
 							$row->addSubmit(__('Go'));
 
-						$rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
+						$formGroups = $result->fetchAll(\PDO::FETCH_GROUP);
 						$countTotal = 0;
 
 						// Merge gibbonPersonIDListStudent into $receipts as an array
@@ -170,7 +170,7 @@ else {
                             return $item;
                         }, $receipts);
 
-						foreach ($rollGroups as $rollGroupName => $recipients) {
+						foreach ($formGroups as $formGroupName => $recipients) {
 							$count = 0;
 
 							// Filter the array for only those individuals involved in the message (student or parent)
@@ -194,10 +194,10 @@ else {
 
 							//print_r($recipients);exit;
 
-							// Skip this roll group if there's no involved individuals
+							// Skip this form group if there's no involved individuals
 							if (empty($recipients)) continue;
 
-							$form->addRow()->addHeading($rollGroupName);
+							$form->addRow()->addHeading($formGroupName);
 							$table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 
 							$header = $table->addHeaderRow();

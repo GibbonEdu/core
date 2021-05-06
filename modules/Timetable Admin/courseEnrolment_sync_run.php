@@ -48,19 +48,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.name as gibbonYearGroupName
                 FROM gibbonCourseClassMap
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonCourseClassMap.gibbonFormGroupID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonCourseClassMap.gibbonYearGroupID)
-                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 GROUP BY gibbonCourseClassMap.gibbonYearGroupID";
     } else {
         // Pull up the class mapping for this year group
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupIDList);
         $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.name as gibbonYearGroupName
                 FROM gibbonCourseClassMap
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonCourseClassMap.gibbonFormGroupID)
                 JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonCourseClassMap.gibbonYearGroupID)
                 WHERE FIND_IN_SET(gibbonCourseClassMap.gibbonYearGroupID, :gibbonYearGroupID)
-                AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 GROUP BY gibbonCourseClassMap.gibbonYearGroupID";
     }
 
@@ -104,14 +104,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         );
 
         // Grab mapped classes for all teachers & students grouped by year group, excluding those already enrolled
-        $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as gibbonRollGroupName, GROUP_CONCAT(CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort SEPARATOR ', ') AS courseList, 'Teacher' as role
+        $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name as gibbonFormGroupName, GROUP_CONCAT(CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort SEPARATOR ', ') AS courseList, 'Teacher' as role
                 FROM gibbonCourseClassMap
-                JOIN gibbonRollGroup ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID || gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
+                JOIN gibbonFormGroup ON (gibbonCourseClassMap.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID || gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID || gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID)
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role = 'Teacher')
-                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourseClassMap.gibbonYearGroupID=:gibbonYearGroupID
                 AND gibbonPerson.status='Full'
                 AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
@@ -119,11 +119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
                 GROUP BY gibbonPerson.gibbonPersonID
             ) UNION ALL (
-                SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as gibbonRollGroupName, GROUP_CONCAT(CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort SEPARATOR ', ') AS courseList, 'Student' as role
+                SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name as gibbonFormGroupName, GROUP_CONCAT(CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort SEPARATOR ', ') AS courseList, 'Student' as role
                 FROM gibbonCourseClassMap
-                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonCourseClassMap.gibbonYearGroupID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonCourseClassMap.gibbonYearGroupID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonCourseClassMap.gibbonFormGroupID)
                 JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonCourseClassMap.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID)
                 JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID  AND gibbonCourseClassPerson.role = 'Student')
@@ -153,15 +153,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             while ($person = $enrolmentResult->fetch()) {
                 $row = $table->addRow();
-                    $row->addCheckbox('syncData['.$person['gibbonRollGroupID'].']['.$person['gibbonPersonID'].']')
+                    $row->addCheckbox('syncData['.$person['gibbonFormGroupID'].']['.$person['gibbonPersonID'].']')
                         ->setValue($person['role'])
                         ->checked($person['role'])
                         ->setClass($classMap['gibbonYearGroupID'])
                         ->addClass(strtolower($person['role']))
                         ->description('&nbsp;&nbsp;');
-                    $row->addLabel('syncData['.$person['gibbonRollGroupID'].']['.$person['gibbonPersonID'].']', Format::name('', $person['preferredName'], $person['surname'], 'Student', true))->addClass('mediumWidth');
+                    $row->addLabel('syncData['.$person['gibbonFormGroupID'].']['.$person['gibbonPersonID'].']', Format::name('', $person['preferredName'], $person['surname'], 'Student', true))->addClass('mediumWidth');
                     $row->addContent($person['role']);
-                    $row->addContent($person['gibbonRollGroupName']);
+                    $row->addContent($person['gibbonFormGroupName']);
                     $row->addContent($person['courseList']);
             }
 

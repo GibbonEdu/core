@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow()->addClass('students');
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), array('allstudents' => true, 'byRoll' => true))->setID('gibbonPersonIDMultiple')->required()->selectMultiple()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $gibbon->session->get('gibbonSchoolYearID'), array('allstudents' => true, 'byForm' => true))->setID('gibbonPersonIDMultiple')->required()->selectMultiple()->selected($gibbonPersonID);
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php')) {
         $availableAbsenceTypes = [
@@ -157,10 +157,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $table->addColumn('timestamp', __('On'))->format(Format::using('dateTimeReadable', 'timestampTaken', '%R, %b %d'));
 
                 $table->addActionColumn()
-                    ->addParam('gibbonPersonID')
+                    ->addParam('gibbonPersonID', $gibbonPersonID[0] ?? '')
                     ->addParam('gibbonAttendanceLogPersonID')
                     ->format(function ($row, $actions) {
-                        $actions->addAction('delete', __('Delete'))
+                        $actions->addAction('deleteInstant', __('Delete'))
+                            ->setIcon('garbage')
                             ->setURL('/modules/Attendance/attendance_future_byPersonDeleteProcess.php')
                             ->addConfirmation(__('Are you sure you want to delete this record? Unsaved changes will be lost.'))
                             ->directLink();

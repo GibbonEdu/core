@@ -320,11 +320,11 @@ else {
 					}
 				}
 
-				//Roll group
+				//Form group
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 					$selectedByRole = array('staff' => 'N', 'students' => 'N', 'parents' => 'N',);
 					$selected = array_reduce($targets, function($group, $item) use (&$selectedByRole) {
-						if ($item['type'] == 'Roll Group') {
+						if ($item['type'] == 'Form Group') {
 							$group[] = $item['id'];
 							$selectedByRole['staff'] = $item['staff'];
 							$selectedByRole['students'] = $item['students'];
@@ -334,41 +334,41 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('rollGroup', __('Form Group'))->description(__('Tutees and tutors.'));
-						$row->addYesNoRadio('rollGroup')->checked($checked)->required();
+						$row->addLabel('formGroup', __('Form Group'))->description(__('Tutees and tutors.'));
+						$row->addYesNoRadio('formGroup')->checked($checked)->required();
 
-					$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
+					$form->toggleVisibilityByClass('formGroup')->onRadio('formGroup')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
 						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
-						$sql="SELECT gibbonRollGroupID AS value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+						$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 					}
 					else {
 						if ($roleCategory == "Staff") {
 							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID1"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID3"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
-							$sql="SELECT gibbonRollGroupID AS value, name FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+							$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 						}
 						else if ($roleCategory == "Student") {
 							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], );
-							$sql="SELECT gibbonRollGroupID AS value, name FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
+							$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 						}
 					}
-					$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-						$row->addLabel('rollGroups[]', __('Select Form Groups'));
-						$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
+					$row = $form->addRow()->addClass('formGroup hiddenReveal');
+						$row->addLabel('formGroups[]', __('Select Form Groups'));
+						$row->addSelect('formGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
-					$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-						$row->addLabel('rollGroupsStaff', __('Include Staff?'));
-						$row->addYesNo('rollGroupsStaff')->selected($selectedByRole['staff']);
+					$row = $form->addRow()->addClass('formGroup hiddenReveal');
+						$row->addLabel('formGroupsStaff', __('Include Staff?'));
+						$row->addYesNo('formGroupsStaff')->selected($selectedByRole['staff']);
 
-					$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-						$row->addLabel('rollGroupsStudents', __('Include Students?'));
-						$row->addYesNo('rollGroupsStudents')->selected($selectedByRole['students']);
+					$row = $form->addRow()->addClass('formGroup hiddenReveal');
+						$row->addLabel('formGroupsStudents', __('Include Students?'));
+						$row->addYesNo('formGroupsStudents')->selected($selectedByRole['students']);
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-						$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-							$row->addLabel('rollGroupsParents', __('Include Parents?'));
-							$row->addYesNo('rollGroupsParents')->selected($selectedByRole['parents']);
+						$row = $form->addRow()->addClass('formGroup hiddenReveal');
+							$row->addLabel('formGroupsParents', __('Include Parents?'));
+							$row->addYesNo('formGroupsParents')->selected($selectedByRole['parents']);
 					}
 				}
 

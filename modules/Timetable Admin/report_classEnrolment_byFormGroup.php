@@ -26,7 +26,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,36 +37,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     echo __('Choose Form Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byRollGroup.php');
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byFormGroup.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required()->placeholder();
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
-    if ($gibbonRollGroupID != '') {
+    if ($gibbonFormGroupID != '') {
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
 
         $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
-        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonRollGroupID);
+        $enrolment = $courseGateway->selectCourseEnrolmentByFormGroup($gibbonFormGroupID);
 
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');
 
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($person) use ($guid) {

@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,22 +34,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
         //Proceed!
         $page->breadcrumbs->add(__('View Form Groups'));
 
-        $gateway = $container->get(RollGroupGateway::class);
+        $gateway = $container->get(FormGroupGateway::class);
         if ($highestAction == "View Form Groups_all") {
-            $rollGroups = $gateway->selectRollGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
+            $formGroups = $gateway->selectFormGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
         }
         else {
-            $rollGroups = $gateway->selectRollGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
+            $formGroups = $gateway->selectFormGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
         }
 
         $formatTutorsList = function($row) use ($gateway) {
-            $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
+            $tutors = $gateway->selectTutorsByFormGroup($row['gibbonFormGroupID'])->fetchAll();
             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
             return Format::nameList($tutors, 'Staff', false, true);
         };
 
-        $table = DataTable::create('rollGroups');
+        $table = DataTable::create('formGroups');
         $table->setTitle(__('Form Groups'));
 
         $table->addColumn('name', __('Name'));
@@ -60,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
         }
         $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
-        $actions = $table->addActionColumn()->addParam('gibbonRollGroupID');
+        $actions = $table->addActionColumn()->addParam('gibbonFormGroupID');
         $actions->addAction('view', __('View'))
-                ->setURL('/modules/Form Groups/rollGroups_details.php');
+                ->setURL('/modules/Form Groups/formGroups_details.php');
 
-        echo $table->render($rollGroups->toDataSet());
+        echo $table->render($formGroups->toDataSet());
 
         //Display year group table for staff
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);

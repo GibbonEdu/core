@@ -79,17 +79,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
                   gibbonPerson.title, 
                   gibbonPerson.surname, 
                   gibbonPerson.preferredName, 
-                  gibbonRollGroup.gibbonRollGroupID, 
-                  gibbonRollGroup.name as rollGroupName, 
-                  gibbonRollGroup.nameShort AS rollGroup
+                  gibbonFormGroup.gibbonFormGroupID, 
+                  gibbonFormGroup.name as formGroupName, 
+                  gibbonFormGroup.nameShort AS formGroup
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE status='Full'
                   AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
                   AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
                   AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
+                ORDER BY surname, preferredName, LENGTH(formGroup), formGroup";
 
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -114,9 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $table->setTitle(__('Report Data'));
             $table->setDescription(__("A list of students who were absent during the provided period."));
             $table->addColumn('count', __('Number Of Absences'));
-            $table->addColumn('rollGroupName', __('Form Group'))
+            $table->addColumn('formGroupName', __('Form Group'))
                   ->format(function ($absence) {
-                    return Format::bold($absence['rollGroupName']);
+                    return Format::bold($absence['formGroupName']);
                   });
             $table->addColumn('name', __('Name'))
                   ->format(function ($absence) {

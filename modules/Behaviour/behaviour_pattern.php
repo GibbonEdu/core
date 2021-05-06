@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
     $level = isset($_GET['level'])? $_GET['level'] : '';
     $fromDate = isset($_GET['fromDate'])? $_GET['fromDate'] : '';
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
     $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
     $minimumCount = isset($_GET['minimumCount'])? $_GET['minimumCount'] : 1;
 
@@ -74,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $row->addDate('fromDate')->setValue($fromDate);
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -104,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // CRITERIA
     $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('count', 'DESC')
-        ->sortBy('rollGroup')
+        ->sortBy('formGroup')
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('descriptor', $descriptor)
         ->filterBy('level', $level)
         ->filterBy('fromDate', Format::dateConvert($fromDate))
-        ->filterBy('rollGroup', $gibbonRollGroupID)
+        ->filterBy('formGroup', $gibbonFormGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->filterBy('minimumCount', $minimumCount)
         ->fromPOST();
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         });
     $table->addColumn('count', __('Negative Count'))->description(__('(Current Year Only)'));
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
 
     $table->addActionColumn()
         ->addParam('gibbonPersonID')

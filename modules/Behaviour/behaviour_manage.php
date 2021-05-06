@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
         $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
         $type = isset($_GET['type'])? $_GET['type'] : '';
 
@@ -59,8 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+            $row->addLabel('gibbonFormGroupID',__('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID',__('Year Group'));
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $criteria = $behaviourGateway->newQueryCriteria(true)
             ->sortBy('timestamp', 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonRollGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->filterBy('type', $type)
             ->fromPOST();
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Behaviour/behaviour_manage_add.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->displayLabel()
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addHeaderAction('addMultiple', __('Add Multiple'))
             ->setURL('/modules/Behaviour/behaviour_manage_addMulti.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->displayLabel();
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->format(function($person) use ($guid) {
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->addParam('gibbonBehaviourID')

@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include './gibbon.php';
 
-$gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'];
 $URL = $gibbon->session->get('absoluteURL').'/index.php';
 
 try {
     $data = array('gibbonPersonIDTutor' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $gibbon->session->get('gibbonPersonID'));
-    $sql = 'SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
+    $sql = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
@@ -33,7 +33,7 @@ try {
 }
 
 if ($result) {
-    if ($gibbonRollGroupID == '') {
+    if ($gibbonFormGroupID == '') {
         $URL .= '?return=error1';
         header("Location: {$URL}");
     } else {
@@ -42,11 +42,11 @@ if ($result) {
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $data = ['gibbonRollGroupID' => $gibbonRollGroupID, 'today' => date('Y-m-d')];
+            $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d')];
             $sql = "SELECT surname, preferredName, email 
                     FROM gibbonStudentEnrolment 
                     JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                    WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' 
+                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' 
                     AND (dateStart IS NULL OR dateStart<=:today) 
                     AND (dateEnd IS NULL  OR dateEnd>=:today) 
                     ORDER BY surname, preferredName";

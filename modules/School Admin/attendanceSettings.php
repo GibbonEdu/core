@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
     
-        $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+        $data=array( 'action1' => '%report_formGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                 FROM gibbonPerson
                 JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)

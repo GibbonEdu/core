@@ -295,10 +295,10 @@ else {
 								else if ($rowTargets["type"]=="Role Category") {
 									$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>" ;
 								}
-								else if ($rowTargets["type"]=="Roll Group") {
+								else if ($rowTargets["type"]=="Form Group") {
 									try {
-										$dataTarget=array("gibbonRollGroupID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID" ;
+										$dataTarget=array("gibbonFormGroupID"=>$rowTargets["id"]);
+										$sqlTarget="SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID" ;
 										$resultTarget=$connection2->prepare($sqlTarget);
 										$resultTarget->execute($dataTarget);
 									}

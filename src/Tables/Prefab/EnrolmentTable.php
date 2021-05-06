@@ -98,7 +98,7 @@ class EnrolmentTable implements OutputableInterface
 
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
-            ->sortBy(['dateStart', 'rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['dateStart', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->fromPOST();
 
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Full', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), false);
@@ -122,7 +122,7 @@ class EnrolmentTable implements OutputableInterface
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
             });
-        $table->addColumn('rollGroup', __('Form Group'))->context('primary');
+        $table->addColumn('formGroup', __('Form Group'))->context('primary');
         $table->addColumn('username', __('Username'));
         $table->addColumn('officialName', __('Official Name'));
         $table->addColumn('dateStart', __('Start Date'))->context('secondary')->format(Format::using('date', 'dateStart'));
@@ -140,7 +140,7 @@ class EnrolmentTable implements OutputableInterface
 
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
-            ->sortBy(['dateEnd', 'rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['dateEnd', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->fromPOST();
 
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Left', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), true);
@@ -165,7 +165,7 @@ class EnrolmentTable implements OutputableInterface
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
             });
-        $table->addColumn('rollGroup', __('Form Group'))->context('primary');
+        $table->addColumn('formGroup', __('Form Group'))->context('primary');
         $table->addColumn('username', __('Username'));
         $table->addColumn('officialName', __('Official Name'));
         $table->addColumn('dateStart', __('End Date'))->context('secondary')->format(Format::using('date', 'dateEnd'));
