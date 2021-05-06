@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
     echo __('Choose Form Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -47,22 +47,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byRollGroup.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID);
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
     echo $form->getOutput();
 
-    if ($gibbonRollGroupID != '') {
+    if ($gibbonFormGroupID != '') {
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
 
         
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = "SELECT surname, preferredName, name, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
+            $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+            $sql = "SELECT surname, preferredName, name, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
 

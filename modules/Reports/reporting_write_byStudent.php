@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     if ($reportingScope['scopeType'] == 'Year Group') {
         $scopeIdentifier = 'gibbonYearGroupID';
     } elseif ($reportingScope['scopeType'] == 'Roll Group') {
-        $scopeIdentifier = 'gibbonRollGroupID';
+        $scopeIdentifier = 'gibbonFormGroupID';
     } elseif ($reportingScope['scopeType'] == 'Course') {
         $scopeIdentifier = 'gibbonCourseClassID';
     }

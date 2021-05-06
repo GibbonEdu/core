@@ -63,15 +63,15 @@ class StaffGateway extends QueryableGateway
             $biographicalGroupingOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Staff' AND name='biographicalGroupingOrder'");
 
             $query->cols([
-                'gibbonRollGroup.name AS rollGroupName',
+                'gibbonFormGroup.name AS rollGroupName',
                 "GROUP_CONCAT(DISTINCT gibbonSpace.name ORDER BY gibbonSpace.name SEPARATOR '<br/>') as facility",
                 "GROUP_CONCAT(DISTINCT gibbonSpace.phoneInternal ORDER BY gibbonSpace.name SEPARATOR '<br/>') as extension",
                 "GROUP_CONCAT(DISTINCT gibbonDepartment.name ORDER BY gibbonDepartment.name SEPARATOR '<br/>') as department",
                 "(CASE WHEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingOrder) > 0 THEN FIND_IN_SET(gibbonStaff.biographicalGrouping, :biographicalGroupingOrder) WHEN gibbonStaff.biographicalGrouping <> '' THEN 998 ELSE 999 END) AS biographicalGroupingOrder",
             ])
-            ->leftJoin('gibbonRollGroup', '((gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID)')
+            ->leftJoin('gibbonFormGroup', '((gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID)')
             ->leftJoin('gibbonSpacePerson', 'gibbonSpacePerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->leftJoin('gibbonSpace', '(gibbonSpace.gibbonSpaceID=gibbonSpacePerson.gibbonSpaceID OR gibbonSpace.gibbonSpaceID=gibbonRollGroup.gibbonSpaceID)')
+            ->leftJoin('gibbonSpace', '(gibbonSpace.gibbonSpaceID=gibbonSpacePerson.gibbonSpaceID OR gibbonSpace.gibbonSpaceID=gibbonFormGroup.gibbonSpaceID)')
             ->leftJoin('gibbonDepartmentStaff', 'gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonDepartment', 'gibbonDepartment.gibbonDepartmentID=gibbonDepartmentStaff.gibbonDepartmentID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)

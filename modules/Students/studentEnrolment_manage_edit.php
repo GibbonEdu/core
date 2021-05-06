@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
-        $form->addHiddenValue('gibbonRollGroupIDOriginal', $values['gibbonRollGroupID']);
+        $form->addHiddenValue('gibbonFormGroupIDOriginal', $values['gibbonFormGroupID']);
         $form->addHiddenValue('rollGroupOriginalNameShort', $values['rollGroup']);
 
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
@@ -86,8 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             $row->addSelectYearGroup('gibbonYearGroupID')->required();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID', __('Form Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required();
 
         $row = $form->addRow();
             $row->addLabel('rollOrder', __('Roll Order'));
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
 
         $dataSelect = array('gibbonPersonID' => $values['gibbonPersonID']);
-        $sqlSelect = 'SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID';
+        $sqlSelect = 'SELECT gibbonFormGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear FROM gibbonStudentEnrolment JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonStudentEnrolment.gibbonSchoolYearID';
         $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
 
         while ($resultSelect && $rowSelect = $resultSelect->fetch()) {

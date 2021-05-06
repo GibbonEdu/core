@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria()
-        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
+        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort'])
         ->fromPOST();
 
     $privacyChoices = $reportGateway->queryStudentPrivacyChoices($criteria, $gibbonSchoolYearID);

@@ -26,7 +26,7 @@ $urlParams = [
     'gibbonReportingScopeID' => $_POST['gibbonReportingScopeID'] ?? '',
     'gibbonReportingCycleID' => $_POST['gibbonReportingCycleID'] ?? '',
     'gibbonYearGroupID' => $_POST['gibbonYearGroupID'] ?? null,
-    'gibbonRollGroupID' => $_POST['gibbonRollGroupID'] ?? null,
+    'gibbonFormGroupID' => $_POST['gibbonFormGroupID'] ?? null,
     'gibbonCourseID' => $_POST['gibbonCourseID'] ?? null,
     'scopeType' => $_POST['scopeType'] ?? null,
 ];
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
         'gibbonReportingScopeID'        => $urlParams['gibbonReportingScopeID'],
         'gibbonReportingCriteriaTypeID' => $_POST['gibbonReportingCriteriaTypeID'] ?? '',
         'gibbonYearGroupID'             => $urlParams['gibbonYearGroupID'],
-        'gibbonRollGroupID'             => $urlParams['gibbonRollGroupID'],
+        'gibbonFormGroupID'             => $urlParams['gibbonFormGroupID'],
         'gibbonCourseID'                => $urlParams['gibbonCourseID'],
         'target'                        => $_POST['target'] ?? '',
         'name'                          => $_POST['name'] ?? '',
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
 
     switch ($urlParams['scopeType']) {
         case 'Year Group': $scopeTypeID = $data['gibbonYearGroupID']; break;
-        case 'Roll Group': $scopeTypeID = $data['gibbonRollGroupID']; break;
+        case 'Roll Group': $scopeTypeID = $data['gibbonFormGroupID']; break;
         case 'Course':     $scopeTypeID = $data['gibbonCourseID']; break;
     }
     $data['sequenceNumber'] = $reportingCriteriaGateway->getHighestSequenceNumberByScope($urlParams['gibbonReportingScopeID'], $urlParams['scopeType'], $scopeTypeID) + 1;

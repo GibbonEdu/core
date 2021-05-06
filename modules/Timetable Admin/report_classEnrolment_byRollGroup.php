@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     echo __('Choose Form Group');
     echo '</h2>';
 
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -46,22 +46,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byRollGroup.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required()->placeholder();
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
-    if ($gibbonRollGroupID != '') {
+    if ($gibbonFormGroupID != '') {
         echo '<h2>';
         echo __('Report Data');
         echo '</h2>';
 
         $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
-        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonRollGroupID);
+        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonFormGroupID);
 
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');

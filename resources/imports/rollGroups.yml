@@ -1,13 +1,13 @@
 details:
     type: rollGroups
     name: Roll Groups
-    table: gibbonRollGroup
+    table: gibbonFormGroup
     modes: { update: true, insert: true, export: true }
 access:
     module: School Admin
     action: Manage Form Groups
 primaryKey:
-    gibbonRollGroupID
+    gibbonFormGroupID
 uniqueKeys:
     - [ gibbonSchoolYearID, name ]
     - [ gibbonSchoolYearID, nameShort ]
@@ -44,10 +44,10 @@ table:
         name: "Location"
         desc: "Name"
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
-    gibbonRollGroupIDNext: 
+    gibbonFormGroupIDNext: 
         name: "Next Form Group"
         desc: "Short Name"
-        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: nameShort  }
+        relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: nameShort  }
     attendance:
         name: "Track Attendance?"
         desc: "Should this class allow attendance to be taken?"

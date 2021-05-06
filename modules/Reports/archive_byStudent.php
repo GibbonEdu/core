@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
 
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
     $search = $_GET['search'] ?? '';
 
@@ -64,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->selected($gibbonRollGroupID)->placeholder();
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
 
-    $reports = $reportArchiveEntryGateway->queryArchiveBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonYearGroupID, $gibbonRollGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+    $reports = $reportArchiveEntryGateway->queryArchiveBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
     // Data TABLE
     $table = DataTable::createPaginated('reportsView', $criteria)->withData($reports);
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
-        ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+        ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
         ->addParam('allStudents', $allStudents)
         ->addParam('search', $criteria->getSearchText())
         ->format(function ($report, $actions) {

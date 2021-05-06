@@ -62,21 +62,21 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonRollGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS rollGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator'
             ])
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->where('gibbonINInvestigation.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID');
 
         if (!empty($gibbonPersonIDCreator)) {
-            $query->where('gibbonINInvestigation.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonRollGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonRollGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonRollGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator')
+            $query->where('gibbonINInvestigation.gibbonPersonIDCreator=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor2=:gibbonPersonIDCreator OR gibbonFormGroup.gibbonPersonIDTutor3=:gibbonPersonIDCreator')
                 ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
         }
 
@@ -86,10 +86,10 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                     ->where('gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
-            'rollGroup' => function ($query, $gibbonRollGroupID) {
+            'rollGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
-                    ->where('gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID')
-                    ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+                    ->where('gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID')
+                    ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
             },
             'yearGroup' => function ($query, $gibbonYearGroupID) {
                 return $query
@@ -115,18 +115,18 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonRollGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS rollGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',
-                'gibbonRollGroup.gibbonPersonIDTutor',
-                'gibbonRollGroup.gibbonPersonIDTutor2',
-                'gibbonRollGroup.gibbonPersonIDTutor3',
+                'gibbonFormGroup.gibbonPersonIDTutor',
+                'gibbonFormGroup.gibbonPersonIDTutor2',
+                'gibbonFormGroup.gibbonPersonIDTutor3',
                 'gibbonYearGroup.gibbonPersonIDHOY'
             ])
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->leftJoin('gibbonPerson AS creator', 'gibbonINInvestigation.gibbonPersonIDCreator=creator.gibbonPersonID')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonINInvestigation.gibbonSchoolYearID')

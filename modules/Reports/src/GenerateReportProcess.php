@@ -116,7 +116,7 @@ class GenerateReportProcess extends BackgroundProcess implements ContainerAwareI
                         'gibbonReportArchiveID' => $report['gibbonReportArchiveID'],
                         'gibbonSchoolYearID'    => $student['gibbonSchoolYearID'],
                         'gibbonYearGroupID'     => $student['gibbonYearGroupID'],
-                        'gibbonRollGroupID'     => $student['gibbonRollGroupID'],
+                        'gibbonFormGroupID'     => $student['gibbonFormGroupID'],
                         'gibbonPersonID'        => $student['gibbonPersonID'],
                         'type'                  => 'Single',
                         'status'                => $options['status'],

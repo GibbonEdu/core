@@ -232,24 +232,24 @@ class StaffDashboard implements OutputableInterface
         $count = 0;
 
             $dataRollGroups = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlRollGroups = 'SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sqlRollGroups = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $resultRollGroups = $connection2->prepare($sqlRollGroups);
             $resultRollGroups->execute($dataRollGroups);
 
         $attendanceAccess = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php');
 
         while ($rowRollGroups = $resultRollGroups->fetch()) {
-            $rollGroups[$count][0] = $rowRollGroups['gibbonRollGroupID'];
+            $rollGroups[$count][0] = $rowRollGroups['gibbonFormGroupID'];
             $rollGroups[$count][1] = $rowRollGroups['nameShort'];
 
             //Roll group table
-            $this->rollGroupTable->build($rowRollGroups['gibbonRollGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->rollGroupTable->build($rowRollGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
             $this->rollGroupTable->setTitle('');
 
             if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
                 $this->rollGroupTable->addHeaderAction('attendance', __('Take Attendance'))
                     ->setURL('/modules/Attendance/attendance_take_byRollGroup.php')
-                    ->addParam('gibbonRollGroupID', $rowRollGroups['gibbonRollGroupID'])
+                    ->addParam('gibbonFormGroupID', $rowRollGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
                     ->displayLabel()
                     ->append(' | ');
@@ -257,7 +257,7 @@ class StaffDashboard implements OutputableInterface
 
             $this->rollGroupTable->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/indexExport.php')
-                ->addParam('gibbonRollGroupID', $rowRollGroups['gibbonRollGroupID'])
+                ->addParam('gibbonFormGroupID', $rowRollGroups['gibbonFormGroupID'])
                 ->directLink()
                 ->displayLabel();
 
@@ -272,8 +272,8 @@ class StaffDashboard implements OutputableInterface
                     $plural = '';
                 }
                 try {
-                    $dataBehaviour = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonRollGroupID' => $rollGroups[$count][0]);
-                    $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY timestamp DESC';
+                    $dataBehaviour = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFormGroupID' => $rollGroups[$count][0]);
+                    $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY timestamp DESC';
                     $resultBehaviour = $connection2->prepare($sqlBehaviour);
                     $resultBehaviour->execute($dataBehaviour);
                 } catch (PDOException $e) {
@@ -282,7 +282,7 @@ class StaffDashboard implements OutputableInterface
 
                 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
                     $rollGroups[$count][3] .= "<div class='linkTop'>";
-                    $rollGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    $rollGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonFormGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                     if ($policyLink != '') {
                         $rollGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';

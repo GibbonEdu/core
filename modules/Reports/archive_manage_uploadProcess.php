@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
             'gibbonReportArchiveID' => $gibbonReportArchiveID,
             'gibbonSchoolYearID' => $gibbonSchoolYearID,
             'gibbonYearGroupID' => $studentEnrolment['gibbonYearGroupID'],
-            'gibbonRollGroupID' => $studentEnrolment['gibbonRollGroupID'],
+            'gibbonFormGroupID' => $studentEnrolment['gibbonFormGroupID'],
             'gibbonPersonID' => $studentEnrolment['gibbonPersonID'],
             'type' => 'Single',
             'status' => 'Final',

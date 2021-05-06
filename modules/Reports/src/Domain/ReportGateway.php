@@ -86,16 +86,16 @@ class ReportGateway extends QueryableGateway
             ->newQuery()
             ->distinct()
             ->from($this->getTableName())
-            ->cols(['gibbonReport.gibbonReportID', 'gibbonYearGroup.gibbonYearGroupID', 'gibbonRollGroup.gibbonRollGroupID', 'gibbonRollGroup.name', 'gibbonYearGroup.nameShort', 'gibbonYearGroup.sequenceNumber', 'gibbonReport.gibbonSchoolYearID', 'COUNT(DISTINCT gibbonReportArchiveEntry.gibbonPersonID) as count', "COUNT(DISTINCT CASE WHEN gibbonReportArchiveEntry.gibbonPersonIDAccessed IS NOT NULL THEN gibbonReportArchiveEntry.gibbonReportArchiveEntryID END) as readCount"])
+            ->cols(['gibbonReport.gibbonReportID', 'gibbonYearGroup.gibbonYearGroupID', 'gibbonFormGroup.gibbonFormGroupID', 'gibbonFormGroup.name', 'gibbonYearGroup.nameShort', 'gibbonYearGroup.sequenceNumber', 'gibbonReport.gibbonSchoolYearID', 'COUNT(DISTINCT gibbonReportArchiveEntry.gibbonPersonID) as count', "COUNT(DISTINCT CASE WHEN gibbonReportArchiveEntry.gibbonPersonIDAccessed IS NOT NULL THEN gibbonReportArchiveEntry.gibbonReportArchiveEntryID END) as readCount"])
             ->innerJoin('gibbonReportArchiveEntry', 'gibbonReportArchiveEntry.gibbonReportID=gibbonReport.gibbonReportID')
-            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportArchiveEntry.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonReportArchiveEntry.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportArchiveEntry.gibbonYearGroupID')
             ->where("gibbonReportArchiveEntry.type='Single'")
             ->where('gibbonReport.gibbonReportID=:gibbonReportID')
             ->bindValue('gibbonReportID', $gibbonReportID)
             ->where('gibbonYearGroup.gibbonYearGroupID=:gibbonYearGroupID')
             ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
-            ->groupBy(['gibbonReport.gibbonReportID', 'gibbonRollGroup.gibbonRollGroupID']);
+            ->groupBy(['gibbonReport.gibbonReportID', 'gibbonFormGroup.gibbonFormGroupID']);
 
         if (!$viewDraft) {
             $query->where("gibbonReportArchiveEntry.status='Final'");

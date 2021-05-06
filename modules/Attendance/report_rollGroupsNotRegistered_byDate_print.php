@@ -54,17 +54,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     //Produce array of attendance data
     
         $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-        $sql = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
+        $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     $log = array();
     while ($row = $result->fetch()) {
-        $log[$row['gibbonRollGroupID']][$row['date']] = true;
+        $log[$row['gibbonFormGroupID']][$row['date']] = true;
     }
 
     
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonRollGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
+        $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
         foreach ($rollGroups as $row) {
 
             //Output row only if not registered on specified date
-            if ( isset($log[$row['gibbonRollGroupID']]) == false || count($log[$row['gibbonRollGroupID']]) < count($lastNSchoolDays) ) {
+            if ( isset($log[$row['gibbonFormGroupID']]) == false || count($log[$row['gibbonFormGroupID']]) < count($lastNSchoolDays) ) {
                 ++$count;
 
                 //COLOR ROW BY STATUS!
@@ -133,11 +133,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
                             echo '<i>'.__('NA').'</i>';
                             echo '</td>';
                         } else {
-                            if (isset($log[$row['gibbonRollGroupID']][$lastNSchoolDays[$i]]) == false) {
+                            if (isset($log[$row['gibbonFormGroupID']][$lastNSchoolDays[$i]]) == false) {
                                 //$class = 'highlightNoData';
                                 $class = 'highlightAbsent';
                             } else {
-                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.$lastNSchoolDays[$i];
+                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonFormGroupID='.$row['gibbonFormGroupID'].'&currentDate='.$lastNSchoolDays[$i];
                                 $class = 'highlightPresent';
                             }
 

@@ -29,7 +29,7 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     if (!empty($student)) {
                         $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
                         $editorName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false);
-                        $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
+                        $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
                         // Raise a new notification event
                         $event = new NotificationEvent('Behaviour', 'Updated Behaviour Record');
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         // Add direct notifications to roll group tutors
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
-                            $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetchAll();
+                            $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {
                                 $event->addRecipient($tutor['gibbonPersonID']);
                             }

@@ -138,7 +138,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
     // Rename the file to something human-readable before downloading
     if (!empty($archiveEntry['gibbonReportID'])) {
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($archiveEntry['gibbonSchoolYearID']);
-        $rollGroup = $container->get(RollGroupGateway::class)->getByID($archiveEntry['gibbonRollGroupID']);
+        $rollGroup = $container->get(RollGroupGateway::class)->getByID($archiveEntry['gibbonFormGroupID']);
         $student = $container->get(UserGateway::class)->getByID($archiveEntry['gibbonPersonID']);
         if (empty($schoolYear) || empty($rollGroup) || empty($student)) {
             header("location:$returnPath&return=error1");

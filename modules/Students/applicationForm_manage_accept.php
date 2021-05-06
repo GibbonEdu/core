@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
-                if (!empty($values['gibbonRollGroupID'])) {
+                if (!empty($values['gibbonFormGroupID'])) {
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
@@ -146,9 +146,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $list->wrap('<ol>', '</ol>');
 
                 // Handle optional auto-enrol feature
-                if (!empty($values['gibbonRollGroupID'])) {
-                    $data = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonRollGroupID=:gibbonRollGroupID";
+                if (!empty($values['gibbonFormGroupID'])) {
+                    $data = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonFormGroupID=:gibbonFormGroupID";
                     $resultClassMap = $pdo->executeQuery($data, $sql);
                     $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
 
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
                 $list = $col->addContent();
 
-                if (empty($values['gibbonRollGroupID'])) {
+                if (empty($values['gibbonFormGroupID'])) {
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
@@ -276,8 +276,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
 
                 // Get student's roll group info (if any)
-                $dataRollGroup = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                $dataRollGroup = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                $sqlRollGroup = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $resultRollGroup = $connection2->prepare($sqlRollGroup);
                 $resultRollGroup->execute($dataRollGroup);
                 $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
                         $body .= __('Year Group').': '.$yearGroupName."<br/>";
                     }
-                    if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
+                    if ($values['gibbonFormGroupID'] != '' && !empty($rollGroupName)) {
                         $body .= __('Form Group').': '.$rollGroupName."<br/>";
                     }
                     if ($values['dateStart'] != '') {
@@ -446,11 +446,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     //Enrol student
                     $enrolmentOK = true;
-                    if ($values['gibbonRollGroupID'] != '') {
+                    if ($values['gibbonFormGroupID'] != '') {
                         if ($gibbonPersonID != '' and $values['gibbonSchoolYearIDEntry'] != '' and $values['gibbonYearGroupIDEntry'] != '') {
                             try {
-                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                                $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID';
+                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                                $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonFormGroupID=:gibbonFormGroupID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -477,7 +477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
                             if ($autoEnrolStudent == 'Y') {
                                 $data = array(
-                                    'gibbonRollGroupID' => $values['gibbonRollGroupID'],
+                                    'gibbonFormGroupID' => $values['gibbonFormGroupID'],
                                     'gibbonPersonID' => $gibbonPersonID,
                                     'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
                                 );
@@ -485,7 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
                                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
                                         FROM gibbonCourseClassMap
-                                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
+                                        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID";
                                 $pdo->executeQuery($data, $sql);
 
                                 if (!$pdo->getQuerySuccess()) {
@@ -1137,7 +1137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
-                    if ($enrolmentOK && !empty($values['gibbonRollGroupID'])) {
+                    if ($enrolmentOK && !empty($values['gibbonFormGroupID'])) {
                         $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and form group.');
                     } else {
                         $notificationText .= ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');

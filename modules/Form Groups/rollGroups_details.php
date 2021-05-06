@@ -37,40 +37,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
         $page->breadcrumbs
             ->add(__('View Form Groups'), 'rollGroups.php');
 
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
-        if ($gibbonRollGroupID == '') {
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        if ($gibbonFormGroupID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonRollGroupID' => $gibbonRollGroupID);
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonFormGroupID' => $gibbonFormGroupID);
                 if ($highestAction == "View Form Groups_all") {
-                    $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonRollGroup
-                            JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-                            LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
+                    $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
+                        FROM gibbonFormGroup
+                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                         WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonRollGroupID=:gibbonRollGroupID';
+                            AND gibbonFormGroupID=:gibbonFormGroupID';
                 }
                 else {
                     $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
                     $data['today'] = date('Y-m-d');
-                    $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroup.gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
-                        FROM gibbonRollGroup
-                            JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                    $sql = "SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonFormGroup.gibbonFormGroupID, gibbonSchoolYear.name as yearName, gibbonFormGroup.name, gibbonFormGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpace.name AS space, website
+                        FROM gibbonFormGroup
+                            JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                             JOIN (
-                                SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment
+                                SELECT gibbonStudentEnrolment.gibbonPersonID, gibbonStudentEnrolment.gibbonFormGroupID FROM gibbonStudentEnrolment
                                 JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                 WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
                                 ORDER BY gibbonStudentEnrolment.gibbonYearGroupID
-                            ) AS students ON (students.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                            ) AS students ON (students.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                             JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=students.gibbonPersonID)
                             JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-                            LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
+                            LEFT JOIN gibbonSpace ON (gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID)
                         WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID
-                            AND gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID
+                            AND gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
                             AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID";
                 }
                 $result = $connection2->prepare($sql);
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
                 $form->setClass('noIntBorder fullWidth');
 
                 $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/rollGroups_details.php");
-                $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
+                $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
 
                 $row = $form->addRow();
                     $row->addLabel('sortBy', __('Sort By'));
@@ -159,13 +159,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonRollGroupID=$gibbonRollGroupID", __('Clear Form')));
+                    $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonFormGroupID=$gibbonFormGroupID", __('Clear Form')));
 
                 echo $form->getOutput();
 
                 // Students
                 $table = $container->get(RollGroupTable::class);
-                $table->build($gibbonRollGroupID, true, true, $sortBy);
+                $table->build($gibbonFormGroupID, true, true, $sortBy);
 
                 echo $table->getOutput();
 

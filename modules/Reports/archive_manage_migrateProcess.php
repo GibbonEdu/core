@@ -39,8 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
     }
 
     $data = ['gibbonReportArchiveID' => $gibbonReportArchiveID];
-    $sql = "INSERT INTO gibbonReportArchiveEntry (`gibbonReportArchiveID`, `gibbonReportID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonRollGroupID`, `gibbonPersonID`, `type`, `status`, `reportIdentifier`, `filePath`, `timestampCreated`, `timestampModified`) 
-            SELECT :gibbonReportArchiveID, NULL, arrReport.schoolYearID, arrArchive.yearGroupID, (SELECT gibbonRollGroupID FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonSchoolYearID=arrReport.schoolYearID AND gibbonStudentEnrolment.gibbonPersonID=arrArchive.studentID LIMIT 1), arrArchive.studentID, 'Single', 'Final', arrReport.reportName, arrArchive.reportName, arrArchive.created, arrArchive.created
+    $sql = "INSERT INTO gibbonReportArchiveEntry (`gibbonReportArchiveID`, `gibbonReportID`, `gibbonSchoolYearID`, `gibbonYearGroupID`, `gibbonFormGroupID`, `gibbonPersonID`, `type`, `status`, `reportIdentifier`, `filePath`, `timestampCreated`, `timestampModified`) 
+            SELECT :gibbonReportArchiveID, NULL, arrReport.schoolYearID, arrArchive.yearGroupID, (SELECT gibbonFormGroupID FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonSchoolYearID=arrReport.schoolYearID AND gibbonStudentEnrolment.gibbonPersonID=arrArchive.studentID LIMIT 1), arrArchive.studentID, 'Single', 'Final', arrReport.reportName, arrArchive.reportName, arrArchive.created, arrArchive.created
             FROM arrArchive
             JOIN arrReport ON (arrReport.reportID=arrArchive.reportID)
             ON DUPLICATE KEY UPDATE timestampModified=arrArchive.created";

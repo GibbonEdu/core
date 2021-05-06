@@ -59,23 +59,23 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         if ($params['allStudents'] != true) {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full'
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
         else {
-            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS rollGroupName, dayType
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonRollGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
 
         $results = $this->pdo->executeQuery($data, $sql);

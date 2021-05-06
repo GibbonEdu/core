@@ -24,10 +24,10 @@ require_once '../../gibbon.php';
 
 $mode = $_POST['mode'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$gibbonRollGroupID = $_POST['gibbonRollGroupID'] ?? '';
+$gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $page = $_POST['page'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&page='.$page;
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page;
 
 if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];

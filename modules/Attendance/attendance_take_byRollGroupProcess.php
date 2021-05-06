@@ -26,10 +26,10 @@ require __DIR__ . '/../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonRollGroupID = $_POST['gibbonRollGroupID'] ?? '';
+$gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=$gibbonRollGroupID&currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     $URL .= '&return=error0';
@@ -43,18 +43,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     } else {
         //Proceed!
         //Check if school year specified
-        if ($gibbonRollGroupID == '' and $currentDate == '') {
+        if ($gibbonFormGroupID == '' and $currentDate == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
             try {
                 if ($highestAction == 'Attendance By Form Group_all') {
-                    $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-                    $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+                    $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 }
                 else {
-                    $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.attendance = 'Y' AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY LENGTH(name), name";
+                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sql = "SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.attendance = 'Y' AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY LENGTH(name), name";
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $attendance = new AttendanceView($gibbon, $pdo);
 
                         try {
-                            $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
-                            $sql = 'INSERT INTO gibbonAttendanceLogRollGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonRollGroupID=:gibbonRollGroupID, date=:date, timestampTaken=:timestampTaken';
+                            $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
+                            $sql = 'INSERT INTO gibbonAttendanceLogFormGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonFormGroupID=:gibbonFormGroupID, date=:date, timestampTaken=:timestampTaken';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 'reason'                 => $reason,
                                 'comment'                => $comment,
                                 'gibbonPersonIDTaker'    => $_SESSION[$guid]['gibbonPersonID'],
-                                'gibbonRollGroupID'      => $gibbonRollGroupID,
+                                'gibbonFormGroupID'      => $gibbonFormGroupID,
                                 'date'                   => $currentDate,
                                 'timestampTaken'         => date('Y-m-d H:i:s'),
                             ];
