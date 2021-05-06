@@ -1,15 +1,15 @@
 {#<!--
-name: Comments - Roll Group
+name: Comments - Form Group
 category: Reporting Cycle
 types: Body
 icon: comment-alt.svg
 sources:
     tutors: Tutors
-    rollGroupCriteria: RollGroupCriteria
+    formGroupCriteria: FormGroupCriteria
 -->#}
 {{- stylesheet ? include(stylesheet) -}}
 
-{%- for criteria in []|merge(rollGroupCriteria.perGroup|default([]))|merge(rollGroupCriteria.perStudent|default([])) -%}
+{%- for criteria in []|merge(formGroupCriteria.perGroup|default([]))|merge(formGroupCriteria.perStudent|default([])) -%}
 <table class="w-full table" cellspacing="0" cellpadding="0" nobr="true" style="padding: 0;">
     {% if criteria.valueType == 'Comment' %}
     <tr>
@@ -21,7 +21,7 @@ sources:
     <tr>
         <td class="w-full" style="font-size: 10pt" colspan="2">
             "{{- criteria.comment -}}" –&nbsp;
-            <b> 
+            <b>
             {%- for tutor in tutors -%}
                 {{ tutor.title }}&nbsp;{{ tutor.preferredName|first }}.&nbsp;{{ tutor.surname }}
                 {{ not loop.last ? ', ' }}

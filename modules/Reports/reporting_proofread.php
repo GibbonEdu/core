@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override');
 
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
-    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) $proofReview = false;
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) $proofReview = false;
 
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
@@ -70,18 +70,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
     
-    $modes = ['Person' => __('Person'), 'Roll Group' => __('Form Group')];
+    $modes = ['Person' => __('Person'), 'Form Group' => __('Form Group')];
     $row = $form->addRow();
         $row->addLabel('mode', __('Proof Read By'));
         $row->addSelect('mode')->fromArray($modes)->selected($mode);
 
     $form->toggleVisibilityByClass('personMode')->onSelect('mode')->when('Person');
-    $form->toggleVisibilityByClass('rollGroupMode')->onSelect('mode')->when('Roll Group');
+    $form->toggleVisibilityByClass('formGroupMode')->onSelect('mode')->when('Form Group');
 
     
 
     if ($highestAction == 'Proof Read_all') {
-        $row = $form->addRow()->addClass('rollGroupMode');
+        $row = $form->addRow()->addClass('formGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
             $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
         asort($formGroups, SORT_NATURAL);
         
-        $row = $form->addRow()->addClass('rollGroupMode');
+        $row = $form->addRow()->addClass('formGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
             $row->addSelect('gibbonFormGroupID')->fromArray($formGroups)->required()->placeholder()->selected($gibbonFormGroupID);
 
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         ->pageSize(25);
 
     // Get criteria that needs or has proof reading
-    if ($mode == 'Roll Group' && !empty($gibbonFormGroupID)) {
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) {
         $proofsTotal = $reportingProofGateway->queryProofReadingByFormGroup($totalCriteria, $gibbonSchoolYearID, $gibbonFormGroupID)->toArray();
         $proofsPaginated = $reportingProofGateway->queryProofReadingByFormGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID);
         $proofReading = $proofsPaginated->toArray();

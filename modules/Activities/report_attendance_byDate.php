@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
             $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required();
 
-        $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'rollGroup' => __('Form Group'));
+        $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'formGroup' => __('Form Group'));
         $row = $form->addRow();
             $row->addLabel('sort', __('Sort By'));
             $row->addSelect('sort')->fromArray($sortOptions)->selected($sort);
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     switch ($sort) {
         case 'surname':         $defaultSort = ['gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
         case 'preferredName':   $defaultSort = ['gibbonPerson.preferredName', 'gibbonPerson.surname']; break;
-        case 'rollGroup':       $defaultSort = ['rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
+        case 'formGroup':       $defaultSort = ['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
         case 'absent':
         default:                $defaultSort = ['attendance', 'gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
     }
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $table->addMetaData('post', ['date' => $date]);
 
-    $table->addColumn('rollGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));

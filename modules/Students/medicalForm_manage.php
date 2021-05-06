@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
 
     $table->addColumn('longTermMedication', __('Medication'))
         ->format(function($person) {

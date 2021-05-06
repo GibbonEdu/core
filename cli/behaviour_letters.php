@@ -69,14 +69,14 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
             //SCAN THROUGH ALL STUDENTS
             
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS rollGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
+                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS formGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch()) { //For every student
                     $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
-                    $formGroup = $row['rollGroup'];
+                    $formGroup = $row['formGroup'];
 
                     //Check count of negative behaviour records in the current year
                     
@@ -199,7 +199,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                             //Peform required text replacements
                             $body = str_replace('[studentName]', $studentName, $body);
-                            $body = str_replace('[rollGroup]', $formGroup, $body);
+                            $body = str_replace('[formGroup]', $formGroup, $body);
                             $body = str_replace('[behaviourCount]', $behaviourCount, $body);
                             $body = str_replace('[behaviourRecord]', $behaviourRecord, $body);
                             $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>', $body);
@@ -326,7 +326,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                     } else {
                                         $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     }
-                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['rollGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
+                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['formGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
                                     $mail->Subject = $subject;
                                     $mail->renderBody('mail/message.twig.html', [
                                         'title'  => $subject,

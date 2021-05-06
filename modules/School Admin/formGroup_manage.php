@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     };
 
     // DATA TABLE
-    $table = DataTable::createPaginated('rollGroupManage', $criteria);
+    $table = DataTable::createPaginated('formGroupManage', $criteria);
 
     if (!empty($nextSchoolYear)) {
         $table->addHeaderAction('copy', __('Copy All To Next Year'))

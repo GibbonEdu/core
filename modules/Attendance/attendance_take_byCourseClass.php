@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         echo "</div>";
                     }
 
-                    //Show roll group grid
+                    //Show form group grid
                     try {
                         $dataCourseClass = array("gibbonCourseClassID" => $gibbonCourseClassID, 'date' => $currentDate);
                         $sqlCourseClass = "SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240 FROM gibbonCourseClassPerson

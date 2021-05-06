@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 echo sprintf(__('In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
                 echo '</p>';
 
-                //Set up years, roll groups and statuses arrays for use later on
+                //Set up years, form groups and statuses arrays for use later on
                 $yearGroups = array();
                 
                     $dataSelect = array();
@@ -406,7 +406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $row->addColumn()->addContent(__($rowReenrol['name']));
                                 $column = $row->addColumn();
                                     $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y')->alignLeft();
-                                //If no enrolment, try and work out next year and roll group
+                                //If no enrolment, try and work out next year and form group
                                 if (is_null($enrolmentCheckYearGroup)) {
                                     $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
                                     $enrolmentCheckFormGroup=$rowReenrol['gibbonFormGroupIDNext'];

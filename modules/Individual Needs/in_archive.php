@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $page->breadcrumbs->add(__('Archive Records'));
     
     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort as rollGroup
+    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort as formGroup
             FROM gibbonPerson 
             JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 
     $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
     $students = array_map(function($item) {
-        return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
+        return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['formGroup'].')';
     }, $students);
     
     if (empty($students)) {

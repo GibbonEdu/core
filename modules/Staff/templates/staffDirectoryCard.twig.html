@@ -18,7 +18,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </div>
             </a>
 
-            <div class="text-sm text-gray-600 my-1">{{ [staff.jobTitle, staff.rollGroupName]|join(", ")|trim(", ") }}</div>
+            <div class="text-sm text-gray-600 my-1">{{ [staff.jobTitle, staff.formGroupName]|join(", ")|trim(", ") }}</div>
 
             <div class="text-sm text-gray-600 my-1">{{ staff.extension ? __('Ext')~". "~staff.extension }}</div>
         </div>

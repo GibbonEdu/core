@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 //GET STUDENTS AND LIST THEIR DETAILS
                 try {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $yearGroups[$i]);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, username, dob, nameShort AS rollgroup, status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE (status='Full' OR status='Left') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupID=:gibbonYearGroupID ORDER BY status, surname, preferredName";
+                    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, username, dob, nameShort AS formGroup, status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID = gibbonFormGroup.gibbonFormGroupID) WHERE (status='Full' OR status='Left') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonYearGroupID=:gibbonYearGroupID ORDER BY status, surname, preferredName";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                             ->setCellValue('B'.$activeRow, $row['surname'])
                             ->setCellValue('C'.$activeRow, $row['preferredName'])
                             ->setCellValue('D'.$activeRow, dateConvertBack($guid, $row['dob']))
-                            ->setCellValue('E'.$activeRow, $row['rollgroup'])
+                            ->setCellValue('E'.$activeRow, $row['formGroup'])
                             ->setCellValue('F'.$activeRow, $row['status']);
                         $excel->getActiveSheet()->getStyle('A'.$activeRow)->applyFromArray($style_border);
                         $excel->getActiveSheet()->getStyle('B'.$activeRow)->applyFromArray($style_border);

@@ -224,7 +224,7 @@ class LibraryGateway extends QueryableGateway
                 'responsible.title as titleResponsible',
                 'responsible.surname as surnameResponsible',
                 'responsible.preferredName as preferredNameResponsible',
-                'gibbonFormGroup.nameShort as rollGroup',
+                'gibbonFormGroup.nameShort as formGroup',
               ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryItem.gibbonLibraryTypeID = gibbonLibraryType.gibbonLibraryTypeID')
             ->leftJoin('gibbonSpace', 'gibbonLibraryItem.gibbonSpaceID = gibbonSpace.gibbonSpaceID')

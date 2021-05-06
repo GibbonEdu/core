@@ -61,12 +61,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 
         $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
-        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonFormGroupID);
+        $enrolment = $courseGateway->selectCourseEnrolmentByFormGroup($gibbonFormGroupID);
 
         // DATA TABLE
         $table = DataTable::create('courseEnrolment');
 
-        $table->addColumn('rollGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'));
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($person) use ($guid) {

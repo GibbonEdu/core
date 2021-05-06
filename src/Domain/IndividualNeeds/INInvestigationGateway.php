@@ -62,7 +62,7 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator'
@@ -86,7 +86,7 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                     ->where('gibbonINInvestigation.gibbonPersonIDStudent=:gibbonPersonID')
                     ->bindValue('gibbonPersonID', $gibbonPersonID);
             },
-            'rollGroup' => function ($query, $gibbonFormGroupID) {
+            'formGroup' => function ($query, $gibbonFormGroupID) {
                 return $query
                     ->where('gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID')
                     ->bindValue('gibbonFormGroupID', $gibbonFormGroupID);
@@ -115,7 +115,7 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                 'student.gibbonPersonID',
                 'student.surname',
                 'student.preferredName',
-                'gibbonFormGroup.nameShort AS rollGroup',
+                'gibbonFormGroup.nameShort AS formGroup',
                 'creator.title AS titleCreator',
                 'creator.surname AS surnameCreator',
                 'creator.preferredName AS preferredNameCreator',

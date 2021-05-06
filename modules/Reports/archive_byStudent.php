@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         });
 
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
     $table->addColumn('count', __('Reports'));
 
     $table->addActionColumn()

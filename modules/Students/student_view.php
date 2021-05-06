@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     ->sortable(['surname', 'preferredName'])
                     ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
                 $table->addColumn('yearGroup', __('Year Group'));
-                $table->addColumn('rollGroup', __('Form Group'));
+                $table->addColumn('formGroup', __('Form Group'));
 
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID')
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $sortOptions = array(
                 'surname,preferredName' => __('Surname'),
                 'preferredName' => __('Given Name'),
-                'rollGroup' => __('Form Group'),
+                'formGroup' => __('Form Group'),
                 'yearGroup' => __('Year Group'),
             );
 
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
                 });
             $table->addColumn('yearGroup', __('Year Group'));
-            $table->addColumn('rollGroup', __('Form Group'));
+            $table->addColumn('formGroup', __('Form Group'));
     
             $table->addActionColumn()
                 ->addParam('gibbonPersonID')

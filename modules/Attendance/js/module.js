@@ -37,7 +37,7 @@ function getDate() {
 
 jQuery(function($){
 
-	// Select all tool for Attendance by Class/Roll Group
+	// Select all tool for Attendance by Class/Form Group
 	$('#set-all').click( function() {
 		$('select[name$="-type"]').val(  $('select[name="set-all-type"]').val() );
 		$('select[name$="-reason"]').val(  $('select[name="set-all-reason"]').val() );

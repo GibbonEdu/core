@@ -57,7 +57,7 @@ class InvoiceGateway extends QueryableGateway
                 'gibbonFinanceInvoice.notes',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
-                'gibbonFormGroup.name AS rollGroup',
+                'gibbonFormGroup.name AS formGroup',
                 "(CASE 
                     WHEN gibbonFinanceInvoice.status = 'Pending' AND billingScheduleType='Scheduled' THEN gibbonFinanceBillingSchedule.invoiceDueDate 
                     ELSE gibbonFinanceInvoice.invoiceDueDate END

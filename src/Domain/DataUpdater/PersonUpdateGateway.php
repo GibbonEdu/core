@@ -79,7 +79,7 @@ class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
                 'gibbonPerson.surname', 
                 'gibbonPerson.preferredName', 
                 'gibbonPerson.gibbonPersonID', 
-                'gibbonFormGroup.name as rollGroupName', 
+                'gibbonFormGroup.name as formGroupName', 
                 'gibbonPersonUpdate.gibbonPersonUpdateID', 
                 'gibbonPersonMedicalUpdate.gibbonPersonMedicalUpdateID', 
                 "MAX(gibbonPersonUpdate.timestamp) as personalUpdate", 

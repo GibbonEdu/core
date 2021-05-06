@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });
     $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('rollGroup', __('Form Group'));
+    $table->addColumn('formGroup', __('Form Group'));
     
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
