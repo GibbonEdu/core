@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
@@ -138,7 +138,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
     // Rename the file to something human-readable before downloading
     if (!empty($archiveEntry['gibbonReportID'])) {
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($archiveEntry['gibbonSchoolYearID']);
-        $formGroup = $container->get(RollGroupGateway::class)->getByID($archiveEntry['gibbonFormGroupID']);
+        $formGroup = $container->get(FormGroupGateway::class)->getByID($archiveEntry['gibbonFormGroupID']);
         $student = $container->get(UserGateway::class)->getByID($archiveEntry['gibbonPersonID']);
         if (empty($schoolYear) || empty($formGroup) || empty($student)) {
             header("location:$returnPath&return=error1");

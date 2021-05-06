@@ -28,12 +28,12 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Students\StudentGateway;
 
 /**
- * RollGroupTable
+ * FormGroupTable
  *
  * @version v18
  * @since   v18
  */
-class RollGroupTable extends DataTable
+class FormGroupTable extends DataTable
 {
     protected $db;
     protected $session;
@@ -70,7 +70,7 @@ class RollGroupTable extends DataTable
             ->newQueryCriteria()
             ->sortBy($sortByArray);
 
-        $students = $this->studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
+        $students = $this->studentGateway->queryStudentEnrolmentByFormGroup($criteria, $gibbonFormGroupID);
         $this->withData($students);
 
         $this->setTitle(__('Students'));

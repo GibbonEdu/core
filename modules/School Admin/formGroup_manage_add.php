@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_add.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -29,12 +29,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Form Groups'), 'rollGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Form Groups'), 'formGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Add Form Group'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/rollGroup_manage_edit.php&gibbonFormGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/formGroup_manage_edit.php&gibbonFormGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         } else {
             $values = $result->fetch();
 
-            $form = Form::create('rollGroupAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_addProcess.php');
+            $form = Form::create('rollGroupAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {
-                    $row->addSelectRollGroup('gibbonFormGroupIDNext', $nextYear);
+                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear);
                 }
 
             $row = $form->addRow();

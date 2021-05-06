@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\Prefab\RollGroupTable;
+use Gibbon\Tables\Prefab\FormGroupTable;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_details.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
        header("Location: {$URL}");
     } else {
         $page->breadcrumbs
-            ->add(__('View Form Groups'), 'rollGroups.php');
+            ->add(__('View Form Groups'), 'formGroups.php');
 
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         if ($gibbonFormGroupID == '') {
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
                 $form->setTitle(__('Filters'));
                 $form->setClass('noIntBorder fullWidth');
 
-                $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/rollGroups_details.php");
+                $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/formGroups_details.php");
                 $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
 
                 $row = $form->addRow();
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups_det
                 echo $form->getOutput();
 
                 // Students
-                $table = $container->get(RollGroupTable::class);
+                $table = $container->get(FormGroupTable::class);
                 $table->build($gibbonFormGroupID, true, true, $sortBy);
 
                 echo $table->getOutput();

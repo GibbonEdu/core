@@ -174,7 +174,7 @@ class ReportingAccessGateway extends QueryableGateway
     }
 
 
-    public function selectAccessibleRollGroupsByReportingScope($gibbonReportingScopeID)
+    public function selectAccessibleFormGroupsByReportingScope($gibbonReportingScopeID)
     {
         $query = $this
             ->newSelect()

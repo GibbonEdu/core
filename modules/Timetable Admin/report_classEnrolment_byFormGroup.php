@@ -26,7 +26,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,11 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byRollGroup.php');
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byFormGroup.php');
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required()->placeholder();
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);

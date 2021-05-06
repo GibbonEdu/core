@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Tables\Prefab\EnrolmentTable;
-use Gibbon\Tables\Prefab\RollGroupTable;
+use Gibbon\Tables\Prefab\FormGroupTable;
 use Gibbon\Contracts\Database\Connection;
 
 /**
@@ -39,7 +39,7 @@ class StaffDashboard implements OutputableInterface
     protected $session;
     protected $formGroupTable;
 
-    public function __construct(Connection $db, Session $session, RollGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
+    public function __construct(Connection $db, Session $session, FormGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
     {
         $this->db = $db;
         $this->session = $session;
@@ -237,7 +237,7 @@ class StaffDashboard implements OutputableInterface
             $resultFormGroups = $connection2->prepare($sqlFormGroups);
             $resultFormGroups->execute($dataFormGroups);
 
-        $attendanceAccess = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php');
+        $attendanceAccess = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php');
 
         while ($rowFormGroups = $resultFormGroups->fetch()) {
             $formGroups[$count][0] = $rowFormGroups['gibbonFormGroupID'];
@@ -249,7 +249,7 @@ class StaffDashboard implements OutputableInterface
 
             if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {
                 $this->rollGroupTable->addHeaderAction('attendance', __('Take Attendance'))
-                    ->setURL('/modules/Attendance/attendance_take_byRollGroup.php')
+                    ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
                     ->displayLabel()

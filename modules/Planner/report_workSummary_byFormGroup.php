@@ -26,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Work Summary by Form Group'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary_byRollGroup.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary_byFormGroup.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,11 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byRollGroup.php');
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byFormGroup.php');
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
+        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));

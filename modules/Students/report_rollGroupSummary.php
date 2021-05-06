@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         ->filterBy('to', Format::dateConvert($dateTo))
         ->fromPOST();
 
-    $formGroups = $reportGateway->queryStudentCountByRollGroup($criteria, $gibbonSchoolYearID);
+    $formGroups = $reportGateway->queryStudentCountByFormGroup($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('rollGroupSummary', $criteria)->setViewMode($viewMode, $gibbon->session);

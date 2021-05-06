@@ -170,7 +170,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     foreach ($additionalUsers as $gibbonPersonID) {
                         // Confirm that this user still has permission to access these reports
                         try {
-                            $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+                            $data = array( 'gibbonPersonID' => $gibbonPersonID, 'action1' => '%report_formGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
                             $sql = "SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole, gibbonPerson WHERE (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) AND (gibbonPerson.gibbonPersonID=:gibbonPersonID) AND (gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'))";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -189,7 +189,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         }
 
         $event->setNotificationText(__('An Attendance CLI script has run.').' '.$report);
-        $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
+        $event->setActionLink('/index.php?q=/modules/Attendance/report_formGroupsNotRegistered_byDate.php');
 
         // Add admin, then push the event to the notification sender
         $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);

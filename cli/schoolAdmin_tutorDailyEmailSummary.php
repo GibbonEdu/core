@@ -24,7 +24,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
@@ -68,7 +68,7 @@ $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 $userGateway = $container->get(UserGateway::class);
 $studentGateway = $container->get(StudentGateway::class);
 $yearGroupGateway = $container->get(YearGroupGateway::class);
-$formGroupGateway = $container->get(RollGroupGateway::class);
+$formGroupGateway = $container->get(FormGroupGateway::class);
 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 $view = $container->get(View::class);
 
@@ -127,7 +127,7 @@ foreach ($yearGroups as $gibbonYearGroupID => $formGroups) {
         $subject = __('Daily Attendance Summary for {context}', ['context' => $formGroup['nameShort'].' '.Format::date(date('Y-m-d'))]);
 
         // Add recipients and sender
-        $tutors = $formGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID);
+        $tutors = $formGroupGateway->selectTutorsByFormGroup($gibbonFormGroupID);
         foreach ($tutors as $tutor) {
             $mail->AddAddress($tutor['email'], Format::name('', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true));
         }

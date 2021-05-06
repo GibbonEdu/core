@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         ->setClass('mediumWidth');
                     $row->addContent((empty($class['syncTo'])? '<em>'.__('No match found').'</em>' : '') )
                         ->setClass('shortWidth right');
-                    $row->addSelectRollGroup('syncTo['.$class['gibbonCourseClassID'].']', $gibbonSchoolYearID)
+                    $row->addSelectFormGroup('syncTo['.$class['gibbonCourseClassID'].']', $gibbonSchoolYearID)
                         ->selected($class['syncTo'])
                         ->setClass('mediumWidth');
             }

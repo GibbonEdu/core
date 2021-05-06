@@ -98,7 +98,7 @@ class DatabaseFormFactory extends FormFactory
     /*
     The optional $all function adds an option to the top of the select, using * to allow selection of all roll groups
     */
-    public function createSelectRollGroup($name, $gibbonSchoolYearID, $all = false)
+    public function createSelectFormGroup($name, $gibbonSchoolYearID, $all = false)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";

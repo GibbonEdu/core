@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
+        $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
             $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
         });
     } elseif (!empty($gibbonYearGroupID)) {
-        $reports = $reportGateway->queryRollGroupsByReport($criteria, $gibbonReportID, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+        $reports = $reportGateway->queryFormGroupsByReport($criteria, $gibbonReportID, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
     } else {
         $reports = $reportGateway->queryYearGroupsByReport($criteria, $gibbonReportID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 

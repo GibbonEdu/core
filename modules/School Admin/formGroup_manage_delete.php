@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rollGroup_manage_deleteProcess.php?gibbonFormGroupID=$gibbonFormGroupID", true);
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/formGroup_manage_deleteProcess.php?gibbonFormGroupID=$gibbonFormGroupID", true);
             echo $form->getOutput();
         }
     }
