@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 } else {
     //Proceed!
     $format = $_POST['format'] ?? '';
-    $gibbonRoleIDList = $_POST['gibbonRoleIDList'] ?? '';
+    $gibbonRoleIDList = $_POST['gibbonRoleIDList'] ?? [];
     $isDefault = $_POST['isDefault'] ?? '';
     $isNumeric = $_POST['isNumeric'] ?? '';
     $numericValue = $_POST['numericValue'] ?? '0';
