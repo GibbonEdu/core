@@ -22,7 +22,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonRoleID = $_GET['gibbonRoleID'];
+$gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/role_manage.php&gibbonRoleID=$gibbonRoleID";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_duplicate.php') == false) {
@@ -31,8 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
 
     if ($gibbonRoleID == '' or $name == '' or $nameShort == '') {
         $URL .= '&return=error3';
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
                 header("Location: {$URL}");
                 exit();
             }
-            
+
             $AI = $connection2->lastInsertID();
 
             //Duplicate permissions
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
             }
 
             //Unlock locked database tables
-            
+
                 $sql = 'UNLOCK TABLES';
                 $result = $connection2->query($sql);
 

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonDistrictID = $_GET['gibbonDistrictID'];
+$gibbonDistrictID = $_GET['gibbonDistrictID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_delete.php&gibbonDistrictID='.$gibbonDistrictID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage.php';
 

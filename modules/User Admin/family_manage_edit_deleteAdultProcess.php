@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonFamilyID = $_GET['gibbonFamilyID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$search = $_GET['search'];
+$gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -57,7 +57,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 
                 // If we're deleting the first contact priority, move the second one to first
                 if ($row['contactPriority'] == 1) {
-                    
+
                         $dataCP = array('gibbonPersonID' => $gibbonPersonID, 'gibbonFamilyID' => $gibbonFamilyID);
                         $sqlCP = 'UPDATE gibbonFamilyAdult SET contactPriority=1 WHERE contactPriority=2 AND gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPersonID=:gibbonPersonID LIMIT 1';
                         $resultCP = $connection2->prepare($sqlCP);
