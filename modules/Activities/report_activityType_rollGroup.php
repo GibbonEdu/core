@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $rollGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
+    $formGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
 
     // Build a set of activity counts for each student
-    $rollGroups->transform(function(&$student) use ($activityGateway,  $status) {
+    $formGroups->transform(function(&$student) use ($activityGateway,  $status) {
         $activities = $activityGateway->selectActivitiesByStudent($student['gibbonSchoolYearID'], $student['gibbonPersonID'], $status)->fetchAll();
         $student['total'] = count($activities);
         $student['activities'] = array();
@@ -119,5 +119,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $table->addColumn('total', __('Total'))->notSortable()->width('10%');
 
-    echo $table->render($rollGroups);
+    echo $table->render($formGroups);
 }

@@ -49,11 +49,11 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // Opt Groups
         if ($params['allStudents'] != true) {
-            $byRollGroup = __('All Enrolled Students by Form Group');
+            $byFormGroup = __('All Enrolled Students by Form Group');
             $byName = __('All Enrolled Students by Alphabet');
         }
         else {
-            $byRollGroup = __('All Students by Form Group');
+            $byFormGroup = __('All Students by Form Group');
             $byName = __('All Students by Alphabet');
         }
 
@@ -85,11 +85,11 @@ class FinanceFormFactory extends DatabaseFormFactory
         foreach ($students as $student) {
             $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
 
-            $values[$byRollGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
+            $values[$byFormGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
             $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['rollGroupName'];
         }
 
-        // Sort the byName list so it's not byRollGroup
+        // Sort the byName list so it's not byFormGroup
         if (!empty($values[$byName]) && is_array($values[$byName])) {
             asort($values[$byName]);
         }

@@ -38,17 +38,17 @@ class StaffCard
     protected $session;
     protected $db;
     protected $staffGateway;
-    protected $rollGroupGateway;
+    protected $formGroupGateway;
     protected $gibbonPersonID;
     protected $status;
     protected $tag;
 
-    public function __construct(Session $session, Connection $db, StaffGateway $staffGateway, RollGroupGateway $rollGroupGateway)
+    public function __construct(Session $session, Connection $db, StaffGateway $staffGateway, RollGroupGateway $formGroupGateway)
     {
         $this->session = $session;
         $this->db = $db;
         $this->staffGateway = $staffGateway;
-        $this->rollGroupGateway = $rollGroupGateway;
+        $this->rollGroupGateway = $formGroupGateway;
     }
 
     public function setPerson($gibbonPersonID)

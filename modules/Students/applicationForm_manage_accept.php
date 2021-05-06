@@ -276,11 +276,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
 
                 // Get student's roll group info (if any)
-                $dataRollGroup = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
-                $sqlRollGroup = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-                $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                $resultRollGroup->execute($dataRollGroup);
-                $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
+                $dataFormGroup = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                $sqlFormGroup = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
+                $resultFormGroup = $connection2->prepare($sqlFormGroup);
+                $resultFormGroup->execute($dataFormGroup);
+                $formGroupName = ($resultFormGroup->rowCount() == 1)? $resultFormGroup->fetchColumn(0) : '';
 
                 //Email website and email address to admin for creation
                 if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
@@ -302,8 +302,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
                         $body .= __('Year Group').': '.$yearGroupName."<br/>";
                     }
-                    if ($values['gibbonFormGroupID'] != '' && !empty($rollGroupName)) {
-                        $body .= __('Form Group').': '.$rollGroupName."<br/>";
+                    if ($values['gibbonFormGroupID'] != '' && !empty($formGroupName)) {
+                        $body .= __('Form Group').': '.$formGroupName."<br/>";
                     }
                     if ($values['dateStart'] != '') {
                         $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
@@ -1134,7 +1134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event = new NotificationEvent('Students', 'Application Form Accepted');
 
                     $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
-                    $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
+                    $studentGroup = (!empty($formGroupName))? $formGroupName : $yearGroupName;
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
                     if ($enrolmentOK && !empty($values['gibbonFormGroupID'])) {

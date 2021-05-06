@@ -75,15 +75,15 @@ if (!isCommandLineInterface()) {
 
     if ($results && $results->rowCount() > 0) {
         $attendanceLogs = $results->fetchAll(\PDO::FETCH_GROUP);
-        foreach ($attendanceLogs as $rollGroupName => $rollGroupLogs) {
-            $gibbonYearGroupID = current($rollGroupLogs)['gibbonYearGroupID'];
+        foreach ($attendanceLogs as $formGroupName => $formGroupLogs) {
+            $gibbonYearGroupID = current($formGroupLogs)['gibbonYearGroupID'];
 
             // Fields to group per-day for attendance logs
             $fields = array('context', 'date', 'type', 'reason', 'comment', 'timestampTaken', 'courseName', 'className', 'gibbonCourseClassID');
             $fields = array_flip($fields);
 
             // Build an attendance log set of days for each student
-            $logsByStudent = array_reduce($rollGroupLogs, function ($carry, &$item) use (&$fields) {
+            $logsByStudent = array_reduce($formGroupLogs, function ($carry, &$item) use (&$fields) {
                 $id = $item['gibbonPersonID'];
                 $carry[$id]['preferredName'] = $item['preferredName'];
                 $carry[$id]['surname'] = $item['surname'];
@@ -127,7 +127,7 @@ if (!isCommandLineInterface()) {
             // Skip reports for empty data sets
             if (count($logsByStudent) == 0) continue;
 
-            $report = '<h4>'.$rollGroupName.'  &nbsp;<small>(Total '.count($logsByStudent).')</small></h4>';
+            $report = '<h4>'.$formGroupName.'  &nbsp;<small>(Total '.count($logsByStudent).')</small></h4>';
             $report .= '<ul>';
 
             foreach ($logsByStudent as $gibbonPersonID => $student) {
@@ -152,7 +152,7 @@ if (!isCommandLineInterface()) {
             }
             $report .= '</ul>';
 
-            $reportByYearGroup[$gibbonYearGroupID][$rollGroupName] = $report;
+            $reportByYearGroup[$gibbonYearGroupID][$formGroupName] = $report;
         }
     }
     
@@ -163,12 +163,12 @@ if (!isCommandLineInterface()) {
 
         $reportHeading = '<h3>'.__('Weekly Attendance Summary').': '.$dateStart->format('M j').' - '.$dateEnd->format('M j').'</h3>';
 
-        foreach ($reportByYearGroup as $gibbonYearGroupID => $reportByRollGroup) {
+        foreach ($reportByYearGroup as $gibbonYearGroupID => $reportByFormGroup) {
             // Raise a new notification event
             $event = new NotificationEvent('Attendance', 'Weekly Attendance Summary');
 
             $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
-            $event->setNotificationText(__('An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
+            $event->setNotificationText(__('An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByFormGroup));
             $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=rollGroup');
 
             // Push the event to the notification sender

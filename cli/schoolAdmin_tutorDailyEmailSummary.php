@@ -41,7 +41,7 @@ if (!isCommandLineInterface()) {
     return;
 }
 
-if (isSchoolOpen($guid, date('Y-m-d'), $connection2, true) == false) { 
+if (isSchoolOpen($guid, date('Y-m-d'), $connection2, true) == false) {
     echo __('School is not open, so no emails will be sent.');
     return;
 }
@@ -68,7 +68,7 @@ $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 $userGateway = $container->get(UserGateway::class);
 $studentGateway = $container->get(StudentGateway::class);
 $yearGroupGateway = $container->get(YearGroupGateway::class);
-$rollGroupGateway = $container->get(RollGroupGateway::class);
+$formGroupGateway = $container->get(RollGroupGateway::class);
 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 $view = $container->get(View::class);
 
@@ -90,19 +90,19 @@ $yearGroups = array_reduce($allStudents, function ($group, $item) {
 }, []);
 
 // Loop over each year group and roll group to send summary emails
-foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
+foreach ($yearGroups as $gibbonYearGroupID => $formGroups) {
 
     $yearGroupContent = '';
     $yearGroup = $yearGroupGateway->getByID($gibbonYearGroupID);
 
     if (empty($yearGroup)) continue;
 
-    foreach ($rollGroups as $gibbonFormGroupID => $students) {
-    
-        $rollGroupContent = '';
-        $rollGroup = $rollGroupGateway->getByID($gibbonFormGroupID);
-        
-        if (empty($rollGroup)) continue;
+    foreach ($formGroups as $gibbonFormGroupID => $students) {
+
+        $formGroupContent = '';
+        $formGroup = $formGroupGateway->getByID($gibbonFormGroupID);
+
+        if (empty($formGroup)) continue;
 
         foreach ($students as $student) {
             // Get school-wide attendance logs
@@ -119,22 +119,22 @@ foreach ($yearGroups as $gibbonYearGroupID => $rollGroups) {
                 'classLogs' => $classLogs,
             ]);
 
-            $rollGroupContent .= $content;
+            $formGroupContent .= $content;
             $yearGroupContent .= $content;
         }
 
         // Format the email subject
-        $subject = __('Daily Attendance Summary for {context}', ['context' => $rollGroup['nameShort'].' '.Format::date(date('Y-m-d'))]);
+        $subject = __('Daily Attendance Summary for {context}', ['context' => $formGroup['nameShort'].' '.Format::date(date('Y-m-d'))]);
 
         // Add recipients and sender
-        $tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID);
+        $tutors = $formGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID);
         foreach ($tutors as $tutor) {
             $mail->AddAddress($tutor['email'], Format::name('', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true));
         }
         $mail->setDefaultSender($subject);
         $mail->renderBody('mail/message.twig.html', [
             'title'  => $subject,
-            'body'   => $rollGroupContent,
+            'body'   => $formGroupContent,
         ]);
 
         // Send

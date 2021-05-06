@@ -36,10 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
 
         $gateway = $container->get(RollGroupGateway::class);
         if ($highestAction == "View Form Groups_all") {
-            $rollGroups = $gateway->selectRollGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
+            $formGroups = $gateway->selectRollGroupsBySchoolYear($gibbon->session->get('gibbonSchoolYearID'));
         }
         else {
-            $rollGroups = $gateway->selectRollGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
+            $formGroups = $gateway->selectRollGroupsBySchoolYearMyChildren($gibbon->session->get('gibbonSchoolYearID'), $gibbon->session->get('gibbonPersonID'));
         }
 
         $formatTutorsList = function($row) use ($gateway) {
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/rollGroups.php
         $actions->addAction('view', __('View'))
                 ->setURL('/modules/Form Groups/rollGroups_details.php');
 
-        echo $table->render($rollGroups->toDataSet());
+        echo $table->render($formGroups->toDataSet());
 
         //Display year group table for staff
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);

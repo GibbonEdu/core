@@ -63,11 +63,11 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                 $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
                 $gibbonFormGroupID = $_POST['gibbonFormGroupID'];
                 $gibbonFormGroupIDOriginal = (isset($_POST['gibbonFormGroupIDOriginal']))? $_POST['gibbonFormGroupIDOriginal'] : 'N';
-                $rollGroupOriginalNameShort = $_POST['rollGroupOriginalNameShort'] ?? '';
+                $formGroupOriginalNameShort = $_POST['rollGroupOriginalNameShort'] ?? '';
                 $gibbonPersonID = $row['gibbonPersonID'];
 
-                $rollGroupTo = $container->get(RollGroupGateway::class)->getRollGroupByID($gibbonFormGroupID);
-                $rollGroupToName = $rollGroupTo['nameShort'];
+                $formGroupTo = $container->get(RollGroupGateway::class)->getRollGroupByID($gibbonFormGroupID);
+                $formGroupToName = $formGroupTo['nameShort'];
 
                 $rollOrder = $_POST['rollOrder'];
                 if ($rollOrder == '') {
@@ -154,7 +154,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 
                     // Add student note
                     if ($gibbonFormGroupID != $gibbonFormGroupIDOriginal) {
-                        $data = array('title' => __('Change of Form Group'), 'note' => __('Student\'s form group was changed from {formGroupFrom} to {formGroupTo} on {date}', ['formGroupFrom' => $rollGroupOriginalNameShort, 'formGroupTo' => $rollGroupToName, 'date' => Format::date(date('Y-m-d'))]), 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s', time()));
+                        $data = array('title' => __('Change of Form Group'), 'note' => __('Student\'s form group was changed from {formGroupFrom} to {formGroupTo} on {date}', ['formGroupFrom' => $formGroupOriginalNameShort, 'formGroupTo' => $formGroupToName, 'date' => Format::date(date('Y-m-d'))]), 'gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s', time()));
                         $sql = 'INSERT INTO gibbonStudentNote SET title=:title, note=:note, gibbonPersonID=:gibbonPersonID, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     // Cancel out early if there's no roll group selected
     if (empty($gibbonFormGroupID)) return;
 
-    $rollGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(RollGroupGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
     $medicalGateway = $container->get(MedicalGateway::class);
 
@@ -82,15 +82,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     // DATA TABLE
     $table = ReportTable::createPaginated('studentsByRollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Report Data'));
-    $table->setDescription(function () use ($gibbonFormGroupID, $rollGroupGateway) {
+    $table->setDescription(function () use ($gibbonFormGroupID, $formGroupGateway) {
         $output = '';
 
         if ($gibbonFormGroupID == '*') return $output;
         
-        if ($rollGroup = $rollGroupGateway->getRollGroupByID($gibbonFormGroupID)) {
-            $output .= '<b>'.__('Form Group').'</b>: '.$rollGroup['name'];
+        if ($formGroup = $formGroupGateway->getRollGroupByID($gibbonFormGroupID)) {
+            $output .= '<b>'.__('Form Group').'</b>: '.$formGroup['name'];
         }
-        if ($tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID)->fetchAll()) {
+        if ($tutors = $formGroupGateway->selectTutorsByRollGroup($gibbonFormGroupID)->fetchAll()) {
             $output .= '<br/><b>'.__('Tutors').'</b>: '.Format::nameList($tutors, 'Staff');
         }
 

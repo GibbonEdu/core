@@ -68,7 +68,7 @@ $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
 
 $familyGateway = $container->get(FamilyGateway::class);
-$rollGroupGateway = $container->get(RollGroupGateway::class);
+$formGroupGateway = $container->get(RollGroupGateway::class);
 $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
 $emailSummaryGateway = $container->get(PlannerParentWeeklyEmailSummaryGateway::class);
 $view = $container->get(View::class);
@@ -152,7 +152,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         ]);
 
         // Get main form tutor email for reply-to
-        $formTutor = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetch();
+        $formTutor = $formGroupGateway->selectTutorsByRollGroup($student['gibbonFormGroupID'])->fetch();
         if (!empty($formTutor)) {
             $replyTo = $formTutor['email'];
             $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');

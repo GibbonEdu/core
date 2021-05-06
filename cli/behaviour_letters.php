@@ -76,7 +76,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
             if ($result->rowCount() > 0) {
                 while ($row = $result->fetch()) { //For every student
                     $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
-                    $rollGroup = $row['rollGroup'];
+                    $formGroup = $row['rollGroup'];
 
                     //Check count of negative behaviour records in the current year
                     
@@ -199,7 +199,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                             //Peform required text replacements
                             $body = str_replace('[studentName]', $studentName, $body);
-                            $body = str_replace('[rollGroup]', $rollGroup, $body);
+                            $body = str_replace('[rollGroup]', $formGroup, $body);
                             $body = str_replace('[behaviourCount]', $behaviourCount, $body);
                             $body = str_replace('[behaviourRecord]', $behaviourRecord, $body);
                             $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>', $body);

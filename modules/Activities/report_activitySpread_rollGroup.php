@@ -79,10 +79,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $rollGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
+    $formGroups = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonFormGroupID);
 
     // Join a set of activity counts per student
-    $rollGroups->transform(function(&$student) use ($activityGateway, $dateType, $status) {
+    $formGroups->transform(function(&$student) use ($activityGateway, $dateType, $status) {
         $activityCounts = $activityGateway->selectActivitySpreadByStudent($student['gibbonSchoolYearID'], $student['gibbonPersonID'], $dateType, $status);
         $student['activities'] = $activityCounts->fetchGroupedUnique();
     });
@@ -136,5 +136,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
     }
 
-    echo $table->render($rollGroups);
+    echo $table->render($formGroups);
 }

@@ -58,17 +58,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         echo '</div>';
     }
         
-    $rollGroupGateway = $container->get(RollGroupGateway::class);
+    $formGroupGateway = $container->get(RollGroupGateway::class);
 
     // QUERY
-    $criteria = $rollGroupGateway->newQueryCriteria(true)
+    $criteria = $formGroupGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber', 'gibbonFormGroup.name'])
         ->fromPOST();
 
-    $rollGroups = $rollGroupGateway->queryRollGroups($criteria, $gibbonSchoolYearID);
+    $formGroups = $formGroupGateway->queryRollGroups($criteria, $gibbonSchoolYearID);
 
-    $formatTutorsList = function($row) use ($rollGroupGateway) {
-        $tutors = $rollGroupGateway->selectTutorsByRollGroup($row['gibbonFormGroupID'])->fetchAll();
+    $formatTutorsList = function($row) use ($formGroupGateway) {
+        $tutors = $formGroupGateway->selectTutorsByRollGroup($row['gibbonFormGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
         return Format::nameList($tutors, 'Staff', false, true);
@@ -96,8 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $table->addColumn('name', __('Name'))
           ->description(__('Short Name'))
-          ->format(function ($rollGroup) {
-            return '<strong>' . $rollGroup['name'] . '</strong><br/><small><i>' . $rollGroup['nameShort'] . '</i></small>';
+          ->format(function ($formGroup) {
+            return '<strong>' . $formGroup['name'] . '</strong><br/><small><i>' . $formGroup['nameShort'] . '</i></small>';
           });
     $table->addColumn('tutors', __('Form Tutors'))->sortable(false)->format($formatTutorsList);
     $table->addColumn('space', __('Location'));
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $table->addActionColumn()
         ->addParam('gibbonFormGroupID')
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-        ->format(function ($rollGroup, $actions) {
+        ->format(function ($formGroup, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/School Admin/rollGroup_manage_edit.php');
 
@@ -116,5 +116,5 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                     ->setURL('/modules/School Admin/rollGroup_manage_delete.php');
         });
 
-    echo $table->render($rollGroups);
+    echo $table->render($formGroups);
 }
