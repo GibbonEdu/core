@@ -45,16 +45,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo __('Choose Form Group');
         echo '</h2>';
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_rollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activitySpread_rollGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->required();
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->sortable(['surname', 'preferredName'])
         ->format(function ($student) use ($guid) {
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
-            return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
+            return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
         });
 
     // Build a reusable formatter for activity counts
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     if ($dateType == 'Term') {
         // Group the activity spread by term & weekday
-        $terms = $activityGateway->selectActivityWeekdaysPerTerm($_SESSION[$guid]['gibbonSchoolYearID'])->fetchGrouped();
+        $terms = $activityGateway->selectActivityWeekdaysPerTerm($session->get('gibbonSchoolYearID'))->fetchGrouped();
         foreach ($terms as $termName => $days) {
             $termColumn = $table->addColumn($termName, $termName);
             foreach ($days as $day) {
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
     } else {
         // Group the activity spread by weekday only
-        $days = $activityGateway->selectActivityWeekdays($_SESSION[$guid]['gibbonSchoolYearID'])->fetchAll();
+        $days = $activityGateway->selectActivityWeekdays($session->get('gibbonSchoolYearID'))->fetchAll();
         foreach ($days as $day) {
             $table->addColumn($day['nameShort'], $day['nameShort'])
                 ->notSortable()

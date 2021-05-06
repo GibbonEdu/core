@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
                     //Set log
                     $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-                    $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Added', array('gibbonPersonIDStudent' => $t));
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Added', array('gibbonPersonIDStudent' => $t));
                 }
             }
             //Write to database

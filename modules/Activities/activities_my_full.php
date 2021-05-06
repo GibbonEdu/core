@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Provider').'</span><br/>';
                 echo '<i>';
                 if ($row['provider'] == 'School') {
-                    echo $_SESSION[$guid]['organisationNameShort'];
+                    echo $session->get('organisationNameShort');
                 } else {
                     echo __('External');
                 };

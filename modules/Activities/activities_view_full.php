@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 try {
                     if ($dateType != 'Date') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
                         $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID";
                     } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
                         $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND gibbonActivityID=:gibbonActivityID";
                     }
                     $result = $connection2->prepare($sql);
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($dateType != 'Date') {
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Terms').'</span><br/>';
-                        $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $terms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
                         $termList = '';
                         for ($i = 0; $i < count($terms); $i = $i + 2) {
                             if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Provider').'</span><br/>';
                     echo '<i>';
                     if ($row['provider'] == 'School') {
-                        echo $_SESSION[$guid]['organisationNameShort'];
+                        echo $session->get('organisationNameShort');
                     } else {
                         echo __('External');
                     };

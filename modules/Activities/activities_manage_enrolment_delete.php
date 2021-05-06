@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo '</div>';
             }
 
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_deleteProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_deleteProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
             echo $form->getOutput();
         }
     }

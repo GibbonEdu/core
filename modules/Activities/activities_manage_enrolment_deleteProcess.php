@@ -67,7 +67,7 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
 
             //Set log
             $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
-            $logGateway->addLog($_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), $gibbonModuleID, $session->get('gibbonPersonID'), 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

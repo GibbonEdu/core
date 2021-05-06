@@ -39,16 +39,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $page->breadcrumbs->add(__('Activity Attendance by Date'));
 
         // Options & Filters
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
 
         $form->setTitle(__('Choose Date'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_attendance_byDate.php');
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_attendance_byDate.php');
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
-            $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+            $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
             $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required();
 
         $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'rollGroup' => __('Form Group'));
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $activityAttendance = $activityGateway->queryActivityAttendanceByDate($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $dateType, $date);
+    $activityAttendance = $activityGateway->queryActivityAttendanceByDate($criteria, $session->get('gibbonSchoolYearID'), $dateType, $date);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('attendance_byDate', $criteria)->setViewMode($viewMode, $gibbon->session);
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $table->addColumn('activity', __('Activity'));
     $table->addColumn('provider', __('Provider'))
         ->format(function($activity) use ($guid){
-            return ($activity['provider'] == 'School')? $_SESSION[$guid]['organisationNameShort'] : __('External');
+            return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
         });
 
     echo $table->render($activityAttendance);

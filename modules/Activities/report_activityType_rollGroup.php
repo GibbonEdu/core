@@ -41,17 +41,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Type by Form Group'));
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
 
         $form->setTitle(__('Choose Form Group'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityType_rollGroup.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityType_rollGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->required();
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->format(function ($student) use ($guid) {
             $title = implode('<br>', $student['activities']);
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities';
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities';
 
             return Format::link($url, $name, $title);
         });

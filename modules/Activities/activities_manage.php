@@ -91,10 +91,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo __('Activities');
     echo '</h2>';
 
-    $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_manageProcessBulk.php');
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(

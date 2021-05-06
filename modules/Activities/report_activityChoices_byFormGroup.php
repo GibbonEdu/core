@@ -43,19 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-<<<<<<< HEAD:modules/Activities/report_activityChoices_byRollGroup.php
-    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byRollGroup.php");
 
-    $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonRollGroupID)->required();
-=======
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byFormGroup.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byFormGroup.php");
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required();
->>>>>>> v22.0.00:modules/Activities/report_activityChoices_byFormGroup.php
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -69,15 +62,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         echo __('Report Data');
         echo '</h2>';
 
-<<<<<<< HEAD:modules/Activities/report_activityChoices_byRollGroup.php
-
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID, 'today' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
-=======
-        
             $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName";
->>>>>>> v22.0.00:modules/Activities/report_activityChoices_byFormGroup.php
             $result = $connection2->prepare($sql);
             $result->execute($data);
 

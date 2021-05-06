@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     }
 
 
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroupID, gibbonActivityStudent.status FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.status='Accepted' AND gibbonActivityID=:gibbonActivityID ORDER BY gibbonActivityStudent.status, surname, preferredName";
         $studentResult = $connection2->prepare($sql);
         $studentResult->execute($data);
@@ -128,14 +128,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo "<td style='width: 33%; vertical-align: top'>";
     echo "<span class='infoTitle'>".__('Start Date').'</span><br>';
     if (!empty($activityTimespan['start'])) {
-        echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], $activityTimespan['start']);
+        echo date($session->get('i18n')['dateFormatPHP'], $activityTimespan['start']);
     }
     echo '</td>';
 
     echo "<td style='width: 33%; vertical-align: top'>";
     echo "<span class='infoTitle'>".__('End Date').'</span><br>';
     if (!empty($activityTimespan['end'])) {
-        echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], $activityTimespan['end']);
+        echo date($session->get('i18n')['dateFormatPHP'], $activityTimespan['end']);
     }
     echo '</td>';
 
@@ -203,7 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $row = $table->addRow();
             $row->addContent(__('Date'))->addClass('w-48 h-24 absolute left-0 ml-px flex items-center');
 
-        $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%2$s"/>';
+        $icon = '<img class="mt-1 inline" title="%1$s" src="./themes/'.$session->get('gibbonThemeName').'/img/%2$s"/>';
 
         // Display the date and action buttons for each session
         $i = 0;
