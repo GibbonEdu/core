@@ -29,8 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     header("Location: {$URL}");
     exit;
 } else {
-    $permissions = $_POST['permission'] ?? array();
-    $totalCount = $_POST['totalCount'] ?? array();
+    $permissions = $_POST['permission'] ?? [];
+    $totalCount = $_POST['totalCount'] ?? [];
     $maxInputVars = ini_get('max_input_vars');
 
     if (empty($totalCount)) {
