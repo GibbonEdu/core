@@ -43,11 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byRollGroup.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byRollGroup.php");
 
     $row = $form->addRow();
         $row->addLabel('gibbonRollGroupID', __('Form Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->required();
+        $row->addSelectRollGroup('gibbonRollGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonRollGroupID)->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 echo '<td>';
 
 
-                    $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $dataActivities = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                     $sqlActivities = "SELECT gibbonActivity.*, gibbonActivityStudent.status, GROUP_CONCAT(CONCAT(gibbonDaysOfWeek.nameShort, ' ', TIME_FORMAT(gibbonActivitySlot.timeStart, '%H:%i'), ' - ', (CASE WHEN gibbonActivitySlot.gibbonSpaceID IS NOT NULL THEN gibbonSpace.name ELSE gibbonActivitySlot.locationExternal END)) SEPARATOR '<br/>') as days
                         FROM gibbonActivity
                         JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID)
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         }
                         echo '<tr>';
                         echo '<td>';
-                        echo '<a class="thickbox" title="'.__('View Details').'" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$activity['gibbonActivityID'].'&width=1000&height=550" style="text-decoration: none; color:inherit;">'.$activity['name'].'</a>';
+                        echo '<a class="thickbox" title="'.__('View Details').'" href="'.$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module').'/activities_view_full.php&gibbonActivityID='.$activity['gibbonActivityID'].'&width=1000&height=550" style="text-decoration: none; color:inherit;">'.$activity['name'].'</a>';
                         echo '</td>';
                         echo '<td width="15%">';
                         if (!empty($timeStatus)) {

@@ -35,12 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", "get");
+    $form = Form::create('action', $session->get('absoluteURL')."/index.php", "get");
     $form->setTitle(__('Choose Student'));
     $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activityChoices_byStudent.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_activityChoices_byStudent.php");
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             ->fromPOST();
 
         $enroledYears = $gateway->queryStudentYears($criteriaYears);
-        
+
         foreach ($enroledYears as $enroledYear) {
             $criteriaActivities = $gateway
                 ->newQueryCriteria()

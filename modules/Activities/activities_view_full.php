@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<i>'.__('None').'</i>';
                     }
 
-                    $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+                    $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                     if ($role == 'Staff') {
                         echo '<h3>'.__('Participants').'</h3>';
 
