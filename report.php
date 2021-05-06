@@ -49,6 +49,7 @@ if (empty($address)) {
         'guid'        => $guid,
         'gibbon'      => $gibbon,
         'version'     => $version,
+        'session'     => $session,
         'pdo'         => $pdo,
         'connection2' => $connection2,
         'autoloader'  => $autoloader,
