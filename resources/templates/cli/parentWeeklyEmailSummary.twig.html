@@ -24,7 +24,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% for item in homework %}
 
         {% set difference = date(item.homeworkDueDateTime).diff(date()) %}
-        {% set latestSubmission = (item.submissions|last) %}
+        {% set latestSubmission = (item.submissions|first) %}
 
         {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') %}
             {% set style = "background-color: #c6f6d5;color: #2f855a;border: 0px solid #2f855a;border-right-width: 8px;" %}
