@@ -433,7 +433,10 @@ class ReportingAccessGateway extends QueryableGateway
             $query->where('gibbonReportingCriteria.gibbonFormGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Course') {
             $query->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
-                ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID');
+                ->leftJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+                ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID')
+                ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonIDStudent')
+                ->where("gibbonCourseClassPerson.role='Student'");
         }
 
         return $this->runSelect($query);
