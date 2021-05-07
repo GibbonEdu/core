@@ -227,7 +227,7 @@ class StaffDashboard implements OutputableInterface
             $timetable .= '</div>';
         }
 
-        //GET ROLL GROUPS
+        //GET FORM GROUPS
         $formGroups = array();
         $formGroupCount = 0;
         $count = 0;

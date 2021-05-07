@@ -211,7 +211,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->where("gibbonPerson.status='Full'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
 
-        // ROLL GROUP
+        // FORM GROUP
         $query->unionAll()
             ->distinct()
             ->from('gibbonReportingScope')
@@ -345,7 +345,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType = 'Year Group'")
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'");
 
-        // ROLL GROUP
+        // FORM GROUP
         $query->unionAll()
             ->from('gibbonReportingCycle')
             ->cols(['gibbonReportingScope.gibbonReportingScopeID  as groupBy', 'gibbonReportingScope.name as scopeName', '0 as orderBy',

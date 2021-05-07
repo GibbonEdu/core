@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        //GET CURRENT ROLL GROUPS
+        //GET CURRENT FORM GROUPS
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
