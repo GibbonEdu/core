@@ -123,7 +123,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $row->addLabel('cognition', __('Cognition'))->description(__('Please choose one description that is most relevant to the student in your subject.'));
                 $row->addRadio('cognition')
                     ->fromArray($options)
-                    ->required()
                     ->checked(false)
                     ->addClass('md:max-w-md')
                     ->alignLeft();
