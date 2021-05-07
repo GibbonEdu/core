@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry'))->description(__('Which year level will student enter.'));
         $row->addSelectYearGroup('gibbonYearGroupIDEntry')->required();
 
-    // ROLL GROUP
+    // FORM GROUP
     $sqlSelect = "SELECT gibbonFormGroupID as value, name, gibbonSchoolYearID FROM gibbonFormGroup ORDER BY gibbonSchoolYearID, name";
     $resultSelect = $pdo->executeQuery(array(), $sqlSelect);
 
