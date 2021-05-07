@@ -55,8 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             $category = $_POST['category'] ?? '';
             $description = $_POST['description'] ?? '';
             $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
-            $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
-
+            $gibbonScaleID = !empty($_POST['gibbonScaleID']) ? $_POST['gibbonScaleID'] : null;
 
             if ($scope == '' or ($scope == 'Learning Area' and $gibbonDepartmentID == '') or $name == '' or $active == '') {
                 $URL .= '&return=error1';
