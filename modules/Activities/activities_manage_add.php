@@ -102,19 +102,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 		$row = $form->addRow();
         	$row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
-			$row->addDate('listingStart')->required()->setValue($listingStart->format($session->get('i18n')('dateFormatPHP')));
+			$row->addDate('listingStart')->required()->setValue($listingStart->format($session->get('i18n')['dateFormatPHP']));
 
 		$row = $form->addRow();
         	$row->addLabel('listingEnd', __('Listing End Date'))->description(__('Default: 2 weeks after the start of next term.'));
-			$row->addDate('listingEnd')->required()->setValue($listingEnd->format($session->get('i18n')('dateFormatPHP')));
+			$row->addDate('listingEnd')->required()->setValue($listingEnd->format($session->get('i18n')['dateFormatPHP']));
 
 		$row = $form->addRow();
         	$row->addLabel('programStart', __('Program Start Date'))->description(__('Default: first day of next term.'));
-			$row->addDate('programStart')->required()->setValue($programStart->format($session->get('i18n')('dateFormatPHP')));
+			$row->addDate('programStart')->required()->setValue($programStart->format($session->get('i18n')['dateFormatPHP']));
 
 		$row = $form->addRow();
         	$row->addLabel('programEnd', __('Program End Date'))->description(__('Default: last day of the next term.'));
-			$row->addDate('programEnd')->required()->setValue($programEnd->format($session->get('i18n')('dateFormatPHP')));
+			$row->addDate('programEnd')->required()->setValue($programEnd->format($session->get('i18n')['dateFormatPHP']));
 	}
 
 	$row = $form->addRow();
