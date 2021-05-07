@@ -2284,7 +2284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 return Format::dateRangeReadable($row['programStart'], $row['programEnd']);
                                             }
                                           });
-                                    $table->addColumn('status', __('Status'));
+                                    $table->addColumn('status', __('Status'))->translatable();
                                     $table->addActionColumn()
                                           ->format(function ($activity, $actions) {
                                             $actions->addAction('view', __('View Details'))

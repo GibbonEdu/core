@@ -910,5 +910,6 @@ ALTER TABLE gibbonMessengerTarget CHANGE `type` `type` enum('Class','Course','Fo
 ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Roll Group','Course') NOT NULL DEFAULT 'Year Group';end
 UPDATE gibbonReportingScope SET scopeType='Form Group' WHERE scopeType='Roll Group';end
 ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Course') NOT NULL DEFAULT 'Year Group';end
+UPDATE gibbonAction SET URLList='report_activitySpread_formGroup.php', entryURL='report_activitySpread_formGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Spread by Form Group';end
 
 ";
