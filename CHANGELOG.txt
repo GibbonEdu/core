@@ -49,6 +49,7 @@ v22.0.00
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
         Formal Assessment: expanded name column in Internal Assessment to 30 chars
+        Individual Needs: no longer require cognition field in IN investigations
         Messenger: updated the send report to list any emails that failed to send
         Messenger: updated the send report to use the formatted email template when resending emails
         Reports: added a help tool with Data Source information to Edit Component page
@@ -86,6 +87,7 @@ v22.0.00
         Planner: fixed issue where sidebar calendar showed the wrong dates
         Planner: fixed suggested date when adding a new lesson plan to exclude school closures
         Reports: fixed error in mPdfRenderer due to missing getPageNumber method
+        Reports: fixed error causing duplicate values when students move classes
         Students: fixed pre-existing comments visible on student profile Markbook page after turning off comments
         System Admin: fixed cache not clearing when switching themes
         Timetable: fixed error adding class enrolment when one exists already

@@ -910,6 +910,10 @@ ALTER TABLE gibbonMessengerTarget CHANGE `type` `type` enum('Class','Course','Fo
 ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Roll Group','Course') NOT NULL DEFAULT 'Year Group';end
 UPDATE gibbonReportingScope SET scopeType='Form Group' WHERE scopeType='Roll Group';end
 ALTER TABLE gibbonReportingScope CHANGE `scopeType` `scopeType` enum('Year Group','Form Group','Course') NOT NULL DEFAULT 'Year Group';end
+UPDATE `gibbonReportPrototypeSection` SET name=REPLACE(name, 'Roll Group', 'Form Group'), dataSources=REPLACE(dataSources, 'rollGroup', 'formGroup'), templateFile=REPLACE(templateFile, 'rollGroup', 'formGroup');end
+UPDATE `gibbonReportPrototypeSection` SET dataSources=REPLACE(dataSources, 'RollGroup', 'FormGroup');end
+UPDATE `gibbonReportTemplateSection` SET name=REPLACE(name, 'Roll Group', 'Form Group');end
+UPDATE `gibbonNotification` SET actionLink=REPLACE(actionLink, 'gibbonRollGroupID', 'gibbonFormGroupID');end
 UPDATE gibbonAction SET URLList='report_activitySpread_formGroup.php', entryURL='report_activitySpread_formGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Spread by Form Group';end
 
 ";

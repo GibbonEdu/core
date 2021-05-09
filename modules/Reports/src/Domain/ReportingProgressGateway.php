@@ -62,7 +62,7 @@ class ReportingProgressGateway extends QueryableGateway
             ->bindValue('today', date('Y-m-d'))
             ->groupBy(['gibbonReportingScopeID']);
 
-        // ROLL GROUPS
+        // FORM GROUPS
         $query->unionAll()
             ->cols(['gibbonReportingScope.gibbonReportingScopeID AS gibbonReportingScopeID', 'gibbonReportingScope.sequenceNumber AS sequenceNumber', 'gibbonReportingScope.name', "COUNT(DISTINCT gibbonStudentEnrolment.gibbonStudentEnrolmentID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')
@@ -148,7 +148,7 @@ class ReportingProgressGateway extends QueryableGateway
             $query->where(':today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd', ['today' => date('Y-m-d')]);
         }
 
-        // ROLL GROUPS
+        // FORM GROUPS
         $query->unionAll()
             ->cols(['teacher.gibbonPersonID AS gibbonPersonID', 'teacher.surname', 'teacher.preferredName', "COUNT(DISTINCT student.gibbonPersonID) as totalCount", "COUNT(DISTINCT CASE WHEN gibbonReportingProgress.status='Complete' THEN gibbonReportingProgress.gibbonReportingProgressID END) as progressCount"])
             ->from('gibbonReportingCycle')

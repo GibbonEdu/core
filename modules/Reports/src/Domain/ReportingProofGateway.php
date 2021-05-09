@@ -79,7 +79,7 @@ class ReportingProofGateway extends QueryableGateway
             ->where('(:today BETWEEN gibbonReportingCycle.dateStart AND gibbonReportingCycle.dateEnd)')
             ->bindValue('today', date('Y-m-d'));
 
-        // ROLL GROUP
+        // FORM GROUP
         $this->unionAllWithCriteria($query, $criteria)
             ->from('gibbonReportingCycle')
             ->cols(['gibbonReportingValue.gibbonPersonIDStudent', 'gibbonReportingValue.gibbonReportingValueID', 'gibbonReportingCriteria.target as criteriaTarget', 'gibbonReportingCriteria.name as criteriaName', 'gibbonReportingCriteriaType.characterLimit', 'gibbonFormGroup.name', 'gibbonFormGroup.nameShort', 'gibbonReportingValue.comment', 'student.surname', 'student.preferredName', 'student.gender', 'writtenBy.surname as surnameWrittenBy',  'writtenBy.preferredName as preferredNameWrittenBy'])
@@ -166,7 +166,7 @@ class ReportingProofGateway extends QueryableGateway
             $query->where('FIND_IN_SET(gibbonReportingCriteria.gibbonReportingScopeID, :reportingScopeIDs)', ['reportingScopeIDs' => $reportingScopeIDs]);
         }
 
-        // ROLL GROUP
+        // FORM GROUP
         $this->unionAllWithCriteria($query, $criteria)
             ->from('gibbonPerson')
             ->cols(['gibbonReportingValue.gibbonPersonIDStudent', 'gibbonReportingValue.gibbonReportingValueID', 'gibbonReportingCriteria.target as criteriaTarget', 'gibbonReportingCriteria.name as criteriaName', 'gibbonReportingCriteriaType.characterLimit', 'gibbonFormGroup.name', 'gibbonFormGroup.nameShort', 'gibbonReportingValue.comment', 'student.surname', 'student.preferredName', 'student.gender'])
@@ -243,7 +243,7 @@ class ReportingProofGateway extends QueryableGateway
             ->where("gibbonCourseClassPerson.role='Teacher'")
             ->where("gibbonCourseClassPerson.reportable='Y'");
 
-        // ROLL GROUPS
+        // FORM GROUPS
         $query->unionAll()
             ->from('gibbonReportingProof')
             ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
