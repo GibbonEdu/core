@@ -49,12 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     }
 
     // Limit date range to the current school year
-    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
-        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    if ($dateStart < $session->get('gibbonSchoolYearFirstDay')) {
+        $dateStart = $session->get('gibbonSchoolYearFirstDay');
     }
 
-    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
-        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    if ($dateEnd > $session->get('gibbonSchoolYearLastDay')) {
+        $dateEnd = $session->get('gibbonSchoolYearLastDay');
     }
 
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
@@ -67,19 +67,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         if ( $lastSetOfSchoolDays[$i] >= $dateStart  ) $lastNSchoolDays[] = $lastSetOfSchoolDays[$i];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_formGroupsNotRegistered_byDate.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupsNotRegistered_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $row = $form->addRow();
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
         echo '</h2>';
 
         //Produce array of attendance data
-        
+
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
             $sql = 'SELECT date, gibbonFormGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogFormGroup WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date';
             $result = $connection2->prepare($sql);
@@ -109,8 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             $log[$row['gibbonFormGroupID']][$row['date']] = true;
         }
 
-        
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sql = "SELECT gibbonFormGroupID, name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND attendance='Y' ORDER BY LENGTH(name), name";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             $formGroups = $result->fetchAll();
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
             echo "<table cellspacing='0' style='width: 100%'>";
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
                     if ($row['gibbonPersonIDTutor'] == '' and $row['gibbonPersonIDTutor2'] == '' and $row['gibbonPersonIDTutor3'] == '') {
                         echo '<i>Not set</i>';
                     } else {
-                        
+
                             $dataTutor = array('gibbonPersonID1' => $row['gibbonPersonIDTutor'], 'gibbonPersonID2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonID3' => $row['gibbonPersonIDTutor3']);
                             $sqlTutor = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID1 OR gibbonPersonID=:gibbonPersonID2 OR gibbonPersonID=:gibbonPersonID3';
                             $resultTutor = $connection2->prepare($sqlTutor);
