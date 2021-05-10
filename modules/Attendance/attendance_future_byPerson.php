@@ -59,12 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $date = (isset($_GET['date']))? $_GET['date'] : '';
 
     // Generate choose student form
-    $form = Form::create('attendanceSearch',$_SESSION[$guid]['absoluteURL'] . '/index.php','GET');
+    $form = Form::create('attendanceSearch',$session->get('absoluteURL') . '/index.php','GET');
     $form->setTitle(__('Choose Student'));
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q','/modules/'.$_SESSION[$guid]['module'].'/attendance_future_byPerson.php');
+    $form->addHiddenValue('q','/modules/'.$session->get('module').'/attendance_future_byPerson.php');
 
     $availableScopes = [
         'single' => __('Single Student'),
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             //Get classes for partial attendance
             $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID[0], !empty($date) ? Format::dateConvert($date) : date('Y-m-d'));
-            
+
             if ($absenceType == 'partial' && empty($classes)) {
                 echo Format::alert(__('Cannot record a partial absence. This student does not have timetabled classes for this day.'));
                 return;
@@ -169,12 +169,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
                 echo $table->render($logs);
             }
-            
+
         }
 
-        $form = Form::create('attendanceSet',$_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_future_byPersonProcess.php');
+        $form = Form::create('attendanceSet',$session->get('absoluteURL') . '/modules/' . $session->get('module') . '/attendance_future_byPersonProcess.php');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('scope', $scope);
         $form->addHiddenValue('absenceType', $absenceType);
         $form->addHiddenValue('gibbonPersonID', implode(",", $gibbonPersonID));
