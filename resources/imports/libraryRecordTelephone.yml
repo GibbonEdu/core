@@ -128,6 +128,14 @@ table:
         name: "Warranty Expiry"
         desc: ""
         args: { filter: date, custom: true, readonly: true, serialize: fields  }
+    fieldWirelessMACAddress:
+        name: "Wireless MAC Address"
+        desc: ""
+        args: { filter: date, custom: true, readonly: true, serialize: fields  }
+    fieldWiredMACAddress:
+        name: "Wired MAC Address"
+        desc: ""
+        args: { filter: date, custom: true, readonly: true, serialize: fields  }
     fieldRepairLog:
         name: "Repair Log/Notes"
         desc: ""
