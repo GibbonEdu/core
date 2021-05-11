@@ -24,7 +24,7 @@ $nameShort = $_POST['nameShort'] ?? '';
 $nameShortDisplay = $_POST['nameShortDisplay'] ?? '';
 $active = $_POST['active'] ?? '';
 $count = $_POST['count'] ?? '';
-$gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID']) ?? []);
+$gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID'] ?? []);
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
