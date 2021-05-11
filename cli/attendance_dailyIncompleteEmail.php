@@ -84,7 +84,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                 try {
                     $data = array('date' => $currentDate);
-                    $sql = 'SELECT gibbonFormGroupID FROM gibbonAttendanceLogFormGroupID WHERE date=:date';
+                    $sql = 'SELECT gibbonFormGroupID FROM gibbonAttendanceLogFormGroup WHERE date=:date';
                     $resultLog = $connection2->prepare($sql);
                     $resultLog->execute($data);
                 } catch (PDOException $e) {
