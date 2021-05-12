@@ -122,7 +122,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonCourseID=gibbonCourse.gibbonCourseID')
-            ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
             ->where('gibbonPerson.gibbonPersonID=:gibbonPersonID')
@@ -205,7 +205,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
             ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
-            ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
             ->where("gibbonPerson.status='Full'")
@@ -565,6 +565,7 @@ class ReportingAccessGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.gibbonCourseClassID=:scopeTypeID')
                 ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
                 ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
+                ->where("gibbonCourseClass.reportable='Y'")
                 ->where("gibbonCourseClassPerson.reportable='Y'");
         }
 
