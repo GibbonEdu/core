@@ -92,10 +92,6 @@ table:
 
     # Type-Specific Serializable Fields
 
-    fieldType:
-        name: "Type"
-        desc: "What kind of product is this?"
-        args: { filter: string, required: true, custom: true, readonly: true, serialize: fields  }
     fieldSerialNumber:
         name: "Serial Number"
         desc: ""
