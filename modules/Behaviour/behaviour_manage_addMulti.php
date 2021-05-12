@@ -44,12 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if ($policyLink != '') {
             echo ' | ';
         }
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
     }
     echo '</div>';
 
 
-    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
+    $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
     $form->addRow()->addHeading(__('Step 1'));
@@ -57,12 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     //Student
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDMulti', __('Students'));
-        $row->addSelectStudent('gibbonPersonIDMulti', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byForm' => true))->selectMultiple()->required();
+        $row->addSelectStudent('gibbonPersonIDMulti', $session->get('gibbonSchoolYearID'), array('byName' => true, 'byForm' => true))->selectMultiple()->required();
 
     //Date
     $row = $form->addRow();
-        $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
+        $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
     //Type
     $row = $form->addRow();
