@@ -15,12 +15,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </td>
             <td style='width: 33%; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Family Status') }}</span><br />
-                {{ family.status }}
+                {{ __(family.status) }}
             </td>
             <td style='width: 34%; vertical-align: top' colspan=2>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Home Languages') }}</span><br />
-                {{ family.languageHomePrimary }} <br />
-                {{ family.languageHomeSecondary }}<br />
+                {{ __(family.languageHomePrimary) }} <br />
+                {{ __(family.languageHomeSecondary) }}<br />
             </td>
         </tr>
         <tr>
@@ -89,11 +89,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <tr>
             <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('First Language') }}</span><br />
-                {{ person.languageFirst }}
+                {{ __(person.languageFirst) }}
             </td>
             <td class="{{ class }}" style='width: 33%; padding-top: 15px; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Second Language') }}</span><br />
-                {{ person.languageSecond }}
+                {{ __(person.languageSecond) }}
             </td>
         </tr>
         <tr>
