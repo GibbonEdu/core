@@ -27,19 +27,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-    
+
     $page->breadcrumbs
         ->add(__('Family Data Updates'), 'data_family_manage.php', $urlParams)
         ->add(__('Edit Request'));
-    
+
     //Check if school year specified
     $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
     if ($gibbonFamilyUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFamilyUpdateID' => $gibbonFamilyUpdateID);
             $sql = 'SELECT gibbonFamily.* FROM gibbonFamilyUpdate JOIN gibbonFamily ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
             $result = $connection2->prepare($sql);
@@ -55,13 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 			$newResult = $pdo->executeQuery($data, $sql);
 
             //Let's go!
-			$oldValues = $result->fetch(); 
+			$oldValues = $result->fetch();
 			$newValues = $newResult->fetch();
-            
+
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == true) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=".$oldValues['gibbonFamilyID']."'>".__('Edit Family')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Family')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=".$oldValues['gibbonFamilyID']."'>".__('Edit Family')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Family')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo '</div>';
             }
 
@@ -74,10 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 				'languageHomeSecondary' => __('Home Language - Secondary'),
 			);
 
-			$form = Form::createTable('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
-			
+			$form = Form::createTable('updateFamily', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_family_manage_editProcess.php?gibbonFamilyUpdateID='.$gibbonFamilyUpdateID);
+
 			$form->setClass('fullWidth colorOddEven');
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonFamilyID', $oldValues['gibbonFamilyID']);
 
 			$row = $form->addRow()->setClass('head heading');
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 					$row->addLabel('new'.$fieldName.'On', $label);
 					$row->addContent($oldValues[$fieldName]);
 					$row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
-				
+
 				if ($isMatching) {
 					$row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
 					$form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 					$row->addContent();
 				}
 			}
-			
+
 			$row = $form->addRow();
 				$row->addSubmit();
 
