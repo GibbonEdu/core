@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $lesson = $_POST['lesson'] ?? '';
 
                     //Validation
-                    if ($type == '' or $version == '' or ($_FILES['file']['name'] == '' and $link == '') or $status == '' or $count == '' or $lesson == '') {
+                    if ($type == '' or $version == '' or (empty($_FILES['file']['name']) and $link == '') or $status == '' or $count == '' or $lesson == '') {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
                     } else {
