@@ -129,13 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     foreach ($dateRange as $weekday) {
         if (!isSchoolOpen($guid, $weekday->format('Y-m-d'), $connection2)) continue;
 
-        $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday);
+        $url = './index.php?q=/modules/Staff/report_subs_availability.php&date='.Format::date($weekday->format('Y-m-d'));
         $columnTitle = Format::link($url, Format::dateReadable($weekday->format('Y-m-d'), '%a, %b %e'));
 
         $table->addColumn($weekday->format('D'), $columnTitle)
             ->context('primary')
             ->notSortable()
-            ->description(Format::date($weekday))
+            ->description(Format::date($weekday->format('Y-m-d')))
             ->format(function ($values) use ($weekday) {
                 return CoverageMiniCalendar::renderTimeRange($values['dates'][$weekday->format('Y-m-d')] ?? [], $weekday);
             })

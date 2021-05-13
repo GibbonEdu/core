@@ -30,16 +30,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
-        echo "<div class='error'>";
-        echo __('The highest grouped action cannot be determined.');
-        echo '</div>';
+        $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Users'));
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $search = $_GET['search'] ?? '';
 
     // CRITERIA
     $userGateway = $container->get(UserGateway::class);
@@ -48,14 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
-    echo '<h2>';
-    echo __('Search');
-    echo '</h2>';
-    
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/user_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/user_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
@@ -66,9 +61,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     echo $form->getOutput();
 
-    echo '<h2>';
-    echo __('View');
-    echo '</h2>';
 
     // QUERY
     $dataSet = $userGateway->queryAllUsers($criteria);
@@ -80,6 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     // DATA TABLE
     $table = DataTable::createPaginated('userManage', $criteria);
+    $table->setTitle(__('View'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
@@ -121,10 +114,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('family', __('Family'))
         ->notSortable()
-        ->format(function($person) use ($guid) {
+        ->format(function($person) use ($gibbon) {
             $output = '';
             foreach ($person['families'] as $family) {
-                $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
+                $output .= '<a href="'.$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
             }
             return $output;
         });
@@ -135,11 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid, $highestAction) {
+        ->format(function ($person, $actions) use ($gibbon, $highestAction) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
-            if ($highestAction == 'Manage Users_editDelete' && $person['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+            if ($highestAction == 'Manage Users_editDelete' && $person['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
                 $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/User Admin/user_manage_delete.php');
             }

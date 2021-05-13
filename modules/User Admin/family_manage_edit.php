@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             // CHILDREN
             $table = DataTable::create('children');
-            $table->setTitle('View Children');
+            $table->setTitle(__('View Children'));
 
             $table->addColumn('photo', __('Photo'))
                 ->format(Format::using('photo', ['image_240']));
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $table->addColumn('name', __('Name'))
                 ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student']));
 
-            $table->addColumn('status', __('Status'));
+            $table->addColumn('status', __('Status'))->translatable();
 
             $table->addColumn('formGroup', __('Form Group'));
             $table->addColumn('comment', __('Comment'))
@@ -274,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     return Format::link('./index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=' . $adult['gibbonPersonID'], $name);
                 });
 
-            $table->addColumn('status', __('Status'));
+            $table->addColumn('status', __('Status'))->translatable();
 
             $table->addColumn('comment', __('Comment'))
                 ->format(function ($adult) {
@@ -283,22 +283,37 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             //Note: This is hacky, but will have to exist until rotating becomes built-in functionality
             $table->addColumn('childDataAccess', '<div class="transform -rotate-90"> ' . __('Data Access') . '</div>')
-                ->width('50px');
+                ->width('50px')
+                ->format(function($adult){
+                    return Format::yesNo($adult['childDataAccess']);
+                });
 
             $table->addColumn('contactPriority', '<div class="transform -rotate-90"> ' . __('Contact Priority') . '</div>')
                 ->width('50px');
 
             $table->addColumn('contactCall', '<div class="transform -rotate-90"> ' . __('Contact By Phone') . '</div>')
+                ->format(function($adult){
+                    return Format::yesNo($adult['contactCall']);
+                })
                 ->width('50px');
 
             $table->addColumn('contactSMS', '<div class="transform -rotate-90"> ' . __('Contact By SMS') . '</div>')
+                ->format(function($adult){
+                    return Format::yesNo($adult['contactSMS']);
+                })
                 ->width('50px');
 
             $table->addColumn('contactEmail', '<div class="transform -rotate-90"> ' . __('Contact By Email') . '</div>')
-                ->width('50px');
+                ->width('50px')
+                ->format(function($adult){
+                    return Format::yesNo($adult['contactEmail']);
+                });
 
             $table->addColumn('contactMail', '<div class="transform -rotate-90"> ' . __('Contact By Mail') . '</div>')
-                ->width('50px');
+                ->width('50px')
+                ->format(function($adult){
+                    return Format::yesNo($adult['contactMail']);
+                });
 
             $table->addActionColumn()
                 ->addParam('gibbonFamilyID', $gibbonFamilyID)
