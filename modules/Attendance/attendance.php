@@ -75,7 +75,7 @@ $page->write($form->getOutput());
 
 
 // define attendance tables, if user is permit to view them
-if (isset($session->get("username"))) {
+if ($session->has('username')) {
     // generator of basic attendance table
     $getDailyAttendanceTable = function ($guid, $connection2, $currentDate, $rowID, $takeAttendanceURL) use ($session) {
 
