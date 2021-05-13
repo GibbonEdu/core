@@ -229,7 +229,7 @@ class ReportingProofGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonReportingProof')
-            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
+            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
             ->innerJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingValueID=gibbonReportingProof.gibbonReportingValueID')
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingValue.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID')
@@ -246,7 +246,7 @@ class ReportingProofGateway extends QueryableGateway
         // FORM GROUPS
         $query->unionAll()
             ->from('gibbonReportingProof')
-            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
+            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
             ->innerJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingValueID=gibbonReportingProof.gibbonReportingValueID')
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingValue.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID')
@@ -261,7 +261,7 @@ class ReportingProofGateway extends QueryableGateway
         // YEAR GROUPS
         $query->unionAll()
             ->from('gibbonReportingProof')
-            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
+            ->cols(['gibbonPerson.gibbonPersonID AS groupBy', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonReportingCycle.name', 'gibbonReportingProof.comment', 'gibbonReportingScope.scopeType'])
             ->innerJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingValueID=gibbonReportingProof.gibbonReportingValueID')
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingValue.gibbonReportingCycleID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCriteriaID=gibbonReportingValue.gibbonReportingCriteriaID')
@@ -272,6 +272,8 @@ class ReportingProofGateway extends QueryableGateway
             ->bindValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList))
             ->where("gibbonReportingProof.status='Edited'")
             ->where("gibbonReportingScope.scopeType='Year Group'");
+
+        $query->orderBy(['surname', 'preferredName']);
 
         return $this->runSelect($query);
     }
