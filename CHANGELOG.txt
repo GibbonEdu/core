@@ -52,6 +52,7 @@ v22.0.00
         Formal Assessment: expanded name column in Internal Assessment to 30 chars
         Individual Needs: no longer require cognition field in IN investigations
         Library: added new Telephone type, with matching import
+        Library: migrated fields to internally use JSON data
         Messenger: updated the send report to list any emails that failed to send
         Messenger: updated the send report to use the formatted email template when resending emails
         Reports: added a help tool with Data Source information to Edit Component page

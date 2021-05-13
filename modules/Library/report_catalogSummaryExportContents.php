@@ -172,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $x);
 		//Column H
 		$x = '';
-        $typeFieldsInner = unserialize($typeFields[$row['gibbonLibraryTypeID']]['fields']);
-        $fields = unserialize($row['fields']);
+        $typeFieldsInner = json_decode($typeFields[$row['gibbonLibraryTypeID']]['fields'], true);
+        $fields = json_decode($row['fields'], true);
         foreach ($typeFieldsInner as $typeField) {
             if (isset($fields[$typeField['name']])) {
                 if ($fields[$typeField['name']] != '') {

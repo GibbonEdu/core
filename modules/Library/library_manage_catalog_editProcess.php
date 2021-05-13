@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
             if ($result->rowCount() == 1) {
                 $row = $result->fetch();
-                $fieldsIn = unserialize($row['fields']);
+                $fieldsIn = json_decode($row['fields'], true);
                 $fieldsOut = array();
                 foreach ($fieldsIn as $field) {
                     $fieldName = preg_replace('/ |\(|\)/', '', $field['name']);
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
                     //Write to database
                     try {
-                        $data = array('id' => $id, 'name' => $name, 'producer' => $producer, 'fields' => serialize($fieldsOut), 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'imageType' => $imageType, 'imageLocation' => $imageLocation, 'replacement' => $replacement, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'replacementCost' => $replacementCost, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'bookable' => $bookable, 'borrowable' => $borrowable, 'status' => $status, 'physicalCondition' => $physicalCondition, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'timestampUpdate' => date('Y-m-d H:i:s', time()), 'gibbonLibraryItemID' => $gibbonLibraryItemID);
+                        $data = array('id' => $id, 'name' => $name, 'producer' => $producer, 'fields' => json_encode($fieldsOut), 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'imageType' => $imageType, 'imageLocation' => $imageLocation, 'replacement' => $replacement, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'replacementCost' => $replacementCost, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'bookable' => $bookable, 'borrowable' => $borrowable, 'status' => $status, 'physicalCondition' => $physicalCondition, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'timestampUpdate' => date('Y-m-d H:i:s', time()), 'gibbonLibraryItemID' => $gibbonLibraryItemID);
                         $sql = 'UPDATE gibbonLibraryItem SET id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, replacement=:replacement, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, bookable=:bookable, borrowable=:borrowable, status=:status, physicalCondition=:physicalCondition, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
