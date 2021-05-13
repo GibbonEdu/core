@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // COLUMNS
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) use ($guid) {
+        ->format(function ($person) use ($session) {
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true))
                 . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';

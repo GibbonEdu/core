@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $table->addColumn('type', __('Type'))
             ->width('5%')
-            ->format(function($beahviour) use ($guid) {
+            ->format(function($beahviour) use ($session) {
                 if ($beahviour['type'] == 'Negative') {
                     return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
                 } elseif ($beahviour['type'] == 'Positive') {
