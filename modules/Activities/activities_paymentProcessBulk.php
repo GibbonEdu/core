@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_payment.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_payment.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_payment.php') == false) {
     $URL .= '&return=error0';
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                                     } else {
                                         $invoiceFail = false;
                                         try {
-                                            $dataInvoice = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFinanceInvoiceeID' => $rowCheck2['gibbonFinanceInvoiceeID'], 'gibbonFinanceBillingScheduleID' => $action, 'notes' => '', 'key' => $key, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $dataInvoice = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFinanceInvoiceeID' => $rowCheck2['gibbonFinanceInvoiceeID'], 'gibbonFinanceBillingScheduleID' => $action, 'notes' => '', 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                                             $sqlInvoice = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
                                             $resultInvoice = $connection2->prepare($sqlInvoice);
                                             $resultInvoice->execute($dataInvoice);

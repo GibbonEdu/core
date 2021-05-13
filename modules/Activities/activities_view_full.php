@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 try {
                     if ($dateType != 'Date') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID);
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
                         $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND NOT gibbonSchoolYearTermIDList='' AND gibbonActivityID=:gibbonActivityID";
                     } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID, 'listingStart' => $today, 'listingEnd' => $today);
                         $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND listingStart<=:listingStart AND listingEnd>=:listingEnd AND gibbonActivityID=:gibbonActivityID";
                     }
                     $result = $connection2->prepare($sql);
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($dateType != 'Date') {
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Terms').'</span><br/>';
-                        $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $terms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
                         $termList = '';
                         for ($i = 0; $i < count($terms); $i = $i + 2) {
                             if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
@@ -138,8 +138,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($row['payment'] == 0) {
                             echo '<i>'.__('None').'</i>';
                         } else {
-                            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                                echo substr($_SESSION[$guid]['currency'], 4);
+                            if (substr($session->get('currency'), 4) != '') {
+                                echo substr($session->get('currency'), 4);
                             }
                             echo $row['payment'];
                         }
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
-                    
+
                         $dataStaff = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
                         $resultStaff = $connection2->prepare($sqlStaff);
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Provider').'</span><br/>';
                     echo '<i>';
                     if ($row['provider'] == 'School') {
-                        echo $_SESSION[$guid]['organisationNameShort'];
+                        echo $session->get('organisationNameShort');
                     } else {
                         echo __('External');
                     };
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     //Slots & Participants
                     echo "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>";
                     echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__('Time Slots').'</h3>';
-                    
+
                         $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                         $resultSlots = $connection2->prepare($sqlSlots);
@@ -217,11 +217,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<i>'.__('None').'</i>';
                     }
 
-                    $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+                    $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                     if ($role == 'Staff') {
                         echo '<h3>'.__('Participants').'</h3>';
 
-                        
+
                             $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Accepted' ORDER BY surname, preferredName";
                             $resultStudents = $connection2->prepare($sqlStudents);
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             echo '</ul>';
                         }
 
-                        
+
                             $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
                             $sqlStudents = "SELECT title, preferredName, surname FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp";
                             $resultStudents = $connection2->prepare($sqlStudents);

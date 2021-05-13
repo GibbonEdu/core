@@ -39,15 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Participants by Activity'));
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
 
         $form->setTitle(__('Choose Activity'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_participants.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_participants.php");
 
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
         $row = $form->addRow();
             $row->addLabel('gibbonActivityID', __('Activity'));
@@ -87,9 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($student) use ($guid) {
+        ->format(function ($student) use ($session) {
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
-            return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
+            return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
         });
     $table->addColumn('status', __('Status'))->translatable();
 
