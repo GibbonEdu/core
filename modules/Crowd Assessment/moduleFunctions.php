@@ -26,38 +26,38 @@ function getLessons($guid, $connection2, $and = '')
 
     $fields = 'gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDetails, date, gibbonPlannerEntry.gibbonCourseClassID, homeworkCrowdAssessOtherTeachersRead, homeworkCrowdAssessClassmatesRead, homeworkCrowdAssessOtherStudentsRead, homeworkCrowdAssessSubmitterParentsRead, homeworkCrowdAssessClassmatesParentsRead, homeworkCrowdAssessOtherParentsRead';
     //Get my classes (student, teacher, classmates)
-    $data = array('today1' => $today, 'gibbonPersonID1' => $session->get('gibbonPersonID'), 'now1' => $now, 'gibbonSchoolYearID1' => $session->get('gibbonSchoolYearID'));
+    $data = array('today1' => $today, 'gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'now1' => $now, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "(SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today1 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND (role='Teacher' OR role='Student') AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now1 AND gibbonSchoolYearID=:gibbonSchoolYearID1 $and)";
 
     //Get other classes if teacher
 
-        $dataTeacher = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+        $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlTeacher = "SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID AND type='Teaching'";
         $resultTeacher = $connection2->prepare($sqlTeacher);
         $resultTeacher->execute($dataTeacher);
     if ($resultTeacher->rowCount() == 1) {
         $data['today2'] = $today;
-        $data['gibbonSchoolYearID2'] = $session->get('gibbonSchoolYearID');
+        $data['gibbonSchoolYearID2'] = $_SESSION[$guid]['gibbonSchoolYearID'];
         $data['now2'] = $now;
         $sql = $sql." UNION (SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today2 AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now2 AND gibbonSchoolYearID=:gibbonSchoolYearID2 AND homeworkCrowdAssessOtherTeachersRead='Y' $and)";
     }
 
     //Get other classes if student
 
-        $dataStudent = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+        $dataStudent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
         $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
         $resultStudent = $connection2->prepare($sqlStudent);
         $resultStudent->execute($dataStudent);
     if ($resultStudent->rowCount() == 1) {
         $data['today3'] = $today;
-        $data['gibbonSchoolYearID3'] = $session->get('gibbonSchoolYearID');
+        $data['gibbonSchoolYearID3'] = $_SESSION[$guid]['gibbonSchoolYearID'];
         $data['now3'] = $now;
         $sql = $sql." UNION (SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today3 AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now3 AND gibbonSchoolYearID=:gibbonSchoolYearID3 AND homeworkCrowdAssessOtherStudentsRead='Y' $and)";
     }
 
     //Get classes if parent
 
-        $dataParent = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+        $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
         $resultParent = $connection2->prepare($sqlParent);
         $resultParent->execute($dataParent);
@@ -74,7 +74,7 @@ function getLessons($guid, $connection2, $and = '')
             while ($rowChild = $resultChild->fetch()) {
                 //submitters+classmates parents
                 $data['today4'.$childCount] = $today;
-                $data['gibbonSchoolYearID4'.$childCount] = $session->get('gibbonSchoolYearID');
+                $data['gibbonSchoolYearID4'.$childCount] = $_SESSION[$guid]['gibbonSchoolYearID'];
                 $data['now4'.$childCount] = $now;
                 $data['gibbonPersonID4'.$childCount] = $rowChild['gibbonPersonID'];
                 $sql = $sql." UNION (SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today4$childCount AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID4$childCount AND role='Student' AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now4$childCount AND gibbonSchoolYearID=:gibbonSchoolYearID4$childCount AND (homeworkCrowdAssessSubmitterParentsRead='Y' OR homeworkCrowdAssessClassmatesParentsRead='Y') $and)";
@@ -83,7 +83,7 @@ function getLessons($guid, $connection2, $and = '')
         }
         //Other classes
         $data['today5'] = $today;
-        $data['gibbonSchoolYearID5'] = $session->get('gibbonSchoolYearID');
+        $data['gibbonSchoolYearID5'] = $_SESSION[$guid]['gibbonSchoolYearID'];
         $data['now5'] = $now;
         $sql = $sql." UNION (SELECT $fields FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE homeworkSubmissionDateOpen<=:today5 AND homeworkCrowdAssess='Y' AND ADDTIME(date, '1344:00:00.0')>=:now5 AND gibbonSchoolYearID=:gibbonSchoolYearID5 AND homeworkCrowdAssessOtherParentsRead='Y' $and)";
     }
@@ -94,7 +94,7 @@ function getLessons($guid, $connection2, $and = '')
 function getCARole($guid, $connection2, $gibbonCourseClassID)
 {
     $role = '';
-    if (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) == 'Parent') {
+    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Parent') {
         $role = 'Parent';
         $childInClass = false;
 
@@ -103,7 +103,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         $children = array();
 
 
-            $dataParent = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $resultParent = $connection2->prepare($sqlParent);
             $resultParent->execute($dataParent);
@@ -137,7 +137,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
     } else {
         //Check if in staff table as teacher
 
-            $dataTeacher = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $dataTeacher = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlTeacher = "SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID AND type='Teaching'";
             $resultTeacher = $connection2->prepare($sqlTeacher);
             $resultTeacher->execute($dataTeacher);
@@ -145,7 +145,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         if ($resultTeacher->rowCount() == 1) {
             $role = 'Teacher';
 
-                $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
+                $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sqlRole = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
                 $resultRole = $connection2->prepare($sqlRole);
                 $resultRole->execute($dataRole);
@@ -156,7 +156,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
 
         //Check if student
 
-            $dataStudent = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+            $dataStudent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sqlStudent = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $resultStudent = $connection2->prepare($sqlStudent);
             $resultStudent->execute($dataStudent);
@@ -164,7 +164,7 @@ function getCARole($guid, $connection2, $gibbonCourseClassID)
         if ($resultStudent->rowCount() == 1) {
             $role = 'Student';
 
-                $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
+                $dataRole = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sqlRole = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Student'";
                 $resultRole = $connection2->prepare($sqlRole);
                 $resultRole->execute($dataRole);
@@ -196,7 +196,7 @@ function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homework
         $count = 0;
         $children = array();
 
-            $dataParent = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $dataParent = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlParent = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
             $resultParent = $connection2->prepare($sqlParent);
             $resultParent->execute($dataParent);
@@ -248,7 +248,7 @@ function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homework
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
         $sqlList = "SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND role='Student' AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') $and ORDER BY surname, preferredName";
     } elseif ($role == 'Student - In Class') {
-        $data = array('gibbonCourseClassID' => $gibbonCourseClassID,'gibbonPersonID' => $session->get('gibbonPersonID'));
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID,'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sqlList = "SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') $and ORDER BY surname, preferredName";
     }
 
