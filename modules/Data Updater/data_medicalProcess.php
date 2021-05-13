@@ -27,7 +27,7 @@ use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 include '../../gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     $URL .= '&return=error0';
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             //Check access to person
             $checkCount = 0;
             if ($highestAction == 'Update Medical Data_any') {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_medical.php&gibbonPersonID='.$gibbonPersonID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_medical.php&gibbonPersonID='.$gibbonPersonID;
 
                 try {
                     $dataSelect = array();
@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 }
                 $checkCount = $resultSelect->rowCount();
             } else {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
 
                 try {
-                    $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
@@ -134,11 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                 // Write to database
                 $existing = $_POST['existing'] ?? 'N';
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+                $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                 $data['timestamp'] = date('Y-m-d H:i:s');
                 $data['fields'] = $fields;
-                
+
                 if ($existing != 'N') {
                     $gibbonPersonMedicalUpdateID = $existing;
                     $data['gibbonPersonMedicalUpdateID'] = $gibbonPersonMedicalUpdateID;
@@ -167,14 +167,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'lastEpisodeTreatment'  => $_POST["lastEpisodeTreatment$i"] ?? '',
                         'comment'               => $_POST["commentCond$i"] ?? '',
                         'attachment'            => $_POST["attachment$i"] ?? null,
-                        'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'],
+                        'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
                     ];
 
                     if (!empty($_FILES["attachment$i"]['tmp_name'])) {
                         // Upload the file, return the /uploads relative path
                         $fileUploader = new FileUploader($pdo, $gibbon->session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES["attachment$i"]);
-    
+
                         if (empty($data['attachment'])) {
                             $partialFail = true;
                         }
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         'lastEpisodeTreatment'        => $_POST['lastEpisodeTreatment'] ?? '',
                         'comment'                     => $_POST['commentCond'] ?? '',
                         'attachment'                  => $_POST['attachment'] ?? '',
-                        'gibbonPersonIDUpdater'       => $_SESSION[$guid]['gibbonPersonID'],
+                        'gibbonPersonIDUpdater'       => $session->get('gibbonPersonID'),
                         'timestamp'                   => date('Y-m-d H:i:s'),
                     ];
 
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                         // Upload the file, return the /uploads relative path
                         $fileUploader = new FileUploader($pdo, $gibbon->session);
                         $data['attachment'] = $fileUploader->uploadFromPost($_FILES['attachment']);
-    
+
                         if (empty($data['attachment'])) {
                             $partialFail = true;
                         }
@@ -253,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     // Raise a new notification event
                     $event = new NotificationEvent('Data Updater', 'Medical Form Updates');
 
-                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->addRecipient($session->get('organisationDBA'));
                     $event->setNotificationText(__('A medical data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_medical_manage.php');
 

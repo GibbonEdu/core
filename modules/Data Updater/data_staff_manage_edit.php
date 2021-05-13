@@ -30,13 +30,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-    
+
     $page->breadcrumbs
         ->add(__('Staff Data Updates'), 'data_staff_manage.php', $urlParams)
         ->add(__('Edit Request'));
-    
+
     $staffUpdateGateway = $container->get(StaffUpdateGateway::class);
     $staffGateway = $container->get(StaffGateway::class);
 
@@ -46,9 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-        
+
     $newValues = $staffUpdateGateway->getByID($gibbonStaffUpdateID);
-    $oldValues = $staffGateway->getByID($newValues['gibbonStaffID'] ?? ''); 
+    $oldValues = $staffGateway->getByID($newValues['gibbonStaffID'] ?? '');
 
     // Check database records exist
     if (empty($oldValues) || empty($newValues)) {
@@ -68,10 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
         'biography'             => __('Biography'),
     ];
 
-    $form = Form::createTable('updateStaff', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_staff_manage_editProcess.php?gibbonStaffUpdateID='.$gibbonStaffUpdateID);
-    
+    $form = Form::createTable('updateStaff', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_staff_manage_editProcess.php?gibbonStaffUpdateID='.$gibbonStaffUpdateID);
+
     $form->setClass('fullWidth colorOddEven');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffID', $oldValues['gibbonStaffID']);
 
     // Provide a link back to edit the associated record
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
             $row->addLabel('new'.$fieldName.'On', $label);
             $row->addContent($oldValues[$fieldName]);
             $row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
-        
+
         if ($isMatching) {
             $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
             $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
 
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Staff', ['dataUpdater' => 1], $oldValues, $newValues);
-    
+
     $row = $form->addRow();
         $row->addSubmit();
 

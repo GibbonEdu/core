@@ -32,7 +32,7 @@ include '../User Admin/moduleFunctions.php';
 $logGateway = $container->get(LogGateway::class);
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -471,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if (isset($_POST['newprivacyOn'])) {
                         if ($_POST['newprivacyOn'] == 'on') {
 
-                                $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                                $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                                 $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
@@ -485,7 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 // Raise a new notification event
                                 $event = new NotificationEvent('Students', 'Updated Privacy Settings');
 
-                                $staffName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                                $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
                                 $studentName = Format::name('', $row2['preferredName'], $row2['surname'], 'Student', false);
                                 $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
@@ -509,13 +509,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                     $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
                                     $notificationText .= $privacyText;
 
-                                    if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
                                         $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
                                     }
-                                    if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
                                         $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', $actionLink);
                                     }
-                                    if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                    if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
                                         $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', $actionLink);
                                     }
                                 }
@@ -530,9 +530,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $privacyValues['oldValue'] = $privacy_old ;
                             $privacyValues['newValue'] = $_POST['newprivacy'] ;
                             $privacyValues['gibbonPersonIDRequestor'] = $row['gibbonPersonIDUpdater'] ;
-                            $privacyValues['gibbonPersonIDAcceptor'] = $_SESSION[$guid]["gibbonPersonID"] ;
+                            $privacyValues['gibbonPersonIDAcceptor'] = $session->get("gibbonPersonID") ;
 
-                            $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                            $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Privacy - Value Changed via Data Updater', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
 
                         }
                     }

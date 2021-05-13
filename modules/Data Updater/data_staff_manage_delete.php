@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
     }
-        
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_staff_manage_deleteProcess.php?gibbonStaffUpdateID=".$gibbonStaffUpdateID);
+
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_staff_manage_deleteProcess.php?gibbonStaffUpdateID=".$gibbonStaffUpdateID);
     echo $form->getOutput();
 }
