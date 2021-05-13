@@ -34,7 +34,7 @@ v22.0.00
     Changes With Important Notices
         System: removed the vendor folder for Cutting Edge Code installations
         System: renamed the gibbonPersonField table to gibbonCustomField
-        System: changed interface strings from Roll Group to Form Group 
+        System: changed interface strings from Roll Group to Form Group
         Students: migrated Blood Type and Tetanus fields from Medical Form into Custom Fields
 
     Tweaks & Additions
@@ -51,6 +51,7 @@ v22.0.00
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
         Formal Assessment: expanded name column in Internal Assessment to 30 chars
         Individual Needs: no longer require cognition field in IN investigations
+        Library: added new Telephone type, with matching import
         Messenger: updated the send report to list any emails that failed to send
         Messenger: updated the send report to use the formatted email template when resending emails
         Reports: added a help tool with Data Source information to Edit Component page
@@ -59,6 +60,7 @@ v22.0.00
         Reports: added a download option to the student list of the View by Report page
         Reports: added a duplicate action in Template Builder
         Reports: added pagination to the Proof Reading page
+        Reports: updated so Assistance with reportable access can write reports
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students
