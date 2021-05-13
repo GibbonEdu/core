@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -83,10 +84,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
 
         $notificationCount = 0;
         $notificationText = '';
+        $notificationList = '';
 
         if ($type == 'proofReadingEdits') {
-            $edits = $container->get(ReportingProofGateway::class)->selectPendingProofReadingEdits($gibbonReportingCycleIDList)->fetchGrouped();
+            $edits = $container->get(ReportingProofGateway::class)->selectPendingProofReadingEdits($gibbonReportingCycleIDList)->fetchGroupedUnique();
+
             $notificationCount = count($edits);
+            $notificationList = '<details><ul><li>'.Format::nameList($edits, 'Staff', false, true, '</li><li>').'</li></ul></details>';
             $notificationText = __('There are {count} pending edits for your reports. Please visit the Proof Read page to view these and complete your reporting comments.');
         } elseif ($type == 'reportsAvailable') {
             $parents = $container->get(ReportArchiveEntryGateway::class)->selectParentArchiveAccessByReportingCycle($gibbonReportingCycleIDList)->fetchAll();
@@ -102,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
 
         $form->addRow()->addHeading(__('Step 2'));
 
-        $form->addRow()->addAlert(__('This action will send the following notification to {count} users.', ['count' => '<b>'.$notificationCount.'</b>']), 'message');
+        $form->addRow()->addAlert(__('This action will send the following notification to {count} users.', ['count' => '<b>'.$notificationCount.'</b>']).$notificationList, 'message');
 
         $col = $form->addRow()->addColumn();
             $col->addLabel('notificationText', __('Notification'));
