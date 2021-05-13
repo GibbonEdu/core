@@ -81,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
             ->addExpandableColumn('details')
             ->format(function ($item) {
                 $detailTable = "<table>";
-                $fields = unserialize($item['fields']);
-                foreach (unserialize($item['typeFields']) as $typeField) {
+                $fields = json_decode($item['fields'], true);
+                foreach (json_decode($item['typeFields'], true) as $typeField) {
                     $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', __($typeField['name']), $fields[$typeField['name']]);
                 }
                 $detailTable .= '</table>';

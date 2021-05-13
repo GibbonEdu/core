@@ -52,6 +52,7 @@ v22.0.00
         Formal Assessment: expanded name column in Internal Assessment to 30 chars
         Individual Needs: no longer require cognition field in IN investigations
         Library: added new Telephone type, with matching import
+        Library: migrated fields to internally use JSON data
         Messenger: updated the send report to list any emails that failed to send
         Messenger: updated the send report to use the formatted email template when resending emails
         Reports: added a help tool with Data Source information to Edit Component page
@@ -61,6 +62,7 @@ v22.0.00
         Reports: added a duplicate action in Template Builder
         Reports: added pagination to the Proof Reading page
         Reports: updated so Assistance with reportable access can write reports
+        Reports: added names of teachers to the Proof Reading Edits notification
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
         Students: adjusted student select in Student Enrolment Add to only show unenrolled students
