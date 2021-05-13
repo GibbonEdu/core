@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         // Function to display the updater info based on the cutoff date
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
-        $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $guid) {
+        $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $session) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
 
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         $table->addColumn('familyName', __('Family'))
             ->width('20%')
-            ->format(function($row) use ($guid) {
+            ->format(function($row) use ($session) {
                 return '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
             });
 

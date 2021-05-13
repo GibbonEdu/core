@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 
         $table->addColumn('student', __('Student'))
             ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-            ->format(function ($row) use ($guid) {
+            ->format(function ($row) use ($session) {
                 $name = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
             });
