@@ -36,13 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
         ->add(__('Discuss'),'crowdAssess_view_discuss.php', $urlParams)
-        ->add(__('Add Post'));    
-    
+        ->add(__('Add Post'));
+
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-    
+
     $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
     $sql = getLessons($guid, $connection2, $and);
     $lesson = $pdo->select($sql[1], $sql[0])->fetch();
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     }
 
     // FORM
-    $form = Form::create('crowdAssessment', $gibbon->session->get('absoluteURL').'/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
+    $form = Form::create('crowdAssessment', $gibbon->session->get('absoluteURL').'/modules/'.$session->get('module')."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
