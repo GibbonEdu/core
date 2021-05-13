@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = "SELECT fields FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID";
             $result = $pdo->executeQuery($data, $sql);
-            $fieldsValues = ($result->rowCount() == 1)? unserialize($result->fetchColumn(0)) : array();
+            $fieldsValues = ($result->rowCount() == 1)? json_decode($result->fetchColumn(0), true) : array();
         }
 
         // Transform the library field types to CustomField compatable types
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 default:            $item['type'] = strtolower($item['type']); break;
             }
             return $item;
-        }, unserialize($values['fields']));
+        }, json_decode($values['fields'], true));
 
         foreach ($fields as $field) {
             $fieldName = 'field'.preg_replace('/ |\(|\)/', '', $field['name']);
