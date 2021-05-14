@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
     $minimumCount = isset($_GET['minimumCount'])? $_GET['minimumCount'] : 1;
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     if ($enableDescriptors == 'Y') {
         $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
         $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
-        
+
         $row = $form->addRow();
             $row->addLabel('descriptor', __('Descriptor'));
             $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
@@ -70,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
 
     $row = $form->addRow();
-        $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('fromDate')->setValue($fromDate);
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->filterBy('minimumCount', $minimumCount)
         ->fromPOST();
 
-    $records = $behaviourGateway->queryBehaviourPatternsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $records = $behaviourGateway->queryBehaviourPatternsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('behaviourPatterns', $criteria);
@@ -124,8 +124,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // COLUMNS
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) use ($guid) {
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
+        ->format(function ($person) use ($session) {
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true))
                 . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });

@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         $search = isset($_GET['search'])? $_GET['search'] : '';
 
         if ($highestAction == 'View Behaviour Records_all') {
-            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setTitle(__('Search'));
             $form->setClass('noIntBorder fullWidth');
 
@@ -59,19 +59,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
-            
+
             $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['surname', 'preferredName'])
                 ->fromPOST();
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], false);
+            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), false);
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
 
         } else if ($highestAction == 'View Behaviour Records_myChildren') {
-            $students = $studentGateway->selectActiveStudentsByFamilyAdult($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])->toDataSet();
+            $students = $studentGateway->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->toDataSet();
 
             $table = DataTable::create('behaviour');
             $table->setTitle( __('My Children'));
@@ -82,8 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         // COLUMNS
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
-            ->format(function ($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
+            ->format(function ($person) use ($session) {
+                $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true));
             });
         $table->addColumn('yearGroup', __('Year Group'));
