@@ -55,7 +55,8 @@ v22.0.00
         Library: added new Telephone type, with matching import
         Library: migrated fields to internally use JSON data
         Messenger: updated the send report to list any emails that failed to send
-        Messenger: updated the send report to use the formatted email template when resending emails
+        Messenger: updated the send report to use the formatted email template when resending emails\
+        Planner: moved class chooser to the top of the sidebar
         Reports: added a help tool with Data Source information to Edit Component page
         Reports: added an option to delete report files from Generate Reports page
         Reports: clear report cache when editing template assets in Production
