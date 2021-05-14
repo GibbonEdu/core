@@ -491,8 +491,6 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         }
     }
 
-    $_SESSION[$guid]['sidebarExtraPosition'] = 'bottom';
-
     return $output;
 }
 
@@ -533,8 +531,6 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 
         $output .= $form->getOutput();
     }
-
-    $_SESSION[$guid]['sidebarExtraPosition'] = 'bottom';
 
     return $output;
 }
