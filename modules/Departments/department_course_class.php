@@ -65,12 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         } else {
             //Get role within learning area
             $role = null;
-            if ($gibbonDepartmentID != '' and isset($_SESSION[$guid]['username'])) {
-                $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
+            if ($gibbonDepartmentID != '' and ($session->get('username'))) {
+                $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
             }
 
             $extra = '';
-            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
+            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) {
                 $extra = ' '.$row['year'];
             }
             if ($gibbonDepartmentID != '') {
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
             $table->addMetaData('hidePagination', true);
 
-            $iconPath = $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/';
+            $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
             $table->addColumn('icon')
                 ->format(function ($menu) use ($iconPath) {
                     $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
@@ -170,12 +170,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
 
             //Print sidebar
-            if (isset($_SESSION[$guid]['username'])) {
+            if ($session->get('username')) {
                 $sidebarExtra = '';
 
                 //Print related class list
                 try {
-                    $dataCourse = array('gibbonCourseID' => $row['gibbonCourseID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $dataCourse = array('gibbonCourseID' => $row['gibbonCourseID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                     $sqlCourse = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY class';
                     $resultCourse = $connection2->prepare($sqlCourse);
                     $resultCourse->execute($dataCourse);
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
                     $sidebarExtra .= '<ul>';
                     while ($rowCourse = $resultCourse->fetch()) {
-                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonCourseClassID='.$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$session->get('absoluteURL')."/index.php?q=/modules/Departments/department_course_class.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$row['gibbonCourseID'].'&gibbonCourseClassID='.$rowCourse['gibbonCourseClassID']."'>".$rowCourse['course'].'.'.$rowCourse['class'].'</a></li>';
                     }
                     $sidebarExtra .= '</ul>';
                     $sidebarExtra .= '</div>';
@@ -200,13 +200,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 //Print list of all classes
                 $sidebarExtra .= '<div class="column-no-break">';
 
-                $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                $form = Form::create('classSelect', $session->get('absoluteURL').'/index.php', 'get');
                 $form->setTitle(__('Current Classes'));
                 $form->setClass('smallIntBorder w-full');
 
-                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course_class.php');
+                $form->addHiddenValue('q', '/modules/'.$session->get('module').'/department_course_class.php');
 
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
                         FROM gibbonCourse
                         JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
