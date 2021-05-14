@@ -50,12 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     }
 
     // Limit date range to the current school year
-    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
-        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    if ($dateStart < $session->get('gibbonSchoolYearFirstDay')) {
+        $dateStart = $session->get('gibbonSchoolYearFirstDay');
     }
 
-    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
-        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    if ($dateEnd > $session->get('gibbonSchoolYearLastDay')) {
+        $dateEnd = $session->get('gibbonSchoolYearLastDay');
     }
 
     $group = !empty($_REQUEST['group'])? $_REQUEST['group'] : '';
@@ -67,19 +67,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $gibbonAttendanceCodeID = (isset($_REQUEST["gibbonAttendanceCodeID"]))? $_REQUEST["gibbonAttendanceCodeID"] : 0;
     $reportType = (empty($gibbonAttendanceCodeID))? 'types' : 'reasons';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_summary_byDate.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_summary_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $options = array("all" => __('All Students'));
@@ -96,12 +96,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $form->toggleVisibilityByClass('class')->onSelect('group')->when('class');
     $row = $form->addRow()->addClass('class');
         $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->required();
+        $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'))->selected($gibbonCourseClassID)->placeholder()->required();
 
     $form->toggleVisibilityByClass('formGroup')->onSelect('group')->when('formGroup');
     $row = $form->addRow()->addClass('formGroup');
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder()->required();
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
@@ -148,11 +148,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo '</div>';
     } else {
         echo '<h2>';
-        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);        
+        echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);
         echo '</h2>';
 
-        
-            $dataSchoolDays = array( 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $dataSchoolDays = array( 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlSchoolDays = "SELECT COUNT(DISTINCT CASE WHEN date>=gibbonSchoolYear.firstDay AND date<=gibbonSchoolYear.lastDay THEN date END) as total, COUNT(DISTINCT CASE WHEN date>=:dateStart AND date <=:dateEnd THEN date END) as dateRange FROM gibbonAttendanceLogPerson, gibbonSchoolYearTerm, gibbonSchoolYear WHERE date>=gibbonSchoolYearTerm.firstDay AND date <= gibbonSchoolYearTerm.lastDay AND date <= NOW() AND gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID";
 
             $resultSchoolDays = $connection2->prepare($sqlSchoolDays);
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo __('Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
-        $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sqlPieces = array();
 
         if ($reportType == 'types') {
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         } else {
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
             echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             if ($reportType == 'types') {
 
-                $href= $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
+                $href= $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';

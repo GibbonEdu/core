@@ -27,7 +27,7 @@ include __DIR__ . '/moduleFunctions.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $scope = $_POST['scope'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $partialFail = false;
             $partialFailSchoolClosed = false;
-            
+
             $type = $_POST['type'] ?? '';
             $reason = $_POST['reason'] ?? '';
             $comment = $_POST['comment'] ?? '';
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 // Handle full-day absenses normally
                                 if ($absenceType == 'full') {
                                     try {
-                                        $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
+                                        $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
                                         $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Future\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
                                         $resultUpdate = $connection2->prepare($sqlUpdate);
                                         $resultUpdate->execute($dataUpdate);
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                         if (!empty($courses) && is_array($courses)) {
                                             foreach ($courses as $course) {
                                                 try {
-                                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
+                                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
                                                     $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
                                                     $resultUpdate = $connection2->prepare($sqlUpdate);
                                                     $resultUpdate->execute($dataUpdate);

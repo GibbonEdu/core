@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php') == false) {
     $URL .= '&return=error0';
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 }
                 else {
-                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonIDTutor1' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                     $sql = "SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.attendance = 'Y' AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY LENGTH(name), name";
                 }
                 $result = $connection2->prepare($sql);
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         $attendance = new AttendanceView($gibbon, $pdo);
 
                         try {
-                            $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
+                            $data = array('gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                             $sql = 'INSERT INTO gibbonAttendanceLogFormGroup SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonFormGroupID=:gibbonFormGroupID, date=:date, timestampTaken=:timestampTaken';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         }
 
                         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
-                        
+
                         $count = $_POST['count'] ?? '';
                         $partialFail = false;
 
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 'type'                   => $type,
                                 'reason'                 => $reason,
                                 'comment'                => $comment,
-                                'gibbonPersonIDTaker'    => $_SESSION[$guid]['gibbonPersonID'],
+                                'gibbonPersonIDTaker'    => $session->get('gibbonPersonID'),
                                 'gibbonFormGroupID'      => $gibbonFormGroupID,
                                 'date'                   => $currentDate,
                                 'timestampTaken'         => date('Y-m-d H:i:s'),

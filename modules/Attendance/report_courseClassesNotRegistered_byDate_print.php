@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     echo '</h2>';
 
     //Produce array of attendance data
-    
+
         $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
         $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
 
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     }
 
     // Produce an array of scheduled classes
-    
+
         $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
         $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
 
@@ -76,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     }
 
 
-    
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') );
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         $classes = $result->fetchAll();
 
         echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
         echo '</div>';
 
         echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             if ($row['studentCount'] <= 0) continue;
 
             //Output row only if not registered on specified date, and timetabled for that day
-            if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false || 
+            if (isset($tt[$row['gibbonCourseClassID']]) == true && (isset($log[$row['gibbonCourseClassID']]) == false ||
                 count($log[$row['gibbonCourseClassID']]) < min(count($lastNSchoolDays), count($tt[$row['gibbonCourseClassID']])) ) ) {
                 ++$count;
 
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 echo Format::dateRangeReadable($dateStart, $dateEnd);
                 echo '</td>';
                 echo '<td style="padding: 0;">';
-                
+
                     echo "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
                     echo '<tr>';
                     $historyCount = 0;
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                             echo "<td class='$class' style='padding: 12px !important;'>";
                             echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
                             echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
-                            echo '</td>';                            
+                            echo '</td>';
 
                             // Wrap to a new line every 10 dates
                             if (  ($historyCount+1) % 10 == 0 ) {
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 echo '</td>';
                 echo '<td>';
 
-                
+
                     $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
                     $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
                     $resultTutor = $connection2->prepare($sqlTutor);
@@ -194,13 +194,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                         echo Format::name('', $rowTutor['preferredName'], $rowTutor['surname'], 'Staff', true, true).'<br/>';
                     }
                 }
-                
+
                 echo '</td>';
                 echo '</tr>';
             }
         }
-        
-        
+
+
 
         if ($count == 0) {
             echo "<tr";

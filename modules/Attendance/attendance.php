@@ -56,7 +56,7 @@ $form->setClass('noIntBorder fullWidth');
 $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 
 $row = $form->addRow();
-$row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+$row->addLabel('currentDate', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
 $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php')) {
@@ -75,7 +75,7 @@ $page->write($form->getOutput());
 
 
 // define attendance tables, if user is permit to view them
-if (isset($_SESSION[$guid]["username"])) {
+if ($session->has('username')) {
     // generator of basic attendance table
     $getDailyAttendanceTable = function ($guid, $connection2, $currentDate, $rowID, $takeAttendanceURL) use ($session) {
 
