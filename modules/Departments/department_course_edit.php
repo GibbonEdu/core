@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     if ($gibbonDepartmentID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT gibbonSchoolYear.name AS year, gibbonDepartment.name AS department, gibbonCourse.name AS course, description, gibbonCourse.gibbonSchoolYearID FROM gibbonCourse JOIN gibbonDepartment ON (gibbonDepartment.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID) JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
@@ -47,15 +47,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             $values = $result->fetch();
 
             //Get role within learning area
-            $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
+            $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
 
             $extra = '';
-            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $values['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
+            if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $values['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) {
                 $extra = ' '.$values['year'];
             }
-            
+
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
-            
+
             $page->breadcrumbs
                 ->add(__('View All'), 'departments.php')
                 ->add($values['department'], 'department.php', $urlParams)
@@ -68,16 +68,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 echo '</div>';
             } else {
 
-                $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_course_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID.'&gibbonCourseID='.$gibbonCourseID);
-                
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-                
+                $form = Form::create('courseEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_course_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID.'&gibbonCourseID='.$gibbonCourseID);
+
+                $form->addHiddenValue('address', $session->get('address'));
+
                 $form->addRow()->addHeading(__('Overview'));
                 $form->addRow()->addEditor('description', $guid)->setRows(20)->setValue($values['description']);
-            
+
                 $row = $form->addRow();
                     $row->addSubmit();
-                
+
                 echo $form->getOutput();
             }
         }

@@ -23,7 +23,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false || empty($highestAction)) {
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         header("Location: {$URL}");
         exit;
     } else {
-        
+
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
             $result = $connection2->prepare($sql);
@@ -53,15 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
         } else {
             //Proceed!
 
-            $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d')];
+            $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d')];
             $sql = "SELECT role, surname, preferredName, email, studentID, gibbonFormGroup.nameShort as formGroup
-                    FROM gibbonCourseClassPerson 
-                    JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    FROM gibbonCourseClassPerson
+                    JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                    WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' 
-                    AND (dateStart IS NULL OR dateStart<=:today) 
-                    AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                    WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full'
+                    AND (dateStart IS NULL OR dateStart<=:today)
+                    AND (dateEnd IS NULL  OR dateEnd>=:today)
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                     ORDER BY role DESC, surname, preferredName";
 
