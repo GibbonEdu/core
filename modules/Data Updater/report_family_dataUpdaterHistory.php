@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Family Data Updater History'));
-    
+
     echo '<p>';
     echo __('This report allows a user to select a range of families, with at least one child enrolled in the target year group, and check whether or not they have had their family and personal data updated after a specified date.');
     echo '</p>';
@@ -42,16 +42,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     echo '</h2>';
 
     $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
-    $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26)); 
+    $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26));
 
     $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
     $hideDetails = isset($_POST['hideDetails'])? $_POST['hideDetails'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_family_dataUpdaterHistory.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_family_dataUpdaterHistory.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList',__('Year Groups'));
@@ -64,14 +64,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     $row = $form->addRow();
         $row->addLabel('nonCompliant', __('Show Only Non-Compliant?'))->description(__('If not checked, show all. If checked, show only non-compliant students.'));
         $row->addCheckbox('nonCompliant')->setValue('Y')->checked($nonCompliant);
-    
+
     $row = $form->addRow();
         $row->addLabel('hideDetails', __('Hide Details?'));
         $row->addCheckbox('hideDetails')->setValue('Y')->checked($hideDetails);
-    
+
     $row = $form->addRow();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 
     if (!empty($gibbonYearGroupIDList)) {
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();
 
-        $dataUpdates = $gateway->queryFamilyUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupIDList, $requiredUpdatesByType);
+        $dataUpdates = $gateway->queryFamilyUpdaterHistory($criteria, $session->get('gibbonSchoolYearID'), $gibbonYearGroupIDList, $requiredUpdatesByType);
         $families = $dataUpdates->getColumn('gibbonFamilyID');
 
         // Join a set of family adults & updater info
@@ -97,18 +97,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $dataUpdates->joinColumn('gibbonFamilyID', 'familyAdults', $familyAdults);
 
         // Join a set of family children & updater info
-        $familyChildren = $gateway->selectFamilyChildUpdatesByFamily($families, $_SESSION[$guid]['gibbonSchoolYearID'])->fetchGrouped();
+        $familyChildren = $gateway->selectFamilyChildUpdatesByFamily($families, $session->get('gibbonSchoolYearID'))->fetchGrouped();
         $dataUpdates->joinColumn('gibbonFamilyID', 'familyChildren', $familyChildren);
 
         // Function to display the updater info based on the cutoff date
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
-        $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $guid) {
+        $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $session) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
 
             return empty($dateUpdated) || $dateCutoff > $date
-                ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png' width='18' />"
-                : "<img title='".$title.' '.__('Up to date').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png' width='18' />";
+                ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png' width='18' />"
+                : "<img title='".$title.' '.__('Up to date').': '.$dateDisplay."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png' width='18' />";
         };
 
         // DATA TABLE
@@ -125,10 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         $table->addColumn('familyName', __('Family'))
             ->width('20%')
-            ->format(function($row) use ($guid) {
-                return '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
+            ->format(function($row) use ($session) {
+                return '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
             });
-        
+
         if ($hideDetails != 'Y') {
             $table->addColumn('familyUpdate', __('Family Data'))
                 ->width('5%')
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
                     return $output;
                 });
         }
-        
+
         $table->addColumn('familyAdultsEmail', __('Parent Email'))
             ->notSortable()
             ->format(function($row) {

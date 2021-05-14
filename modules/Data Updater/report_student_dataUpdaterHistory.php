@@ -41,20 +41,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo '</h2>';
 
     $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
-    $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26)); 
+    $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26));
 
     $choices = isset($_POST['members'])? $_POST['members'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_student_dataUpdaterHistory.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    
+    $form->addHiddenValue('address', $session->get('address'));
+
     $row = $form->addRow();
         $row->addLabel('members', __('Students'));
-        $row->addSelectStudent('members', $_SESSION[$guid]['gibbonSchoolYearID'], array('byForm' => true, 'byName' => true))
+        $row->addSelectStudent('members', $session->get('gibbonSchoolYearID'), array('byForm' => true, 'byName' => true))
             ->selectMultiple()
             ->required()
             ->selected($choices);
@@ -66,10 +66,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     $row = $form->addRow();
         $row->addLabel('nonCompliant', __('Show Only Non-Compliant?'))->description(__('If not checked, show all. If checked, show only non-compliant students.'));
         $row->addCheckbox('nonCompliant')->setValue('Y')->checked($nonCompliant);
-    
+
     $row = $form->addRow();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 
     if (count($choices) > 0) {
@@ -85,8 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();
 
-        $dataUpdates = $gateway->queryStudentUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $choices);
-        
+        $dataUpdates = $gateway->queryStudentUpdaterHistory($criteria, $session->get('gibbonSchoolYearID'), $choices);
+
         // Join a set of parent emails per student
         $people = $dataUpdates->getColumn('gibbonPersonID');
         $parentEmails = $gateway->selectParentEmailsByPersonID($people)->fetchGrouped();
@@ -116,9 +116,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 
         $table->addColumn('student', __('Student'))
             ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-            ->format(function ($row) use ($guid) {
+            ->format(function ($row) use ($session) {
                 $name = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
-                return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
+                return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
             });
 
         $table->addColumn('formGroupName', __('Form Group'));
