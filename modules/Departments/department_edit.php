@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
             $result = $connection2->prepare($sql);
@@ -45,16 +45,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
             $values = $result->fetch();
 
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
-            
+
             $page->breadcrumbs
                 ->add(__('View All'), 'departments.php')
                 ->add($values['name'], 'department.php', $urlParams)
-                ->add(__('Edit Department'));            
+                ->add(__('Edit Department'));
 
             $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
             //Get role within learning area
-            $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
+            $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
 
             if ($role != 'Coordinator' and $role != 'Assistant Coordinator' and $role != 'Teacher (Curriculum)' and $role != 'Director' and $role != 'Manager') {
                 echo "<div class='error'>";
@@ -62,13 +62,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                 echo '</div>';
             } else {
 
-				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID);
-				
-				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-				
+				$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_editProcess.php?gibbonDepartmentID='.$gibbonDepartmentID);
+
+				$form->addHiddenValue('address', $session->get('address'));
+
 				$form->addRow()->addHeading(__('Overview'));
 				$form->addRow()->addEditor('blurb', $guid)->setRows(20)->setValue($values['blurb']);
-				
+
 				$form->addRow()->addHeading(__('Current Resources'));
 
 				$data = array('gibbonDepartmentID' => $gibbonDepartmentID);
@@ -86,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 						$row->addContent(__('Actions'))->setClass('shortWidth');
 
 					while ($resource = $result->fetch()) {
-						$href = ($resource['type'] == 'Link')? $resource['url'] : $_SESSION[$guid]['absoluteURL'].'/'.$resource['url'];
+						$href = ($resource['type'] == 'Link')? $resource['url'] : $session->get('absoluteURL').'/'.$resource['url'];
 
 						$row = $table->addRow();
 							$row->addContent($resource['name'])->wrap('<a href="'.$href.'" target="blank">', '</a>');
 							$row->addContent($resource['type']);
-							$row->addContent("<img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/>")->wrap("<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$resource['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$resource['gibbonDepartmentID'].'&address='.$_GET['q']."'>", '</a>');
+							$row->addContent("<img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/>")->wrap("<a onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/department_edit_resource_deleteProcess.php?gibbonDepartmentResourceID='.$resource['gibbonDepartmentResourceID'].'&gibbonDepartmentID='.$resource['gibbonDepartmentID'].'&address='.$_GET['q']."'>", '</a>');
 					}
 				}
 
@@ -108,16 +108,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                         $row->addLabel("type{$i}", sprintf(__('Resource %1$s Type'), $i));
 						$row->addRadio("type{$i}")->fromArray(array('Link' => __('Link'), 'File' => __('File')))->inline();
 
-					$form->toggleVisibilityByClass("resource{$i}TypeLink")->onRadio("type{$i}")->when('Link');	
+					$form->toggleVisibilityByClass("resource{$i}TypeLink")->onRadio("type{$i}")->when('Link');
 					$row = $form->addRow()->addClass("resource{$i}Row resource{$i}TypeLink");
                         $row->addLabel("url{$i}", sprintf(__('Resource %1$s URL'), $i));
 						$row->addURL("url{$i}");
-						
+
 					$form->toggleVisibilityByClass("resource{$i}TypeFile")->onRadio("type{$i}")->when('File');
 					$row = $form->addRow()->addClass("resource{$i}Row resource{$i}TypeFile");
                         $row->addLabel("file{$i}", sprintf(__('Resource %1$s File'), $i));
 						$row->addFileUpload("file{$i}");
-						
+
 					if ($i < 3) {
 						$form->toggleVisibilityByClass("resource{$i}Button")->onRadio("type{$i}")->when(array('Link', 'File'));
 						$row = $form->addRow()->addClass("resource{$i}Row resource{$i}Button");
@@ -126,10 +126,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 							->addClass('right');
 					}
 				}
-				
+
 				$row = $form->addRow();
 					$row->addSubmit();
-				
+
 				echo $form->getOutput();
 				?>
 

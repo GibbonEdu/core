@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     $page->breadcrumbs->add(__('View All'));
 
     $departmentGateway = $container->get(DepartmentGateway::class);
-    
+
     // QUERY
     $criteria = $departmentGateway->newQueryCriteria(true)
         ->sortBy(['sequenceNumber', 'name']);
-    
+
     // Data Table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
@@ -64,10 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         $tableLA = clone $table;
         $tableLA->setId('learningAreas');
         $tableLA->setTitle(__('Learning Areas'));
-        
+
         echo $tableLA->render($learningAreas);
     }
-    
+
     // Administration
     $administration = $departmentGateway->queryDepartments($criteria, 'Administration');
 
@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         //Print sidebar
         $sidebarExtra = '';
 
-        
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE \'% - Left%\' ORDER BY course, class';
             $result = $connection2->prepare($sql);
             $result->execute($data);

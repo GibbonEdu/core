@@ -23,7 +23,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edit.php') == false) {
     $URL .= '&return=error0';
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
                 header("Location: {$URL}");
             } else {
                 //Get role within learning area
-                $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
+                $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
 
                 if ($role != 'Coordinator' and $role != 'Assistant Coordinator' and $role != 'Teacher (Curriculum)' and $role != 'Director' and $role != 'Manager') {
                     $URL .= '&return=error0';

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID';
             $result = $connection2->prepare($sql);
@@ -50,11 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             //Get role within learning area
             $role = null;
             if (isset($_SESSION[$guid]['username'])) {
-                $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
+                $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
             }
 
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
-            
+
             $page->breadcrumbs
                 ->add(__('View All'), 'departments.php')
                 ->add($row['name'], 'departments.php', $urlParams);
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 echo '<h2>';
                 echo __('Overview');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 }
                 echo '</h2>';
                 echo '<p>';
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             //Print staff
             $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName";
-           
+
             $staff = $pdo->select($sqlStaff, $dataStaff)->toDataSet();
 
             // Data Table
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                         ? Format::link($url, $userPhoto)
                         : $userPhoto;
                 });
-            
+
             $table->addColumn('name')
                 ->setClass('text-xs font-bold mt-1')
                 ->format(function ($person) use ($canViewProfile) {
@@ -135,14 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             //Print current course list
-            
+
                 $dataCourse = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sqlCourse = "SELECT gibbonCourse.* FROM gibbonCourse 
-                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
-                    WHERE gibbonDepartmentID=:gibbonDepartmentID 
-                    AND gibbonYearGroupIDList <> '' 
-                    AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') 
-                    GROUP BY gibbonCourse.gibbonCourseID 
+                $sqlCourse = "SELECT gibbonCourse.* FROM gibbonCourse
+                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                    WHERE gibbonDepartmentID=:gibbonDepartmentID
+                    AND gibbonYearGroupIDList <> ''
+                    AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
+                    GROUP BY gibbonCourse.gibbonCourseID
                     ORDER BY nameShort, name";
                 $resultCourse = $connection2->prepare($sqlCourse);
                 $resultCourse->execute($dataCourse);
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
                 $sidebarExtra .= '<ul>';
                 while ($rowCourse = $resultCourse->fetch()) {
-                    $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
+                    $sidebarExtra .= "<li><a href='".$session->get('absoluteURL')."/index.php?q=/modules/Departments/department_course.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=".$rowCourse['gibbonCourseID']."'>".$rowCourse['nameShort']."</a> <span style='font-size: 85%; font-style: italic'>".$rowCourse['name'].'</span></li>';
                 }
                 $sidebarExtra .= '</ul>';
                 $sidebarExtra .= '</div>';
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
-                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonSchoolYear.name AS year, gibbonCourse.gibbonCourseID as value, gibbonCourse.name AS name
                         FROM gibbonCourse
                         JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
@@ -185,8 +185,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 }, array());
 
                 if (!empty($courses)) {
-                    $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-                    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/department_course.php');
+                    $form = Form::create('courseSelect', $session->get('absoluteURL').'/index.php', 'get');
+                    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/department_course.php');
                     $form->addHiddenValue('gibbonDepartmentID', $gibbonDepartmentID);
 
                     $row = $form->addRow()->addClass('items-center');
@@ -200,14 +200,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     $sidebarExtra .= '<h4>';
                     $sidebarExtra .= __('Non-Current Courses');
                     $sidebarExtra .= '</h4>';
-                    
+
                     $sidebarExtra .= $form->getOutput();
                     $sidebarExtra .= '</div>';
                 }
             }
 
             //Print useful reading
-            
+
                 $dataReading = array('gibbonDepartmentID' => $gibbonDepartmentID);
                 $sqlReading = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name';
                 $resultReading = $connection2->prepare($sqlReading);
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 $sidebarExtra .= '<h4>';
                 $sidebarExtra .= __('Useful Reading');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    $sidebarExtra .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    $sidebarExtra .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 }
                 $sidebarExtra .= '</h4>';
 
@@ -227,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     if ($rowReading['type'] == 'Link') {
                         $sidebarExtra .= "<li><a target='_blank' href='".$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     } else {
-                        $sidebarExtra .= "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
+                        $sidebarExtra .= "<li><a href='".$session->get('absoluteURL').'/'.$rowReading['url']."'>".$rowReading['name'].'</a></li>';
                     }
                 }
                 $sidebarExtra .= '</ul>';
