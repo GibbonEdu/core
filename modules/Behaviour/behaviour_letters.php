@@ -36,14 +36,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
 
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL']."/index.php", 'get', 'noIntBorder fullWidth standardForm');
+    $form = Form::create('filter', $session->get('absoluteURL')."/index.php", 'get', 'noIntBorder fullWidth standardForm');
     $form->setTitle(__('Filter'));
     $form->addHiddenValue('q', '/modules/Behaviour/behaviour_letters.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         ->filterBy('student', $gibbonPersonID)
         ->fromPOST();
 
-    $letters = $behaviourGateway->queryBehaviourLettersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $letters = $behaviourGateway->queryBehaviourLettersBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('behaviourLetters', $criteria);
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         ->sortable(['surname', 'preferredName'])
         ->width('25%')
         ->format(function($person) use ($guid) {
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
             return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                   .'<br/><small><i>'.$person['formGroup'].'</i></small>';
         });

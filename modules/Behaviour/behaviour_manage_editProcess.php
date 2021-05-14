@@ -29,7 +29,7 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -48,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         } else {
             try {
                 if ($highestAction == 'Manage Behaviour Records_all') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
                     $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID ORDER BY date DESC';
                 } elseif ($highestAction == 'Manage Behaviour Records_my') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviourID=:gibbonBehaviourID AND gibbonPersonIDCreator=:gibbonPersonID ORDER BY date DESC';
                 }
                 $result = $connection2->prepare($sql);
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     header("Location: {$URL}");
                 } else {
                     try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => dateConvert($guid, $date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => dateConvert($guid, $date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
                         $sql = 'UPDATE gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonSchoolYearID=:gibbonSchoolYearID WHERE gibbonBehaviourID=:gibbonBehaviourID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -99,10 +99,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $inAssistantGateway = $container->get(INAssistantGateway::class);
 
                     // Send behaviour notifications
-                    $student = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)->fetch();
+                    $student = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
                     if (!empty($student)) {
                         $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
-                        $editorName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false);
+                        $editorName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false);
                         $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
 
                         // Raise a new notification event
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
 
                         // Add the person who created the behaviour record, if edited by someone else
-                        if ($behaviourRecord['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
+                        if ($behaviourRecord['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
                             $event->addRecipient($behaviourRecord['gibbonPersonIDCreator']);
                         }
 
