@@ -594,7 +594,7 @@ if (!$session->has('address')) {
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray'), function ($group, $item) {
+            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;
                 }
