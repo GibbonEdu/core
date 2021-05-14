@@ -39,13 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
     $form->setTitle(__('Filter'));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_consecutiveAbsences.php");
 
     $row = $form->addRow();
         $row->addLabel('numberOfSchoolDays', __('Number of School Days'));
@@ -74,13 +74,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
             $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
             $sql = "
-                SELECT 
-                  gibbonPerson.gibbonPersonID, 
-                  gibbonPerson.title, 
-                  gibbonPerson.surname, 
-                  gibbonPerson.preferredName, 
-                  gibbonFormGroup.gibbonFormGroupID, 
-                  gibbonFormGroup.name as formGroupName, 
+                SELECT
+                  gibbonPerson.gibbonPersonID,
+                  gibbonPerson.title,
+                  gibbonPerson.surname,
+                  gibbonPerson.preferredName,
+                  gibbonFormGroup.gibbonFormGroupID,
+                  gibbonFormGroup.name as formGroupName,
                   gibbonFormGroup.nameShort AS formGroup
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)

@@ -23,9 +23,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';

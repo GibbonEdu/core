@@ -27,7 +27,7 @@ $gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GE
 $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 $currentDate = isset($_GET['currentDate'])? $_GET['currentDate'] : '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_delete.php') == false) {
     $URL .= '&return=error0';

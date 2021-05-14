@@ -27,7 +27,7 @@ $gibbonAttendanceLogPersonID = $_POST['gibbonAttendanceLogPersonID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? dateConvertBack($guid, date('Y-m-d'));
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
     $URL .= '&return=error0';
@@ -67,7 +67,7 @@ else if ($gibbonAttendanceLogPersonID == '' or $gibbonPersonID == '' or $current
 
         //UPDATE
         try {
-            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'direction' => $direction, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'] );
+            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'direction' => $direction, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID') );
             $sql = 'UPDATE gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), type=:type, reason=:reason, comment=:comment, direction=:direction, gibbonPersonIDTaker=:gibbonPersonIDTaker, timestampTaken=NOW() WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);

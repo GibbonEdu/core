@@ -23,7 +23,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_studentSelfRegister.php";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_studentSelfRegister.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php') == false) {
     $URL .= '&return=error0';
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         else {
             //Check for existence of records today
             try {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'date' => $currentDate);
                 $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
 
                 if (!$inRange && $status == 'Absent') {
                     try {
-                        $dataUpdate = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
+                        $dataUpdate = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                         $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Absent\'), gibbonPersonID=:gibbonPersonID, direction=\'Out\', type=\'Absent\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
                         $resultUpdate = $connection2->prepare($sqlUpdate);
                         $resultUpdate->execute($dataUpdate);
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                 }
                 else if ($inRange && $status == 'Present') {
                     try {
-                        $dataUpdate = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
+                        $dataUpdate = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));
                         $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=\'Present\'), gibbonPersonID=:gibbonPersonID, direction=\'In\', type=\'Present\', context=\'Self Registration\', reason=\'\', comment=\'\', gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=NULL, date=:date, timestampTaken=:timestampTaken';
                         $resultUpdate = $connection2->prepare($sqlUpdate);
                         $resultUpdate->execute($dataUpdate);
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
 
                 $selfRegistrationRedirect = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect');
                 if ($selfRegistrationRedirect == 'Y') {
-                    $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php&return=message0&status=$status";
+                    $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php&return=message0&status=$status";
                 }
                 else {
                     $URL .= '&return=success0';

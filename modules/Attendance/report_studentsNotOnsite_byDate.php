@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not Onsite'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose Date'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/report_studentsNotOnsite_byDate.php");
+        $form->addHiddenValue('q', "/modules/" . $session->get('module') . "/report_studentsNotOnsite_byDate.php");
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         echo $form->getOutput();
     }
-    
+
     if (empty($currentDate)) {
         return;
     }

@@ -34,9 +34,9 @@ $moduleName = getModuleName($_POST["address"] ?? '');
 
 if ($moduleName == "Planner") {
     $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-    $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
+    $URL=$session->get("absoluteURL") . "/index.php?q=/modules/" . $moduleName . "/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&gibbonCourseClassID=$gibbonCourseClassID&date=" . $currentDate ;
 } else {
-    $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
+    $URL=$session->get("absoluteURL") . "/index.php?q=/modules/" . $moduleName . "/attendance_take_byCourseClass.php&gibbonCourseClassID=$gibbonCourseClassID&currentDate=" . dateConvertBack($guid, $currentDate) ;
 }
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")==FALSE) {
@@ -109,12 +109,12 @@ else {
                     }
 
                     if ($resultLog->rowCount()<1) {
-                        $data=array("gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+                        $data=array("gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
                         $sql="INSERT INTO gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken" ;
 
                     } else {
                         $resultUpdate=$resultLog->fetch() ;
-                        $data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
+                        $data=array("gibbonAttendanceLogCourseClassID" => $resultUpdate['gibbonAttendanceLogCourseClassID'], "gibbonPersonIDTaker"=>$session->get("gibbonPersonID"), "gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate, "timestampTaken"=>date("Y-m-d H:i:s"));
                         $sql="UPDATE gibbonAttendanceLogCourseClass SET gibbonPersonIDTaker=:gibbonPersonIDTaker, gibbonCourseClassID=:gibbonCourseClassID, date=:date, timestampTaken=:timestampTaken WHERE gibbonAttendanceLogCourseClassID=:gibbonAttendanceLogCourseClassID" ;
                     }
 
@@ -182,7 +182,7 @@ else {
                             'type'                   => $type,
                             'reason'                 => $reason,
                             'comment'                => $comment,
-                            'gibbonPersonIDTaker'    => $_SESSION[$guid]['gibbonPersonID'],
+                            'gibbonPersonIDTaker'    => $session->get('gibbonPersonID'),
                             'gibbonCourseClassID'    => $gibbonCourseClassID,
                             'date'                   => $currentDate,
                             'timestampTaken'         => date('Y-m-d H:i:s'),

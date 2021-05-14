@@ -29,7 +29,7 @@ $urlParams = ['gibbonPersonID' => $_GET['gibbonPersonID'], 'currentDate' => $_GE
 
 $page->breadcrumbs
 	->add(__('Take Attendance by Person'), 'attendance_take_byPerson.php', $urlParams)
-	->add(__('Edit Attendance by Person'));      
+	->add(__('Edit Attendance by Person'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
     // Access denied
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 	    $attendance = new AttendanceView($gibbon, $pdo);
 
-	    
+
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
 			$sqlPerson = "SELECT p.preferredName, p.surname, type, reason, comment, date, context, timestampTaken, gibbonAttendanceLogPerson.gibbonCourseClassID, t.preferredName as teacherPreferredName, t.surname as teacherSurname, gibbonCourseClass.nameShort as className, gibbonCourse.nameShort as courseName FROM gibbonAttendanceLogPerson JOIN gibbonPerson p ON (gibbonAttendanceLogPerson.gibbonPersonID=p.gibbonPersonID) JOIN gibbonPerson t ON (gibbonAttendanceLogPerson.gibbonPersonIDTaker=t.gibbonPersonID) LEFT JOIN gibbonCourseClass ON (gibbonAttendanceLogPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $values = $resultPerson->fetch();
             $currentDate = dateConvertBack($guid, $values['date']);
 
-			$form = Form::create('attendanceEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byPerson_editProcess.php');
+			$form = Form::create('attendanceEdit', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/attendance_take_byPerson_editProcess.php');
 			$form->setAutocomplete('off');
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID);
 			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 			$form->addHiddenValue('currentDate', $currentDate);
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			$row = $form->addRow();
 				$row->addLabel('time', __('Time'));
 				$row->addTextField('time')->readonly()->setValue(substr($values['timestampTaken'], 11) . ' ' . dateConvertBack($guid, substr($values['timestampTaken'], 0, 10)));
-				
+
 			$row = $form->addRow();
 				$row->addLabel('where', __('Where'));
 				$row->addTextField('where')->readonly()->setValue(__($values['context']));
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			$form->loadAllValuesFrom($values);
 
 			echo $form->getOutput();
-	        
+
 	    }
 	}
 }

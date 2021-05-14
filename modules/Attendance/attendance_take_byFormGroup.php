@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $gibbonFormGroupID = '';
         if (isset($_GET['gibbonFormGroupID']) == false) {
-                $data = array('gibbonPersonIDTutor1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonPersonIDTutor1' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         echo '<h2>'.__('Choose Form Group')."</h2>";
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID)->placeholder();
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->required()->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                     //Check form group
 
-                        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                         $sql = 'SELECT gibbonFormGroup.*, firstDay, lastDay FROM gibbonFormGroup JOIN gibbonSchoolYear ON (gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonFormGroupID=:gibbonFormGroupID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -205,10 +205,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $students[$key]['log'] = $log;
                             }
 
-                            $form = Form::create('attendanceByFormGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byFormGroupProcess.php');
+                            $form = Form::create('attendanceByFormGroup', $session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byFormGroupProcess.php');
                             $form->setAutocomplete('off');
 
-                            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
                             $form->addHiddenValue('currentDate', $currentDate);
                             $form->addHiddenValue('count', count($students));
