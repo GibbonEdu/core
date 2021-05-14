@@ -27,19 +27,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Budget Cycles'), 'budgetCycles_manage.php')
-        ->add(__('Add Budget Cycle'));    
+        ->add(__('Add Budget Cycle'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/budgetCycles_manage_edit.php&gibbonFinanceBudgetCycleID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
 
-    $form = Form::create('budgetCycle', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgetCycles_manage_addProcess.php');
+    $form = Form::create('budgetCycle', $session->get('absoluteURL').'/modules/'.$session->get('module').'/budgetCycles_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue("address", $_SESSION[$guid]['address']);
+    $form->addHiddenValue("address", $session->get('address'));
 
     $row = $form->addRow();
         $row->addHeading(__("Basic Information"));
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         'Current' =>  __("Current"),
         'Past' => __("Past")
     );
-    
+
     $row = $form->addRow();
 	$row->addLabel("status", __("Status"));
 	$row->addSelect("status")->fromArray($statusTypes);
@@ -63,22 +63,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle')->required()->maxLength(3);
 
     $row = $form->addRow();
-        $row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
         $row->addDate("dateStart")->required();
 
     $row = $form->addRow();
-        $row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
         $row->addDate("dateEnd")->required();
 
     $row = $form->addRow();
         $row->addHeading(__("Budget Allocations"));
 
-    
+
         $dataBudget = array();
         $sqlBudget = 'SELECT * FROM gibbonFinanceBudget ORDER BY name';
         $resultBudget = $connection2->prepare($sqlBudget);
         $resultBudget->execute($dataBudget);
-    
+
     if ($resultBudget->rowCount() < 1) {
         $row = $form->addRow();
             $row->addAlert(__('There are no records to display.'), "error");
@@ -86,17 +86,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         while ($rowBudget = $resultBudget->fetch()) {
 
             $description = "";
-            
-            if ($_SESSION[$guid]['currency'] != '') {
-                $description = sprintf(__('Numeric value in %1$s.'), $_SESSION[$guid]['currency']);
+
+            if ($session->get('currency') != '') {
+                $description = sprintf(__('Numeric value in %1$s.'), $session->get('currency'));
             } else {
                 $description = __('Numeric value.');
             }
-            
+
             $row = $form->addRow();
                 $row->addLabel('values[]', $rowBudget['name'])->description($description);
                 $row->addNumber("values[]")->maxLength(15)->decimalPlaces(2)->setValue("0.00");
-            
+
             $form->addHiddenValue("gibbonFinanceBudgetIDs[]", $rowBudget['gibbonFinanceBudgetID']);
         }
     }

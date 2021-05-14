@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_del
     if ($gibbonFinanceBudgetID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
             $sql = 'SELECT * FROM gibbonFinanceBudget WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
             $result = $connection2->prepare($sql);
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_del
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_deleteProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgets_manage_deleteProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
             echo $form->getOutput();
         }
     }
