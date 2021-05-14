@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
         ->description(__('Form Group'))
         ->sortable(['surname', 'preferredName'])
         ->width('25%')
-        ->format(function($person) use ($guid) {
+        ->format(function($person) use ($session) {
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
             return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
                   .'<br/><small><i>'.$person['formGroup'].'</i></small>';
