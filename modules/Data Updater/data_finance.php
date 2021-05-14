@@ -43,20 +43,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             echo '</p>';
         } else {
             echo '<p>';
-            echo sprintf(__('This page allows any adult with data access permission to request selected finance data updates for any children in their family. If any of your children do not appear in this list, please contact %1$s.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
+            echo sprintf(__('This page allows any adult with data access permission to request selected finance data updates for any children in their family. If any of your children do not appear in this list, please contact %1$s.'), "<a href='mailto:".$session->get('organisationAdminstratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
             echo '</p>';
         }
 
         $customResponces = array();
         $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
-        if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+        if ($session->get('organisationDBAEmail') != '' and $session->get('organisationDBAName') != '') {
+            $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationDBAEmail')."'>".$session->get('organisationDBAName').'</a>');
         }
         $customResponces['error3'] = $error3;
 
         $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed.');
-        if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+        if ($session->get('organisationDBAEmail') != '' and $session->get('organisationDBAName') != '') {
+            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationDBAEmail')."'>".$session->get('organisationDBAName').'</a>');
         }
         $customResponces['success0'] = $success0;
 
@@ -68,14 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
 		$gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : null;
 
-        $form = Form::create('selectInvoicee', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_finance.php');
+        $form = Form::create('selectInvoicee', $session->get('absoluteURL').'/index.php', 'get');
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_finance.php');
 
         if ($highestAction == 'Update Finance Data_any') {
             $data = array();
             $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
         } else {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID, gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
 					FROM gibbonFamilyAdult
 					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -120,20 +120,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             //Check access to person
             $checkCount = 0;
             if ($highestAction == 'Update Finance Data_any') {
-                
+
                     $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 $checkCount = $resultSelect->rowCount();
             } else {
-                
-                    $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
                 while ($rowCheck = $resultCheck->fetch()) {
-                    
+
                         $dataCheck2 = array('gibbonFamilyID' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoiceeID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
@@ -154,8 +154,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 //Check if there is already a pending form for this user
                 $existing = false;
                 $proceed = false;
-                
-                    $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+
+                    $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     $proceed = true;
                 } else {
                     //Get user's data
-                    
+
                         $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
                         $sql = 'SELECT * FROM gibbonFinanceInvoicee WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
                         $result = $connection2->prepare($sql);
@@ -193,9 +193,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
 					$required = ($highestAction != 'Update Finance Data_any');
 
-					$form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID);
+					$form = Form::create('updateFinance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID);
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
 					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
 
 					$form->addRow()->addHeading(__('Invoice To'));

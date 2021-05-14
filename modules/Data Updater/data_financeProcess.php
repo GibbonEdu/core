@@ -22,7 +22,7 @@ use Gibbon\Comms\NotificationEvent;
 include '../../gibbon.php';
 
 $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_finance.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_finance.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.php') == false) {
     $URL .= '&return=error0';
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
             //Check access to person
             $checkCount = 0;
             if ($highestAction == 'Update Finance Data_any') {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_finance.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_finance.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
 
 
                     $dataSelect = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
@@ -53,10 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 $checkCount = $resultSelect->rowCount();
                 $values = $resultSelect->fetch();
             } else {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID;
 
 
-                    $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
@@ -125,8 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
 
                 // Auto-accept updates where no data had changed
                 $data['status'] = $dataChanged ? 'Pending' : 'Complete';
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+                $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                 $data['timestamp'] = date('Y-m-d H:i:s');
 
                 //Write to database
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     // Raise a new notification event
                     $event = new NotificationEvent('Data Updater', 'Finance Data Updates');
 
-                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->addRecipient($session->get('organisationDBA'));
                     $event->setNotificationText(__('A finance data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_finance_manage.php');
 

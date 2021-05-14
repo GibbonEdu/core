@@ -110,8 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
 
     // Write to database
     $gibbonStaffUpdateID = $_POST['existing'] ?? 'N';
-    $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-    $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+    $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+    $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
     $data['timestamp'] = date('Y-m-d H:i:s');
 
     if ($gibbonStaffUpdateID != 'N') {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         // Raise a new notification event
         $event = new NotificationEvent('Data Updater', 'Staff Data Updates');
 
-        $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+        $event->addRecipient($session->get('organisationDBA'));
         $event->setNotificationText(__('A staff data update request has been submitted.'));
         $event->setActionLink('/index.php?q=/modules/Data Updater/data_staff_manage.php');
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
     $URLSuccess = $highestAction == 'Update Staff Data_any'
         ? $gibbon->session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID"
         : $gibbon->session->get('absoluteURL')."/index.php?q=/modules/Data Updater/data_updates.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
-        
+
     $URLSuccess .= '&return=success0';
     header("Location: {$URLSuccess}");
 }

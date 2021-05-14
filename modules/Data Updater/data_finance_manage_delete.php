@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     if ($gibbonFinanceInvoiceeUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceInvoiceeUpdateID' => $gibbonFinanceInvoiceeUpdateID);
             $sql = 'SELECT * FROM gibbonFinanceInvoiceeUpdate WHERE gibbonFinanceInvoiceeUpdateID=:gibbonFinanceInvoiceeUpdateID';
             $result = $connection2->prepare($sql);
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
         } else {
             //Let's go!
 
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_finance_manage_deleteProcess.php?gibbonFinanceInvoiceeUpdateID=".$gibbonFinanceInvoiceeUpdateID);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_finance_manage_deleteProcess.php?gibbonFinanceInvoiceeUpdateID=".$gibbonFinanceInvoiceeUpdateID);
             echo $form->getOutput();
         }
     }

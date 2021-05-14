@@ -27,7 +27,7 @@ include '../../gibbon.php';
 include '../User Admin/moduleFunctions.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal.php&gibbonPersonID=$gibbonPersonID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
     $URL .= '&return=error0';
@@ -49,9 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $checkCount = 0;
             $self = false;
             if ($highestAction == 'Update Personal Data_any') {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
-                
-                
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
+
+
                     $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonRoleIDAll FROM gibbonPerson WHERE status='Full' AND gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -59,10 +59,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $checkCount = $resultSelect->rowCount();
                 $self = true;
             } else {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
-                
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
+
                 try {
-                    $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataCheck = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     echo $e->getMessage();
                 }
                 while ($rowCheck = $resultCheck->fetch()) {
-                    
+
                         $dataCheck2 = array('gibbonFamilyID1' => $rowCheck['gibbonFamilyID'], 'gibbonFamilyID2' => $rowCheck['gibbonFamilyID']);
                         $sqlCheck2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID2)";
                         $resultCheck2 = $connection2->prepare($sqlCheck2);
@@ -80,14 +80,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             ++$checkCount;
                         }
                         //Check for self
-                        if ($rowCheck2['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                        if ($rowCheck2['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                             $self = true;
                         }
                     }
                 }
             }
 
-            if ($self == false and $gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+            if ($self == false and $gibbonPersonID == $session->get('gibbonPersonID')) {
                 ++$checkCount;
             }
 
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         'jobTitle'                   => $_POST['jobTitle'] ?? $values['jobTitle'],
                         'vehicleRegistration'        => $_POST['vehicleRegistration'] ?? $values['vehicleRegistration'],
                     ];
- 
+
                     $data = array_map('trim', $data);
 
                     // Date handling - ensure NULL value
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $data["phone{$i}Type"] = 'Other';
                         }
                     }
-                    
+
                     // Student privacy settings
                     $data['privacy'] = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
                         ? implode(', ', $_POST['privacyOptions'])
@@ -248,8 +248,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                         // Auto-accept updates where no data had changed
                         $data['status'] = $dataChanged ? 'Pending' : 'Complete';
-                        $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                        $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                        $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+                        $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                         $data['timestamp'] = date('Y-m-d H:i:s');
 
 
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 if (!empty($_POST[$i.'-matchAddress'])) {
                                     $sqlAddress = '';
                                     try {
-                                        $dataCheck = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                                        $dataCheck = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'));
                                         $sqlCheck = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                                         $resultCheck = $connection2->prepare($sqlCheck);
                                         $resultCheck->execute($dataCheck);
@@ -282,10 +282,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                         $partialFail = true;
                                     } elseif ($resultCheck->rowCount() == 1) {
                                         $rowCheck = $resultCheck->fetch();
-                                        $dataAddress = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonUpdateID' => $rowCheck['gibbonPersonUpdateID']);
+                                        $dataAddress = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'), 'gibbonPersonUpdateID' => $rowCheck['gibbonPersonUpdateID']);
                                         $sqlAddress = 'UPDATE gibbonPersonUpdate SET gibbonPersonID=:gibbonPersonID, address1=:address1, address1District=:address1District, address1Country=:address1Country, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
                                     } else {
-                                        $dataAddress = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                                        $dataAddress = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'));
                                         $sqlAddress = 'INSERT INTO gibbonPersonUpdate SET gibbonPersonID=:gibbonPersonID, address1=:address1, address1District=:address1District, address1Country=:address1Country, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
                                     }
                                     if ($sqlAddress != '') {
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             // Raise a new notification event
                             $event = new NotificationEvent('Data Updater', 'Personal Data Updates');
 
-                            $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                            $event->addRecipient($session->get('organisationDBA'));
                             $event->setNotificationText(__('A personal data update request has been submitted.'));
                             $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
 

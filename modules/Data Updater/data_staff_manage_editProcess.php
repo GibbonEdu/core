@@ -25,7 +25,7 @@ include '../../gibbon.php';
 
 $gibbonStaffUpdateID = $_GET['gibbonStaffUpdateID'] ?? '';
 $gibbonStaffID = $_POST['gibbonStaffID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_staff_manage_edit.php&gibbonStaffUpdateID=$gibbonStaffUpdateID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_staff_manage_edit.php&gibbonStaffUpdateID=$gibbonStaffUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -34,13 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     // Proceed!
     $staffUpdateGateway = $container->get(StaffUpdateGateway::class);
     $staffGateway = $container->get(StaffGateway::class);
-    
+
     // Check required values
     if (empty($gibbonStaffUpdateID) || empty($gibbonStaffID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         return;
-    } 
+    }
 
     // Check database records exist
     $values = $staffUpdateGateway->getByID($gibbonStaffUpdateID);

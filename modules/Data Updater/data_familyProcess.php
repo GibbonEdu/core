@@ -22,7 +22,7 @@ use Gibbon\Comms\NotificationEvent;
 include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
     $URL .= '&return=error0';
@@ -42,18 +42,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         } else {
             //Check access to person
             if ($highestAction == 'Update Family Data_any') {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_family.php&gibbonFamilyID='.$gibbonFamilyID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_family.php&gibbonFamilyID='.$gibbonFamilyID;
 
-                
+
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
                     $sqlCheck = 'SELECT gibbonFamily.* FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
             } else {
-                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
+                $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
 
-                
-                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                    $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sqlCheck = "SELECT gibbonFamily.* FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";
                     $resultCheck = $connection2->prepare($sqlCheck);
                     $resultCheck->execute($dataCheck);
@@ -67,14 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 //Proceed!
                 $data = [
-                    'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
                     'nameAddress' => $_POST['nameAddress'] ?? '',
                     'homeAddress' => $_POST['homeAddress'] ?? '',
                     'homeAddressDistrict' => $_POST['homeAddressDistrict'] ?? '',
                     'homeAddressCountry' => $_POST['homeAddressCountry'] ?? '',
                     'languageHomePrimary' => $_POST['languageHomePrimary'] ?? '',
                     'languageHomeSecondary' => $_POST['languageHomeSecondary'] ?? '',
-                    'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'],
+                    'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
                 ];
 
                 // COMPARE VALUES: Has the data changed?
@@ -92,8 +92,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 //Write to database
                 $existing = $_POST['existing'] ?? 'N';
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-                $data['gibbonPersonIDUpdater'] = $_SESSION[$guid]['gibbonPersonID'];
+                $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+                $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                 $data['timestamp'] = date('Y-m-d H:i:s');
 
                 if ($existing != 'N') {
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     // Raise a new notification event
                     $event = new NotificationEvent('Data Updater', 'Family Data Updates');
 
-                    $event->addRecipient($_SESSION[$guid]['organisationDBA']);
+                    $event->addRecipient($session->get('organisationDBA'));
                     $event->setNotificationText(__('A family data update request has been submitted.'));
                     $event->setActionLink('/index.php?q=/modules/Data Updater/data_family_manage.php');
 
