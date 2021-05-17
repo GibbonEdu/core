@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -112,19 +114,12 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
                         // Handle automatic course enrolment if enabled
-                        $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                        $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                         if ($autoEnrolStudent == 'Y') {
-                            $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => date('Y-m-d'));
-                            $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
-                                    SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
-                                    FROM gibbonCourseClassMap
-                                    LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
-                                    WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
-                                    AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-                            $pdo->executeQuery($data, $sql);
+                            $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonPersonID);
 
-                            if ($pdo->getQuerySuccess() == false) {
-                                $URL .= "&return=warning3&editID=$AI";
+                            if (!$pdo->getQuerySuccess()) {
+                                $URL .= "&return=warning1&editID=$AI";
                                 header("Location: {$URL}");
                                 exit;
                             }

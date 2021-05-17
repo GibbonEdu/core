@@ -237,4 +237,45 @@ class CourseEnrolmentGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function unenrolAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID, $date = null)
+    {
+        $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => $date ?? date('Y-m-d'));
+        $sql = "UPDATE gibbonCourseClassPerson
+                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                SET role='Student - Left', dateUnenrolled=:dateUnenrolled
+                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupIDOriginal";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function updateAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID, $date = null)
+    {
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => $date ?? date('Y-m-d'));
+        $sql = "UPDATE gibbonCourseClassPerson
+                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
+                    AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                SET gibbonCourseClassPerson.role='Student', gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
+                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function insertAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonPersonID, $date = null)
+    {
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => $date ?? date('Y-m-d'));
+        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
+                FROM gibbonCourseClassMap
+                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+
+        return $this->db()->insert($sql, $data);
+    }
 }

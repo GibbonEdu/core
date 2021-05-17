@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -474,21 +475,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and form group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
-                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                             if ($autoEnrolStudent == 'Y') {
-                                $data = array(
-                                    'gibbonFormGroupID' => $values['gibbonFormGroupID'],
-                                    'gibbonPersonID' => $gibbonPersonID,
-                                    'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
-                                );
+                                $enrolmentDate = $pdo->selectOne("SELECT GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE)", ['gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry']]);
 
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
-                                        FROM gibbonCourseClassMap
-                                        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID";
-                                $pdo->executeQuery($data, $sql);
+                                $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($values['gibbonFormGroupID'], $gibbonPersonID, $enrolmentDate);
 
-                                if (!$pdo->getQuerySuccess()) {
+                                if (!$inserted) {
                                     echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
                                     echo '<li>'.__('The student has automatically been enrolled in courses for Form Group.').'</li>';

@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
@@ -340,10 +341,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
-                    //Unlock tables
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';
                     if ($staffRecord == 'Y' && !empty($AI)) {
@@ -378,19 +375,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                         $inserted = $container->get(StudentGateway::class)->insert($studentData);
                         if ($inserted) {
                             // Handle automatic course enrolment if enabled
-                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                             if ($autoEnrolStudent == 'Y') {
-                                $data = array('gibbonFormGroupID' => $studentData['gibbonFormGroupID'], 'gibbonPersonID' => $AI, 'dateEnrolled' => date('Y-m-d'));
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
-                                        FROM gibbonCourseClassMap
-                                        LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
-                                        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
-                                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-                                $pdo->executeQuery($data, $sql);
+                                $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($studentData['gibbonFormGroupID'], $AI);
 
-                                if ($pdo->getQuerySuccess() == false) {
-                                    echo
+                                if (!$inserted) {
                                     $URL .= "&return=warning2&editID=$AI";
                                     header("Location: {$URL}");
                                     exit;

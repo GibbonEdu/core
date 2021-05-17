@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
@@ -103,53 +104,27 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         exit;
                     }
 
+                    $partialFail = false;
+
                     // Handle automatic course enrolment if enabled
-                    $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                    $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                     if ($autoEnrolStudent == 'Y') {
+                        $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
 
                         // Remove existing auto-enrolment: moving a student from one Form Group to another
-                        $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupIDOriginal, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => date('Y-m-d'));
-                        $sql = "UPDATE gibbonCourseClassPerson
-                                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
-                                SET role='Student - Left', dateUnenrolled=:dateUnenrolled
-                                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                                AND gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupIDOriginal";
-                        $pdo->executeQuery($data, $sql);
-
-                        if ($pdo->getQuerySuccess() == false) {
-                            $URL .= "&return=warning3";
-                            header("Location: {$URL}");
-                            exit;
-                        }
+                        $courseEnrolmentGateway->unenrolAutomaticCourseEnrolments($gibbonFormGroupIDOriginal, $gibbonStudentEnrolmentID);
+                        
+                        $partialFail &= !$pdo->getQuerySuccess();
 
                         // Update existing course enrolments for new Form Group
-                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
-                        $sql = "UPDATE gibbonCourseClassPerson
-                                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
-                                    AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
-                                SET gibbonCourseClassPerson.role='Student', gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
-                                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
-                        $pdo->executeQuery($data, $sql);
+                        $courseEnrolmentGateway->updateAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID);
+
+                        $partialFail &= !$pdo->getQuerySuccess();
 
                         // Add course enrolments for new Form Group
-                        $data = array('gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => date('Y-m-d'));
-                        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
-                                SELECT gibbonCourseClassMap.gibbonCourseClassID, gibbonStudentEnrolment.gibbonPersonID, 'Student', :dateEnrolled, 'Y'
-                                FROM gibbonStudentEnrolment
-                                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
-                                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
-                                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
-                        $pdo->executeQuery($data, $sql);
+                        $courseEnrolmentGateway->insertAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonPersonID);
 
-                        if ($pdo->getQuerySuccess() == false) {
-                            $URL .= "&return=warning3";
-                            header("Location: {$URL}");
-                            exit;
-                        }
+                        $partialFail &= !$pdo->getQuerySuccess();
                     }
 
                     // Add student note
@@ -160,13 +135,13 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
                         $result->execute($data);
 
                         if ($pdo->getQuerySuccess() == false) {
-                            $URL .= "&return=warning3";
-                            header("Location: {$URL}");
-                            exit;
+                            $partialFail = true;
                         }
                     }
 
-                    $URL .= '&return=success0';
+                    $URL .= $partialFail
+                        ? '&return=warning1'
+                        : '&return=success0';
                     header("Location: {$URL}");
                     exit;
                 }
