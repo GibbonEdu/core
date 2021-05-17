@@ -426,6 +426,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$row->addSelectCountry('citizenship1');
 				}
 
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('documents', __('Personal Documents'));
+                $col->addContent($page->fetchFromTemplate('ui/documentEdit.twig.html', []));
+
 			$row = $form->addRow();
 				$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
                 $row->addTextField('citizenship1Passport')->maxLength(30);

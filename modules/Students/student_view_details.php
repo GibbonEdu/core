@@ -782,6 +782,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         echo $table->render([$row]);
 
+
+                        echo '<h4>'.__('Personal Documents').'</h4>';
+                        echo $page->fetchFromTemplate('ui/documentView.twig.html', []);
+
                     } elseif ($subpage == 'Family') {
 
                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
