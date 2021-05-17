@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Timetable\CourseSyncGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     // Access denied
@@ -34,6 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $returns['error6'] = __('Your request failed due to an attachment error.');
     $returns['error7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+    $returns['warning2'] = __('Your request was successful, but some data was not properly saved.');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
@@ -111,8 +113,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // Get all roles and filter roles based on role restrictions
     $staffRoles = [];
+    $studentRoles = [];
     $availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles, &$staffRoles) {
+    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles, &$staffRoles, &$studentRoles) {
         if ($item['restriction'] == 'Admin Only') {
             if (!in_array('001', $currentUserRoles)) return $carry;
         } else if ($item['restriction'] == 'Same Role') {
@@ -120,6 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         }
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
+        }
+        if ($item['category'] == 'Student') {
+            $studentRoles[] = $item['gibbonRoleID'];
         }
         $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
@@ -496,8 +502,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('jobTitle', __('Job Title'));
         $row->addTextField('jobTitle')->maxlength(100);
 
+    // STUDENT
+    $form->toggleVisibilityByClass('studentDetails')->onSelect('gibbonRoleIDPrimary')->when($studentRoles);
+    $form->toggleVisibilityByClass('studentRecord')->onCheckbox('studentRecord')->when('Y');
+    $form->addRow()->addClass('studentDetails')->addHeading(__('Student'))->addClass('studentDetails');
 
-    // SUBMIT    
+    $row = $form->addRow()->addClass('studentDetails');
+        $row->addLabel('studentRecord', __('Add Student Enrolment'));
+        $row->addCheckbox('studentRecord')->setValue('Y')->description(__('Create a linked student record?'));
+
+    $row = $form->addRow()->addClass('studentRecord');
+    $row->addLabel('yearName', __('School Year'));
+    $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($session->get('gibbonSchoolYearName'));
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->required();
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->required();
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('rollOrder', __('Roll Order'));
+        $row->addNumber('rollOrder')->maxLength(2);
+
+    // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
+    $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
+    if ($classMapCount > 0) {
+        $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
+        $row = $form->addRow()->addClass('studentRecord');;
+            $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
+                ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));
+            $row->addYesNo('autoEnrolStudent')->selected($autoEnrolDefault);
+    }
+
+    // SUBMIT
     $row = $form->addRow();
         $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
         $row->addSubmit();

@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';
 
@@ -340,9 +341,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
                     //Unlock tables
-
-                        $sql = 'UNLOCK TABLES';
-                        $result = $connection2->query($sql);
+                    $sql = 'UNLOCK TABLES';
+                    $result = $connection2->query($sql);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';
@@ -362,6 +362,40 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                             ]));
                             $event->setActionLink('/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$AI.'&allStaff=&search=');
                             $event->sendNotifications($pdo, $gibbon->session);
+                        }
+                    }
+
+                    // Create a student record for this new user
+                    $studentRecord = $_POST['studentRecord'] ?? 'N';
+                    if ($studentRecord == 'Y' && !empty($AI)) {
+                        $studentData = [
+                            'gibbonPersonID'        => $AI,
+                            'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID') ?? '',
+                            'gibbonYearGroupID'     => $_POST['gibbonYearGroupID'] ?? '',
+                            'gibbonFormGroupID'     => $_POST['gibbonFormGroupID'] ?? '',
+                            'rollOrder'             => !empty($_POST['rollOrder']) ? $_POST['rollOrder'] : null
+                        ];
+                        $inserted = $container->get(StudentGateway::class)->insert($studentData);
+                        if ($inserted) {
+                            // Handle automatic course enrolment if enabled
+                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            if ($autoEnrolStudent == 'Y') {
+                                $data = array('gibbonFormGroupID' => $studentData['gibbonFormGroupID'], 'gibbonPersonID' => $AI, 'dateEnrolled' => date('Y-m-d'));
+                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
+                                        FROM gibbonCourseClassMap
+                                        LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                                        WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                                        AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+                                $pdo->executeQuery($data, $sql);
+
+                                if ($pdo->getQuerySuccess() == false) {
+                                    echo
+                                    $URL .= "&return=warning2&editID=$AI";
+                                    header("Location: {$URL}");
+                                    exit;
+                                }
+                            }
                         }
                     }
 
