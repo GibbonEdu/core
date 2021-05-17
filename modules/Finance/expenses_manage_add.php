@@ -35,9 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
     } else {
         //Proceed!
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-    
-        $urlParams = compact('gibbonFinanceBudgetCycleID');        
-        
+
+        $urlParams = compact('gibbonFinanceBudgetCycleID');
+
         $page->breadcrumbs
             ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
             ->add(__('Add Expense'));
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 
         $editLink = '';
         if (isset($_GET['editID'])) {
-            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID='.$_GET['editID'].'&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID'].'&status2='.$_GET['status2'].'&gibbonFinanceBudgetID2='.$_GET['gibbonFinanceBudgetID2'];
+            $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID='.$_GET['editID'].'&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID'].'&status2='.$_GET['status2'].'&gibbonFinanceBudgetID2='.$_GET['gibbonFinanceBudgetID2'];
         }
         $page->return->setEditLink($editLink);
 
@@ -63,20 +63,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         } else {
             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                 echo '</div>';
 			}
-			
-			$form = Form::create('expenseManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_addProcess.php');
+
+			$form = Form::create('expenseManage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenses_manage_addProcess.php');
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('status2', $status2);
             $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
 			$form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
 			$form->addRow()->addHeading(__('Basic Information'));
-			
+
 			$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 			$row = $form->addRow();
 				$row->addLabel('name', __('Budget Cycle'));
@@ -163,4 +163,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         }
     }
 }
-

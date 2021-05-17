@@ -27,14 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
-        ->add(__('Edit Expense Approver'));    
+        ->add(__('Edit Expense Approver'));
 
     //Check if school year specified
     $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
     if ($gibbonFinanceExpenseApproverID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceExpenseApproverID' => $gibbonFinanceExpenseApproverID);
             $sql = 'SELECT * FROM gibbonFinanceExpenseApprover WHERE gibbonFinanceExpenseApproverID=:gibbonFinanceExpenseApproverID';
             $result = $connection2->prepare($sql);
@@ -46,10 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/expenseApprovers_manage_editProcess.php?gibbonFinanceExpenseApproverID=$gibbonFinanceExpenseApproverID");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Staff'));
