@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('gibbonFormGroupup').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
 
                     $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
                     $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
@@ -331,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('gibbonFormGroupup').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
                         if (isset($row['gibbonFormGroupID'])) {
 
                                 $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
@@ -669,7 +669,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
                             return $student['yearGroupName'];
                         });
-                        $col->addColumn('gibbonFormGroupID', __('gibbonFormGroupup'))->format(function ($values) use ($student) {
+                        $col->addColumn('gibbonFormGroupID', __('Form Group'))->format(function ($values) use ($student) {
                             return Format::link('./index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['formGroupName']);
                         });
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
@@ -1239,7 +1239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $col->addColumn('comment', __('Comment'))->addClass('col-span-3');
                         }
 
-                        
+
 
                         $fields = is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
                         echo $table->render(!empty($medical) ? [$medical + $fields] : []);
