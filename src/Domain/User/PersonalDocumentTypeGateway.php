@@ -60,7 +60,7 @@ class PersonalDocumentTypeGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectDocumentTypes($params)
+    public function selectPersonalDocumentTypes($params)
     {
         $query = $this
             ->newSelect()
