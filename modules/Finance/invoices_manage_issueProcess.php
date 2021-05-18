@@ -34,8 +34,8 @@ $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
 if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_issue.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
-    $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_issue.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
+    $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_edit.php') == false) {
         $URL .= '&return=error0';
@@ -91,7 +91,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 } else {
                     //Write to database
                     try {
-                        $data = array('status' => $status, 'notes' => $notes, 'separated' => $separated, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                        $data = array('status' => $status, 'notes' => $notes, 'separated' => $separated, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sql = "UPDATE gibbonFinanceInvoice SET status=:status, notes=:notes, separated=:separated, invoiceDueDate=:invoiceDueDate, invoiceIssueDate=:invoiceIssueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -196,17 +196,17 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                         if (count($emails) > 0) {
                             //Prep message
-                            $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                            $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                             $mail = $container->get(Mailer::class);
-                            $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                            $mail->SetFrom($from, sprintf(__('%1$s Finance'), $session->get('organisationName')));
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
                             }
 
                             $mail->Subject = __('Invoice from {organisation} via {system}', [
-                                'organisation' => $_SESSION[$guid]['organisationNameShort'],
-                                'system' => $_SESSION[$guid]['systemName'],
+                                'organisation' => $session->get('organisationNameShort'),
+                                'system' => $session->get('systemName'),
                             ]);
 
                             $mail->renderBody('mail/email.twig.html', [

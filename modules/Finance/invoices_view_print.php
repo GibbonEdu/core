@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             //Confirm access to this student
             try {
                 if ($highestAction=="View Invoices_myChildren") {
-                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                    $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                     $sqlChild = "SELECT gibbonPerson.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                 } else if ($highestAction=="View Invoices_mine") {
                     $dataChild = array('gibbonPersonID' => $gibbonPersonID);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             } else {
                 $rowChild = $resultChild->fetch();
 
-                
+
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'gibbonPersonID' => $gibbonPersonID);
                     $sql = "SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID AND (gibbonFinanceInvoice.status='Issued' OR gibbonFinanceInvoice.status='Paid' OR gibbonFinanceInvoice.status='Paid - Partial')";
                     $result = $connection2->prepare($sql);
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '<h2>';
                         echo 'Invoice';
                         echo '</h2>';
-                        $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
+                        $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, true);
                         if ($invoiceContents == false) {
                             echo "<div class='error'>";
                             echo __('An error occurred.');
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '</h2>';
                         //Get receipt number
                         $receiptNumber = null;
-                        
+
                             $dataReceiptNumber = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                             $sqlReceiptNumber = "SELECT *
                                 FROM gibbonPayment
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                             $resultReceiptNumber = $connection2->prepare($sqlReceiptNumber);
                             $resultReceiptNumber->execute($dataReceiptNumber);
                         $receiptNumber = ($resultReceiptNumber->rowCount()-1) ;
-                        $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
+                        $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $receiptNumber);
                         if ($receiptContents == false) {
                             echo "<div class='error'>";
                             echo __('An error occurred.');
