@@ -628,13 +628,19 @@ if (!$session->has('address')) {
 
         switch ($category) {
             case 'Parent':
-                $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'parentDashboardEnable') == "Y") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
+                }
                 break;
             case 'Student':
-                $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'studentDashboardEnable') == "Y") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
+                }
                 break;
             case 'Staff':
-                $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'staffDashboardEnable') == "Y") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                }
                 break;
             case 'Other':
                 break;

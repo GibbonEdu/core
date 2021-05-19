@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dashboardSettings.php';
@@ -26,48 +28,45 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $staffDashboardDefaultTab = $_POST['staffDashboardDefaultTab'] ?? '';
-    $studentDashboardDefaultTab = $_POST['studentDashboardDefaultTab'] ?? '';
-    $parentDashboardDefaultTab = $_POST['parentDashboardDefaultTab'] ?? '';
+    $settingGateway = $container->get(SettingGateway::class);
+    $partialFail = false;
 
-    //Write to database
-    $fail = false;
+    $settingsToUpdate = [
+        'School Admin' => [
+            'staffDashboardEnable' => 'required',
+            'staffDashboardDefaultTab' => '',
+            'studentDashboardEnable' => 'required',
+            'studentDashboardDefaultTab' => '',
+            'parentDashboardEnable' => 'required',
+            'parentDashboardDefaultTab' => '',
+        ],
+    ];
 
-    try {
-        $data = array('value' => $staffDashboardDefaultTab);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='staffDashboardDefaultTab'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Validate required fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            if ($property == 'required' && empty($_POST[$name])) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
+        }
     }
 
-    try {
-        $data = array('value' => $studentDashboardDefaultTab);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='studentDashboardDefaultTab'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
+    // Update fields
+    foreach ($settingsToUpdate as $scope => $settings) {
+        foreach ($settings as $name => $property) {
+            $value = $_POST[$name] ?? '';
+
+            if ($property == 'skip-empty' && empty($value)) continue;
+
+            $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
+            $partialFail &= !$updated;
+        }
     }
 
-    try {
-        $data = array('value' => $parentDashboardDefaultTab);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='School Admin' AND name='parentDashboardDefaultTab'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-
-
-    if ($fail == true) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
-    } else {
-        getSystemSettings($guid, $connection2);
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
-    }
+    $URL .= $partialFail
+        ? '&return=warning1'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

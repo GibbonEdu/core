@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
             'publicRegistrationPrivacyStatement' => '',
             'publicRegistrationAgreement' => '',
             'publicRegistrationPostscript' => '',
-            'publicRegistrationAlternateEmail' => '',
+            'publicRegistrationAlternateEmail' => 'required',
         ],
     ];
 
