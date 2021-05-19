@@ -920,4 +920,7 @@ ALTER TABLE `gibbonLibraryType` CHANGE `fields` `fields` TEXT CHARACTER SET utf8
 UPDATE gibbonAction SET URLList='report_activitySpread_formGroup.php', entryURL='report_activitySpread_formGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Spread by Form Group';end
 INSERT INTO gibbonLanguage (name) SELECT * FROM (SELECT 'Zulu') AS tmp WHERE NOT EXISTS (SELECT name FROM gibbonLanguage WHERE (name='Zulu')) LIMIT 1;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'publicRegistrationAlternateEmail', 'Include Alternate Email?', 'Should the alternate email field be visible in the Public Registration form?', 'N');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('School Admin', 'staffDashboardEnable', 'Enable Staff Dashboard?', 'Should the Staff Dashboard be visible to users?', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('School Admin', 'parentDashboardEnable', 'Enable Parent Dashboard?', 'Should the Parent Dashboard be visible to users?', 'Y');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('School Admin', 'studentDashboardEnable', 'Enable Student Dashboard?', 'Should the Student Dashboard be visible to users?', 'Y');end
 ";
