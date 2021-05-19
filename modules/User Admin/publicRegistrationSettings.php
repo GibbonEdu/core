@@ -83,6 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $setting = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAlternateEmail', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

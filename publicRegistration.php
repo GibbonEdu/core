@@ -81,6 +81,13 @@ if ($proceed == false) {
         $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email')->required();
 
+    $publicRegistrationAlternateEmail = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAlternateEmail');
+    if ($publicRegistrationAlternateEmail == "Y") {
+        $row = $form->addRow();
+            $row->addLabel('emailAlternate', __('Alternate Email'));
+            $row->addEmail('emailAlternate');
+    }
+
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField('./publicRegistrationCheck.php');
@@ -120,7 +127,7 @@ if ($proceed == false) {
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);
-    
+
     $row = $form->addRow();
         $row->addLabel('passwordConfirm', __('Confirm Password'));
         $row->addPassword('passwordConfirm')
