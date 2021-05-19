@@ -919,4 +919,5 @@ ALTER TABLE `gibbonLibraryItem` CHANGE `fields` `fields` TEXT CHARACTER SET utf8
 ALTER TABLE `gibbonLibraryType` CHANGE `fields` `fields` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'JSON object';end
 UPDATE gibbonAction SET URLList='report_activitySpread_formGroup.php', entryURL='report_activitySpread_formGroup.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Activities') AND name='Activity Spread by Form Group';end
 INSERT INTO gibbonLanguage (name) SELECT * FROM (SELECT 'Zulu') AS tmp WHERE NOT EXISTS (SELECT name FROM gibbonLanguage WHERE (name='Zulu')) LIMIT 1;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'publicRegistrationAlternateEmail', 'Include Alternate Email?', 'Should the alternate email field be visible in the Public Registration form?', 'N');end
 ";
