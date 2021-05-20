@@ -19,9 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
-use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Services\Format;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\TableAware;
 
 /**
  * @version v22
@@ -60,15 +61,23 @@ class PersonalDocumentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectPersonalDocuments($params)
+    public function selectPersonalDocuments($foreignTable = null, $foreignTableID = null, $params = [])
     {
         $query = $this
             ->newSelect()
-            ->cols(['gibbonPersonalDocumentType.*', 'gibbonPersonalDocument.*'])
-            ->from('gibbonPersonalDocument')
-            ->join('gibbonPersonalDocumentType', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID')
+            ->cols(['gibbonPersonalDocumentType.*'])
+            ->from('gibbonPersonalDocumentType')
             ->where("gibbonPersonalDocumentType.active='Y'");
 
+        if (!empty($foreignTable) && !empty($foreignTableID)) {
+            $query
+                ->cols(['gibbonPersonalDocument.gibbonPersonalDocumentID', 'gibbonPersonalDocument.foreignTable', 'gibbonPersonalDocument.foreignTableID', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.filePath'])
+                ->leftJoin('gibbonPersonalDocument', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID AND gibbonPersonalDocument.foreignTable=:foreignTable AND gibbonPersonalDocument.foreignTableID=:foreignTableID')
+                ->bindValue('foreignTable', $foreignTable)
+                ->bindValue('foreignTableID', $foreignTableID);
+        }
+
+        // Handle role category flags as ORs
         $query->where(function ($query) use (&$params) {
             if ($params['student'] ?? false) {
                 $query->orWhere('activePersonStudent=:student', ['student' => $params['student']]);
@@ -90,6 +99,9 @@ class PersonalDocumentGateway extends QueryableGateway
         }
         if ($params['dataUpdater'] ?? false) {
             $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
+        }
+        if ($params['notEmpty'] ?? false) {
+            $query->where('gibbonPersonalDocument.gibbonPersonalDocumentID IS NOT NULL');
         }
 
         $query->orderBy(['sequenceNumber', 'name']);

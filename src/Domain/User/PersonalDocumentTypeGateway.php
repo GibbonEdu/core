@@ -46,7 +46,7 @@ class PersonalDocumentTypeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonalDocumentTypeID', 'name', 'active', 'required',
+                'gibbonPersonalDocumentTypeID', 'name', 'active', 'required','type'
             ]);
 
         $criteria->addFilterRules([
@@ -58,41 +58,5 @@ class PersonalDocumentTypeGateway extends QueryableGateway
         ]);
 
         return $this->runQuery($query, $criteria);
-    }
-
-    public function selectPersonalDocumentTypes($params)
-    {
-        $query = $this
-            ->newSelect()
-            ->cols(['*'])
-            ->from('gibbonPersonalDocumentType')
-            ->where("active='Y'");
-
-        $query->where(function ($query) use (&$params) {
-            if ($params['student'] ?? false) {
-                $query->orWhere('activePersonStudent=:student', ['student' => $params['student']]);
-            }
-            if ($params['staff'] ?? false) {
-                $query->orWhere('activePersonStaff=:staff', ['staff' => $params['staff']]);
-            }
-            if ($params['parent'] ?? false) {
-                $query->orWhere('activePersonParent=:parent', ['parent' => $params['parent']]);
-            }
-            if ($params['other'] ?? false) {
-                $query->orWhere('activePersonOther=:other', ['other' => $params['other']]);
-            }
-        });
-
-        // Handle additional flags as ANDs
-        if ($params['applicationForm'] ?? false) {
-            $query->where('activeApplicationForm=:applicationForm', ['applicationForm' => $params['applicationForm']]);
-        }
-        if ($params['dataUpdater'] ?? false) {
-            $query->where('activeDataUpdater=:dataUpdater', ['dataUpdater' => $params['dataUpdater']]);
-        }
-
-        $query->orderBy(['sequenceNumber', 'name']);
-
-        return $this->runSelect($query);
     }
 }
