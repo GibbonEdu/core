@@ -24,16 +24,17 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
-use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
@@ -702,46 +703,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->format(function ($values) {
                             $output = __($values['countryOfBirth']);
-                            if (!empty($values['birthCertificateScan'])) {
-                                $output .= '<br/>'.Format::link('./'.$values['birthCertificateScan'], __('View Birth Certificate'), ['target' => '_blank']);
-                            }
+                            // if (!empty($values['birthCertificateScan'])) {
+                            //     $output .= '<br/>'.Format::link('./'.$values['birthCertificateScan'], __('View Birth Certificate'), ['target' => '_blank']);
+                            // }
                             return $output;
                         });
                         $col->addColumn('ethnicity', __('Ethnicity'));
                         $col->addColumn('religion', __('Religion'));
-                        $col->addColumn('citizenship1', __('Citizenship 1'))->format(function ($values) {
-                            $output = $values['citizenship1'];
-                            if (!empty($values['citizenship1Passport'])) {
-                                $output .= '<br/>'.$values['citizenship1Passport'];
-                            }
-                            if (!empty($values['citizenship1PassportScan'])) {
-                                $output .= '<br/>'.Format::link('./'.$values['citizenship1PassportScan'], __('View Passport'), ['target' => '_blank']);
-                            }
-                            return $output;
-                        });
-                        $col->addColumn('citizenship2', __('Citizenship 2'))->format(function ($values) {
-                            $output = $values['citizenship2'];
-                            if (!empty($values['citizenship2Passport'])) {
-                                $output .= '<br/>'.$values['citizenship2Passport'];
-                            }
-                            if (!empty($values['citizenship2PassportScan'])) {
-                                $output .= '<br/>'.Format::link('./'.$values['citizenship2PassportScan'], __('View Passport'), ['target' => '_blank']);
-                            }
-                            return $output;
-                        });
-                        $col->addColumn('nationalIDCardNumber', $country ? __($country).' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
-                            $output = $values['nationalIDCardNumber'];
-                            if (!empty($values['nationalIDCardScan'])) {
-                                $output .= '<br/>'.Format::link('./'.$values['nationalIDCardScan'], __('View ID Card'), ['target' => '_blank']);
-                            }
-                            return $output;
-                        });
+                        // $col->addColumn('citizenship1', __('Citizenship 1'))->format(function ($values) {
+                        //     $output = $values['citizenship1'];
+                        //     if (!empty($values['citizenship1Passport'])) {
+                        //         $output .= '<br/>'.$values['citizenship1Passport'];
+                        //     }
+                        //     if (!empty($values['citizenship1PassportScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['citizenship1PassportScan'], __('View Passport'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
+                        // $col->addColumn('citizenship2', __('Citizenship 2'))->format(function ($values) {
+                        //     $output = $values['citizenship2'];
+                        //     if (!empty($values['citizenship2Passport'])) {
+                        //         $output .= '<br/>'.$values['citizenship2Passport'];
+                        //     }
+                        //     if (!empty($values['citizenship2PassportScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['citizenship2PassportScan'], __('View Passport'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
+                        // $col->addColumn('nationalIDCardNumber', $country ? __($country).' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
+                        //     $output = $values['nationalIDCardNumber'];
+                        //     if (!empty($values['nationalIDCardScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['nationalIDCardScan'], __('View ID Card'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
                         $col->addColumn('languageFirst', __('First Language'));
                         $col->addColumn('languageSecond', __('Second Language'));
                         $col->addColumn('languageThird', __('Third Language'));
-                        $col->addColumn('residencyStatus', $country ? __($country).' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
-                        $col->addColumn('visaExpiryDate', $country ? __($country).' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
-                            ->format(Format::using('date', 'visaExpiryDate'));
+                        // $col->addColumn('residencyStatus', $country ? __($country).' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
+                        // $col->addColumn('visaExpiryDate', $country ? __($country).' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
+                        //     ->format(Format::using('date', 'visaExpiryDate'));
 
                         $col = $table->addColumn('System Access', __('System Access'));
 
@@ -778,13 +779,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             });
                         }
 
+                        // CUSTOM FIELDS
                         $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'User', ['student' => 1], $row['fields']);
-
                         echo $table->render([$row]);
 
+                        // PERSONAL DOCUMENTS
+                        $params = ['student' => true, 'notEmpty' => true];
+                        $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
 
-                        echo '<h4>'.__('Personal Documents').'</h4>';
-                        echo $page->fetchFromTemplate('ui/documentView.twig.html', []);
+                        echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
+                        
 
                     } elseif ($subpage == 'Family') {
 
