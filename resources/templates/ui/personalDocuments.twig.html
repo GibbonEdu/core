@@ -38,7 +38,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
             {% for field in document.fields|jsonDecode %}
                 {% if field != 'documentNumber' and field != 'documentName' and field != 'filePath' %}
-                <div class="w-1/4 sm:w-1/6 text-gray-700">
+                <div class="w-1/4 sm:flex-1 text-gray-700">
                     <div class="text-xs font-medium">
                         {% if field == 'dateIssue' %}
                             {{ __('Issued') }}
@@ -52,9 +52,9 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     </div>
                     <span class="text-xs text-gray-600">
                         {% if field == 'dateIssue' or field == 'dateExpiry' %}
-                            {{ formatUsing('date', document[field]) }}
+                            {{ formatUsing('date', document[field])|default(__('N/A')) }}
                         {% else %}
-                            {{ document[field] }}
+                            {{ document[field]|default(__('N/A')) }}
                         {% endif %}
                     </span>
                 </div>
