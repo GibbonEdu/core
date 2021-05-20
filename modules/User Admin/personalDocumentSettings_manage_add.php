@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings_manage_add.php') == false) {
     // Access denied
@@ -34,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/personalDocumentSettings_manage_edit.php&gibbonPersonalDocumentTypeID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
+
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
 
     $form = Form::create('personalDocumentType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/personalDocumentSettings_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -64,28 +67,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $form->addRow()->addHeading(__('Configure'));
 
-    $types = [
-        'Passport'      => __('Passport'),
-        'Identity Card' => __('Identity Card'),
-        'Other'         => __('Other'),
-    ];
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
-
-    $fieldOptions = [
-        'documentName'   => __('Name on Document'),
-        'documentNumber' => __('Document Number'),
-        'documentType'   => __('Document Type'),
-        'dateIssue'      => __('Issue Date'),
-        'dateExpiry'     => __('Expiry Date'),
-        'filePath'       => __('File Upload'),
-        'country'        => __('Country'),
-    ];
+        $row->addLabel('document', __('Type'));
+        $row->addSelect('document')->fromArray($personalDocumentHandler->getDocuments())->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('fields', __('Fields'));
-        $row->addCheckbox('fields')->fromArray($fieldOptions);
+        $row->addCheckbox('fields')->fromArray($personalDocumentHandler->getFields());
 
     $form->addRow()->addHeading(__('Visibility'));
 

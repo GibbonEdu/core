@@ -54,9 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         ->setURL('/modules/User Admin/personalDocumentSettings_manage_add.php')
         ->displayLabel();
 
+    $table->addDraggableColumn('gibbonPersonalDocumentTypeID', $gibbon->session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_editOrderAjax.php');
+
     $table->addColumn('name', __('Name'));
-    $table->addColumn('required', __('Required'))->format(Format::using('yesNo', 'required'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+    $table->addColumn('required', __('Required'))->format(Format::using('yesNo', 'required'));
 
     // ACTIONS
     $table->addActionColumn()
@@ -65,8 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/User Admin/personalDocumentSettings_manage_edit.php');
 
-            $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/User Admin/personalDocumentSettings_manage_delete.php');
+            if ($values['type'] == 'Additional') {
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/User Admin/personalDocumentSettings_manage_delete.php');
+            }
         });
 
     echo $table->render($absenceTypes);

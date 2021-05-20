@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         'description'           => $_POST['description'] ?? '',
         'active'                => $_POST['active'] ?? 'Y',
         'required'              => $_POST['required'] ?? 'N',
-        'type'                  => $_POST['type'] ?? '',
+        'document'              => $_POST['document'] ?? '',
         'fields'                => $_POST['fields'] ?? [],
         'sequenceNumber'        => $_POST['sequenceNumber'] ?? 0,
         'activePersonStudent'   => $_POST['activePersonStudent'] ?? 0,
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     $data['activePersonParent'] = in_array('activePersonParent', $roleCategories);
     $data['activePersonOther'] = in_array('activePersonOther', $roleCategories);
 
-    if (empty($data['name']) || empty($data['type'])) {
+    if (empty($data['name']) || empty($data['document'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;

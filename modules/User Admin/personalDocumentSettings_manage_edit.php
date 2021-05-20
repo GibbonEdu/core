@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings_manage_edit.php') == false) {
     // Access denied
@@ -40,6 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         return;
     }
 
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
+    
     $form = Form::create('personalDocumentType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/personalDocumentSettings_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -70,24 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $form->addRow()->addHeading(__('Configure'));
 
-    $types = [
-        'Passport'      => __('Passport'),
-        'Identity Card' => __('Identity Card'),
-        'Other'         => __('Other'),
-    ];
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
+        $row->addLabel('document', __('Type'));
+        $row->addSelect('document')->fromArray($personalDocumentHandler->getDocuments())->required()->placeholder();
 
-    $fieldOptions = [
-        'documentName'   => __('Name on Document'),
-        'documentNumber' => __('Document Number'),
-        'documentType'   => __('Document Type'),
-        'dateIssue'      => __('Issue Date'),
-        'dateExpiry'     => __('Expiry Date'),
-        'filePath'       => __('File Upload'),
-        'country'        => __('Country'),
-    ];
+    $fieldOptions = $personalDocumentHandler->getFields();
     $fields = json_decode($values['fields'] ?? '');
     $fields = array_combine($fields, $fields);
     unset($values['fields']);
