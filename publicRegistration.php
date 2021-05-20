@@ -110,10 +110,8 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('usernameCheck', __('Username'));
-        $row->addTextField('usernameCheck')
-            ->maxLength(20)
-            ->required()
-            ->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'username'));
+        $row->addUsername('usernameCheck')
+            ->required();
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
