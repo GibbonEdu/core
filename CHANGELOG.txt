@@ -76,6 +76,7 @@ v22.0.00
         System Admin: updated user-related imports to enable importing by username or email address
         System Admin: added file uploader for choosing logo and background images in System Settings
         System Admin: prevent installing or updating a module that requires a newer core version
+        System Admin: added Student Application Form import
         User Admin: added an option to restrict Public Registration to a list of allowed domains
         User Admin: added ability to enrol student when adding a new user with student primary role category
         User Admin: added setting to include Alternate Email in Public Registration form
