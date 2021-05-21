@@ -182,7 +182,7 @@ class CustomFieldHandler
         }
 
         if (!empty($params['heading'])) {
-            $form->addRow()->addHeading(__($params['heading']), $params['headingLevel'] ?? 'h3');
+            $form->addRow()->addClass($params['class'] ?? '')->addHeading(__($params['heading']), $params['headingLevel'] ?? 'h3');
         }
 
         foreach ($customFieldsGrouped as $heading => $customFields) {
@@ -200,7 +200,7 @@ class CustomFieldHandler
             
             // Handle creating a new heading if the form doesn't already have one
             if (!empty($heading) && !$form->hasHeading($heading)) {
-                $form->addRow()->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
+                $form->addRow()->addClass($params['class'] ?? '')->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
             }
 
             foreach ($customFields as $field) {
@@ -212,7 +212,9 @@ class CustomFieldHandler
                 }
 
                 $name = $prefix.$field['gibbonCustomFieldID'];
-                $row = $field['type'] == 'editor' ? $form->addRow()->setHeading($heading)->addColumn() : $form->addRow()->setHeading($heading);
+                $row = $field['type'] == 'editor' 
+                    ? $form->addRow()->addClass($params['class'] ?? '')->setHeading($heading)->addColumn() 
+                    : $form->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
                     $row->addLabel($name, $field['name'])->description($field['description']);
                     $row->addCustomField($name, $field)->setValue($fieldValue);
 

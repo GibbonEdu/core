@@ -75,7 +75,7 @@ class PersonalDocuments extends Input
         foreach ($this->documents as $document) {
             $fields = json_decode($document['fields']);
 
-            $output .= '<input type="hidden" name="document['.$document['gibbonPersonalDocumentTypeID'].'][gibbonPersonalDocumentID]" value="'.$document['gibbonPersonalDocumentID'].'">';
+            $output .= '<input type="hidden" name="document['.$document['gibbonPersonalDocumentTypeID'].'][gibbonPersonalDocumentID]" value="'.($document['gibbonPersonalDocumentID'] ?? '').'">';
 
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-between">';
