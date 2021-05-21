@@ -27,10 +27,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     //Proceed!
     $page->breadcrumbs->add(__('Application Form Settings'));
 
-    $form = Form::create('applicationFormSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormSettingsProcess.php');
+    $form = Form::create('applicationFormSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationFormSettingsProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('General Options'));
 

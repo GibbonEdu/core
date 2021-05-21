@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             if (!empty($search)) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
             
@@ -85,11 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             echo Format::alert(__('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.'), 'message');
 
-			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
+			$form = Form::create('addUser', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_editProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
+			$form->addHiddenValue('address', $session->get('address'));
 
 			// BASIC INFORMATION
 			$form->addRow()->addHeading(__('Basic Information'));
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					->description(__('Accepts aspect ratio between 1:1.2 and 1:1.4.'));
 				$row->addFileUpload('file1')
 					->accepts('.jpg,.jpeg,.gif,.png')
-					->setAttachment('attachment1', $_SESSION[$guid]['absoluteURL'], $values['image_240'])
+					->setAttachment('attachment1', $session->get('absoluteURL'), $values['image_240'])
 					->setMaxUpload(false);
 
 			// SYSTEM ACCESS
@@ -147,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			$allRoles = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
 			// Put together an array of this user's current roles
-			$currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
-			$currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+			$currentUserRoles = (is_array($session->get('gibbonRoleIDAll'))) ? array_column($session->get('gibbonRoleIDAll'), 0) : array();
+			$currentUserRoles[] = $session->get('gibbonRoleIDPrimary');
 
 			// Filter all roles based on role restrictions
 			$availableRoles = array_reduce($allRoles, function ($carry, $item) use (&$currentUserRoles) {
@@ -397,7 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addFileUpload('birthCertificateScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
 					->setMaxUpload(false)
-					->setAttachment('birthCertificateScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['birthCertificateScan']);
+					->setAttachment('birthCertificateScanCurrent', $session->get('absoluteURL'), $values['birthCertificateScan']);
 
 			$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
 			$row = $form->addRow();
@@ -439,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addFileUpload('citizenship1PassportScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
 					->setMaxUpload(false)
-					->setAttachment('citizenship1PassportScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['citizenship1PassportScan']);
+					->setAttachment('citizenship1PassportScanCurrent', $session->get('absoluteURL'), $values['citizenship1PassportScan']);
 
 			$row = $form->addRow();
 				$row->addLabel('citizenship2', __('Citizenship 2'));
@@ -457,11 +457,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
                 $row->addDate('citizenship2PassportExpiry');
 
-			if (!empty($_SESSION[$guid]['country'])) {
-				$nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
-				$nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
-				$residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
-				$visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
+			if (!empty($session->get('country'))) {
+				$nationalIDCardNumberLabel = __($session->get('country')).' '.__('ID Card Number');
+				$nationalIDCardScanLabel = __($session->get('country')).' '.__('ID Card Scan');
+				$residencyStatusLabel = __($session->get('country')).' '.__('Residency/Visa Type');
+				$visaExpiryDateLabel = __($session->get('country')).' '.__('Visa Expiry Date');
 			} else {
 				$nationalIDCardNumberLabel = __('National ID Card Number');
 				$nationalIDCardScanLabel = __('National ID Card Scan');
@@ -478,7 +478,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addFileUpload('nationalIDCardScan')
 					->accepts('.jpg,.jpeg,.gif,.png,.pdf')
 					->setMaxUpload(false)
-					->setAttachment('nationalIDCardScanCurrent', $_SESSION[$guid]['absoluteURL'], $values['nationalIDCardScan']);
+					->setAttachment('nationalIDCardScanCurrent', $session->get('absoluteURL'), $values['nationalIDCardScan']);
 
 			$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 

@@ -53,13 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__('Back').'</a>';
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChildProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_edit_editChildProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addRow()->addHeading(__('Edit Child'));
 

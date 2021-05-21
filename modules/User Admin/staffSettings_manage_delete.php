@@ -33,6 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/staffSettings_manage_deleteProcess.php?gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/User Admin/staffSettings_manage_deleteProcess.php?gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID);
     echo $form->getOutput();
 }

@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('staffAbsenceType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/staffSettings_manage_addProcess.php');
+    $form = Form::create('staffAbsenceType', $session->get('absoluteURL').'/modules/User Admin/staffSettings_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));

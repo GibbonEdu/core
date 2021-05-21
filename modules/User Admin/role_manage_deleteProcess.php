@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_delete.php&gibbonRoleID='.$gibbonRoleID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_delete.php&gibbonRoleID='.$gibbonRoleID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_delete.php') == false) {
     $URL .= '&return=error0';

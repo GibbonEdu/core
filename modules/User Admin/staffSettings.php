@@ -78,10 +78,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     echo $table->render($absenceTypes);
 
     // FORM
-    $form = Form::create('staffSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staffSettingsProcess.php');
+    $form = Form::create('staffSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/staffSettingsProcess.php');
     $form->setTitle(__('Settings'));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Staff Absence'));
 
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
 
     $row = $form->addRow()->addHeading(__('Name Formats'))->append(__('How should staff names be formatted?').' '.__('Choose from [title], [preferredName], [surname].').' '.__('Use a colon to limit the number of letters, for example [preferredName:1] will use the first initial.'));
 
-    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = "SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
     $result = $pdo->executeQuery($data, $sql);
     if ($result->rowCount() > 0) {

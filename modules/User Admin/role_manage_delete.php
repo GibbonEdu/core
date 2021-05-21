@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_del
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/role_manage_deleteProcess.php?gibbonRoleID=$gibbonRoleID", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/role_manage_deleteProcess.php?gibbonRoleID=$gibbonRoleID", true);
             echo $form->getOutput();
         }
     }

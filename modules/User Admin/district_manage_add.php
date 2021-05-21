@@ -30,13 +30,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/district_manage_edit.php&gibbonDistrictID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/district_manage_edit.php&gibbonDistrictID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/district_manage_addProcess.php");
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/district_manage_addProcess.php");
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
