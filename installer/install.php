@@ -295,7 +295,7 @@ if ($canInstall == false) {
         } catch (\Exception $e) {
             echo "<div class='error'>";
             echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-            echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+            echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
             echo '</div>';
         }
     }
@@ -593,7 +593,7 @@ if ($canInstall == false) {
     } catch (Exception $e) {
         echo "<div class='error'>";
         echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-        echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+        echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
         echo '</div>';
     }
 
