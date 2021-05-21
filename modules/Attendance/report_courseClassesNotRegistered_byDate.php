@@ -49,12 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     }
 
     // Limit date range to the current school year
-    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
-        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    if ($dateStart < $session->get('gibbonSchoolYearFirstDay')) {
+        $dateStart = $session->get('gibbonSchoolYearFirstDay');
     }
 
-    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
-        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    if ($dateEnd > $session->get('gibbonSchoolYearLastDay')) {
+        $dateEnd = $session->get('gibbonSchoolYearLastDay');
     }
 
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
@@ -67,19 +67,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         if ( $lastSetOfSchoolDays[$i] >= $dateStart  ) $lastNSchoolDays[] = $lastSetOfSchoolDays[$i];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_courseClassesNotRegistered_byDate.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_courseClassesNotRegistered_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $row = $form->addRow();
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         echo '</h2>';
 
         //Produce array of attendance data
-        
+
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
             $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
 
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         }
 
         // Produce an array of scheduled classes
-        
+
             $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
             $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
 
@@ -123,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
         }
 
 
-        
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
+
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID') );
             $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort, (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance = 'Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -139,11 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo __('The specified date is in the future: it must be today or earlier.');
             echo '</div>';
         } else {
-            //Produce array of roll groups
+            //Produce array of form groups
             $classes = $result->fetchAll();
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_courseClassesNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_courseClassesNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
             echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             $timestampStart = dateConvertToTimestamp($dateStart);
             $timestampEnd = dateConvertToTimestamp($dateEnd);
 
-            //Loop through each roll group
+            //Loop through each form group
             foreach ($classes as $row) {
 
                 // Skip classes with no students
@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                     echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
                                     echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                                 }
-                                echo '</td>';  
+                                echo '</td>';
 
                                 // Wrap to a new line every 10 dates
                                 if (  ($historyCount+1) % 10 == 0 ) {
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</td>';
                     echo '<td>';
 
-                    
+
                         $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
                         $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
                         $resultTutor = $connection2->prepare($sqlTutor);

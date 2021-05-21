@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $sql = "SELECT name AS value, name FROM gibbonAttendanceCode WHERE active='Y' ORDER BY sequenceNumber ASC, name";
-    $setting = getSettingByScope($connection2, 'Attendance', 'defaultRollGroupAttendanceType', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $row = $form->addRow()->addHeading(__('Attendance CLI'));
 
-    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByRollGroup', true);
+    $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $setting = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers', true);
     $inputs = array();
     
-        $data=array( 'action1' => '%report_rollGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
+        $data=array( 'action1' => '%report_formGroupsNotRegistered_byDate.php%', 'action2' => '%report_courseClassesNotRegistered_byDate.php%' );
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                 FROM gibbonPerson
                 JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID)

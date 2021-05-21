@@ -21,13 +21,13 @@ use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$gibbonUnitID = $_POST['gibbonUnitID'];
-$gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'];
-$gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'];
-$nameTarget = $_POST['nameTarget'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '' ?? '';
+$gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
+$gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? '';
+$gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'] ?? '';
+$nameTarget = $_POST['nameTarget'] ?? '';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
                 $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
-            
+
             if ($result->rowCount() != 1) {
                 $URL .= '&copyForwardReturn=error4';
                 header("Location: {$URL}");

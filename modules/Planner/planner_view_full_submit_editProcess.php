@@ -23,7 +23,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
+$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
@@ -68,34 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                         $gibbonPersonID = $_POST['gibbonPersonID'];
                     }
 
-                    $type = null;
-                    if (isset($_POST['type'])) {
-                        $type = $_POST['type'];
-                    }
-                    $version = null;
-                    if (isset($_POST['version'])) {
-                        $version = $_POST['version'];
-                    }
-                    $link = null;
-                    if (isset($_POST['link'])) {
-                        $link = $_POST['link'];
-                    }
-                    $status = null;
-                    if (isset($_POST['status'])) {
-                        $status = $_POST['status'];
-                    }
-                    $gibbonPlannerEntryID = null;
-                    if (isset($_POST['gibbonPlannerEntryID'])) {
-                        $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-                    }
-                    $count = null;
-                    if (isset($_POST['count'])) {
-                        $count = $_POST['count'];
-                    }
-                    $lesson = null;
-                    if (isset($_POST['lesson'])) {
-                        $lesson = $_POST['lesson'];
-                    }
+                    $type = $_POST['type'] ?? '';
+                    $version = $_POST['version'] ?? '';
+                    $link = $_POST['link'] ?? '';
+                    $status = $_POST['status'] ?? '';
+                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+                    $count = $_POST['count'] ?? '';
+                    $lesson = $_POST['lesson'] ?? '';
+
 
                     if (($submission == true and $gibbonPlannerEntryHomeworkID == '') or ($submission == false and ($gibbonPersonID == '' or $type == '' or $version == '' or ($type == 'File' and $_FILES['file']['name'] == '') or ($type == 'Link' and $link == '') or $status == '' or $lesson == '' or $count == ''))) {
                         $URL .= '&return=error1';

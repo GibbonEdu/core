@@ -45,19 +45,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not Present'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose Date'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/report_studentsNotPresent_byDate.php");
+        $form->addHiddenValue('q', "/modules/" . $session->get('module') . "/report_studentsNotPresent_byDate.php");
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
             $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
-        $sortOptions = ['surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')];
+        $sortOptions = ['surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'formGroup' => __('Form Group')];
         $row = $form->addRow();
             $row->addLabel('sort', __('Sort By'));
             $row->addSelect('sort')->fromArray($sortOptions)->selected($sort)->required();
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         echo $form->getOutput();
     }
-    
+
     if (empty($currentDate)) {
         return;
     }
@@ -92,12 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     switch ($sort) {
         case 'preferredName':
-            $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonRollGroup.nameShort']); break;
-        case 'rollGroup':
-            $criteria->sortBy(['gibbonRollGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
+            $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.nameShort']); break;
+        case 'formGroup':
+            $criteria->sortBy(['gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
         default:
         case 'surname':
-            $criteria->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRollGroup.nameShort']); break;
+            $criteria->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.nameShort']); break;
     }
     $criteria->fromPOST();
 
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $table->addMetaData('blankSlate', __('All students are present.'));
     $table->addRowCountColumn($attendance->getPageFrom());
 
-    $table->addColumn('rollGroup', __('Roll Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('name', __('Name'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {

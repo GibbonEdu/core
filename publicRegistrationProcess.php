@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include './gibbon.php';
 
@@ -57,6 +58,7 @@ if ($proceed == false) {
         $dob = dateConvert($guid, $dob);
     }
     $email = trim($_POST['email']);
+    $emailAlternate = (!empty($_POST['emailAlternate']) ? trim($_POST['emailAlternate']) : '');
     $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'];
     $salt = getSalt();
@@ -86,35 +88,13 @@ if ($proceed == false) {
         }
     }
 
-    // Check required custom fields
     $customRequireFail = false;
-    $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
-    $fields = array();
-    if ($resultFields->rowCount() > 0) {
-        while ($rowFields = $resultFields->fetch()) {
-            if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']])) {
-                if ($rowFields['type'] == 'date') {
-                    $fields[$rowFields['gibbonCustomFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonCustomFieldID']]);
-                } else {
-                    $fields[$rowFields['gibbonCustomFieldID']] = $_POST['custom'.$rowFields['gibbonCustomFieldID']];
-                }
-            }
-            if ($rowFields['required'] == 'Y') {
-                if (isset($_POST['custom'.$rowFields['gibbonCustomFieldID']]) == false) {
-                    $customRequireFail = true;
-                } elseif ($_POST['custom'.$rowFields['gibbonCustomFieldID']] == '') {
-                    $customRequireFail = true;
-                }
-            }
-        }
-    }
+    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', ['publicRegistration' => 1], $customRequireFail);
 
     if ($customRequireFail) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
-    } else {
-        $fields = json_encode($fields);
     }
 
     // Check strength of password
@@ -142,7 +122,7 @@ if ($proceed == false) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
-    } 
+    }
 
     // Check publicRegistrationMinimumAge
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
@@ -154,8 +134,8 @@ if ($proceed == false) {
     }
 
     //Write to database
-    $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
-    $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
+    $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'emailAlternate' => $emailAlternate, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
+    $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, emailAlternate=:emailAlternate, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
 
     $gibbonPersonID = $pdo->insert($sql, $data);
 

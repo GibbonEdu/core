@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -80,6 +81,13 @@ if ($proceed == false) {
         $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email')->required();
 
+    $publicRegistrationAlternateEmail = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAlternateEmail');
+    if ($publicRegistrationAlternateEmail == "Y") {
+        $row = $form->addRow();
+            $row->addLabel('emailAlternate', __('Alternate Email'));
+            $row->addEmail('emailAlternate');
+    }
+
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField('./publicRegistrationCheck.php');
@@ -102,10 +110,8 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('usernameCheck', __('Username'));
-        $row->addTextField('usernameCheck')
-            ->maxLength(20)
-            ->required()
-            ->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'username'));
+        $row->addUsername('usernameCheck')
+            ->required();
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -119,7 +125,7 @@ if ($proceed == false) {
             ->addGeneratePasswordButton($form)
             ->required()
             ->maxLength(30);
-    
+
     $row = $form->addRow();
         $row->addLabel('passwordConfirm', __('Confirm Password'));
         $row->addPassword('passwordConfirm')
@@ -128,17 +134,7 @@ if ($proceed == false) {
             ->maxLength(30);
 
     // CUSTOM FIELDS
-    $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
-    if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addHeading(__('Other Information'));
-
-        while ($rowFields = $resultFields->fetch()) {
-            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-            $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                $row->addCustomField($name, $rowFields);
-        }
-    }
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', ['publicRegistration' => 1]);
 
     $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {

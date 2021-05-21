@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYear_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_manage_edit.php') == false) {
@@ -48,11 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $name = $_POST['name'];
-            $status = $_POST['status'];
-            $sequenceNumber = $_POST['sequenceNumber'];
-            $firstDay = dateConvert($guid, $_POST['firstDay']);
-            $lastDay = dateConvert($guid, $_POST['lastDay']);
+            $name = $_POST['name'] ?? '';
+            $status = $_POST['status'] ?? '';
+            $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+            $firstDay = dateConvert($guid, $_POST['firstDay'] ?? '');
+            $lastDay = dateConvert($guid, $_POST['lastDay'] ?? '');
 
             if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
                 $URL .= '&return=error3';

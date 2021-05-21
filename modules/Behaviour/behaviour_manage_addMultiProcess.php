@@ -29,7 +29,7 @@ include '../../gibbon.php';
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviour_manage_addMulti.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviour_manage_addMulti.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         foreach ($gibbonPersonIDMulti as $gibbonPersonID) {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => dateConvert($guid, $date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => dateConvert($guid, $date), 'type' => $type, 'descriptor' => $descriptor, 'level' => $level, 'comment' => $comment, 'followup' => $followup, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = 'INSERT INTO gibbonBehaviour SET gibbonPersonID=:gibbonPersonID, date=:date, type=:type, descriptor=:descriptor, level=:level, comment=:comment, followup=:followup, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -75,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             // Attempt to notify tutor(s) and EA(s) of negative behaviour
             if ($type == 'Negative') {
 
-                    $dataDetail = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
-                    $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonRollGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
+                    $dataDetail = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
+                    $sqlDetail = 'SELECT gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, surname, preferredName, gibbonStudentEnrolment.gibbonYearGroupID FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID';
                     $resultDetail = $connection2->prepare($sqlDetail);
                     $resultDetail->execute($dataDetail);
                 if ($resultDetail->rowCount() == 1) {
@@ -105,18 +105,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     // Add event listeners to the notification sender
                     $event->pushNotifications($notificationGateway, $notificationSender);
 
-                    // Add direct notifications to roll group tutors
+                    // Add direct notifications to form group tutors
                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
                         if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
                             $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
-                            if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
                                 $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);
                             }
-                            if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
                                 $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', $actionLink);
                             }
-                            if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
                                 $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', $actionLink);
                             }
                         }
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     'title'                       => __('Behaviour').': '.$descriptor,
                     'note'                        => empty($followup) ? $comment : $comment.' <br/><br/>'.$followup,
                     'gibbonPersonID'              => $gibbonPersonID,
-                    'gibbonPersonIDCreator'       => $_SESSION[$guid]['gibbonPersonID'],
+                    'gibbonPersonIDCreator'       => $session->get('gibbonPersonID'),
                     'gibbonStudentNoteCategoryID' => $noteGateway->getNoteCategoryIDByName('Behaviour') ?? null,
                     'timestamp'                   => date('Y-m-d H:i:s', time()),
                 ];

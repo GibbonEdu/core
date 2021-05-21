@@ -257,8 +257,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         //Enrol applicant
                         $enrolmentOK = true;
                         try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $values['type'], 'jobTitle' => $values['jobTitle']);
-                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle';
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
+                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -350,8 +350,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $enrolmentOK = true;
 
                         try {
-                            $data = array('gibbonPersonID' => $values['gibbonPersonID'], 'type' => $values['type'], 'jobTitle' => $values['jobTitle']);
-                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle';
+                            $data = array('gibbonPersonID' => $values['gibbonPersonID'], 'type' => $values['type'], 'jobTitle' => $values['jobTitle'], 'fields' => $values['staffFields']);
+                            $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle, fields=:fields';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

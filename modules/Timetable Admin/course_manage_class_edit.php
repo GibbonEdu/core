@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_edit.php') == false) {
     // Access denied
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     } else {
         
             $data = array('gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
+            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance, gibbonCourseClass.fields FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -55,6 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
 			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
 			
+            $row = $form->addRow()->addHeading(__('Basic Details'));
+
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
 				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
@@ -81,6 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addYesNo('attendance');
 			}
 
+            // Custom Fields
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Class', [], $values['fields']);
+            
 			$row = $form->addRow();
 				$row->addFooter();
 				$row->addSubmit();

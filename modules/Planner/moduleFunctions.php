@@ -110,7 +110,12 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 							echo "<img style='margin-top: 2px' id='delete$i' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
 						}
 						if ($mode == 'workingEdit') {
-                            echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$_GET['gibbonUnitClassID']."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
+                            $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+                            $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+                            $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+                            $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+                            $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+                            echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonCourseID='.$gibbonCourseID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonUnitID='.$gibbonUnitID."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$gibbonUnitClassID."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
 						}
 						if ($mode != 'embed') {
 							echo "<div title='".__('Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
@@ -264,128 +269,6 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         //Show date picker in sidebar
         $output = '<div class="column-no-break">';
 
-        //Count back to first Monday before first day
-        $startDayStamp = $todayStamp;
-        while (date('D', $startDayStamp) != 'Mon') {
-            $startDayStamp = $startDayStamp - 86400;
-        }
-
-        //Count forward 6 weeks after start day
-        $endDayStamp = $startDayStamp + (86400 * 41);
-
-        //Check which days are school days
-        $days = array();
-        $days['Mon'] = 'Y';
-        $days['Tue'] = 'Y';
-        $days['Wed'] = 'Y';
-        $days['Thu'] = 'Y';
-        $days['Fri'] = 'Y';
-        $days['Sat'] = 'Y';
-        $days['Sun'] = 'Y';
-
-
-            $dataDays = array();
-            $sqlDays = "SELECT * FROM gibbonDaysOfWeek WHERE schoolDay='N'";
-            $resultDays = $connection2->prepare($sqlDays);
-            $resultDays->execute($dataDays);
-        while ($rowDays = $resultDays->fetch()) {
-            if ($rowDays['nameShort'] == 'Mon') {
-                $days['Mon'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Tue') {
-                $days['Tue'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Wed') {
-                $days['Wed'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Thu') {
-                $days['Thu'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Fri') {
-                $days['Fri'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Sat') {
-                $days['Sat'] = 'N';
-            } elseif ($rowDays['nameShort'] == 'Sun') {
-                $days['Sun'] = 'N';
-            }
-        }
-
-        $count = 1;
-
-        $calendar = "<table class='mini' cellspacing='0' style='width: 250px; margin-bottom: 0px'>";
-        $calendar .= "<tr class='head'>";
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Mon');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Tue');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Wed');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Thu');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Fri');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Sat');
-        $calendar .= '</th>';
-        $calendar .= "<th style='width: 35px; text-align: center'>";
-        $calendar .= __('Sun');
-        $calendar .= '</th>';
-        $calendar .= '</tr>';
-
-        for ($i = $startDayStamp;$i <= $endDayStamp;$i = $i + 86400) {
-            if (date('D', $i) == 'Mon') {
-                $calendar .= "<tr style='height: 25px'>";
-            }
-
-            if ($days[date('D', $i)] == 'N' or isSchoolOpen($guid, date('Y-m-d', $i), $connection2) == false) {
-                $calendar .= "<td style='text-align: center; background-color: #bbbbbb; font-size: 10px; color: #858586'>";
-                if ($i == $dateStamp) {
-                    $calendar .= "<span style='border: 1px solid #ffffff; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                } else {
-                    $calendar .= date('d', $i).'<br/>';
-                    $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                }
-                $calendar .= '</td>';
-            } else {
-                $calendar .= "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
-                if ($i == $dateStamp) {
-                    if ($i == $todayStamp) {
-                        $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $calendar .= '</a>';
-                    } else {
-                        $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= "<span style='border: 1px solid #cc0000; padding: 0px 2px 0px 1px'>".date('d', $i).'</span><br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $calendar .= '</a>';
-                    }
-                } else {
-                    if ($i == $todayStamp) {
-                        $calendar .= "<a style='color: #6B99CE; font-weight: bold; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= date('d', $i).'<br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $calendar .= '</a>';
-                    } else {
-                        $calendar .= "<a style='text-decoration: none' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&search=$gibbonPersonID&date=".date('Y-m-d', $i)."'>";
-                        $calendar .= date('d', $i).'<br/>';
-                        $calendar .= "<span style='font-size: 65%'>".date('M', $i).'</span>';
-                        $calendar .= '</a>';
-                    }
-                }
-                $calendar .= '</td>';
-            }
-
-            if (date('D', $i) == 'Sun') {
-                $calendar .= '</tr>';
-            }
-            ++$count;
-        }
-        $calendar .= '</table>';
-
-
         global $pdo;
 
         // Date Chooser
@@ -395,8 +278,6 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
         $form->addHiddenValue('q', '/modules/Planner/planner.php');
         $form->addHiddenValue('search', $gibbonPersonID);
-
-        $row = $form->addRow()->addContent($calendar);
 
         $row = $form->addRow();
             $row->addDate('dateHuman', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
@@ -486,8 +367,6 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         }
     }
 
-    $_SESSION[$guid]['sidebarExtraPosition'] = 'bottom';
-
     return $output;
 }
 
@@ -528,8 +407,6 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
 
         $output .= $form->getOutput();
     }
-
-    $_SESSION[$guid]['sidebarExtraPosition'] = 'bottom';
 
     return $output;
 }

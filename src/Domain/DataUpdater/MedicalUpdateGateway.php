@@ -42,7 +42,7 @@ class MedicalUpdateGateway extends QueryableGateway implements ScrubbableGateway
     private static $searchableColumns = [''];
 
     private static $scrubbableKey = 'gibbonPersonID';
-    private static $scrubbableColumns = ['bloodType' => '','longTermMedication' => '','longTermMedicationDetails' => '','tetanusWithin10Years' => '','comment' => ''];
+    private static $scrubbableColumns = ['longTermMedication' => '','longTermMedicationDetails' => '','comment' => '', 'fields' => ''];
     
     /**
      * @param QueryCriteria $criteria

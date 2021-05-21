@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_edit.php') == false) {
@@ -42,10 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $page->addError(__('The specified record cannot be found.'));
         return;
     }
+
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
         
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $form->addRow()->addHeading(__('Basic Details'));
 
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
@@ -56,38 +61,75 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addTextField('name')->maxLength(50)->required();
 
     $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
+        $row->addLabel('description', __('Description'))->description(__('Displayed as smaller text next to the field name.'));
         $row->addTextField('description')->maxLength(255);
+
+    $headings = $customFieldHandler->getHeadings();
+    $headings = $headings[$values['context']] ?? [];
+    $isHeadingCustom = !empty($values['heading']) && !in_array($values['heading'], $headings);
+    $row = $form->addRow();
+        $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
+        $row->addSelect('heading')
+            ->fromArray($headings)
+            ->fromArray(['Custom' => '['.__('Custom').']'])
+            ->placeholder()
+            ->selected($isHeadingCustom ? 'Custom' : $values['heading']);
+    
+    $form->toggleVisibilityByClass('headingCustom')->onSelect('heading')->when('Custom');
+    
+    $row = $form->addRow()->addClass('headingCustom');
+        $row->addLabel('headingCustom', __('Custom Heading'));
+        $row->addTextField('headingCustom')->maxLength(90)->setValue($isHeadingCustom ? $values['heading'] : '');
+        unset($values['heading']);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $types = array(
-        'varchar' => __('Short Text (max 255 characters)'),
-        'text'    => __('Long Text'),
-        'date'    => __('Date'),
-        'url'     => __('Link'),
-        'select'  => __('Dropdown')
-    );
+    $form->addRow()->addHeading(__('Configure'));
+
+    $types = $customFieldHandler->getTypes();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
+        $row->addSelect('type')->fromArray($types)->readOnly()->required()->placeholder();
 
-    $form->toggleVisibilityByClass('optionsRow')->onSelect('type')->when(array('varchar', 'text', 'select'));
+    if ($values['type'] == 'varchar' || $values['type'] == 'number') {
+        $row = $form->addRow()->addClass('optionsLength');
+            $row->addLabel('options', __('Max Length'))->description(__('Number of characters, up to 255.'));
+            $row->addNumber('options')->minimum(1)->maximum(255)->onlyInteger(true);
+    }
 
-    $row = $form->addRow()->addClass('optionsRow');
-        $row->addLabel('options', __('Options'))
-            ->description(__('Short Text: number of characters, up to 255.'))
-            ->description(__('Long Text: number of rows for field.'))
-            ->description(__('Dropdown: comma separated list of options.'));
-        $row->addTextArea('options')->setRows(3)->required();
+    if ($values['type'] == 'text' || $values['type'] == 'editor') {
+        $row = $form->addRow()->addClass('optionsRows');
+            $row->addLabel('options', __('Rows'))->description(__('Number of rows for field.'));
+            $row->addNumber('options')->minimum(1)->maximum(20)->onlyInteger(true);
+    }
+
+    if ($values['type'] == 'select' || $values['type'] == 'checkboxes' || $values['type'] == 'radio') {
+        $row = $form->addRow()->addClass('optionsOptions');
+            $row->addLabel('options', __('Options'))
+                ->description(__('Comma separated list of options.'))
+                ->description(__('Dropdown: use [] to create option groups.'));
+            $row->addTextArea('options')->setRows(3)->required();
+    }
+
+    if ($values['type'] == 'file') {
+        $row = $form->addRow()->addClass('optionsFile');
+            $row->addLabel('options', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
+            $row->addTextField('options');
+    }
 
     $row = $form->addRow();
         $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
         $row->addYesNo('required')->required();
 
-    if ($values['context'] == 'Person') {
+    $row = $form->addRow();
+        $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
+        $row->addYesNo('hidden')->required();
+
+    if ($values['context'] == 'User') {
+        $form->addRow()->addHeading(__('Visibility'));
+
         $activePersonOptions = array(
             'activePersonStudent' => __('Student'),
             'activePersonStaff'   => __('Staff'),
@@ -115,6 +157,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
                 $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
                 $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->required();
         }
+    } elseif ($values['context'] == 'Medical Form') {
+        $row = $form->addRow();
+            $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
+            $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+    } elseif ($values['context'] == 'Staff') {
+        $row = $form->addRow();
+            $row->addLabel('activeDataUpdater', __('Include In Data Updater?'));
+            $row->addSelect('activeDataUpdater')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+            
+        $row = $form->addRow();
+            $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
+            $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
+
     }
 
     $row = $form->addRow();

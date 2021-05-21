@@ -90,9 +90,14 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Label($for, $label);
     }
 
-    public function createHeading($content = '')
+    public function createHeading($content = '', $tag = null)
     {
-        return new Layout\Heading($content);
+        return new Layout\Heading($content, $tag);
+    }
+
+    public function createSubheading($content, $tag = 'h4')
+    {
+        return new Layout\Heading($content, $tag = 'h4');
     }
 
     public function createContent($content = '')
@@ -233,6 +238,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\CustomBlocks($this, $name, $session);
     }
 
+    public function createPersonalDocuments($name, $documents, $view, $settingGateway)
+    {
+        return new Input\PersonalDocuments($this, $name, $documents, $view, $settingGateway);
+    }
+
     public function createUsername($name)
     {
         return new Input\Username($name);
@@ -244,12 +254,6 @@ class FormFactory implements FormFactoryInterface
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
-
-    public function createSubheading($content, $tag = 'h4')
-    {
-        $content = sprintf('<%1$s class="m-0 p-0">%2$s</%1$s>', $tag, $content);
-        return $this->createContent($content);
-    }
 
     public function createAlert($content, $level = 'warning')
     {
@@ -367,19 +371,6 @@ class FormFactory implements FormFactoryInterface
             'Divorced'      => __('Divorced'),
             'De Facto'         => __('De Facto'),
             'Other'          => __('Other')
-        ))->placeholder();
-    }
-    public function createSelectBloodType($name)
-    {
-        return $this->createSelect($name)->fromArray(array(
-            'O+' => 'O+',
-            'A+' => 'A+',
-            'B+' => 'B+',
-            'AB+' => 'AB+',
-            'O-' => 'O-',
-            'A-' => 'A-',
-            'B-' => 'B-',
-            'AB-' => 'AB-'
         ))->placeholder();
     }
 

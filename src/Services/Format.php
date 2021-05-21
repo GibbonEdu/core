@@ -57,7 +57,7 @@ class Format
     public static function setupFromSession(Session $session)
     {
         $settings = $session->get('i18n');
-        
+
         $settings['absolutePath'] = $session->get('absolutePath');
         $settings['absoluteURL'] = $session->get('absoluteURL');
         $settings['gibbonThemeName'] = $session->get('gibbonThemeName');
@@ -68,7 +68,7 @@ class Format
         $settings['nameFormatStaffInformalReversed'] = $session->get('nameFormatStaffInformalReversed');
         $settings['nameFormatStaffFormal'] = $session->get('nameFormatStaffFormal');
         $settings['nameFormatStaffFormalReversed'] = $session->get('nameFormatStaffFormalReversed');
-        
+
         static::setup($settings);
     }
 
@@ -84,7 +84,7 @@ class Format
         if (empty($dateString)) {
             return '';
         }
-        $date = static::createDateTime($dateString);
+        $date = static::createDateTime($dateString, strlen($dateString) == 10 ? 'Y-m-d' : null);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
@@ -115,7 +115,7 @@ class Format
         $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
-    
+
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
@@ -253,7 +253,7 @@ class Format
         } elseif ($timeDifference < 0) {
             $time = __('in {time}', ['time' => $time]);
         }
-        
+
         return $tooltip
             ? self::tooltip($time, static::dateTime($dateString))
             : $time;
@@ -336,10 +336,29 @@ class Format
     public static function yesNo($value, $translate = true)
     {
         $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
-        
+
         return $translate ? __($value) : $value;
     }
 
+    /**
+     * Formats a F/M/Other/Unspecified value as Female/Male/Other/Unspecified in the current language.
+     *
+     * @param string $value
+     * @param bool   $translate
+     * @return string
+     */
+    public static function genderName($value, $translate = true)
+    {
+        $genderNames = [
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified')
+            ];
+        
+        return $translate ? __($genderNames[$value]) : $genderNames[$value];
+    }    
+    
     /**
      * Formats a filesize in bytes to display in KB, MB, etc.
      *
@@ -419,7 +438,7 @@ class Format
      *
      * @param string $url
      * @param string $text
-     * @param string $title
+     * @param array $attr
      * @return string
      */
     public static function link($url, $text = '', $attr = [])
@@ -434,6 +453,9 @@ class Format
             $attr = ['title' => $attr];
         }
 
+        if (stripos($url, '@') !== false) {
+            $url = 'mailto:'.$url;
+        }
         if (substr($url, 0, 2) == './') {
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }
@@ -443,6 +465,18 @@ class Format
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
         }
+    }
+
+    /**
+     * Replaces all URLs with active hyperlinks
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function hyperlinkAll(string $value)
+    {
+        $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
+        return preg_replace($pattern, '$1<a target="_blank" href="$2">$2</a>', $value);
     }
 
     /**
@@ -482,7 +516,7 @@ class Format
         }
 
         $date = $date->diff(new DateTime());
-        
+
         return $short
             ? $date->y . __('y') .', '. $date->m . __('m')
             : $date->y .' '. __('years') .', '. $date->m .' '. __('months');
@@ -609,7 +643,7 @@ class Format
 
         return trim($output, ' ');
     }
-    
+
     /**
      * Formats a linked name based on roleCategory
      * @param string $gibbonPersonID
@@ -641,7 +675,7 @@ class Format
         }
         return $output;
     }
-    
+
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
      *
@@ -775,7 +809,7 @@ class Format
     {
         // HEY SHORTY IT'S YOUR BIRTHDAY!
         $daysUntilNextBirthday = daysUntilNextBirthday($dob);
-        
+
         if (empty($dob) || $daysUntilNextBirthday >= 8) {
             return '';
         }

@@ -107,11 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
             
                 $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
-                $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonRollGroup.nameShort as rollGroupNameShort
+                $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonFormGroup.nameShort as formGroupNameShort
                         FROM gibbonActivityStudent
                         JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
-                        LEFT JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                        LEFT JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                         WHERE gibbonActivityID=:gibbonActivityID
                         AND NOT gibbonActivityStudent.status=:statusCheck
                         AND gibbonPerson.status='Full'
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __('Student');
                 echo '</th>';
                 echo '<th>';
-                echo __('Roll Group');
+                echo __('Form Group');
                 echo '</th>';
                 echo '<th>';
                 echo __('Status');
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     }
                     echo '</td>';
                     echo '<td>';
-                    echo $values['rollGroupNameShort'];
+                    echo $values['formGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
                     echo __($values['status']);

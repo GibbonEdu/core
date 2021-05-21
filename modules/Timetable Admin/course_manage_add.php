@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -63,6 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 			
+            $row = $form->addRow()->addHeading(__('Basic Details'));
+
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
 				$row->addTextField('schoolYearName')->required()->readonly()->setValue($schoolYear['name']);
@@ -84,6 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(3);
 			
+            $row = $form->addRow()->addHeading(__('Display Information'));
+
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');
 				$column->addLabel('description', __('Blurb'));
@@ -93,10 +98,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('map', __('Include In Curriculum Map'));
 				$row->addYesNo('map')->required();
 			
+            $row = $form->addRow()->addHeading(__('Configure'));
+
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
 				$row->addCheckboxYearGroup('gibbonYearGroupIDList');
 			
+            // Custom Fields
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Course', []);
+
 			$row = $form->addRow();
 				$row->addFooter();
 				$row->addSubmit();

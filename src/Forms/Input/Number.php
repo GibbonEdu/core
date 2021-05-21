@@ -31,6 +31,7 @@ class Number extends TextField
     protected $max;
     protected $decimalPlaces = 0;
     protected $onlyInteger = true;
+    protected $spinner = false;
 
     /**
      * Define a minimum for this numeric value.
@@ -71,6 +72,12 @@ class Number extends TextField
         $this->onlyInteger = $value;
         return $this;
     }
+    
+    public function spinner($value)
+    {
+        $this->spinner = $value;
+        return $this;
+    }
 
     /**
      * Gets the HTML output for this form element.
@@ -90,15 +97,37 @@ class Number extends TextField
         if ($this->onlyInteger) {
             $validateParams[] = 'onlyInteger: true';
         }
+        
+        
 
         $this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
         if (!empty($this->decimalPlaces) && $this->decimalPlaces > 0) {
             $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+(\.[0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
-
-        $output = '<input type="text" '.$this->getAttributeString().'>';
-
+        if ($this->spinner) {
+            $output = '<div class="input-box border-0 standardWidth">';
+            $output .= '<div class="inline-button border border-r-0 rounded-l-sm text-base text-gray-600" style="height: 36px;" onclick="decrement(this)">-</div>';
+            $output .='<input type="text" class="number inline-block standardWidth w-9/12 " '.$this->getAttributeString().' style="border-width: 1px !important; border-radius: 0 !important;">';
+            $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="increment(this)">+</div>';
+            $output .= '</div>';
+            $output .= '<script type="text/javascript">
+                function increment(self) {
+                    $(".number", $(self).parent()).val( function(i, oldval) {
+                        $(this).trigger("keyup");
+                        return ++oldval;
+                    });
+                }
+                function decrement(self) {
+                    $(".number", $(self).parent()).val( function(i, oldval) {
+                        $(this).trigger("keyup");
+                        return --oldval;
+                    });
+                }
+            </script>';
+        } else {
+            $output = '<input type="text" '.$this->getAttributeString().'>';
+        }
         return $output;
     }
 }

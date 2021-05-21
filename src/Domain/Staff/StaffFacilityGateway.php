@@ -58,13 +58,13 @@ class StaffFacilityGateway extends QueryableGateway
         $this->unionWithCriteria($query, $criteria)
             ->distinct()
             ->cols([
-                'gibbonSpace.*', 'NULL AS gibbonSpacePersonID', "'Roll Group' as usageType", "NULL AS exception"
+                'gibbonSpace.*', 'NULL AS gibbonSpacePersonID', "'Form Group' as usageType", "NULL AS exception"
             ])
-            ->from('gibbonRollGroup')
-            ->innerJoin('gibbonSpace', 'gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID')
+            ->from('gibbonFormGroup')
+            ->innerJoin('gibbonSpace', 'gibbonFormGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID')
             ->where('(gibbonPersonIDTutor=:gibbonPersonID OR gibbonPersonIDTutor2=:gibbonPersonID OR gibbonPersonIDTutor3=:gibbonPersonID)')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
-            ->where('gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->where('gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $this->unionWithCriteria($query, $criteria)

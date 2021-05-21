@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 /**
  * CoverageTodayView
@@ -35,14 +35,14 @@ use Gibbon\Domain\RollGroups\RollGroupGateway;
 class CoverageTodayView
 {
     protected $staffCoverageGateway;
-    protected $rollGroupGateway;
+    protected $formGroupGateway;
     protected $userGateway;
     protected $gibbonStaffCoverageID;
 
-    public function __construct(StaffCoverageGateway $staffCoverageGateway, RollGroupGateway $rollGroupGateway, UserGateway $userGateway)
+    public function __construct(StaffCoverageGateway $staffCoverageGateway, FormGroupGateway $formGroupGateway, UserGateway $userGateway)
     {
         $this->staffCoverageGateway = $staffCoverageGateway;
-        $this->rollGroupGateway = $rollGroupGateway;
+        $this->formGroupGateway = $formGroupGateway;
         $this->userGateway = $userGateway;
     }
 
@@ -82,29 +82,29 @@ class CoverageTodayView
             ]);
         }
 
-        // Roll Group Info
-        $rollGroups = $this->rollGroupGateway->selectRollGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
+        // Form Group Info
+        $formGroups = $this->formGroupGateway->selectFormGroupsByTutor($coverage['gibbonPersonID'])->toDataSet();
 
-        if (count($rollGroups) > 0) {
+        if (count($formGroups) > 0) {
             $table = DataTable::create('todaysCoverageTimetable');
 
-            $table->addColumn('name', __('Roll Group'))->context('primary');
+            $table->addColumn('name', __('Form Group'))->context('primary');
             $table->addColumn('spaceName', __('Location'))->context('primary');
 
             $table->addActionColumn()
-                ->addParam('gibbonRollGroupID')
+                ->addParam('gibbonFormGroupID')
                 ->format(function ($values, $actions) {
                     if ($values['attendance'] == 'Y') {
                         $actions->addAction('attendance', __('Take Attendance'))
                             ->setIcon('attendance')
-                            ->setURL('/modules/Attendance/attendance_take_byRollGroup.php');
+                            ->setURL('/modules/Attendance/attendance_take_byFormGroup.php');
                     }
 
                     $actions->addAction('view', __('View Details'))
-                        ->setURL('/modules/Roll Groups/rollGroups_details.php');
+                        ->setURL('/modules/Form Groups/formGroups_details.php');
                 });
 
-            $page->write($table->render($rollGroups).'<br/>');
+            $page->write($table->render($formGroups).'<br/>');
         }
 
         // Timetable Info

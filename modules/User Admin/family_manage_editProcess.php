@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonFamilyID = $_GET['gibbonFamilyID'];
-$search = $_GET['search'];
+$gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
+$search = $_GET['search'] ?? '';
 
 if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -31,14 +31,14 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Validate Inputs
-        $name = $_POST['name'];
-        $status = $_POST['status'];
-        $languageHomePrimary = $_POST['languageHomePrimary'];
-        $languageHomeSecondary = $_POST['languageHomeSecondary'];
-        $nameAddress = $_POST['nameAddress'];
-        $homeAddress = $_POST['homeAddress'];
-        $homeAddressDistrict = $_POST['homeAddressDistrict'];
-        $homeAddressCountry = $_POST['homeAddressCountry'];
+        $name = $_POST['name'] ?? '';
+        $status = $_POST['status'] ?? '';
+        $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
+        $languageHomeSecondary = $_POST['languageHomeSecondary'] ?? '';
+        $nameAddress = $_POST['nameAddress'] ?? '';
+        $homeAddress = $_POST['homeAddress'] ?? '';
+        $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? '';
+        $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
 
         //Write to database
         try {

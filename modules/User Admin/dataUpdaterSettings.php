@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         'Personal' => __('Personal'),
         'Medical' => __('Medical'),
         'Finance' => __('Finance'),
+        'Staff' => __('Staff'),
     );
     $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType', true);
     $row = $form->addRow()->addClass('requiredUpdates');

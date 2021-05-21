@@ -375,16 +375,11 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
 } else if ($session->has('organisationBackground')) {
     $backgroundImage = $session->get('absoluteURL').'/'.$session->get('organisationBackground');
     $backgroundScroll = 'repeat fixed center top';
-} else {
-    $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
-    $backgroundScroll = 'repeat fixed center top';
 }
 
-$page->stylesheets->add(
-    'personal-background',
-    'body { background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important; }',
-    ['type' => 'inline']
-);
+if (!empty($backgroundImage)) {
+    $page->addData(['bodyBackground' => 'background: url("'.$backgroundImage.'") '.$backgroundScroll.' #626cd3!important;background-size: cover !important;']);
+}
 
 $page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
 $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
@@ -512,7 +507,7 @@ if ($isLoggedIn && !$upgrade) {
         $session->set('menuMainItems', $menuMainItems);
     }
 
-    
+
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
@@ -535,7 +530,6 @@ if ($isLoggedIn && !$upgrade) {
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
-    'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'organisationName'  => $session->get('organisationName'),
     'cacheString'       => $session->get('cacheString'),
@@ -600,7 +594,7 @@ if (!$session->has('address')) {
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray'), function ($group, $item) {
+            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;
                 }
@@ -619,6 +613,7 @@ if (!$session->has('address')) {
             $globals = [
                 'guid'        => $guid,
                 'connection2' => $connection2,
+                'session'     => $session,
             ];
 
             $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
@@ -633,13 +628,19 @@ if (!$session->has('address')) {
 
         switch ($category) {
             case 'Parent':
-                $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'parentDashboardEnable') != "N") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
+                }
                 break;
             case 'Student':
-                $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'studentDashboardEnable') != "N") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
+                }
                 break;
             case 'Staff':
-                $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                if (getSettingByScope($connection2, 'School Admin', 'staffDashboardEnable') != "N") {
+                    $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
+                }
                 break;
             case 'Other':
                 break;
@@ -664,6 +665,7 @@ if (!$session->has('address')) {
             'autoloader'  => $autoloader,
             'container'   => $container,
             'page'        => $page,
+            'session'     => $session,
         ];
 
         if (is_file('./'.$address)) {
@@ -695,8 +697,10 @@ if ($isLoggedIn) {
  * Adds an alert to the index based on the URL 'return' parameter.
  */
 if (!empty($_GET['return'])) {
-    if ($alert = $page->return->process($_GET['return'])){
-        $page->addAlert($alert['context'], $alert['text']);
+    if (!($session->get('address') == 'notifications.php' AND $session->get('username') == '')) {
+        if ($alert = $page->return->process($_GET['return'])){
+            $page->addAlert($alert['context'], $alert['text']);
+        }
     }
 }
 /**

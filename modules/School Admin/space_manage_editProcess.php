@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSpaceID = $_GET['gibbonSpaceID'];
+$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/space_manage_edit.php&gibbonSpaceID=$gibbonSpaceID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_edit.php') == false) {
@@ -47,20 +47,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $name = $_POST['name'];
-            $type = $_POST['type'];
-            $capacity = $_POST['capacity'];
-            $computer = $_POST['computer'];
-            $computerStudent = $_POST['computerStudent'];
-            $projector = $_POST['projector'];
-            $tv = $_POST['tv'];
-            $dvd = $_POST['dvd'];
-            $hifi = $_POST['hifi'];
-            $speakers = $_POST['speakers'];
-            $iwb = $_POST['iwb'];
-            $phoneInternal = $_POST['phoneInternal'];
-            $phoneExternal = preg_replace('/[^0-9+]/', '', $_POST['phoneExternal']);
-            $comment = $_POST['comment'];
+            $name = $_POST['name'] ?? '';
+            $type = $_POST['type'] ?? '';
+            $capacity = $_POST['capacity'] ?? '';
+            $computer = $_POST['computer'] ?? '';
+            $computerStudent = $_POST['computerStudent'] ?? '';
+            $projector = $_POST['projector'] ?? '';
+            $tv = $_POST['tv'] ?? '';
+            $dvd = $_POST['dvd'] ?? '';
+            $hifi = $_POST['hifi'] ?? '';
+            $speakers = $_POST['speakers'] ?? '';
+            $iwb = $_POST['iwb'] ?? '';
+            $phoneInternal = $_POST['phoneInternal'] ?? '';
+            $phoneExternal = preg_replace('/[^0-9+]/', '', $_POST['phoneExternal'] ?? '');
+            $comment = $_POST['comment'] ?? '';
 
             //Validate Inputs
             if ($name == '' or $type == '' or $computer == '' or $computerStudent == '' or $projector == '' or $tv == '' or $dvd == '' or $hifi == '' or $speakers == '' or $iwb == '') {

@@ -433,7 +433,7 @@ CustomBlocks.prototype.init = function() {
                 block.find('.showHide').show();
 
                 // Restart any TinyMCE editors that are not active
-                $('textarea.tinymce', _.container).each(function(index, element) {
+                $('textarea.tinymce', block).each(function(index, element) {
                     tinymce.EditorManager.execCommand('mceAddEditor', false, $(this).prop("id"));
                 });
             }
@@ -499,7 +499,12 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
+        $("[name='"+key+"']:not([type='file']):not([type='radio'])", block).val(data[key]);
+        $("input:radio[name='"+key+"']", block).each(function () {
+            if ($(this).val() == data[key]) {
+                $(this).attr("checked", true);
+            }
+        });
     }
 
     var readonly = data.readonly || [];
@@ -534,9 +539,12 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
 
     // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
     $("textarea[data-tinymce]", block).each(function (index, element) {
-        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media'), rows: $(this).prop("rows") };
+        var isHidden = $(this).is(":hidden");
+        var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media'), rows: $(this).attr("rows") };
         $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function(responseText, textStatus, jqXHR) {
-            tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
+            if (!isHidden) {
+                tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
+            }
         });
     });
 };

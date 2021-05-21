@@ -140,7 +140,7 @@ function getModuleVersion($moduleName, $guid)
     $versionFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$moduleName.'/version.php';
     if (is_file($versionFile)) {
         include $versionFile;
-       return $moduleVersion;
+       return ['moduleVersion' => $moduleVersion, 'coreVersion' => ($coreVersion ?? '')];
     } else {
         return false;
     }
@@ -164,7 +164,7 @@ function getThemeManifest($themeName, $guid)
         $manifestOK = ($name == $themeName);
     }
 
-    return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
+    return @compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'themeColours', 'manifestOK');
 }
 
 /**

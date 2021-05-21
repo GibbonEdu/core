@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$viewBy = isset($_POST['viewBy'])? $_POST['viewBy'] : '';
-$subView = isset($_POST['subView'])? $_POST['subView'] : '';
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$viewBy = $_POST['viewBy'] ?? '';
+$subView = $_POST['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = isset($_POST['gibbonCourseClassID'])? $_POST['gibbonCourseClassID'] : '';
-$date = isset($_POST['date'])? $_POST['date'] : '';
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$date = $_POST['date'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_delete.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/planner.php';
 

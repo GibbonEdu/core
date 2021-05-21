@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes from User Admin (for custom fields)
@@ -97,14 +98,16 @@ if ($proceed == false) {
     } else {
         $jobOpenings = $result->fetchAll();
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_jobOpenings_view.php'>".__('View Current Job Openings')."<img style='margin-left: 5px' title='".__('View Current Job Openings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
-        echo '</div>';
+        $customFieldHandler = $container->get(CustomFieldHandler::class);
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $form->addHeaderAction('view', __('View Current Job Openings'))
+            ->setURL('/modules/Staff/applicationForm_jobOpenings_view.php')
+            ->displayLabel();
 
         $form->addRow()->addHeading(__('Job Related Information'));
 
@@ -237,19 +240,10 @@ if ($proceed == false) {
                 $row->addSelectCountry('homeAddressCountry')->required();
         }
 
-        // CUSTOM FIELDS FOR STAFF
-        $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-        if ($resultFields->rowCount() > 0) {
-            $form->addRow()->addHeading(__('Other Information'));
-
-            while ($rowFields = $resultFields->fetch()) {
-                $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-                $row = $form->addRow();
-                    $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                    $row->addCustomField($name, $rowFields);
-            }
-        }
-
+        // CUSTOM FIELDS FOR USER: STAFF
+        $params = ['staff' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
+        $customFieldHandler->addCustomFieldsToForm($form, 'User', $params);
+        
         // REQURIED DOCUMENTS
         $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
 
@@ -303,6 +297,10 @@ if ($proceed == false) {
                 $row->addLabel('referenceEmail2', __('Referee 2'))->description(__('An email address for a second referee.'));
                 $row->addEmail('referenceEmail2')->required();
         }
+
+        // CUSTOM FIELDS FOR STAFF RECORD
+        $params = ['applicationForm' => 1, 'prefix' => 'customStaff'];
+        $customFieldHandler->addCustomFieldsToForm($form, 'Staff', $params);
 
         //AGREEMENT
         $agreement = getSettingByScope($connection2, 'Staff', 'staffApplicationFormAgreement');

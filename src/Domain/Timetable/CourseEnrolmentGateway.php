@@ -134,32 +134,32 @@ class CourseEnrolmentGateway extends QueryableGateway
     {
         $gibbonYearGroupIDList = is_array($gibbonYearGroupID)? implode(',', $gibbonYearGroupID) : $gibbonYearGroupID;
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS rollGroupName
+        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonPerson.status='Full'
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
-                ORDER BY rollGroupName, surname, preferredName";
+                ORDER BY formGroupName, surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
 
-    public function selectCourseEnrolmentByRollGroup($gibbonRollGroupID)
+    public function selectCourseEnrolmentByFormGroup($gibbonFormGroupID)
     {
-        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.name as rollGroup,
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFormGroup.name as formGroup,
                     (SELECT COUNT(*) FROM gibbonCourseClassPerson
                     JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                     JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                     WHERE gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID
-                    AND gibbonCourse.gibbonSchoolYearID=gibbonRollGroup.gibbonSchoolYearID
+                    AND gibbonCourse.gibbonSchoolYearID=gibbonFormGroup.gibbonSchoolYearID
                     AND gibbonCourseClassPerson.role = 'Student') AS classCount
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                WHERE gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID
+                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
                 AND gibbonPerson.status='Full'
                 ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
@@ -191,14 +191,18 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectClassParticipantsByDate($gibbonCourseClassID, $date)
+    public function selectClassParticipantsByDate($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
-        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'today' => date('Y-m-d')];
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'today' => date('Y-m-d')];
         $sql = "SELECT gibbonCourseClassPerson.*, gibbonPerson.*
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             LEFT JOIN (
-                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID 
+                FROM gibbonTTDayDate 
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) 
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                WHERE gibbonTTDayDate.date=:date AND gibbonTTColumnRow.timeStart>=:timeStart AND gibbonTTColumnRow.timeEnd<=:timeEnd) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND status='Full'
@@ -210,5 +214,68 @@ class CourseEnrolmentGateway extends QueryableGateway
             ORDER BY FIELD(role, 'Teacher', 'Assistant', 'Technician', 'Student', 'Parent'), surname, preferredName";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function selectClassesByPersonAndDate($gibbonSchoolYearID, $gibbonPersonID, $date)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'date' => $date];
+        $sql = "SELECT DISTINCT gibbonTT.gibbonTTID, gibbonTT.name, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort as classNameShort, gibbonTTColumnRow.name as columnName, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonCourse.name as courseName, gibbonCourse.nameShort as courseNameShort 
+            FROM gibbonTT 
+            JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) 
+            JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+            JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) 
+            JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) 
+            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+            WHERE gibbonPersonID=:gibbonPersonID 
+            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+            AND gibbonTT.active='Y' 
+            AND gibbonTTDayDate.date=:date 
+            AND gibbonCourseClassPerson.role='Student' 
+            ORDER BY gibbonTTColumnRow.timeStart ASC";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function unenrolAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID, $date = null)
+    {
+        $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => $date ?? date('Y-m-d'));
+        $sql = "UPDATE gibbonCourseClassPerson
+                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                SET role='Student - Left', dateUnenrolled=:dateUnenrolled
+                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupIDOriginal";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function updateAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID, $date = null)
+    {
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateEnrolled' => $date ?? date('Y-m-d'));
+        $sql = "UPDATE gibbonCourseClassPerson
+                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
+                    AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                SET gibbonCourseClassPerson.role='Student', gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
+                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function insertAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonPersonID, $date = null)
+    {
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID, 'gibbonPersonID' => $gibbonPersonID, 'dateEnrolled' => $date ?? date('Y-m-d'));
+        $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
+                SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', :dateEnrolled, 'Y'
+                FROM gibbonCourseClassMap
+                LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role='Student')
+                WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
+
+        return $this->db()->insert($sql, $data);
     }
 }

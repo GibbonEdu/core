@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -28,10 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
 
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
-    
+
     $page->breadcrumbs
         ->add(__('Medical Data Updates'), 'data_medical_manage.php', $urlParams)
         ->add(__('Edit Request'));
@@ -41,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     if ($gibbonPersonMedicalUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = "SELECT gibbonPersonMedical.* FROM gibbonPersonMedicalUpdate
                     LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID)
@@ -67,15 +68,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == true && !empty($oldValues['gibbonPersonMedicalID'])) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=".$oldValues['gibbonPersonMedicalID']."&search='>".__('Edit Medical Form')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Medical Form')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=".$oldValues['gibbonPersonMedicalID']."&search='>".__('Edit Medical Form')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Medical Form')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                 echo '</div>';
             }
 
             $compare = array(
-                'bloodType'                 => __('Blood Type'),
                 'longTermMedication'        => __('Long-Term Medication?'),
                 'longTermMedicationDetails' => __('Medication Details'),
-                'tetanusWithin10Years'      => __('Tetanus Within Last 10 Years?'),
                 'comment'      => __('Comment'),
             );
 
@@ -100,10 +99,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $result = $pdo->executeQuery(array(), $sql);
             $alerts = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-            $form = Form::createTable('updateMedical', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_editProcess.php?gibbonPersonMedicalUpdateID='.$gibbonPersonMedicalUpdateID);
+            $form = Form::createTable('updateMedical', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_medical_manage_editProcess.php?gibbonPersonMedicalUpdateID='.$gibbonPersonMedicalUpdateID);
 
             $form->setClass('fullWidth colorOddEven');
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $newValues['gibbonPersonID']);
             $form->addHiddenValue('formExists', !empty($oldValues['gibbonPersonMedicalID']));
 
@@ -158,6 +157,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             foreach ($compare as $fieldName => $label) {
                 $comparisonFields($form, $oldValues, $newValues, $fieldName, $label);
             }
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Medical Form', ['dataUpdater' => 1], $oldValues, $newValues);
 
             // Existing Conditions
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);

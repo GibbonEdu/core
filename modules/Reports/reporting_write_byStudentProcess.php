@@ -114,21 +114,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
             $data['value'] = $value;
         }
 
-        $updated = $reportingValueGateway->insertAndUpdate($data, [
-            'value' => $data['value'],
-            'comment' => $data['comment'],
-            'gibbonScaleGradeID' => $data['gibbonScaleGradeID'],
-            'gibbonPersonIDModified' => $gibbon->session->get('gibbonPersonID'),
-            'timestampModified' => date('Y-m-d H:i:s'),
-        ]);
-        $partialFail = !$updated;
+        $existing = $reportingValueGateway->selectBy(['gibbonReportingCriteriaID' => $data['gibbonReportingCriteriaID'], 'gibbonPersonIDStudent' => $data['gibbonPersonIDStudent']])->fetch();
+
+        if (!empty($existing)) {
+            $updated = $reportingValueGateway->update($existing['gibbonReportingValueID'], $data + [
+                'value' => $data['value'],
+                'comment' => $data['comment'],
+                'gibbonScaleGradeID' => $data['gibbonScaleGradeID'],
+                'gibbonPersonIDModified' => $gibbon->session->get('gibbonPersonID'),
+                'timestampModified' => date('Y-m-d H:i:s'),
+            ]);
+            $partialFail = !$updated;
+        } else {
+            $inserted = $reportingValueGateway->insert($data);
+            $partialFail = !$inserted;
+        }
     }
 
     // Update progress
     $dataProgress = [
         'gibbonReportingScopeID' => $urlParams['gibbonReportingScopeID'],
         'gibbonYearGroupID'      => $reportingScope['scopeType'] == 'Year Group' ? $urlParams['scopeTypeID'] : null,
-        'gibbonRollGroupID'      => $reportingScope['scopeType'] == 'Roll Group' ? $urlParams['scopeTypeID'] : null,
+        'gibbonFormGroupID'      => $reportingScope['scopeType'] == 'Form Group' ? $urlParams['scopeTypeID'] : null,
         'gibbonCourseClassID'    => $reportingScope['scopeType'] == 'Course' ? $urlParams['scopeTypeID'] : '',
         'gibbonPersonIDStudent'  => $gibbonPersonIDStudent,
         'status'               => !empty($_POST['complete'])? 'Complete' : 'In Progress',

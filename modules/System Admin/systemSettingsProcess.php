@@ -47,7 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             'organisationNameShort' => 'required',
             'organisationEmail' => 'required',
             'organisationLogo' => 'requiredFile',
-            'organisationBackground' => '',
             'organisationAdministrator' => 'required',
             'organisationDBA' => 'required',
             'organisationHR' => 'required',
@@ -106,18 +105,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $_POST['organisationLogo'] = $fileUploader->uploadFromPost($file, 'logo');
 
         if (empty($_POST['organisationLogo'])) {
-            $partialFail = true;
-        }
-    }
-
-    // Move attached background file, if there is one
-    if (!empty($_FILES['organisationBackgroundFile']['tmp_name'])) {
-        $file = $_FILES['organisationBackgroundFile'] ?? null;
-
-        // Upload the file, return the /uploads relative path
-        $_POST['organisationBackground'] = $fileUploader->uploadFromPost($file, 'background');
-
-        if (empty($_POST['organisationBackground'])) {
             $partialFail = true;
         }
     }

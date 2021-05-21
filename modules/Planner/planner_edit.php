@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-        $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+        $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
         //Check if school year specified
         $gibbonCourseClassID = null;

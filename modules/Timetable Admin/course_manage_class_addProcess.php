@@ -17,14 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\CustomFieldHandler;
+
 include '../../gibbon.php';
 
-$name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$reportable = $_POST['reportable'];
-$attendance = (isset($_POST['attendance']))? $_POST['attendance'] : 'N';
+$name = $_POST['name'] ?? '';
+$nameShort = $_POST['nameShort'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$reportable = $_POST['reportable'] ?? '';
+$attendance = $_POST['attendance'] ?? 'N';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
@@ -50,14 +52,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             exit();
         }
 
+        $customRequireFail = false;
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Class', [], $customRequireFail);
+
+        if ($customRequireFail) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+
         if ($result->rowCount() > 0) {
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
             //Write to database
             try {
-                $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance);
-                $sql = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance';
+                $data = array('gibbonCourseID' => $gibbonCourseID, 'name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'fields' => $fields);
+                $sql = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance, fields=:fields';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

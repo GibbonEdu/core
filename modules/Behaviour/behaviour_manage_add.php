@@ -44,14 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $gibbonBehaviourID = isset($_GET['gibbonBehaviourID'])? $_GET['gibbonBehaviourID'] : null;
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
         $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
         $type = isset($_GET['type'])? $_GET['type'] : '';
 
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type;
+            $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$_GET['editID'].'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type;
             $editID = $_GET['editID'];
         }
 
@@ -73,15 +73,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             if ($policyLink != '') {
                 echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
             }
-            if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '' or $type != '') {
+            if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '' or $type != '') {
                 if ($policyLink != '') {
                     echo ' | ';
                 }
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__('Back to Search Results').'</a>';
             }
             echo '</div>';
 
-            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
+            $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
             $form->addRow()->addHeading(__('Step 1'));
@@ -89,12 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
-            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->required();
+            	$row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($gibbonPersonID)->required();
 
             //Date
             $row = $form->addRow();
-            	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
+            	$row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+            	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
             //Type
             $row = $form->addRow();
@@ -163,9 +163,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 echo '</div>';
             } else {
                 //Check for existence of behaviour record
-                
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonBehaviourID' => $gibbonBehaviourID);
-                    $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
+
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonBehaviourID' => $gibbonBehaviourID);
+                    $sql = "SELECT * FROM gibbonBehaviour JOIN gibbonPerson ON (gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonBehaviourID=:gibbonBehaviourID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 if ($result->rowCount() != 1) {
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 } else {
                     $values = $result->fetch();
 
-                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL'].'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
+                    $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=2&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                     $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
@@ -190,16 +190,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     //Lessons
                     $lessons = array();
                     $minDate = date('Y-m-d', (time() - (24 * 60 * 60 * 30)));
-                    
-                        $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $values['gibbonPersonID']);
+
+                        $dataSelect = array('date1' => date('Y-m-d', time()), 'date2' => $minDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $values['gibbonPersonID']);
                         $sqlSelect = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.name AS lesson, gibbonPlannerEntryID, date, homework, homeworkSubmission FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonPlannerEntry ON (gibbonCourseClass.gibbonCourseClassID=gibbonPlannerEntry.gibbonCourseClassID) WHERE (date<=:date1 AND date>=:date2) AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' ORDER BY course, class, date DESC, timeStart";
                         $resultSelect = $connection2->prepare($sqlSelect);
                         $resultSelect->execute($dataSelect);
                     while ($rowSelect = $resultSelect->fetch()) {
                         $show = true;
                         if ($highestAction == 'Manage Behaviour Records_my') {
-                            
-                                $dataShow = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
+
+                                $dataShow = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $rowSelect['gibbonCourseClassID']);
                                 $sqlShow = "SELECT * FROM gibbonCourseClassPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND role='Teacher'";
                                 $resultShow = $connection2->prepare($sqlShow);
                                 $resultShow->execute($dataShow);

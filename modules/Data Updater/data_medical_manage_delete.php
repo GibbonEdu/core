@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     if ($gibbonPersonMedicalUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
             $sql = 'SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
             $result = $connection2->prepare($sql);
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_medical_manage_deleteProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_medical_manage_deleteProcess.php?gibbonPersonMedicalUpdateID=$gibbonPersonMedicalUpdateID");
 	        echo $form->getOutput();
         }
     }

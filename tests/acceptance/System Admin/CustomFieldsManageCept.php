@@ -9,7 +9,7 @@ $I->clickNavigation('Add');
 $I->seeBreadcrumb('Add Custom Field');
 
 $addFormValues = array(
-    'context'               => 'Person',
+    'context'               => 'User',
     'name'                  => 'Test Field',
     'active'                => 'Y',
     'description'           => 'For Testing',
@@ -37,7 +37,7 @@ $I->seeCheckboxIsChecked('input[type=checkbox][value=activePersonStudent]');
 $I->seeCheckboxIsChecked('input[type=checkbox][value=activePersonOther]');
 
 $editFormValues = array(
-    'context'               => 'Person',
+    'context'               => 'User',
     'name'                  => 'Test Field!',
     'active'                => 'N',
     'description'           => 'For Testing?',

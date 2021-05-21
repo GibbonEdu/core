@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
             echo '</div>';
         } else {
             list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
-            $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
+            $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
             //Check if school year specified
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];

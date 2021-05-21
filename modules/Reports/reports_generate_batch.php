@@ -70,14 +70,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 
     $bulkActions = array(
         'Generate' => __('Generate'),
+        'Delete' => __('Delete'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addSelect('status')
             ->fromArray(['Draft' => __('Draft'), 'Final' => __('Final')])
             ->required()
-            ->setClass('w-32');
+            ->setClass('status w-32');
         $col->addSubmit(__('Go'));
+
+    $form->toggleVisibilityByClass('status')->onSelect('action')->when('Generate');
 
     // Data TABLE
     $table = $form->addRow()->addDataTable('reportsGenerate', $criteria)->withData($reports);

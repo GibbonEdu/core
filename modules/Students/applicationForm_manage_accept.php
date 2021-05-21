@@ -22,6 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -127,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
-                if (!empty($values['gibbonRollGroupID'])) {
-                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
+                if (!empty($values['gibbonFormGroupID'])) {
+                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
                 if (!empty($values['gibbonFamilyID']) || !empty($linkedApplication['gibbonFamilyID'])) {
@@ -146,19 +148,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $list->wrap('<ol>', '</ol>');
 
                 // Handle optional auto-enrol feature
-                if (!empty($values['gibbonRollGroupID'])) {
-                    $data = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonRollGroupID=:gibbonRollGroupID";
+                if (!empty($values['gibbonFormGroupID'])) {
+                    $data = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                    $sql = "SELECT COUNT(*) FROM gibbonCourseClassMap WHERE gibbonFormGroupID=:gibbonFormGroupID";
                     $resultClassMap = $pdo->executeQuery($data, $sql);
                     $classMapCount = ($resultClassMap->rowCount() > 0)? $resultClassMap->fetchColumn(0) : 0;
 
-                    // Student has a roll group and mapped classes exist
+                    // Student has a form group and mapped classes exist
                     if ($classMapCount > 0) {
                         $autoEnrolStudent = (getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses') == 'Y');
 
                         $col->addContent(__('The system can optionally perform the following actions:'))->wrap('<i><u>', '</u></i>');
                         $col->addCheckbox('autoEnrolStudent')
-                            ->description(__('Automatically enrol student in classes for Roll Group.'))
+                            ->description(__('Automatically enrol student in classes for Form Group.'))
                             ->inline(true)
                             ->setValue('Y')
                             ->checked($autoEnrolStudent? 'Y' : 'N')
@@ -170,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
                 $list = $col->addContent();
 
-                if (empty($values['gibbonRollGroupID'])) {
-                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
+                if (empty($values['gibbonFormGroupID'])) {
+                    $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a form group).').'</li>');
                 }
 
                 $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')
@@ -275,12 +277,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $resultYearGroup->execute($dataYearGroup);
                 $yearGroupName = ($resultYearGroup->rowCount() == 1)? $resultYearGroup->fetchColumn(0) : '';
 
-                // Get student's roll group info (if any)
-                $dataRollGroup = array('gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                $sqlRollGroup = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                $resultRollGroup = $connection2->prepare($sqlRollGroup);
-                $resultRollGroup->execute($dataRollGroup);
-                $rollGroupName = ($resultRollGroup->rowCount() == 1)? $resultRollGroup->fetchColumn(0) : '';
+                // Get student's form group info (if any)
+                $dataFormGroup = array('gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                $sqlFormGroup = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
+                $resultFormGroup = $connection2->prepare($sqlFormGroup);
+                $resultFormGroup->execute($dataFormGroup);
+                $formGroupName = ($resultFormGroup->rowCount() == 1)? $resultFormGroup->fetchColumn(0) : '';
 
                 //Email website and email address to admin for creation
                 if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
@@ -302,8 +304,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
                         $body .= __('Year Group').': '.$yearGroupName."<br/>";
                     }
-                    if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
-                        $body .= __('Roll Group').': '.$rollGroupName."<br/>";
+                    if ($values['gibbonFormGroupID'] != '' && !empty($formGroupName)) {
+                        $body .= __('Form Group').': '.$formGroupName."<br/>";
                     }
                     if ($values['dateStart'] != '') {
                         $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
@@ -377,8 +379,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($continueLoop == false) {
                     $insertOK = true;
                     try {
-                        $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $values['studentID'], 'fields' => $values['fields']);
-                        $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status=:status, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, studentID=:studentID, fields=:fields";
+                        $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $values['studentID'], 'fields' => $values['fields']);
+                        $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status=:status, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, studentID=:studentID, fields=:fields";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -398,6 +400,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $informStudentArray[0]['username'] = $username;
                             $informStudentArray[0]['password'] = $password;
                         }
+
+                        // Update personal document ownership
+                        $container->get(PersonalDocumentGateway::class)->updatePersonalDocumentOwnership('gibbonApplicationForm', $gibbonApplicationFormID, 'gibbonPerson', $gibbonPersonID);
                     }
                 }
 
@@ -446,11 +451,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     //Enrol student
                     $enrolmentOK = true;
-                    if ($values['gibbonRollGroupID'] != '') {
+                    if ($values['gibbonFormGroupID'] != '') {
                         if ($gibbonPersonID != '' and $values['gibbonSchoolYearIDEntry'] != '' and $values['gibbonYearGroupIDEntry'] != '') {
                             try {
-                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonRollGroupID' => $values['gibbonRollGroupID']);
-                                $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonRollGroupID=:gibbonRollGroupID';
+                                $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $values['gibbonSchoolYearIDEntry'], 'gibbonYearGroupID' => $values['gibbonYearGroupIDEntry'], 'gibbonFormGroupID' => $values['gibbonFormGroupID']);
+                                $sql = 'INSERT INTO gibbonStudentEnrolment SET gibbonPersonID=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonYearGroupID=:gibbonYearGroupID, gibbonFormGroupID=:gibbonFormGroupID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -471,27 +476,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo 'Student Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and roll group.').'</li>';
+                            echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and form group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
-                            $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
+                            $autoEnrolStudent = $_POST['autoEnrolStudent'] ?? 'N';
                             if ($autoEnrolStudent == 'Y') {
-                                $data = array(
-                                    'gibbonRollGroupID' => $values['gibbonRollGroupID'],
-                                    'gibbonPersonID' => $gibbonPersonID,
-                                    'gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry'],
-                                );
+                                $enrolmentDate = $pdo->selectOne("SELECT GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE)", ['gibbonSchoolYearIDEntry' => $values['gibbonSchoolYearIDEntry']]);
 
-                                $sql = "INSERT INTO gibbonCourseClassPerson (`gibbonCourseClassID`, `gibbonPersonID`, `role`, `dateEnrolled`, `reportable`)
-                                        SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, 'Student', GREATEST((SELECT firstDay FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry), CURRENT_DATE), 'Y'
-                                        FROM gibbonCourseClassMap
-                                        WHERE gibbonCourseClassMap.gibbonRollGroupID=:gibbonRollGroupID";
-                                $pdo->executeQuery($data, $sql);
+                                $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($values['gibbonFormGroupID'], $gibbonPersonID, $enrolmentDate);
 
-                                if (!$pdo->getQuerySuccess()) {
+                                if (!$inserted) {
                                     echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enrolled in courses for Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enrolled in courses for Form Group.').'</li>';
                                 }
                             }
 
@@ -1134,11 +1131,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $event = new NotificationEvent('Students', 'Application Form Accepted');
 
                     $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
-                    $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
+                    $studentGroup = (!empty($formGroupName))? $formGroupName : $yearGroupName;
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
-                    if ($enrolmentOK && !empty($values['gibbonRollGroupID'])) {
-                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and roll group.');
+                    if ($enrolmentOK && !empty($values['gibbonFormGroupID'])) {
+                        $notificationText .= ' '.__('The student has successfully been enrolled in the specified school year, year group and form group.');
                     } else {
                         $notificationText .= ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');
                     }

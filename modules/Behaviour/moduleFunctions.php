@@ -61,7 +61,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Behaviour/behaviour_manage_add.php')
                         ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->addParam('gibbonRollGroupID', '')
+                        ->addParam('gibbonFormGroupID', '')
                         ->addParam('gibbonYearGroupID', '')
                         ->addParam('type', '')
                         ->displayLabel();
@@ -101,7 +101,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                         return Format::date($beahviour['timestamp']);
                     }
                 });
-            
+
             $table->addColumn('type', __('Type'))
                 ->width('5%')
                 ->format(function($beahviour) use ($guid) {
@@ -115,11 +115,11 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             if ($enableDescriptors == 'Y') {
                 $table->addColumn('descriptor', __('Descriptor'));
             }
-    
+
             if ($enableLevels == 'Y') {
                 $table->addColumn('level', __('Level'))->width('15%');
             }
-    
+
             $table->addColumn('teacher', __('Teacher'))
                 ->sortable(['preferredNameCreator', 'surnameCreator'])
                 ->width('25%')
@@ -129,10 +129,10 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
-                
+
                 $table->addActionColumn()
                     ->addParam('gibbonPersonID', $gibbonPersonID)
-                    ->addParam('gibbonRollGroupID', '')
+                    ->addParam('gibbonFormGroupID', '')
                     ->addParam('gibbonYearGroupID', '')
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')

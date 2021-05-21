@@ -149,8 +149,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $responsible = !empty($item['surnameResponsible'])
                 ? Format::name($item['titleResponsible'], $item['preferredNameResponsible'], $item['surnameResponsible'], 'Student')
                 : '';
-            $responsible .= !empty($item['rollGroup'])
-                ? ' ('.$item['rollGroup'].')'
+            $responsible .= !empty($item['formGroup'])
+                ? ' ('.$item['formGroup'].')'
                 : '';
             return '<b>' . __($item['status']) . '</b><br/>' . Format::small($responsible);
         });

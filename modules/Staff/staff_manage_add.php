@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     // Access denied
@@ -106,6 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $row = $form->addRow();
         $row->addLabel('biography', __('Biography'));
         $row->addTextArea('biography')->setRows(10);
+
+    // Custom Fields
+    $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Staff', []);
 
     $row = $form->addRow();
         $row->addFooter();

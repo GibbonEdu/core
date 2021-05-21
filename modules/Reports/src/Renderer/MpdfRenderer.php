@@ -299,7 +299,7 @@ class MpdfRenderer implements ReportRendererInterface
 
         // Add a page with odd-numbered reports for two-sided printing
         if ($this->hasMode(self::OUTPUT_TWO_SIDED)) {
-            if ($this->pdf->getPageNumber() % 2 != 0) {
+            if ($this->getPageNumber() % 2 != 0) {
                 $this->pdf->SetHTMLHeaderByName('header0', 'O');
                 $this->pdf->SetHTMLFooterByName('footer0', 'O');
                 $this->pdf->AddPageByArray([
@@ -328,7 +328,7 @@ class MpdfRenderer implements ReportRendererInterface
     {
         if (empty($this->headers)) return;
 
-        $docPageNum = $forceFirst ? 0 : $this->pdf->getPageNumber();
+        $docPageNum = $forceFirst ? 0 : $this->getPageNumber();
         $pageNum = $this->lastPage && !($docPageNum == 1) ? -1 : $docPageNum + 1;
 
         $defaultHeader = isset($this->headers[0])? 'header0' : false;
@@ -341,7 +341,7 @@ class MpdfRenderer implements ReportRendererInterface
     {
         if (empty($this->footers)) return;
 
-        $docPageNum = max($this->pdf->getPageNumber(), 1);
+        $docPageNum = max($this->getPageNumber(), 1);
         $pageNum = $this->lastPage || $forceLast ? -1 : $docPageNum;
         $defaultFooter = isset($this->footers[0])? 'footer0' : false;
         $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;
@@ -391,5 +391,10 @@ class MpdfRenderer implements ReportRendererInterface
         }
 
         return $filename;
+    }
+
+    protected function getPageNumber()
+    {
+        return max(0, $this->pdf->docPageNum($this->pdf->page));
     }
 }

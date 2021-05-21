@@ -60,13 +60,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             'comment'           => $_POST['comment'] ?? ''
         ];
 
-        // Validate the required values are present
-        if (empty($data['cognition'])) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-            exit;
-        }
-
         // Update the record
         $updated = $contributionsGateway->update($gibbonINInvestigationContributionID, $data);
 

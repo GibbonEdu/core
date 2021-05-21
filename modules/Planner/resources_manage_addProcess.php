@@ -39,20 +39,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             exit;
         } else {
             //Proceed!
-            $type = $_POST['type'];
+            $type = $_POST['type'] ?? '';
             if ($type == 'File') {
-                $content = $_FILES['file'];
+                $content = $_FILES['file'] ?? '';
             } elseif ($type == 'HTML') {
-                $content = $_POST['html'];
+                $content = $_POST['html'] ?? '';
             } elseif ($type == 'Link') {
-                $content = $_POST['link'];
+                $content = $_POST['link'] ?? '';
             }
-            $name = $_POST['name'];
-            $category = $_POST['category'];
-            $purpose = $_POST['purpose'];
-            $tags = strtolower($_POST['tags']);
-            $gibbonYearGroupIDList = (!empty($_POST['gibbonYearGroupID']))? implode(',', $_POST['gibbonYearGroupID']) : '';
-            $description = $_POST['description'];
+            $name = $_POST['name'] ?? '';
+            $category = $_POST['category'] ?? '';
+            $purpose = $_POST['purpose'] ?? '';
+            $tags = strtolower($_POST['tags'] ?? '');
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID'] ?? '');
+            $description = $_POST['description'] ?? '';
 
             if (($type != 'File' and $type != 'HTML' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '') {
                 $URL .= '&return=error1';

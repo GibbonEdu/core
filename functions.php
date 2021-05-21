@@ -378,10 +378,12 @@ function getFastFinder($connection2, $guid)
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
             ->setClass('w-full text-white flex items-center')
+            ->setAria('label', __('Search'))
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
             ->setParameter('tokenLimit', 1)
+            ->setParameter('arialabel', __('Fast Finder'))
             ->addValidation('Validate.Presence', 'failureMessage: " "')
             ->append('<input type="submit" style="height:34px;padding:0 1rem;" value="'.__('Go').'">');
 
@@ -1524,19 +1526,19 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
-//Take a roll group, and return the next one, or false if none
-function getNextRollGroupID($gibbonRollGroupID, $connection2)
+//Take a form group, and return the next one, or false if none
+function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;
 
-        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-        $sql = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+        $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
+        $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        if (!is_null($row['gibbonRollGroupIDNext'])) {
-            $output = $row['gibbonRollGroupIDNext'];
+        if (!is_null($row['gibbonFormGroupIDNext'])) {
+            $output = $row['gibbonFormGroupIDNext'];
         }
     }
 

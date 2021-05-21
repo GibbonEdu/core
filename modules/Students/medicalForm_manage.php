@@ -81,17 +81,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('rollGroup', __('Roll Group'));
-
-    $table->addColumn('bloodType', __('Blood Type'));
+    $table->addColumn('formGroup', __('Form Group'));
 
     $table->addColumn('longTermMedication', __('Medication'))
         ->format(function($person) {
             return !empty($person['longTermMedicationDetails'])? $person['longTermMedicationDetails'] : Format::yesNo($person['longTermMedication']);
         });
-
-    $table->addColumn('tetanusWithin10Years', __('Tetanus'))
-        ->format(Format::using('yesNo', 'tetanusWithin10Years'));
 
     $table->addColumn('conditionCount', __('Conditions'));
 

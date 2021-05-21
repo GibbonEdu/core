@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\CustomFieldHandler;
+
 include '../../gibbon.php';
 
-$gibbonCourseID = $_GET['gibbonCourseID'];
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_edit.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_edit.php') == false) {
@@ -53,13 +55,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             } else {
                 $gibbonDepartmentID = null;
             }
-            $name = $_POST['name'];
-            $nameShort = $_POST['nameShort'];
-            $orderBy = $_POST['orderBy'];
-            $description = $_POST['description'];
-            $map = $_POST['map'];
-            $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-            $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? implode(',', $_POST['gibbonYearGroupIDList']) : '';
+            $name = $_POST['name'] ?? '';
+            $nameShort = $_POST['nameShort'] ?? '';
+            $orderBy = $_POST['orderBy'] ?? '';
+            $description = $_POST['description'] ?? '';
+            $map = $_POST['map'] ?? '';
+            $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+            $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
 
             if ($name == '' or $nameShort == '' or $gibbonSchoolYearID == '' or $map == '') {
                 $URL .= '&return=error3';
@@ -77,14 +79,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     exit();
                 }
 
+                $customRequireFail = false;
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Course', [], $customRequireFail);
+
+                if ($customRequireFail) {
+                    $URL .= '&return=error1';
+                    header("Location: {$URL}");
+                    exit;
+                }
+
                 if ($result->rowCount() > 0) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
                     try {
-                        $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'UPDATE gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList WHERE gibbonCourseID=:gibbonCourseID';
+                        $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'nameShort' => $nameShort, 'orderBy' => $orderBy, 'description' => $description, 'map' => $map, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'fields' => $fields, 'gibbonCourseID' => $gibbonCourseID);
+                        $sql = 'UPDATE gibbonCourse SET gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, orderBy=:orderBy, description=:description, map=:map, gibbonYearGroupIDList=:gibbonYearGroupIDList, fields=:fields WHERE gibbonCourseID=:gibbonCourseID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

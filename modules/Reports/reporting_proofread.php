@@ -41,11 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
     $mode = $_GET['mode'] ?? 'Person';
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $override = $_GET['override'] ?? 'N';
 
+    $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override');
+
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
-    if ($mode == 'Roll Group' && !empty($gibbonRollGroupID)) $proofReview = false;
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) $proofReview = false;
 
     $reportingProofGateway = $container->get(ReportingProofGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
@@ -68,20 +70,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
     
-    $modes = ['Person' => __('Person'), 'Roll Group' => __('Roll Group')];
+    $modes = ['Person' => __('Person'), 'Form Group' => __('Form Group')];
     $row = $form->addRow();
         $row->addLabel('mode', __('Proof Read By'));
         $row->addSelect('mode')->fromArray($modes)->selected($mode);
 
     $form->toggleVisibilityByClass('personMode')->onSelect('mode')->when('Person');
-    $form->toggleVisibilityByClass('rollGroupMode')->onSelect('mode')->when('Roll Group');
+    $form->toggleVisibilityByClass('formGroupMode')->onSelect('mode')->when('Form Group');
 
     
 
     if ($highestAction == 'Proof Read_all') {
-        $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->required()->selected($gibbonRollGroupID);
+        $row = $form->addRow()->addClass('formGroupMode');
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->required()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -103,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
 
         $staff = [];
-        $rollGroups = [];
+        $formGroups = [];
 
         foreach ($reportingScopes as $scope) {
             if ($scope['canProofRead'] != 'Y') continue;
@@ -120,8 +122,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 }, []);
             }
 
-            $rollGroupsByScope = $reportingAccessGateway->selectAccessibleRollGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
-            $rollGroups = array_merge($rollGroups, $rollGroupsByScope);
+            $formGroupsByScope = $reportingAccessGateway->selectAccessibleFormGroupsByReportingScope($scope['gibbonReportingScopeID'])->fetchKeyPair();
+            $formGroups = array_merge($formGroups, $formGroupsByScope);
         }
 
         // Prevent access if the staff list is empty
@@ -135,11 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $staff[$gibbon->session->get('gibbonPersonID')] = Format::name('', $gibbon->session->get('preferredName'), $gibbon->session->get('surname'), 'Staff', true, true);
         }
 
-        asort($rollGroups, SORT_NATURAL);
+        asort($formGroups, SORT_NATURAL);
         
-        $row = $form->addRow()->addClass('rollGroupMode');
-            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-            $row->addSelect('gibbonRollGroupID')->fromArray($rollGroups)->required()->placeholder()->selected($gibbonRollGroupID);
+        $row = $form->addRow()->addClass('formGroupMode');
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelect('gibbonFormGroupID')->fromArray($formGroups)->required()->placeholder()->selected($gibbonFormGroupID);
 
         $row = $form->addRow()->addClass('personMode');
             $row->addLabel('gibbonPersonID', __('Person'));
@@ -157,11 +159,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
 
+    $totalCriteria = $reportingProofGateway->newQueryCriteria()->pageSize(0);
+    $criteria = $reportingProofGateway->newQueryCriteria()
+        ->page($_REQUEST['page'] ?? 1)
+        ->pageSize(25);
+
     // Get criteria that needs or has proof reading
-    if ($mode == 'Roll Group' && !empty($gibbonRollGroupID)) {
-        $proofReading = $reportingProofGateway->selectProofReadingByRollGroup($gibbonSchoolYearID, $gibbonRollGroupID)->fetchAll();
+    if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) {
+        $proofsTotal = $reportingProofGateway->queryProofReadingByFormGroup($totalCriteria, $gibbonSchoolYearID, $gibbonFormGroupID)->toArray();
+        $proofsPaginated = $reportingProofGateway->queryProofReadingByFormGroup($criteria, $gibbonSchoolYearID, $gibbonFormGroupID);
+        $proofReading = $proofsPaginated->toArray();
     } elseif ($mode == 'Person' && !empty($gibbonPersonID)) {
-        $proofReading = $reportingProofGateway->selectProofReadingByPerson($gibbonSchoolYearID, $gibbonPersonID, $reportingScopeIDs ?? [])->fetchAll();
+        $proofsTotal = $reportingProofGateway->queryProofReadingByPerson($totalCriteria, $gibbonSchoolYearID, $gibbonPersonID, $reportingScopeIDs ?? [])->toArray();
+        $proofsPaginated = $reportingProofGateway->queryProofReadingByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID, $reportingScopeIDs ?? []);
+        $proofReading = $proofsPaginated->toArray();
     }
 
     if (count($proofReading) == 0) {
@@ -169,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return;
     }
 
-    $ids = array_column($proofReading ?? [], 'gibbonReportingValueID');
+    $ids = array_column($proofsTotal ?? [], 'gibbonReportingValueID');
     $proofs = $reportingProofGateway->selectProofsByValueID($ids)->fetchGroupedUnique();
     $proofsDone = array_reduce($proofs, function ($total, $item) {
         return $item['status'] == 'Done' || $item['status'] == 'Accepted' ? $total+1 : $total;
@@ -178,10 +189,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [ 
         'canWriteReport' => true,
         'reportingOpen' => true,
-        'totalCount' => count($proofReading),
+        'totalCount' => count($proofsTotal),
         'progressCount' => $proofsDone,
         'partialCount' => max(0, count($proofs) - $proofsDone),
         'progressColour' => 'green',
+    ]);
+
+    echo $page->fetchFromTemplate('ui/pagination.twig.html', [
+        'dataSet' => $proofsPaginated,
+        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
     ]);
 
     $form = Form::createTable('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
@@ -189,10 +205,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->setTitle(__('Comments'));
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
-    $form->addHiddenValue('gibbonRollGroupID', $gibbonRollGroupID);
+    $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     $form->addHiddenValue('override', $override);
     $form->addHiddenValue('mode', $mode);
+    $form->addHiddenValue('page', $_REQUEST['page'] ?? 1);
     $form->addClass(' blank');
 
     $differ = new TextDiff();
@@ -252,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 $actions = ['Accepted' => __('Accept').'&nbsp;&nbsp;', 'Declined' => __('Decline').'&nbsp;&nbsp;', 'Revised' => __('Edit Comment').'&nbsp;&nbsp;'];
             } else {
                 $section->addContent($criteria['comment'])
-                    ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-4">', '</div>');
+                    ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-6">', '</div>');
                     
                 $actions = ['Revised' => __('Edit Comment').'&nbsp;&nbsp;'];
             }
@@ -263,7 +280,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
                 ->checkName($criteria['preferredName'])
                 ->checkPronouns($criteria['gender'])
-                ->setClass('flex w-full reportCriteria text-base font-sans')
+                ->setClass('flex flex-col w-full reportCriteria text-base font-sans')
+                ->addClass('comment'.$gibbonReportingValueID)
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
                 ->setValue($proof['status'] == 'Edited' ? $proof['comment'] : $criteria['comment']);
@@ -289,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 : htmlPrep($criteria['comment']);
 
             $section->addContent($proofText)
-                    ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-4">', '</div>');
+                    ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-6">', '</div>');
 
             $form->toggleVisibilityByClass('comment'.$gibbonReportingValueID)->onRadio("status[{$gibbonReportingValueID}]")->when('Edited');
 
@@ -297,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             $col->addCommentEditor("comment[{$gibbonReportingValueID}]")
                 ->checkName($criteria['preferredName'])
                 ->checkPronouns($criteria['gender'])
-                ->setClass('flex reportCriteria text-base font-sans')
+                ->setClass('flex flex-col reportCriteria text-base font-sans')
                 ->addClass('comment'.$gibbonReportingValueID)
                 ->setID("comment{$gibbonReportingValueID}")
                 ->maxLength($criteria['characterLimit'])
@@ -326,16 +344,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     }
 
     echo $form->getOutput();
+
+    echo $page->fetchFromTemplate('ui/pagination.twig.html', [
+        'dataSet' => $proofsPaginated,
+        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
+    ]);
 }
 ?>
 
 <script>
 $('input.statusInput').change(function() {
-    console.log($(this).data('id'));
-    console.log($(this).val());
-
     var details = $(this).parents('details').first();
-    console.log(details);
 
     if ($(this).val() == 'Done' || $(this).val() == 'Accepted') {
         details.removeClass('message bg-blue-100').removeClass('error bg-red-100');
@@ -350,6 +369,11 @@ $('input.statusInput').change(function() {
         details.addClass('error bg-red-100');
         details.find('textarea').attr('readonly', false);
     }
+
+    window.onbeforeunload = function(event) {
+        if (event.explicitOriginalTarget.value=='Save') return;
+        return "<?php echo __('There are unsaved changes on this page.') ?>";
+    };
 });
 
 </script>

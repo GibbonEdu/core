@@ -26,7 +26,7 @@ $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss_post.php') == false) {
     $URL .= '&return=error0';
@@ -78,15 +78,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         header("Location: {$URL}");
                     } else {
                         //INSERT
-                        $replyTo = $_GET['replyTo'] ?? '';
-
+                        $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
 
                         //Attempt to prevent XSS attack
                         $comment = $_POST['comment'] ?? '';
+                        $comment = trim(preg_replace('/^<p>|<\/p>$/i', '', $comment));
                         $comment = tinymceStyleStripTags($comment, $connection2);
 
                         try {
-                            $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'comment' => $comment, 'replyTo' => $replyTo);
+                            $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
                             $sql = 'INSERT INTO gibbonCrowdAssessDiscuss SET gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonCrowdAssessDiscussIDReplyTo=:replyTo';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             header("Location: {$URL}");
                             exit();
                         }
-                        $hash = '#'.($_GET['replyTo'] ?? '');
+                        $hash = '#'.($_GET['replyTo'] ?? null);
 
 
                         //Work out who we are replying too
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
 
                         //Create notification for homework owner, as long as it is not me.
-                        if ($gibbonPersonID != $_SESSION[$guid]['gibbonPersonID'] and $gibbonPersonID != $replyToID) {
+                        if ($gibbonPersonID != $session->get('gibbonPersonID') and $gibbonPersonID != $replyToID) {
                             $notificationText = __('Someone has commented on your {homeworkName} for lesson plan "{lessonName}".', ['lessonName' => $name, 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]);
                             setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Crowd Assessment', "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID");
                         }

@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\CustomFieldHandler;
+
 include '../../gibbon.php';
 
-$gibbonFirstAidID = $_GET['gibbonFirstAidID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
+$gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_edit.php') == false) {
     $URL .= '&return=error0';
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                     JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
                     JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
                     JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFirstAidID=:gibbonFirstAidID";
             $result = $connection2->prepare($sql);
@@ -57,11 +59,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $row = $result->fetch();
             $gibbonPersonID = $row['gibbonPersonIDFirstAider'];
             $timeOut = (!empty($_POST['timeOut'])) ? $_POST['timeOut'] : null;
-            $followUp = $_POST['followUp'];
+            $followUp = $_POST['followUp'] ?? '';
+
+            $customRequireFail = false;
+            $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('First Aid', [], $customRequireFail);
+
+            if ($customRequireFail) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+                exit;
+            }
 
             try {
-                $data = array('timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID);
-                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut WHERE gibbonFirstAidID=:gibbonFirstAidID';
+                $data = array('timeOut' => $timeOut, 'gibbonFirstAidID' => $gibbonFirstAidID, 'fields' => $fields);
+                $sql = 'UPDATE gibbonFirstAid SET timeOut=:timeOut, fields=:fields WHERE gibbonFirstAidID=:gibbonFirstAidID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

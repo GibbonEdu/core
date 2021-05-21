@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria()
-        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
+        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort'])
         ->fromPOST();
 
     $privacyChoices = $reportGateway->queryStudentPrivacyChoices($criteria, $gibbonSchoolYearID);
@@ -59,9 +59,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $table->setTitle(__('Privacy Choices by Student'));
 
     $table->addRowCountColumn($privacyChoices->getPageFrom());
-    $table->addColumn('rollGroup', __('Roll Group'))
+    $table->addColumn('formGroup', __('Form Group'))
         ->context('secondary')
-        ->sortable(['gibbonYearGroup.sequenceNumber', 'rollGroup']);
+        ->sortable(['gibbonYearGroup.sequenceNumber', 'formGroup']);
 
     $table->addColumn('image_240', __('Student'))
         ->context('primary')

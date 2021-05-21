@@ -19,12 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Messenger;
 
-use Gibbon\Services\BackgroundProcess;
-use Gibbon\Contracts\Database\Connection;
-use League\Container\ContainerAwareInterface;
-use League\Container\ContainerAwareTrait;
+use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Services\BackgroundProcess;
+use Gibbon\Contracts\Database\Connection;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
 
 /**
  * MessageProcess
@@ -102,6 +103,11 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
             default:
                 $actionText = __('Your request was completed successfully, but some or all messages could not be delivered.');
                 break;
+        }
+
+        if (!empty($sendResult['emailErrors'])) {
+            $actionText .= '<br/><br/>' .__('You message failed to deliver to the following recipients. This can happen because the email is invalid or the receiving mail server did not respond.').'<br/>';
+            $actionText .= Format::list($sendResult['emailErrors']);
         }
 
         $notificationSender = $this->getContainer()->get(NotificationSender::class);

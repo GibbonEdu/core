@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 		$page->addError(__('You have not specified one or more required parameters.'));
 	} else {
 	    //Proceed!
-	    
+
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );
 			$sqlPerson = "SELECT gibbonAttendanceLogPersonID FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonAttendanceLogPersonID=:gibbonAttendanceLogPersonID ";
 			$resultPerson = $connection2->prepare($sqlPerson);
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo __('The specified record does not exist.');
             echo '</div>';
 	    } else {
-			$form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byPerson_deleteProcess.php?gibbonAttendanceLogPersonID='.$gibbonAttendanceLogPersonID.'&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$currentDate);
+			$form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module'). '/attendance_take_byPerson_deleteProcess.php?gibbonAttendanceLogPersonID='.$gibbonAttendanceLogPersonID.'&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$currentDate);
 			echo $form->getOutput();
 	    }
 	}

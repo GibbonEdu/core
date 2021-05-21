@@ -168,21 +168,21 @@ else {
 					}
 				}
 
-				//Roll Groups
-				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
-					if ($_POST["rollGroup"]=="Y") {
-						$staff=$_POST["rollGroupsStaff"] ;
-						$students=$_POST["rollGroupsStudents"] ;
+				//Form Groups
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
+					if ($_POST["formGroup"]=="Y") {
+						$staff=$_POST["formGroupsStaff"] ;
+						$students=$_POST["formGroupsStudents"] ;
 						$parents="N" ;
-						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
-							$parents=$_POST["rollGroupsParents"] ;
+						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
+							$parents=$_POST["formGroupsParents"] ;
 						}
-						$choices=$_POST["rollGroups"] ;
+						$choices=$_POST["formGroups"] ;
 						if ($choices!="") {
 							foreach ($choices as $t) {
 								try {
 									$data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Form Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
 									$result=$connection2->prepare($sql);
 									$result->execute($data);
 								}

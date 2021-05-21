@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -39,19 +40,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             ->add(__('First Aid Records'), 'firstAidRecord.php')
             ->add(__('Add'));
 
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
+            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
             $editID = $_GET['editID'];
         }
         $page->return->setEditLink($editLink);
         $page->return->addReturns(['warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')]);
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -92,6 +93,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             $column = $row->addColumn();
             $column->addLabel('followUp', __('Follow Up'));
             $column->addTextArea('followUp')->setRows(8)->setClass('fullWidth');
+
+        // CUSTOM FIELDS
+        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'First Aid', []);
 
         $row = $form->addRow();
             $row->addFooter();

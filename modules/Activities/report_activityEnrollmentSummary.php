@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
-    $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
     $table = ReportTable::createPaginated('activityEnrollmentSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
         return $row;
     });
-    
+
     $table->addMetaData('filterOptions', [
         'active:Y'          => __('Active').': '.__('Yes'),
         'active:N'          => __('Active').': '.__('No'),

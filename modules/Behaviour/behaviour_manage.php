@@ -43,11 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
+        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
         $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
         $type = isset($_GET['type'])? $_GET['type'] : '';
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -56,11 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID',__('Student'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
+            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
-            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+            $row->addLabel('gibbonFormGroupID',__('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID',__('Year Group'));
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             'Positive' => __('Positive'),
             'Negative' => __('Negative')
         );
-                
+
         $row = $form->addRow();
             $row->addLabel('type',__('Type'));
             $row->addSelect('type')->fromArray($arrTypes)->selected($type)->placeholder();
@@ -87,16 +87,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $criteria = $behaviourGateway->newQueryCriteria(true)
             ->sortBy('timestamp', 'DESC')
             ->filterBy('student', $gibbonPersonID)
-            ->filterBy('rollGroup', $gibbonRollGroupID)
+            ->filterBy('formGroup', $gibbonFormGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->filterBy('type', $type)
             ->fromPOST();
 
-        
+
         if ($highestAction == 'Manage Behaviour Records_all') {
-            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Behaviour Records_my') {
-            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         } else {
             return;
         }
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Behaviour/behaviour_manage_add.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->displayLabel()
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $table->addHeaderAction('addMultiple', __('Add Multiple'))
             ->setURL('/modules/Behaviour/behaviour_manage_addMulti.php')
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->displayLabel();
@@ -145,13 +145,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             });
 
         $table->addColumn('student', __('Student'))
-            ->description(__('Roll Group'))
+            ->description(__('Form Group'))
             ->sortable(['student.surname', 'student.preferredName'])
             ->width('25%')
-            ->format(function($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
+            ->format(function($person) use ($session) {
+                $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Behaviour&search=&allStudents=&sort=surname,preferredName';
                 return '<b>'.Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true)).'</b>'
-                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+                      .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });
 
         $table->addColumn('date', __('Date'))
@@ -163,14 +163,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     return Format::date($beahviour['timestamp']);
                 }
             });
-            
+
         $table->addColumn('type', __('Type'))
             ->width('5%')
-            ->format(function($beahviour) use ($guid) {
+            ->format(function($beahviour) use ($session) {
                 if ($beahviour['type'] == 'Negative') {
-                    return "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
                 } elseif ($beahviour['type'] == 'Positive') {
-                    return "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                    return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
                 }
             });
 
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID', $gibbonPersonID)
-            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonFormGroupID', $gibbonFormGroupID)
             ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
             ->addParam('type', $type)
             ->addParam('gibbonBehaviourID')

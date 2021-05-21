@@ -32,17 +32,28 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     $data = [
-        'context'                  => $_POST['context'] ?? 'Person',
+        'context'                  => $_POST['context'] ?? '',
         'name'                     => $_POST['name'] ?? '',
         'active'                   => $_POST['active'] ?? '',
         'description'              => $_POST['description'] ?? '',
         'type'                     => $_POST['type'] ?? '',
         'options'                  => $_POST['options'] ?? '',
-        'required'                 => $_POST['required'] ?? '',
+        'required'                 => $_POST['required'] ?? 'N',
+        'hidden'                   => $_POST['hidden'] ?? 'N',
+        'heading'                  => $_POST['heading'] ?? '',
         'activeDataUpdater'        => $_POST['activeDataUpdater'] ?? '0',
         'activeApplicationForm'    => $_POST['activeApplicationForm'] ?? '0',
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
     ];
+
+    if (!empty($data['heading'])) {
+        $data['heading'] = strchr($data['heading'], '_', true);
+        $data['heading'] = $data['heading'] == 'Custom' ? ($_POST['headingCustom'] ?? '') : $data['heading'];
+    }
+
+    // Add this field to the bottom of the current sequenceNumber for this context
+    $sequenceCheck = $customFieldGateway->selectBy(['context' => $data['context']], ['sequenceNumber'])->fetch();
+    $data['sequenceNumber'] = $sequenceCheck['sequenceNumber'] + 1;
 
     if ($data['type'] == 'varchar') $data['options'] = min(max(0, intval($data['options'])), 255);
     if ($data['type'] == 'text') $data['options'] = max(0, intval($data['options']));

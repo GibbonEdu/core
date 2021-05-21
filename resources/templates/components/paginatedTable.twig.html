@@ -139,7 +139,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block bulkActions %}
     {% if bulkActions %}
-    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple-600 rounded-t z-20">
+    <div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-{{ themeColour }}-600 rounded-t z-20">
         <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
             <span>0</span> {{ __('Selected') }}
         </div>

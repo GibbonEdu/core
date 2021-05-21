@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_b
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('contextData', $contextData);
+    $form->addHiddenValue('action', 'Generate');
 
     $options = ['Draft' => __('Draft'), 'Final' => __('Final')];
     $row = $form->addRow();

@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Forms\CustomFieldHandler;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,15 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonStaffID = $_GET['gibbonStaffID'];
-$allStaff = '';
-if (isset($_GET['allStaff'])) {
-    $allStaff = $_GET['allStaff'];
-}
-$search = '';
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
+$gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
+$allStaff = $_GET['allStaff'] ?? '';
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
@@ -60,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             if ($initials == '') {
                 $initials = null;
             }
-            $type = $_POST['type'];
-            $jobTitle = $_POST['jobTitle'];
-            $dateStart = $_POST['dateStart'];
+            $type = $_POST['type'] ?? '';
+            $jobTitle = $_POST['jobTitle'] ?? '';
+            $dateStart = $_POST['dateStart'] ?? '';
             if ($dateStart == '') {
                 $dateStart = null;
             } else {
@@ -74,17 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             } else {
                 $dateEnd = dateConvert($guid, $dateEnd);
             }
-            $firstAidQualified = $_POST['firstAidQualified'];
+            $firstAidQualified = $_POST['firstAidQualified'] ?? '';
             $firstAidQualification = $_POST['firstAidQualification'] ?? null;
-            $firstAidExpiry = null;
-            if ($firstAidQualified == 'Y' and $_POST['firstAidExpiry'] != '') {
-                $firstAidExpiry = dateConvert($guid, $_POST['firstAidExpiry']);
-            }
-            $countryOfOrigin = $_POST['countryOfOrigin'];
-            $qualifications = $_POST['qualifications'];
-            $biographicalGrouping = $_POST['biographicalGrouping'];
-            $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'];
-            $biography = $_POST['biography'];
+            $firstAidExpiry = ($firstAidQualified == 'Y' and !empty($_POST['firstAidExpiry'])) ? dateConvert($guid, $_POST['firstAidExpiry']) : null;
+            $countryOfOrigin = $_POST['countryOfOrigin'] ?? '';
+            $qualifications = $_POST['qualifications'] ?? '';
+            $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';
+            $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'] ?? '';
+            $biography = $_POST['biography'] ?? '';
 
             if ($type == '') {
                 $URL .= '&return=error3';
@@ -101,14 +94,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     header("Location: {$URL}");
                 }
 
+                $customRequireFail = false;
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Staff', [], $customRequireFail);
+
+                if ($customRequireFail) {
+                    $URL .= '&return=error1';
+                    header("Location: {$URL}");
+                    exit;
+                }
+
                 if ($result->rowCount() > 0) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
                     try {
-                        $data = array('initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'gibbonStaffID' => $gibbonStaffID);
-                        $sql = 'UPDATE gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) SET initials=:initials, type=:type, gibbonStaff.jobTitle=:jobTitle, dateStart=:dateStart, dateEnd=:dateEnd, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography WHERE gibbonStaffID=:gibbonStaffID';
+                        $data = array('initials' => $initials, 'type' => $type, 'jobTitle' => $jobTitle, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'firstAidQualified' => $firstAidQualified, 'firstAidQualification' => $firstAidQualification, 'firstAidExpiry' => $firstAidExpiry, 'countryOfOrigin' => $countryOfOrigin, 'qualifications' => $qualifications, 'biographicalGrouping' => $biographicalGrouping, 'biographicalGroupingPriority' => $biographicalGroupingPriority, 'biography' => $biography, 'fields' => $fields, 'gibbonStaffID' => $gibbonStaffID);
+                        $sql = 'UPDATE gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) SET initials=:initials, type=:type, gibbonStaff.jobTitle=:jobTitle, dateStart=:dateStart, dateEnd=:dateEnd, firstAidQualified=:firstAidQualified, firstAidQualification=:firstAidQualification, firstAidExpiry=:firstAidExpiry, countryOfOrigin=:countryOfOrigin, qualifications=:qualifications, biographicalGrouping=:biographicalGrouping, biographicalGroupingPriority=:biographicalGroupingPriority, biography=:biography, gibbonStaff.fields=:fields WHERE gibbonStaffID=:gibbonStaffID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

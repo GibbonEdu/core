@@ -53,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         }
         else {
             //Check for existence of records today
-            
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $currentDate);
+
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'date' => $currentDate);
                 $sql = "SELECT type FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date=:date ORDER BY timestampTaken DESC";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -72,11 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                         $inRange = true ;
                 }
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendance_studentSelfRegisterProcess.php');
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/attendance_studentSelfRegisterProcess.php');
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
 
                 if (!$inRange) { //Out of school, offer ability to register as absent
                     $form->addHiddenValue('status', 'Absent');
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                     $form->addHiddenValue('status', 'Present');
 
                     $row = $form->addRow();
-                        $row->addLabel('submit',sprintf(__('Welcome back to %1$s. Click the Submit button below to register yourself as %2$sPresent%3$s today.'), $_SESSION[$guid]['organisationNameShort'], '<span style=\'color: #390; text-decoration: underline\'>', '</span>'));
+                        $row->addLabel('submit',sprintf(__('Welcome back to %1$s. Click the Submit button below to register yourself as %2$sPresent%3$s today.'), $session->get('organisationNameShort'), '<span style=\'color: #390; text-decoration: underline\'>', '</span>'));
                 }
 
                 $row = $form->addRow();

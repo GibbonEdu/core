@@ -526,6 +526,7 @@ ul.ui-tabs-nav li.ui-state-default {
 }
 ul.ui-tabs-nav li.ui-state-default a {
     color: rgba(0, 0, 0, 1);
+    outline: none;
 }
 
 div.ui-widget-overlay {
@@ -1243,3 +1244,99 @@ table.smallIntBorder td.noPadding {
     width: 14px;
     opacity: 0.65;
 }
+
+/* multi-part form: progress indicator classes */
+.multiPartForm {
+	list-style-type: none;
+	margin: 20px 0 30px 0;
+	padding: 0;
+	overflow: hidden;
+	counter-reset: step;
+}
+
+/* step labels */
+.multiPartForm .step {
+	list-style-type: none;
+	color: #444;
+	text-transform: uppercase;
+	font-size: 12px;
+	width: 25%;
+	float: left;
+	position: relative;
+	z-index: 0;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+/* step counter */
+.multiPartForm .step:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 30px;
+	line-height: 30px;
+	display: block;
+	font-size: 16px;
+	color: #333;
+	background: white;
+	border-radius: 3px;
+	margin: 0 auto 5px auto;
+	z-index: 0;
+}
+
+/* progress connectors */
+.multiPartForm .step:after {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: white;
+	position: absolute;
+	left: -50%;
+	top: 14px;
+	z-index: -1;
+	margin: 0 15px;
+}
+
+/* connector not needed before the first step */
+.multiPartForm .step:first-child:after {
+	content: none; 
+}
+/* active step */
+.multiPartForm .step.active:before,
+.multiPartForm .step.active:after{
+	background-color: #A88EDB;
+	color: white;
+}
+
+.body-gradient-purple {
+    background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;
+}
+
+.body-gradient-blue {
+    background: radial-gradient(80% 1000px at 20% 500px, #63B3ED 0%, #3182CE 100%) no-repeat fixed ;
+}
+
+.body-gradient-indigo {
+    background: radial-gradient(80% 1000px at 20% 500px, #7F9CF5 0%, #5A67D8 100%) no-repeat fixed ;
+}
+
+.body-gradient-green {
+    background: radial-gradient(80% 1000px at 20% 500px, #68D391 0%, #38A169 100%) no-repeat fixed ;
+}
+
+.body-gradient-yellow {
+    background: radial-gradient(80% 1000px at 20% 500px, #ECC94B 0%, #D69E2E 100%) no-repeat fixed ;
+}
+
+.body-gradient-orange {
+    background: radial-gradient(80% 1000px at 20% 500px, #F6AD55 0%, #DD6B20 100%) no-repeat fixed ;
+}
+
+.body-gradient-red {
+    background: radial-gradient(80% 1000px at 20% 500px, #FC8181 0%, #E53E3E 100%) no-repeat fixed ;
+}
+
+.body-gradient-pink {
+    background: radial-gradient(80% 1000px at 20% 500px, #F687B3 0%, #D53F8C 100%) no-repeat fixed ;
+}
+

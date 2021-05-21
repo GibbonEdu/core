@@ -39,13 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
     require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->setTitle('Filter');
+    $form->setTitle(__('Filter'));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_consecutiveAbsences.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_consecutiveAbsences.php");
 
     $row = $form->addRow();
         $row->addLabel('numberOfSchoolDays', __('Number of School Days'));
@@ -74,22 +74,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
 
             $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
             $sql = "
-                SELECT 
-                  gibbonPerson.gibbonPersonID, 
-                  gibbonPerson.title, 
-                  gibbonPerson.surname, 
-                  gibbonPerson.preferredName, 
-                  gibbonRollGroup.gibbonRollGroupID, 
-                  gibbonRollGroup.name as rollGroupName, 
-                  gibbonRollGroup.nameShort AS rollGroup
+                SELECT
+                  gibbonPerson.gibbonPersonID,
+                  gibbonPerson.title,
+                  gibbonPerson.surname,
+                  gibbonPerson.preferredName,
+                  gibbonFormGroup.gibbonFormGroupID,
+                  gibbonFormGroup.name as formGroupName,
+                  gibbonFormGroup.nameShort AS formGroup
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE status='Full'
                   AND (dateStart IS NULL OR dateStart <= CURRENT_TIMESTAMP)
                   AND (dateEnd IS NULL  OR dateEnd >= CURRENT_TIMESTAMP)
                   AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY surname, preferredName, LENGTH(rollGroup), rollGroup";
+                ORDER BY surname, preferredName, LENGTH(formGroup), formGroup";
 
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -114,9 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/consecutiveAbse
             $table->setTitle(__('Report Data'));
             $table->setDescription(__("A list of students who were absent during the provided period."));
             $table->addColumn('count', __('Number Of Absences'));
-            $table->addColumn('rollGroupName', __('Roll Group'))
+            $table->addColumn('formGroupName', __('Form Group'))
                   ->format(function ($absence) {
-                    return Format::bold($absence['rollGroupName']);
+                    return Format::bold($absence['formGroupName']);
                   });
             $table->addColumn('name', __('Name'))
                   ->format(function ($absence) {

@@ -27,11 +27,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
-    $status = $_POST['status'];
-    $sequenceNumber = $_POST['sequenceNumber'];
-    $firstDay = dateConvert($guid, $_POST['firstDay']);
-    $lastDay = dateConvert($guid, $_POST['lastDay']);
+    $name = $_POST['name'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+    $firstDay = dateConvert($guid, $_POST['firstDay'] ?? '');
+    $lastDay = dateConvert($guid, $_POST['lastDay'] ?? '');
 
     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
         $URL .= '&return=error1';

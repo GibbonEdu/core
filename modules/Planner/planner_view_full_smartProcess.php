@@ -23,8 +23,8 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
-$mode = $_POST['mode'];
+$gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
+$mode = $_POST['mode'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID".$_POST['params'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
@@ -86,18 +86,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                     }
                 } else {
-                    $order = $_POST['order'];
-                    $seq = $_POST['minSeq'];
+                    $order = $_POST['order'] ?? '';
+                    $seq = $_POST['minSeq'] ?? '';
 
                     $summaryBlocks = '';
                     foreach ($order as $i) {
-                        $id = $_POST["gibbonUnitClassBlockID$i"];
-                        $title = $_POST["title$i"];
+                        $id = $_POST["gibbonUnitClassBlockID$i"] ?? '';
+                        $title = $_POST["title$i"] ?? '';
                         $summaryBlocks .= $title.', ';
-                        $type = $_POST["type$i"];
-                        $length = $_POST["length$i"];
-                        $contents = $_POST["contents$i"];
-                        $teachersNotes = $_POST["teachersNotes$i"];
+                        $type = $_POST["type$i"] ?? '';
+                        $length = $_POST["length$i"] ?? '';
+                        $contents = $_POST["contents$i"] ?? '';
+                        $teachersNotes = $_POST["teachersNotes$i"] ?? '';
                         $complete = 'N';
                         if (isset($_POST["complete$i"])) {
                             if ($_POST["complete$i"] == 'on') {

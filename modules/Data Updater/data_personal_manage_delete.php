@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     if ($gibbonPersonUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonPersonUpdateID' => $gibbonPersonUpdateID);
             $sql = 'SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
             $result = $connection2->prepare($sql);
@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             echo '</div>';
         } else {
             //Let's go!
-            
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/data_personal_manage_deleteProcess.php?gibbonPersonUpdateID=".$gibbonPersonUpdateID);
+
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/data_personal_manage_deleteProcess.php?gibbonPersonUpdateID=".$gibbonPersonUpdateID);
             echo $form->getOutput();
         }
     }

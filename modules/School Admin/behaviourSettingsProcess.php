@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $enableDescriptors = $_POST['enableDescriptors'];
-    $enableLevels = $_POST['enableLevels'];
-    $enableBehaviourLetters = $_POST['enableBehaviourLetters'];
+    $enableDescriptors = $_POST['enableDescriptors'] ?? '';
+    $enableLevels = $_POST['enableLevels'] ?? '';
+    $enableBehaviourLetters = $_POST['enableBehaviourLetters'] ?? '';
     $positiveDescriptors = '';
     $negativeDescriptors = '';
     if ($enableDescriptors == 'Y') {
@@ -50,13 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $levels = substr($levels, 0, -1);
     }
 
-    $behaviourLettersLetter1Count = (isset($_POST['behaviourLettersLetter1Count']))? $_POST['behaviourLettersLetter1Count'] : '';
-    $behaviourLettersLetter1Text = (isset($_POST['behaviourLettersLetter1Text']))? $_POST['behaviourLettersLetter1Text'] : '';
-    $behaviourLettersLetter2Count = (isset($_POST['behaviourLettersLetter2Count']))? $_POST['behaviourLettersLetter2Count'] : '';
-    $behaviourLettersLetter2Text = (isset($_POST['behaviourLettersLetter2Text']))? $_POST['behaviourLettersLetter2Text'] : '';
-    $behaviourLettersLetter3Count = (isset($_POST['behaviourLettersLetter3Count']))? $_POST['behaviourLettersLetter3Count'] : '';
-    $behaviourLettersLetter3Text = (isset($_POST['behaviourLettersLetter3Text']))? $_POST['behaviourLettersLetter3Text'] : '';
-    
+    $behaviourLettersLetter1Count = $_POST['behaviourLettersLetter1Count'] ?? '';
+    $behaviourLettersLetter1Text = $_POST['behaviourLettersLetter1Text'] ?? '';
+    $behaviourLettersLetter2Count = $_POST['behaviourLettersLetter2Count'] ?? '';
+    $behaviourLettersLetter2Text = $_POST['behaviourLettersLetter2Text'] ?? '';
+    $behaviourLettersLetter3Count = $_POST['behaviourLettersLetter3Count'] ?? '';
+    $behaviourLettersLetter3Text = $_POST['behaviourLettersLetter3Text'] ?? '';
+
     $notifyTutors = $_POST['notifyTutors'] ?? 'Y';
     $notifyEducationalAssistants = $_POST['notifyEducationalAssistants'] ?? 'N';
     $policyLink = $_POST['policyLink'] ?? '';

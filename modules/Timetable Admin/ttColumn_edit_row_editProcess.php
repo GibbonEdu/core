@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'];
-$gibbonTTColumnID = $_POST['gibbonTTColumnID'];
+$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'] ?? '';
+$gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
 if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -52,11 +52,11 @@ if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $name = $_POST['name'];
-                $nameShort = $_POST['nameShort'];
-                $timeStart = $_POST['timeStart'];
-                $timeEnd = $_POST['timeEnd'];
-                $type = $_POST['type'];
+                $name = $_POST['name'] ?? '';
+                $nameShort = $_POST['nameShort'] ?? '';
+                $timeStart = $_POST['timeStart'] ?? '';
+                $timeEnd = $_POST['timeEnd'] ?? '';
+                $type = $_POST['type'] ?? '';
 
                 if ($name == '' or $nameShort == '' or $timeStart == '' or $timeEnd == '' or $type == '') {
                     $URL .= '&return=error3';

@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->required()->maxLength(60)->readonly($isReadOnly)->setValue($role['description']);
+                $row->addTextField('description')->required()->maxLength(60)->readonly($isReadOnly)->setValue(__($role['description']));
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));

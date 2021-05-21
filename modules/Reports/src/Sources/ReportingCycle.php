@@ -53,13 +53,16 @@ class ReportingCycle extends DataSource
         $values = $this->db()->selectOne($sql, $data);
 
 
-        $data = ['gibbonReportID' => $ids['gibbonReportID']];
-        $sql = "SELECT allCycles.cycleNumber, allCycles.name
+        $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID'], 'gibbonReportID' => $ids['gibbonReportID']];
+        $sql = "SELECT allCycles.cycleNumber, allCycles.nameShort
                 FROM gibbonReport 
-                JOIN gibbonReportingCycle AS currentCycle ON (currentCycle.gibbonReportingCycleID=gibbonReport.gibbonReportingCycleID)
-                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, currentCycle.gibbonYearGroupIDList))
-                JOIN gibbonReportingCycle AS allCycles ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, allCycles.gibbonYearGroupIDList))
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList))
+                JOIN gibbonReportingCycle AS allCycles ON (allCycles.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReport.gibbonSchoolYearID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
+                AND gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, allCycles.gibbonYearGroupIDList)
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, allCycles.gibbonYearGroupIDList)
                 GROUP BY allCycles.gibbonReportingCycleID
                 ORDER BY allCycles.sequenceNumber, allCycles.cycleNumber";
 

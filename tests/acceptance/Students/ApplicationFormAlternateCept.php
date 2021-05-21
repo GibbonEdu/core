@@ -29,7 +29,6 @@ $originalUserSettings = $I->grabAllFormValues();
 
 $newUserSettings = array_replace($originalUserSettings, array(
     'nationality'        => '',
-    'residencyStatus'    => '',
     'privacy'            => 'N',
 
 ));
@@ -59,11 +58,11 @@ $formValues = array(
     'languageSecond'              => 'Latin',
     'languageThird'               => 'Turkish',
     'countryOfBirth'              => 'Antarctica',
-    'citizenship1'                => 'Antarctica',
-    'citizenship1Passport'        => 'ABC12345',
-    'nationalIDCardNumber'        => 'DEF12345',
-    'residencyStatus'             => 'Resident',
-    'visaExpiryDate'              => '01/01/2020',
+    // 'citizenship1'                => 'Antarctica',
+    // 'citizenship1Passport'        => 'ABC12345',
+    // 'nationalIDCardNumber'        => 'DEF12345',
+    // 'residencyStatus'             => 'Resident',
+    // 'visaExpiryDate'              => '01/01/2020',
     'email'                       => 'testing.mctest@testingemail.test',
     'phone1'                      => '12345678',
     'phone1Type'                  => 'Mobile',

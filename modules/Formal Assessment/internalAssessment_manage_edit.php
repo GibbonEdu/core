@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $row = $form->addRow();
                         $row->addLabel('name', __('Name'));
-                        $row->addTextField('name')->required()->maxLength(20);
+                        $row->addTextField('name')->required()->maxLength(30);
 
                     $row = $form->addRow();
                         $row->addLabel('description', __('Description'));

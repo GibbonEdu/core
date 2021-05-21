@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonResourceID = $_GET['gibbonResourceID'];
+$gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
 $time = time();
 
@@ -69,20 +69,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                 } else {
                     $row = $result->fetch();
 
-                    $type = $_POST['type'];
+                    $type = $_POST['type'] ?? '';
                     if ($type == 'File') {
-                        $content = $row['content'];
+                        $content = $row['content'] ?? '';
                     } elseif ($type == 'HTML') {
-                        $content = $_POST['html'];
+                        $content = $_POST['html'] ?? '';
                     } elseif ($type == 'Link') {
-                        $content = $_POST['link'];
+                        $content = $_POST['link'] ?? '';
                     }
-                    $name = $_POST['name'];
-                    $category = $_POST['category'];
-                    $purpose = $_POST['purpose'];
-                    $tags = strtolower($_POST['tags']);
-                    $gibbonYearGroupIDList = (!empty($_POST['gibbonYearGroupID']))? implode(',', $_POST['gibbonYearGroupID']) : '';
-                    $description = $_POST['description'];
+                    $name = $_POST['name'] ?? '';
+                    $category = $_POST['category'] ?? '';
+                    $purpose = $_POST['purpose'] ?? '';
+                    $tags = strtolower($_POST['tags'] ?? '');
+                    $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID'] ?? '');
+                    $description = $_POST['description'] ?? '';
 
                     if (($type != 'File' and $type != 'HTML' and $type != 'Link') or (is_null($content) and $type != 'File') or $name == '' or $category == '' or $tags == '') {
                         $URL .= '&return=error3';
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     }
 
                     //Write to database
-                    
+
                         $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonResourceID' => $gibbonResourceID);
                         $sql = 'UPDATE gibbonResource SET type=:type, content=:content, name=:name, category=:category, purpose=:purpose, tags=:tags, gibbonYearGroupIDList=:gibbonYearGroupIDList, description=:description, gibbonPersonID=:gibbonPersonID WHERE gibbonResourceID=:gibbonResourceID';
                         $result = $connection2->prepare($sql);

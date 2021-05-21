@@ -1,0 +1,58 @@
+{#<!--
+name: Report - Form Group
+category: Reporting Cycle
+types: Body
+sources:
+    student: Student
+    tutors: Tutors
+    reportingCycle: ReportingCycle
+    formGroupCriteria: FormGroupCriteria
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+{% if formGroupCriteria.perGroup or formGroupCriteria.perStudent  %}
+
+<table class="w-full table" cellspacing="0" cellpadding="10">
+    <tr>
+        <td class="header bg-primary border-top border-bottom border-left" style="width:50%;">
+            {{- __('Form Group') }}: {{ student.formGroupName -}}
+        </td>
+        <td class="subheader bg-primary border-top border-bottom border-right" style="width:50%;text-align:right;">
+            {%- for tutor in tutors -%}
+                {{ tutor.title }} {{ tutor.preferredName|first }}. {{ tutor.surname }}
+                {{ not loop.last ? ', ' }}
+            {%- endfor -%}
+        </td>
+    </tr>
+    <tr>
+        <td class="border w-full" colspan="2">
+        {%- for criteria in []|merge(formGroupCriteria.perGroup|default([]))|merge(formGroupCriteria.perStudent|default([])) -%}
+        <table style="width: 100%; padding: 0;" class="w-full" cellspacing="0" cellpadding="0" nobr="true">
+            {% if criteria.valueType == 'Comment' %}
+            <tr>
+                <td class="w-full header" style="line-height:1.8;" colspan="2">
+                    {{- criteria.criteriaName -}}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-full" style="font-size: 9pt"  colspan="2">
+                    {{- criteria.comment -}}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td class="w-full" style="font-size: 9pt; line-height:1.8;" colspan="2"><b>{{- criteria.criteriaName }}</b>:
+                    {{ criteria.descriptor ? criteria.descriptor : criteria.value -}}
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+        {% if not loop.last %}
+            <table cellspacing="0" cellpadding="6"><tr><td style="font-size: 1px;">&nbsp;</td></tr></table>
+        {% endif %}
+        {%- endfor -%}
+        </td>
+    </tr>
+</table>
+{% endif %}
+<br/>

@@ -44,16 +44,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not In Class'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose Date'));
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentsNotInClass_byDate.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentsNotInClass_byDate.php");
 
         $row = $form->addRow();
-            $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+            $row->addLabel('currentDate', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
             $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
         $typeOptions = $container->get(AttendanceCodeGateway::class)->selectAttendanceCodes()->fetchKeyPair();
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         // CRITERIA
         $criteria = $attendanceLogGateway->newQueryCriteria(true)
-            ->sortBy(['sequenceNumber', 'rollGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['sequenceNumber', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList ?? []))
             ->filterBy('types', implode(',', $types ?? []))
             ->pageSize(!empty($viewMode) ? 0 : 50)
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $table->addRowCountColumn($logs->getPageFrom());
 
-        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('formGroup', __('Form Group'));
 
         $table->addColumn('student', __('Student'))
             ->context('primary')

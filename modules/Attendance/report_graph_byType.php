@@ -46,19 +46,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     }
 
     // Limit date range to the current school year
-    if ($dateStart < $_SESSION[$guid]['gibbonSchoolYearFirstDay']) {
-        $dateStart = $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
+    if ($dateStart < $session->get('gibbonSchoolYearFirstDay')) {
+        $dateStart = $session->get('gibbonSchoolYearFirstDay');
     }
 
-    if ($dateEnd > $_SESSION[$guid]['gibbonSchoolYearLastDay']) {
-        $dateEnd = $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    if ($dateEnd > $session->get('gibbonSchoolYearLastDay')) {
+        $dateEnd = $session->get('gibbonSchoolYearLastDay');
     }
 
     $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
 
-    // Get the roll groups - revert to All if it's selected
-    $rollGroups = $_POST['gibbonRollGroupID'] ?? array('all');
-    if (in_array('all', $rollGroups)) $rollGroups = array('all');
+    // Get the form groups - revert to All if it's selected
+    $formGroups = $_POST['gibbonFormGroupID'] ?? array('all');
+    if (in_array('all', $formGroups)) $formGroups = array('all');
 
     require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
@@ -77,18 +77,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $reasons = (isset($_POST['reasons']))? $_POST['reasons'] : array();
 
     // Options & Filters
-    $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_graph_byType.php');
+    $form = Form::create('attendanceTrends', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_graph_byType.php');
     $form->setTitle(__('Choose Date'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
@@ -105,11 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('reasons', __('Reasons'));
         $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
 
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-    $sql = "SELECT gibbonRollGroupID as value, name FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+    $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelect('gibbonRollGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($rollGroups);
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelect('gibbonFormGroupID')->fromArray(array('all' => __('All')))->fromQuery($pdo, $sql, $data)->selectMultiple()->selected($formGroups);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
         $rows = $attendanceLogGateway->queryAttendanceCountsByType(
             $attendanceLogGateway->newQueryCriteria(),
-            $_SESSION[$guid]['gibbonSchoolYearID'],
-            $rollGroups,
+            $session->get('gibbonSchoolYearID'),
+            $formGroups,
             $dateStart,
             $dateEnd,
             $countClassAsSchool

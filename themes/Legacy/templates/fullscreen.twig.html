@@ -1,0 +1,24 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+<!DOCTYPE html>
+<html>
+    <head>
+        {{ block('meta', 'head.twig.html') }}
+        {{ block('styles', 'head.twig.html') }}
+    </head>
+    <body style='background-image: none'>
+
+        {% for type, alerts in page.alerts %}
+            {% for text in alerts %}
+                <div class="{{ type }}">{{ text|raw }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        {{ content|join("\n")|raw }}
+    </body>
+</html>

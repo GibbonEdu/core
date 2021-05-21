@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonCourseID = $_POST['gibbonCourseID'];
-$gibbonCourseIDCopyTo = $_POST['gibbonCourseIDCopyTo'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$action = $_POST['action'];
+$gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
+$gibbonCourseIDCopyTo = $_POST['gibbonCourseIDCopyTo'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$action = $_POST['action'] ?? '';
 
 if ($gibbonCourseID == '' or $gibbonCourseIDCopyTo == '' or $gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {

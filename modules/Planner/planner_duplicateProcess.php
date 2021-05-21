@@ -19,16 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$viewBy = $_POST['viewBy'];
-$subView = $_POST['subView'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$viewBy = $_POST['viewBy'] ?? '';
+$subView = $_POST['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-$gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'];
-$date = dateConvert($guid, $_POST['date']);
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+$gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'] ?? '';
+$date = dateConvert($guid, $_POST['date'] ?? '');
 $duplicateReturnYear = 'current';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID_org";
 
@@ -72,9 +72,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $row = $result->fetch();
 
                 //Validate Inputs
-                $name = $_POST['name'];
-                $timeStart = $_POST['timeStart'];
-                $timeEnd = $_POST['timeEnd'];
+                $name = $_POST['name'] ?? '';
+                $timeStart = $_POST['timeStart'] ?? '';
+                $timeEnd = $_POST['timeEnd'] ?? '';
                 $summary = $row['summary'];
                 $description = $row['description'];
                 //Add to smart blocks to description if copying to another year
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $description .= $rowBlocks['contents'];
                     }
 
-                    
+
                         $dataPlannerUpdate = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'description' => $description);
                         $sqlPlannerUpdate = 'UPDATE gibbonPlannerEntry SET description=:description WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
                         $resultPlannerUpdate = $connection2->prepare($sqlPlannerUpdate);
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     $partialFail = false;
 
                     //Try to duplicate MB columns
-                    $duplicate = $_POST['duplicate'];
+                    $duplicate = $_POST['duplicate'] ?? '';
                     if ($duplicate == 'Y') {
                         try {
                             $dataMarkbook = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);

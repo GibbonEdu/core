@@ -32,29 +32,59 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    // Staff dashboard
+    $form->addRow()->addHeading(__('Staff Dashboard'));
+
+    $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardEnable', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('staffDashboardEnable')->onSelect('staffDashboardEnable')->when('Y');
+
     $staffDashboardDefaultTabTypes = array(
         '' => '',
         'Planner' => __('Planner')
     );
     $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('staffDashboardEnable');
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
             ->fromArray($staffDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Staff Dashboard'")
             ->selected($setting['value']);
 
+
+    // Student dashboard
+    $form->addRow()->addHeading(__('Student Dashboard'));
+
+    $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardEnable', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('studentDashboardEnable')->onSelect('studentDashboardEnable')->when('Y');
+
     $studentDashboardDefaultTabTypes = array(
         '' => '',
         'Planner' => __('Planner')
     );
     $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('studentDashboardEnable');;
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
             ->fromArray($studentDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Student Dashboard'")
             ->selected($setting['value']);
+
+    // Parent dashboard
+    $form->addRow()->addHeading(__('Parent Dashboard'));
+    $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardEnable', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('parentDashboardEnable')->onSelect('parentDashboardEnable')->when('Y');
 
     $parentDashboardDefaultTabTypes = array(
         '' => '',
@@ -63,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         'Activities' => __('Activities')
     );
     $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('parentDashboardEnable');;
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
             ->fromArray($parentDashboardDefaultTabTypes)

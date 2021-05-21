@@ -43,36 +43,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-
+        $viewMode = $_REQUEST['viewMode'] ?? '';
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
         if ($highestAction == 'Student History_all') {
-            echo '<h2>';
-            echo __('Choose Student');
-            echo '</h2>';
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-            $gibbonPersonID = null;
-            if (isset($_GET['gibbonPersonID'])) {
-                $gibbonPersonID = $_GET['gibbonPersonID'];
+            if (empty($viewMode)) {
+                $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
+                $form->setTitle(__('Choose Student'));
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setClass('noIntBorder fullWidth');
+
+                $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentHistory.php");
+
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Student'));
+                    $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID)->selected($gibbonPersonID)->placeholder()->required();
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSearchSubmit($gibbon->session);
+
+                echo $form->getOutput();
             }
-
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
-            $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->setClass('noIntBorder fullWidth');
-
-            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
-
-            $row = $form->addRow();
-                $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID)->selected($gibbonPersonID)->placeholder()->required();
-
-            $row = $form->addRow();
-                $row->addFooter();
-                $row->addSearchSubmit($gibbon->session);
-
-            echo $form->getOutput();
 
             if ($gibbonPersonID != '') {
                 $output = '';
@@ -80,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 echo __('Report Data');
                 echo '</h2>';
 
-                
+
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                     $result = $connection2->prepare($sql);
@@ -102,15 +97,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     $renderer->addData('canTakeAttendanceByPerson', $canTakeAttendanceByPerson);
 
                     $table = DataTable::create('studentHistory', $renderer);
-                    $table->addHeaderAction('print', __('Print'))
-                        ->setURL('/report.php')
-                        ->addParam('q', '/modules/Attendance/report_studentHistory_print.php')
-                        ->addParam('gibbonPersonID', $gibbonPersonID)
-                        ->addParam('viewMode', 'print')
-                        ->setIcon('print')
-                        ->setTarget('_blank')
-                        ->directLink()
-                        ->displayLabel();
+
+                    if (empty($viewMode)) {
+                        $table->addHeaderAction('print', __('Print'))
+                            ->setURL('/report.php')
+                            ->addParam('q', '/modules/Attendance/report_studentHistory.php')
+                            ->addParam('gibbonPersonID', $gibbonPersonID)
+                            ->addParam('viewMode', 'print')
+                            ->setIcon('print')
+                            ->setTarget('_blank')
+                            ->directLink()
+                            ->displayLabel();
+                    }
 
                     echo $table->render($attendanceData);
                 }
@@ -122,8 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $gibbonPersonID = $_GET['gibbonPersonID'];
             }
             //Test data access field for permission
-            
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -136,9 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $countChild = 0;
                 $options = [];
                 while ($row = $result->fetch()) {
-                    
+
                         $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                        $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     if ($resultChild->rowCount() > 0) {
@@ -162,16 +160,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo __('Access denied.');
                     echo '</div>';
                 } else {
-                    echo '<h2>';
-                    echo __('Choose');
-                    echo '</h2>';
-
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
+                    $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
+                    $form->setTitle(__('Choose'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 
-                    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+                    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentHistory.php");
 
                     if ($countChild > 0) {
                         $row = $form->addRow();
@@ -193,8 +187,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                 if ($gibbonPersonID != '' and $countChild > 0) {
                     //Confirm access to this student
-                    
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+
+                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         @$resultChild->execute($dataChild);
@@ -212,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                             echo __('Report Data');
                             echo '</h2>';
 
-                            
+
                                 $data = array('gibbonPersonID' => $gibbonPersonID);
                                 $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                 $result = $connection2->prepare($sql);
@@ -245,8 +239,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             echo __('Report Data');
             echo '</h2>';
 
-            
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -260,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 // ATTENDANCE DATA
                 $attendanceData = $container
                     ->get(StudentHistoryData::class)
-                    ->getAttendanceData($gibbonSchoolYearID, $_SESSION[$guid]['gibbonPersonID'], $row['dateStart'], $row['dateEnd']);
+                    ->getAttendanceData($gibbonSchoolYearID, $session->get('gibbonPersonID'), $row['dateStart'], $row['dateEnd']);
 
                 // DATA TABLE
                 $renderer = $container->get(StudentHistoryView::class);
@@ -270,4 +264,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         }
     }
 }
-?>

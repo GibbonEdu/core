@@ -45,13 +45,13 @@ class Tutors extends DataSource
         $data = ['gibbonStudentEnrolmentID' => $ids['gibbonStudentEnrolmentID']];
         $sql = "SELECT tutor.gibbonPersonID, tutor.title, tutor.surname, tutor.firstName, tutor.preferredName,  tutor.officialName, tutor.email
                 FROM gibbonStudentEnrolment
-                JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                 JOIN gibbonPerson as tutor ON (
-                    tutor.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor 
-                    OR tutor.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 
-                    OR tutor.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor3)
+                    tutor.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor 
+                    OR tutor.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor2 
+                    OR tutor.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor3)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
-                ORDER BY tutor.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor DESC, tutor.gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 DESC";
+                ORDER BY tutor.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor DESC, tutor.gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor2 DESC";
 
         $values = $this->db()->select($sql, $data)->fetchGroupedUnique();
 

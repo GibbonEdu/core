@@ -23,7 +23,7 @@ use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\User\FamilyGateway;
-use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerParentWeeklyEmailSummaryGateway;
 
 $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
@@ -68,7 +68,7 @@ $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
 
 $familyGateway = $container->get(FamilyGateway::class);
-$rollGroupGateway = $container->get(RollGroupGateway::class);
+$formGroupGateway = $container->get(FormGroupGateway::class);
 $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
 $emailSummaryGateway = $container->get(PlannerParentWeeklyEmailSummaryGateway::class);
 $view = $container->get(View::class);
@@ -152,7 +152,7 @@ foreach ($families as $gibbonFamilyID => $students) {
         ]);
 
         // Get main form tutor email for reply-to
-        $formTutor = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetch();
+        $formTutor = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetch();
         if (!empty($formTutor)) {
             $replyTo = $formTutor['email'];
             $replyToName = Format::name($formTutor['title'], $formTutor['preferredName'], $formTutor['surname'], 'Staff');
@@ -207,7 +207,7 @@ foreach ($families as $gibbonFamilyID => $students) {
             // Prep email
             $buttonURL = "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$student['gibbonPersonID'].'&gibbonPersonIDParent='.$parent['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'];
 
-            $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $student['surname'].', '.$student['preferredName'].' ('.$student['rollGroup'].')', $gibbon->session->get('systemName'), $gibbon->session->get('organisationNameShort'));
+            $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $student['surname'].', '.$student['preferredName'].' ('.$student['formGroup'].')', $gibbon->session->get('systemName'), $gibbon->session->get('organisationNameShort'));
 
             $body = sprintf(__('Dear %1$s'), $parent['preferredName'].' '.$parent['surname']).',<br/><br/>';
             $body .= $content;

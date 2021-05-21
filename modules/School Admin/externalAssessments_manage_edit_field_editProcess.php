@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
-$gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+$gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
+$gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID";
@@ -51,10 +51,10 @@ if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $name = $_POST['name'];
-                $category = $_POST['category'];
-                $order = $_POST['order'];
-                $gibbonScaleID = $_POST['gibbonScaleID'];
+                $name = $_POST['name'] ?? '';
+                $category = $_POST['category'] ?? '';
+                $order = $_POST['order'] ?? '';
+                $gibbonScaleID = $_POST['gibbonScaleID'] ?? '';
                 $gibbonYearGroupIDList = '';
                 if (!empty($_POST['gibbonYearGroupIDList']) && is_array($_POST['gibbonYearGroupIDList'])) {
                     $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']);

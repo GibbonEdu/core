@@ -23,12 +23,18 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
@@ -129,10 +135,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
 
-                    $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                    $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                    $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                    $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                     $resultDetail = $connection2->prepare($sqlDetail);
                     $resultDetail->execute($dataDetail);
                     if ($resultDetail->rowCount() == 1) {
@@ -170,87 +176,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</tr>';
                     echo '</table>';
 
-                    $extendedBriefProfile = getSettingByScope($connection2, 'Students', 'extendedBriefProfile');
-                    if ($extendedBriefProfile == 'Y') {
-                        echo '<h3>';
-                        echo __('Family Details');
-                        echo '</h3>';
-
-                        $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
-                        $sqlFamily = 'SELECT * FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID';
-                        $resultFamily = $connection2->prepare($sqlFamily);
-                        $resultFamily->execute($dataFamily);
-
-                        if ($resultFamily->rowCount() < 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
-                        } else {
-                            while ($rowFamily = $resultFamily->fetch()) {
-                                $count = 1;
-
-                                //Get adults
-                                $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status=\'Full\' ORDER BY contactPriority, surname, preferredName';
-                                $resultMember = $connection2->prepare($sqlMember);
-                                $resultMember->execute($dataMember);
-
-                                while ($rowMember = $resultMember->fetch()) {
-                                    echo '<h4>';
-                                    echo __('Adult').' '.$count;
-                                    echo '</h4>';
-                                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                                    echo '<tr>';
-                                    echo "<td style='width: 33%; vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                    echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
-                                    echo '</td>';
-                                    echo "<td style='width: 33%; vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('First Language').'</span><br/>';
-                                    echo $rowMember['languageFirst'];
-                                    echo '</td>';
-                                    echo "<td style='width: 34%; vertical-align: top' colspan=2>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Second Language').'</span><br/>';
-                                    echo $rowMember['languageSecond'];
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    echo '<tr>';
-                                    echo "<td style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
-                                    if ($rowMember['contactCall'] == 'N') {
-                                        echo __('Do not contact by phone.');
-                                    } elseif ($rowMember['contactCall'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
-                                        for ($i = 1; $i < 5; ++$i) {
-                                            if ($rowMember['phone'.$i] != '') {
-                                                if ($rowMember['phone'.$i.'Type'] != '') {
-                                                    echo $rowMember['phone'.$i.'Type'].':</i> ';
-                                                }
-                                                if ($rowMember['phone'.$i.'CountryCode'] != '') {
-                                                    echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
-                                                }
-                                                echo formatPhone($rowMember['phone'.$i]).'<br/>';
-                                            }
-                                        }
-                                    }
-                                    echo '</td>';
-                                    echo "<td style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Email').'</span><br/>';
-                                    if ($rowMember['contactEmail'] == 'N') {
-                                        echo __('Do not contact by email.');
-                                    } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
-                                        if ($rowMember['email'] != '') {
-                                            echo "<a href='mailto:".$rowMember['email']."'>".$rowMember['email'].'</a><br/>';
-                                        }
-                                        echo '<br/>';
-                                    }
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    echo '</table>';
-                                    ++$count;
-                                }
-                            }
-                        }
-                    }
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
                 }
@@ -407,17 +332,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-                        if (isset($row['gibbonRollGroupID'])) {
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group').'</span><br/>';
+                        if (isset($row['gibbonFormGroupID'])) {
 
-                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
+                                $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                                $sqlDetail = 'SELECT * FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$rowDetail['gibbonRollGroupID']."'>".$rowDetail['name'].'</a>';
+                                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -429,8 +354,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
                         if (isset($rowDetail['gibbonPersonIDTutor'])) {
 
-                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonRollGroup JOIN gibbonPerson ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName';
+                                $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
+                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonFormGroup JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName';
                                 $resultDetail = $connection2->prepare($sqlDetail);
                                 $resultDetail->execute($dataDetail);
                             while ($rowDetail = $resultDetail->fetch()) {
@@ -496,9 +421,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                             $dataSelect = array('gibbonPersonID' => $row['gibbonPersonID']);
-                            $sqlSelect = "SELECT gibbonRollGroup.name AS rollGroup, gibbonSchoolYear.name AS schoolYear
+                            $sqlSelect = "SELECT gibbonFormGroup.name AS formGroup, gibbonSchoolYear.name AS schoolYear
                                 FROM gibbonStudentEnrolment
-                                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                                 JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                                 WHERE gibbonPersonID=:gibbonPersonID
                                 AND (gibbonSchoolYear.status = 'Current' OR gibbonSchoolYear.status='Past')
@@ -506,7 +431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultSelect = $connection2->prepare($sqlSelect);
                             $resultSelect->execute($dataSelect);
                         while ($rowSelect = $resultSelect->fetch()) {
-                            echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['rollGroup'].'<br/>';
+                            echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].'<br/>';
                         }
                         if ($row['dateEnd'] != '') {
                             echo '<u>'.__('End Date').'</u>: '.dateConvertBack($guid, $row['dateEnd']).'</br>';
@@ -570,7 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
                         $studentGateway = $container->get(StudentGateway::class);
-                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonRollGroupID'], $gibbonPersonID)->fetchAll();
+                        $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
                         $criteria = $studentGateway->newQueryCriteria();
 
                         if ($staff) {
@@ -698,509 +623,175 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                     } elseif ($subpage == 'Personal') {
-                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
-                            echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo '</div>';
+                        $schoolYearGateway = $container->get(SchoolYearGateway::class);
+                        $yearGroupGateway = $container->get(YearGroupGateway::class);
+                        $formGroupGateway = $container->get(FormGroupGateway::class);
+                        $studentGateway = $container->get(StudentGateway::class);
+
+                        $student = $studentGateway->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, false)->fetch();
+                        $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'] ?? '')->fetchAll();
+                        $yearGroup = $yearGroupGateway->getByID($student['gibbonYearGroupID'] ?? '', ['name', 'gibbonPersonIDHOY']);
+                        $headOfYear = $container->get(UserGateway::class)->getByID($yearGroup['gibbonPersonIDHOY'] ?? '', ['title', 'surname', 'preferredName', 'gibbonPersonID']);
+                        $house = $container->get(HouseGateway::class)->getByID($row['gibbonHouseID'] ?? '', ['name']);
+
+                        $table = DataTable::createDetails('overview');
+
+                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
+                            $table->addHeaderAction('edit', __('Edit User'))
+                                ->setURL('/modules/User Admin/user_manage_edit.php')
+                                ->addParam('gibbonPersonID', $gibbonPersonID)
+                                ->displayLabel();
                         }
 
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Surname').'</span><br/>';
-                        echo $row['surname'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('First Name').'</span><br/>';
-                        echo $row['firstName'];
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
+                        $col = $table->addColumn('Basic Information');
 
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Preferred Name').'</span><br/>';
-                        echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Official Name').'</span><br/>';
-                        echo $row['officialName'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name In Characters').'</span><br/>';
-                        echo $row['nameInCharacters'];
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Gender').'</span><br/>';
-                        echo $row['gender'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Date of Birth').'</span><br/>';
-                        if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                            echo dateConvertBack($guid, $row['dob']);
+                        $col->addColumn('surname', __('Surname'));
+                        $col->addColumn('firstName', __('First Name'))->addClass('col-span-2');
+                        $col->addColumn('preferredName', __('Preferred Name'));
+                        $col->addColumn('officialName', __('Official Name'));
+                        $col->addColumn('nameInCharacters', __('Name In Characters'));
+                        $col->addColumn('gender', __('Gender'))
+                                ->format(Format::using('genderName', 'gender'));
+                        $col->addColumn('dob', __('Date of Birth'))->format(Format::using('date', 'dob'));
+                        $col->addColumn('age', __('Age'))->format(Format::using('age', 'dob'));
+
+                        $col = $table->addColumn('Contact Information', __('Contact Information'));
+
+                        for ($i = 1; $i <= 4; $i++) {
+                            if (empty($row["phone$i"])) continue;
+                            $col->addColumn("phone$i", __('Phone '.$i))->format(Format::using('phone', ["phone{$i}", "phone{$i}CountryCode", "phone{$i}Type"]));
                         }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Age').'</span><br/>';
-                        if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                            echo Format::age($row['dob']);
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
+                        $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
+                        $col->addColumn('emailAlternate', __('Alternate Email'))->format(Format::using('link', 'emailAlternate'));
+                        $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
 
-                        echo '<h4>';
-                        echo __('Contacts');
-                        echo '</h4>';
+                        $col = $table->addColumn('School Information', __('School Information'));
 
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        $numberCount = 0;
-                        if ($row['phone1'] != '' or $row['phone2'] != '' or $row['phone3'] != '' or $row['phone4'] != '') {
-                            echo '<tr>';
-                            for ($i = 1; $i < 5; ++$i) {
-                                if ($row['phone'.$i] != '') {
-                                    ++$numberCount;
-                                    echo "<td width: 33%; style='vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Phone')." $numberCount</span><br/>";
-                                    if ($row['phone'.$i.'Type'] != '') {
-                                        echo $row['phone'.$i.'Type'].':</i> ';
-                                    }
-                                    if ($row['phone'.$i.'CountryCode'] != '') {
-                                        echo '+'.$row['phone'.$i.'CountryCode'].' ';
-                                    }
-                                    echo formatPhone($row['phone'.$i]).'<br/>';
-                                    echo '</td>';
-                                } else {
-                                    echo "<td width: 33%; style='vertical-align: top'>";
+                        $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
+                            return $student['yearGroupName'];
+                        });
+                        $col->addColumn('gibbonFormGroupID', __('Form Group'))->format(function ($values) use ($student) {
+                            return Format::link('./index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['formGroupName']);
+                        });
+                        $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
+                            if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
+                            return Format::nameList($tutors, 'Staff', false, true);
+                        });
+                        $col->addColumn('gibbonHouseID', __('House'))->format(function ($values) use ($house) {
+                            return !empty($house['name']) ? $house['name'] : '';
+                        });
+                        $col->addColumn('studentID', __('Student ID'));
+                        $col->addColumn('headOfYear', __('Head of Year'))->format(function ($values) use ($headOfYear) {
+                            return !empty($headOfYear)
+                                ? Format::nameLinked($headOfYear['gibbonPersonID'], '', $headOfYear['preferredName'], $headOfYear['surname'], 'Staff')
+                                : '';
+                        });
 
-                                    echo '</td>';
-                                }
+                        $col->addColumn('lastSchool', __('Last School'));
+                        $col->addColumn('dateStart', __('Start Date'))->format(Format::using('date', 'dateStart'));
+                        $col->addColumn('classOf', __('Class Of'))->format(function ($values) use ($schoolYearGateway) {
+                            if (empty($values['gibbonSchoolYearIDClassOf'])) return Format::small(__('N/A'));
+                            $schoolYear = $schoolYearGateway->getByID($values['gibbonSchoolYearIDClassOf'], ['name']);
+                            return $schoolYear['name'] ?? '';
+                        });
+                        $col->addColumn('nextSchool', __('Next School'));
+                        $col->addColumn('dateEnd', __('End Date'))->format(Format::using('date', 'dateEnd'));
+                        $col->addColumn('departureReason', __('Departure Reason'));
+
+                        $col = $table->addColumn('Background Information', __('Background Information'));
+                        $country = $gibbon->session->get('country');
+
+                        $col->addColumn('countryOfBirth', __('Country of Birth'))->format(function ($values) {
+                            $output = __($values['countryOfBirth']);
+                            // if (!empty($values['birthCertificateScan'])) {
+                            //     $output .= '<br/>'.Format::link('./'.$values['birthCertificateScan'], __('View Birth Certificate'), ['target' => '_blank']);
+                            // }
+                            return $output;
+                        });
+                        $col->addColumn('ethnicity', __('Ethnicity'));
+                        $col->addColumn('religion', __('Religion'));
+                        // $col->addColumn('citizenship1', __('Citizenship 1'))->format(function ($values) {
+                        //     $output = $values['citizenship1'];
+                        //     if (!empty($values['citizenship1Passport'])) {
+                        //         $output .= '<br/>'.$values['citizenship1Passport'];
+                        //     }
+                        //     if (!empty($values['citizenship1PassportScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['citizenship1PassportScan'], __('View Passport'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
+                        // $col->addColumn('citizenship2', __('Citizenship 2'))->format(function ($values) {
+                        //     $output = $values['citizenship2'];
+                        //     if (!empty($values['citizenship2Passport'])) {
+                        //         $output .= '<br/>'.$values['citizenship2Passport'];
+                        //     }
+                        //     if (!empty($values['citizenship2PassportScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['citizenship2PassportScan'], __('View Passport'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
+                        // $col->addColumn('nationalIDCardNumber', $country ? __($country).' '.__('ID Card') : __('National ID Card'))->format(function ($values) {
+                        //     $output = $values['nationalIDCardNumber'];
+                        //     if (!empty($values['nationalIDCardScan'])) {
+                        //         $output .= '<br/>'.Format::link('./'.$values['nationalIDCardScan'], __('View ID Card'), ['target' => '_blank']);
+                        //     }
+                        //     return $output;
+                        // });
+                        $col->addColumn('languageFirst', __('First Language'));
+                        $col->addColumn('languageSecond', __('Second Language'));
+                        $col->addColumn('languageThird', __('Third Language'));
+                        // $col->addColumn('residencyStatus', $country ? __($country).' '.__('Residency/Visa Type') : __('Residency/Visa Type'));
+                        // $col->addColumn('visaExpiryDate', $country ? __($country).' '.__('Visa Expiry Date') :__('Visa Expiry Date'))
+                        //     ->format(Format::using('date', 'visaExpiryDate'));
+
+                        $col = $table->addColumn('System Access', __('System Access'));
+
+                        $col->addColumn('username', __('Username'));
+                        $col->addColumn('canLogin', __('Can Login?'))->format(Format::using('yesNo', 'canLogin'));
+                        $col->addColumn('lastIPAddress', __('Last IP Address'));
+
+                        $col = $table->addColumn('Miscellaneous', __('Miscellaneous'));
+
+                        $col->addColumn('transport', __('Transport'))->format(function ($values) {
+                            $output = $values['transport'];
+                            if (!empty($values['transportNotes'])) {
+                                $output .= '<br/>'.$values['transportNotes'];
                             }
-                            echo '</tr>';
-                        }
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
-                        if ($row['email'] != '') {
-                            echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Alternate Email').'</span><br/>';
-                        if ($row['emailAlternate'] != '') {
-                            echo "<i><a href='mailto:".$row['emailAlternate']."'>".$row['emailAlternate'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
-                        if ($row['website'] != '') {
-                            echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        if ($row['address1'] != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=4>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 1').'</span><br/>';
-                            $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
-                            if ($address1 != false) {
-                                echo $address1;
-                            }
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        if ($row['address2'] != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 2').'</span><br/>';
-                            $address2 = addressFormat($row['address2'], $row['address2District'], $row['address2Country']);
-                            if ($address2 != false) {
-                                echo $address2;
-                            }
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
-
-                        echo '<h4>';
-                        echo __('School Information');
-                        echo '</h4>';
-
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Last School').'</span><br/>';
-                        echo $row['lastSchool'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Start Date').'</span><br/>';
-                        echo dateConvertBack($guid, $row['dateStart']);
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Class Of').'</span><br/>';
-                        if ($row['gibbonSchoolYearIDClassOf'] == '') {
-                            echo '<i>'.__('NA').'</i>';
-                        } else {
-
-                                $dataDetail = array('gibbonSchoolYearIDClassOf' => $row['gibbonSchoolYearIDClassOf']);
-                                $sqlDetail = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDClassOf';
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
-                            if ($resultDetail->rowCount() == 1) {
-                                $rowDetail = $resultDetail->fetch();
-                                echo $rowDetail['name'];
-                            }
-                        }
-
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Next School').'</span><br/>';
-                        echo $row['nextSchool'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('End Date').'</span><br/>';
-                        echo dateConvertBack($guid, $row['dateEnd']);
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Departure Reason').'</span><br/>';
-                        echo $row['departureReason'];
-                        echo '</td>';
-                        echo '</tr>';
-                        $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
-                        if ($dayTypeOptions != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Day Type').'</span><br/>';
-                            echo $row['dayType'];
-                            echo '</td>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-
-                            echo '</td>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '</table>';
-
-                        echo '<h4>';
-                        echo __('Background');
-                        echo '</h4>';
-
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td width: 33%; style='vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Country of Birth').'</span><br/>';
-                        if ($row['countryOfBirth'] != '') {
-                            echo $row['countryOfBirth']."<br/>";
-                        }
-                        if ($row['birthCertificateScan'] != '') {
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['birthCertificateScan']."'>View Birth Certificate</a>";
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Ethnicity').'</span><br/>';
-                        echo $row['ethnicity'];
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Religion').'</span><br/>';
-                        echo $row['religion'];
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship 1').'</span><br/>';
-                        if ($row['citizenship1'] != '') {
-                            echo $row['citizenship1']."<br/>";
-                        }
-                        if ($row['citizenship1Passport'] != '') {
-                            echo $row['citizenship1Passport']."<br/>";
-                        }
-                        if ($row['citizenship1PassportScan'] != '') {
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['citizenship1PassportScan']."'>View Passport</a>";
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship 2').'</span><br/>';
-                        echo $row['citizenship2'];
-                        if ($row['citizenship2Passport'] != '') {
-                            echo '<br/>';
-                            echo $row['citizenship2Passport'];
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        if ($_SESSION[$guid]['country'] == '') {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('National ID Card').'</span><br/>';
-                        } else {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".$_SESSION[$guid]['country'].' '.__('ID Card').'</span><br/>';
-                        }
-                        if ($row['nationalIDCardNumber'] != '') {
-                            echo $row['nationalIDCardNumber']."<br/>";
-                        }
-                        if ($row['nationalIDCardScan'] != '') {
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['nationalIDCardScan']."'>View ID Card</a>";
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('First Language').'</span><br/>';
-                        echo $row['languageFirst'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Second Language').'</span><br/>';
-                        echo $row['languageSecond'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Third Language').'</span><br/>';
-                        echo $row['languageThird'];
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '<tr>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        if ($_SESSION[$guid]['country'] == '') {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Residency/Visa Type').'</span><br/>';
-                        } else {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".$_SESSION[$guid]['country'].' '.__('Residency/Visa Type').'</span><br/>';
-                        }
-                        echo $row['residencyStatus'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        if ($_SESSION[$guid]['country'] == '') {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Visa Expiry Date').'</span><br/>';
-                        } else {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".$_SESSION[$guid]['country'].' '.__('Visa Expiry Date').'</span><br/>';
-                        }
-                        if ($row['visaExpiryDate'] != '') {
-                            echo dateConvertBack($guid, $row['visaExpiryDate']);
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        echo '<h4>';
-                        echo 'School Data';
-                        echo '</h4>';
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
-                        if (isset($row['gibbonYearGroupID'])) {
-
-                                $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
-                                $sqlDetail = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
-                            if ($resultDetail->rowCount() == 1) {
-                                $rowDetail = $resultDetail->fetch();
-                                echo __($rowDetail['name']);
-                            }
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
-                        if (isset($row['gibbonRollGroupID'])) {
-                            $sqlDetail = "SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID='".$row['gibbonRollGroupID']."'";
-
-                                $dataDetail = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
-                                $sqlDetail = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
-                            if ($resultDetail->rowCount() == 1) {
-                                $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$rowDetail['gibbonRollGroupID']."'>".$rowDetail['name'].'</a>';
-                                } else {
-                                    echo $rowDetail['name'];
-                                }
-                                $primaryTutor = $rowDetail['gibbonPersonIDTutor'];
-                            }
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Tutors').'</span><br/>';
-                        if (isset($rowDetail['gibbonPersonIDTutor'])) {
-
-                                $dataDetail = array('gibbonPersonIDTutor' => $rowDetail['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $rowDetail['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $rowDetail['gibbonPersonIDTutor3']);
-                                $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonIDTutor OR gibbonPersonID=:gibbonPersonIDTutor2 OR gibbonPersonID=:gibbonPersonIDTutor3';
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
-                            while ($rowDetail = $resultDetail->fetch()) {
-                                if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
-                                } else {
-                                    echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
-                                }
-                                if ($rowDetail['gibbonPersonID'] == $primaryTutor and $resultDetail->rowCount() > 1) {
-                                    echo ' ('.__('Main Tutor').')';
-                                }
-                                echo '<br/>';
-                            }
-                        }
-                        echo '</td>';
-                        echo '<tr>';
-                        echo "<td style='padding-top: 15px ; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('House').'</span><br/>';
-
-                            $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
-                            $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        if ($resultDetail->rowCount() == 1) {
-                            $rowDetail = $resultDetail->fetch();
-                            echo $rowDetail['name'];
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Student ID').'</span><br/>';
-                        echo $row['studentID'];
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-
-                            $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
-                            $sqlDetail = "SELECT DISTINCT gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID";
-                            $resultDetail = $connection2->prepare($sqlDetail);
-                            $resultDetail->execute($dataDetail);
-                        if ($resultDetail->rowCount() == 1) {
-                            echo "<span style='font-size: 115%; font-weight: bold;'>".__('Head of Year').'</span><br/>';
-                            $rowDetail = $resultDetail->fetch();
-                            if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
-                            } else {
-                                echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
-                            }
-                            echo '<br/>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        echo '<h4>';
-                        echo __('System Data');
-                        echo '</h4>';
-
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td width: 33%; style='vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Username').'</span><br/>';
-                        echo $row['username'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Can Login?').'</span><br/>';
-                        echo ynExpander($guid, $row['canLogin']);
-                        echo '</td>';
-                        echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Last IP Address').'</span><br/>';
-                        echo $row['lastIPAddress'];
-                        echo '</td>';
-                        echo '</tr>';
-                        echo '</table>';
-
-                        echo '<h4>';
-                        echo __('Miscellaneous');
-                        echo '</h4>';
-
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Transport').'</span><br/>';
-                        echo $row['transport'];
-                        if ($row['transportNotes'] != '') {
-                            echo '<br/>';
-                            echo $row['transportNotes'];
-                        }
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Vehicle Registration').'</span><br/>';
-                        echo $row['vehicleRegistration'];
-                        echo '</td>';
-                        echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Locker Number').'</span><br/>';
-                        echo $row['lockerNumber'];
-                        echo '</td>';
-                        echo '</tr>';
+                            return $output;
+                        });
+                        $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
+                        $col->addColumn('lockerNumber', __('Locker Number'));
 
                         $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
                         if ($privacySetting == 'Y') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Image Privacy').'</span><br/>';
-                            if ($row['privacy'] != '') {
-                                echo "<span style='color: #cc0000; background-color: #F6CECB'>";
-                                echo __('Privacy required:').' '.$row['privacy'];
-                                echo '</span>';
-                            } else {
-                                echo "<span style='color: #390; background-color: #D4F6DC;'>";
-                                echo __('Privacy not required or not set.');
-                                echo '</span>';
-                            }
-
-                            echo '</td>';
-                            echo '</tr>';
+                            $col->addColumn('privacy', __('Privacy'))->format(function ($values) {
+                                if (!empty($values['privacy'])) {
+                                    return Format::tag(__('Privacy required:').' '.$values['privacy'], 'error');
+                                } else {
+                                    return Format::tag(__('Privacy not required or not set.'), 'success');
+                                }
+                            });
                         }
                         $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
-                        if ($studentAgreementOptions != '') {
-                            echo '<tr>';
-                            echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Student Agreements').'</span><br/>';
-                            echo __('Agreements Signed:').' '.$row['studentAgreements'];
-                            echo '</td>';
-                            echo '</tr>';
+                        if (!empty($studentAgreementOptions)) {
+                            $col->addColumn('studentAgreements', __('Student Agreements:'))->format(function ($values) {
+                                return __('Agreements Signed:') .' '.$values['studentAgreements'];
+                            });
                         }
-                        echo '</table>';
 
-                        //Custom Fields
-                        $fields = json_decode($row['fields'], true);
-                        $resultFields = getCustomFields($connection2, $guid, true);
-                        if ($resultFields->rowCount() > 0) {
-                            echo '<h4>';
-                            echo __('Custom Fields');
-                            echo '</h4>';
+                        // CUSTOM FIELDS
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'User', ['student' => 1], $row['fields']);
+                        echo $table->render([$row]);
 
-                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                            $count = 0;
-                            $columns = 3;
+                        // PERSONAL DOCUMENTS
+                        if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_personalDocumentSummary.php')) {
+                            $params = ['student' => true, 'notEmpty' => true];
+                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
 
-                            while ($rowFields = $resultFields->fetch()) {
-                                if ($count % $columns == 0) {
-                                    echo '<tr>';
-                                }
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($rowFields['name']).'</span><br/>';
-                                if (isset($fields[$rowFields['gibbonCustomFieldID']])) {
-                                    if ($rowFields['type'] == 'date') {
-                                        echo dateConvertBack($guid, $fields[$rowFields['gibbonCustomFieldID']]);
-                                    } elseif ($rowFields['type'] == 'url') {
-                                        echo "<a target='_blank' href='".$fields[$rowFields['gibbonCustomFieldID']]."'>".$fields[$rowFields['gibbonCustomFieldID']].'</a>';
-                                    } else {
-                                        echo $fields[$rowFields['gibbonCustomFieldID']];
-                                    }
-                                }
-                                echo '</td>';
-
-                                if ($count % $columns == ($columns - 1)) {
-                                    echo '</tr>';
-                                }
-                                ++$count;
-                            }
-
-                            if ($count % $columns != 0) {
-                                for ($i = 0; $i < $columns - ($count % $columns); ++$i) {
-                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'></td>";
-                                }
-                                echo '</tr>';
-                            }
-
-                            echo '</table>';
+                            echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
                         }
+                        
+
                     } elseif ($subpage == 'Family') {
 
                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
@@ -1631,10 +1222,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
 
-                        $table->addColumn('longTermMedication', __('Long Term Medication'))
+                        $col = $table->addColumn('General Information');
+
+                        $col->addColumn('longTermMedication', __('Long Term Medication'))
                             ->format(Format::using('yesno', 'longTermMedication'));
 
-                        $table->addColumn('longTermMedicationDetails', __('Details'))
+                        $col->addColumn('longTermMedicationDetails', __('Details'))
                             ->addClass('col-span-2')
                             ->format(function ($medical) {
                                 return !empty($medical['longTermMedication'])
@@ -1642,11 +1235,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $table->addColumn('tetanusWithin10Years', __('Tetanus Last 10 Years?'))
-                            ->format(Format::using('yesno', 'longTermMedication'));
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'], $table);
 
-                        $table->addColumn('bloodType', __('Blood Type'));
-                        $table->addColumn('medicalConditions', __('Medical Conditions?'))
+                        $col->addColumn('medicalConditions', __('Medical Conditions?'))
+                            ->addClass('col-span-3')
                             ->format(function ($medical) use ($conditions) {
                                 return count($conditions) > 0
                                     ? __('Yes').'. '.__('Details below.')
@@ -1654,10 +1246,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             });
 
                         if (!empty($medical['comment'])) {
-                            $table->addColumn('comment', __('Comment'))->addClass('col-span-3');
+                            $col->addColumn('comment', __('Comment'))->addClass('col-span-3');
                         }
 
-                        echo $table->render(!empty($medical) ? [$medical] : []);
+
+
+                        $fields = is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
+                        echo $table->render(!empty($medical) ? [$medical + $fields] : []);
 
                         // MEDICAL CONDITIONS
                         $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
@@ -2285,7 +1880,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                 }
                                                 echo '</tr>';
-                                                if (mb_strlen($rowEntry['comment']) > 200) {
+                                                if ($rowEntry['commentOn'] == 'Y' && mb_strlen($rowEntry['comment']) > 200) {
                                                     echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                                                     echo '<td colspan=6>';
                                                     echo nl2br($rowEntry['comment']);
@@ -2422,7 +2017,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     });
 
                                 $table->addColumn('yearGroup', __('Year Group'))->width('15%');
-                                $table->addColumn('rollGroup', __('Roll Group'))->width('15%');
+                                $table->addColumn('formGroup', __('Form Group'))->width('15%');
                                 $table->addColumn('timestampModified', __('Date'))
                                     ->width('30%')
                                     ->format(function ($report) {
@@ -2496,8 +2091,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 UNION
                                 (SELECT DISTINCT surname, preferredName, email
                                     FROM gibbonPerson
-                                        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
-                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                        JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonPersonIDEA=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDEA3=gibbonPerson.gibbonPersonID)
+                                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                                         JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                                         AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2
@@ -2699,7 +2294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 return Format::dateRangeReadable($row['programStart'], $row['programEnd']);
                                             }
                                           });
-                                    $table->addColumn('status', __('Status'));
+                                    $table->addColumn('status', __('Status'))->translatable();
                                     $table->addActionColumn()
                                           ->format(function ($activity, $actions) {
                                             $actions->addAction('view', __('View Details'))
@@ -3033,7 +2628,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $orders = explode(',', $mainMenuCategoryOrder);
 
                     //Sort array
-                    @array_multisort($orders, $studentMenuCategory, $studentMenuName, $studentMenuLink);
+                    @array_multisort($studentMenuCategory, $studentMenuName, $studentMenuLink);
 
                     //Spit out array whilt sorting by $mainMenuCategoryOrder
                     if (count($studentMenuCategory) > 0) {

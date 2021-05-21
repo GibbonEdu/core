@@ -18,7 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Timetable\CourseSyncGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     // Access denied
@@ -34,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $returns['error6'] = __('Your request failed due to an attachment error.');
     $returns['error7'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+    $returns['warning2'] = __('Your request was successful, but some data was not properly saved.');
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
@@ -49,6 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         echo '</div>';
     }
 
+    echo Format::alert(__('Note that certain fields are available depending on the role categories (Staff, Student, Parent) that a user is assigned to. These fields, such as personal documents and custom fields, will be editable after the user has been created.'), 'message');
+    
     $form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -111,8 +116,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     // Get all roles and filter roles based on role restrictions
     $staffRoles = [];
+    $studentRoles = [];
     $availableRoles = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles, &$staffRoles) {
+    $availableRoles = array_reduce($availableRoles, function ($carry, $item) use (&$currentUserRoles, &$staffRoles, &$studentRoles) {
         if ($item['restriction'] == 'Admin Only') {
             if (!in_array('001', $currentUserRoles)) return $carry;
         } else if ($item['restriction'] == 'Same Role') {
@@ -120,6 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         }
         if ($item['category'] == 'Staff') {
             $staffRoles[] = $item['gibbonRoleID'];
+        }
+        if ($item['category'] == 'Student') {
+            $studentRoles[] = $item['gibbonRoleID'];
         }
         $carry[$item['gibbonRoleID']] = __($item['name']);
         return $carry;
@@ -276,9 +285,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth');
 
-    $row = $form->addRow();
-        $row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
     $ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
     $row = $form->addRow();
@@ -298,76 +307,76 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addTextField('religion')->maxLength(30);
         }
 
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    $row = $form->addRow();
-        $row->addLabel('citizenship1', __('Citizenship 1'));
-        if (!empty($nationalityList)) {
-            $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
-        } else {
-            $row->addSelectCountry('citizenship1');
-        }
+    // $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1', __('Citizenship 1'));
+    //     if (!empty($nationalityList)) {
+    //         $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
+    //     } else {
+    //         $row->addSelectCountry('citizenship1');
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
-        $row->addTextField('citizenship1Passport')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
+    //     $row->addTextField('citizenship1Passport')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
-        $row->addDate('citizenship1PassportExpiry');
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+    //     $row->addDate('citizenship1PassportExpiry');
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2', __('Citizenship 2'));
-        if (!empty($nationalityList)) {
-            $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
-        } else {
-            $row->addSelectCountry('citizenship2');
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2', __('Citizenship 2'));
+    //     if (!empty($nationalityList)) {
+    //         $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
+    //     } else {
+    //         $row->addSelectCountry('citizenship2');
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
-        $row->addTextField('citizenship2Passport')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
+    //     $row->addTextField('citizenship2Passport')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
-        $row->addDate('citizenship2PassportExpiry');
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
+    //     $row->addDate('citizenship2PassportExpiry');
 
-    if (!empty($_SESSION[$guid]['country'])) {
-        $nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
-        $nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
-        $residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
-        $visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
-    } else {
-        $nationalIDCardNumberLabel = __('National ID Card Number');
-        $nationalIDCardScanLabel = __('National ID Card Scan');
-        $residencyStatusLabel = __('Residency/Visa Type');
-        $visaExpiryDateLabel = __('Visa Expiry Date');
-    }
+    // if (!empty($_SESSION[$guid]['country'])) {
+    //     $nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
+    //     $nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
+    //     $residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
+    //     $visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
+    // } else {
+    //     $nationalIDCardNumberLabel = __('National ID Card Number');
+    //     $nationalIDCardScanLabel = __('National ID Card Scan');
+    //     $residencyStatusLabel = __('Residency/Visa Type');
+    //     $visaExpiryDateLabel = __('Visa Expiry Date');
+    // }
 
-    $row = $form->addRow();
-        $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
-        $row->addTextField('nationalIDCardNumber')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
+    //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
-    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    // $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
-    $row = $form->addRow();
-        $row->addLabel('residencyStatus', $residencyStatusLabel);
-        if (!empty($residencyStatusList)) {
-            $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-        } else {
-            $row->addTextField('residencyStatus')->maxLength(30);
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('residencyStatus', $residencyStatusLabel);
+    //     if (!empty($residencyStatusList)) {
+    //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
+    //     } else {
+    //         $row->addTextField('residencyStatus')->maxLength(30);
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
-        $row->addDate('visaExpiryDate');
+    // $row = $form->addRow();
+    //     $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
+    //     $row->addDate('visaExpiryDate');
 
     // EMPLOYMENT
     $form->addRow()->addHeading(__('Employment'));
@@ -496,8 +505,42 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('jobTitle', __('Job Title'));
         $row->addTextField('jobTitle')->maxlength(100);
 
+    // STUDENT
+    $form->toggleVisibilityByClass('studentDetails')->onSelect('gibbonRoleIDPrimary')->when($studentRoles);
+    $form->toggleVisibilityByClass('studentRecord')->onCheckbox('studentRecord')->when('Y');
+    $form->addRow()->addClass('studentDetails')->addHeading(__('Student'))->addClass('studentDetails');
 
-    // SUBMIT    
+    $row = $form->addRow()->addClass('studentDetails');
+        $row->addLabel('studentRecord', __('Add Student Enrolment'));
+        $row->addCheckbox('studentRecord')->setValue('Y')->description(__('Create a linked student record?'));
+
+    $row = $form->addRow()->addClass('studentRecord');
+    $row->addLabel('yearName', __('School Year'));
+    $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($session->get('gibbonSchoolYearName'));
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->required();
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->required();
+
+    $row = $form->addRow()->addClass('studentRecord');
+        $row->addLabel('rollOrder', __('Roll Order'));
+        $row->addNumber('rollOrder')->maxLength(2);
+
+    // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
+    $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
+    if ($classMapCount > 0) {
+        $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
+        $row = $form->addRow()->addClass('studentRecord');;
+            $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
+                ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));
+            $row->addYesNo('autoEnrolStudent')->selected($autoEnrolDefault);
+    }
+
+    // SUBMIT
     $row = $form->addRow();
         $row->addFooter()->append('<small>'.getMaxUpload($guid, true).'</small>');
         $row->addSubmit();

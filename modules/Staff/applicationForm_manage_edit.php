@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -56,17 +57,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $values = $result->fetch();
             $proceed = true;
 
-            echo "<div class='linkTop'>";
-            if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a> | ';
-            }
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-            echo '</div>';
+            $customFieldHandler = $container->get(CustomFieldHandler::class);
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            if ($search != '') {
+                $form->addHeaderAction('back', __('Back to Search Results'))
+                ->setURL('/modules/Staff/applicationForm_manage.php')
+                ->addParam('search', $search)
+                ->displayLabel()
+                ->append(' | ');
+            }
+
+            $form->addHeaderAction('print', __('Print'))
+                ->setURL('/report.php')
+                ->addParam('q', '/modules/Staff/applicationForm_manage_edit_print.php')
+                ->addParam('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID)
+                ->directLink()
+                ->displayLabel();
 
             $form->addRow()->addHeading(__('For Office Use'));
 
@@ -260,20 +271,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addSelectCountry('homeAddressCountry')->required();
             }
 
-            // CUSTOM FIELDS FOR STAFF
-            $existingFields = isset($values['fields'])? json_decode($values['fields'], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, true, false, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $form->addRow()->addHeading(__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-                    $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            // CUSTOM FIELDS FOR USER: STAFF
+            $params = ['staff' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $values['fields']);
 
             // REQURIED DOCUMENTS
             $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
@@ -331,6 +331,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addEmail('referenceEmail2')->required();
 
             }
+
+            // CUSTOM FIELDS FOR STAFF RECORD
+            $params = ['applicationForm' => 1, 'prefix' => 'customStaff'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'Staff', $params, $values['staffFields']);
 
             $form->loadAllValuesFrom($values);
 

@@ -122,7 +122,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonCourseID=gibbonCourse.gibbonCourseID')
-            ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
             ->where('gibbonPerson.gibbonPersonID=:gibbonPersonID')
@@ -154,19 +154,19 @@ class ReportingAccessGateway extends QueryableGateway
 
         $query->unionAll()
             ->from('gibbonPerson')
-            ->cols(["LPAD(gibbonRollGroup.gibbonRollGroupID, 5, '0') as scopeTypeID", 'gibbonRollGroup.name as criteriaName', 'gibbonRollGroup.nameShort as criteriaNameShort',
+            ->cols(["LPAD(gibbonFormGroup.gibbonFormGroupID, 5, '0') as scopeTypeID", 'gibbonFormGroup.name as criteriaName', 'gibbonFormGroup.nameShort as criteriaNameShort',
             "(SELECT COUNT(*) FROM gibbonReportingCriteria as criteria WHERE criteria.gibbonReportingScopeID=:gibbonReportingScopeID AND criteria.target='Per Student') as targetCount",
-            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND enrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID $onlyFullStudents) as totalCount",
-            "(SELECT COUNT(*) FROM gibbonReportingProgress as progress WHERE progress.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete') as progressCount"])
-            ->innerJoin('gibbonRollGroup', '(gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)')
-            ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            "(SELECT COUNT(*) FROM gibbonStudentEnrolment as enrolment JOIN gibbonPerson as student ON (student.gibbonPersonID=enrolment.gibbonPersonID) WHERE enrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID AND enrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID $onlyFullStudents) as totalCount",
+            "(SELECT COUNT(*) FROM gibbonReportingProgress as progress WHERE progress.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND progress.gibbonReportingScopeID=:gibbonReportingScopeID AND progress.status='Complete') as progressCount"])
+            ->innerJoin('gibbonFormGroup', '(gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)')
+            ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID')
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingCriteria.gibbonReportingCycleID')
             ->where('gibbonPerson.gibbonPersonID=:gibbonPersonID')
             ->bindValue('gibbonPersonID', $gibbonPersonID)
             ->where('gibbonReportingCriteria.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
             ->having('totalCount > 0')
-            ->groupBy(['gibbonRollGroup.gibbonRollGroupID']);
+            ->groupBy(['gibbonFormGroup.gibbonFormGroupID']);
 
         if (!$allStudents) $query->bindValue('today', date('Y-m-d'));
 
@@ -174,19 +174,19 @@ class ReportingAccessGateway extends QueryableGateway
     }
 
 
-    public function selectAccessibleRollGroupsByReportingScope($gibbonReportingScopeID)
+    public function selectAccessibleFormGroupsByReportingScope($gibbonReportingScopeID)
     {
         $query = $this
             ->newSelect()
             ->from('gibbonReportingScope')
-            ->cols(['gibbonRollGroup.gibbonRollGroupID', 'gibbonRollGroup.name'])
+            ->cols(['gibbonFormGroup.gibbonFormGroupID', 'gibbonFormGroup.name'])
             ->innerJoin('gibbonReportingCycle', 'gibbonReportingCycle.gibbonReportingCycleID=gibbonReportingScope.gibbonReportingCycleID')
             ->innerJoin('gibbonStudentEnrolment', 'FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList) AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
-            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
-            ->groupBy(['gibbonRollGroup.gibbonRollGroupID'])
-            ->orderBy(['LENGTH(gibbonRollGroup.name)', 'gibbonRollGroup.name']);
+            ->groupBy(['gibbonFormGroup.gibbonFormGroupID'])
+            ->orderBy(['LENGTH(gibbonFormGroup.name)', 'gibbonFormGroup.name']);
 
         return $this->runSelect($query);
     }
@@ -205,20 +205,20 @@ class ReportingAccessGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
             ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
-            ->where("gibbonCourseClassPerson.role='Teacher'")
+            ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where("gibbonCourseClass.reportable='Y'")
             ->where("gibbonPerson.status='Full'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
 
-        // ROLL GROUP
+        // FORM GROUP
         $query->unionAll()
             ->distinct()
             ->from('gibbonReportingScope')
             ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingScopeID=gibbonReportingScope.gibbonReportingScopeID')
-            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID')
-            ->innerJoin('gibbonPerson', '(gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID')
+            ->innerJoin('gibbonPerson', '(gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)')
             ->where('gibbonReportingScope.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->where("gibbonPerson.status='Full'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
@@ -256,10 +256,10 @@ class ReportingAccessGateway extends QueryableGateway
             $query->cols(['gibbonYearGroup.name as name', 'gibbonYearGroup.nameShort as nameShort'])
                 ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID')
                 ->where('gibbonYearGroup.gibbonYearGroupID=:scopeTypeID');
-        } elseif ($scopeType == 'Roll Group') {
-            $query->cols(['gibbonRollGroup.name as name', 'gibbonRollGroup.nameShort as nameShort'])
-                ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID')
-                ->where('gibbonRollGroup.gibbonRollGroupID=:scopeTypeID');
+        } elseif ($scopeType == 'Form Group') {
+            $query->cols(['gibbonFormGroup.name as name', 'gibbonFormGroup.nameShort as nameShort'])
+                ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID')
+                ->where('gibbonFormGroup.gibbonFormGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Course') {
             $query->cols(['gibbonCourse.name', "CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as nameShort"])
                 ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
@@ -296,11 +296,11 @@ class ReportingAccessGateway extends QueryableGateway
                 ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID AND gibbonReportingProgress.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID')
                 ->where('gibbonStudentEnrolment.gibbonYearGroupID=:scopeTypeID')
                 ->groupBy(['gibbonStudentEnrolment.gibbonPersonID']);
-        } elseif ($scopeType == 'Roll Group') {
+        } elseif ($scopeType == 'Form Group') {
             $query->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
                 ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-                ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID AND gibbonReportingProgress.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID')
-                ->where('gibbonStudentEnrolment.gibbonRollGroupID=:scopeTypeID')
+                ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID AND gibbonReportingProgress.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID')
+                ->where('gibbonStudentEnrolment.gibbonFormGroupID=:scopeTypeID')
                 ->groupBy(['gibbonStudentEnrolment.gibbonPersonID']);
         } elseif ($scopeType == 'Course') {
             $query->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
@@ -345,7 +345,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType = 'Year Group'")
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'");
 
-        // ROLL GROUP
+        // FORM GROUP
         $query->unionAll()
             ->from('gibbonReportingCycle')
             ->cols(['gibbonReportingScope.gibbonReportingScopeID  as groupBy', 'gibbonReportingScope.name as scopeName', '0 as orderBy',
@@ -353,7 +353,7 @@ class ReportingAccessGateway extends QueryableGateway
             'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget'])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID
-                AND gibbonReportingCriteria.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+                AND gibbonReportingCriteria.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->innerJoin('gibbonReportingCriteriaType', 'gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID')
             ->leftJoin('gibbonReportingValue', "gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID
@@ -361,14 +361,14 @@ class ReportingAccessGateway extends QueryableGateway
                 ")
             ->leftJoin('gibbonScaleGrade', 'gibbonScaleGrade.gibbonScaleID=gibbonReportingCriteriaType.gibbonScaleID AND gibbonReportingValue.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID')
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID
-                AND gibbonReportingProgress.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID
+                AND gibbonReportingProgress.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID
                 AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonReportingValue.gibbonPersonIDStudent')
             ->leftJoin('gibbonPerson as created', 'gibbonReportingValue.gibbonPersonIDCreated=created.gibbonPersonID')
             ->where('gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonIDStudent')
             ->bindValue('gibbonPersonIDStudent', $gibbonPersonIDStudent)
             ->where('gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID')
             ->bindValue('gibbonReportingCycleID', $gibbonReportingCycleID)
-            ->where("gibbonReportingScope.scopeType = 'Roll Group'")
+            ->where("gibbonReportingScope.scopeType = 'Form Group'")
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'");
 
         $query->unionAll()
@@ -429,11 +429,14 @@ class ReportingAccessGateway extends QueryableGateway
 
         if ($scopeType == 'Year Group') {
             $query->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID');
-        } elseif ($scopeType == 'Roll Group') {
-            $query->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID');
+        } elseif ($scopeType == 'Form Group') {
+            $query->where('gibbonReportingCriteria.gibbonFormGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Course') {
             $query->leftJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
-                ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID');
+                ->leftJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
+                ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID')
+                ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonIDStudent')
+                ->where("gibbonCourseClassPerson.role='Student'");
         }
 
         return $this->runSelect($query);
@@ -444,18 +447,18 @@ class ReportingAccessGateway extends QueryableGateway
         $query = $this
             ->newSelect()
             ->from('gibbonReportingCycle')
-            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingValue.comment', 'gibbonReportingValue.timestampModified', 'created.title', 'created.preferredName', 'created.surname', 'created.image_240', 'gibbonReportingProgress.status as progress', 'gibbonReportingScope.gibbonReportingScopeID', 'gibbonReportingScope.scopeType', "(CASE WHEN gibbonReportingCriteria.gibbonYearGroupID IS NOT NULL THEN gibbonReportingCriteria.gibbonYearGroupID WHEN gibbonReportingCriteria.gibbonRollGroupID IS NOT NULL THEN gibbonReportingCriteria.gibbonRollGroupID ELSE gibbonReportingValue.gibbonCourseClassID END) AS scopeTypeID"])
+            ->cols(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingValue.comment', 'gibbonReportingValue.timestampModified', 'created.title', 'created.preferredName', 'created.surname', 'created.image_240', 'gibbonReportingProgress.status as progress', 'gibbonReportingScope.gibbonReportingScopeID', 'gibbonReportingScope.scopeType', "(CASE WHEN gibbonReportingCriteria.gibbonYearGroupID IS NOT NULL THEN gibbonReportingCriteria.gibbonYearGroupID WHEN gibbonReportingCriteria.gibbonFormGroupID IS NOT NULL THEN gibbonReportingCriteria.gibbonFormGroupID ELSE gibbonReportingValue.gibbonCourseClassID END) AS scopeTypeID"])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID
                 AND (gibbonReportingCriteria.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID
-                OR gibbonReportingCriteria.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID
+                OR gibbonReportingCriteria.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID
                 OR gibbonReportingCriteria.gibbonCourseID IS NOT NULL)')
             ->innerJoin('gibbonReportingCriteriaType', 'gibbonReportingCriteriaType.gibbonReportingCriteriaTypeID=gibbonReportingCriteria.gibbonReportingCriteriaTypeID')
             ->innerJoin('gibbonReportingScope', 'gibbonReportingScope.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID')
             ->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID AND gibbonReportingValue.gibbonPersonIDStudent=gibbonStudentEnrolment.gibbonPersonID')
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID
                 AND (gibbonReportingProgress.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID
-                    OR gibbonReportingProgress.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID
+                    OR gibbonReportingProgress.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID
                     OR gibbonReportingProgress.gibbonCourseClassID=gibbonReportingValue.gibbonCourseClassID)
                 AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonReportingValue.gibbonPersonIDStudent')
             ->leftJoin('gibbonPerson as created', 'gibbonReportingValue.gibbonPersonIDCreated=created.gibbonPersonID')
@@ -489,9 +492,9 @@ class ReportingAccessGateway extends QueryableGateway
         if ($scopeType == 'Year Group') {
             $query->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
                 ->where('gibbonReportingCriteria.gibbonYearGroupID=:scopeTypeID');
-        } elseif ($scopeType == 'Roll Group') {
+        } elseif ($scopeType == 'Form Group') {
             $query->leftJoin('gibbonReportingValue', 'gibbonReportingValue.gibbonReportingCriteriaID=gibbonReportingCriteria.gibbonReportingCriteriaID')
-                ->where('gibbonReportingCriteria.gibbonRollGroupID=:scopeTypeID');
+                ->where('gibbonReportingCriteria.gibbonFormGroupID=:scopeTypeID');
         } elseif ($scopeType == 'Course') {
             $query
                 ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:scopeTypeID')
@@ -549,11 +552,11 @@ class ReportingAccessGateway extends QueryableGateway
                 ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportingCriteria.gibbonYearGroupID')
                 ->where('gibbonYearGroup.gibbonYearGroupID=:scopeTypeID')
                 ->where('gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID');
-        } elseif ($scopeType == 'Roll Group') {
-            $query->cols(['gibbonRollGroup.gibbonRollGroupID as identifier'])
-                ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonReportingCriteria.gibbonRollGroupID')
-                ->where('gibbonRollGroup.gibbonRollGroupID=:scopeTypeID')
-                ->where('(gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)');
+        } elseif ($scopeType == 'Form Group') {
+            $query->cols(['gibbonFormGroup.gibbonFormGroupID as identifier'])
+                ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonReportingCriteria.gibbonFormGroupID')
+                ->where('gibbonFormGroup.gibbonFormGroupID=:scopeTypeID')
+                ->where('(gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)');
         } elseif ($scopeType == 'Course') {
             $query->cols(['gibbonCourseClassPerson.gibbonCourseClassID as identifier'])
                 ->innerJoin('gibbonCourse', 'gibbonCourse.gibbonCourseID=gibbonReportingCriteria.gibbonCourseID')
@@ -562,6 +565,7 @@ class ReportingAccessGateway extends QueryableGateway
                 ->where('gibbonCourseClassPerson.gibbonCourseClassID=:scopeTypeID')
                 ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID')
                 ->where("(gibbonCourseClassPerson.role='Teacher' OR gibbonCourseClassPerson.role='Assistant')")
+                ->where("gibbonCourseClass.reportable='Y'")
                 ->where("gibbonCourseClassPerson.reportable='Y'");
         }
 

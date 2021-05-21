@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     // Proceed!
     $substituteGateway = $container->get(SubstituteGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
-    
+
     $substitute = $substituteGateway->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
 
     if (empty($substitute)) {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         exit;
     }
 
-    $dateStart = $_POST['dateStart'];
+    $dateStart = $_POST['dateStart'] ?? '';
     $dateEnd = $_POST['dateEnd'] ?? $_POST['dateStart'];
 
     $start = new DateTime(Format::dateConvert($dateStart).' 00:00:00');

@@ -34,7 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     $behaviourAlertLowThreshold = $_POST['behaviourAlertLowThreshold'] ?? '';
     $behaviourAlertMediumThreshold = $_POST['behaviourAlertMediumThreshold'] ?? '';
     $behaviourAlertHighThreshold = $_POST['behaviourAlertHighThreshold'] ?? '';
-    $extendedBriefProfile = $_POST['extendedBriefProfile'] ?? '';
     $studentAgreementOptions = '';
     foreach (explode(',', $_POST['studentAgreementOptions']) as $agreement) {
         $studentAgreementOptions .= trim($agreement).',';
@@ -113,15 +112,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
     try {
         $data = array('value' => $behaviourAlertHighThreshold);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='behaviourAlertHighThreshold'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $extendedBriefProfile);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Students' AND name='extendedBriefProfile'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

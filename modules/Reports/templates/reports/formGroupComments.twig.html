@@ -1,0 +1,37 @@
+{#<!--
+name: Comments - Form Group
+category: Reporting Cycle
+types: Body
+icon: comment-alt.svg
+sources:
+    tutors: Tutors
+    formGroupCriteria: FormGroupCriteria
+-->#}
+{{- stylesheet ? include(stylesheet) -}}
+
+{%- for criteria in []|merge(formGroupCriteria.perGroup|default([]))|merge(formGroupCriteria.perStudent|default([])) -%}
+<table class="w-full table" cellspacing="0" cellpadding="0" nobr="true" style="padding: 0;">
+    {% if criteria.valueType == 'Comment' %}
+    <tr>
+        <td class="w-full header" style="line-height:1.8;font-size: 12pt; font-weight: bold;" colspan="2">
+            {{- criteria.criteriaName -}}
+        </td>
+    </tr>
+    <tr><td style="font-size: 4px;">&nbsp;</td></tr>
+    <tr>
+        <td class="w-full" style="font-size: 10pt" colspan="2">
+            "{{- criteria.comment -}}" –&nbsp;
+            <b>
+            {%- for tutor in tutors -%}
+                {{ tutor.title }}&nbsp;{{ tutor.preferredName|first }}.&nbsp;{{ tutor.surname }}
+                {{ not loop.last ? ', ' }}
+            {%- endfor -%}</b>
+        </td>
+    </tr>
+    {% endif %}
+</table>
+{% if not loop.last %}
+    <table cellspacing="0" cellpadding="6"><tr><td style="font-size: 1px;">&nbsp;</td></tr></table>
+{% endif %}
+{%- endfor -%}
+<br/>

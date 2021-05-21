@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/librarySettin
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $defaultLoanLength = $_POST['defaultLoanLength'];
-    $browseBGColor = $_POST['browseBGColor'];
-    $browseBGImage = $_POST['browseBGImage'];
+    $defaultLoanLength = $_POST['defaultLoanLength'] ?? '';
+    $browseBGColor = $_POST['browseBGColor'] ?? '';
+    $browseBGImage = $_POST['browseBGImage'] ?? '';
 
     //Validate Inputs
     if ($defaultLoanLength == '') {

@@ -17,10 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,6 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
     echo '</div>';
+
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
 
     $form = Form::create('applicationFormEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
@@ -145,19 +151,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry'))->description(__('Which year level will student enter.'));
         $row->addSelectYearGroup('gibbonYearGroupIDEntry')->required();
 
-    // ROLL GROUP
-    $sqlSelect = "SELECT gibbonRollGroupID as value, name, gibbonSchoolYearID FROM gibbonRollGroup ORDER BY gibbonSchoolYearID, name";
+    // FORM GROUP
+    $sqlSelect = "SELECT gibbonFormGroupID as value, name, gibbonSchoolYearID FROM gibbonFormGroup ORDER BY gibbonSchoolYearID, name";
     $resultSelect = $pdo->executeQuery(array(), $sqlSelect);
 
-    $rollGroups = ($resultSelect->rowCount() > 0)? $resultSelect->fetchAll() : array();
-    $rollGroupsChained = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'gibbonSchoolYearID'));
-    $rollGroupsOptions = array_combine(array_column($rollGroups, 'value'), array_column($rollGroups, 'name'));
+    $formGroups = ($resultSelect->rowCount() > 0)? $resultSelect->fetchAll() : array();
+    $formGroupsChained = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'gibbonSchoolYearID'));
+    $formGroupsOptions = array_combine(array_column($formGroups, 'value'), array_column($formGroups, 'name'));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
-        $row->addSelect('gibbonRollGroupID')
-            ->fromArray($rollGroupsOptions)
-            ->chainedTo('gibbonSchoolYearIDEntry', $rollGroupsChained)
+        $row->addLabel('gibbonFormGroupID', __('Form Group at Entry'))->description(__('If set, the student will automatically be enrolled on Accept.'));
+        $row->addSelect('gibbonFormGroupID')
+            ->fromArray($formGroupsOptions)
+            ->chainedTo('gibbonSchoolYearIDEntry', $formGroupsChained)
             ->placeholder();
 
     // DAY TYPE
@@ -365,40 +371,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth')->required();
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1', __('Citizenship'));
-        $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-        if (!empty($nationalityList)) {
-            $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
-        } else {
-            $row->addSelectCountry('citizenship1')->required();
-        }
-
     $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
-    $row = $form->addRow();
-        $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
-        $row->addTextField('citizenship1Passport')->maxLength(30);
+    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    
+    // PERSONAL DOCUMENTS
+    $params = ['student' => true, 'applicationForm' => true];
+    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationForm', $gibbonApplicationFormID, $params)->fetchAll();
+    if (!empty($documents)) {
+        $col = $form->addRow()->addColumn();
+            $col->addLabel('documents', __('Personal Documents'));
+            $col->addPersonalDocuments('documents', $documents, $container->get(View::class), $container->get(SettingGateway::class));
+    }
+    
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1', __('Citizenship'));
+    //     
+    //     if (!empty($nationalityList)) {
+    //         $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
+    //     } else {
+    //         $row->addSelectCountry('citizenship1')->required();
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
-        $row->addDate('citizenship1PassportExpiry');
+    // 
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
+    //     $row->addTextField('citizenship1Passport')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('nationalIDCardNumber', $countryName.__('National ID Card Number'));
-        $row->addTextField('nationalIDCardNumber')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+    //     $row->addDate('citizenship1PassportExpiry');
 
-    $row = $form->addRow();
-        $row->addLabel('residencyStatus', $countryName.__('Residency/Visa Type'));
-        $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-        if (!empty($residencyStatusList)) {
-            $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-        } else {
-            $row->addTextField('residencyStatus')->maxLength(30);
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('nationalIDCardNumber', $countryName.__('National ID Card Number'));
+    //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-        $row->addDate('visaExpiryDate');
+    // $row = $form->addRow();
+    //     $row->addLabel('residencyStatus', $countryName.__('Residency/Visa Type'));
+    //     
+    //     if (!empty($residencyStatusList)) {
+    //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
+    //     } else {
+    //         $row->addTextField('residencyStatus')->maxLength(30);
+    //     }
+
+    // $row = $form->addRow();
+    //     $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+    //     $row->addDate('visaExpiryDate');
 
     // STUDENT CONTACT
     $form->addRow()->addSubheading(__('Student Contact'));
@@ -483,20 +502,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // CUSTOM FIELDS FOR STUDENT
-    $existingFields = (isset($application["fields"]))? json_decode($application["fields"], true) : null;
-    $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
-    if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addSubheading(__('Other Information'));
-
-        while ($rowFields = $resultFields->fetch()) {
-            $name = 'custom'.$rowFields['gibbonCustomFieldID'];
-            $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-            $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                $row->addCustomField($name, $rowFields)->setValue($value);
-        }
-    }
+    $params = ['student' => 1, 'applicationForm' => 1, 'headingLevel' => 'h4'];
+    $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application['fields']);
 
     // FAMILY
     if (empty($application['gibbonFamilyID'])) {
@@ -540,21 +547,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-            $existingFields = (isset($application["parent1fields"]))? json_decode($application["parent1fields"], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $row = $form->addRow();
-                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent1custom".$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-                    $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => 'parent1custom', 'headingPrefix' => __('Parent/Guardian').' 1', 'headingLevel' => 'h4'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application['parent1fields'] ?? '');
 
             $start = 2;
         } else {
@@ -681,21 +675,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addTextField("parent{$i}employer")->maxLength(90);
 
             // CUSTOM FIELDS FOR PARENTS
-            $existingFields = (isset($application["parent{$i}fields"]))? json_decode($application["parent{$i}fields"], true) : null;
-            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-            if ($resultFields->rowCount() > 0) {
-                $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
-
-                while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonCustomFieldID'];
-                    $value = (isset($existingFields[$rowFields['gibbonCustomFieldID']]))? $existingFields[$rowFields['gibbonCustomFieldID']] : '';
-
-                    $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
-                        $row->addCustomField($name, $rowFields)->setValue($value);
-                }
-            }
+            $params = ['parent' => 1, 'applicationForm' => 1, 'prefix' => "parent{$i}custom", 'headingPrefix' => __('Parent/Guardian')." $i", 'headingLevel' => 'h4'];
+            $customFieldHandler->addCustomFieldsToForm($form, 'User', $params, $application["parent{$i}fields"] ?? '');
         }
     } else {
         // EXISTING FAMILY

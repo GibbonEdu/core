@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\CustomFieldHandler;
+
 include '../../gibbon.php';
 
-$search = $_GET['search'];
+$search = $_GET['search'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_add.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_add.php') == false) {
@@ -27,18 +29,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonPersonID = $_POST['gibbonPersonID'];
-    $bloodType = $_POST['bloodType'];
-    $longTermMedication = $_POST['longTermMedication'];
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+    $longTermMedication = $_POST['longTermMedication'] ?? '';
     $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
-    $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
-    $comment = $_POST['comment'];
+    $comment = $_POST['comment'] ?? '';
 
     //Validate Inputs
     if ($gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $customRequireFail = false;
+        $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Medical Form', [], $customRequireFail);
+
+        if ($customRequireFail) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit;
+        }
+
         //Check unique inputs for uniquness
         try {
             $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -57,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment);
-                $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment';
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'fields' => $fields, 'comment' => $comment);
+                $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, fields=:fields, comment=:comment';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

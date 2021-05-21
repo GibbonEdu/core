@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     $reportIdentifier = $_GET['reportIdentifier'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     
     if (empty($gibbonReportID) && empty($reportIdentifier)) {
         $page->addError(__('The specified record cannot be found.'));
@@ -68,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
 
     $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $gibbonSchoolYearID)->selected($gibbonRollGroupID)->placeholder();
+        $row->addLabel('gibbonFormGroupID', __('Form Group'));
+        $row->addSelectFormGroup('gibbonFormGroupID', $gibbonSchoolYearID)->selected($gibbonFormGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
@@ -81,25 +81,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
 
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy($gibbonRollGroupID ? ['surname', 'preferredName'] : ['sequenceNumber', 'name'])
+        ->sortBy($gibbonFormGroupID ? ['surname', 'preferredName'] : ['sequenceNumber', 'name'])
         ->fromPOST();
 
     // QUERY
     if (empty($gibbonReportID) && !empty($reportIdentifier)) {
-        $reports = $reportArchiveEntryGateway->queryArchiveByReportIdentifier($criteria, $gibbonSchoolYearID, $reportIdentifier, $gibbonYearGroupID, $gibbonRollGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
-    } elseif (!empty($gibbonRollGroupID)) {
-        $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, !empty($gibbonReportID) ? $gibbonReportID : $reportIdentifier, $gibbonYearGroupID, $gibbonRollGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+        $reports = $reportArchiveEntryGateway->queryArchiveByReportIdentifier($criteria, $gibbonSchoolYearID, $reportIdentifier, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+
+        $reports->transform(function (&$report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
+            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'] ?? '', $roleCategory, $canViewDraftReports, $canViewPastReports);
+        });
+    } elseif (!empty($gibbonFormGroupID)) {
+        $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, !empty($gibbonReportID) ? $gibbonReportID : $reportIdentifier, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+
+        $reports->transform(function (&$report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
+            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
+        });
     } elseif (!empty($gibbonYearGroupID)) {
-        $reports = $reportGateway->queryRollGroupsByReport($criteria, $gibbonReportID, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+        $reports = $reportGateway->queryFormGroupsByReport($criteria, $gibbonReportID, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
     } else {
         $reports = $reportGateway->queryYearGroupsByReport($criteria, $gibbonReportID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+
+        $reports->transform(function (&$report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
+            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Batch', $report['gibbonYearGroupID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
+        });
     }
 
     // Data TABLE
     $table = DataTable::createPaginated('reportsView', $criteria)->withData($reports);
     $table->setTitle(__('View'));
 
-    if (!empty($gibbonRollGroupID)) {
+    if (!empty($gibbonFormGroupID)) {
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->width('25%')
@@ -109,10 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
         $table->addColumn('status', __('Last Created'))
             ->notSortable()
-            ->format(function ($report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
+            ->format(function ($report) {
                 $output = '';
-                $archive = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
-
+                $archive = $report['archive'] ?? null;
                 if ($archive) {
                     $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                     $url = './modules/Reports/archive_byStudent_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'].'&gibbonPersonID='.$report['gibbonPersonID'];
@@ -151,9 +162,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
         $table->addColumn('timestamp', __('Last Created'))
             ->notSortable()
-            ->format(function ($report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway, &$logs) {
-                $archive = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Batch', $report['gibbonYearGroupID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
-
+            ->format(function ($report) {
+                $archive = $report['archive'] ?? null;
                 if ($archive) {
                     $tag = '<span class="tag ml-2 '.($archive['status'] == 'Final' ? 'success' : 'dull').'">'.__($archive['status']).'</span>';
                     $url = './modules/Reports/archive_byReport_download.php?gibbonReportArchiveEntryID='.$archive['gibbonReportArchiveEntryID'];
@@ -187,8 +197,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         ->addParam('gibbonReportID', $gibbonReportID)
         ->addParam('reportIdentifier', $reportIdentifier)
         ->format(function ($report, $actions) {
-            if (!empty($report['gibbonRollGroupID']) && !empty($report['gibbonPersonID'])) {
+            if (!empty($report['gibbonFormGroupID']) && !empty($report['gibbonPersonID'])) {
                 $actions->addAction('view', __('View'))
+                        ->directLink()
+                        ->addParam('action', 'view')
+                        ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
+                        ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
+                        ->setURL('/modules/Reports/archive_byStudent_download.php');
+                        
+                $actions->addAction('download', __('Download'))
+                        ->directLink()
+                        ->setIcon('download')
+                        ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
+                        ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
+                        ->setURL('/modules/Reports/archive_byStudent_download.php');
+
+                $actions->addAction('go', __('View by Student'))
+                    ->setIcon('page_right')
                     ->addParam('gibbonReportID', $report['gibbonReportID'] ?? '')
                     ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
                     ->setURL('/modules/Reports/archive_byStudent_view.php');
@@ -196,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
                 $actions->addAction('go', __('Go'))
                     ->setIcon('page_right')
                     ->addParam('gibbonYearGroupID', $report['gibbonYearGroupID'] ?? '')
-                    ->addParam('gibbonRollGroupID', $report['gibbonRollGroupID'] ?? '')
+                    ->addParam('gibbonFormGroupID', $report['gibbonFormGroupID'] ?? '')
                     ->setURL('/modules/Reports/archive_byReport_view.php');
             }
         });

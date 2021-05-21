@@ -123,20 +123,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $people = array();
 
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
-            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS rollGroupName
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
                 FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE status='Full'
                     AND (dateStart IS NULL OR dateStart<=:date)
                     AND (dateEnd IS NULL  OR dateEnd>=:date)
-                    AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 ORDER BY name, surname, preferredName";
             $result = $pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() > 0) {
-                $people['--'.__('Students By Roll Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+                $people['--'.__('Students By Form Group').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['gibbonPersonID']] = $item['formGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());
             }

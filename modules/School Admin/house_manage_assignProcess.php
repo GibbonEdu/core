@@ -29,11 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     //Proceed!
     //Validate Inputs
 
-    $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? $_POST['gibbonYearGroupIDList'] : '';
-    $gibbonHouseIDList = (isset($_POST['gibbonHouseIDList']))? $_POST['gibbonHouseIDList'] : '';
-    $balanceYearGroup = (isset($_POST['balanceYearGroup']))? $_POST['balanceYearGroup'] : '';
-    $balanceGender = (isset($_POST['balanceGender']))? $_POST['balanceGender'] : '';
-    $overwrite = (isset($_POST['overwrite']))? $_POST['overwrite'] : '';
+    $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? '';
+    $gibbonHouseIDList = $_POST['gibbonHouseIDList'] ?? '';
+    $balanceYearGroup = $_POST['balanceYearGroup'] ?? '';
+    $balanceGender = $_POST['balanceGender'] ?? '';
+    $overwrite = $_POST['overwrite'] ?? '';
 
     if (empty($gibbonYearGroupIDList) || empty($gibbonHouseIDList) || empty($balanceYearGroup) || empty($balanceGender) || empty($overwrite)) {
         $URL .= "&return=error1";

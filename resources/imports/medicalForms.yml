@@ -16,10 +16,6 @@ table:
         desc: "Username or Email (if unique)"
         args: { filter: nospaces, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
-    bloodType:
-        name: "Blood Type"
-        desc: ""
-        args: {filter: string}
     longTermMedication:
         name: "Long Term Medication"
         desc: ""
@@ -28,10 +24,6 @@ table:
         name: "Medication Details"
         desc: ""
         args: {filter: string}
-    tetanusWithin10Years:
-        name: "Tetanus Within Last 10 Years?"
-        desc: ""
-        args: {filter: yesno, custom: true}
     comment:
         name: "Comment"
         desc: ""

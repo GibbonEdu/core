@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     // Proceed!
     $page->breadcrumbs->add(__('My Data Updates'));
 
-    $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+    $gibbonPersonID = $session->get('gibbonPersonID');
     $dataUpdaterGateway = $container->get(DataUpdaterGateway::class);
 
     // Get the data updater settings for required updates
@@ -43,16 +43,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
         $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
     } else {
-        $requiredUpdatesByType = array();
+        $requiredUpdatesByType = [];
         $cutoffDate = null;
     }
-    
+
     // Get the active data types based on this user's permissions
-    $updatableDataTypes = array();
+    $updatableDataTypes = [];
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php')) $updatableDataTypes[] = 'Family';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php')) $updatableDataTypes[] = 'Personal';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php')) $updatableDataTypes[] = 'Medical';
     if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.php')) $updatableDataTypes[] = 'Finance';
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.php')) $updatableDataTypes[] = 'Staff';
 
     echo '<p>';
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     $updatablePeople = $dataUpdaterGateway->selectUpdatableUsersByPerson($gibbonPersonID)->toDataSet();
     $updatablePeople->transform(function (&$person) use ($dataUpdaterGateway, $gibbonPersonID, &$requiredUpdatesByType, &$cutoffDate) {
         $person['updates'] = $dataUpdaterGateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
-        
+
         foreach ($person['updates'] as $type => $dataUpdates) {
             foreach ($dataUpdates as $index => $dataUpdate) {
                 if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
@@ -119,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
                 foreach ($person['updates'][$type] as $dataUpdate) {
                     $lastUpdate = !empty($dataUpdate['lastUpdated'])
-                        ? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) 
+                        ? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated']))
                         : '';
 
                     // Create an action icon for this type of update

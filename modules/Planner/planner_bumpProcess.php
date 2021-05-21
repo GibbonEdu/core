@@ -19,15 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-$viewBy = $_POST['viewBy'];
-$subView = $_POST['subView'];
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
+$viewBy = $_POST['viewBy'] ?? '';
+$subView = $_POST['subView'] ?? '';
 if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
-$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
-$date = $_POST['date'];
-$direction = $_POST['direction'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
+$date = $_POST['date'] ?? '';
+$direction = $_POST['direction'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_bump.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 $URLBump = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/planner.php';
 

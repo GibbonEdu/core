@@ -31,14 +31,16 @@ use Gibbon\Forms\RowDependancyInterface;
 class Heading extends Element implements OutputableInterface, RowDependancyInterface
 {
     protected $row;
+    protected $tag = 'h3';
 
     /**
      * Add a generic heading element.
      * @param  string  $content
      */
-    public function __construct($content)
+    public function __construct($content, $tag = null)
     {
         $this->content = $content;
+        $this->tag = !empty($tag) ? $tag : 'h3';
     }
 
     /**
@@ -49,10 +51,17 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
     {
         $this->row = $row;
 
-        $this->row->addClass('break top-0 z-10');
+        $this->row->addClass($this->tag == 'h3' ? 'break top-0 z-10' : 'm-0 p-0');
 
         $headingID = preg_replace('/[^a-zA-Z0-9]/', '', substr(strip_tags($this->content), 0, 60)); 
         $this->row->setID($headingID);
+
+        $this->row->setHeading(preg_replace('/[^a-zA-Z0-9 -_]/', '', strip_tags($this->content)));
+    }
+
+    public function getTag()
+    {
+        return $this->tag;
     }
 
     /**
@@ -61,6 +70,6 @@ class Heading extends Element implements OutputableInterface, RowDependancyInter
      */
     protected function getElement()
     {
-        return '<h3 class="m-0 py-0">'.$this->content.'</h3>';
+        return sprintf('<%1$s class="m-0 p-0">%2$s</%1$s>', $this->tag ?? 'h3', $this->content);
     }
 }

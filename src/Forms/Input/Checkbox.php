@@ -206,7 +206,7 @@ class Checkbox extends Input
             $hasMultiple = count($this->options) > 1;
 
             if ($hasMultiple) {
-                $output .= '<fieldset id="'.$this->getID().'" style="border: 0px;">';
+                $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
             }
             
             if (!empty($this->checkall)) {
@@ -221,33 +221,43 @@ class Checkbox extends Input
 
             $count = 0;
 
-            foreach ($this->options as $value => $label) {
-                if ($hasMultiple) {
-                    $this->setID($identifier.$count);
-                }
-                $this->setName($name);
-                $this->setAttribute('checked', $this->getIsChecked($value));
-                if ($value != 'on') $this->setValue($value);
+            $optionGroups = !is_array(current($this->options))
+                    ? ['' => $this->options]
+                    : $this->options;
 
-                if ($this->inline) {
-                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
-                    $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
-                } elseif ($this->align == 'center') {
-                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
-                    $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
-                } elseif ($this->align == 'left') {
-                    $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'my-px').'">';
-                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
-                    $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
-                    $output .= '</div>';
-                } else {
-                    $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'my-px').'">';
-                    $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
-                    $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
-                    $output .= '</div>';
+            foreach ($optionGroups as $group => $options) {
+            
+                if (!empty($group)) {
+                    $output .= '<label class="flex font-bold pb-1 border-b border-gray-400">'.$group.'</label>';
                 }
+                foreach ($options as $value => $label) {
+                    if ($hasMultiple) {
+                        $this->setID($identifier.$count);
+                    }
+                    $this->setName($name);
+                    $this->setAttribute('checked', $this->getIsChecked($value));
+                    if ($value != 'on') $this->setValue($value);
 
-                $count++;
+                    if ($this->inline) {
+                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
+                        $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                    } elseif ($this->align == 'center') {
+                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
+                        $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
+                    } elseif ($this->align == 'left') {
+                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
+                        $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
+                        $output .= '</div>';
+                    } else {
+                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
+                        $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                        $output .= '</div>';
+                    }
+
+                    $count++;
+                }
             }
 
             if ($hasMultiple) {

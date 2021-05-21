@@ -71,26 +71,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_s
 
     $bulkActions = array(
         'Generate' => __('Generate'),
+        'Delete' => __('Delete'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addSelect('status')
             ->fromArray(['Draft' => __('Draft'), 'Final' => __('Final')])
             ->required()
-            ->setClass('w-32');
+            ->setClass('status w-32');
         $col->addSubmit(__('Go'));
+
+    $form->toggleVisibilityByClass('status')->onSelect('action')->when('Generate');
 
     // Data TABLE
     $table = $form->addRow()->addDataTable('reportsGenerate', $reportGateway->newQueryCriteria(true))->withData(new DataSet($ids));
 
     $table->addMetaData('bulkActions', $col);
 
-    if (!empty(array_filter(array_column($ids, 'rollGroup')))) {
-        $table->addColumn('rollGroup', __('Roll Group'))
+    if (!empty(array_filter(array_column($ids, 'formGroup')))) {
+        $table->addColumn('formGroup', __('Form Group'))
             ->notSortable()
             ->width('10%')
             ->format(function($values) {
-                return $values['rollGroup'] ?? __('Unknown');
+                return $values['formGroup'] ?? __('Unknown');
             });
     }
 

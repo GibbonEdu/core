@@ -26,10 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $targetsTemplate = $_POST['targetsTemplate'];
-    $teachingStrategiesTemplate = $_POST['teachingStrategiesTemplate'];
-    $notesReviewTemplate = $_POST['notesReviewTemplate'];
-    $investigationNotificationRole = $_POST['investigationNotificationRole'];
+    $targetsTemplate = $_POST['targetsTemplate'] ?? '';
+    $teachingStrategiesTemplate = $_POST['teachingStrategiesTemplate'] ?? '';
+    $notesReviewTemplate = $_POST['notesReviewTemplate'] ?? '';
+    $investigationNotificationRole = $_POST['investigationNotificationRole'] ?? '';
 
     //Write to database
     $fail = false;

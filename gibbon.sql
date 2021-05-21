@@ -438,7 +438,7 @@ CREATE TABLE `gibbonActivityAttendance` (
 CREATE TABLE `gibbonActivitySlot` (
   `gibbonActivitySlotID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonSpaceID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `locationExternal` varchar(50) NOT NULL,
   `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL,
   `timeStart` time NOT NULL,

@@ -27,10 +27,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 } else {
     //Proceed!
     //Validate Inputs
-    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
-    $sequenceNumber = $_POST['sequenceNumber'];
-    $name = $_POST['name'];
-    $nameShort = $_POST['nameShort'];
+    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
+    $sequenceNumber = $_POST['sequenceNumber'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $nameShort = $_POST['nameShort'] ?? '';
     $firstDay = dateConvert($guid, $_POST['firstDay']);
     $lastDay = dateConvert($guid, $_POST['lastDay']);
 

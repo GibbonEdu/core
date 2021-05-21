@@ -166,7 +166,7 @@ class Session implements SessionInterface
             return $retrieve($_SESSION[$this->guid], $key, $default);
         }
 
-        return (isset($_SESSION[$this->guid][$key]))? $_SESSION[$this->guid][$key] : $default;
+        return !empty($_SESSION[$this->guid][$key])? $_SESSION[$this->guid][$key] : $default;
     }
 
     /**

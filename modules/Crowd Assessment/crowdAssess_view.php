@@ -18,154 +18,107 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\CrowdAssessment\CrowdAssessDiscussGateway;
+use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 
-//Module includes
+// Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Proceed
+    // Proceed
     $page->breadcrumbs
         ->add(__('View All Assessments'), 'crowdAssess.php')
         ->add(__('View Assessment'));
 
-    //Get class variable
+    // Get lesson variable
     $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-    if ($gibbonPlannerEntryID == '') {
-        echo "<div class='warning'>";
-        echo __('You have not specified one or more required parameters.');
-        echo '</div>';
+    if (empty($gibbonPlannerEntryID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
     }
-    //Check existence of and access to this class.
-    else {
-        $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
-        $sql = getLessons($guid, $connection2, $and);
-        
-            $result = $connection2->prepare($sql[1]);
-            $result->execute($sql[0]);
 
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The selected record does not exist, or you do not have access to it.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
+    // Check existence of and access to this lesson.
+    $and = " AND gibbonPlannerEntryID=$gibbonPlannerEntryID";
+    $sql = getLessons($guid, $connection2, $and);
+    $lesson = $pdo->select($sql[1], $sql[0])->fetch();
 
-            echo "<table class='smallIntBorder mb-4' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
-            echo $row['course'].'.'.$row['class'];
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo $row['name'];
-            echo '</td>';
-            echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Date').'</span><br/>';
-            echo dateConvertBack($guid, $row['date']);
-            echo '</td>';
-            echo '</tr>';
-            echo '<tr>';
-            echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__('Details').'</span><br/>';
-            echo $row['homeworkDetails'];
-            echo '</td>';
-            echo '</tr>';
-            echo '</table>';
+    if (empty($lesson)) {
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+        return;
+    }
 
-            $role = getCARole($guid, $connection2, $row['gibbonCourseClassID']);
+    $plannerHomeworkGateway = $container->get(PlannerEntryHomeworkGateway::class);
+    $crowdDiscussionGateway = $container->get(CrowdAssessDiscussGateway::class);
 
-            $sqlList = getStudents($guid, $connection2, $role, $row['gibbonCourseClassID'], $row['homeworkCrowdAssessOtherTeachersRead'], $row['homeworkCrowdAssessOtherParentsRead'], $row['homeworkCrowdAssessSubmitterParentsRead'], $row['homeworkCrowdAssessClassmatesParentsRead'], $row['homeworkCrowdAssessOtherStudentsRead'], $row['homeworkCrowdAssessClassmatesRead']);
+    // DETAILS
+    $table = DataTable::createDetails('crowdAssessment');
 
-            //Return $sqlList as table
-            if ($sqlList[1] != '') {
-                
-                    $resultList = $connection2->prepare($sqlList[1]);
-                    $resultList->execute($sqlList[0]);
+    $table->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('date', __('Date'))->format(Format::using('date', 'date'));
+    $table->addColumn('homeworkDetails', __('Details'))->addClass('col-span-3');
 
-                if ($resultList->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo 'There is currently no work to assess.';
-                    echo '</div>';
-                } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __('Student');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Read');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Comments');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __('Discuss');
-                    echo '</th>';
-                    echo '</tr>';
+    echo $table->render([$lesson]);
+    echo '<br/>';
 
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($rowList = $resultList->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
+    // Get Student work
+    $role = getCARole($guid, $connection2, $lesson['gibbonCourseClassID']);
 
-                        //COLOR ROW BY STATUS!
-                        echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowList['gibbonPersonID']."'>".Format::name('', $rowList['preferredName'], $rowList['surname'], 'Student', true).'</a>';
-                        echo '</td>';
-                        echo '<td>';
-                        $rowWork = null;
-                        
-                            $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $rowList['gibbonPersonID']);
-                            $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
-                            $resultWork = $connection2->prepare($sqlWork);
-                            $resultWork->execute($dataWork);
-                        if ($resultWork->rowCount() > 0) {
-                            $rowWork = $resultWork->fetch();
+    $sqlList = getStudents($guid, $connection2, $role, $lesson['gibbonCourseClassID'], $lesson['homeworkCrowdAssessOtherTeachersRead'], $lesson['homeworkCrowdAssessOtherParentsRead'], $lesson['homeworkCrowdAssessSubmitterParentsRead'], $lesson['homeworkCrowdAssessClassmatesParentsRead'], $lesson['homeworkCrowdAssessOtherStudentsRead'], $lesson['homeworkCrowdAssessClassmatesRead']);
 
-                            if ($rowWork['status'] == 'Exemption') {
-                                $linkText = 'Exemption';
-                            } elseif ($rowWork['version'] == 'Final') {
-                                $linkText = 'Final';
-                            } else {
-                                $linkText = 'Draft'.$rowWork['count'];
-                            }
+    // DATA TABLE
+    $students = $pdo->select($sqlList[1], $sqlList[0])->fetchAll();
+    foreach ($students as $index => $student) {
+        $homework = $plannerHomeworkGateway->selectBy(['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $student['gibbonPersonID']])->fetch();
+        $discuss = $crowdDiscussionGateway->selectDiscussionByHomeworkID($homework['gibbonPlannerEntryHomeworkID'] ?? '');
 
-                            if ($rowWork['type'] == 'File') {
-                                echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
-                            } elseif ($rowWork['type'] == 'Link') {
-                                echo "<span title='".$rowWork['version'].'. Submitted at '.substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
-                            } else {
-                                echo "<span title='Recorded at ".substr($rowWork['timestamp'], 11, 5).' on '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."'>$linkText</span>";
-                            }
-                        }
-                        echo '</td>';
-                        echo '<td>';
-                        $dataDiscuss = array('gibbonPlannerEntryHomeworkID' => $rowWork['gibbonPlannerEntryHomeworkID'] ?? '');
-                        $sqlDiscuss = 'SELECT gibbonCrowdAssessDiscuss.*, title, surname, preferredName, category FROM gibbonCrowdAssessDiscuss JOIN gibbonPerson ON (gibbonCrowdAssessDiscuss.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
-                        $resultDiscuss = $connection2->prepare($sqlDiscuss);
-                        $resultDiscuss->execute($dataDiscuss);
-                        echo $resultDiscuss->rowCount();
-                        echo '</td>';
-                        echo '<td>';
-                        if (!empty($rowWork['gibbonPlannerEntryHomeworkID']) and $rowWork['status'] != 'Exemption') {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                        }
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                    echo '</table>';
-                }
+        $students[$index]['homework'] = $homework;
+        $students[$index]['comments'] = $discuss->rowCount() ?? 0;
+    }
+
+    $table = DataTable::create('crowdAssessmentStudents');
+    $table->addMetaData('blankSlate', __('There is currently no work to assess.'));
+
+    $table->addColumn('name', __('Student'))
+        ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, true]));
+    $table->addColumn('read', __('Read'))
+        ->format(function($student) {
+            $homework = $student['homework'];
+            if (empty($homework)) return '';
+
+            if ($homework['status'] == 'Exemption') {
+                $linkText = 'Exemption';
+            } elseif ($homework['version'] == 'Final') {
+                $linkText = 'Final';
+            } else {
+                $linkText = 'Draft'.$homework['count'];
             }
-        }
-    }
+
+            if ($homework['type'] == 'File' || $homework['type'] == 'Link') {
+                $url = $homework['type'] == 'File'  ? './'.$homework['location'] : $homework['location'];
+                $title = $homework['version'].' '.sprintf(__('Submitted at %1$s on %2$s'), substr($homework['timestamp'], 11, 5), Format::date($homework['timestamp']));
+                return Format::link($url, $linkText, ['title' => $title]);
+            } else {
+                $title = sprintf(__('Recorded at %1$s on %2$s'), substr($homework['timestamp'], 11, 5), Format::date($homework['timestamp']));
+                return Format::tooltip($linkText, $title);
+            }
+        });
+    $table->addColumn('comments', __('Comments'));
+    
+    $table->addActionColumn()
+        ->addParam('gibbonPersonID')
+        ->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)
+        ->format(function ($student, $actions) {
+            if (!empty($student['homework']) && $student['homework']['status'] != 'Exemption') {
+                $actions->addAction('view', __('Discuss'))
+                    ->addParam('gibbonPlannerEntryHomeworkID', $student['homework']['gibbonPlannerEntryHomeworkID'])
+                    ->setURL('/modules/Crowd Assessment/crowdAssess_view_discuss.php');
+            }
+        });
+
+    echo $table->render($students);
 }

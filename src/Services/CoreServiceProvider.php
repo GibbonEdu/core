@@ -152,6 +152,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $twig->addGlobal('absolutePath', $session->get('absolutePath'));
             $twig->addGlobal('absoluteURL', $session->has('absoluteURL') ? $session->get('absoluteURL') : '.');
             $twig->addGlobal('gibbonThemeName', $themeName);
+            $twig->addGlobal('themeColour', $session->has('themeColour') ? $session->get('themeColour') : 'purple');
 
 
             $twig->addFunction(new \Twig\TwigFunction('__', function ($string, $domain = null) {
@@ -169,6 +170,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $twig->addFunction(new \Twig\TwigFunction('formatUsing', function ($method, ...$args) {
                 return Format::$method(...$args);
             }, ['is_safe' => ['html']]));
+
+            $twig->addFilter(new \Twig\TwigFilter('jsonDecode', 'json_decode', ['is_safe' => ['html']]));
 
             return $twig;
         });

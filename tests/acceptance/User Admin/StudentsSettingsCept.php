@@ -20,7 +20,6 @@ $newFormValues = array(
     'behaviourAlertLowThreshold'    => '2',
     'behaviourAlertMediumThreshold' => '4',
     'behaviourAlertHighThreshold'   => '8',
-    'extendedBriefProfile'          => 'Y',
     'studentAgreementOptions'       => 'Option1,Option2,Option3',
     'dayTypeOptions'                => 'Day,Type,Option,Test',
     'dayTypeText'                   => 'Day-Type Test',

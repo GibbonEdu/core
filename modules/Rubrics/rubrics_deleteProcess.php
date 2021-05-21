@@ -22,16 +22,12 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 //Search & Filters
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$filter2 = null;
-if (isset($_GET['filter2'])) {
-    $filter2 = $_GET['filter2'];
-}
+$search = $_GET['search'] ?? '';
 
-$gibbonRubricID = $_POST['gibbonRubricID'];
+$filter2 = $_GET['filter2'] ?? '';
+
+
+$gibbonRubricID = $_POST['gibbonRubricID'] ?? '';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_delete.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics.php&search=$search&filter2=$filter2";
 
