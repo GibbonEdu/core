@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
         try {
             if ($allStudents != 'on') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.name AS yearGroup, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             } else {
                 $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         } else {
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment.php&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/externalAssessment.php&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             if ($highestAction == 'External Assessment Data_manage') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                 echo '</div>';
             }
 
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             externalAssessmentDetails($guid, $gibbonPersonID, $connection2, '', $manage, $search, $allStudents);
 
             //Set sidebar
-            $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+            $session->get('sidebarExtra') = getUserPhoto($guid, $row['image_240'], 240);
         }
     }
 }

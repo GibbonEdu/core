@@ -26,7 +26,7 @@ include './moduleFunctions.php';
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
     $URL .= '&return=error0';
