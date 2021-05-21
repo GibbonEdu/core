@@ -21,6 +21,7 @@ use Gibbon\View\Page;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -846,29 +847,19 @@ if ($canInstall == false) {
                         $settingsFail = true;
                     }
                     if ($cuttingEdgeCode == 'Y') {
-                        include '../CHANGEDB.php';
-                        $sqlTokens = explode(';end', $sql[(count($sql))][1]);
-                        $versionMaxLinesMax = (count($sqlTokens) - 1);
-                        $tokenCount = 0;
+                        $updater = $container->get(Updater::class);
+                        $errors = $updater->update();
+
+                        if (!empty($errors)) {
+                            echo Format::alert(__('Some aspects of your update failed.'));
+                        }
+                        
                         try {
-                            $data = array('cuttingEdgeCodeLine' => $versionMaxLinesMax);
+                            $data = array('cuttingEdgeCodeLine' => $updater->cuttingEdgeMaxLine);
                             $sql = "UPDATE gibbonSetting SET value=:cuttingEdgeCodeLine WHERE scope='System' AND name='cuttingEdgeCodeLine'";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                        }
-
-                        foreach ($sqlTokens as $sqlToken) {
-                            if ($tokenCount <= $versionMaxLinesMax) { //Decide whether this has been run or not
-                                if (trim($sqlToken) != '') {
-                                    try {
-                                        $result = $connection2->query($sqlToken);
-                                    } catch (PDOException $e) {
-                                        $partialFail = true;
-                                    }
-                                }
-                            }
-                            ++$tokenCount;
                         }
                     }
 
