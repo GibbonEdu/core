@@ -54,6 +54,7 @@ v22.0.00
         Individual Needs: no longer require cognition field in IN investigations
         Library: added new Telephone type, with matching import
         Library: migrated fields to internally use JSON data
+        Library: added new Rack-Mounted Server form factor type under Computer type
         Messenger: updated the send report to list any emails that failed to send
         Messenger: updated the send report to use the formatted email template when resending emails
         Planner: moved class chooser to the top of the sidebar
