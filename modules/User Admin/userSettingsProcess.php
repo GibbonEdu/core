@@ -77,15 +77,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     }
 
     try {
-        $data = array('value' => $residencyStatus);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='residencyStatus'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
         $data = array('value' => $privacy);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='privacy'";
         $result = $connection2->prepare($sql);

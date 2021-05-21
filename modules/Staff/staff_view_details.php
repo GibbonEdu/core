@@ -25,6 +25,7 @@ use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
 //Module includes for User Admin (for custom fields)
@@ -334,12 +335,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
                         $col->addColumn('lockerNumber', __('Locker Number'));
 
-                        // Custom Fields
+                        // CUSTOM FIELDS
                         $customFieldHandler->addCustomFieldsToTable($table, 'Staff', ['withoutHeading' => ['Biography']], $row['fieldsStaff']);
-
                         $customFieldHandler->addCustomFieldsToTable($table, 'Person', ['staff' => 1], $row['fields']);
 
                         echo $table->render([$row]);
+
+                        // PERSONAL DOCUMENTS
+                        if ($highestActionManage == 'Manage Staff_confidential') {
+                            $params = ['staff' => true, 'notEmpty' => true];
+                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
+
+                            echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
+                        }
 
                     } elseif ($subpage == 'Family') {
                         $familyGateway = $container->get(FamilyGateway::class);

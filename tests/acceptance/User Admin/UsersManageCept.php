@@ -11,7 +11,6 @@ $newUserSettings = array_replace($originalUserSettings, array(
     'nationality'     => 'Nationality 1, Nationality 2, Nationality 3',
     'ethnicity'       => 'Ethnicity 1, Ethnicity 2, Ethnicity 3',
     'religions'       => 'Religion 1, Religion 2, Religion 3',
-    'residencyStatus' => 'Status 1, Status 2, Status 3',
     'privacy'         => 'Y',
     'privacyBlurb'    => 'Privacy Blurb Test',
     'privacyOptions'  => 'Privacy 1, Privacy 2, Privacy 3',
@@ -79,13 +78,13 @@ $formValues = array(
     'countryOfBirth'            => 'Antarctica',
     'ethnicity'                 => 'Ethnicity 2',
     'religion'                  => 'Religion 3',
-    'citizenship1'              => 'Nationality 1',
-    'citizenship1Passport'      => '1234ABC',
-    'citizenship2'              => 'Nationality 2',
-    'citizenship2Passport'      => 'ABC1234',
-    'nationalIDCardNumber'      => '1234-5678',
-    'visaExpiryDate'            => '30/01/2100',
-    'residencyStatus'           => 'Status 3',
+    // 'citizenship1'              => 'Nationality 1',
+    // 'citizenship1Passport'      => '1234ABC',
+    // 'citizenship2'              => 'Nationality 2',
+    // 'citizenship2Passport'      => 'ABC1234',
+    // 'nationalIDCardNumber'      => '1234-5678',
+    // 'visaExpiryDate'            => '30/01/2100',
+    // 'residencyStatus'           => 'Status 3',
     // 'profession'                => 'Student',
     // 'employer'                  => 'None',
     // 'jobTitle'                  => 'Student',
@@ -118,9 +117,9 @@ $I->selectFromDropdown('gibbonHouseID', 2);
 
 // File Uploads
 $I->attachFile('file1', 'attachment.jpg');
-$I->attachFile('birthCertificateScan', 'attachment.jpg');
-$I->attachFile('citizenship1PassportScan', 'attachment.jpg');
-$I->attachFile('nationalIDCardScan', 'attachment.jpg');
+// $I->attachFile('birthCertificateScan', 'attachment.jpg');
+// $I->attachFile('citizenship1PassportScan', 'attachment.jpg');
+// $I->attachFile('nationalIDCardScan', 'attachment.jpg');
 
 $I->submitForm('#content form', $formValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
@@ -133,9 +132,9 @@ $I->seeBreadcrumb('Edit User');
 
 $I->seeInFormFields('#content form', $formValues);
 $I->seeFieldIsNotEmpty('input[name="attachment1"]');
-$I->seeFieldIsNotEmpty('input[name="birthCertificateScanCurrent"]');
-$I->seeFieldIsNotEmpty('input[name="citizenship1PassportScanCurrent"]');
-$I->seeFieldIsNotEmpty('input[name="nationalIDCardScanCurrent"]');
+// $I->seeFieldIsNotEmpty('input[name="birthCertificateScanCurrent"]');
+// $I->seeFieldIsNotEmpty('input[name="citizenship1PassportScanCurrent"]');
+// $I->seeFieldIsNotEmpty('input[name="nationalIDCardScanCurrent"]');
 
 $formValues = array(
     'title'                     => 'Mr.',
@@ -176,13 +175,13 @@ $formValues = array(
     'countryOfBirth'            => 'Zimbabwe',
     'ethnicity'                 => 'Ethnicity 1',
     'religion'                  => 'Religion 2',
-    'citizenship1'              => 'Nationality 2',
-    'citizenship1Passport'      => '4321ABC',
-    'citizenship2'              => 'Nationality 3',
-    'citizenship2Passport'      => 'ABC4321',
-    'nationalIDCardNumber'      => '4321-5678',
-    'visaExpiryDate'            => '10/10/2110',
-    'residencyStatus'           => 'Status 1',
+    // 'citizenship1'              => 'Nationality 2',
+    // 'citizenship1Passport'      => '4321ABC',
+    // 'citizenship2'              => 'Nationality 3',
+    // 'citizenship2Passport'      => 'ABC4321',
+    // 'nationalIDCardNumber'      => '4321-5678',
+    // 'visaExpiryDate'            => '10/10/2110',
+    // 'residencyStatus'           => 'Status 1',
     'emergency1Name'            => 'Emergency Person 1 Also',
     'emergency1Relationship'    => 'Friend',
     'emergency1Number1'         => '87654321',
@@ -204,9 +203,9 @@ $I->see('Your request was completed successfully.', '.success');
 // Cleanup Files ------------------------------------------------
 
 $I->deleteFile('../'.$I->grabValueFrom('input[name="attachment1"]'));
-$I->deleteFile('../'.$I->grabValueFrom('input[name="birthCertificateScanCurrent"]'));
-$I->deleteFile('../'.$I->grabValueFrom('input[name="citizenship1PassportScanCurrent"]'));
-$I->deleteFile('../'.$I->grabValueFrom('input[name="nationalIDCardScanCurrent"]'));
+// $I->deleteFile('../'.$I->grabValueFrom('input[name="birthCertificateScanCurrent"]'));
+// $I->deleteFile('../'.$I->grabValueFrom('input[name="citizenship1PassportScanCurrent"]'));
+// $I->deleteFile('../'.$I->grabValueFrom('input[name="nationalIDCardScanCurrent"]'));
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
