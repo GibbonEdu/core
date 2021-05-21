@@ -784,10 +784,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo $table->render([$row]);
 
                         // PERSONAL DOCUMENTS
-                        $params = ['student' => true, 'notEmpty' => true];
-                        $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
+                        if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_personalDocumentSummary.php')) {
+                            $params = ['student' => true, 'notEmpty' => true];
+                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
 
-                        echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
+                            echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
+                        }
                         
 
                     } elseif ($subpage == 'Family') {
