@@ -15,7 +15,6 @@ $newFormValues = array(
     'nationality'        => 'Nationality 1,Nationality 2,Nationality 3',
     'ethnicity'          => 'Ethnicity 1,Ethnicity 2',
     'religions'          => 'Religion 1,Religion 3,Religion 3,Religion 4',
-    'residencyStatus'    => 'Status Test',
     'departureReasons'   => 'Reason 1,Reason 2,Reason 3',
     'privacy'            => 'Y',
     'privacyBlurb'       => 'Privacy Blurb Test',
