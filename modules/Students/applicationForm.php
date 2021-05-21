@@ -259,6 +259,8 @@ if ($proceed == false) {
         $row->addSelectCountry('countryOfBirth')->required();
 
     $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
+    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
@@ -271,7 +273,7 @@ if ($proceed == false) {
 
     // $row = $form->addRow();
     //     $row->addLabel('citizenship1', __('Citizenship'));
-    //     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+    //     
     //     if (!empty($nationalityList)) {
     //         $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
     //     } else {
@@ -293,7 +295,7 @@ if ($proceed == false) {
 
     // $row = $form->addRow();
     //     $row->addLabel('residencyStatus', $countryName.__('Residency/Visa Type'));
-    //     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    //     
     //     if (!empty($residencyStatusList)) {
     //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
     //     } else {
