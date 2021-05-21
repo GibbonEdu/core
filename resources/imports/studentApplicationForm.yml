@@ -21,11 +21,15 @@ table:
         desc: "Year group short name, as set in School Admin. Must already exist."
         args: { filter: string, required: true }
         relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort }
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "Linked field for internal use"
+        args: { filter: schoolyear, linked: gibbonSchoolYearIDEntry, readonly: true }
     gibbonFormGroupID:
         name: "Form Group"
         desc: "Form Group short name, as set in School Admin. Must already exist."
         args: { filter: string }
-        relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: nameShort }
+        relationship: { table: gibbonFormGroup, key: gibbonFormGroupID, field: [ nameShort, gibbonSchoolYearID] }
     dateStart:
         name: "Start Date"
         desc: "Users's first day at school."
@@ -229,34 +233,6 @@ table:
         name: "Notes"
         desc: ""
         args: {filter: string}
-    bus:
-        name: "Bus Info"
-        desc: ""
-        args: { filter: string, readonly: true, serialize: fields }
-    tuition:
-        name: "Tuition"
-        desc: ""
-        args: { filter: string, readonly: true, serialize: fields }
-    discount:
-        name: "Discount"
-        desc: ""
-        args: { filter: string, readonly: true, serialize: fields }
-    lunch:
-        name: "Lunch"
-        desc: ""
-        args: { filter: string, readonly: true, serialize: fields }
-    passportExpiry:
-        name: "Passport Expiry"
-        desc: ""
-        args: { filter: string, readonly: true, serialize: fields }
-    fields:
-        name: "Student Custom Fields"
-        desc: ""
-        args: { filter: customfield, serialize: fields, custom: true }
-    parent1fields:
-        name: "Parent 1 Custom Fields"
-        desc: ""
-        args: { filter: customfield, serialize: parent1fields, custom: true }
     howDidYouHear:
         name: "How Did You Hear"
         desc: ""
