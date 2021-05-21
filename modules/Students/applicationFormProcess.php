@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 include '../../gibbon.php';
 
@@ -350,7 +351,7 @@ if ($proceed == false) {
                 }
             }
         }
-        if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $countryOfBirth == '' or $citizenship1 == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
+        if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageHomePrimary == '' or $languageFirst == '' or $countryOfBirth == '' or $gibbonSchoolYearIDEntry == '' or $dateStart == '' or $gibbonYearGroupIDEntry == '' or $sen == '' or $howDidYouHear == '' or (isset($_POST['agreement']) and $agreement != 'Y') or $familyFail) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
@@ -393,12 +394,16 @@ if ($proceed == false) {
                 $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
                 $secureAI = sha1($AI.'X2J53ZGy'.$guid.$gibbonSchoolYearIDEntry);
 
-                // Update the Application Form with a hash for looking up this record in the future
+                // PERSONAL DOCUMENTS
+                $personalDocumentFail = false;
+                $params = ['student' => true, 'applicationForm' => true];
+                $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonApplicationForm', $AI, $params, $personalDocumentFail);
 
-                    $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
-                    $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                // Update the Application Form with a hash for looking up this record in the future
+                $data = array('gibbonApplicationFormID' => $AI, 'gibbonApplicationFormHash' => $secureAI );
+                $sql = 'UPDATE gibbonApplicationForm SET gibbonApplicationFormHash=:gibbonApplicationFormHash WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 //Deal with family relationships
                 if ($gibbonFamily == 'TRUE') {
