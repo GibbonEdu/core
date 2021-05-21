@@ -171,6 +171,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 return Format::$method(...$args);
             }, ['is_safe' => ['html']]));
 
+            $twig->addFilter(new \Twig\TwigFilter('jsonDecode', 'json_decode', ['is_safe' => ['html']]));
+
             return $twig;
         });
 
