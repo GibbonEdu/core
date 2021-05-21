@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 include '../../gibbon.php';
 
@@ -380,7 +381,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $parent2fields = $customFieldHandler->getFieldDataFromPOST('User', $params + ['prefix' => 'parent2custom'], $customRequireFail);
                 }
 
-                if ($customRequireFail) {
+                // PERSONAL DOCUMENTS
+                $personalDocumentFail = false;
+                $params = ['student' => true, 'applicationForm' => true];
+                $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonApplicationForm', $gibbonApplicationFormID, $params, $personalDocumentFail);
+
+                if ($customRequireFail || $personalDocumentFail) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {

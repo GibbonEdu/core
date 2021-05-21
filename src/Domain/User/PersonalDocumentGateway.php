@@ -61,6 +61,40 @@ class PersonalDocumentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryStudentDocuments(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDList)
+    {
+        if (is_array($gibbonPersonIDList)) {
+            $gibbonPersonIDList = array_map(function($item) {
+                return str_pad($item, 12, 0, STR_PAD_LEFT);
+            }, $gibbonPersonIDList);
+            $gibbonPersonIDList = implode(',', $gibbonPersonIDList);
+        }
+
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols(['gibbonPersonalDocumentID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.name as formGroup', 'gibbonPersonalDocumentType.name as documentTypeName', 'gibbonPersonalDocumentType.document', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.filePath'])
+            ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonPersonalDocument.foreignTableID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonPersonalDocument.foreignTable="gibbonPerson"')
+            ->where('FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)')
+            ->bindValue('gibbonPersonIDList', $gibbonPersonIDList);
+
+        $criteria->addFilterRules([
+            'documents' => function ($query, $documents) {
+                return $query
+                    ->where('FIND_IN_SET(gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID, :documents)')
+                    ->bindValue('documents', $documents);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectPersonalDocuments($foreignTable = null, $foreignTableID = null, $params = [])
     {
         $query = $this
@@ -107,5 +141,15 @@ class PersonalDocumentGateway extends QueryableGateway
         $query->orderBy(['sequenceNumber', 'name']);
 
         return $this->runSelect($query);
+    }
+
+    public function updatePersonalDocumentOwnership($foreignTableOld, $foreignTableOldID, $foreignTableNew, $foreignTableNewID)
+    {
+        $data = ['foreignTableOld' => $foreignTableOld, 'foreignTableOldID' => $foreignTableOldID, 'foreignTableNew' => $foreignTableNew, 'foreignTableNewID' => $foreignTableNewID];
+        $sql = "UPDATE gibbonPersonalDocument 
+                SET foreignTable=:foreignTableNew, foreignTableID=:foreignTableNewID 
+                WHERE foreignTable=:foreignTableOld AND foreignTableID=:foreignTableOldID";
+
+        return $this->db()->update($sql, $data);
     }
 }
