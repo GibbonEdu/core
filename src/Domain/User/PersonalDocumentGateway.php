@@ -142,4 +142,14 @@ class PersonalDocumentGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function updatePersonalDocumentOwnership($foreignTableOld, $foreignTableOldID, $foreignTableNew, $foreignTableNewID)
+    {
+        $data = ['foreignTableOld' => $foreignTableOld, 'foreignTableOldID' => $foreignTableOldID, 'foreignTableNew' => $foreignTableNew, 'foreignTableNewID' => $foreignTableNewID];
+        $sql = "UPDATE gibbonPersonalDocument 
+                SET foreignTable=:foreignTableNew, foreignTableID=:foreignTableNewID 
+                WHERE foreignTable=:foreignTableOld AND foreignTableID=:foreignTableOldID";
+
+        return $this->db()->update($sql, $data);
+    }
 }
