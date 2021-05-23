@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
                 ->add(__('Edit Column Row'));
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_editProcess.php');
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumn_edit_row_editProcess.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTColumnID', $gibbonTTColumnID);
             $form->addHiddenValue('gibbonTTColumnRowID', $gibbonTTColumnRowID);
 

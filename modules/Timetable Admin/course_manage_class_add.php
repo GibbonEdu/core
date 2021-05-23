@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
     }
 
     $page->return->setEditLink($editLink);
@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         } else {
 			$values = $result->fetch(); 
 
-			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_addProcess.php');
+			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_addProcess.php');
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
 			

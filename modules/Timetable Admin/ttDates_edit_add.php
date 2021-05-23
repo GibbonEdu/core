@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                     ->add(__('Edit Days in Date'), 'ttDates_edit.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStamp' => $dateStamp])
                     ->add(__('Add Day to Date'));
 
-				$form = Form::create('addTTDate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_addProcess.php');
+				$form = Form::create('addTTDate', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttDates_edit_addProcess.php');
 
-				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+				$form->addHiddenValue('address', $session->get('address'));
 				$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 				$form->addHiddenValue('dateStamp', $dateStamp);
 

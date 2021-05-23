@@ -40,10 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncAdd', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_edit.php');
+    $form = Form::create('courseEnrolmentSyncAdd', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync_edit.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $row = $form->addRow();

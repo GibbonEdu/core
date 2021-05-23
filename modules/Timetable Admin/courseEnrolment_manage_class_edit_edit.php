@@ -51,9 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(__('Edit %1$s.%2$s Enrolment', ['%1$s' => $values['courseNameShort'], '%2$s' => $values['name']]), 'courseEnrolment_manage_class_edit.php', $urlParams)
                 ->add(__('Edit Participant'));
 
-			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
                 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonCourseClassPersonID', $gibbonCourseClassPersonID);
 
 			$row = $form->addRow();
