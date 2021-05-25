@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         if ($highestAction == 'Manage Facility Changes_allClasses') {
             $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria);
         } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
-            $facilityChanges = $facilityChangeGateway->queryFacilityChangesByDepartment($criteria, $_SESSION[$guid]['gibbonPersonID']);
+            $facilityChanges = $facilityChangeGateway->queryFacilityChangesByDepartment($criteria, $session->get('gibbonPersonID'));
         } else {
-            $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria, $_SESSION[$guid]['gibbonPersonID']);
+            $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria, $session->get('gibbonPersonID'));
         }
 
         // DATA TABLE

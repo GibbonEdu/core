@@ -39,6 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/customFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/customFields_deleteProcess.php?gibbonCustomFieldID=$gibbonCustomFieldID");
     echo $form->getOutput();
 }

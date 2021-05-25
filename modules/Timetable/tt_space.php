@@ -52,10 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         echo __('Search');
         echo '</h2>';
 
-        $form = Form::create('ttSpace', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('ttSpace', $session->get('absoluteURL').'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_space.php');
+        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/tt_space.php');
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));

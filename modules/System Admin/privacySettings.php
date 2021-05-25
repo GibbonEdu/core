@@ -30,10 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
     //Proceed!
     $page->breadcrumbs->add(__('Security & Privacy Settings'));
 
-    $form = Form::create('privacySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/privacySettingsProcess.php');
+    $form = Form::create('privacySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/privacySettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // SECURITY SETTINGS
     $form->addRow()->addHeading(__('Security Settings'));

@@ -21,7 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/services_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/services_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_manage.php') == false) {
     $URL .= '&return=error0';
