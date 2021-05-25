@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_write_data.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_write_data.php&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
     $URL .= '&return=error0';
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     } else {
                         $commentValue = $_POST["comment$i"] ?? '';
                     }
-                    $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+                    $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
                     //SET AND CALCULATE FOR ATTAINMENT
                     if ($attainment == 'Y' and $gibbonScaleIDAttainment != '') {
