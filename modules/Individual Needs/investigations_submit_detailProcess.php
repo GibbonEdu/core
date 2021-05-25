@@ -29,8 +29,8 @@ require_once '../../gibbon.php';
 $gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
 $gibbonINInvestigationContributionID = $_POST['gibbonINInvestigationContributionID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
-$URLSuccess = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_submit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
+$URLSuccess = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_submit_detail.php') == false) {
     $URL .= '&return=error0';
