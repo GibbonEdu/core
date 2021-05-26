@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonUsernameFormatID = isset($_POST['gibbonUsernameFormatID'])? $_POST['gibbonUsernameFormatID'] : '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings.php&gibbonUsernameFormatID='.$gibbonUsernameFormatID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings.php&gibbonUsernameFormatID='.$gibbonUsernameFormatID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
     $URL .= '&return=error0';

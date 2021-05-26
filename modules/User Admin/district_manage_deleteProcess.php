@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonDistrictID = $_GET['gibbonDistrictID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_delete.php&gibbonDistrictID='.$gibbonDistrictID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_delete.php&gibbonDistrictID='.$gibbonDistrictID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage_delete.php') == false) {
     $URL .= '&return=error0';

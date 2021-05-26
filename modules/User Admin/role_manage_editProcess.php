@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_edit.php&gibbonRoleID='.$gibbonRoleID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_edit.php&gibbonRoleID='.$gibbonRoleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edit.php') == false) {
     $URL .= '&return=error0';

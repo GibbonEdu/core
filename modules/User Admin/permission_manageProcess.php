@@ -22,7 +22,7 @@ include '../../gibbon.php';
 $gibbonModuleID = $_POST['gibbonModuleID'] ?? '';
 $gibbonRoleID = $_POST['gibbonRoleID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_manage.php') == false) {
     $URL .= '&return=error0';
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
             header("Location: {$URL}");
             exit;
         } else {
-            $_SESSION[$guid]['pageLoads'] = null;
+            $session->set('pageLoads', null);
 
             //Success0
             $URL .= '&return=success0';

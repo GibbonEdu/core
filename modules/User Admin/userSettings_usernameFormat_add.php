@@ -32,14 +32,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
 
-    $form = Form::create('usernameFormat', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_addProcess.php');
+    $form = Form::create('usernameFormat', $session->get('absoluteURL').'/modules/'.$session->get('module').'/userSettings_usernameFormat_addProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $sql = "SELECT gibbonRole.gibbonRoleID as value, gibbonRole.name FROM gibbonRole LEFT JOIN gibbonUsernameFormat ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonUsernameFormat.gibbonRoleIDList)) WHERE gibbonUsernameFormatID IS NULL ORDER BY gibbonRole.name";
     $result = $pdo->executeQuery(array(), $sql);

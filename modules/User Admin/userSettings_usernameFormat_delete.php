@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     if ($gibbonUsernameFormatID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_deleteProcess.php");
+        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/userSettings_usernameFormat_deleteProcess.php");
         echo $form->getOutput();
     }
 }

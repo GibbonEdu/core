@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/district_manage_deleteProcess.php?gibbonDistrictID=".$gibbonDistrictID);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/district_manage_deleteProcess.php?gibbonDistrictID=".$gibbonDistrictID);
             echo $form->getOutput();
         }
     }

@@ -25,7 +25,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     $imageFail = false;
                     if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name']))
                     {
-                        $path = $_SESSION[$guid]['absolutePath'];
+                        $path = $session->get('absolutePath');
                         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
                         //Move 240 attached file, if there is one

@@ -26,7 +26,7 @@ include './moduleFunctions.php';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $search = $_GET['search'] ?? '';
 $size = $_GET['size'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
     $URL .= '&return=error0';

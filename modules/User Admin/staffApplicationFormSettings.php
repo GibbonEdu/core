@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     //Proceed!
     $page->breadcrumbs->add(__('Staff Application Form Settings'));
 
-    $form = Form::create('staffApplicationFormSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staffApplicationFormSettingsProcess.php');
+    $form = Form::create('staffApplicationFormSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/staffApplicationFormSettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('General Options'));
 

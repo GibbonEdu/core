@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     echo __('Search');
     echo '</h2>';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/family_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/family_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(_('Family Name'));

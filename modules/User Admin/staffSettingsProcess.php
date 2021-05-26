@@ -21,7 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffSettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.php') == false) {
     $URL .= '&return=error0';

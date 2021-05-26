@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $returns['warning2'] = __('Your request was successful, but some data was not properly saved.');
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID='.$_GET['editID'].'&search='.$_GET['search'];
     }
     $page->return->setEditLink($editLink);
     $page->return->addReturns($returns);
@@ -48,16 +48,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     if (!empty($search)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
     echo Format::alert(__('Note that certain fields are available depending on the role categories (Staff, Student, Parent) that a user is assigned to. These fields, such as personal documents and custom fields, will be editable after the user has been created.'), 'message');
     
-    $form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_addProcess.php?search='.$search);
+    $form = Form::create('addUser', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_addProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // BASIC INFORMATION
     $form->addRow()->addHeading(__('Basic Information'));
@@ -107,8 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $form->addRow()->addHeading(__('System Access'));
 
     // Put together an array of this user's current roles
-    $currentUserRoles = (is_array($_SESSION[$guid]['gibbonRoleIDAll'])) ? array_column($_SESSION[$guid]['gibbonRoleIDAll'], 0) : array();
-    $currentUserRoles[] = $_SESSION[$guid]['gibbonRoleIDPrimary'];
+    $currentUserRoles = (is_array($session->get('gibbonRoleIDAll'))) ? array_column($session->get('gibbonRoleIDAll'), 0) : array();
+    $currentUserRoles[] = $session->get('gibbonRoleIDPrimary');
 
     $data = array();
     $sql = "SELECT * FROM gibbonRole ORDER BY name";
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
-        $email->uniqueField($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage_emailAjax.php');
+        $email->uniqueField($session->get('absoluteURL').'/modules/User Admin/user_manage_emailAjax.php');
     }
 
     $row = $form->addRow();
@@ -307,7 +307,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addTextField('religion')->maxLength(30);
         }
 
-    // $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+
+    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
     // $row = $form->addRow();
     //     $row->addLabel('citizenship1', __('Citizenship 1'));
     //     if (!empty($nationalityList)) {
@@ -364,7 +365,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     //     $row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
     //     $row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
-    // $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
     // $row = $form->addRow();
     //     $row->addLabel('residencyStatus', $residencyStatusLabel);

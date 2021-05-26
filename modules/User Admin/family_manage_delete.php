@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_deleteProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_deleteProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search", true);
             echo $form->getOutput();
 
         }
