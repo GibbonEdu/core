@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         if (empty($investigation) || empty($contribution) || $contribution['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID')) {
             $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         } else {
-            $form = Form::create('addform', $_SESSION[$guid]['absoluteURL']."/modules/Individual Needs/investigations_submit_detailProcess.php");
+            $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_submit_detailProcess.php");
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->addHiddenValue('address', "/modules/Individual Needs/investigations_manage_edit.php");
             $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonIDStudent', __('Student'));
-            	$row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($investigation['gibbonPersonIDStudent'])->required()->readonly();
+            	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($investigation['gibbonPersonIDStudent'])->required()->readonly();
 
             //Status
             $row = $form->addRow();
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
             //Date
             $row = $form->addRow();
-            	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required()->readonly();
+            	$row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+            	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required()->readonly();
 
     		//Reason
             $row = $form->addRow();

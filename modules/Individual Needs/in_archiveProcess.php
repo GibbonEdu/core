@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/in_archive.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/in_archive.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archive.php') == false) {
     $URL .= '&return=error0';

@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 include '../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'].'&source='.$_GET['source'].'&gibbonINDescriptorID='.$_GET['gibbonINDescriptorID'].'&gibbonAlertLevelID='.$_GET['gibbonAlertLevelID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'].'&source='.$_GET['source'].'&gibbonINDescriptorID='.$_GET['gibbonINDescriptorID'].'&gibbonAlertLevelID='.$_GET['gibbonAlertLevelID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == false) {
     $URL .= '&return=error0';
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     } else {
         //Check access to specified student
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
             $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, dateStart, dateEnd, gibbonYearGroup.gibbonYearGroupID FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 // Raise a new notification event
                 $event = new NotificationEvent('Individual Needs', 'Updated Individual Needs');
 
-                $staffName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                $staffName = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff', false, true);
                 $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                 $actionLink = "/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID&search=";
 

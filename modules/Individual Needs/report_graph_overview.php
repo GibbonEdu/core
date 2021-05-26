@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
         ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.name'])
         ->fromPOST();
 
-    $inCounts = $inGateway->queryINCountsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupID);
+    $inCounts = $inGateway->queryINCountsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $gibbonYearGroupID);
     $chartData = $inCounts->toArray();
 
     if (empty($viewMode)) {
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
 
         if (!empty($gibbonYearGroupID)) {
             echo "<div class='linkTop'>";
-            echo '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Individual Needs/report_graph_overview.php">'.__('Clear Filters').'</a>';
+            echo '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/report_graph_overview.php">'.__('Clear Filters').'</a>';
             echo '</div>';
         }
 
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
                 'mode' => 'label',
             ],
         ]);
-        
+
         $chart->addDataset('total', __('Total Students'))
             ->setData(array_column($chartData, 'studentCount'));
 

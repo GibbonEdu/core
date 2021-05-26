@@ -53,12 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     echo __('Filter');
     echo '</h3>';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth standardForm');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('q', '/modules/Individual Needs/in_summary.php');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     //SELECT FROM ARRAY
     $sql = "SELECT gibbonINDescriptorID as value, name FROM gibbonINDescriptor ORDER BY sequenceNumber";
@@ -73,15 +73,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
-    
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
+
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
         $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
-    
+
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
-        
+
     echo $form->getOutput();
 
     echo '<h3>';
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->fromPOST();
 
-    $individualNeeds = $individualNeedsGateway->queryINBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $individualNeeds = $individualNeedsGateway->queryINBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('inSummary', $criteria);

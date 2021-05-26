@@ -59,12 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                 $page->addError(__('The selected record does not exist, or you do not have access to it.'));
             } else {
                 $canEdit = false ;
-                if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']))) {
+                if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $session->get('gibbonPersonID')))) {
                     $canEdit = true ;
                 }
 
                 $isTutor = false ;
-                if ($investigation['gibbonPersonIDTutor'] == $_SESSION[$guid]['gibbonPersonID'] || $investigation['gibbonPersonIDTutor2'] == $_SESSION[$guid]['gibbonPersonID'] || $investigation['gibbonPersonIDTutor3'] == $_SESSION[$guid]['gibbonPersonID']) {
+                if ($investigation['gibbonPersonIDTutor'] == $session->get('gibbonPersonID') || $investigation['gibbonPersonIDTutor2'] == $session->get('gibbonPersonID') || $investigation['gibbonPersonIDTutor3'] == $session->get('gibbonPersonID')) {
                     $isTutor = true ;
                 }
 
@@ -74,11 +74,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
-                    $form = Form::create('addform', $_SESSION[$guid]['absoluteURL']."/modules/Individual Needs/investigations_manage_editProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
+                    $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_manage_editProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', "/modules/Individual Needs/investigations_manage_edit.php");
                     $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     //Student
                     $row = $form->addRow();
                     	$row->addLabel('gibbonPersonIDStudent', __('Student'));
-                    	$row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->required()->readonly();
+                    	$row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->placeholder(__('Please select...'))->selected($gibbonPersonID)->required()->readonly();
 
                     //Status
                     $row = $form->addRow();
@@ -96,8 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Date
                     $row = $form->addRow();
-                    	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                    	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required()->readonly();
+                    	$row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+                    	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required()->readonly();
 
             		//Reason
                     $row = $form->addRow();
