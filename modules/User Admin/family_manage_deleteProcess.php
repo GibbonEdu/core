@@ -21,8 +21,8 @@ include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
 $search = $_GET['search'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_delete.php&gibbonFamilyID=$gibbonFamilyID&search=$search";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage.php&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_delete.php&gibbonFamilyID=$gibbonFamilyID&search=$search";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_delete.php') == false) {
     $URL .= '&return=error0';

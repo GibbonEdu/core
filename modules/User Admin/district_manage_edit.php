@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/district_manage_editProcess.php?gibbonDistrictID=$gibbonDistrictID");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/district_manage_editProcess.php?gibbonDistrictID=$gibbonDistrictID");
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));

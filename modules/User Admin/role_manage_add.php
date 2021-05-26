@@ -30,13 +30,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/role_manage_edit.php&gibbonRoleID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/role_manage_edit.php&gibbonRoleID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('addRole', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/role_manage_addProcess.php');
+    $form = Form::create('addRole', $session->get('absoluteURL').'/modules/'.$session->get('module').'/role_manage_addProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $categories = array(
         'Staff'   => __('Staff'),

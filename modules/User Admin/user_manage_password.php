@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             //Let's go!
             $roleGateway = $container->get(RoleGateway::class);
             $role = $roleGateway->getRoleByID($values['gibbonRoleIDPrimary']);
-            $userRoles = $roleGateway->selectAllRolesByPerson($_SESSION[$guid]['gibbonPersonID'])->fetchGroupedUnique();
+            $userRoles = $roleGateway->selectAllRolesByPerson($session->get('gibbonPersonID'))->fetchGroupedUnique();
 
             // Acess denied for users changing a password if they do not have system access to this role
             if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) ) 
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $search = $_GET['search'] ?? '';
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -75,9 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 echo '</div>';
             }
 
-            $form = Form::create('resetUserPassword', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
+            $form = Form::create('resetUserPassword', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('username', __('Username'));

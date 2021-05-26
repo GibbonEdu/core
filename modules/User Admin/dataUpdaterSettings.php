@@ -26,8 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     //Proceed!
     $page->breadcrumbs->add(__('Data Updater Settings'));
 
-    $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form = Form::create('dataUpdaterSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataUpdaterSettingsProcess.php');
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('Settings'));
 
@@ -71,10 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     echo '<h2>'.__('Required Fields for Personal Updates').'</h2>';
     echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
-    $form = Form::createTable('dataUpdaterSettingsFields', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
+    $form = Form::createTable('dataUpdaterSettingsFields', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataUpdaterSettingsFieldsProcess.php');
     
     $form->setClass('fullWidth rowHighlight');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     
     // Default settings
     $settingDefaults = [

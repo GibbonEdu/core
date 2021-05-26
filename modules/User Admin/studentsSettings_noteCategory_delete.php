@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentsSettings_noteCategory_deleteProcess.php?gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/studentsSettings_noteCategory_deleteProcess.php?gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID");
             echo $form->getOutput();
         }
     }

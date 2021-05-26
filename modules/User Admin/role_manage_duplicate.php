@@ -49,9 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
         } else {
             $role = $result->fetch();
 
-            $form = Form::create('addRole', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/role_manage_duplicateProcess.php?gibbonRoleID='.$gibbonRoleID);
+            $form = Form::create('addRole', $session->get('absoluteURL').'/modules/'.$session->get('module').'/role_manage_duplicateProcess.php?gibbonRoleID='.$gibbonRoleID);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));

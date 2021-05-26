@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
         echo __('This page allows you to bulk import user photos, in the form of a ZIP file contain images named with individual usernames. See notes below for sizing information.');
         echo '</p>';
 
-        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_userPhotos.php&step=2');
+        $form = Form::create('importUserPhotos', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/import_userPhotos.php&step=2');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        $form->addHiddenValue('gibbonSchoolYearID', $_SESSION[$guid]['gibbonSchoolYearID']);
+        $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('gibbonSchoolYearID', $session->get('gibbonSchoolYearID'));
 
         $row = $form->addRow();
             $row->addLabel('file', __('ZIP File'))->description(__('See Notes below for specification.'));
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                 $month = date('m', $time);
 
                 //Check for folder in uploads based on today's date
-                $pathTemp = $_SESSION[$guid]['absolutePath'];
+                $pathTemp = $session->get('absolutePath');
                 if (is_dir($pathTemp.'/uploads/'.$year.'/'.$month) == false) {
                     mkdir($pathTemp.'/uploads/'.$year.'/'.$month, 0777, true);
                 }
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                             } else {
                                                 $filePath = 'uploads/'.$year.'/'.$month.'/'.$username."_$count".strrchr($filename, '.');
                                             }
-                                            if (!(file_exists($_SESSION[$guid]['absolutePath'].'/'.$filePath))) {
+                                            if (!(file_exists($session->get('absolutePath').'/'.$filePath))) {
                                                 $unique = true;
                                             }
                                             ++$count;
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                             //Check image properties
                                             $imageFail = false;
 
-                                            $size = getimagesize($_SESSION[$guid]['absolutePath'].'/'.$filePath);
+                                            $size = getimagesize($session->get('absolutePath').'/'.$filePath);
                                             $width = $size[0];
                                             $height = $size[1];
                                             $aspect = $height / $width;

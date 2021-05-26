@@ -40,10 +40,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings_m
         return;
     }
 
-    $form = Form::create('staffAbsenceType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/staffSettings_manage_editProcess.php');
+    $form = Form::create('staffAbsenceType', $session->get('absoluteURL').'/modules/User Admin/staffSettings_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceTypeID', $gibbonStaffAbsenceTypeID);
 
     $row = $form->addRow();

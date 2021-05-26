@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             return;
         } else {
             //Let's go!
-            $form = Form::create('action1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form = Form::create('action1', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHeaderAction('back', __('Back to Search Results'))
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 ->addParam('search', $search)
                 ->setURL('/modules/User Admin/family_manage.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addRow()->addHeading(__('General Information'));
 
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $children[$count]['status'] = $rowChildren['status'];
                 $children[$count]['comment'] = $rowChildren['comment'];
 
-                $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $dataDetail = array('gibbonPersonID' => $rowChildren['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlDetail = 'SELECT * FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultDetail = $pdo->select($sqlDetail, $dataDetail);
 
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             // RELATIONSHIPS
-            $form = Form::createTable('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form = Form::createTable('action2', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setTitle(__('Relationships'));
             $form->setDescription(__('Use the table below to show how each child is related to each adult in the family.'));
 
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('colorOddEven fullWidth');
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
 
                 $row = $form->addRow()->addClass('head break');
                     $row->addContent(__('Adults'));
@@ -227,31 +227,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 ->addParam('search', $search)
                 ->addParam('gibbonFamilyID', $gibbonFamilyID)
                 ->addParam('gibbonPersonID')
-                ->format(function($child, $actions) use ($guid) {
+                ->format(function($child, $actions) use ($session) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editChild.php');
+                        ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_editChild.php');
 
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_deleteChild.php');
+                        ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_deleteChild.php');
 
                     $actions->addAction('changePassword', __('Change Password'))
                         ->setIcon('key')
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/user_manage_password.php');
+                        ->setURL('/modules/' . $session->get('module') . '/user_manage_password.php');
                 });
 
             echo $table->render($children);
 
             // ADD CHILD
-            $form = Form::create('action3', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form = Form::create('action3', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_edit_addChildProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addRow()->addHeading(__('Add Child'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byForm' => true, 'showForm' => true))->placeholder()->required();
+                $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'), array('allStudents' => true, 'byName' => true, 'byForm' => true, 'showForm' => true))->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));
@@ -319,26 +319,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 ->addParam('gibbonFamilyID', $gibbonFamilyID)
                 ->addParam('gibbonPersonID')
                 ->addParam('search', $search)
-                ->format(function ($adult, $actions) use ($guid) {
+                ->format(function ($adult, $actions) use ($session) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_editAdult.php');
+                        ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_editAdult.php');
 
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/family_manage_edit_deleteAdult.php');
+                        ->setURL('/modules/' . $session->get('module') . '/family_manage_edit_deleteAdult.php');
 
                     $actions->addAction('changePassword', __('Change Password'))
                         ->setIcon('key')
-                        ->setURL('/modules/' . $_SESSION[$guid]['module'] . '/user_manage_password.php');
+                        ->setURL('/modules/' . $session->get('module') . '/user_manage_password.php');
                 });
 
             echo $table->render($adults);
 
 
-            $form = Form::create('action4', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
+            $form = Form::create('action4', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_edit_addAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addRow()->addHeading(__('Add Adult'));
 
