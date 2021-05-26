@@ -158,6 +158,15 @@ if ($proceed == false) {
         $URL .= '&return=success1';
         header("Location: {$URL}");
     } else {
+        // Raise a new notification event
+        $event = new NotificationEvent('User Admin', 'New Public Registration');
+
+        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
+        $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
+
+        $event->sendNotifications($pdo, $gibbon->session);
+
         $URL .= '&return=success0';
         header("Location: {$URL}");
     }
