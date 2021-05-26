@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         ->sortBy('date', 'DESC')
         ->fromPOST();
 
-    $records = $contributionsGateway->queryContributionsByPerson($criteria, $_SESSION[$guid]['gibbonPersonID']);
+    $records = $contributionsGateway->queryContributionsByPerson($criteria, $session->get('gibbonPersonID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('investigationsManage', $criteria);

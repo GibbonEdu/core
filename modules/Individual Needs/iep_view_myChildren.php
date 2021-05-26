@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
     echo '</p>';
 
     //Test data access field for permission
-    
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -48,8 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
         $options = array();
 
         while ($row = $result->fetch()) {
-            
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
@@ -71,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             echo 'Choose Student';
             echo '</h2>';
 
-            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
 
-            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/iep_view_myChildren.php');
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('q', '/modules/'.$session->get('module').'/iep_view_myChildren.php');
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Student'));
@@ -89,8 +89,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
 
         if ($gibbonPersonID != '' && count($options) > 0) {
             //Confirm access to this student
-            
-                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             } else {
                 $rowChild = $resultChild->fetch();
 
-                
+
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
                     $result = $connection2->prepare($sql);
