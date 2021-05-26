@@ -48,14 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $ttDate = $_GET['ttDate'];
     }
     if ($ttDate == '') {
-        $ttDate = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+        $ttDate = date($session->get('i18n')['dateFormatPHP']);
     }
 
-    $form = Form::create('viewAvailableFacilities', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('viewAvailableFacilities', $session->get('absoluteURL').'/index.php', 'get');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableSpaces.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_viewAvailableSpaces.php');
 
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
     $sql = 'SELECT gibbonTTID as value, name FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
 
     $row = $form->addRow();
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         echo '</h2>';
 
         
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonTTID' => $gibbonTTID);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
             $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                 $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
                 echo "<th style='vertical-align: top; text-align: center; width: ".(550 / $daysInWeek)."px'>";
                 echo __($day['nameShort']).'<br/>';
-                echo "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+                echo "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                 echo '</th>';
                 $count ++;
             }
@@ -223,11 +223,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
 			//Check to see if week is at all in term time...if it is, then display the grid
 			$isWeekInTerm = false;
-            
-                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultTerm = $connection2->prepare($sqlTerm);
-                $resultTerm->execute($dataTerm);
+            $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+            $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+            $resultTerm = $connection2->prepare($sqlTerm);
+            $resultTerm->execute($dataTerm);
             $weekStart = date('Y-m-d', ($startDayStamp + (86400 * 0)));
             $weekEnd = date('Y-m-d', ($startDayStamp + (86400 * 6)));
             while ($rowTerm = $resultTerm->fetch()) {
@@ -252,11 +251,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
 					//Check to see if day is term time
 					$isDayInTerm = false;
-					
-						$dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-						$sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-						$resultTerm = $connection2->prepare($sqlTerm);
-						$resultTerm->execute($dataTerm);
+                    $dataTerm = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                    $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                    $resultTerm = $connection2->prepare($sqlTerm);
+                    $resultTerm->execute($dataTerm);
 					while ($rowTerm = $resultTerm->fetch()) {
 						if ($date >= $rowTerm['firstDay'] and $date <= $rowTerm['lastDay']) {
 							$isDayInTerm = true;

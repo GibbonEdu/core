@@ -56,10 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
 
-            $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
+            $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
             $form->setTitle(__('Add Participants'));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $people = array();
 
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, false, true);
 
-            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_editProcessBulk.php');
+            $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/studentEnrolment_manage_editProcessBulk.php');
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
             $form->setTitle(__('Current Participants'));

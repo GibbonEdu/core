@@ -22,7 +22,7 @@ use Gibbon\Domain\System\ThemeGateway;
 include '../../gibbon.php';
 
 //Get URL from calling page, and set returning URL
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/theme_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/theme_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_install.php') == false) {
     $URL .= '&return=error0';
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        if (!(include $_SESSION[$guid]['absolutePath']."/themes/$themeName/manifest.php")) {
+        if (!(include $session->get('absolutePath')."/themes/$themeName/manifest.php")) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {

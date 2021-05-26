@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         $gibbonPersonID = isset($_GET['gibbonPersonID']) ? $_GET['gibbonPersonID'] : null;
         $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $allUsers = (isset($_GET['allUsers']) && $_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') ? $_GET['allUsers'] : '';
+        $allUsers = (isset($_GET['allUsers']) && $session->get('gibbonRoleIDCurrentCategory') == 'Staff') ? $_GET['allUsers'] : '';
 
         $studentGateway = $container->get(StudentGateway::class);
         $staffGateway = $container->get(StaffGateway::class);
@@ -56,24 +56,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 ->fromPOST();
 
 
-            $form = Form::create('ttView', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('ttView', $session->get('absoluteURL').'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
             $form->setTitle(__('Search'));
 
-            $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt.php');
+            $form->addHiddenValue('q', '/modules/'.$session->get('module').'/tt.php');
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 
-            if ($gibbon->session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
+            if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
                 $row = $form->addRow();
                     $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
                     $row->addCheckbox('allUsers')->checked($allUsers);
             }
 
             $row = $form->addRow();
-                $row->addSearchSubmit($gibbon->session);
+                $row->addSearchSubmit($session);
 
             echo $form->getOutput();
         }
@@ -83,25 +83,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo '</h2>';
 
         if ($highestAction == 'View Timetable by Person_my') {
-            $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDPrimary'], $connection2);
+            $role = getRoleCategory($session->get('gibbonRoleIDPrimary'), $connection2);
             if ($role == 'Student') {
-                $result = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+                $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
             } else {
-                $result = $staffGateway->selectStaffByID($_SESSION[$guid]['gibbonPersonID'], 'Teaching');
+                $result = $staffGateway->selectStaffByID($session->get('gibbonPersonID'), 'Teaching');
             }
             $users = $result->toDataSet();
 
             $table = DataTable::create('timetables');
 
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
-            $result = $studentGateway->selectActiveStudentsByFamilyAdult($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            $result = $studentGateway->selectActiveStudentsByFamilyAdult($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
             $users = $result->toDataSet();
 
             $table = DataTable::create('timetables');
 
         } else if ($canViewAllTimetables) {
 
-            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbon->session->get('gibbonRoleIDCurrentCategory'));
+            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonRoleIDCurrentCategory'));
 
             $table = DataTable::createPaginated('timetables', $criteria);
 

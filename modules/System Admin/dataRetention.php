@@ -32,12 +32,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention
 
     $page->return->addReturns(['success0' => __('{count} records were successfully scrubbed. These records still exist in the database, but their personal data has now been removed.', ['count' => $_GET['count'] ?? 0])]);
 
-    $form = Form::create('dataRetention', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataRetentionProcess.php');
+    $form = Form::create('dataRetention', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataRetentionProcess.php');
     
     $form->setDescription(__('Comply with privacy regulations by flushing older, non-academic, data from the system.')." ".__('This action will scrub selected data for all users in the specified category whose status is Left, and whose end date preceeds the specified data. This process clears certain fields, rather than removing any database rows.'));
     $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbon->session->get('gibbonSchoolYearIDCurrent'), ['firstDay']);
 

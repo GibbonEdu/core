@@ -31,9 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         ->add(__('View Logs'), 'logs_view.php')
         ->add(__('Purge Logs'));
 
-    $form = Form::create('logs', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/logs_view_purgeProcess.php');
+    $form = Form::create('logs', $session->get('absoluteURL').'/modules/System Admin/logs_view_purgeProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $sql = "SELECT DISTINCT title AS value, title AS name FROM gibbonLog ORDER BY title";
     $row = $form->addRow();

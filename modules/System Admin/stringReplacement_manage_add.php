@@ -35,19 +35,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/stringReplacement_manage_edit.php&gibbonStringID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/stringReplacement_manage_edit.php&gibbonStringID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
     if ($search != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
-    $form = Form::create('addString', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage_addProcess.php?search='.$search);
+    $form = Form::create('addString', $session->get('absoluteURL').'/modules/'.$session->get('module').'/stringReplacement_manage_addProcess.php?search='.$search);
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('original', __('Original String'));

@@ -53,10 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             echo __('Step 1 - Choose Facility');
             echo '</h2>';
 
-            $form = Form::create('spaceBookingStep1', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_add.php&step=2');
+            $form = Form::create('spaceBookingStep1', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/spaceBooking_manage_add.php&step=2');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
             $facilities = array();
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 $row->addSelect('foreignKeyID')->fromArray($facilities)->required()->placeholder()->selected($foreignKeyID);
 
             $row = $form->addRow();
-                $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
                 $row->addDate('date')->required()->setValue($date);
 
             $row = $form->addRow();
@@ -175,9 +175,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
                     $available = false;
 
-                    $form = Form::create('spaceBookingStep1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_addProcess.php');
+                    $form = Form::create('spaceBookingStep1', $session->get('absoluteURL').'/modules/'.$session->get('module').'/spaceBooking_manage_addProcess.php');
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
                     $form->addHiddenValue('foreignKey', $foreignKey);

@@ -49,9 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         return;
     }
 
-    $form = Form::create('emailTemplates', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/emailTemplates_manage_editProcess.php');
+    $form = Form::create('emailTemplates', $session->get('absoluteURL').'/modules/System Admin/emailTemplates_manage_editProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonEmailTemplateID', $gibbonEmailTemplateID);
 
     $form->addRow()->addHeading(__('Basic Details'));

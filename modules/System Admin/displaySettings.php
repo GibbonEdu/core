@@ -28,9 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     //Proceed!
     $page->breadcrumbs->add(__('Display Settings'));
 
-    $form = Form::create('displaySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/displaySettingsProcess.php');
+    $form = Form::create('displaySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/displaySettingsProcess.php');
     
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     
     $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
     $row = $form->addRow();

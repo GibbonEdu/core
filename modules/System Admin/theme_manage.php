@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     $page->return->addReturns($returns);
 
     echo "<div class='message'>";
-    echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
+    echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$session->get('absolutePath').'/themes/</u></b>');
     echo '</div>';    
     
     echo '<h2>';
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     echo '</h2>';        
     
     // Get list of themes in /themes directory
-    $themeFolders = glob($_SESSION[$guid]['absolutePath'].'/themes/*', GLOB_ONLYDIR);
+    $themeFolders = glob($session->get('absolutePath').'/themes/*', GLOB_ONLYDIR);
     $themeGateway = $container->get(ThemeGateway::class);
 
     // CRITERIA
@@ -65,8 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     // Build a set of theme data, flagging orphaned themes that do not appear to be in the themes folder.
     // Also checks for available updates by comparing version numbers
-    $themes->transform(function (&$theme) use ($guid, &$orphans, &$themeFolders, &$themeGateway) {
-        if (array_search($_SESSION[$guid]['absolutePath'].'/themes/'.$theme['name'], $themeFolders) === false) {
+    $themes->transform(function (&$theme) use ($session, &$orphans, &$themeFolders, &$themeGateway) {
+        if (array_search($session->get('absolutePath').'/themes/'.$theme['name'], $themeFolders) === false) {
             $theme['orphaned'] = true;
             $orphans[] = $theme;
             return;
@@ -84,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     // Build a set of uninstalled themes by checking the $themes DataSet.
     // Validates the manifest file and grabs the theme details from there.
-    $uninstalledThemes = array_reduce($themeFolders, function($group, $themePath) use ($guid, &$themeNames) {
-        $themeName = substr($themePath, strlen($_SESSION[$guid]['absolutePath'].'/themes/'));
+    $uninstalledThemes = array_reduce($themeFolders, function($group, $themePath) use ($guid, $session, &$themeNames) {
+        $themeName = substr($themePath, strlen($session->get('absolutePath').'/themes/'));
         if (!in_array($themeName, $themeNames)) {
             $theme = getThemeManifest($themeName, $guid);
             
@@ -100,10 +100,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     }, array());    
        
     // INSTALLED THEMES
-    $form = Form::create('theme_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
+    $form = Form::create('theme_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/theme_manageProcess.php');
     
     $form->setClass('fullWidth');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->setClass('w-full blank');
 
     // DATA TABLE

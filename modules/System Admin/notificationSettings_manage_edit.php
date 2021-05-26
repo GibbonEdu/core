@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
         } else {
             $event = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_editProcess.php');
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/notificationSettings_manage_editProcess.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
             $row = $form->addRow();
@@ -160,10 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             $resultSelect=$pdo->executeQuery($data, $sql);
 
             if ($resultSelect && $resultSelect->rowCount() > 0) {
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_listener_addProcess.php');
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/notificationSettings_manage_listener_addProcess.php');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
                 while ($rowSelect = $resultSelect->fetch()) {
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                     $row = $form->addRow()->addClass('scopeTypeStudent');
                         $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                        $row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->placeholder();
+                        $row->addSelectStudent('gibbonPersonIDStudent', $session->get('gibbonSchoolYearID'))->required()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
                     $row = $form->addRow()->addClass('scopeTypeStaff');

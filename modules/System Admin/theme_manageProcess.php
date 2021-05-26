@@ -26,7 +26,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonThemeID = $_POST['gibbonThemeID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
     $URL .= '&return=error0';

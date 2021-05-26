@@ -22,7 +22,7 @@ use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/logs_view_purge.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/logs_view_purge.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php') == false) {
     $URL .= '&return=error0';

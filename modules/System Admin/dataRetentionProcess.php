@@ -26,7 +26,7 @@ use Gibbon\Domain\System\LogGateway;
 include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataRetention.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataRetention.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/dataRetention.php') == false) {
     $URL .= '&return=error0';

@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     }
 
     // FORM
-    $form = Form::create('cacheSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cacheManager_settingsProcess.php');
+    $form = Form::create('cacheSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cacheManager_settingsProcess.php');
 
     $form->addRow()->addHeading(__('Settings'));
 
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     echo $form->getOutput();
 
     // CLEAR CACHE
-    $form = Form::create('clearCache', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cacheManager_clearCacheProcess.php');
+    $form = Form::create('clearCache', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cacheManager_clearCacheProcess.php');
     $form->addClass('mt-10');
 
     $form->addRow()->addHeading(__('System Data'));

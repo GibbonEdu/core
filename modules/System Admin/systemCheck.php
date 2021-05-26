@@ -33,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $versionDB = getSettingByScope($connection2, 'System', 'version');
 
-    $trueIcon = "<img title='" . __('Yes'). "' src='".$_SESSION[$guid]["absoluteURL"]."/themes/".$_SESSION[$guid]["gibbonThemeName"]."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-    $falseIcon = "<img title='" . __('No'). "' src='".$_SESSION[$guid]["absoluteURL"]."/themes/".$_SESSION[$guid]["gibbonThemeName"]."/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
+    $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
+    $falseIcon = "<img title='" . __('No'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
 
     $versionTitle = __('%s Version');
     $versionMessage = __('%s requires %s version %s or higher');
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     // File Check
     $fileCount = 0;
     $publicWriteCount = 0;
-    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($_SESSION[$guid]["absolutePath"])) as $filename)
+    foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($session->get("absolutePath"))) as $filename)
     {
         if (pathinfo($filename, PATHINFO_EXTENSION) != 'php') continue;
         if (strpos(pathinfo($filename, PATHINFO_DIRNAME), '/uploads') !== false) continue;
@@ -156,8 +156,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('uploadsFolderLabel', __('Uploads folder server writeable'));
-        $row->addTextField('uploadsFolder')->setValue($_SESSION[$guid]['absoluteURL'].'/uploads')->readonly();
-        $row->addContent(is_writable($_SESSION[$guid]['absolutePath'].'/uploads')? $trueIcon : $falseIcon);
+        $row->addTextField('uploadsFolder')->setValue($session->get('absoluteURL').'/uploads')->readonly();
+        $row->addContent(is_writable($session->get('absolutePath').'/uploads')? $trueIcon : $falseIcon);
 
     echo $form->getOutput();
 }

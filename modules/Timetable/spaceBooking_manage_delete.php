@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $data = array('gibbonTTSpaceBookingID1' => $gibbonTTSpaceBookingID, 'gibbonTTSpaceBookingID2' => $gibbonTTSpaceBookingID);
                     $sql = "(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBookingID=:gibbonTTSpaceBookingID1) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND gibbonTTSpaceBookingID=:gibbonTTSpaceBookingID2) ORDER BY date, name";
                 } else {
-                    $data = array('gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonTTSpaceBookingID1' => $gibbonTTSpaceBookingID, 'gibbonTTSpaceBookingID2' => $gibbonTTSpaceBookingID);
+                    $data = array('gibbonPersonID1' => $session->get('gibbonPersonID'), 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'gibbonTTSpaceBookingID1' => $gibbonTTSpaceBookingID, 'gibbonTTSpaceBookingID2' => $gibbonTTSpaceBookingID);
                     $sql = "(SELECT gibbonTTSpaceBooking.*, gibbonSpace.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonSpace ON (gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonSpaceID' AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID1 AND gibbonTTSpaceBookingID=:gibbonTTSpaceBookingID1) UNION (SELECT gibbonTTSpaceBooking.*, gibbonLibraryItem.name AS name, surname, preferredName FROM gibbonTTSpaceBooking JOIN gibbonLibraryItem ON (gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonPerson ON (gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE foreignKey='gibbonLibraryItemID' AND gibbonTTSpaceBooking.gibbonPersonID=:gibbonPersonID2 AND gibbonTTSpaceBookingID=:gibbonTTSpaceBookingID2) ORDER BY date, name";
                 }
                 $result = $connection2->prepare($sql);
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/spaceBooking_manage_deleteProcess.php?gibbonTTSpaceBookingID=$gibbonTTSpaceBookingID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/spaceBooking_manage_deleteProcess.php?gibbonTTSpaceBookingID=$gibbonTTSpaceBookingID");
                 echo $form->getOutput();
             }
         }

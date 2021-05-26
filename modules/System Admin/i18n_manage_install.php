@@ -40,14 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         if (empty($i18n)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = Form::create('install', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/i18n_manage_installProcess.php');
+            $form = Form::create('install', $session->get('absoluteURL').'/modules/System Admin/i18n_manage_installProcess.php');
             $form->addHiddenValue('address', $_GET['q']);
             $form->addHiddenValue('gibboni18nID', $gibboni18nID);
 
             $row = $form->addRow();
                 $col = $row->addColumn();
                 $col->addContent( ($mode == 'update'? __('Update') : __('Install')).' '.$i18n['name'])->wrap('<strong style="font-size: 18px;">', '</strong><br/><br/>');
-                $col->addContent(sprintf(__('This action will download the required files and place them in the %1$s folder on your server.'), '<b>'.$_SESSION[$guid]['absolutePath'].'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
+                $col->addContent(sprintf(__('This action will download the required files and place them in the %1$s folder on your server.'), '<b>'.$session->get('absolutePath').'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
 
             $form->addRow()->addConfirmSubmit();
 

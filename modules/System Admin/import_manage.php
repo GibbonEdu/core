@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
             });
         $table->addColumn('timestamp', __('Last Import'))
             ->width('25%')
-            ->format(function ($importType) use ($guid) {
+            ->format(function ($importType) use ($session) {
                 if ($log = $importType['log']) {
                     $text = Format::dateReadable($log['timestamp']);
-                    $url = $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/System Admin/import_history_view.php&gibbonLogID='.$log['gibbonLogID'].'&width=600&height=550';
+                    $url = $session->get('absoluteURL').'/fullscreen.php?q=/modules/System Admin/import_history_view.php&gibbonLogID='.$log['gibbonLogID'].'&width=600&height=550';
                     $title = Format::dateTime($log['timestamp']).' - '.Format::nameList([$log]);
                     return Format::link($url, $text, ['title' => $title, 'class' => 'thickbox']);
                 }

@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $page->breadcrumbs->add(__('Manage Languages'));
 
     $page->return->addReturns([
-        'error3' => __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/i18n/</u></b>')
+        'error3' => __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$session->get('absolutePath').'/i18n/</u></b>')
     ]);
 
     // Update any existing languages that may have been installed manually
@@ -48,14 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $languages = $i18nGateway->queryI18n($criteria, 'Y');
 
-    $languages->transform(function(&$i18n) use ($guid)  {
-        $i18n['isInstalled'] = i18nFileExists($_SESSION[$guid]['absolutePath'], $i18n['code']);
+    $languages->transform(function(&$i18n) use ($session)  {
+        $i18n['isInstalled'] = i18nFileExists($session->get('absolutePath'), $i18n['code']);
     });
 
-    $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
+    $form = Form::create('i18n_manage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/i18n_manageProcess.php');
     $form->setTitle(__('Installed'));
     $form->setClass('fullWidth');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->setClass('w-full blank');
 
     // DATA TABLE
@@ -132,8 +132,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $languages = $i18nGateway->queryI18n($criteria, 'N');
 
-    $languages->transform(function(&$i18n) use ($guid)  {
-        $i18n['isInstalled'] = i18nFileExists($_SESSION[$guid]['absolutePath'], $i18n['code']);
+    $languages->transform(function(&$i18n) use ($session)  {
+        $i18n['isInstalled'] = i18nFileExists($session->get('absolutePath'), $i18n['code']);
     });
 
     // DATA TABLE

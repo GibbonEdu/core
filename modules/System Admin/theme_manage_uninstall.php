@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
             echo __('The specified theme cannot be found or is active and so cannot be removed.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/theme_manage_uninstallProcess.php?gibbonThemeID=$gibbonThemeID&orphaned=$orphaned");
             echo $form->getOutput();
         }
     }
