@@ -40,12 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ??  '';
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth standardForm');
-    
+
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');
 
     $row = $form->addRow();
@@ -55,10 +55,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $row = $form->addRow();
         $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
         $row->addCheckbox('allStudents')->checked($allStudents);
-        
+
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
-        
+
     echo $form->getOutput();
 
     $studentGateway = $container->get(StudentGateway::class);
@@ -67,23 +67,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         ->sortBy(['surname', 'preferredName'])
         ->filterBy('all',$allStudents)
         ->fromPOST();
-    
+
     $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Formal Assessment/externalAssessment_manage_processBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Formal Assessment/externalAssessment_manage_processBulk.php');
     $form->setTitle(__('Choose A Student'));
     $form->addHiddenValue('search', $search);
-    
+
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('students', $criteria)->withData($students);
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
-            
+
     $table->addMetaData('filterOptions', [
         'all:on'        => __('All Students')
     ]);
-     
+
     if ($criteria->hasFilter('all')) {
         $table->addMetaData('filterOptions', [
             'status:full'     => __('Status').': '.__('Full'),
@@ -119,16 +119,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
         $table->addMetaData('bulkActions', $col);
     }
-            
+
     // COLUMNS
     $table->addColumn('student', __('Student'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) {    
+        ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
-    
+
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
         ->addParam('search', $search)
@@ -141,6 +141,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     if ($highestAction == 'External Assessment Data_manage') {
         $table->addCheckboxColumn('gibbonPersonID');
     }
-    
+
     echo $form->getOutput();
 }

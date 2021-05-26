@@ -67,16 +67,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
                     ->add(__('Edit Column'));
 
-                if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
+                if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $session->get('gibbonPersonID')) {
                     echo "<div class='error'>";
                     echo __('This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
                     echo '</div>';
                 } else {
                     $page->return->addReturns(['error3' => __('Your request failed due to an attachment error.')]);
 
-                    $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
+                    $form = Form::create('internalAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/internalAssessment_manage_editProcess.php?gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
 
                     $form->addRow()->addHeading(__('Basic Information'));
 
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $row = $form->addRow();
                         $row->addLabel('file', __('Attachment'));
-                        $row->addFileUpload('file')->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
+                        $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
 
                     $form->addRow()->addHeading(__('Assessment'));
 
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $attainmentScaleLabel = !empty($attainmentAlternativeName)? $attainmentAlternativeName.' '.__('Scale') : __('Attainment Scale');
                     $row = $form->addRow()->addClass('attainmentRow');
                         $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
-                        $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                        $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($session->get('defaultAssessmentScale'));
 
                     $effortLabel = !empty($effortAlternativeName)? sprintf(__('Assess %1$s?'), $effortAlternativeName) : __('Assess Effort?');
                     $row = $form->addRow();
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $effortScaleLabel = !empty($effortAlternativeName)? $effortAlternativeName.' '.__('Scale') : __('Effort Scale');
                     $row = $form->addRow()->addClass('effortRow');
                         $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
-                        $row->addSelectGradeScale('gibbonScaleIDEffort')->required()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                        $row->addSelectGradeScale('gibbonScaleIDEffort')->required()->selected($session->get('defaultAssessmentScale'));
 
                     $row = $form->addRow();
                         $row->addLabel('comment', __('Include Comment?'));

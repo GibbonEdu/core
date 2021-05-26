@@ -26,7 +26,7 @@ include '../../gibbon.php';
 $action = $_POST['action'] ?? '';
 $search = $_POST['search'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Formal Assessment/externalAssessment.php&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Formal Assessment/externalAssessment.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
     $URL .= '&return=error0';
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             header("Location: {$URL}");
             exit();
         }
-    
+
         foreach ($gibbonPersonIDList as $gibbonPersonID) {
             $data = [
                 'gibbonExternalAssessmentID' => $gibbonExternalAssessmentID,
@@ -74,18 +74,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         'gibbonPersonID' => $gibbonPersonID,
                     ];
 
-                    $sql = "INSERT INTO gibbonExternalAssessmentStudentEntry 
-                            (`gibbonExternalAssessmentStudentID`, `gibbonExternalAssessmentFieldID`, `gibbonScaleGradeID`) 
-                            SELECT :gibbonExternalAssessmentStudentID, field.gibbonExternalAssessmentFieldID, 
+                    $sql = "INSERT INTO gibbonExternalAssessmentStudentEntry
+                            (`gibbonExternalAssessmentStudentID`, `gibbonExternalAssessmentFieldID`, `gibbonScaleGradeID`)
+                            SELECT :gibbonExternalAssessmentStudentID, field.gibbonExternalAssessmentFieldID,
                             (
-                                SELECT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessment 
-                                JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) 
+                                SELECT gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessment
+                                JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
                                 JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
-                                JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID) 
-                                WHERE gibbonExternalAssessment.name='Cognitive Abilities Test' 
+                                JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentStudentID=gibbonExternalAssessmentStudent.gibbonExternalAssessmentStudentID)
+                                WHERE gibbonExternalAssessment.name='Cognitive Abilities Test'
                                     AND gibbonExternalAssessmentStudent.gibbonPersonID=:gibbonPersonID
                                     AND gibbonExternalAssessmentField.name=field.name
-                                    AND gibbonExternalAssessmentField.category LIKE '%GCSE Target Grades' 
+                                    AND gibbonExternalAssessmentField.category LIKE '%GCSE Target Grades'
                                     AND NOT (gibbonScaleGradeID IS NULL)
                                 LIMIT 1
                             )
@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         'gibbonExternalAssessmentID' => $gibbonExternalAssessmentID,
                     ];
 
-                    $sql = "INSERT INTO gibbonExternalAssessmentStudentEntry 
-                            (`gibbonExternalAssessmentStudentID`, `gibbonExternalAssessmentFieldID`, `gibbonScaleGradeID`) 
+                    $sql = "INSERT INTO gibbonExternalAssessmentStudentEntry
+                            (`gibbonExternalAssessmentStudentID`, `gibbonExternalAssessmentFieldID`, `gibbonScaleGradeID`)
                             SELECT :gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID, NULL
                             FROM gibbonExternalAssessmentField
                             WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID";

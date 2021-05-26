@@ -49,28 +49,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo __('Choose A Student');
             echo '</h3>';
 
-            $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get", "noIntBorder fullWidth standardForm");
+            $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get", "noIntBorder fullWidth standardForm");
 			$form->setFactory(DatabaseFormFactory::create($pdo));
-			
+
 			$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Student'));
-				$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]["gibbonSchoolYearID"], array())->selected($gibbonPersonID)->placeholder();
-				
+				$row->addSelectStudent('gibbonPersonID', $session->get("gibbonSchoolYearID"), array())->selected($gibbonPersonID)->placeholder();
+
             $row = $form->addRow();
 				$row->addSearchSubmit($gibbon->session);
-				
+
 			echo $form->getOutput();
-			
+
 			if ($gibbonPersonID) {
 				echo '<h3>';
 				echo __('Internal Assessments');
 				echo '</h3>';
 
 				//Check for access
-				
+
 					$dataCheck = array('gibbonPersonID' => $gibbonPersonID);
 					$sqlCheck = "SELECT DISTINCT gibbonPerson.* FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')";
 					$resultCheck = $connection2->prepare($sqlCheck);
@@ -88,8 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 			$page->breadcrumbs->add(__('View My Childrens\'s Internal Assessments'));
 
 			//Test data access field for permission
-			
-				$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+				$data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
 				$sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
 				$result = $connection2->prepare($sql);
 				$result->execute($data);
@@ -102,8 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				//Get child list
 				$options = array();
 				while ($row = $result->fetch()) {
-					
-						$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+						$dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 						$sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
 						$resultChild = $connection2->prepare($sqlChild);
 						$resultChild->execute($dataChild);
@@ -125,12 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 					echo __('Choose Student');
 					echo '</h2>';
 
-					$form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get");
+					$form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
 					$form->setClass('noIntBorder fullWidth standardForm');
 
 					$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
-					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-					
+					$form->addHiddenValue('address', $session->get('address'));
+
 					$row = $form->addRow();
 						$row->addLabel('search', __('Student'));
 						$row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
@@ -140,14 +140,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 					echo $form->getOutput();
                 }
-				
+
                 $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
                 $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
 
                 if ($gibbonPersonID != '' and count($options) > 0) {
                     //Confirm access to this student
-                    
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'date' => date('Y-m-d'));
+
+                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'date' => date('Y-m-d'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);

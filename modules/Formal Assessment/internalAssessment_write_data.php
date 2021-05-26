@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
                 } else {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
                 }
                 $result = $connection2->prepare($sql);
@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                
+
                     $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
                     $sql2 = "SELECT gibbonInternalAssessmentColumn.*, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
-                        FROM gibbonInternalAssessmentColumn 
+                        FROM gibbonInternalAssessmentColumn
                         LEFT JOIN gibbonScale as attainmentScale ON (attainmentScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDAttainment)
                         LEFT JOIN gibbonScale as effortScale ON (effortScale.gibbonScaleID=gibbonInternalAssessmentColumn.gibbonScaleIDEffort)
                         WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID";
@@ -108,19 +108,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID, 'today' => date('Y-m-d'));
                     $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.dateStart, gibbonInternalAssessmentEntry.*
-                        FROM gibbonCourseClassPerson 
-                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        FROM gibbonCourseClassPerson
+                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         LEFT JOIN gibbonInternalAssessmentEntry ON (gibbonInternalAssessmentEntry.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID AND gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID)
-                        WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                        AND gibbonCourseClassPerson.reportable='Y' AND gibbonCourseClassPerson.role='Student' 
-                        AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                        WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                        AND gibbonCourseClassPerson.reportable='Y' AND gibbonCourseClassPerson.role='Student'
+                        AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
                         ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
                     $result = $pdo->executeQuery($data, $sql);
                     $students = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
-                    $form = Form::create('internalAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/internalAssessment_write_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&address='.$_SESSION[$guid]['address']);
+                    $form = Form::create('internalAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/internalAssessment_write_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonInternalAssessmentColumnID='.$gibbonInternalAssessmentColumnID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
 
                     $form->addRow()->addHeading(__('Assessment Details'));
 
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $row = $form->addRow();
                         $row->addLabel('file', __('Attachment'));
-                        $row->addFileUpload('file')->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
+                        $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
 
 
                     if (count($students) == 0) {
@@ -141,8 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                         $completeText = !empty($values['completeDate'])? __('Marked on').' '.dateConvertBack($guid, $values['completeDate']) : __('Unmarked');
                         $detailsText = $values['type'];
-                        if ($values['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$values['attachment'])) {
-                            $detailsText .= " | <a title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$values['attachment']."'>".__('More info').'</a>';
+                        if ($values['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$values['attachment'])) {
+                            $detailsText .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$values['attachment']."'>".__('More info').'</a>';
                         }
 
                         $header = $table->addHeaderRow();
@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$scale)
                                     ->setClass('textCenter');
                             }
-        
+
                             if ($hasEffort) {
                                 $scale = '';
                                 if (!empty($values['gibbonScaleIDEffort'])) {
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$scale)
                                     ->setClass('textCenter');
                             }
-        
+
                             if ($hasComment || $hasUpload) {
                                 $header->addContent(__('Com'))->setTitle(__('Comment'))->setClass('textCenter');
                             }
@@ -189,9 +189,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     foreach ($students as $index => $student) {
                         $count = $index+1;
                         $row = $table->addRow();
-            
+
                         $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
-                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
+                            ->setURL($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Internal Assessment')
                             ->wrap('<strong>', '</strong>')
@@ -201,12 +201,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $attainment = $row->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])->setClass('textCenter gradeSelect');
                             if (!empty($student['attainmentValue'])) $attainment->selected($student['attainmentValue']);
                         }
-    
+
                         if ($hasEffort) {
                             $effort = $row->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])->setClass('textCenter gradeSelect');
                             if (!empty($student['effortValue'])) $effort->selected($student['effortValue']);
                         }
-    
+
                         if ($hasComment || $hasUpload) {
                             $col = $row->addColumn()->addClass('stacked');
 
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             }
 
                             if ($hasUpload) {
-                                $col->addFileUpload('response'.$count)->setAttachment('attachment'.$count, $_SESSION[$guid]['absoluteURL'], $student['response'])->setMaxUpload(false);
+                                $col->addFileUpload('response'.$count)->setAttachment('attachment'.$count, $session->get('absoluteURL'), $student['response'])->setMaxUpload(false);
                             }
                         }
                         $form->addHiddenValue($count.'-gibbonPersonID', $student['gibbonPersonID']);
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);
-        
+
                     echo $form->getOutput();
                 }
             }
