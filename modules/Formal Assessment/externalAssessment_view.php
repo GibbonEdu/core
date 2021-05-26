@@ -40,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             $page->breadcrumbs->add(__('View My Childrens\'s External Assessments'));
 
             //Test data access field for permission
-            
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $count = 0;
                 $options = array();
                 while ($row = $result->fetch()) {
-                    
-                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
+
+                        $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
@@ -78,12 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                     $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
-                    $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get");
+                    $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get");
                     $form->setClass('noIntBorder fullWidth standardForm');
 
                     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment_view.php');
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-                    
+                    $form->addHiddenValue('address', $session->get('address'));
+
                     $row = $form->addRow();
                         $row->addLabel('search', __('Student'));
                         $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
@@ -99,8 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                 if ($gibbonPersonID != '' and count($options) > 0) {
                     //Confirm access to this student
-                    
-                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+
+                        $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);

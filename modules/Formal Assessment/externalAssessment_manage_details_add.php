@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Formal Assessment/externalAssessment_manage_details_edit.php&gibbonExternalAssessmentStudentID='.$_GET['editID'].'&search='.$_GET['search'].'&allStudents='.$_GET['allStudents'].'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Formal Assessment/externalAssessment_manage_details_edit.php&gibbonExternalAssessmentStudentID='.$_GET['editID'].'&search='.$_GET['search'].'&allStudents='.$_GET['allStudents'].'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     } else {
         try {
             if ($allStudents != 'on') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonYearGroupID, gibbonStudentEnrolmentID, surname, preferredName, title, image_240, gibbonYearGroup.name AS yearGroup, gibbonFormGroup.nameShort AS formGroup FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonFormGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             } else {
                 $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         } else {
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
                 echo '</div>';
             }
             $row = $result->fetch();
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             //Step 1
             if ($step == 1) {
-                $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_add.php', 'get');
+                $form = Form::create('addAssessment', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/externalAssessment_manage_details_add.php', 'get');
 
                 $form->addHiddenValue('q', $_GET['q']);
                 $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $copyToGCSECheck = isset($_GET['copyToGCSECheck'])? $_GET['copyToGCSECheck'] : null;
                 $copyToIBCheck = isset($_GET['copyToIBCheck'])? $_GET['copyToIBCheck'] : null;
 
-                
+
                     $dataSelect = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
                     $sqlSelect = "SELECT * FROM gibbonExternalAssessment WHERE active='Y' AND gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY name";
                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -138,14 +138,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     //Attempt to get CATs grades to copy to GCSE target
                     if ($copyToGCSECheck == 'Y') {
                         $grades = array();
-                        
+
                             $dataCopy = array('gibbonPersonID' => $gibbonPersonID);
                             $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='Cognitive Abilities Test' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
                             $resultCopy = $connection2->prepare($sqlCopy);
                             $resultCopy->execute($dataCopy);
                         if ($resultCopy->rowCount() > 0) {
                             $rowCopy = $resultCopy->fetch();
-                            
+
                                 $dataCopy2 = array('category' => '%GCSE Target Grades', 'gibbonExternalAssessmentStudentID' => $rowCopy['gibbonExternalAssessmentStudentID']);
                                 $sqlCopy2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID) WHERE category LIKE :category AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID AND NOT (gibbonScaleGradeID IS NULL) ORDER BY name';
                                 $resultCopy2 = $connection2->prepare($sqlCopy2);
@@ -327,9 +327,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         }
                     }
 
-                    $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
+                    $form = Form::create('addAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                     $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
@@ -347,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         $row->addFileUpload('file');
                     }
 
-                    
+
                         $dataField = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
                         $sqlField = 'SELECT category, gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order';
                         $resultField = $connection2->prepare($sqlField);
