@@ -39,15 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 
     $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_classEnrolment_byFormGroup.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_classEnrolment_byFormGroup.php');
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->required()->placeholder();
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);
@@ -69,8 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         $table->addColumn('formGroup', __('Form Group'));
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
-            ->format(function($person) use ($guid) {
-                return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID='.$person['gibbonPersonID'], Format::name('', $person['preferredName'], $person['surname'], 'Student', true) );
+            ->format(function($person) use ($session) {
+                return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID='.$person['gibbonPersonID'], Format::name('', $person['preferredName'], $person['surname'], 'Student', true) );
             });
         $table->addColumn('classCount', __('Class Count'));
 

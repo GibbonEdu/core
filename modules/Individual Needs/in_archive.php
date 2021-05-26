@@ -28,11 +28,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('Archive Records'));
-    
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
     $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort as formGroup
-            FROM gibbonPerson 
-            JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            FROM gibbonPerson
+            JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
             WHERE status='Full' ORDER BY surname, preferredName";
@@ -42,15 +42,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $students = array_map(function($item) {
         return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['formGroup'].')';
     }, $students);
-    
+
     if (empty($students)) {
         $page->addError(__('There are no records to display.'));
         return;
     }
-    
-    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php');
-                
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $form = Form::create('courseEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/in_archiveProcess.php');
+
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('deleteCurrentPlans', __('Delete Current Plans?'))->description(__('Deletes Individual Education Plan fields only, not Individual Needs Status fields.'));
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     $row = $form->addRow();
         $row->addLabel('title', __('Archive Title'));
         $row->addTextField('title')->required()->maxLength(50);
-                        
+
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
         $row->addCheckbox('gibbonPersonID')->fromArray($students)->addCheckAllNone();

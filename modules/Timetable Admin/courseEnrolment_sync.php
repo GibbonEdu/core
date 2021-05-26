@@ -30,10 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
 
-    if ($gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    if ($gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
     } else {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
@@ -49,21 +49,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
         $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
         if ($previousYear != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
         } else {
             echo __('Previous Year').' ';
         }
         echo ' | ';
         if ($nextYear != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
             echo __('Next Year').' ';
         }
     echo '</div>';
 
-    $form = Form::create('settings', $_SESSION[$guid]['absoluteURL'].'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
+    $form = Form::create('settings', $session->get('absoluteURL').'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
     $form->setTitle(__('Settings'));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses', true);
     $row = $form->addRow();

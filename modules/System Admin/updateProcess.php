@@ -25,9 +25,9 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
 $partialFail = false;
-$_SESSION[$guid]['systemUpdateError'] = '';
+$session->set('systemUpdateError', '');
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
     $URL .= '&return=error0';

@@ -22,7 +22,7 @@ use Gibbon\Domain\System\I18nGateway;
 include '../../gibbon.php';
 
 $gibboni18nID = $_POST['gibboni18nID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/i18n_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/i18n_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
     $URL .= '&return=error0';

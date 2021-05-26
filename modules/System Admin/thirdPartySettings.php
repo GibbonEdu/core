@@ -29,9 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     //Proceed!
     $page->breadcrumbs->add(__('Third Party Settings'));
 
-    $form = Form::create('thirdPartySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/thirdPartySettingsProcess.php');
+    $form = Form::create('thirdPartySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/thirdPartySettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // GOOGLE
     $form->addRow()->addHeading(__('Google Integration'))->append(sprintf(__('If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>'));

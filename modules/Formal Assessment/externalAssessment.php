@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         });
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
-    
+
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
         ->addParam('search', $search)

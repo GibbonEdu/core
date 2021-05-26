@@ -22,7 +22,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceBooking_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceBooking_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 } else {
                     //Write to database
                     try {
-                        $data = array('foreignKey' => $foreignKey, 'foreignKeyID' => $foreignKeyID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('foreignKey' => $foreignKey, 'foreignKeyID' => $foreignKeyID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = 'INSERT INTO gibbonTTSpaceBooking SET foreignKey=:foreignKey, foreignKeyID=:foreignKeyID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonPersonID=:gibbonPersonID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 // Redirect back to View Timetable by Facility if we started there
                 if (isset($_POST['source']) && $_POST['source'] == 'tt') {
                     $ttDate = dateConvertBack($guid, $dates[0]);
-                    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$foreignKeyID.'&ttDate='.$ttDate;
+                    $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$foreignKeyID.'&ttDate='.$ttDate;
                 }
 
                 $URL .= '&return=success0';
