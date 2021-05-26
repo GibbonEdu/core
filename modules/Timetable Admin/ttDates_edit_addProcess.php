@@ -23,7 +23,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $dateStamp = $_POST['dateStamp'] ?? '';
 $gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$dateStamp;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$dateStamp;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
     $URL .= '&return=error0';

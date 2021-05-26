@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         echo __('Step 1');
         echo '</h3>';
 
-        $nextYear = getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2);
+        $nextYear = getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2);
         if ($nextYear == false) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
@@ -63,12 +63,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo '</div>';
             } else {
 
-                $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=2');
+                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=2');
 
                 $form->addHiddenValue('nextYear', $nextYear);
 
                 $row = $form->addRow();
-                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$session->get('gibbonSchoolYearName').'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
 
                 $row = $form->addRow();
                     $row->addSubmit(__('Proceed'));
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         echo '</h3>';
 
         $nextYear = $_POST['nextYear'];
-        if ($nextYear == '' or $nextYear != getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2)) {
+        if ($nextYear == '' or $nextYear != getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2)) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo '</p>';
 
                 // Get the current courses/classes
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class";
                 $result = $pdo->executeQuery($data, $sql);
                 $currentCourses = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     return $currentCourse;
                 }, $currentCourses);
 
-                $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=3');
+                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
                 $form->setClass('w-full blank');
 
                 $form->addHiddenValue('nextYear', $nextYear);
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         }
     } elseif ($step == 3) {
         $nextYear = $_POST['nextYear'];
-        if ($nextYear == '' or $nextYear != getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2)) {
+        if ($nextYear == '' or $nextYear != getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2)) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';

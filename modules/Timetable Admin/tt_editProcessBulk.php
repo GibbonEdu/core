@@ -25,7 +25,7 @@ $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $action = $_POST['action'];
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.php') == false) {
     $URL .= '&return=error0';

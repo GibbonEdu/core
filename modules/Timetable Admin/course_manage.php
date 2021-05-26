@@ -34,12 +34,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if (isset($_GET['gibbonSchoolYearID'])) {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
     }
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
         
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -67,13 +67,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
 			$nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
 			if ($previousYear != false) {
-				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
 			} else {
 				echo __('Previous Year').' ';
 			}
 			echo ' | ';
 			if ($nextYear != false) {
-				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
 			} else {
 				echo __('Next Year').' ';
 			}
@@ -95,12 +95,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo __('Filters');
         echo '</h3>';
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/course_manage.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/course_manage.php");
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $row = $form->addRow();

@@ -28,7 +28,7 @@ $dates = $_POST['dates'] ?? [];
 $gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 $overwrite = $_POST['overwrite'] ?? 'N';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
     $URL .= '&return=error0';

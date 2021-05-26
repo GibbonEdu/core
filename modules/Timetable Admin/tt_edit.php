@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_editProcess.php');
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/tt_editProcess.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
@@ -114,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             $ttDays = $timetableDayGateway->queryTTDays($criteria, $gibbonTTID);
 
             // FORM
-            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_editProcessBulk.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_editProcessBulk.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form->addHiddenValue('address', $session->get('address'));
 
             // BULK ACTIONS
             $bulkActions = array(

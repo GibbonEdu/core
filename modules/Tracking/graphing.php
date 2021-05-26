@@ -52,14 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
             'effort' => (!empty($effortAlt))? $effortAlt : __('Effort'),
         );
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Tracking/graphing.php');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Tracking/graphing.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonIDs', __('Student'));
-            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byForm' => true))->selectMultiple()->required();
+            $row->addSelectStudent('gibbonPersonIDs', $session->get('gibbonSchoolYearID'), array('byName' => true, 'byForm' => true))->selectMultiple()->required();
         $row = $form->addRow();
             $row->addLabel('dataType', __('Data Type'));
             $row->addSelect('dataType')->fromArray($dataTypes)->required();
@@ -337,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         echo '</table>';
 
                         //PLOT DATA
-                        echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/Chart.min.js"></script>';
+                        echo '<script type="text/javascript" src="'.$session->get('absoluteURL').'/lib/Chart.js/Chart.min.js"></script>';
 
                         echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__('Data').'</b></p>';
                         echo '<div style="width:100%">';

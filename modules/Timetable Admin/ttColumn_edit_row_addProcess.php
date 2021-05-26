@@ -27,7 +27,7 @@ $type = $_POST['type'] ?? '';
 
 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_add.php&gibbonTTColumnID=$gibbonTTColumnID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_add.php&gibbonTTColumnID=$gibbonTTColumnID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_add.php') == false) {
     $URL .= '&return=error0';
