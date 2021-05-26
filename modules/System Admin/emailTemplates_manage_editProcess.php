@@ -26,7 +26,7 @@ require_once '../../gibbon.php';
 $gibbonEmailTemplateID = $_POST['gibbonEmailTemplateID'] ?? '';
 $sendTest = $_POST['sendTest'] ?? 'N';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/emailTemplates_manage_edit.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_edit.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_edit.php') == false) {
     $URL .= '&return=error0';

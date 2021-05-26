@@ -46,9 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $customFieldHandler = $container->get(CustomFieldHandler::class);
         
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/customFields_editProcess.php?gibbonCustomFieldID='.$gibbonCustomFieldID);
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Basic Details'));
 

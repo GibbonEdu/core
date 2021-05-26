@@ -23,7 +23,7 @@ include '../../gibbon.php';
 
 $gibbonNotificationEventID = $_GET['gibbonNotificationEventID'] ?? null;
 $gibbonNotificationListenerID = $_GET['gibbonNotificationListenerID'] ?? null;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';

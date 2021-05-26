@@ -25,13 +25,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $form = Form::create('update', $_SESSION[$guid]['absoluteURL'].'/modules/System Admin/i18n_manage_updateAllProcess.php');
+    $form = Form::create('update', $session->get('absoluteURL').'/modules/System Admin/i18n_manage_updateAllProcess.php');
     $form->addHiddenValue('address', $_GET['q']);
 
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addContent(__('Update All'))->wrap('<strong style="font-size: 18px;">', '</strong><br/><br/>');
-        $col->addContent(sprintf(__('This action will download the required files and place them in the %1$s folder on your server.'), '<b>'.$_SESSION[$guid]['absolutePath'].'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
+        $col->addContent(sprintf(__('This action will download the required files and place them in the %1$s folder on your server.'), '<b>'.$session->get('absolutePath').'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
 
     $form->addRow()->addConfirmSubmit();
 

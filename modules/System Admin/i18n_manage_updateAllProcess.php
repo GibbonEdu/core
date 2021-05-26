@@ -24,7 +24,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/i18n_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/i18n_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
     $URL .= '&return=error0';

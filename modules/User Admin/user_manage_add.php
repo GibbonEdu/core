@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
 
@@ -51,6 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         echo '</div>';
     }
 
+    echo Format::alert(__('Note that certain fields are available depending on the role categories (Staff, Student, Parent) that a user is assigned to. These fields, such as personal documents and custom fields, will be editable after the user has been created.'), 'message');
+    
     $form = Form::create('addUser', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_addProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -282,9 +285,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth');
 
-    $row = $form->addRow();
-        $row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('birthCertificateScan', __('Birth Certificate Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('birthCertificateScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
     $ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
     $row = $form->addRow();
@@ -304,76 +307,77 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addTextField('religion')->maxLength(30);
         }
 
+
     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    $row = $form->addRow();
-        $row->addLabel('citizenship1', __('Citizenship 1'));
-        if (!empty($nationalityList)) {
-            $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
-        } else {
-            $row->addSelectCountry('citizenship1');
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1', __('Citizenship 1'));
+    //     if (!empty($nationalityList)) {
+    //         $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
+    //     } else {
+    //         $row->addSelectCountry('citizenship1');
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
-        $row->addTextField('citizenship1Passport')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
+    //     $row->addTextField('citizenship1Passport')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
-        $row->addDate('citizenship1PassportExpiry');
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+    //     $row->addDate('citizenship1PassportExpiry');
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship1PassportScan', __('Citizenship 1 Passport Scan'))->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('citizenship1PassportScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2', __('Citizenship 2'));
-        if (!empty($nationalityList)) {
-            $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
-        } else {
-            $row->addSelectCountry('citizenship2');
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2', __('Citizenship 2'));
+    //     if (!empty($nationalityList)) {
+    //         $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
+    //     } else {
+    //         $row->addSelectCountry('citizenship2');
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
-        $row->addTextField('citizenship2Passport')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
+    //     $row->addTextField('citizenship2Passport')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
-        $row->addDate('citizenship2PassportExpiry');
+    // $row = $form->addRow();
+    //     $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
+    //     $row->addDate('citizenship2PassportExpiry');
 
-    if (!empty($session->get('country'))) {
-        $nationalIDCardNumberLabel = __($session->get('country')).' '.__('ID Card Number');
-        $nationalIDCardScanLabel = __($session->get('country')).' '.__('ID Card Scan');
-        $residencyStatusLabel = __($session->get('country')).' '.__('Residency/Visa Type');
-        $visaExpiryDateLabel = __($session->get('country')).' '.__('Visa Expiry Date');
-    } else {
-        $nationalIDCardNumberLabel = __('National ID Card Number');
-        $nationalIDCardScanLabel = __('National ID Card Scan');
-        $residencyStatusLabel = __('Residency/Visa Type');
-        $visaExpiryDateLabel = __('Visa Expiry Date');
-    }
+    // if (!empty($_SESSION[$guid]['country'])) {
+    //     $nationalIDCardNumberLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Number');
+    //     $nationalIDCardScanLabel = __($_SESSION[$guid]['country']).' '.__('ID Card Scan');
+    //     $residencyStatusLabel = __($_SESSION[$guid]['country']).' '.__('Residency/Visa Type');
+    //     $visaExpiryDateLabel = __($_SESSION[$guid]['country']).' '.__('Visa Expiry Date');
+    // } else {
+    //     $nationalIDCardNumberLabel = __('National ID Card Number');
+    //     $nationalIDCardScanLabel = __('National ID Card Scan');
+    //     $residencyStatusLabel = __('Residency/Visa Type');
+    //     $visaExpiryDateLabel = __('Visa Expiry Date');
+    // }
 
-    $row = $form->addRow();
-        $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
-        $row->addTextField('nationalIDCardNumber')->maxLength(30);
+    // $row = $form->addRow();
+    //     $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
+    //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
 
-    $row = $form->addRow();
-        $row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
-        $row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
+    // $row = $form->addRow();
+    //     $row->addLabel('nationalIDCardScan', $nationalIDCardScanLabel)->description(__('Less than 1440px by 900px').'. '.__('Accepts PDF files.'));
+    //     $row->addFileUpload('nationalIDCardScan')->accepts('.jpg,.jpeg,.gif,.png,.pdf')->setMaxUpload(false);
 
     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
 
-    $row = $form->addRow();
-        $row->addLabel('residencyStatus', $residencyStatusLabel);
-        if (!empty($residencyStatusList)) {
-            $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-        } else {
-            $row->addTextField('residencyStatus')->maxLength(30);
-        }
+    // $row = $form->addRow();
+    //     $row->addLabel('residencyStatus', $residencyStatusLabel);
+    //     if (!empty($residencyStatusList)) {
+    //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
+    //     } else {
+    //         $row->addTextField('residencyStatus')->maxLength(30);
+    //     }
 
-    $row = $form->addRow();
-        $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
-        $row->addDate('visaExpiryDate');
+    // $row = $form->addRow();
+    //     $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
+    //     $row->addDate('visaExpiryDate');
 
     // EMPLOYMENT
     $form->addRow()->addHeading(__('Employment'));

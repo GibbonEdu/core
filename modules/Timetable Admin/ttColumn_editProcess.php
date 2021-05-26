@@ -23,7 +23,7 @@ $name = $_POST['name'] ?? '';
 $nameShort = $_POST['nameShort'] ?? '';
 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_edit.php&gibbonTTColumnID='.$gibbonTTColumnID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_edit.php&gibbonTTColumnID='.$gibbonTTColumnID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit.php') == false) {
     $URL .= '&return=error0';

@@ -21,7 +21,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_add.php') == false) {
     $URL .= '&return=error0';

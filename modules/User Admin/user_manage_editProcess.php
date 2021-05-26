@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
@@ -447,6 +448,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     $params = compact('student', 'staff', 'parent', 'other');
                     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
+                    // PERSONAL DOCUMENTS
+                    $personalDocumentFail = false;
+                    $params = compact('student', 'staff', 'parent', 'other');
+                    $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonPerson', $gibbonPersonID, $params, $personalDocumentFail);
+
                     if ($customRequireFail) {
                         $URL .= '&return=error3';
                         header("Location: {$URL}");
@@ -556,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $URL .= '&return=warning1';
                             header("Location: {$URL}");
                         } else {
-                            if ($imageFail) {
+                            if ($personalDocumentFail) {
                                 $URL .= '&return=warning1';
                                 header("Location: {$URL}");
                             } else {

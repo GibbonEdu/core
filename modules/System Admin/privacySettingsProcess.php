@@ -25,7 +25,7 @@ include '../../config.php';
 // Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/privacySettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/privacySettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettings.php') == false) {
     $URL .= '&return=error0';
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
 
     // Update all the system settings that are stored in the session
     getSystemSettings($guid, $connection2);
-    $_SESSION[$guid]['pageLoads'] = null;
+    $session->set('pageLoads', null);
 
     $URL .= $partialFail
         ? '&return=warning1'

@@ -73,11 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncRun', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync_runProcess.php');
+    $form = Form::create('courseEnrolmentSyncRun', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_runProcess.php');
     $form->setClass('w-full blank');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

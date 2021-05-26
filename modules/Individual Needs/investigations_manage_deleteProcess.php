@@ -27,7 +27,7 @@ $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
 $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_delete.php') == false) {
     $URL .= '&return=error0';

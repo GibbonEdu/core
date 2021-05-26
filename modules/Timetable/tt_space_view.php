@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -68,12 +68,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 if ($_POST['fromTT'] == 'Y') {
                     if (isset($_POST['spaceBookingCalendar'])) {
                         if ($_POST['spaceBookingCalendar'] == 'on' or $_POST['spaceBookingCalendar'] == 'Y') {
-                            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
+                            $session->set('viewCalendarSpaceBooking', 'Y');
                         } else {
-                            $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
+                            $session->set('viewCalendarSpaceBooking', 'N');
                         }
                     } else {
-                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
+                        $session->set('viewCalendarSpaceBooking', 'N');
                     }
                 }
             }

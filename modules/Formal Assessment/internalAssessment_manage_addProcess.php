@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -71,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
         $viewableStudents = $_POST['viewableStudents'] ?? '';
         $viewableParents = $_POST['viewableParents'] ?? '';
-        $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
-        $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonIDCreator = $session->get('gibbonPersonID');
+        $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
         $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
         $fileUploader->getFileExtensions();

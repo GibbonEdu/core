@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     if ($gibbonExternalAssessmentStudentID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
             $sql = 'SELECT gibbonExternalAssessmentStudent.*, gibbonExternalAssessment.name AS assessment, gibbonExternalAssessment.allowFileUpload FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
             $result = $connection2->prepare($sql);
@@ -51,39 +51,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
                 echo '</div>';
             }
-            
+
             //Check for all fields
-            
+
                 $dataCheck = array('gibbonExternalAssessmentID' => $values['gibbonExternalAssessmentID']);
                 $sqlCheck = 'SELECT * FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID';
                 $resultCheck = $connection2->prepare($sqlCheck);
                 $resultCheck->execute($dataCheck);
 
             while ($rowCheck = $resultCheck->fetch()) {
-                
+
                     $dataCheck2 = array('gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID'], 'gibbonExternalAssessmentStudentID' => $values['gibbonExternalAssessmentStudentID']);
                     $sqlCheck2 = 'SELECT * FROM gibbonExternalAssessmentStudentEntry WHERE gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID';
                     $resultCheck2 = $connection2->prepare($sqlCheck2);
                     $resultCheck2->execute($dataCheck2);
 
                 if ($resultCheck2->rowCount() < 1) {
-                    
+
                         $dataCheck3 = array('gibbonExternalAssessmentStudentID' => $values['gibbonExternalAssessmentStudentID'], 'gibbonExternalAssessmentFieldID' => $rowCheck['gibbonExternalAssessmentFieldID']);
                         $sqlCheck3 = 'INSERT INTO gibbonExternalAssessmentStudentEntry SET gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
                         $resultCheck3 = $connection2->prepare($sqlCheck3);
                         $resultCheck3->execute($dataCheck3);
                 }
             }
-			
-            $form = Form::create('editAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_editProcess.php?search='.$search.'&allStudents='.$allStudents);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form = Form::create('editAssessment', $session->get('absoluteURL').'/modules/'.$session->get('module').'/externalAssessment_manage_details_editProcess.php?search='.$search.'&allStudents='.$allStudents);
+
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             $form->addHiddenValue('gibbonExternalAssessmentStudentID', $gibbonExternalAssessmentStudentID);
-            
+
             $row = $form->addRow();
                 $row->addLabel('name', __('Assessment Type'));
                 $row->addTextField('name')->required()->readOnly()->setValue(__($values['assessment']));
@@ -95,10 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             if ($values['allowFileUpload'] == 'Y') {
                 $row = $form->addRow();
                 $row->addLabel('file', __('Upload File'))->description(__('Use this to attach raw data, graphical summary, etc.'));
-                $row->addFileUpload('file')->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
+                $row->addFileUpload('file')->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
             }
 
-            
+
                 $dataField = array('gibbonExternalAssessmentID' => $values['gibbonExternalAssessmentID'], 'gibbonExternalAssessmentStudentID' => $gibbonExternalAssessmentStudentID);
                 $sqlField = 'SELECT category, gibbonExternalAssessmentStudentEntryID, gibbonExternalAssessmentField.*, gibbonScale.usage, gibbonExternalAssessmentStudentEntry.gibbonScaleGradeID FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) LEFT JOIN gibbonExternalAssessmentStudentEntry ON (gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=gibbonExternalAssessmentStudentEntry.gibbonExternalAssessmentFieldID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentStudentID=:gibbonExternalAssessmentStudentID ORDER BY category, gibbonExternalAssessmentField.order';
                 $resultField = $connection2->prepare($sqlField);
@@ -131,11 +131,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                 $form->addHiddenValue('count', $count);
             }
-            
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
         }
     }

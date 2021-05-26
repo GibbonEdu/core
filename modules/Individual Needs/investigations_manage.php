@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
         $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
         $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -51,11 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
+            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID)->placeholder();
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -78,9 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $criteria2 = $contributionsGateway->newQueryCriteria();
 
         if ($highestAction == 'Manage Investigations_all') {
-            $records = $investigationGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+            $records = $investigationGateway->queryInvestigations($criteria, $session->get('gibbonSchoolYearID'));
         } else if ($highestAction == 'Manage Investigations_my') {
-            $records = $investigationGateway->queryInvestigations($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            $records = $investigationGateway->queryInvestigations($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
         } else {
             return;
         }

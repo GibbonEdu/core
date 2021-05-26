@@ -30,7 +30,7 @@ $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -70,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     }
 
     $canEdit = false ;
-    if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']))) {
+    if ($highestAction == 'Manage Investigations_all' || ($highestAction == 'Manage Investigations_my' && ($investigation['gibbonPersonIDCreator'] == $session->get('gibbonPersonID')))) {
         $canEdit = true ;
     }
 
     $isTutor = false ;
-    if ($investigation['gibbonPersonIDTutor'] == $_SESSION[$guid]['gibbonPersonID'] || $investigation['gibbonPersonIDTutor2'] == $_SESSION[$guid]['gibbonPersonID'] || $investigation['gibbonPersonIDTutor3'] == $_SESSION[$guid]['gibbonPersonID']) {
+    if ($investigation['gibbonPersonIDTutor'] == $session->get('gibbonPersonID') || $investigation['gibbonPersonIDTutor2'] == $session->get('gibbonPersonID') || $investigation['gibbonPersonIDTutor3'] == $session->get('gibbonPersonID')) {
         $isTutor = true ;
     }
 

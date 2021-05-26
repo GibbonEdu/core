@@ -32,10 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $page->return->addReturns(['error6' => __('The uploaded file was missing or only partially uploaded.')]);
 
-    $form = Form::create('systemSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/systemSettingsProcess.php');
+    $form = Form::create('systemSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/systemSettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // SYSTEM SETTINGS
     $form->addRow()->addHeading(__('System Settings'));

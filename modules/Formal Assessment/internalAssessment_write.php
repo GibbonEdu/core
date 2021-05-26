@@ -50,8 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         }
         if ($gibbonCourseClassID == '') {
-            
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
                 } else {
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonYearGroupIDList FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID AND role='Teacher'";
                 }
                 $result = $connection2->prepare($sql);
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 //Get teacher list
                 $teaching = false;
-                
+
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                     $result = $connection2->prepare($sql);
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         if ($row['reportable'] != 'Y') continue;
 
                         echo '<li>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
-                        if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                        if ($row['gibbonPersonID'] == $session->get('gibbonPersonID')) {
                             $teaching = true;
                         }
                     }
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo '</h3>';
 
                 //Count number of columns
-                
+
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC';
                     $result = $connection2->prepare($sql);
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         if ($columns - ($x * $columnsPerPage) < 3) {
                             $columnsThisPage = $columns - ($x * $columnsPerPage);
                         }
-                        
+
                             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                             $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.($x * $columnsPerPage).', '.$columnsPerPage;
                             $result = $connection2->prepare($sql);
@@ -227,13 +227,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         if ($x <= 0) {
                             echo __('Newer');
                         } else {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x - 1)."'>".__('Newer').'</a>';
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x - 1)."'>".__('Newer').'</a>';
                         }
                         echo ' | ';
                         if ((($x + 1) * $columnsPerPage) >= $columns) {
                             echo __('Older');
                         } else {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x + 1)."'>".__('Older').'</a>';
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x + 1)."'>".__('Older').'</a>';
                         }
                         echo '</div>';
                         echo '</div>';
@@ -304,12 +304,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 echo __('Unmarked').'<br/>';
                             }
                             echo $row['type'];
-                            if ($row['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['attachment'])) {
-                                echo " | <a 'title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
+                            if ($row['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$row['attachment'])) {
+                                echo " | <a 'title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$row['attachment']."'>More info</a>";
                             }
                             echo '</span><br/>';
                             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__('Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                             }
                             echo '</th>';
                         }
@@ -326,7 +326,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 if ($attainmentOn[$i] == 'Y' and $attainmentID[$i] != '') {
                                     $leftBorder = true;
                                     echo "<th style='border-left: 2px solid #666; text-align: center; width: 40px'>";
-                                    
+
                                         $dataScale = array('gibbonScaleID' => $attainmentID[$i]);
                                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultScale = $connection2->prepare($sqlScale);
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $leftBorderStyle = 'border-left: 2px solid #666;';
                                     }
                                     echo "<th style='$leftBorderStyle text-align: center; width: 40px'>";
-                                    
+
                                         $dataScale = array('gibbonScaleID' => $effortID[$i]);
                                         $sqlScale = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultScale = $connection2->prepare($sqlScale);
@@ -402,7 +402,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $count = 0;
                         $rowNum = 'odd';
 
-                        
+
                             $dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
                             $sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonCourseClassPerson.reportable='Y' ORDER BY surname, preferredName";
                             $resultStudents = $connection2->prepare($sqlStudents);
@@ -430,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                                 if ($externalAssessment == true) {
                                     echo "<td style='text-align: center'>";
-                                    
+
                                         $dataEntry = array('gibbonPersonID' => $rowStudents['gibbonPersonID'], 'gibbonExternalAssessmentFieldID' => $externalAssessmentFields[0]);
                                         $sqlEntry = "SELECT gibbonScaleGrade.value, gibbonScaleGrade.descriptor, gibbonExternalAssessmentStudent.date
                                             FROM gibbonExternalAssessmentStudentEntry
@@ -451,7 +451,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                                 for ($i = 0; $i < $columnsThisPage; ++$i) {
                                     $row = $result->fetch();
-                                    
+
                                         $dataEntry = array('gibbonInternalAssessmentColumnID' => $columnID[($i)], 'gibbonPersonIDStudent' => $rowStudents['gibbonPersonID']);
                                         $sqlEntry = 'SELECT * FROM gibbonInternalAssessmentEntry WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
                                         $resultEntry = $connection2->prepare($sqlEntry);
@@ -532,7 +532,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                             }
                                             echo "<td style='$leftBorderStyle text-align: center;'>";
                                             if ($rowEntry['response'] != '') {
-                                                echo "<a title='".__('Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Up</a><br/>";
+                                                echo "<a title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowEntry['response']."'>Up</a><br/>";
                                             }
                                         }
                                         echo '</td>';
@@ -562,7 +562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 $leftBorderStyle = 'border-left: 2px solid #666;';
                                             }
                                             echo "<td style='$leftBorderStyle text-align: center;'>";
-                                            
+
                                                 $dataWork = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID[$i], 'gibbonPersonID' => $rowStudents['gibbonPersonID']);
                                                 $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                                                 $resultWork = $connection2->prepare($sqlWork);
@@ -588,7 +588,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 }
 
                                                 if ($rowWork['type'] == 'File') {
-                                                    echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                                    echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
                                                 } elseif ($rowWork['type'] == 'Link') {
                                                     echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                                 } else {

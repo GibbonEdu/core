@@ -37,12 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
     $title = isset($_GET['title'])? $_GET['title'] : '';
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Filters'));
     $form->setClass('noIntBorder fullWidth');
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/logs_view.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/logs_view.php');
 
     $sql = "SELECT DISTINCT title AS value, title AS name FROM gibbonLog ORDER BY title";
     $row = $form->addRow();

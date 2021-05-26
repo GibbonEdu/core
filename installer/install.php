@@ -295,7 +295,7 @@ if ($canInstall == false) {
         } catch (\Exception $e) {
             echo "<div class='error'>";
             echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-            echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+            echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
             echo '</div>';
         }
     }
@@ -346,7 +346,7 @@ if ($canInstall == false) {
                     if ($demoData == 'Y') {
                         if (file_exists('../gibbon_demo.sql') == false) {
                             echo "<div class='error'>";
-                            echo __('../gibbon_demo.sql does not exist, so we will conintue without demo data.');
+                            echo __('../gibbon_demo.sql does not exist, so we will continue without demo data.');
                             echo '</div>';
                         } else {
                             $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
@@ -368,7 +368,7 @@ if ($canInstall == false) {
 
                             if ($demoFail) {
                                 echo "<div class='error'>";
-                                echo __('There were some issues installing the demo data, but we will conintue anyway.');
+                                echo __('There were some issues installing the demo data, but we will continue anyway.');
                                 echo '</div>';
                             }
                         }
@@ -593,7 +593,7 @@ if ($canInstall == false) {
     } catch (Exception $e) {
         echo "<div class='error'>";
         echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-        echo '<div>' . sprintf(__('Error details: {error_message}', $e->getMessage())) . '</div>';
+        echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
         echo '</div>';
     }
 

@@ -30,10 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     // Proceed!
     $page->breadcrumbs->add(__('Manage Services'));
 
-    $form = Form::create('manageServices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/services_manageProcess.php');
+    $form = Form::create('manageServices', $session->get('absoluteURL').'/modules/'.$session->get('module').'/services_manageProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // VALUE ADDED
     $form->addRow()->addHeading(__('gibbonedu.com Services'));
