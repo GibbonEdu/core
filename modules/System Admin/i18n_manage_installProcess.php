@@ -25,7 +25,7 @@ include '../../gibbon.php';
 require_once __DIR__ . '/moduleFunctions.php';
 
 $gibboni18nID = $_POST['gibboni18nID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/i18n_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/i18n_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.php') == false) {
     $URL .= '&return=error0';
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         }
 
         // Download & install the required language files
-        $installed = i18nFileInstall($_SESSION[$guid]['absolutePath'], $i18n['code']);
+        $installed = i18nFileInstall($session->get('absolutePath'), $i18n['code']);
 
         // Tag this i18n with the current version it was installed at
         $dataUpdate = ['installed' => 'Y', 'version' => $version];

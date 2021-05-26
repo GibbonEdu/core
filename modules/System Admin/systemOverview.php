@@ -32,21 +32,21 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $page->breadcrumbs->add(__('System Overview'));
 
     // Prepare and submit stats if that is what the system calls for
-    if ($_SESSION[$guid]['statsCollection'] == 'Y') {
+    if ($session->get('statsCollection') == 'Y') {
         $absolutePathProtocol = '';
         $absolutePath = '';
-        if (substr($_SESSION[$guid]['absoluteURL'], 0, 7) == 'http://') {
+        if (substr($session->get('absoluteURL'), 0, 7) == 'http://') {
             $absolutePathProtocol = 'http';
-            $absolutePath = substr($_SESSION[$guid]['absoluteURL'], 7);
-        } elseif (substr($_SESSION[$guid]['absoluteURL'], 0, 8) == 'https://') {
+            $absolutePath = substr($session->get('absoluteURL'), 7);
+        } elseif (substr($session->get('absoluteURL'), 0, 8) == 'https://') {
             $absolutePathProtocol = 'https';
-            $absolutePath = substr($_SESSION[$guid]['absoluteURL'], 8);
+            $absolutePath = substr($session->get('absoluteURL'), 8);
         }
 
         $usersTotal = $pdo->selectOne("SELECT COUNT(*) FROM gibbonPerson");
         $usersFull = $pdo->selectOne("SELECT COUNT(*) FROM gibbonPerson WHERE status='Full'");
 
-        echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($_SESSION[$guid]['organisationName']).'&type='.urlencode($_SESSION[$guid]['installType']).'&version='.urlencode($version).'&country='.$_SESSION[$guid]['country']."&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>";
+        echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($session->get('organisationName')).'&type='.urlencode($session->get('installType')).'&version='.urlencode($version).'&country='.$session->get('country')."&usersTotal=$usersTotal&usersFull=$usersFull'></iframe>";
     }
 
     $phpVersion = phpversion();

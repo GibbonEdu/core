@@ -27,7 +27,7 @@ include '../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/update.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
 $partialFail = false;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
