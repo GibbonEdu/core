@@ -40,7 +40,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateUsingGuid()
     {
-        $this->assertEquals('Bienvenido', __($this->guid, 'Welcome'));
+        $this->assertEquals('Bienvenue sur Gibbon', __($this->guid, 'Welcome To Gibbon'));
     }
 
     /**
@@ -48,7 +48,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateUsingGuidWithDomainString()
     {
-        $this->assertEquals('Bienvenido', __($this->guid, 'Welcome', 'gibbon'));
+        $this->assertEquals('Bienvenue sur Gibbon', __($this->guid, 'Welcome To Gibbon', 'gibbon'));
         $this->assertEquals('Welcome', __($this->guid, 'Welcome', 'bogus_domain'));
     }
 
@@ -57,7 +57,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateNoGuid()
     {
-        $this->assertEquals('Bienvenido', __('Welcome'));
+        $this->assertEquals('Bienvenue sur Gibbon', __('Welcome To Gibbon'));
     }
 
     /**
@@ -65,7 +65,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateNoGuidWithDomainString()
     {
-        $this->assertEquals('Bienvenido', __('Welcome', 'gibbon'));
+        $this->assertEquals('Bienvenue sur Gibbon', __('Welcome To Gibbon', 'gibbon'));
         $this->assertEquals('Welcome', __('Welcome', 'bogus_domain'));
     }
 
@@ -74,7 +74,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateUsingEmptyParameters()
     {
-        $this->assertEquals('Bienvenido', __('Welcome', [], []));
+        $this->assertEquals('Bienvenue sur Gibbon', __('Welcome To Gibbon', [], []));
     }
 
     /**
@@ -98,7 +98,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateUsingOptions()
     {
-        $this->assertEquals('Bienvenido', __('Welcome', [], ['domain' => 'gibbon']));
+        $this->assertEquals('Bienvenue sur Gibbon', __('Welcome To Gibbon', [], ['domain' => 'gibbon']));
         $this->assertEquals('Welcome', __('Welcome', [], ['domain' => 'bogus_domain']));
     }
 }
