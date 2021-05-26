@@ -48,6 +48,7 @@ v22.0.00
         System: added Somali as language option in dropdown menus
         System: updated chart.js to v2.9.4
         System: added Zulu as language option in dropdown menus
+        System: adjusted Public Registration to notify even when account is set to Full immediately
         Crowd Assessment: improved the view of comments in discussion threads
         Finance: removed student DOB and Gender from Export Invoices
         Formal Assessment: added attainment and effort descriptor as title to Internal Assessment view
