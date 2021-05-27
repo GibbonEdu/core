@@ -425,11 +425,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchAll();
             if (!empty($documents)) {
                 $col = $form->addRow()->addColumn();
-                    $col->addLabel('documents', __('Personal Documents'));
-                    $col->addPersonalDocuments('documents', $documents, $container->get(View::class), $container->get(SettingGateway::class));
+                    $col->addLabel('document', __('Personal Documents'));
+                    $col->addPersonalDocuments('document', $documents, $container->get(View::class), $container->get(SettingGateway::class));
             }
 
-      $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+            $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
 			// $row = $form->addRow();
 			// 	$row->addLabel('citizenship1', __('Citizenship 1'));
 			// 	if (!empty($nationalityList)) {

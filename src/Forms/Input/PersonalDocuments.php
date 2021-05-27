@@ -72,10 +72,12 @@ class PersonalDocuments extends Input
     {
         $output = '';
 
+        $name = $this->getName();
+
         foreach ($this->documents as $document) {
             $fields = json_decode($document['fields']);
 
-            $output .= '<input type="hidden" name="document['.$document['gibbonPersonalDocumentTypeID'].'][gibbonPersonalDocumentID]" value="'.($document['gibbonPersonalDocumentID'] ?? '').'">';
+            $output .= '<input type="hidden" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][gibbonPersonalDocumentID]" value="'.($document['gibbonPersonalDocumentID'] ?? '').'">';
 
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-between">';
@@ -94,7 +96,7 @@ class PersonalDocuments extends Input
                 $fieldsUsed = count(array_filter(array_intersect_key($document, array_flip($fields))));
                 $output .= '<div class="flex-grow"></div>';
                 $output .= '<span class="font-normal text-xxs">'.__('N/A');
-                $output .= '<input class="document-omit ml-2" type="checkbox" value="Y" name="document['.$document['gibbonPersonalDocumentTypeID'].'][omit]" '.(!empty($document['gibbonPersonalDocumentID']) && $fieldsUsed == 0? 'checked' : '').'>';
+                $output .= '<input class="document-omit ml-2" type="checkbox" value="Y" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][omit]" '.(!empty($document['gibbonPersonalDocumentID']) && $fieldsUsed == 0? 'checked' : '').'>';
                 $output .= '</span>';
                 $output .= '</div>';
             }
@@ -105,10 +107,10 @@ class PersonalDocuments extends Input
 
             foreach ($fields as $field) {
                 $output .= '<div class="px-4 py-2 flex flex-col sm:flex-row justify-between sm:items-center content-center p-0">';
-                $row = $this->factory->createRow();
+                $row = $this->factory->createRow()->addClass($this->getClass());
 
-                $fieldID = 'document'.$document['gibbonPersonalDocumentTypeID'].$field;
-                $fieldName = 'document['.$document['gibbonPersonalDocumentTypeID'].']['.$field.']';
+                $fieldID = $name.$document['gibbonPersonalDocumentTypeID'].$field;
+                $fieldName = $name.'['.$document['gibbonPersonalDocumentTypeID'].']['.$field.']';
                 $label = $input = null;
                 
                 switch ($field) {
@@ -147,7 +149,7 @@ class PersonalDocuments extends Input
                                      ->accepts('.jpg,.jpeg,.gif,.png,.pdf,.doc,.docx')
                                      ->setMaxUpload(false);
                         if (!empty($document['filePath'])) {
-                            $input->setAttachment('attachment['.$document['gibbonPersonalDocumentTypeID'].']['.$field.']', $this->absoluteURL, $document['filePath']);
+                            $input->setAttachment($name.'['.$document['gibbonPersonalDocumentTypeID'].']['.$field.']', $this->absoluteURL, $document['filePath']);
                         }
                         break;
                 }
