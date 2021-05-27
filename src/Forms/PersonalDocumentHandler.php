@@ -19,20 +19,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\View\View;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 class PersonalDocumentHandler
 {
     protected $personalDocumentGateway;
+    protected $fileUploader;
+    protected $settingGateway;
+    protected $view;
+    
     protected $documents;
     protected $fields;
 
-    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader)
+    public function __construct(PersonalDocumentGateway $personalDocumentGateway, FileUploader $fileUploader, View $view, SettingGateway $settingGateway)
     {
         $this->personalDocumentGateway = $personalDocumentGateway;
         $this->fileUploader = $fileUploader;
+        $this->settingGateway = $settingGateway;
+        $this->view = $view;
 
         $this->documents = [
             'Passport' => __('Passport'),
@@ -68,18 +76,19 @@ class PersonalDocumentHandler
 
         foreach ($documents as $document) {
             $fields = json_decode($document['fields']);
+            $prefix = $params['prefix'] ?? '';
             $data = [];
 
             foreach ($fields as $field) {
-                $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
+                $value = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
 
                 if ($field == 'dateIssue' || $field == 'dateExpiry') {
                     // Handle date conversion
                     $data[$field] = !empty($value) ? Format::dateConvert($value) : null;
                 } elseif ($field == 'filePath') {
                     // Handle file uploads
-                    $file = $_FILES['document'.$document['gibbonPersonalDocumentTypeID'].$field] ?? null;
-                    $attachment = $_POST['attachment'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
+                    $file = $_FILES[$prefix.'document'.$document['gibbonPersonalDocumentTypeID'].$field] ?? null;
+                    $attachment = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
 
                     if (!empty($file['tmp_name'])) {
                         $this->fileUploader->setFileSuffixType(FileUploader::FILE_SUFFIX_ALPHANUMERIC);
@@ -97,8 +106,8 @@ class PersonalDocumentHandler
                 }
             }
 
-            $omit = $_POST['document'][$document['gibbonPersonalDocumentTypeID']]['omit'] ?? null;
-            $exists = $_POST['document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
+            $omit = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['omit'] ?? null;
+            $exists = $_POST[$prefix.'document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
 
             // Skip any documents that are entirely empty
             if (count(array_filter($data)) == 0 && $omit != 'Y' && !$exists) continue;
@@ -110,6 +119,20 @@ class PersonalDocumentHandler
 
             $success = $this->personalDocumentGateway->insertAndUpdate($data, $data);
             $personalDocumentFail &= !$success;
+        }
+    }
+
+    public function addPersonalDocumentsToForm(&$form, $foreignTable = null, $foreignTableID = null, $params)
+    {
+        $documents = $this->personalDocumentGateway->selectPersonalDocuments($foreignTable, $foreignTableID, $params)->fetchAll();
+        if (empty($documents)) return;
+
+        $prefix = $params['prefix'] ?? '';
+
+        if (!empty($documents)) {
+            $col = $form->addRow()->setClass($params['class'] ?? '')->addColumn();
+                $col->addLabel($prefix.'document', __('Personal Documents'));
+                $col->addPersonalDocuments($prefix.'document', $documents, $this->view, $this->settingGateway);
         }
     }
 

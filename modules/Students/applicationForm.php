@@ -21,9 +21,9 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -154,6 +154,7 @@ if ($proceed == false) {
     $siblingApplicationMode = !empty($gibbonApplicationFormID);
 
     $customFieldHandler = $container->get(CustomFieldHandler::class);
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
 
     $form = Form::create('applicationForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
     $form->setAutocomplete('on');
@@ -264,12 +265,7 @@ if ($proceed == false) {
 
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
-    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments(null, null, $params)->fetchAll();
-    if (!empty($documents)) {
-        $col = $form->addRow()->addColumn();
-            $col->addLabel('documents', __('Personal Documents'));
-            $col->addPersonalDocuments('documents', $documents, $container->get(View::class), $container->get(SettingGateway::class));
-    }
+    $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
 
     // $row = $form->addRow();
     //     $row->addLabel('citizenship1', __('Citizenship'));
@@ -590,29 +586,33 @@ if ($proceed == false) {
                 $row->addLabel("parent{$i}languageSecond", __('Second Language'));
                 $row->addSelectLanguage("parent{$i}languageSecond")->placeholder()->loadFrom($application);
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
-                if (!empty($nationalityList)) {
-                    $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder()->loadFrom($application);
-                } else {
-                    $row->addSelectCountry("parent{$i}citizenship1")->loadFrom($application);
-                }
+            // PERSONAL DOCUMENTS
+            $params = ['parent' => true, 'applicationForm' => true, 'prefix' => "parent{$i}", 'class' => "parentSection{$i}"];
+            $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
-                $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30)->loadFrom($application);
+            // $row = $form->addRow()->setClass("parentSection{$i}");
+            //     $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
+            //     if (!empty($nationalityList)) {
+            //         $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder()->loadFrom($application);
+            //     } else {
+            //         $row->addSelectCountry("parent{$i}citizenship1")->loadFrom($application);
+            //     }
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
-                if (!empty($residencyStatusList)) {
-                    $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder()->loadFrom($application);
-                } else {
-                    $row->addTextField("parent{$i}residencyStatus")->maxLength(30)->loadFrom($application);
-                }
+            // $row = $form->addRow()->setClass("parentSection{$i}");
+            //     $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
+            //     $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30)->loadFrom($application);
 
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-                $row->addDate("parent{$i}visaExpiryDate")->loadFrom($application);
+            // $row = $form->addRow()->setClass("parentSection{$i}");
+            //     $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
+            //     if (!empty($residencyStatusList)) {
+            //         $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder()->loadFrom($application);
+            //     } else {
+            //         $row->addTextField("parent{$i}residencyStatus")->maxLength(30)->loadFrom($application);
+            //     }
+
+            // $row = $form->addRow()->setClass("parentSection{$i}");
+            //     $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+            //     $row->addDate("parent{$i}visaExpiryDate")->loadFrom($application);
 
             // PARENT CONTACT
             $row = $form->addRow()->setClass("parentSection{$i}");

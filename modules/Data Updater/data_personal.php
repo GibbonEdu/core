@@ -529,8 +529,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     
                     if (!empty($documents)) {
                         $col = $form->addRow()->addColumn();
-                            $col->addLabel('documents', __('Personal Documents'));
-                            $col->addPersonalDocuments('documents', $documents, $container->get(View::class), $container->get(SettingGateway::class));
+                            $col->addLabel('document', __('Personal Documents'));
+                            $col->addPersonalDocuments('document', $documents, $container->get(View::class), $container->get(SettingGateway::class));
                     }
                     
                     // $row = $form->addRow()->onlyIf($isVisible('citizenship1'));

@@ -382,9 +382,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
 
                 // PERSONAL DOCUMENTS
+                $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
                 $personalDocumentFail = false;
                 $params = ['student' => true, 'applicationForm' => true];
-                $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonApplicationForm', $gibbonApplicationFormID, $params, $personalDocumentFail);
+                $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationForm', $gibbonApplicationFormID, $params, $personalDocumentFail);
+
+                if ($gibbonFamily == 'FALSE') { // Only if there is no family
+                    $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent1'];
+                    $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent1', $gibbonApplicationFormID, $params, $personalDocumentFail);
+    
+                    if (empty($_POST['secondParent'])) {
+                        $params = ['parent' => true, 'applicationForm' => true, 'prefix' => 'parent2'];
+                        $personalDocumentHandler->updateDocumentsFromPOST('gibbonApplicationFormParent2', $gibbonApplicationFormID, $params, $personalDocumentFail);
+                    }
+                }
+
 
                 if ($customRequireFail || $personalDocumentFail) {
                     $URL .= '&return=error3';
