@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID='.$_GET['editID'].'&search='.$_GET['search'];
     }
     $page->return->setEditLink($editLink);
 
@@ -40,21 +40,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $search = $_GET['search'];
     if ($search != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_addProcess.php?search=$search");
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalForm_manage_addProcess.php?search=$search");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('General Information'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->required()->placeholder()->selected($gibbonPersonID);
 
     $row = $form->addRow();
         $row->addLabel('longTermMedication', __('Long-Term Medication?'));

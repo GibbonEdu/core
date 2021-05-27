@@ -41,16 +41,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students by Form Group'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose Form Group'))
             ->setFactory(DatabaseFormFactory::create($pdo))
             ->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_byFormGroup.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_students_byFormGroup.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'], true)->selected($gibbonFormGroupID)->placeholder()->required();
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'), true)->selected($gibbonFormGroupID)->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('view', __('View'));

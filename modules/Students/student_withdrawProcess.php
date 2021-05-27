@@ -30,7 +30,7 @@ use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 require_once '../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_withdraw.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_withdraw.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.php') == false) {
     $URL .= '&return=error0';

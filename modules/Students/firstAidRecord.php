@@ -47,20 +47,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo __('Filter');
         echo '</h3>';
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/firstAidRecord.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/firstAidRecord.php");
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Student'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->selected($gibbonPersonID);
+            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->selected($gibbonPersonID);
 
         $row = $form->addRow();
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
-            $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonFormGroupID);
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID);
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->fromPOST();
 
-        $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+        $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
         // DATA TABLE
         $table = DataTable::createPaginated('firstAidRecords', $criteria);
@@ -113,8 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $table->addColumn('patient', __('Student'))
             ->description(__('Form Group'))
             ->sortable(['surnamePatient', 'preferredNamePatient'])
-            ->format(function($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
+            ->format(function($person) use ($session) {
+                $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
                       .'<br/><small><i>'.$person['formGroup'].'</i></small>';
             });

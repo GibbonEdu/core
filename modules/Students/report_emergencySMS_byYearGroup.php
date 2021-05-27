@@ -56,11 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
         $hideName = $_GET['hideName'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', "get");
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', "get");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_emergencySMS_byYearGroup.php", "get");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_emergencySMS_byYearGroup.php", "get");
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -91,10 +91,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
         try {
             if ($gibbonYearGroupID == '*') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, emergency1Number1, emergency2Number1 FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
             } else {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $gibbonYearGroupID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonYearGroupID' => $gibbonYearGroupID);
                 $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, emergency1Number1, emergency2Number1 FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
             }
             $result = $connection2->prepare($sql);

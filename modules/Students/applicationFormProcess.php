@@ -26,7 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 include '../../gibbon.php';
 
 //Check to see if system settings are set from databases
-if (empty($_SESSION[$guid]['systemSettingsSet'])) {
+if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 }
 
@@ -36,12 +36,12 @@ include '../User Admin/moduleFunctions.php';
 //Module includes from Finance (for setting payment log)
 include '../Finance/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Students/applicationForm.php';
 
 $proceed = false;
 $public = false;
 
-if (isset($_SESSION[$guid]['username']) == false) {
+if (!$session->has('username')) {
     $public = true;
     //Get public access
     $access = getSettingByScope($connection2, 'Application Form', 'publicApplications');
@@ -453,7 +453,7 @@ if ($proceed == false) {
                 // Raise a new notification event
                 $event = new NotificationEvent('Students', 'New Application Form');
 
-                $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
+                $event->addRecipient($session->get('organisationAdmissions'));
                 $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                 $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
 
@@ -462,14 +462,14 @@ if ($proceed == false) {
 
                 //Email reference form link to referee
                 $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
-                if ($applicationFormRefereeLink != '' and $referenceEmail != '' and $_SESSION[$guid]['organisationAdmissionsName'] != '' and $_SESSION[$guid]['organisationAdmissionsEmail'] != '') {
+                if ($applicationFormRefereeLink != '' and $referenceEmail != '' and $session->get('organisationAdmissionsName') != '' and $session->get('organisationAdmissionsEmail') != '') {
                     //Prep message
                     $subject = __('Request For Reference');
-                    $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationAdmissionsName'], '<br/><br/>');
+                    $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $session->get('organisationAdmissionsName'), '<br/><br/>');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
+                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
                     $mail->AddAddress($referenceEmail);
                     $mail->renderBody('mail/email.twig.html', [
                         'title'  => $subject,
@@ -487,16 +487,16 @@ if ($proceed == false) {
 
                 //Notify parent 1 of application status
                 if (!empty($parent1email) && !$skipEmailNotification) {
-                    $subject =  sprintf(__('%1$s Application Form Confirmation'), $_SESSION[$guid]['organisationName']);
-                    $body = sprintf(__('Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
+                    $subject =  sprintf(__('%1$s Application Form Confirmation'), $session->get('organisationName'));
+                    $body = sprintf(__('Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $session->get('organisationName')).' ';
                     $body .= __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
                     $body .= __('You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
                     $body .= "<a href='{$URL}&id={$secureAI}'>{$URL}&id={$secureAI}</a><br/><br/>";
-                    $body .= sprintf(__('In the meantime, should you have any questions please contact %1$s at %2$s.'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['organisationAdmissionsEmail']).'<br/><br/>';
+                    $body .= sprintf(__('In the meantime, should you have any questions please contact %1$s at %2$s.'), $session->get('organisationAdmissionsName'), $session->get('organisationAdmissionsEmail')).'<br/><br/>';
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
+                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
                     $mail->AddAddress($parent1email);
                     $mail->renderBody('mail/email.twig.html', [
                         'title'  => $subject,
@@ -538,8 +538,8 @@ if ($proceed == false) {
                 $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
                 if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
-                    $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI";
-                    $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
+                    $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI");
+                    $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
                     header("Location: {$URL}");
                 } else {
                     $URL .= "&return=success0&id=$secureAI";
@@ -580,16 +580,16 @@ if ($proceed == false) {
         }
 
         //Get email parameters ready to send messages for to admissions for payment problems
-        $to = $_SESSION[$guid]['organisationAdmissionsEmail'];
-        $subject = $_SESSION[$guid]['organisationNameShort'].' Gibbon Application Form Payment Issue';
+        $to = $session->get('organisationAdmissionsEmail');
+        $subject = $session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
 
         //Check return values to see if we can proceed
         if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
-            $body = __('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
+            $body = __('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
             $mail = $container->get(Mailer::class);
             $mail->Subject = $subject;
-            $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
+            $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
             $mail->AddAddress($to);
             $mail->renderBody('mail/email.twig.html', [
                 'title'  => $subject,
@@ -635,11 +635,11 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
+                    $body = __('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
+                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
                     $mail->AddAddress($to);
                     $mail->renderBody('mail/email.twig.html', [
                         'title'  => $subject,
@@ -676,11 +676,11 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__('Admissions Administrator');
+                    $body = __('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
+                    $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));
                     $mail->AddAddress($to);
                     $mail->renderBody('mail/email.twig.html', [
                         'title'  => $subject,

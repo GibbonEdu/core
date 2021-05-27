@@ -46,31 +46,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
-            $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
+            $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Students/firstAidRecord_edit.php&gibbonFirstAidID='.$_GET['editID'].'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID;
             $editID = $_GET['editID'];
         }
         $page->return->setEditLink($editLink);
         $page->return->addReturns(['warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')]);
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/firstAidRecord_addProcess.php?gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow()->addHeading(__('Basic Information'));
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Patient'));
-            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder()->required();
+            $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->placeholder()->required();
 
         $row = $form->addRow();
             $row->addLabel('name', __('First Aider'));
-            $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->required()->readonly();
+            $row->addTextField('name')->setValue(Format::name('', $session->get('preferredName'), $session->get('surname'), 'Student'))->required()->readonly();
 
         $row = $form->addRow();
-            $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            $row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
+            $row->addLabel('date', __('Date'));
+            $row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
         $row = $form->addRow();
             $row->addLabel('timeIn', __('Time In'))->description("Format: hh:mm (24hr)");

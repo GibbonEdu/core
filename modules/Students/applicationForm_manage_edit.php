@@ -70,24 +70,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     echo "<div class='linkTop'>";
     if ($search != '') {
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
     }
 
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
     }
 
-    echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
     echo '</div>';
 
     $customFieldHandler = $container->get(CustomFieldHandler::class);
 
-    $form = Form::create('applicationFormEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_editProcess.php?search='.$search);
+    $form = Form::create('applicationFormEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
     $form->addHiddenValue('gibbonApplicationFormID', $application['gibbonApplicationFormID']);
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description(__('Student\'s intended first day at school.'))->append(__('Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addLabel('dateStart', __('Start Date'))->description(__('Student\'s intended first day at school.'))->append(__('Format:').' '.$session->get('i18n')['dateFormat']);
         $row->addDate('dateStart')->required();
 
     $row = $form->addRow();
@@ -282,7 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         }
         $row = $table->addRow();
-        $row->addContent("<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>")->addClass('right');
+        $row->addContent("<a href='#' onclick='if (confirm(\"".$messageDelete."\")) window.location = \"".$session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_deleteLinkProcess.php?gibbonApplicationFormID='.$gibbonApplicationFormID."&gibbonSchoolYearID=".$gibbonSchoolYearID."\"; else return false;'><img style='margin-left: 4px' title='".__('Remove').' '.__('Sibling Applications')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>")->addClass('right');
 
     } else {
         // Or add a new link (mutually exclusive, to prevent linking multiple families)
@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND
@@ -371,7 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth')->required();
 
-    $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
+    $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
     
@@ -416,7 +416,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     //     }
 
     // $row = $form->addRow();
-    //     $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+    //     $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
     //     $row->addDate('visaExpiryDate');
 
     // STUDENT CONTACT
@@ -486,7 +486,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $header->addContent(__('Address'));
     $header->addContent(sprintf(__('Grades%1$sAttended'), '<br/>'));
     $header->addContent(sprintf(__('Language of%1$sInstruction'), '<br/>'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
+    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
     // Grab some languages, for auto-complete
     $results = $pdo->executeQuery(array(), "SELECT name FROM gibbonLanguage ORDER BY name");
@@ -641,7 +641,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
 
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+                $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
                 $row->addDate("parent{$i}visaExpiryDate");
 
             // PARENT CONTACT
@@ -684,7 +684,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $form->addHiddenValue('gibbonFamilyID', $application['gibbonFamilyID']);
 
         $row = $form->addRow();
-            $row->addHeading(__('Family'))->append(sprintf(__('The applying family is already a member of %1$s.'), $_SESSION[$guid]['organisationName']));
+            $row->addHeading(__('Family'))->append(sprintf(__('The applying family is already a member of %1$s.'), $session->get('organisationName')));
 
         $dataFamily = array('gibbonFamilyID' => $application['gibbonFamilyID']);
         $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
@@ -726,9 +726,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $header = $table->addHeaderRow();
     $header->addContent(__('Sibling Name'));
-    $header->addContent(__('Date of Birth'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
+    $header->addContent(__('Date of Birth'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
     $header->addContent(__('School Attending'));
-    $header->addContent(__('Joining Date'))->append('<br/><small>'.$_SESSION[$guid]['i18n']['dateFormat'].'</small>');
+    $header->addContent(__('Joining Date'))->append('<br/><small>'.$session->get('i18n')['dateFormat'].'</small>');
 
     // Add additional sibling rows up to 3
     for ($i = 1; $i <= 3; ++$i) {
@@ -901,7 +901,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
-                    ->setAttachments($_SESSION[$guid]['absoluteURL'], $attachments)
+                    ->setAttachments($session->get('absoluteURL'), $attachments)
                     ->setRequired($requiredDocumentsCompulsory == 'Y' && stripos($requiredDocumentsList[$i], $internalDocuments) === false)
                     ->uploadMultiple(true)
                     ->canDelete(true);
