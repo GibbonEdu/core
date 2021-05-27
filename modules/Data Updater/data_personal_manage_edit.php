@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
@@ -209,8 +210,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             // CUSTOM FIELDS
-            $params = compact('student', 'staff', 'parent', 'other');
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'User', $params + ['dataUpdater' => 1], $oldValues, $newValues);
+            $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'User', $params, $oldValues, $newValues);
+
+            // PERSONAL DOCUMENTS
+            $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
+            $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToDataUpdate($form, $oldValues['gibbonPersonID'], $gibbonPersonUpdateID, $params);
 
             $row = $form->addRow();
                 $row->addSubmit();
