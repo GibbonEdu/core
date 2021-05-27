@@ -97,7 +97,7 @@ class HomeworkTable
             }
 
             if ($homework['type'] == 'teacherRecorded' && !empty($homework['submissions'])) {
-                $latestSubmission = end($homework['submissions']);
+                $latestSubmission = current($homework['submissions']);
                 if ($latestSubmission['version'] == 'Final') $row->addClass('success');
             }
 
