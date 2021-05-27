@@ -63,7 +63,7 @@ class PersonalDocumentHandler
 
     public function updateDocumentsFromPOST($foreignTable = null, $foreignTableID = null, $params = [], &$personalDocumentFail = false)
     {
-        $documents = $this->personalDocumentGateway->selectPersonalDocuments(null, null, $params);
+        $documents = $this->personalDocumentGateway->selectPersonalDocuments(null, null, $params)->fetchAll();
         if (empty($documents)) return;
 
         foreach ($documents as $document) {
@@ -93,7 +93,7 @@ class PersonalDocumentHandler
                     }
                 } else {
                     // Handle all other data
-                    $data[$field] = $value;
+                    $data[$field] = !empty($value) ? $value : null;
                 }
             }
 
@@ -111,5 +111,94 @@ class PersonalDocumentHandler
             $success = $this->personalDocumentGateway->insertAndUpdate($data, $data);
             $personalDocumentFail &= !$success;
         }
+    }
+
+    public function addPersonalDocumentsToDataUpdate(&$form, $gibbonPersonID, $gibbonPersonUpdateID, $params)
+    {
+        $documentsOld = $this->personalDocumentGateway->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params)->fetchGroupedUnique();
+        $documentsNew = $this->personalDocumentGateway->selectPersonalDocuments('gibbonPersonUpdate', $gibbonPersonUpdateID, $params + ['notEmpty' => true])->fetchGroupedUnique();
+        if (empty($documentsOld) && empty($documentsNew)) return;
+
+        foreach ($documentsOld as $gibbonPersonalDocumentTypeID => $document) {
+            $row = $form->addRow()->setClass('head heading')->addContent(__($document['name']));
+
+            // Add the existing document ID, so we can check against it later when processing the update
+            if (!empty($documentsNew[$gibbonPersonalDocumentTypeID])) {
+                $form->addHiddenValue("document[$gibbonPersonalDocumentTypeID][gibbonPersonalDocumentID]", $documentsNew[$gibbonPersonalDocumentTypeID]['gibbonPersonalDocumentID']);
+            }
+                
+            $fields = json_decode($document['fields']);
+            foreach ($fields as $field) {
+                $oldValue = $documentsOld[$gibbonPersonalDocumentTypeID][$field] ?? null;
+                $newValue = $documentsNew[$gibbonPersonalDocumentTypeID][$field] ?? null;
+
+                if (empty($documentsNew)) { // Handle updates after they have been accepted and documents deleted
+                    $newValue = $oldValue;
+                }
+
+                $newValueLabel = $newValue;
+                if ($field == 'dateIssue' || $field == 'dateExpiry') {
+                    $oldValue = Format::date($oldValue);
+                    $newValue = Format::date($newValue);
+                } elseif ($field == 'filePath') {
+                    $oldValue = !empty($oldValue) ? Format::link('./'.$oldValue, __('Attachment'), ['target' => '_blank']) : '';
+                    $newValueLabel = !empty($newValue) ? Format::link('./'.$newValue, __('Attachment'), ['target' => '_blank']) : '';
+                }
+
+                $isMatching = ($oldValue != $newValue);
+
+                $row = $form->addRow();
+                $row->addLabel('document'.$field.'On', __($this->fields[$field]));
+                $row->addContent($oldValue);
+                $row->addContent($newValueLabel)->addClass($isMatching ? 'matchHighlightText' : '');
+
+                if ($isMatching) {
+                    $row->addCheckbox("document[$gibbonPersonalDocumentTypeID][{$field}On]")->checked(true)->setClass('textCenter');
+                    $form->addHiddenValue("document[$gibbonPersonalDocumentTypeID][{$field}]", $newValue);
+                } else {
+                    $row->addContent();
+                }
+            }
+        }
+    }
+
+    public function updatePersonalDocumentsFromDataUpdate($gibbonPersonID, $gibbonPersonUpdateID, $params = [])
+    {
+        $documents = $this->personalDocumentGateway->selectPersonalDocuments('gibbonPersonUpdate', $gibbonPersonUpdateID, $params)->fetchAll();
+        if (empty($documents)) return;
+
+        foreach ($documents as $document) {
+            $fields = json_decode($document['fields']);
+            $data = [];
+
+            foreach ($fields as $field) {
+                if (!isset($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field.'On'])) continue;
+                if (!isset($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field])) continue;
+
+                $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? '';
+
+                if ($field == 'dateIssue' || $field == 'dateExpiry') {
+                    $value = Format::dateConvert($value);
+                }
+
+                $data[$field] = $value;
+            }
+
+            $exists = $_POST['document'][$document['gibbonPersonalDocumentTypeID']]['gibbonPersonalDocumentID'] ?? null;
+
+            // Skip any documents that are entirely empty
+            if (count(array_filter($data)) == 0 && !$exists) continue;
+
+            $data['gibbonPersonalDocumentTypeID'] = $document['gibbonPersonalDocumentTypeID'];
+            $data['foreignTable'] = 'gibbonPerson';
+            $data['foreignTableID'] = $gibbonPersonID;
+            $data['timestamp'] = date('Y-m-d H:i:s');
+
+            if ($this->personalDocumentGateway->insertAndUpdate($data, $data)) {
+                $this->personalDocumentGateway->deleteWhere(['gibbonPersonalDocumentTypeID' => $document['gibbonPersonalDocumentTypeID'], 'foreignTable' => 'gibbonPersonUpdate', 'foreignTableID' => $gibbonPersonUpdateID]);
+            }
+        }
+
+        return json_encode($fields);
     }
 }

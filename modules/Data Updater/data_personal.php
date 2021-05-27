@@ -17,10 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -514,66 +517,82 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         }
 
                     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship1'));
-                        $row->addLabel('citizenship1', __('Citizenship 1'));
-                        if (!empty($nationalityList)) {
-                            $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
-                        } else {
-                            $row->addSelectCountry('citizenship1');
-                        }
-
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship1Passport'));
-                        $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
-                        $row->addTextField('citizenship1Passport')->maxLength(30);
-
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship1PassportExpiry'));
-                        $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
-                        $row->addDate('citizenship1PassportExpiry');
-
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship2'));
-                        $row->addLabel('citizenship2', __('Citizenship 2'));
-                        if (!empty($nationalityList)) {
-                            $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
-                        } else {
-                            $row->addSelectCountry('citizenship2');
-                        }
-
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship2Passport'));
-                        $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
-                        $row->addTextField('citizenship2Passport')->maxLength(30);
-
-                    $row = $form->addRow()->onlyIf($isVisible('citizenship2PassportExpiry'));
-                        $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
-                        $row->addDate('citizenship2PassportExpiry');
-
-                    if (!empty($session->get('country'))) {
-                        $nationalIDCardNumberLabel = __($session->get('country')).' '.__('ID Card Number');
-                        $nationalIDCardScanLabel = __($session->get('country')).' '.__('ID Card Scan');
-                        $residencyStatusLabel = __($session->get('country')).' '.__('Residency/Visa Type');
-                        $visaExpiryDateLabel = __($session->get('country')).' '.__('Visa Expiry Date');
-                    } else {
-                        $nationalIDCardNumberLabel = __('National ID Card Number');
-                        $nationalIDCardScanLabel = __('National ID Card Scan');
-                        $residencyStatusLabel = __('Residency/Visa Type');
-                        $visaExpiryDateLabel = __('Visa Expiry Date');
-                    }
-
-                    $row = $form->addRow()->onlyIf($isVisible('nationalIDCardNumber'));
-                        $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
-                        $row->addTextField('nationalIDCardNumber')->maxLength(30);
-
                     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-                    $row = $form->addRow()->onlyIf($isVisible('residencyStatus'));
-                        $row->addLabel('residencyStatus', $residencyStatusLabel);
-                        if (!empty($residencyStatusList)) {
-                            $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-                        } else {
-                            $row->addTextField('residencyStatus')->maxLength(30);
-                        }
+                    
+                    // PERSONAL DOCUMENTS
+                    $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
+                    if ($existing) {
+                        $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPersonUpdate', $values['gibbonPersonUpdateID'], $params)->fetchAll();
+                    } else {
+                        $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params )->fetchAll();
+                    }
+                    
+                    if (!empty($documents)) {
+                        $col = $form->addRow()->addColumn();
+                            $col->addLabel('documents', __('Personal Documents'));
+                            $col->addPersonalDocuments('documents', $documents, $container->get(View::class), $container->get(SettingGateway::class));
+                    }
+                    
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship1'));
+                    //     $row->addLabel('citizenship1', __('Citizenship 1'));
+                    //     if (!empty($nationalityList)) {
+                    //         $row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
+                    //     } else {
+                    //         $row->addSelectCountry('citizenship1');
+                    //     }
 
-                    $row = $form->addRow()->onlyIf($isVisible('visaExpiryDate'));
-                        $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
-                        $row->addDate('visaExpiryDate');
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship1Passport'));
+                    //     $row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
+                    //     $row->addTextField('citizenship1Passport')->maxLength(30);
+
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship1PassportExpiry'));
+                    //     $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
+                    //     $row->addDate('citizenship1PassportExpiry');
+
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship2'));
+                    //     $row->addLabel('citizenship2', __('Citizenship 2'));
+                    //     if (!empty($nationalityList)) {
+                    //         $row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
+                    //     } else {
+                    //         $row->addSelectCountry('citizenship2');
+                    //     }
+
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship2Passport'));
+                    //     $row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
+                    //     $row->addTextField('citizenship2Passport')->maxLength(30);
+
+                    // $row = $form->addRow()->onlyIf($isVisible('citizenship2PassportExpiry'));
+                    //     $row->addLabel('citizenship2PassportExpiry', __('Citizenship 2 Passport Expiry Date'));
+                    //     $row->addDate('citizenship2PassportExpiry');
+
+                    // if (!empty($session->get('country'))) {
+                    //     $nationalIDCardNumberLabel = __($session->get('country')).' '.__('ID Card Number');
+                    //     $nationalIDCardScanLabel = __($session->get('country')).' '.__('ID Card Scan');
+                    //     $residencyStatusLabel = __($session->get('country')).' '.__('Residency/Visa Type');
+                    //     $visaExpiryDateLabel = __($session->get('country')).' '.__('Visa Expiry Date');
+                    // } else {
+                    //     $nationalIDCardNumberLabel = __('National ID Card Number');
+                    //     $nationalIDCardScanLabel = __('National ID Card Scan');
+                    //     $residencyStatusLabel = __('Residency/Visa Type');
+                    //     $visaExpiryDateLabel = __('Visa Expiry Date');
+                    // }
+
+                    // $row = $form->addRow()->onlyIf($isVisible('nationalIDCardNumber'));
+                    //     $row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
+                    //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
+
+                    // 
+                    // $row = $form->addRow()->onlyIf($isVisible('residencyStatus'));
+                    //     $row->addLabel('residencyStatus', $residencyStatusLabel);
+                    //     if (!empty($residencyStatusList)) {
+                    //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
+                    //     } else {
+                    //         $row->addTextField('residencyStatus')->maxLength(30);
+                    //     }
+
+                    // $row = $form->addRow()->onlyIf($isVisible('visaExpiryDate'));
+                    //     $row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
+                    //     $row->addDate('visaExpiryDate');
 
                     // EMPLOYMENT
                     if ($parent) {
