@@ -51,7 +51,7 @@ class ReportingValueGateway extends QueryableGateway
     public function selectReportingCommentsByCycle($gibbonReportingCycleID)
     {
         $data = ['gibbonReportingCycleID' => $gibbonReportingCycleID];
-        $sql = "SELECT gibbonReportingValue.comment, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonReportingScope.scopeType, (CASE WHEN scopeType='Course' THEN gibbonReportingValue.gibbonCourseClassID WHEN scopeType='Form Group' THEN gibbonReportingCriteria.gibbonFormGroupID WHEN scopeType='Year Group' THEN gibbonReportingCriteria.gibbonYearGroupID END) as scopeTypeID, gibbonReportingScope.gibbonReportingScopeID, gibbonReportingCriteria.name as criteriaName
+        $sql = "SELECT gibbonReportingValue.gibbonReportingValueID, gibbonReportingValue.comment, gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonReportingScope.scopeType, (CASE WHEN scopeType='Course' THEN gibbonReportingValue.gibbonCourseClassID WHEN scopeType='Form Group' THEN gibbonReportingCriteria.gibbonFormGroupID WHEN scopeType='Year Group' THEN gibbonReportingCriteria.gibbonYearGroupID END) as scopeTypeID, gibbonReportingScope.gibbonReportingScopeID, gibbonReportingCriteria.name as criteriaName
                 FROM gibbonReportingCycle
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID)
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -63,7 +63,7 @@ class ReportingValueGateway extends QueryableGateway
                 AND gibbonReportingCriteriaType.valueType='Comment'
                 AND gibbonReportingCriteria.target = 'Per Student'
                 AND (gibbonReportingValue.comment IS NOT NULL AND gibbonReportingValue.comment <> '')
-                ORDER BY gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
+                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName, gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }

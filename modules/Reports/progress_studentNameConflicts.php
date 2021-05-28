@@ -66,10 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
     
     // Get all student preferred names
     $names = $container->get(StudentGateway::class)->selectActiveStudentNames($session->get('gibbonSchoolYearID'))->fetchAll(\PDO::FETCH_COLUMN, 0);
+    sort($names);
     $names = array_unique($names);
 
+    // Get all student comments in the selected reporting cycle
     $reportingValues = $reportingValueGateway->selectReportingCommentsByCycle($gibbonReportingCycleID)->fetchAll();    
- 
     $foundNames = [];
 
     // Check all comments for names that don't match this student's name
@@ -79,14 +80,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
 
             $matches = [];
             if (preg_match('/\b'.$name.'\b/', $values['comment'], $matches)) {
-                $foundNames[$values['gibbonPersonID']]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
-                $foundNames[$values['gibbonPersonID']]['gibbonReportingScopeID'] = $values['gibbonReportingScopeID'];
-                $foundNames[$values['gibbonPersonID']]['criteriaName'] = $values['criteriaName'];
-                $foundNames[$values['gibbonPersonID']]['scopeType'] = $values['scopeType'];
-                $foundNames[$values['gibbonPersonID']]['scopeTypeID'] = $values['scopeTypeID'];
-                $foundNames[$values['gibbonPersonID']]['preferredName'] = $values['preferredName'];
-                $foundNames[$values['gibbonPersonID']]['surname'] = $values['surname'];
-                $foundNames[$values['gibbonPersonID']]['foundNames'][] = $name;
+                $key = $values['gibbonReportingValueID'];
+                $foundNames[$key]['gibbonPersonIDStudent'] = $values['gibbonPersonID'];
+                $foundNames[$key]['gibbonReportingScopeID'] = $values['gibbonReportingScopeID'];
+                $foundNames[$key]['criteriaName'] = $values['criteriaName'];
+                $foundNames[$key]['scopeType'] = $values['scopeType'];
+                $foundNames[$key]['scopeTypeID'] = $values['scopeTypeID'];
+                $foundNames[$key]['preferredName'] = $values['preferredName'];
+                $foundNames[$key]['surname'] = $values['surname'];
+                $foundNames[$key]['foundNames'][] = $name;
             }
         }
     }
@@ -106,6 +108,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
 
     $table->addColumn('found', __('Found Names'))
         ->format(function ($values) {
+            if (!empty($values['foundNames']) && is_array($values['foundNames'])) {
+                sort($values['foundNames']);
+                $values['foundNames'] = array_unique($values['foundNames']);
+            }
             return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
         });
 
