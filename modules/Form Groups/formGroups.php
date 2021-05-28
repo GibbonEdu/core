@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         $table->addColumn('name', __('Name'));
         $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
         $table->addColumn('space', __('Room'));
-        if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == "Staff") {
+        if (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) == "Staff") {
             $table->addColumn('students', __('Students'));
         }
         $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         echo $table->render($formGroups->toDataSet());
 
         //Display year group table for staff
-        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+        $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
         if ($roleCategory == 'Staff') {
             $yearGroupGateway = $container->get(YearGroupGateway::class);
 
