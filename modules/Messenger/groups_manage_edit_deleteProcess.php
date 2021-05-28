@@ -24,8 +24,8 @@ include '../../gibbon.php';
 $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit_delete.php&gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit_delete.php&gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     if ($highestAction == 'Manage Groups_all') {
         $values = $groupGateway->selectGroupByID($gibbonGroupID);
     } else {
-        $values = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+        $values = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $session->get('gibbonPersonID'));
     }
 
     if (empty($values)) {

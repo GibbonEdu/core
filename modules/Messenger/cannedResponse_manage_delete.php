@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_deleteProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/cannedResponse_manage_deleteProcess.php?gibbonMessengerCannedResponseID=$gibbonMessengerCannedResponseID");
             echo $form->getOutput();
         }
     }

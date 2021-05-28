@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
         } else {
-            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $session->get('gibbonPersonID'));
         }
 
         if ($result->isEmpty()) {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_edit_deleteProcess.php?gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_edit_deleteProcess.php?gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID");
                 echo $form->getOutput();
             }
         }

@@ -40,15 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
     if ($highestAction == 'Manage Groups_all') {
-        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+        $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'));
     } else {
-        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+        $groups = $groupGateway->queryGroups($criteria, $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
     }
     
     // FORM
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/groups_manageProcessBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/groups_manageProcessBulk.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     if ($highestAction == 'Manage Groups_all') {
         // BULK ACTIONS

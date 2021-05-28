@@ -30,14 +30,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     //Proceed!
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
 	
-	$form = Form::create('canneResponse', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_addProcess.php');
+	$form = Form::create('canneResponse', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cannedResponse_manage_addProcess.php');
                 
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+	$form->addHiddenValue('address', $session->get('address'));
 
 	$row = $form->addRow();
 		$row->addLabel('subject', __('Subject'))->description(__('Must be unique.'));

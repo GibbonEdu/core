@@ -103,14 +103,14 @@ else {
 			$page->return->addReturns(['error2' => 'Some elements of your request failed, but others were successful.']);
 
 			// Create a reusable confirmation closure
-			$icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';
+			$icon = '<img src="./themes/'.$session->get('gibbonThemeName').'/img/%1$s"/>';
 			$confirmationIndicator = function($recipient) use ($icon) {
 				if (empty($recipient['key'])) return __('N/A');
 				return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
 			};
 
 			$sender = false;
-			if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == 'Manage Messages_all') {
+			if ($row['gibbonPersonID'] == $session->get('gibbonPersonID') || $highestAction == 'Manage Messages_all') {
 				$sender = true;
 			}
 
@@ -124,7 +124,7 @@ else {
 				//Tab content
 				echo "<div id='tabs1'>";
 					
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
 						$sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
 							FROM gibbonPerson
 							JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -155,8 +155,8 @@ else {
 							$resultReceipts->execute($dataReceipts);
 						$receipts = $resultReceipts->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
-						$form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
-						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+						$form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
+						$form->addHiddenValue('address', $session->get('address'));
 
 						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');
 							$row->addSubmit(__('Go'));
@@ -295,9 +295,9 @@ else {
 							$result = $connection2->prepare($sql);
 							$result->execute($data);
 
-						$form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
+						$form = BulkActionForm::create('resendByRecipient', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
 
-						$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+						$form->addHiddenValue('address', $session->get('address'));
 
 						$row = $form->addBulkActionRow(array('resend' => __('Resend')))->addClass('flex justify-end');;
 							$row->addSubmit(__('Go'));
