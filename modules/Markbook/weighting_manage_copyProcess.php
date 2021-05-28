@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_edit.php') == false) {
     $URL .= '&return=error0';
