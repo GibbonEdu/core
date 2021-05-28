@@ -69,6 +69,7 @@ v22.0.00
         Reports: added pagination to the Proof Reading page
         Reports: updated so Assistance with reportable access can write reports
         Reports: added names of teachers to the Proof Reading Edits notification
+        Reports: added a Student Name Conflicts tool to check for other student names in report comments
         School Admin: added ability to disable staff, student and parent dashboards
         Students: added Medical Form custom fields to student profile
         Students: updated Medical Data Summary to include medical custom fields
