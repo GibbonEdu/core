@@ -67,18 +67,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 if ($search != '' or $allStaff != '') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
+                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
                     echo '</div>';
                 }
 
                 $customFieldHandler = $container->get(CustomFieldHandler::class);
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$values['gibbonStaffID']."&search=$search&allStaff=$allStaff");
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/staff_manage_editProcess.php?gibbonStaffID='.$values['gibbonStaffID']."&search=$search&allStaff=$allStaff");
                 $form->setTitle(__('General Information'));
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
 
                 $form->addHeaderAction('view', __('View'))
@@ -170,6 +170,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                 $table = DataTable::create('facilities');
+                
+                $table->setTitle(__('Facilities'));
 
                 $table->addHeaderAction('add', __('Add'))
                     ->setURL('/modules/Staff/staff_manage_edit_facility_add.php')
@@ -195,8 +197,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 echo $table->render($facilities);
 
                 if ($highestAction == 'Manage Staff_confidential') {
-                    echo '<h3>'.__('Contracts').'</h3>';
-
                     $contractsGateway = $container->get(StaffContractGateway::class);
 
                     $criteria = $contractsGateway->newQueryCriteria()
@@ -205,6 +205,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $contracts = $contractsGateway->queryContractsByStaff($criteria, $gibbonStaffID);
 
                     $table = DataTable::create('contracts');
+                    
+                    $table->setTitle(__('Contracts'));
 
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Staff/staff_manage_edit_contract_add.php')

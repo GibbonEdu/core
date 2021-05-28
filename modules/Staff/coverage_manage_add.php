@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         ->add(__('Add Coverage'));
 
     $editLink = isset($_GET['editID'])
-        ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$_GET['editID']
+        ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$_GET['editID']
         : '';
     $page->return->setEditLink($editLink);
 
@@ -51,10 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         return $group;
     }, []);
 
-    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_manage_addProcess.php');
+    $form = Form::create('staffAbsenceEdit', $session->get('absoluteURL').'/modules/Staff/coverage_manage_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Add Coverage'));
 
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
         $row->addLabel('gibbonPersonID', __('Created For'));
         $row->addSelectStaff('gibbonPersonID')
             ->placeholder()
-            ->selected($_SESSION[$guid]['gibbonPersonID'])
+            ->selected($session->get('gibbonPersonID'))
             ->isRequired();
 
     $statusOptions = [

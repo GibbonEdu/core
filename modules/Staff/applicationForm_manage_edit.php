@@ -59,10 +59,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             $customFieldHandler = $container->get(CustomFieldHandler::class);
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/applicationForm_manage_editProcess.php?search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             if ($search != '') {
                 $form->addHeaderAction('back', __('Back to Search Results'))
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             $row = $form->addRow();
-                $row->addLabel('dateStart', __('Start Date'))->description(__('Intended first day at school.'))->append(__('Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']);
+                $row->addLabel('dateStart', __('Start Date'))->description(__('Intended first day at school.'));
                 $row->addDate('dateStart');
 
             $row = $form->addRow();
@@ -159,11 +159,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
                 $row = $form->addRow();
                     $row->addLabel('surname', __('Surname'));
-                    $row->addTextField('surname')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['surname']);
+                    $row->addTextField('surname')->required()->maxLength(30)->readonly()->setValue($session->get('surname'));
 
                 $row = $form->addRow();
                     $row->addLabel('preferredName', __('Preferred Name'));
-                    $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['preferredName']);
+                    $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($session->get('preferredName'));
             }
             else { //Not logged in
                 $row = $form->addRow();
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addSelectGender('gender')->required();
 
                 $row = $form->addRow();
-                    $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                    $row->addLabel('dob', __('Date of Birth'));
                     $row->addDate('dob')->required();
 
                 $form->addRow()->addHeading(__('Background Data'));
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $row->addSelectCountry('citizenship1')->required();
                     }
 
-                $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
+                $countryName = ($session->has('country'))? __($session->get('country')).' ' : '';
                 $row = $form->addRow();
                     $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
                     $row->addTextField('citizenship1Passport')->maxLength(30);
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     }
 
                 $row = $form->addRow();
-                    $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+                    $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->append("<br>".__('If relevant.'));
                     $row->addDate('visaExpiryDate');
 
                 $form->addRow()->addHeading(__('Contacts'));
@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $rowFile = $resultFile->fetch();
                         $row->addWebLink(__('Download'))
                             ->addClass('right')
-                            ->setURL($_SESSION[$guid]['absoluteURL'].'/'.$rowFile['path'])
+                            ->setURL($session->get('absoluteURL').'/'.$rowFile['path'])
                             ->setTarget('_blank');
                     }
                 }

@@ -24,7 +24,7 @@ require_once '../../gibbon.php';
 $gibbonPersonID = $_REQUEST['gibbonPersonID'] ?? '';
 $gibbonStaffCoverageDateID = $_REQUEST['gibbonStaffCoverageDateID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$gibbonPersonID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$gibbonPersonID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availability.php') == false) {
     $URL .= '&return=error0';

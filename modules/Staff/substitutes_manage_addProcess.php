@@ -24,7 +24,7 @@ require_once '../../gibbon.php';
 
 $search = $_GET['search'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/substitutes_manage_add.php&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/substitutes_manage_add.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_add.php') == false) {
     $URL .= '&return=error0';

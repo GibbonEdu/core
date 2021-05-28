@@ -26,7 +26,7 @@ include '../User Admin/moduleFunctions.php';
 
 $gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'] ?? '';
 $search = $_GET['search'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_edit.php') == false) {
     $URL .= '&return=error0';

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     $page->scripts->add('chart');
 
-    $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+    $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) :new DateTimeImmutable();
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
@@ -43,13 +43,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     // DATE SELECTOR
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_absences_weekly.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php');
 	$form->setClass('blank fullWidth');
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+	$form->addHiddenValue('address', $session->get('address'));
 
 	$row = $form->addRow()->addClass('flex flex-wrap');
 
-	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_absences_weekly.php';
+	$link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences_weekly.php';
 	$lastWeek = $date->modify('-1 week')->format($dateFormat);
 	$thisWeek = (new DateTime('Today'))->format($dateFormat);
 	$nextWeek = $date->modify('+1 week')->format($dateFormat);
@@ -161,13 +161,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         $table->addColumn('fullName', __('Name'))
             ->width('30%')
             ->sortable(['surname', 'preferredName'])
-            ->format(function ($absence) use ($guid, $canView) {
+            ->format(function ($absence) use ($session, $canView) {
                 $output = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
-
                 if ($canView) {
-                    $output = Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$absence['gibbonPersonID'], $output);
+                    $output = Format::link($session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$absence['gibbonPersonID'], $output);
                 }
-                
                 if ($absence['allDay'] != 'Y') {
                     $output .= '<br/>'.Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
                 }
