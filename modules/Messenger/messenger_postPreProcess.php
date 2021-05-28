@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php";
+$URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php";
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == false) {
     $URL .= "&addReturn=fail0";
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'body'              => $_POST['body'] ?? '',
         'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
         'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
-        'gibbonPersonID'    => $_SESSION[$guid]['gibbonPersonID'],
+        'gibbonPersonID'    => $session->get('gibbonPersonID'),
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
 
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         $_POST
     );
 
-    $_SESSION[$guid]['pageLoads'] = null;
+    $session->set('pageLoads', null);
     $notification = $data['email'] == 'Y' || $data['sms'] == 'Y' ? 'Y' : 'N';
 
     $URL.="&addReturn=success0&notification={$notification}";

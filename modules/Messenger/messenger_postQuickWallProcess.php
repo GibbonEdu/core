@@ -22,7 +22,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/messenger_postQuickWall.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/messenger_postQuickWall.php';
 $time = time();
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php') == false) {
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
         } else {
             //Write to database
             try {
-                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                $data = array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'email' => '', 'messageWall' => $messageWall, "messageWallPin" => $messageWallPin, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s'));
                 $sql = 'INSERT INTO gibbonMessenger SET gibbonSchoolYearID=:gibbonSchoolYearID, email=:email, messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, gibbonPersonID=:gibbonPersonID, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 header("Location: {$URL}");
             } else {
                 //Success 0
-                $_SESSION[$guid]['pageLoads'] = null;
+                $session->set('pageLoads', null);
 				$URL .= "&return=success0&editID=$AI";
                 header("Location: {$URL}");
             }

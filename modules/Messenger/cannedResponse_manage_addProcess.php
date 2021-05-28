@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/cannedResponse_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/cannedResponse_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
         } else {
             //Write to database
             try {
-                $data = array('subject' => $subject, 'body' => $body, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                $data = array('subject' => $subject, 'body' => $body, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                 $sql = 'INSERT INTO gibbonMessengerCannedResponse SET subject=:subject, body=:body, gibbonPersonIDCreator=:gibbonPersonIDCreator';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

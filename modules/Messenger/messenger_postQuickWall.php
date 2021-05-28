@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     //Proceed!
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&gibbonMessengerID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&gibbonMessengerID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     echo __('This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.');
 	echo '</div>';
 
-	$form = Form::create('postQuickWall', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postQuickWallProcess.php?address='.$_GET['q']);
+	$form = Form::create('postQuickWall', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messenger_postQuickWallProcess.php?address='.$_GET['q']);
 
 	$form->addHiddenValue('messageWall', 'Y');
 

@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+    $dateFormat = $session->get('i18n')['dateFormatPHP'];
     $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
 
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
@@ -52,14 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
     }
 
-	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php');
+	$form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php');
 	$form->setClass('blank fullWidth');
 
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+	$form->addHiddenValue('address', $session->get('address'));
 
 	$row = $form->addRow()->addClass('flex flex-wrap');
 
-	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php';
+	$link = $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/messageWall_view.php';
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 

@@ -35,8 +35,35 @@ class MessengerGateway extends QueryableGateway
 
     private static $tableName = 'gibbonMessenger';
     private static $primaryKey = 'gibbonMessengerID';
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['gibbonMessenger.subject', 'gibbonMessenger.body'];
     
+    /**
+     * Queries the list of users for the Manage Users page.
+     *
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryMessages(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID = null)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category', 
+            ])
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonMessenger.gibbonPersonID')
+            ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
+            ->where('gibbonMessenger.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        if (!empty($gibbonPersonID)) {
+            $query->where('gibbonMessenger.gibbonPersonID=:gibbonPersonID')
+                ->bindValue('gibbonPersonID', $gibbonPersonID);
+        }
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function getRecentMessageWallTimestamp()
     {
         $sql = "SELECT UNIX_TIMESTAMP(timestamp) FROM gibbonMessenger WHERE messageWall='Y' ORDER BY timestamp DESC LIMIT 1";

@@ -84,7 +84,7 @@ else {
 					$sql="SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID" ;
 				}
 				else {
-					$data=array("gibbonMessengerID"=>$gibbonMessengerID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]);
+					$data=array("gibbonMessengerID"=>$gibbonMessengerID, "gibbonPersonID"=>$session->get('gibbonPersonID'));
 					$sql="SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID" ;
 				}
 				$result=$connection2->prepare($sql);
@@ -107,9 +107,9 @@ else {
 					echo '<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
 				echo '</div>';
 
-				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_manage_editProcess.php');
+				$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messenger_manage_editProcess.php');
 
-				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+				$form->addHiddenValue('address', $session->get('address'));
 				$form->addHiddenValue('gibbonMessengerID', $values['gibbonMessengerID']);
 
 				$form->addRow()->addHeading(__('Delivery Mode'));
@@ -118,10 +118,10 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
 						if ($values["email"]=="Y") {
-							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 				}
 
@@ -156,16 +156,16 @@ else {
 					if ($smsUsername == "" OR $smsPassword == "" OR $smsURL == "") {
 						$row = $form->addRow()->addClass('sms');
 							$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
-							$row->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'message');
+							$row->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $session->get('organisationAdministratorEmail') . "'>" . $session->get('organisationAdministratorName') . "</a>"), 'message');
 					}
 					else {
 						$row = $form->addRow();
 							$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
 							if ($values["sms"]=="Y") {
-								$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+								$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconTick.png'/>")->addClass('right');
 							}
 							else {
-								$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+								$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconCross.png'/>")->addClass('right') ;
 							}
 					}
 				}
@@ -192,10 +192,10 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 						if ($values["emailReceipt"]=="Y") {
-							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $session->get('gibbonThemeName') . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 
 					$row = $form->addRow()->addClass('emailReceipt');
@@ -205,7 +205,7 @@ else {
 
 				//TARGETS
 				$form->addRow()->addHeading(__('Targets'));
-				$roleCategory = getRoleCategory($_SESSION[$guid]["gibbonRoleIDCurrent"], $connection2);
+				$roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
 				//Get existing TARGETS
 				try {
@@ -340,16 +340,16 @@ else {
 					$form->toggleVisibilityByClass('formGroup')->onRadio('formGroup')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-						$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+						$data=array("gibbonSchoolYearID"=>$session->get('gibbonSchoolYearID'));
 						$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 					}
 					else {
 						if ($roleCategory == "Staff") {
-							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID1"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID2"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonPersonID3"=>$_SESSION[$guid]["gibbonPersonID"], "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+							$data=array("gibbonSchoolYearID"=>$session->get('gibbonSchoolYearID'), "gibbonPersonID1"=>$session->get('gibbonPersonID'), "gibbonPersonID2"=>$session->get('gibbonPersonID'), "gibbonPersonID3"=>$session->get('gibbonPersonID'), "gibbonSchoolYearID"=>$session->get('gibbonSchoolYearID'));
 							$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonID1 OR gibbonPersonIDTutor2=:gibbonPersonID2 OR gibbonPersonIDTutor3=:gibbonPersonID3) AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 						}
 						else if ($roleCategory == "Student") {
-							$data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"], );
+							$data=array("gibbonSchoolYearID"=>$session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$session->get('gibbonPersonID'), );
 							$sql="SELECT gibbonFormGroupID AS value, name FROM gibbonFormGroup JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name" ;
 						}
 					}
@@ -392,10 +392,10 @@ else {
 					$form->toggleVisibilityByClass('course')->onRadio('course')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 						$sql = "SELECT gibbonCourseID as value, nameShort as name FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
 						$sql = "SELECT gibbonCourse.gibbonCourseID as value, gibbonCourse.nameShort as name
                                 FROM gibbonCourse
                                 JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
@@ -442,10 +442,10 @@ else {
 					$form->toggleVisibilityByClass('class')->onRadio('class')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 						$sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
 						$sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
                             FROM gibbonCourse
                             JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
@@ -492,10 +492,10 @@ else {
 					$form->toggleVisibilityByClass('activity')->onRadio('activity')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 						$sql = "SELECT gibbonActivityID as value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
 					} else {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
 						if ($roleCategory == "Staff") {
 							$sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
 						} else if ($roleCategory == "Student") {
@@ -557,7 +557,7 @@ else {
 						$data = array();
 						$sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
 					} else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-						$dataSelect = array('gibbonPersonID'=>$_SESSION[$guid]['gibbonPersonID']);
+						$dataSelect = array('gibbonPersonID'=>$session->get('gibbonPersonID'));
 						$sql = "SELECT gibbonHouse.gibbonHouseID as value, name FROM gibbonHouse JOIN gibbonPerson ON (gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY name";
 					}
 					$row = $form->addRow()->addClass('houses hiddenReveal');
@@ -625,7 +625,7 @@ else {
 					$result = $pdo->executeQuery(array(), $sql);
 
 					// Filter the attendance codes by allowed roles (if any)
-					$currentRole = $_SESSION[$guid]['gibbonRoleIDCurrent'];
+					$currentRole = $session->get('gibbonRoleIDCurrent');
 					$attendanceCodes = ($result->rowCount() > 0)? $result->fetchAll() : array();
 					$attendanceCodes = array_filter($attendanceCodes, function($item) use ($currentRole) {
 						if (!empty($item['gibbonRoleIDAll'])) {
@@ -670,10 +670,10 @@ else {
 					$form->toggleVisibilityByClass('messageGroup')->onRadio('group')->when('Y');
 
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 						$sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
-						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID2' => $session->get('gibbonPersonID'));
 						$sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name)
 							UNION
 							(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2)

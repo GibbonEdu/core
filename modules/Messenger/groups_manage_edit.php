@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
         } else {
-            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $session->get('gibbonPersonID'));
         }
 
         if ($result->isEmpty()) {
@@ -53,10 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_editProcess.php?gibbonGroupID=$gibbonGroupID");
+            $form = Form::create('groups', $session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_editProcess.php?gibbonGroupID=$gibbonGroupID");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $row = $form->addRow();
                 $row->addLabel('members', __('Add Members'));
-                $row->addSelectUsers('members', $_SESSION[$guid]['gibbonSchoolYearID'], ['includeStudents' => true])
+                $row->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true])
                     ->selectMultiple();
             	
 			$row = $form->addRow();
