@@ -22,8 +22,8 @@ include '../../gibbon.php';
 $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage_delete.php&search=$search&gibbonMessengerID=".$gibbonMessengerID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage.php&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage_delete.php&search=$search&gibbonMessengerID=".$gibbonMessengerID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/messenger_manage.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage_delete.php') == false) {
     $URL .= '&return=error0';
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                     $data = array('gibbonMessengerID' => $gibbonMessengerID);
                     $sql = 'SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID';
                 } else {
-                    $data = array('gibbonMessengerID' => $gibbonMessengerID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonMessengerID' => $gibbonMessengerID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = 'SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID';
                 }
                 $result = $connection2->prepare($sql);

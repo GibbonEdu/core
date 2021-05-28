@@ -19,461 +19,242 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
-if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __("You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Get action with highest precendence
-	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
-	if ($highestAction==FALSE) {
-		print "<div class='error'>" ;
-		print __("The highest grouped action cannot be determined.") ;
-		print "</div>" ;
-	}
-	else {
-		//Proceed!
-		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
-		$deleteReturnMessage="" ;
-		$class="error" ;
-		if (!($deleteReturn=="")) {
-			if ($deleteReturn=="success0") {
-				$deleteReturnMessage=__("Your request was completed successfully.") ;
-				$class="success" ;
-			}
-			print "<div class='$class'>" ;
-				print $deleteReturnMessage;
-			print "</div>" ;
-		}
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php') == false) {
+    // Access denied
+    $page->addError(__('You do not have access to this action.'));
+} else {
+    // Get action with highest precedence
+    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2);
+    if ($highestAction==FALSE) {
+        $page->addError(__('The highest grouped action cannot be determined.'));
+        return;
+    }
 
-		print "<h2>" ;
-		print __("Search") ;
-		print "</h2>" ;
+    $search = isset($_GET['search'])? $_GET['search'] : '';
 
-		$search = isset($_GET['search'])? $_GET['search'] : '';
+    // CRITERIA
+    $messengerGateway = $container->get(MessengerGateway::class);
+    $criteria = $messengerGateway->newQueryCriteria(true)
+        ->searchBy($messengerGateway->getSearchableColumns(), $search)
+        ->sortBy(['timestamp'], 'DESC')
+        ->fromPOST();
 
-		$form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/index.php', 'get');
-		$form->setClass('noIntBorder fullWidth');
+    $form = Form::create('searchForm', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+    $form->setTitle(__('Search'));
 
-		$form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/messenger_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/messenger_manage.php');
 
-		$row = $form->addRow();
-			$row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
-			$row->addTextField('search')->setValue($search);
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
+        $row->addTextField('search')->setValue($search);
 
-		$row = $form->addRow();
-			$row->addSearchSubmit($gibbon->session, __('Clear Search'));
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
 
-		echo $form->getOutput();
+    echo $form->getOutput();
 
-		print "<h2>" ;
-		print __("Messages") ;
-        print "</h2>" ;
+    // QUERY
+    $messages = $messengerGateway->queryMessages($criteria, $session->get('gibbonSchoolYearID'), $highestAction != 'Manage Messages_all' ? $session->get('gibbonPersonID') : '' );
+    $sendingMessages = $messengerGateway->getSendingMessages();
 
-        $messengerGateway = $container->get(MessengerGateway::class);
-        $sendingMessages = $messengerGateway->getSendingMessages();
+    // DATA TABLE
+    $table = DataTable::createPaginated('messages', $criteria);
+    $table->setTitle(__('Messages'));
 
-		//Set pagination variable
-		$page=1 ; if (isset($_GET["page"])) { $page=$_GET["page"] ; }
-		if ((!is_numeric($page)) OR $page<1) {
-			$page=1 ;
-		}
+    if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php')) {
+        $table->addHeaderAction('new', __('New Message'))
+            ->setURL('/modules/Messenger/messenger_post.php')
+            ->setIcon('page_new')
+            ->addParam('search', $search)
+            ->displayLabel();
+    }
 
-		try {
-			if ($highestAction=="Manage Messages_all") {
-				if ($search=="") {
-					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'));
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC" ;
-				}
-				else {
-					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
-				}
-			}
-			else {
-				if ($search=="") {
-					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$gibbon->session->get("gibbonPersonID"));
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC" ;
-				}
-				else {
-					$data=array('gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), "gibbonPersonID"=>$gibbon->session->get("gibbonPersonID"), "search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT gibbonMessenger.*, title, surname, preferredName, category FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
-				}
-			}
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) {
-			print "<div class='error'>" . $e->getMessage() . "</div>" ;
-		}
+    if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php')) {
+        $table->addHeaderAction('newWall', __('New Quick Wall Message'))
+            ->setURL('/modules/Messenger/messenger_postQuickWall.php')
+            ->setIcon('page_new')
+            ->addParam('search', $search)
+            ->displayLabel()
+            ->prepend(' | ');
+    }
+    
+    $table->addColumn('subject', __('Subject'))
+        ->context('primary')
+        ->format(function ($values) {
+            return '<b>'.$values['subject'].'</b>';
+        });
 
-		$sqlPage=$sql ." LIMIT " . $gibbon->session->get("pagination") . " OFFSET " . (($page-1)*$gibbon->session->get("pagination")) ;
+    $table->addColumn('timestamp', __('Date Sent'))
+        ->description(__('Dates Published'))
+        ->format(function ($values) {
+            $output = Format::date($values['timestamp']).'<br/>';
 
-		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
-			print "<div class='linkTop'>" ;
-				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-					print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_post.php'>" .  __('New Message') . "<img style='margin-left: 5px' title='" . __('New Message') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_new.png'/></a>" ;
-				}
-				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
-					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-						print " | " ;
-					}
-					print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_postQuickWall.php'>" .  __('New Quick Wall Message') . "<img style='margin-left: 5px' title='" . __('New Quick Wall Message') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_new.png'/></a>" ;
-				}
-			print "</div>" ;
-		}
+            if ($values['messageWall'] == 'Y') {
+                if (!empty($values['messageWall_date1'])) $output .= Format::small(Format::date($values['messageWall_date1'])).'<br/>';
+                if (!empty($values['messageWall_date2'])) $output .= Format::small(Format::date($values['messageWall_date2'])).'<br/>';
+                if (!empty($values['messageWall_date3'])) $output .= Format::small(Format::date($values['messageWall_date3'])).'<br/>';
+            }
+            return $output;
+        });
 
-		if ($result->rowCount()<1) {
-			print "<div class='error'>" ;
-			print __("There are no records to display.") ;
-			print "</div>" ;
-		}
-		else {
-			if ($result->rowCount()>$gibbon->session->get("pagination")) {
-				printPagination($guid, $result->rowCount(), $page, $gibbon->session->get("pagination"), "top", "&search=$search") ;
-			}
+    if ($highestAction == 'Manage Messages_all') {
+        $table->addColumn('author', __('Author'))
+            ->context('primary')
+            ->sortable(['surname', 'preferredName'])
+            ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false]));
+    }
 
-			print "<table cellspacing='0' style='width: 100%'>" ;
-				print "<tr class='head'>" ;
-					print "<th>" ;
-						print __("Subject") ;
-					print "</th>" ;
-					print "<th style='width: 100px'>" ;
-						print __('Date Sent'). "<br/>" ;
-						print "<span style='font-style: italic; font-size: 85%'>" . __('Dates Published') . "</span>" ;
-					print "</th>" ;
-					print "<th>" ;
-						print __("Author") ;
-					print "</th>" ;
-					print "<th style='width: 320px'>" ;
-						print __("Recipients") ;
-					print "</th>" ;
-					print "<th>" ;
-						print __("Email") ;
-					print "</th>" ;
-					print "<th>" ;
-						print __("Wall") ;
-					print "</th>" ;
-					print "<th>" ;
-						print __("SMS") ;
-					print "</th>" ;
-					print "<th style='width: 120px'>" ;
-						print __("Actions") ;
-					print "</th>" ;
-				print "</tr>" ;
+    $table->addColumn('recipients', __('Recipients'))
+        ->notSortable()
+        ->format(function ($values) use (&$pdo) {
+            $output = '';
+            if (!empty($sendingMessages[$values['gibbonMessengerID']])) {
+                $output .= '<div class="statusBar" data-id="'.$sendingMessages[$values['gibbonMessengerID']].'">';
+                $output .= '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'
+                    .'<span class="tag ml-2 message">'.__('Sending').'</span></div>';
+                $output .= '</div>';
+            }
 
-				$count=0;
-				$rowNum="odd" ;
-				try {
-					$resultPage=$connection2->prepare($sqlPage);
-					$resultPage->execute($data);
-				}
-				catch(PDOException $e) {
-					print "<div class='error'>" . $e->getMessage() . "</div>" ;
-				}
-				while ($row=$resultPage->fetch()) {
-					if ($row['messageWallPin'] == 'Y') {
-						$rowNum="selected" ;
-					}
-					else if ($count%2==0) {
-						$rowNum="even" ;
-					}
-					else {
-						$rowNum="odd" ;
-					}
+            $data = ['gibbonMessengerID' => $values['gibbonMessengerID']];
+            $sql = "SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id";
+            $targets = $pdo->select($sql, $data)->fetchAll();
 
+            foreach ($targets as $target) {
+                if ($target['type']=='Activity') {
+                    $data = ['gibbonActivityID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                }
+                elseif ($target['type']=='Class') {
+                    $data = ['gibbonCourseClassID'=>$target['id']];
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['course'] . '.' . $targetData['class'] . '<br/>';
+                    }
+                } elseif ($target['type']=='Course') {
+                    $data = ['gibbonCourseID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                } elseif ($target['type']=='Role') {
+                    $data = ['gibbonRoleID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . __($targetData['name']) . '<br/>';
+                    }
+                } elseif ($target['type']=='Role Category') {
+                    $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
+                } elseif ($target['type']=='Form Group') {
+                   
+                    $data = ['gibbonFormGroupID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID";
+                
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                } elseif ($target['type']=='Year Group') {
 
-					//COLOR ROW BY STATUS!
-					print "<tr class=$rowNum>" ;
-						print "<td>" ;
-							print "<b>" . $row["subject"] . "</b><br/>" ;
-						print "</td>" ;
-						print "<td>" ;
-							print dateConvertBack($guid, substr($row["timestamp"],0,10)) . "<br/>" ;
-							if ($row["messageWall"]=="Y") {
-								print "<span style='font-style: italic; font-size: 85%'>" ;
-									if ($row["messageWall_date1"]!="") {
-										print dateConvertBack($guid, $row["messageWall_date1"]) . "<br/>" ;
-									}
-									if ($row["messageWall_date2"]!="") {
-										print dateConvertBack($guid, $row["messageWall_date2"]) . "<br/>" ;
-									}
-									if ($row["messageWall_date3"]!="") {
-										print dateConvertBack($guid, $row["messageWall_date3"]) . "<br/>" ;
-									}
-								print "</span>" ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print Format::name($row["title"], $row["preferredName"], $row["surname"], $row["category"]) ;
-						print "</td>" ;
-                        print "<td>" ;
-                            if (!empty($sendingMessages[$row['gibbonMessengerID']])) {
-                                echo '<div class="statusBar" data-id="'.$sendingMessages[$row['gibbonMessengerID']].'">';
-                                echo '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'
-                                    .'<span class="tag ml-2 message">'.__('Sending').'</span></div>';
-                                echo '</div>';
-                            }
+                    $data = ['gibbonYearGroupID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . __($targetData['name']) . '<br/>';
+                    }
+                } elseif ($target['type']=='Applicants') {
 
-							try {
-								$dataTargets=array("gibbonMessengerID"=>$row["gibbonMessengerID"]);
-								$sqlTargets="SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id" ;
-								$resultTargets=$connection2->prepare($sqlTargets);
-								$resultTargets->execute($dataTargets);
-							}
-							catch(PDOException $e) {
-								print "<div class='error'>" . $e->getMessage() . "</div>" ;
-							}
-							$targets="" ;
-							while ($rowTargets=$resultTargets->fetch()) {
-								if ($rowTargets["type"]=="Activity") {
-									try {
-										$dataTarget=array("gibbonActivityID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Class") {
-									try {
-										$dataTarget=array("gibbonCourseClassID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["course"] . "." . $rowTarget["class"] . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Course") {
-									try {
-										$dataTarget=array("gibbonCourseID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Role") {
-									try {
-										$dataTarget=array("gibbonRoleID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTarget["name"]) . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Role Category") {
-									$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>" ;
-								}
-								else if ($rowTargets["type"]=="Form Group") {
-									try {
-										$dataTarget=array("gibbonFormGroupID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Year Group") {
-									try {
-										$dataTarget=array("gibbonYearGroupID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTarget["name"]) . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Applicants") {
-									try {
-										$dataTarget=array("gibbonSchoolYearID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Houses") {
-									try {
-										$dataTarget=array("gibbonHouseID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-                                else if ($rowTargets["type"]=="Transport") {
-									$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>" ;
-								}
-                                else if ($rowTargets["type"]=="Attendance") {
-                                  $targets.="<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>" ;
-                                }
-								else if ($rowTargets["type"]=="Individuals") {
-									try {
-										$dataTarget=array("gibbonPersonID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . Format::name("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
-									}
-								}
-								else if ($rowTargets["type"]=="Group") {
-									try {
-										$dataTarget=array("gibbonGroupID"=>$rowTargets["id"]);
-										$sqlTarget="SELECT name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID" ;
-										$resultTarget=$connection2->prepare($sqlTarget);
-										$resultTarget->execute($dataTarget);
-									}
-									catch(PDOException $e) {
-										print "<div class='error'>" . $e->getMessage() . "</div>" ;
-									}
-									if ($resultTarget->rowCount()==1) {
-										$rowTarget=$resultTarget->fetch() ;
-										$targets.="<b>" . __($rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
-									}
-								}
-							}
-							print $targets ;
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["email"]=="Y") {
-								print "<img title='" . __('Sent by email.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
-							}
-							else {
-								print "<img title='" . __('Not sent by email.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["messageWall"]=="Y") {
-								print "<img title='" . __('Sent by message wall.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
-							}
-							else {
-								print "<img title='" . __('Not sent by message wall.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							if ($row["sms"]=="Y") {
-								print "<img title='" . __('Sent by sms.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconTick.png'/> " ;
-							}
-							else {
-								print "<img title='" . __('Not sent by sms.') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/iconCross.png'/> " ;
-							}
-						print "</td>" ;
-						print "<td>" ;
-							print "<a href='" . $gibbon->session->get("absoluteURL") . "/index.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __('Edit') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/config.png'/></a> " ;
-							print "<a class='thickbox' href='" . $gibbon->session->get("absoluteURL") . "/fullscreen.php?q=/modules/" . $gibbon->session->get("module") . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><img title='" . __('Delete') . "' src='./themes/" . $gibbon->session->get("gibbonThemeName") . "/img/garbage.png'/></a> " ;
-							print "<script type='text/javascript'>" ;
-								print "$(document).ready(function(){" ;
-									print "\$(\".comment-$count\").hide();" ;
-									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
-									print "\$(\".show_hide-$count\").click(function(){" ;
-									print "\$(\".comment-$count\").fadeToggle(1000);" ;
-									print "});" ;
-								print "});" ;
-							print "</script>" ;
-							if (is_null($row["emailReceipt"]) == false) {
-								print "<a href='".$gibbon->session->get("absoluteURL")."/index.php?q=/modules/Messenger/messenger_manage_report.php&gibbonMessengerID=".$row['gibbonMessengerID']."&sidebar=true&search=$search'><img title='" . __('View Send Report') . "' style='padding-right: 5px' src='" . $gibbon->session->get("absoluteURL") . "/themes/" . $gibbon->session->get("gibbonThemeName") . "/img/target.png' /></a>" ;
-							}
-							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $gibbon->session->get("absoluteURL") . "/themes/" . $gibbon->session->get("gibbonThemeName") . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
-							}
-						print "</td>" ;
-					print "</tr>" ;
-					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
-						print "<tr class='comment-$count' id='comment-$count'>" ;
-							print "<td style='background-color: #fff' colspan=8>" ;
-								if ($row["emailReport"]!="") {
-									print "<b><u>Email Report</u></b><br/>" ;
-									$emails=explode("),",$row["emailReport"]) ;
-									$emails=array_unique($emails) ;
-									$emails=msort($emails) ;
-									foreach ($emails AS $email) {
-										print $email . ")<br/>" ;
-									}
-								}
-								if ($row["smsReport"]!="") {
-									print "<b><u>SMS Report</u></b><br/>" ;
-									$smss=explode("),",$row["smsReport"]) ;
-									$smss=array_unique($smss) ;
-									$smss=msort($smss) ;
-									foreach ($smss AS $sms) {
-										print $sms . ")<br/>" ;
-									}
-								}
-							print "</td>" ;
-						print "</tr>" ;
-					}
+                    $data = ['gibbonSchoolYearID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                } elseif ($target['type']=='Houses') {
 
-					$count++ ;
-				}
-			print "</table>" ;
+                    $data = ['gibbonHouseID'=>$target['id']];
+                    $sql = "SELECT name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                } elseif ($target['type']=='Transport') {
+                    $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
+                } elseif ($target['type']=='Attendance') {
+                    $output .= '<b>' . __($target['type']) . '</b> - ' . __($target['id']) . '<br/>';
+                } elseif ($target['type']=='Individuals') {
+                    
+                    $data = ['gibbonPersonID'=>$target['id']];
+                    $sql = "SELECT preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+                    
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . Format::name('', $targetData['preferredName'], $targetData['surname'], 'Student', true) . '<br/>';
+                    }
+                } elseif ($target['type']=='Group') {
+                    $data = ['gibbonGroupID'=>$target['id']];
+                    $sql = 'SELECT name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID';
 
-			if ($result->rowCount()>$gibbon->session->get("pagination")) {
-				printPagination($guid, $result->rowCount(), $page, $gibbon->session->get("pagination"), "bottom", "&search=$search") ;
-			}
-		}
-	}
+                    if ($targetData = $pdo->select($sql, $data)->fetch()) {
+                        $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
+                    }
+                }
+            }
+
+            return $output;
+        });
+
+    $table->addColumn('email', __('Email'))->format(function ($values) use (&$session) {
+        return $values['email'] == 'Y'
+            ? '<img title="'.__('Sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
+            : '<img title="'.__('Not sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+    });
+
+    $table->addColumn('messageWall', __('Wall'))->format(function ($values) use (&$session) {
+        return $values['messageWall'] == 'Y'
+            ? '<img title="'.__('Sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
+            : '<img title="'.__('Not sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+    });
+
+    $table->addColumn('sms', __('SMS'))->format(function ($values) use (&$session) {
+        return $values['sms'] == 'Y'
+            ? '<img title="'.__('Sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
+            : '<img title="'.__('Not sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+    });
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonMessengerID')
+        ->addParam('sidebar', 'true')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($values, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Messenger/messenger_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Messenger/messenger_manage_delete.php');
+
+            if (!is_null($values['emailReceipt'])) {
+                $actions->addAction('send', __('View Send Report'))
+                        ->setURL('/modules/Messenger/messenger_manage_report.php')
+                        ->setIcon('target');
+            }
+        });
+
+    echo $table->render($messages);
 }
 ?>
+
 <script>
 $('.statusBar').each(function(index, element) {
     var refresh = setInterval(function () {

@@ -26,7 +26,7 @@ include '../../gibbon.php';
 $gibbonLogID = $_POST['gibbonLogID'] ?? '';
 
 if (empty($gibbonLogID)) return;
-if (empty($_SESSION[$guid]['username'])) return;
+if (!$session->has('username')) return;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php')) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
