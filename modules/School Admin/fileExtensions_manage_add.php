@@ -31,13 +31,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/fileExtensions_manage_edit.php&gibbonFileExtensionID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/fileExtensions_manage_edit.php&gibbonFileExtensionID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('fileExtensions', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fileExtensions_manage_addProcess.php');
+    $form = Form::create('fileExtensions', $session->get('absoluteURL').'/modules/'.$session->get('module').'/fileExtensions_manage_addProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $illegalTypes = FileUploader::getIllegalFileExtensions();
 

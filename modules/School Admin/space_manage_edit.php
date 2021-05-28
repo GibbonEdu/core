@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('spaceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/space_manage_editProcess.php?gibbonSpaceID='.$gibbonSpaceID);
+            $form = Form::create('spaceEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/space_manage_editProcess.php?gibbonSpaceID='.$gibbonSpaceID);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));

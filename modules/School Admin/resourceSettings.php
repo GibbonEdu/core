@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSetti
     //Proceed!
     $page->breadcrumbs->add(__('Resource Settings'));
 
-    $form = Form::create('resourceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/resourceSettingsProcess.php');
+    $form = Form::create('resourceSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/resourceSettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'Resources', 'categories', true);
     $row = $form->addRow();

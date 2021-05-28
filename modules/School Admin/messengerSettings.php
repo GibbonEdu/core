@@ -27,13 +27,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     $page->breadcrumbs->add(__('Messenger Settings'));
 
 
-    $form = Form::create('messengerSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messengerSettingsProcess.php' );
+    $form = Form::create('messengerSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messengerSettingsProcess.php' );
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('SMS Settings'));
 
-    $row = $form->addRow()->addAlert(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.').' '.sprintf(__('%1$sClick here%2$s to configure SMS settings.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/thirdPartySettings.php'>", "</a>"));
+    $row = $form->addRow()->addAlert(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.').' '.sprintf(__('%1$sClick here%2$s to configure SMS settings.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/System Admin/thirdPartySettings.php'>", "</a>"));
 
 	$row = $form->addRow()->addHeading(__('Message Wall Settings'));
 
