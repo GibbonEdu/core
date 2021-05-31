@@ -152,4 +152,13 @@ class PersonalDocumentGateway extends QueryableGateway
 
         return $this->db()->update($sql, $data);
     }
+
+    public function deletePersonalDocuments($foreignTable, $foreignTableID)
+    {
+        $data = ['foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID];
+        $sql = "DELETE FROM gibbonPersonalDocument 
+                WHERE foreignTable=:foreignTable AND foreignTableID=:foreignTableID";
+
+        return $this->db()->delete($sql, $data);
+    }
 }
