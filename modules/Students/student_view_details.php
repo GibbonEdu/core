@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
             //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID1 AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             }
 
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
-                if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                if ($gibbonPersonID == $session->get('gibbonPersonID')) {
                     $skipBrief = true;
                 } elseif (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
                     $highestAction = 'View Student Profile_brief';
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
                 $sql = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -177,13 +177,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</table>';
 
                     //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
+                    $session->set('sidebarExtra', getUserPhoto($guid, $row['image_240'], 240));
                 }
                 return;
             } else {
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'today' => date('Y-m-d'));
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID1' => $_GET['gibbonPersonID'], 'gibbonPersonID2' => $session->get('gibbonPersonID'), 'today' => date('Y-m-d'));
                         $sql = "SELECT * FROM gibbonFamilyChild
                             JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -195,8 +195,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2
                             AND childDataAccess='Y'";
                     } elseif ($highestAction == 'View Student Profile_my') {
-                        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
+                        $gibbonPersonID = $session->get('gibbonPersonID');
+                        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                         $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
@@ -204,14 +204,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                     } elseif ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
-                            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
+                            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
                                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                                 AND gibbonPerson.gibbonPersonID=:gibbonPersonID AND status='Full'
                                 AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         } else {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sql = "SELECT gibbonStudentEnrolment.*, gibbonPerson.* FROM gibbonPerson
                                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     if ($search != '' or $allStudents != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view.php&search='.$search."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Students/student_view.php&search='.$search."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if ($subpage == 'Overview') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             echo '</div>';
                         }
 
@@ -342,7 +342,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
                                 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
+                                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$rowDetail['gibbonFormGroupID']."'>".$rowDetail['name'].'</a>';
                                 } else {
                                     echo $rowDetail['name'];
                                 }
@@ -360,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $resultDetail->execute($dataDetail);
                             while ($rowDetail = $resultDetail->fetch()) {
                                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                                 } else {
                                     echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                                 }
@@ -393,7 +393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo "<span style='font-size: 115%; font-weight: bold;'>".__('Head of Year').'</span><br/>';
                             $rowDetail = $resultDetail->fetch();
                             if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                             } else {
                                 echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                             }
@@ -576,7 +576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                     echo '</div>';
                                 }
                             }
@@ -809,7 +809,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.php') == true) {
                                     echo "<div class='linkTop'>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$rowFamily['gibbonFamilyID']."'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$rowFamily['gibbonFamilyID']."'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                     echo '</div>';
                                 } else {
                                     echo '<br/><br/>';
@@ -1012,7 +1012,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 //Get siblings
 
-                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                    $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID'], 'gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                                     $sqlMember = 'SELECT gibbonPerson.gibbonPersonID, image_240, preferredName, surname, status, gibbonStudentEnrolmentID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
                                     $resultMember = $connection2->prepare($sqlMember);
                                     $resultMember->execute($dataMember);
@@ -1068,7 +1068,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     } elseif ($subpage == 'Emergency Contacts') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             echo '</div>';
                         }
 
@@ -1313,11 +1313,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($resultCategories->rowCount() > 0) {
                                     $categories = true;
 
-                                    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                                    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
                                     $form->setTitle(__('Filter'));
                                     $form->setClass('noIntBorder fullWidth');
 
-                                    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
+                                    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view_details.php');
                                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                     $form->addHiddenValue('allStudents', $allStudents);
                                     $form->addHiddenValue('search', $search);
@@ -1394,8 +1394,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->addParam('search', $search)
                                     ->addParam('subpage', 'Notes')
                                     ->addParam('category', $category ?? '')
-                                    ->format(function ($note, $actions) use ($highestAction, $guid) {
-                                        if ($note['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == "View Student Profile_fullEditAllNotes") {
+                                    ->format(function ($note, $actions) use ($highestAction, $session) {
+                                        if ($note['gibbonPersonIDCreator'] == $session->get('gibbonPersonID') || $highestAction == "View Student Profile_fullEditAllNotes") {
                                             $actions->addAction('edit', __('Edit'))
                                                     ->setURL('/modules/Students/student_view_details_notes_edit.php');
                                         }
@@ -1421,7 +1421,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             // ATTENDANCE DATA
                             $attendanceData = $container->get(StudentHistoryData::class)
-                                ->getAttendanceData($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
+                                ->getAttendanceData($session->get('gibbonSchoolYearID'), $gibbonPersonID, $row['dateStart'], $row['dateEnd']);
 
                             // DATA TABLE
                             $renderer = $container->get(StudentHistoryView::class);
@@ -1458,7 +1458,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
                                 $alert = getAlert($guid, $connection2, 002);
-                                $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+                                $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
                                     $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
@@ -1472,7 +1472,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $and2 = '';
                                 $dataList = array();
                                 $dataEntry = array();
-                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+                                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $session->get('gibbonSchoolYearID');
 
                                 if ($filter != '*') {
                                     $dataList['filter'] = $filter;
@@ -1495,10 +1495,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __('This page displays academic results for a student throughout their school career. Only subjects with published results are shown.');
                                 echo '</p>';
 
-                                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                                $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
                                 $form->setClass('noIntBorder fullWidth');
 
-                                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/student_view_details.php');
+                                $form->addHiddenValue('q', '/modules/'.$session->get('module').'/student_view_details.php');
                                 $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                 $form->addHiddenValue('allStudents', $allStudents);
                                 $form->addHiddenValue('search', $search);
@@ -1562,7 +1562,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($highestAction2 == 'View Markbook_myClasses') {
                                     // Get class list (limited to a teacher's classes)
 
-                                        $dataList['gibbonPersonIDTeacher'] = $_SESSION[$guid]['gibbonPersonID'];
+                                        $dataList['gibbonPersonIDTeacher'] = $session->get('gibbonPersonID');
                                         $dataList['gibbonPersonIDStudent'] = $gibbonPersonID;
                                         $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target
                                             FROM gibbonCourse
@@ -1702,8 +1702,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     echo __('Unmarked').'<br/>';
                                                 }
                                                 echo $rowEntry['type'];
-                                                if ($rowEntry['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowEntry['attachment'])) {
-                                                    echo " | <a 'title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['attachment']."'>".__('More info').'</a>';
+                                                if ($rowEntry['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowEntry['attachment'])) {
+                                                    echo " | <a 'title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowEntry['attachment']."'>".__('More info').'</a>';
                                                 }
                                                 echo '</span><br/>';
                                                 echo '</td>';
@@ -1742,7 +1742,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                     echo "<div $styleAttainment>".$rowEntry['attainmentValue'];
                                                     if ($rowEntry['gibbonRubricIDAttainment'] != '' and $enableRubrics =='Y') {
-                                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                                        echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
                                                     }
                                                     echo '</div>';
                                                     if ($rowEntry['attainmentValue'] != '') {
@@ -1774,7 +1774,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         }
                                                         echo "<div $styleEffort>".$rowEntry['effortValue'];
                                                         if ($rowEntry['gibbonRubricIDEffort'] != '' and $enableRubrics =='Y') {
-                                                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                                            echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowList['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
                                                         }
                                                         echo '</div>';
                                                         if ($rowEntry['effortValue'] != '') {
@@ -1807,7 +1807,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                         }
                                                     }
                                                     if ($rowEntry['response'] != '') {
-                                                        echo "<a title='Uploaded Response' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__('Uploaded Response').'</a><br/>';
+                                                        echo "<a title='Uploaded Response' href='".$session->get('absoluteURL').'/'.$rowEntry['response']."'>".__('Uploaded Response').'</a><br/>';
                                                     }
                                                     echo '</td>';
                                                 }
@@ -1855,7 +1855,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                             }
 
                                                             if ($rowWork['type'] == 'File') {
-                                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
                                                             } elseif ($rowWork['type'] == 'Link') {
                                                                 echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                                             } else {
@@ -1927,7 +1927,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 } elseif ($highestAction2 == 'View Internal Assessments_myChildrens') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');
                                 } elseif ($highestAction2 == 'View Internal Assessments_mine') {
-                                    echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');
+                                    echo getInternalAssessmentRecord($guid, $connection2, $session->get('gibbonPersonID'), 'student');
                                 }
                             }
                         }
@@ -2064,7 +2064,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Edit link
                             if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == true) {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                 echo '</div>';
                             }
 
@@ -2082,7 +2082,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             //Get and display a list of student's educational assistants
 
-                                $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $gibbonPersonID);
+                                $dataDetail = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID2' => $gibbonPersonID);
                                 $sqlDetail = "(SELECT DISTINCT surname, preferredName, email
                                     FROM gibbonPerson
                                         JOIN gibbonINAssistant ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID)
@@ -2218,7 +2218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                     echo '</div>';
                                 }
                             }
@@ -2312,7 +2312,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+                            $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES
@@ -2363,7 +2363,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $options = unserialize($rowHook['options']);
 
                             //Check for permission to hook
-                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
+                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
                                 $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
                                     FROM gibbonHook
                                     JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
@@ -2381,7 +2381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __('Your request failed because you do not have access to this action.');
                                 echo '</div>';
                             } else {
-                                $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
+                                $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
                                 if (!file_exists($include)) {
                                     echo "<div class='error'>";
                                     echo __('The selected page cannot be displayed due to a hook error.');
@@ -2394,62 +2394,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
 
                     //Set sidebar
-                    $_SESSION[$guid]['sidebarExtra'] = '';
+                    $session->set('sidebarExtra', '');
 
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
 
-                        $_SESSION[$guid]['sidebarExtra'] .= '<div class="w-48 sm:w-64 h-10 mb-2">';
+                        $session->set('sidebarExtra', $session->get('sidebarExtra').'<div class="w-48 sm:w-64 h-10 mb-2">');
                         if ($alert == '') {
-                            $_SESSION[$guid]['sidebarExtra'] .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
+                             $session->set('sidebarExtra', $session->get('sidebarExtra').'<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>');
                         } else {
-                            $_SESSION[$guid]['sidebarExtra'] .= $alert;
+                             $session->set('sidebarExtra', $session->get('sidebarExtra').$alert);
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                         $session->set('sidebarExtra', $session->get('sidebarExtra').'</div>');
                     }
 
-                    $_SESSION[$guid]['sidebarExtra'] .= getUserPhoto($guid, $studentImage, 240);
+                     $session->set('sidebarExtra', $session->get('sidebarExtra').getUserPhoto($guid, $studentImage, 240));
 
                     //PERSONAL DATA MENU ITEMS
-                    $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__('Personal').'</h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
+                     $session->set('sidebarExtra', $session->get('sidebarExtra').'<div class="column-no-break">');
+                     $session->set('sidebarExtra', $session->get('sidebarExtra').'<h4>'.__('Personal').'</h4>');
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<ul class='moduleMenu'>");
                     $style = '';
                     if ($subpage == 'Overview') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Overview'>".__('Overview').'</a></li>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Overview'>".__('Overview').'</a></li>');
                     $style = '';
                     if ($subpage == 'Personal') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Personal'>".__('Personal').'</a></li>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Personal'>".__('Personal').'</a></li>');
                     $style = '';
                     if ($subpage == 'Family') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Family'>".__('Family').'</a></li>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Family'>".__('Family').'</a></li>');
                     $style = '';
                     if ($subpage == 'Emergency Contacts') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>');
                     $style = '';
                     if ($subpage == 'Medical') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>');
                     if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
                         if ($enableStudentNotes == 'Y') {
                             $style = '';
                             if ($subpage == 'Notes') {
                                 $style = "style='font-weight: bold'";
                             }
-                            $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__('Notes').'</a></li>';
+                             $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__('Notes').'</a></li>');
                         }
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra').'</ul>');
 
                     //OTHER MENU ITEMS, DYANMICALLY ARRANGED TO MATCH CUSTOM TOP MENU
                     //Get all modules, with the categories
@@ -2475,7 +2475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Markbook'];
                         $studentMenuName[$studentMenuCount] = __('Markbook');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Markbook'>".__('Markbook').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Markbook'>".__('Markbook').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php')) {
@@ -2485,7 +2485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Formal Assessment'];
                         $studentMenuName[$studentMenuCount] = __('Formal Assessment');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Internal%20Assessment'>".__('Internal Assessment').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Internal%20Assessment'>".__('Internal Assessment').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php') or isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_view.php')) {
@@ -2495,7 +2495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Formal Assessment'];
                         $studentMenuName[$studentMenuCount] = __('External Assessment');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=External Assessment'>".__('External Assessment').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=External Assessment'>".__('External Assessment').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php')) {
@@ -2505,7 +2505,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Reports'];
                         $studentMenuName[$studentMenuCount] = __('Reports');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Reports'>".__('Reports').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Reports'>".__('Reports').'</a></li>';
                         ++$studentMenuCount;
                     }
 
@@ -2516,7 +2516,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Activities'];
                         $studentMenuName[$studentMenuCount] = __('Activities');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Activities'>".__('Activities').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Activities'>".__('Activities').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') or isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php')) {
@@ -2527,7 +2527,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Planner'];
                         $studentMenuName[$studentMenuCount] = __($homeworkNamePlural);
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__($homeworkNamePlural).'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__($homeworkNamePlural).'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php')) {
@@ -2537,7 +2537,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Individual Needs'];
                         $studentMenuName[$studentMenuCount] = __('Individual Needs');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Individual Needs'>".__('Individual Needs').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Individual Needs'>".__('Individual Needs').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php')) {
@@ -2547,7 +2547,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Library'];
                         $studentMenuName[$studentMenuCount] = __('Library Borrowing');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Library Borrowing'>".__('Library Borrowing').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Library Borrowing'>".__('Library Borrowing').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
@@ -2557,7 +2557,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Timetable'];
                         $studentMenuName[$studentMenuCount] = __('Timetable');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Timetable'>".__('Timetable').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Timetable'>".__('Timetable').'</a></li>';
                         ++$studentMenuCount;
                     }if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
                         $style = '';
@@ -2566,7 +2566,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
                         $studentMenuName[$studentMenuCount] = __('Attendance');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Attendance'>".__('Attendance').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Attendance'>".__('Attendance').'</a></li>';
                         ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php')) {
@@ -2576,7 +2576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Behaviour'];
                         $studentMenuName[$studentMenuCount] = __('Behaviour');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__('Behaviour').'</a></li>';
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__('Behaviour').'</a></li>';
                         ++$studentMenuCount;
                     }
 
@@ -2595,7 +2595,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $options = unserialize($rowHooks['options']);
                             //Check for permission to hook
 
-                                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
+                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
                                 $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
                                         FROM gibbonHook
                                         JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
@@ -2616,7 +2616,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
                                 $studentMenuName[$studentMenuCount] = __($rowHooks['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHooks['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHooks['gibbonHookID']."'>".__($rowHooks['name']).'</a></li>';
+                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHooks['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHooks['gibbonHookID']."'>".__($rowHooks['name']).'</a></li>';
                                 ++$studentMenuCount;
                                 ++$count;
                             }
@@ -2642,20 +2642,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
 
                             if ($countEntries > 0) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '<h4>'.__($order).'</h4>';
-                                $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
+                                 $session->set('sidebarExtra', $session->get('sidebarExtra').'<h4>'.__($order).'</h4>');
+                                 $session->set('sidebarExtra', $session->get('sidebarExtra')."<ul class='moduleMenu'>");
                                 for ($i = 0; $i < count($studentMenuCategory); ++$i) {
                                     if ($studentMenuCategory[$i] == $order) {
-                                        $_SESSION[$guid]['sidebarExtra'] .= $studentMenuLink[$i];
+                                         $session->set('sidebarExtra', $session->get('sidebarExtra').$studentMenuLink[$i]);
                                     }
                                 }
 
-                                $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
+                                 $session->set('sidebarExtra', $session->get('sidebarExtra').'</ul>');
                             }
                         }
                     }
 
-                    $_SESSION[$guid]['sidebarExtra'] .= '</div>';
+                     $session->set('sidebarExtra', $session->get('sidebarExtra').'</div>');
                 }
             }
         }

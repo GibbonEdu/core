@@ -21,8 +21,8 @@ include '../../gibbon.php';
 
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
 $search = $_GET['search'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/medicalForm_manage_delete.php&gibbonPersonMedicalID='.$gibbonPersonMedicalID."&search=$search";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage.php&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/medicalForm_manage_delete.php&gibbonPersonMedicalID='.$gibbonPersonMedicalID."&search=$search";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_delete.php') == false) {
     $URL .= '&return=error0';

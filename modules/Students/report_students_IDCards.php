@@ -40,14 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     $choices = $_POST['gibbonPersonID'] ?? [];
 
-    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_students_IDCards.php");
+    $form = Form::create('action',  $session->get('absoluteURL')."/index.php?q=/modules/Students/report_students_IDCards.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byForm" => true))->required()->placeholder()->selectMultiple()->selected($choices);
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'), array("allStudents" => false, "byName" => true, "byForm" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
         $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
         echo '</h2>';
 
         try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlWhere = ' AND (';
             for ($i = 0; $i < count($choices); ++$i) {
                 $data[$choices[$i]] = $choices[$i];
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                         echo ' '.$fileUploader->getLastError();
                     echo '</div>';
                 } else {
-                    $bg = 'background: url("'.$_SESSION[$guid]['absoluteURL']."/$attachment\") repeat left top #fff;";
+                    $bg = 'background: url("'.$session->get('absoluteURL')."/$attachment\") repeat left top #fff;";
                 }
             }
 
@@ -124,10 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<table class='blank' cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>";
                 echo '<tr>';
                 echo "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>";
-                if ($row['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['image_240']) == false) {
-                    echo "<img style='width: 150px; height: 200px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240.jpg'/><br/>";
+                if ($row['image_240'] == '' or file_exists($session->get('absolutePath').'/'.$row['image_240']) == false) {
+                    echo "<img style='width: 150px; height: 200px' class='user' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240.jpg'/><br/>";
                 } else {
-                    echo "<img style='width: 150px; height: 200px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/'.$row['image_240']."'/><br/>";
+                    echo "<img style='width: 150px; height: 200px' class='user' src='".$session->get('absoluteURL').'/'.$row['image_240']."'/><br/>";
                 }
                 echo '</td>';
                 echo "<td style='padding: 0px ; width: 18px'></td>";
@@ -143,9 +143,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
-                echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
+                echo '<b>'.$session->get('organisationNameShort').' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
                 echo '<b>'.__('Year/Form')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
-                echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['gibbonSchoolYearName'].'</span><br/>';
+                echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$session->get('gibbonSchoolYearName').'</span><br/>';
                 echo '</div>';
                 echo '</td>';
                 echo '</tr>';

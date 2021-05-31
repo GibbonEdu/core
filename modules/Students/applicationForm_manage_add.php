@@ -37,9 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Add Form'));
 
-    $form = Form::create('addApplication', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm.php');
+    $form = Form::create('addApplication', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $types = array(
         'blank' => __('Blank Application'),
