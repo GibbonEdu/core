@@ -27,10 +27,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     //Proceed!
     $page->breadcrumbs->add(__('Finance Settings'));
 
-    $form = Form::create('financeSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/financeSettingsProcess.php');
+    $form = Form::create('financeSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/financeSettingsProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('General Settings'));
 
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $row = $form->addRow()->addClass('onlinePayment');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']))
-            ->append(sprintf(__('In %1$s.'), $_SESSION[$guid]['currency']));
+            ->append(sprintf(__('In %1$s.'), $session->get('currency')));
         $row->addNumber($setting['name'])
             ->setValue($setting['value'])
             ->decimalPlaces(2);

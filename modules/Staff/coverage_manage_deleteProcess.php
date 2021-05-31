@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 $gibbonStaffCoverageID = $_GET['gibbonStaffCoverageID'] ?? '';
 $search = $_POST['search'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_manage.php&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_delete.php') == false) {
     $URL .= '&return=error0';

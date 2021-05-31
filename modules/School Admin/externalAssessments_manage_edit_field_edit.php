@@ -48,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                 ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
                 ->add(__('Edit Field'));
 
-            $form = Form::create('externalAssessmentField', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_editProcess.php?gibbonExternalAssessmentFieldID='.$gibbonExternalAssessmentFieldID.'&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID);
+            $form = Form::create('externalAssessmentField', $session->get('absoluteURL').'/modules/'.$session->get('module').'/externalAssessments_manage_edit_field_editProcess.php?gibbonExternalAssessmentFieldID='.$gibbonExternalAssessmentFieldID.'&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
             $row = $form->addRow();

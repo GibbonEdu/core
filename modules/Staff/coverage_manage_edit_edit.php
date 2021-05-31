@@ -48,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         return;
     }
 
-    $form = Form::create('staffCoverageEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_manage_edit_editProcess.php');
+    $form = Form::create('staffCoverageEdit', $session->get('absoluteURL').'/modules/Staff/coverage_manage_edit_editProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
     $form->addHiddenValue('gibbonStaffCoverageDateID', $gibbonStaffCoverageDateID);
    

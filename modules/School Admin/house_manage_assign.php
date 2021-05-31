@@ -31,10 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
         ->add(__('Manage Houses'), 'house_manage.php')
         ->add(__('Assign Houses'));
 
-    $form = Form::create('houseAssignProcess', $_SESSION[$guid]['absoluteURL'].'/modules/School Admin/house_manage_assignProcess.php');
+    $form = Form::create('houseAssignProcess', $session->get('absoluteURL').'/modules/School Admin/house_manage_assignProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));

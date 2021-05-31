@@ -32,9 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     $result->execute($data);
 
     //Let's go!
-    $form = Form::create('alertLevelSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alertLevelSettingsProcess.php' );
+    $form = Form::create('alertLevelSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/alertLevelSettingsProcess.php' );
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $count = 0;
     while ($rowSQL = $result->fetch()) {

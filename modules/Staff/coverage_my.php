@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     // Proceed!
     $page->breadcrumbs->add(__('My Coverage'));
     
-    $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+    $gibbonPersonID = $session->get('gibbonPersonID');
     $displayCount = 0;
     
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
 
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
         $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
-        $schoolYear = $schoolYearGateway->getSchoolYearByID($_SESSION[$guid]['gibbonSchoolYearID']);
+        $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
         // CALENDAR VIEW
         $table = CoverageCalendar::create($coverage->toArray(), $exceptions->toArray(), $schoolYear['firstDay'], $schoolYear['lastDay']);

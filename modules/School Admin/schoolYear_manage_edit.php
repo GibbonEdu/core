@@ -46,10 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('schoolYear', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_editProcess.php?gibbonSchoolYearID='.$gibbonSchoolYearID);
+            $form = Form::create('schoolYear', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYear_manage_editProcess.php?gibbonSchoolYearID='.$gibbonSchoolYearID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $statuses = array(
                 'Past'     => __('Past'),
@@ -72,11 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                     $row->addSelect('status')->fromArray($statuses)->required()->selected($values['status']);
 
                     $form->toggleVisibilityByClass('statusChange')->onSelect('status')->when('Current');
-                    $direction = ($values['sequenceNumber'] < $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'])? __('Upcoming') : __('Past');
+                    $direction = ($values['sequenceNumber'] < $session->get('gibbonSchoolYearSequenceNumberCurrent'))? __('Upcoming') : __('Past');
 
                     // Display an alert to warn users that changing this will have an impact on their system.
                     $row = $form->addRow()->setClass('statusChange');
-                    $row->addAlert(sprintf(__('Setting the status of this school year to Current will change the current school year %1$s to %2$s. Adjustments to the Academic Year can affect the visibility of vital data in your system. It\'s recommended to use the Rollover tool in User Admin to advance school years rather than changing them here. PROCEED WITH CAUTION!'), $_SESSION[$guid]['gibbonSchoolYearNameCurrent'], $direction) );
+                    $row->addAlert(sprintf(__('Setting the status of this school year to Current will change the current school year %1$s to %2$s. Adjustments to the Academic Year can affect the visibility of vital data in your system. It\'s recommended to use the Rollover tool in User Admin to advance school years rather than changing them here. PROCEED WITH CAUTION!'), $session->get('gibbonSchoolYearNameCurrent'), $direction) );
             }
 
             $row = $form->addRow();
@@ -84,11 +84,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                 $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear', $values['sequenceNumber'])->required()->maxLength(3)->setValue($values['sequenceNumber']);
 
             $row = $form->addRow();
-                $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('firstDay', __('First Day'));
                 $row->addDate('firstDay')->required()->setValue(dateConvertBack($guid, $values['firstDay']));
 
             $row = $form->addRow();
-                $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('lastDay', __('Last Day'));
                 $row->addDate('lastDay')->required()->setValue(dateConvertBack($guid, $values['lastDay']));
 
             $row = $form->addRow();

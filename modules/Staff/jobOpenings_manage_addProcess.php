@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
     } else {
         //Write to database
         try {
-            $data = array('type' => $type, 'jobTitle' => $jobTitle, 'dateOpen' => $dateOpen, 'active' => $active, 'description' => $description, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('type' => $type, 'jobTitle' => $jobTitle, 'dateOpen' => $dateOpen, 'active' => $active, 'description' => $description, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
             $sql = 'INSERT INTO gibbonStaffJobOpening SET type=:type, jobTitle=:jobTitle, dateOpen=:dateOpen, active=:active, description=:description, gibbonPersonIDCreator=:gibbonPersonIDCreator';
             $result = $connection2->prepare($sql);
             $result->execute($data);

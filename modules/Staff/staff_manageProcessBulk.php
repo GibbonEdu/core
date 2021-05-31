@@ -31,7 +31,7 @@ $dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
 $allStaff = $_GET['allStaff'] ?? '';
 $search = $_GET['search'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage.php&search=$search&allStaff=$allStaff";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage.php&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') == false) {
     $URL .= '&return=error0';

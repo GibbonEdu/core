@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     }
 
     $editLink = isset($_GET['editID'])
-        ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$_GET['editID']
+        ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$_GET['editID']
         : '';
     $page->return->setEditLink($editLink);
     $page->return->addReturns([
@@ -73,20 +73,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     }, []);
 
     // FORM
-    $form = Form::create('staffAbsence', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_addProcess.php');
+    $form = Form::create('staffAbsence', $session->get('absoluteURL').'/modules/Staff/absences_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Basic Information'));
 
     if ($highestAction == 'New Absence_any') {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Person'));
             $row->addSelectStaff('gibbonPersonID')->placeholder()->isRequired()->selected($gibbonPersonID);
     } elseif ($highestAction == 'New Absence_mine') {
-        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $session->get('gibbonPersonID');
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
     }
 

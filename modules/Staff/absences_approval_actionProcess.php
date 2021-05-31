@@ -25,8 +25,8 @@ require_once '../../gibbon.php';
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 $status = $_POST['status'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_approval_action.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_approval.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_approval_action.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_approval.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_action.php') == false) {
     $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval_ac
         exit;
     }
 
-    if ($absence['gibbonPersonIDApproval'] != $_SESSION[$guid]['gibbonPersonID']) {
+    if ($absence['gibbonPersonIDApproval'] != $session->get('gibbonPersonID')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

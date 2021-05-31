@@ -49,14 +49,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID='.$_GET['editID']."&gibbonScaleID=$gibbonScaleID";
+                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID='.$_GET['editID']."&gibbonScaleID=$gibbonScaleID";
             }
             $page->return->setEditLink($editLink);
 
 
-            $form = Form::create('gradeScaleGradeAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_addProcess.php');
+            $form = Form::create('gradeScaleGradeAdd', $session->get('absoluteURL').'/modules/'.$session->get('module').'/gradeScales_manage_edit_grade_addProcess.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonScaleID', $gibbonScaleID);
 
             $row = $form->addRow();
