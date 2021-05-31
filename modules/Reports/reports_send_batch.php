@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->add(__('Select Reports'));
 
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
-    
+
     $familyGateway = $container->get(FamilyGateway::class);
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $criteria = $reportGateway->newQueryCriteria()
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
-    
+
     $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, $gibbonReportID, $gibbonYearGroupID, 'All', $roleCategory, false, true);
 
     $studentIDs = $reports->getColumn('gibbonPersonID');
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         });
 
     $table->addColumn('timestampSent', __('Sent'))
-        ->format(function ($report) use ($guid) {
+        ->format(function ($report) use ($session) {
             $title = Format::name($report['parentTitle'], $report['parentPreferredName'], $report['parentSurname'], 'Parent', false).': '.Format::relativeTime($report['timestampAccessed'], false);
 
             if ($report['timestampSent'] == '0000-00-00 00:00:00') {
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
 
             return '';
         });
-    
+
     $table->addCheckboxColumn('identifier', 'gibbonReportArchiveEntryID')
         ->format(function ($report) {
             $emails = array_filter(array_column($report['familyAdults'], 'email'));
