@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $form = Form::create('applicationFormFee', $gibbon->session->get('absoluteURL').'/modules/Students/applicationForm_manage_edit_feeProcess.php?search='.$search);
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
     $form->addHiddenValue('gibbonApplicationFormID', $application['gibbonApplicationFormID']);
 

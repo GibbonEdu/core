@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo __('Search');
     echo '</h2>';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/medicalForm_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo __('View');
     echo '</h2>';
 
-    $medicalForms = $medicalGateway->queryMedicalFormsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $medicalForms = $medicalGateway->queryMedicalFormsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('medicalForms', $criteria);

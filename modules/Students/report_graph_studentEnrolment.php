@@ -63,8 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
     echo __('Choose Date');
     echo '</h2>';
 
-    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
-    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $_SESSION[$guid]['gibbonSchoolYearLastDay'];
+    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $session->get('gibbonSchoolYearFirstDay');
+    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $session->get('gibbonSchoolYearLastDay');
     $interval =  (isset($_POST['interval']))? $_POST['interval'] : '+1 week';
     $excludeLeft = $_POST['excludeLeft'] ?? '';
 
@@ -88,16 +88,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
         '+1 year' => __('Year')
     );
 
-    $form = Form::create('attendanceTrends', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/report_graph_studentEnrolment.php');
+    $form = Form::create('attendanceTrends', $session->get('absoluteURL').'/index.php?q=/modules/Students/report_graph_studentEnrolment.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'));
         $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $row = $form->addRow();

@@ -21,7 +21,7 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/firstAidRecord_add.php&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/firstAidRecord_add.php&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_add.php') == false) {
     $URL .= '&return=error0&step=1';
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
     //Proceed!
     $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-    $gibbonPersonIDFirstAider = $_SESSION[$guid]['gibbonPersonID'];
+    $gibbonPersonIDFirstAider = $session->get('gibbonPersonID');
     $date = $_POST['date'] ?? '';
     $timeIn = $_POST['timeIn'] ?? '';
     $description = $_POST['description'] ?? '';
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
         //Write to database
         try {
-            $data = array('gibbonPersonIDPatient' => $gibbonPersonID, 'gibbonPersonIDFirstAider' => $gibbonPersonIDFirstAider, 'date' => dateConvert($guid, $date), 'timeIn' => $timeIn, 'description' => $description, 'actionTaken' => $actionTaken, 'followUp' => $followUp, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'fields' => $fields);
+            $data = array('gibbonPersonIDPatient' => $gibbonPersonID, 'gibbonPersonIDFirstAider' => $gibbonPersonIDFirstAider, 'date' => dateConvert($guid, $date), 'timeIn' => $timeIn, 'description' => $description, 'actionTaken' => $actionTaken, 'followUp' => $followUp, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'fields' => $fields);
             $sql = 'INSERT INTO gibbonFirstAid SET gibbonPersonIDPatient=:gibbonPersonIDPatient, gibbonPersonIDFirstAider=:gibbonPersonIDFirstAider, date=:date, timeIn=:timeIn, description=:description, actionTaken=:actionTaken, followUp=:followUp, gibbonSchoolYearID=:gibbonSchoolYearID, fields=:fields';
             $result = $connection2->prepare($sql);
             $result->execute($data);

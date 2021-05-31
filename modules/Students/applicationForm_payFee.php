@@ -31,7 +31,7 @@ if (isset($_GET['return'])) {
         'error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."),
         'error4' => __('Online payment options are not available at this time.'),
         'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'),
-        'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonApplicationFormID)
+        'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $session->get('systemName'), $gibbonApplicationFormID)
     ]);
     return;
 }
@@ -64,15 +64,15 @@ if ($enablePayments != 'Y' || empty($paypalAPIUsername) || empty($paypalAPIPassw
 $currency = getSettingByScope($connection2, 'System', 'currency');
 $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
 
-$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/Students/applicationForm_payFeeProcess.php');
+$form = Form::create('action', $session->get('absoluteURL').'/modules/Students/applicationForm_payFeeProcess.php');
             
-$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+$form->addHiddenValue('address', $session->get('address'));
 $form->addHiddenValue('key', $gibbonApplicationFormHash);
 $form->addHiddenValue('gibbonApplicationFormID', $application['gibbonApplicationFormID']);
 
 $form->addRow()->addHeading(__('Application Fee'));
 
-$row = $form->addRow()->addContent(sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]['systemName']))->wrap('<p class="my-2">', '</p>');
+$row = $form->addRow()->addContent(sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $session->get('systemName')))->wrap('<p class="my-2">', '</p>');
 
 $row = $form->addRow();
     $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));

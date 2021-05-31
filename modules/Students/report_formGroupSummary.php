@@ -50,30 +50,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
         echo '</p>';
 
         if (empty($dateFrom) && !empty($dateTo)) {
-            $dateFrom = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+            $dateFrom = date($session->get('i18n')['dateFormatPHP']);
         }
         if (empty($dateTo) && !empty($dateFrom)) {
             if (dateConvertToTimestamp(dateConvert($guid, $dateFrom))>$today) {
                 $dateTo = $dateFrom;
             }
             else {
-                $dateTo = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
+                $dateTo = date($session->get('i18n')['dateFormatPHP']);
             }
         }
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_formGroupSummary.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupSummary.php");
 
         $row = $form->addRow();
-            $row->addLabel('dateFrom', __('From Date'))->description(__('Start date must be before this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateFrom', __('From Date'))->description(__('Start date must be before this date.'))->append('<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
             $row->addDate('dateFrom')->setValue($dateFrom);
 
         $row = $form->addRow();
-            $row->addLabel('dateTo', __('To Date'))->description(__('End date must be after this date.'))->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+            $row->addLabel('dateTo', __('To Date'))->description(__('End date must be after this date.'))->append('<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
             $row->addDate('dateTo')->setValue($dateTo);
 
 

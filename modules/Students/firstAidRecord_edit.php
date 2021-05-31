@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFirstAidID' => $gibbonFirstAidID);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFirstAidID' => $gibbonFirstAidID);
             $sql = "SELECT gibbonFirstAid.*, patient.gibbonPersonID AS gibbonPersonIDPatient, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
                 FROM gibbonFirstAid
                     JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
@@ -64,10 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
 
             $row = $form->addRow()->addHeading(__('Basic Information'));

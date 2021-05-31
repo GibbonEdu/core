@@ -57,21 +57,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         if ($search != '') {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
             echo '</div>';
         }
 
-        $form = Form::create('studentEnrolmentAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+        $form = Form::create('studentEnrolmentAdd', $session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
         $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
         $form->addHiddenValue('gibbonFormGroupIDOriginal', $values['gibbonFormGroupID']);
         $form->addHiddenValue('formGroupOriginalNameShort', $values['formGroup']);
 
         $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['name']);
-        $schoolYearName = $schoolYear['name'] ?? $_SESSION[$guid]['gibbonSchoolYearName'];
+        $schoolYearName = $schoolYear['name'] ?? $session->get('gibbonSchoolYearName');
 
         $row = $form->addRow();
             $row->addLabel('yearName', __('School Year'));

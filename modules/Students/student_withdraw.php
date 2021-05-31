@@ -27,10 +27,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
     // Proceed!
     $page->breadcrumbs->add(__('Withdraw Student'));
 
-    $form = Form::create('studentWithdraw', $_SESSION[$guid]['absoluteURL'].'/modules/Students/student_withdrawProcess.php');
+    $form = Form::create('studentWithdraw', $session->get('absoluteURL').'/modules/Students/student_withdrawProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Basic Information'));
 

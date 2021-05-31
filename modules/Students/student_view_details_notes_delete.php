@@ -56,6 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/Students/student_view_details_notes_deleteProcess.php', true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Students/student_view_details_notes_deleteProcess.php', true);
     echo $form->getOutput();
 }

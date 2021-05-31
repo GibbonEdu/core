@@ -29,9 +29,9 @@ $paid = $_GET['paid'] ?? '';
 $paymentToken = $_GET['token'] ?? '';
 
 $gibbonApplicationFormID = $_REQUEST['gibbonApplicationFormID'];
-$key = $_REQUEST['key'];
+$key = $_REQUEST['key'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_payFee.php&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_payFee.php&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key";
 
 if (empty($key) || empty($gibbonApplicationFormID)) {
     $URL .= '&return=error1';
@@ -63,9 +63,9 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
             exit;
         }
 
-        $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm_payFee.php&return=error3';
+        $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL').'/index.php?q=/modules/Students/applicationForm_payFee.php&return=error3');
 
-        $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=".urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key").'&fail='.urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success2&paid=N&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key");
+        $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=".urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key").'&fail='.urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success2&paid=N&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key");
         header("Location: {$URL}");
         exit;
 
@@ -107,14 +107,14 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
 
             // Send a receipt
             $subject = __('Receipt from {organisation} via {system}', [
-                'organisation' => $_SESSION[$guid]['organisationNameShort'],
-                'system' => $_SESSION[$guid]['systemName'],
+                'organisation' => $session->get('organisationNameShort'),
+                'system' => $session->get('systemName'),
             ]);
             $body = __('Thank you for your application fee payment. Please find attached a copy of the payment details for your record.');
 
             $mail = $container->get(Mailer::class);
             $mail->AddAddress($application['parent1email']);
-            $mail->AddBCC($_SESSION[$guid]['organisationAdmissionsEmail']);
+            $mail->AddBCC($session->get('organisationAdmissionsEmail'));
             $mail->setDefaultSender($subject);
             $mail->renderBody('mail/message.twig.html', [
                 'title'  => __('Application Fee'),

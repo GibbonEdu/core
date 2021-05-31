@@ -28,7 +28,7 @@ $subpage = $_POST['subpage'] ?? 'Notes';
 $category = $_POST['category'] ?? '';
 $allStudents = $_POST['allStudents'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=$subpage&category=$category&allStudents=$allStudents";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=$search&subpage=$subpage&category=$category&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_delete.php') == false) {
     $URL .= '&return=error0';

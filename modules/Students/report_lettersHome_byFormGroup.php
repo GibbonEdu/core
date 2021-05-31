@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHom
     $page->breadcrumbs->add(__('Letters Home by Form Group'));
 
 
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFormGroup.nameShort AS formGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
             FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHom
             //Check for older siblings
             $proceed = false;
 
-                $dataSibling = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
+                $dataSibling = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonFamilyID' => $row['gibbonFamilyID']);
                 $sqlSibling = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFamily.name, gibbonFamily.gibbonFamilyID
                     FROM gibbonPerson
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
