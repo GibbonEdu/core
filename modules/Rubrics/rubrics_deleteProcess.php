@@ -28,8 +28,8 @@ $filter2 = $_GET['filter2'] ?? '';
 
 
 $gibbonRubricID = $_POST['gibbonRubricID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_delete.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics.php&search=$search&filter2=$filter2";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_delete.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics.php&search=$search&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php') == false) {
     $URL .= '&return=error0';
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                         $data = array('gibbonRubricID' => $gibbonRubricID);
                         $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
                     }
                     $result = $connection2->prepare($sql);

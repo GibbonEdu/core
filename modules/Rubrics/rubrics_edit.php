@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                 echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
-                
+
                     $data = array('gibbonRubricID' => $gibbonRubricID);
                     $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                     $result = $connection2->prepare($sql);
@@ -171,15 +171,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                     if ($search != '' or $filter2 != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
-                    $form = Form::create('addRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_editProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+                    $form = Form::create('addRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_editProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-                    
+                    $form->addHiddenValue('address', $session->get('address'));
+
                     $form->addRow()->addHeading(__('Rubric Basics'));
 
                     $row = $form->addRow();
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);
-                    
+
                     echo $form->getOutput();
 
 					echo '<a name="rubricDesign"></a>';

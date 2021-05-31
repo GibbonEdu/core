@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         ->fromPOST();
 
     // SEARCH
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_view.php');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rubrics_view.php');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
 
@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
 
     // If the current user is a student, limit the results to their year group
     $gibbonYearGroupID = null;
-    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
     if ($roleCategory == 'Student') {
         $studentGateway = $container->get(StudentGateway::class);
-        $enrolment = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])->fetch();
+        $enrolment = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetch();
 
         if (!empty($enrolment)) {
             $gibbonYearGroupID = $enrolment['gibbonYearGroupID'];

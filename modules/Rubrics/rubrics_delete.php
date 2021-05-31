@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                         $data = array('gibbonRubricID' => $gibbonRubricID);
                         $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
                     } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonRubricID' => $gibbonRubricID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT * FROM gibbonRubric JOIN gibbonDepartment ON (gibbonRubric.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonRubric.gibbonDepartmentID IS NULL WHERE gibbonRubricID=:gibbonRubricID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
                     }
                     $result = $connection2->prepare($sql);
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
                     echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
-                    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
+                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_deleteProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2");
                     echo $form->getOutput();
                 }
             }

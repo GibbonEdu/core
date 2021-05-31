@@ -27,8 +27,8 @@ $search = $_GET['search'] ?? '';
 $filter2 = $_GET['filter2'] ?? '';
 
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_add.php&search=$search&filter2=$filter2";
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&sidebar=false&search=$search&filter2=$filter2";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_add.php&search=$search&filter2=$filter2";
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&sidebar=false&search=$search&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') == false) {
     $URL .= '&return=error0';
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             } else {
                 //Write to database
                 try {
-                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonScaleID' => $gibbonScaleID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                     $sql = 'INSERT INTO gibbonRubric SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonScaleID=:gibbonScaleID, gibbonPersonIDCreator=:gibbonPersonIDCreator';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
