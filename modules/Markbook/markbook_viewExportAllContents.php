@@ -45,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 } else {
     // Check existence of and access to this class.
     $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
-    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction);
-    
+    $class = getClass($pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, $highestAction);
+
     if (empty($class)) {
         echo '<div class="error">';
         echo __('You do not have access to this action.');
@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __('Cumulative'));
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
-            
+
             // Add Final Grades, if enabled & available
             if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0) {
 

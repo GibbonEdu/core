@@ -23,7 +23,7 @@ $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_addMulti.php') == false) {
     $URL .= '&return=error0';
@@ -117,8 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $viewableStudents = $_POST['viewableStudents'] ?? '';
         $viewableParents = $_POST['viewableParents'] ?? '';
         $attachment = '';
-        $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
-        $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonIDCreator = $session->get('gibbonPersonID');
+        $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
         //Lock markbook column table
         try {

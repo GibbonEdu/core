@@ -44,15 +44,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 } else {
     // Check existence of and access to this class.
     $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
-    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction);
-    
+    $class = getClass($pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, $highestAction);
+
     if (empty($class)) {
         echo '<div class="error">';
         echo __('You do not have access to this action.');
         echo '</div>';
         return;
     }
-    
+
     $alert = getAlert($guid, $connection2, 002);
 
     //Proceed!
