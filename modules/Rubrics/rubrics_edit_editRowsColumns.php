@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
             if ($search != '' or $filter2 != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID='.$_GET['gibbonRubricID']."&search=$search&filter2=$filter2&sidebar=false'>".__('Back').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID='.$_GET['gibbonRubricID']."&search=$search&filter2=$filter2&sidebar=false'>".__('Back').'</a>';
                 echo '</div>';
             }
 
@@ -81,9 +81,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                     //Let's go!
 					$values = $result->fetch(); 
 					
-					$form = Form::create('addRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+					$form = Form::create('addRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
                     
                     $form->addRow()->addHeading(__('Rubric Basics'));
 
