@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
             $result = $connection2->prepare($sql);
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            
+
                 $data2 = array('gibbonInternalAssessmentColumnID' => $gibbonInternalAssessmentColumnID);
                 $sql2 = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonInternalAssessmentColumnID=:gibbonInternalAssessmentColumnID';
                 $result2 = $connection2->prepare($sql2);
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $values = $result->fetch();
                 $values2 = $result2->fetch();
 
-                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/internalAssessment_manage_deleteProcess.php?gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID");
                 echo $form->getOutput();
             }
         }
