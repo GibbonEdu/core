@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
 
         // Register scripts available to the core, but not included by default
         $page->scripts->add('chart');
-    
+
         $search = isset($_REQUEST['search'])? $_REQUEST['search'] : '';
         $department = isset($_POST['filter2'])? $_POST['filter2'] : '';
         $yearGroups = getYearGroups($connection2);
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
             ->fromPOST();
 
         // SEARCH
-        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics.php');
+        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/rubrics.php');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                 if ($highestAction == 'Manage Rubrics_viewEditAll') {
                     $canEdit = true;
                 } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea' && $rubric['scope'] == 'Learning Area') {
-                    $departmentMember = $departmentGateway->selectMemberOfDepartmentByRole($rubric['gibbonDepartmentID'], $_SESSION[$guid]['gibbonPersonID'], ['Coordinator', 'Teacher (Curriculum)']);
+                    $departmentMember = $departmentGateway->selectMemberOfDepartmentByRole($rubric['gibbonDepartmentID'], $session->get('gibbonPersonID'), ['Coordinator', 'Teacher (Curriculum)']);
                     $canEdit = $departmentMember->rowCount() > 0;
                 }
 
