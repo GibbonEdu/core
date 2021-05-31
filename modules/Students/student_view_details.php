@@ -2396,60 +2396,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Set sidebar
                     $session->set('sidebarExtra', '');
 
+                    $sidebarExtra = '';
                     //Show alerts
                     if ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         $alert = getAlertBar($guid, $connection2, $gibbonPersonID, $row['privacy'], '', false, true);
 
-                        $session->set('sidebarExtra', $session->get('sidebarExtra').'<div class="w-48 sm:w-64 h-10 mb-2">');
+                        $sidebarExtra .= '<div class="w-48 sm:w-64 h-10 mb-2">';
                         if ($alert == '') {
-                             $session->set('sidebarExtra', $session->get('sidebarExtra').'<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>');
+                             $sidebarExtra .= '<span class="text-gray-500 text-xs">'.__('No Current Alerts').'</span>';
                         } else {
-                             $session->set('sidebarExtra', $session->get('sidebarExtra').$alert);
+                             $sidebarExtra .= $alert;
                         }
-                         $session->set('sidebarExtra', $session->get('sidebarExtra').'</div>');
+                         $sidebarExtra .= '</div>';
                     }
 
-                     $session->set('sidebarExtra', $session->get('sidebarExtra').getUserPhoto($guid, $studentImage, 240));
+                     $sidebarExtra .= getUserPhoto($guid, $studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
-                     $session->set('sidebarExtra', $session->get('sidebarExtra').'<div class="column-no-break">');
-                     $session->set('sidebarExtra', $session->get('sidebarExtra').'<h4>'.__('Personal').'</h4>');
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<ul class='moduleMenu'>");
+                     $sidebarExtra .= '<div class="column-no-break">';
+                     $sidebarExtra .= '<h4>'.__('Personal').'</h4>';
+                     $sidebarExtra .= "<ul class='moduleMenu'>";
                     $style = '';
                     if ($subpage == 'Overview') {
                         $style = "style='font-weight: bold'";
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Overview'>".__('Overview').'</a></li>');
+                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Overview'>".__('Overview').'</a></li>';
                     $style = '';
                     if ($subpage == 'Personal') {
                         $style = "style='font-weight: bold'";
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Personal'>".__('Personal').'</a></li>');
+                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Personal'>".__('Personal').'</a></li>';
                     $style = '';
                     if ($subpage == 'Family') {
                         $style = "style='font-weight: bold'";
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Family'>".__('Family').'</a></li>');
+                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Family'>".__('Family').'</a></li>';
                     $style = '';
                     if ($subpage == 'Emergency Contacts') {
                         $style = "style='font-weight: bold'";
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>');
+                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
                     $style = '';
                     if ($subpage == 'Medical') {
                         $style = "style='font-weight: bold'";
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>');
+                     $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Medical'>".__('Medical').'</a></li>';
                     if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
                         if ($enableStudentNotes == 'Y') {
                             $style = '';
                             if ($subpage == 'Notes') {
                                 $style = "style='font-weight: bold'";
                             }
-                             $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__('Notes').'</a></li>');
+                             $sidebarExtra .= "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__('Notes').'</a></li>';
                         }
                     }
-                     $session->set('sidebarExtra', $session->get('sidebarExtra').'</ul>');
+                     $sidebarExtra .= '</ul>';
 
                     //OTHER MENU ITEMS, DYANMICALLY ARRANGED TO MATCH CUSTOM TOP MENU
                     //Get all modules, with the categories
@@ -2642,20 +2643,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
 
                             if ($countEntries > 0) {
-                                 $session->set('sidebarExtra', $session->get('sidebarExtra').'<h4>'.__($order).'</h4>');
-                                 $session->set('sidebarExtra', $session->get('sidebarExtra')."<ul class='moduleMenu'>");
+                                 $sidebarExtra .= '<h4>'.__($order).'</h4>';
+                                 $sidebarExtra .= "<ul class='moduleMenu'>";
                                 for ($i = 0; $i < count($studentMenuCategory); ++$i) {
                                     if ($studentMenuCategory[$i] == $order) {
-                                         $session->set('sidebarExtra', $session->get('sidebarExtra').$studentMenuLink[$i]);
+                                         $sidebarExtra .= $studentMenuLink[$i];
                                     }
                                 }
 
-                                 $session->set('sidebarExtra', $session->get('sidebarExtra').'</ul>');
+                                 $sidebarExtra .= '</ul>';
                             }
                         }
                     }
 
-                     $session->set('sidebarExtra', $session->get('sidebarExtra').'</div>');
+                    $sidebarExtra .= '</div>';
+
+                    $session->set('sidebarExtra', $sidebarExtra);
                 }
             }
         }
