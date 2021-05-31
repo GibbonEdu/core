@@ -144,13 +144,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 //Create Form
                 $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setTitle(__('Filters'));
                 $form->setClass('noIntBorder fullWidth');
 
-                $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/formGroups_details.php");
+                $form->addHiddenValue('q', "/modules/".$session->get('module')."/formGroups_details.php");
                 $form->addHiddenValue('gibbonFormGroupID', $gibbonFormGroupID);
 
                 $row = $form->addRow();
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 $row = $form->addRow();
                     $row->addFooter();
-                    $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonFormGroupID=$gibbonFormGroupID", __('Clear Form')));
+                    $row->addSubmit(__('Go'))->prepend(sprintf('<a href="%s" class="right">%s</a> &nbsp;', $session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonFormGroupID=$gibbonFormGroupID", __('Clear Form')));
 
                 echo $form->getOutput();
 
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 echo $table->getOutput();
 
                 //Set sidebar
-                $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);
+                $session->set('sidebarExtra', getUserPhoto($guid, $primaryTutor240, 240));
             }
         }
     }
