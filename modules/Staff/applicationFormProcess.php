@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 include '../../gibbon.php';
 
@@ -64,7 +65,7 @@ if ($proceed == false) {
 
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
     $questions = $_POST['questions'] ?? '';
-    $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+    $gibbonPersonID = $_POST['gibbonPersonID'] ?? null;
     $surname = $_POST['surname'] ?? '';
     $firstName = $_POST['firstName'] ?? '';
     $preferredName = $_POST['preferredName'] ?? '';
@@ -197,6 +198,10 @@ if ($proceed == false) {
                         //Last insert ID
                         $AI = str_pad($connection2->lastInsertID(), 7, '0', STR_PAD_LEFT);
                         $ids .= $AI.', ';
+
+                        // PERSONAL DOCUMENTS
+                        $params = ['staff' => true, 'applicationForm' => true];
+                        $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonStaffApplicationForm', $AI, $params, $partialFail);
 
                         // Attach required documents
                         if ($requiredDocuments != false && !empty($uploadedDocuments) && is_array($uploadedDocuments)) {

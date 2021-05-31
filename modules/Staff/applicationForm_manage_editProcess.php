@@ -1,6 +1,7 @@
 <?php
 
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -116,7 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $fields = $customFieldHandler->getFieldDataFromPOST('User', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
                 $staffFields = $customFieldHandler->getFieldDataFromPOST('Staff', ['applicationForm' => 1, 'prefix' => 'customStaff'], $customRequireFail);
 
-                if ($customRequireFail) {
+                // PERSONAL DOCUMENTS
+                $personalDocumentFail = false;
+                $params = ['staff' => true, 'applicationForm' => true];
+                $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $params, $personalDocumentFail);
+
+                if ($customRequireFail || $personalDocumentFail) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
