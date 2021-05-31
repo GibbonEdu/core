@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                 echo '</div>';
             } else {
                 $gibbonMarkbookWeightID = (isset($_GET['gibbonMarkbookWeightID']))? $_GET['gibbonMarkbookWeightID'] : null;
-                
+
                     $data2 = array('gibbonMarkbookWeightID' => $gibbonMarkbookWeightID);
                     $sql2 = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonMarkbookWeightID=:gibbonMarkbookWeightID';
                     $result2 = $connection2->prepare($sql2);
@@ -108,9 +108,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                         )
                         ->add(__('Edit Weighting'));
 
-                    $form = Form::create('manageWeighting', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID");
-                
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form = Form::create('manageWeighting', $session->get('absoluteURL').'/modules/'.$session->get('module')."/weighting_manage_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID");
+
+                    $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('type', $values['type']);
 
                     $form->addRow()->addHeading(__('Add Markbook Weighting'));

@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
     $page->breadcrumbs->add(__('View Markbook'));
 
     // Lock the file so other scripts cannot call it
-    if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
+    if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') ) return;
 
     //Get settings
     $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -38,8 +38,8 @@ use Gibbon\Services\Format;
     echo '</p>';
 
     //Test data access field for permission
-    
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -53,8 +53,8 @@ use Gibbon\Services\Format;
         $count = 0;
         $options = array();
         while ($row = $result->fetch()) {
-            
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
@@ -76,11 +76,11 @@ use Gibbon\Services\Format;
 
             $gibbonPersonID = (isset($_GET['search']))? $_GET['search'] : null;
 
-            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth standardForm');
 
             $form->addHiddenValue('q', '/modules/Markbook/markbook_view.php');
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Student'));
@@ -97,8 +97,8 @@ use Gibbon\Services\Format;
 
         if (!empty($gibbonPersonID) and count($options) > 0) {
             //Confirm access to this student
-            
-                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+
+                $dataChild = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID2 AND childDataAccess='Y'";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
@@ -120,7 +120,7 @@ use Gibbon\Services\Format;
                 $dataList = array();
                 $dataEntry = array();
 
-                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+                $filter = isset($_REQUEST['filter'])? $_REQUEST['filter'] : $session->get('gibbonSchoolYearID');
                 if ($filter != '*') {
                     $dataList['filter'] = $filter;
                     $and .= ' AND gibbonSchoolYearID=:filter';
@@ -138,10 +138,10 @@ use Gibbon\Services\Format;
                     $and2 .= ' AND type=:filter3';
                 }
 
-                $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                $form = Form::create('filter', $session->get('absoluteURL').'/index.php','get');
                 $form->setClass('noIntBorder fullWidth');
 
-                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/markbook_view.php');
+                $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
                 $form->addHiddenValue('search', $gibbonPersonID);
 
                 $sqlSelect = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
@@ -200,7 +200,7 @@ use Gibbon\Services\Format;
                 <?php
 
                 //Get class list
-                
+
                     $dataList['gibbonPersonID'] = $gibbonPersonID;
                     $dataList['gibbonPersonID2'] = $gibbonPersonID;
                     $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class";
@@ -220,7 +220,7 @@ use Gibbon\Services\Format;
                         if ($resultEntry->rowCount() > 0) {
                             echo '<h4>'.$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
 
-                            
+
                                 $dataTeachers = array('gibbonCourseClassID' => $rowList['gibbonCourseClassID']);
                                 $sqlTeachers = "SELECT title, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
                                 $resultTeachers = $connection2->prepare($sqlTeachers);
@@ -294,7 +294,7 @@ use Gibbon\Services\Format;
                                 }
                                 echo $rowEntry['type'];
                                 if ($rowEntry['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowEntry['attachment'])) {
-                                    echo " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['attachment']."'>More info</a>";
+                                    echo " | <a 'title='Download more information' href='".$session->get('absoluteURL').'/'.$rowEntry['attachment']."'>More info</a>";
                                 }
                                 echo '</span><br/>';
                                 echo '</td>';
@@ -317,7 +317,7 @@ use Gibbon\Services\Format;
                                 } else {
                                     echo "<td style='text-align: center'>";
                                     $attainmentExtra = '';
-                                    
+
                                         $dataAttainment = array('gibbonScaleID' => $rowEntry['gibbonScaleIDAttainment']);
                                         $sqlAttainment = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
                                         $resultAttainment = $connection2->prepare($sqlAttainment);
@@ -332,7 +332,7 @@ use Gibbon\Services\Format;
                                     }
                                     echo "<div $styleAttainment>".$rowEntry['attainmentValue'];
                                     if ($rowEntry['gibbonRubricIDAttainment'] != '' AND $enableRubrics =='Y') {
-                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+                                        echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDAttainment'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=attainment&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
                                     }
                                     echo '</div>';
                                     if ($rowEntry['attainmentValue'] != '') {
@@ -348,7 +348,7 @@ use Gibbon\Services\Format;
 	                                } else {
 	                                    echo "<td style='text-align: center'>";
 	                                    $effortExtra = '';
-	                                    
+
 	                                        $dataEffort = array('gibbonScaleID' => $rowEntry['gibbonScaleIDEffort']);
 	                                        $sqlEffort = 'SELECT * FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
 	                                        $resultEffort = $connection2->prepare($sqlEffort);
@@ -363,7 +363,7 @@ use Gibbon\Services\Format;
 	                                    }
 	                                    echo "<div $styleEffort>".$rowEntry['effortValue'];
 	                                    if ($rowEntry['gibbonRubricIDEffort'] != '' AND $enableRubrics =='Y') {
-	                                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/rubric.png'/></a>";
+	                                        echo "<a class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php&gibbonRubricID='.$rowEntry['gibbonRubricIDEffort'].'&gibbonCourseClassID='.$rowEntry['gibbonCourseClassID'].'&gibbonMarkbookColumnID='.$rowEntry['gibbonMarkbookColumnID']."&gibbonPersonID=$gibbonPersonID&mark=FALSE&type=effort&width=1100&height=550'><img style='margin-bottom: -3px; margin-left: 3px' title='View Rubric' src='./themes/".$session->get('gibbonThemeName')."/img/rubric.png'/></a>";
 	                                    }
 	                                    echo '</div>';
 	                                    if ($rowEntry['effortValue'] != '') {
@@ -402,7 +402,7 @@ use Gibbon\Services\Format;
                                         echo '<br/>';
                                     }
                                     if ($rowEntry['response'] != '') {
-                                        echo "<a title='Uploaded Response' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Uploaded Response</a><br/>";
+                                        echo "<a title='Uploaded Response' href='".$session->get('absoluteURL').'/'.$rowEntry['response']."'>Uploaded Response</a><br/>";
                                     }
                                     echo '</td>';
                                 }
@@ -411,7 +411,7 @@ use Gibbon\Services\Format;
                                     echo __('N/A');
                                     echo '</td>';
                                 } else {
-                                    
+
                                         $dataSub = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID']);
                                         $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
                                         $resultSub = $connection2->prepare($sqlSub);
@@ -424,7 +424,7 @@ use Gibbon\Services\Format;
                                         echo '<td>';
                                         $rowSub = $resultSub->fetch();
 
-                                        
+
                                             $dataWork = array('gibbonPlannerEntryID' => $rowEntry['gibbonPlannerEntryID'], 'gibbonPersonID' => $gibbonPersonID);
                                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                                             $resultWork = $connection2->prepare($sqlWork);
@@ -450,7 +450,7 @@ use Gibbon\Services\Format;
                                             }
 
                                             if ($rowWork['type'] == 'File') {
-                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
                                             } elseif ($rowWork['type'] == 'Link') {
                                                 echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                             } else {
@@ -493,8 +493,8 @@ use Gibbon\Services\Format;
 
                             echo '</table>';
 
-                            
-                                $dataEntry2 = array('gibbonPersonIDStudent' => $_SESSION[$guid]['gibbonPersonID']);
+
+                                $dataEntry2 = array('gibbonPersonIDStudent' => $session->get('gibbonPersonID'));
                                 $sqlEntry2 = "SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' ORDER BY completeDate DESC, name";
                                 $resultEntry2 = $connection2->prepare($sqlEntry2);
                                 $resultEntry2->execute($dataEntry2);

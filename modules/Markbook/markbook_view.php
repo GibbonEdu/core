@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 } else {
     // Register scripts available to the core, but not included by default
     $page->scripts->add('chart');
-    
+
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         $alert = getAlert($guid, $connection2, 002);
 
         // Define a randomized lock for this script
-        define("MARKBOOK_VIEW_LOCK", sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') );
+        define("MARKBOOK_VIEW_LOCK", sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') );
 
         //VIEW ACCESS TO ALL MARKBOOK DATA
         if ($highestAction == 'View Markbook_allClassesAllData' || $highestAction == 'View Markbook_myClasses') {

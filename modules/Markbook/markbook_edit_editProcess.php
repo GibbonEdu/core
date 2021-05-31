@@ -24,7 +24,7 @@ $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_edit.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edit.php') == false) {
     $URL .= '&return=error0';
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $viewableStudents = $_POST['viewableStudents'] ?? '';
                     $viewableParents = $_POST['viewableParents'] ?? '';
                     $attachment = $_POST['attachment'] ?? '';
-                    $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'] ?? '';
+                    $gibbonPersonIDLastEdit = $session->get('gibbonPersonID') ?? '';
 
                     $partialFail = false;
 
