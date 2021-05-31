@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
                 //Get teacher list
                 $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
-                $teaching = isset($teacherList[$_SESSION[$guid]['gibbonPersonID']]);
+                $teaching = isset($teacherList[$session->get('gibbonPersonID')]);
                 $isCoordinator = isDepartmentCoordinator($pdo, $_SESSION[$guid]['gibbonPersonID']);
 
                 $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                         )
                         ->add(__('Copy Columns'));
 
-		            
+
 			            $data = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 			            $sql = "SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID";
 			            $result = $connection2->prepare($sql);
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	                    echo __('There are no records to display.');
 	                    echo '</div>';
 	                } else {
-	                	
+
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 		                    $sql2 = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
 		                    $result2 = $connection2->prepare($sql2);
@@ -116,16 +116,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	                	echo '<p>';
 	                	printf( __('This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
                         echo '</p>';
-                        
+
                         echo '<fieldset>';
 
-                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookCopyClassID='.$gibbonMarkbookCopyClassID);
+                        $form = Form::create('action', $session->get('absoluteURL').'/modules/Markbook/markbook_edit_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookCopyClassID='.$gibbonMarkbookCopyClassID);
                         $form->setClass('fullWidth');
 
-                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->addHiddenValue('address', $session->get('address'));
 
                         $table = $form->addRow()->addTable()->setClass('fullWidth colorOddEven noMargin noPadding noBorder');
-                        
+
                         $header = $table->addHeaderRow();
                             $header->addCheckAll()->checked(true);
                             $header->addContent(__('Name'));

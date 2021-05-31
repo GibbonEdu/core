@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
             $sql = 'SELECT surname, preferredName, gibbonFinanceInvoice.* FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
             $result = $connection2->prepare($sql);
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                     echo '</p>';
                 }
 
-                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $preview);
+                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $preview);
                 if ($invoiceContents == false) {
                     echo "<div class='error'>";
                     echo __('An error occurred.');
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
             } elseif ($type == 'reminder1' or $type == 'reminder2' or $type == 'reminder3') {
                 //Update reminder count
                 if ($row['reminderCount'] < 3) {
-                    
+
                         $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                         $result = $connection2->prepare($sql);
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 echo '<h2>';
                 echo __('Invoice');
                 echo '</h2>';
-                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency']);
+                $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'));
                 if ($invoiceContents == false) {
                     echo "<div class='error'>";
                     echo __('An error occurred.');
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 echo '<h2>';
                 echo __('Receipt');
                 echo '</h2>';
-                $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
+                $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, $receiptNumber);
                 if ($receiptContents == false) {
                     echo "<div class='error'>";
                     echo __('An error occurred.');

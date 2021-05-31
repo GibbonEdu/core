@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     // Proceed!
     $page->breadcrumbs->add(__('Approve Staff Absences'));
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $search = $_GET['search'] ?? '';
     $dateStart = $_GET['dateStart'] ?? '';
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
         ->sortBy('status', 'ASC')
         ->fromPOST();
 
-    $absences = $staffAbsenceGateway->queryAbsencesByApprover($criteria, $_SESSION[$guid]['gibbonPersonID']);
+    $absences = $staffAbsenceGateway->queryAbsencesByApprover($criteria, $session->get('gibbonPersonID'));
 
     // DATA TABLE
     $table = DataTable::createPaginated('staffAbsences', $criteria);
@@ -67,9 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
     // COLUMNS
     $table->addColumn('fullName', __('Name'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($absence) use ($guid) {
+        ->format(function ($absence) use ($session) {
             $text = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$absence['gibbonPersonID'];
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$absence['gibbonPersonID'];
 
             return Format::link($url, $text);
         });

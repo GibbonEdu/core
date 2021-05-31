@@ -28,18 +28,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     $page->breadcrumbs
         ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
         ->add(__('Add Expense Approver'));
-    
+
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseApprovers_manage_addProcess.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseApprovers_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Staff'));

@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonMedicalConditionID = $_GET['gibbonMedicalConditionID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/medicalConditions_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/medicalConditions_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_delete.php') == false) {
     $URL .= '&return=error0';

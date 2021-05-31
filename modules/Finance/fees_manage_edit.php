@@ -26,19 +26,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
     //Proceed!
     //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    
+
     $urlParams = compact('gibbonSchoolYearID');
-    
+
     $page->breadcrumbs
         ->add(__('Manage Fees'),'fees_manage.php', $urlParams)
-        ->add(__('Edit Fee'));         
+        ->add(__('Edit Fee'));
 
     $gibbonFinanceFeeID = $_GET['gibbonFinanceFeeID'];
     $search = $_GET['search'];
     if ($gibbonFinanceFeeID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceFeeID' => $gibbonFinanceFeeID);
             $sql = 'SELECT gibbonFinanceFee.*, gibbonSchoolYear.name AS schoolYear
                 FROM gibbonFinanceFee
@@ -56,13 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fees_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/fees_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonFinanceFeeID', $gibbonFinanceFeeID);
 
             $row = $form->addRow();

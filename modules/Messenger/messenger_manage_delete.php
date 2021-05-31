@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                     $data = array('gibbonMessengerID' => $gibbonMessengerID);
                     $sql = 'SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID';
                 } else {
-                    $data = array('gibbonMessengerID' => $gibbonMessengerID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonMessengerID' => $gibbonMessengerID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = 'SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID';
                 }
                 $result = $connection2->prepare($sql);
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_deleteProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search");
+                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/messenger_manage_deleteProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search");
                 echo $form->getOutput();
             }
         }

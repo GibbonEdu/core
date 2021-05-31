@@ -46,9 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('houses', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/house_manage_editProcess.php?gibbonHouseID='.$gibbonHouseID);
+            $form = Form::create('houses', $session->get('absoluteURL').'/modules/'.$session->get('module').'/house_manage_editProcess.php?gibbonHouseID='.$gibbonHouseID);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('attachment1', $values['logo']);
 
             $row = $form->addRow();
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
                 $row->addLabel('file1', __('Logo'));
                 $file = $row->addFileUpload('file1')
                     ->accepts($fileUploader->getFileExtensions('Graphics/Design'))
-                    ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo'])
+                    ->setAttachment('logo', $session->get('absoluteURL'), $values['logo'])
                     ->setDeleteAction('/modules/School Admin/house_manage_edit_photoDeleteProcess.php?gibbonHouseID='.$gibbonHouseID);
 
             $row = $form->addRow();

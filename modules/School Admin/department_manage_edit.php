@@ -52,10 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('departmentManageRecord', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$_SESSION[$guid]['address']);
+            $form = Form::create('departmentManageRecord', $session->get('absoluteURL').'/modules/'.$session->get('module')."/department_manage_editProcess.php?gibbonDepartmentID=$gibbonDepartmentID&address=".$session->get('address'));
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $types = array(
                 'Learning Area' => __('Learning Area'),
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
                 $row->addFileUpload('file')
                     ->accepts('.jpg,.jpeg,.gif,.png')
-                    ->setAttachment('logo', $_SESSION[$guid]['absoluteURL'], $values['logo']);
+                    ->setAttachment('logo', $session->get('absoluteURL'), $values['logo']);
 
             $form->addRow()->addHeading(__('Current Staff'));
 
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                     $row = $table->addRow();
                     $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                     $row->addContent(__($staff['role']));
-                    $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$staff['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
+                    $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/department_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonDepartmentStaffID='.$staff['gibbonDepartmentStaffID']."&gibbonDepartmentID=$gibbonDepartmentID'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>");
                 }
             }
 

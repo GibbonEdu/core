@@ -28,9 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     //Proceed!
     $page->breadcrumbs->add(__('Activity Settings'));
 
-    $form = Form::create('activitySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activitySettingsProcess.php');
+    $form = Form::create('activitySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activitySettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $dateTypes = array(
         'Date' => __('Date'),

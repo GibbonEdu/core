@@ -36,14 +36,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($gibbonGroupID);
         } else {
-            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $session->get('gibbonPersonID'));
         }
 
         if ($result->isEmpty()) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_deleteProcess.php?gibbonGroupID=$gibbonGroupID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/groups_manage_deleteProcess.php?gibbonGroupID=$gibbonGroupID");
             echo $form->getOutput();
         }
     }

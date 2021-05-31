@@ -28,7 +28,7 @@ $search = $_POST['search'] ?? '';
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage.php&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_delete.php') == false) {
     $URL .= '&return=error0';

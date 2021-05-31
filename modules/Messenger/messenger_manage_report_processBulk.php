@@ -30,7 +30,7 @@ $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
 
 if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_manage_report.php&search=$search&gibbonMessengerID=$gibbonMessengerID&sidebar=true";
+    $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_manage_report.php&search=$search&gibbonMessengerID=$gibbonMessengerID&sidebar=true";
 
     if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage_report.php') == false) {
         $URL .= '&return=error0';
@@ -70,7 +70,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
             } else {
                 $row = $result->fetch();
 
-                if ($row['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] && $highestAction != 'Manage Messages_all') {
+                if ($row['gibbonPersonID'] != $session->get('gibbonPersonID') && $highestAction != 'Manage Messages_all') {
                     $URL .= '&return=error0';
                     header("Location: {$URL}");
                     exit;
@@ -82,7 +82,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     
                     $mail= $container->get(Mailer::class);
                     $mail->SMTPKeepAlive = true;
-    				$mail->SetFrom($_SESSION[$guid]["email"], $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
+    				$mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
     				$mail->Subject=__('REMINDER:').' '.$row['subject'];
 
                     //Scan through receipients
@@ -105,7 +105,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     						$mail->AddAddress($rowRecipt['contactDetail']);
     						//Deal with email receipt and body finalisation
     						if ($row['emailReceipt'] == 'Y') {
-    							$bodyReadReceipt = '<a target="_blank" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$row['emailReceiptText'].'</a>';
+    							$bodyReadReceipt = '<a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$row['emailReceiptText'].'</a>';
     							if (is_numeric(strpos($row['body'], '[confirmLink]'))) {
     								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $row['body']);
     							}

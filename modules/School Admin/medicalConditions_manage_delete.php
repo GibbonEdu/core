@@ -39,6 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/School Admin/medicalConditions_manage_deleteProcess.php?gibbonMedicalConditionID='.$gibbonMedicalConditionID);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/School Admin/medicalConditions_manage_deleteProcess.php?gibbonMedicalConditionID='.$gibbonMedicalConditionID);
     echo $form->getOutput();
 }

@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
@@ -466,6 +467,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         header("Location: {$URL}");
                         exit();
                     }
+
+                    // PERSONAL DOCUMENTS
+                    $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
+                    $container->get(PersonalDocumentHandler::class)->updatePersonalDocumentsFromDataUpdate($gibbonPersonID, $gibbonPersonUpdateID, $params);
 
                     //Notify tutors of change to privacy settings
                     if (isset($_POST['newprivacyOn'])) {

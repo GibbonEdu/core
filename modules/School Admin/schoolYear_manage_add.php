@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/schoolYear_manage_edit.php&gibbonSchoolYearID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/schoolYear_manage_edit.php&gibbonSchoolYearID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('schoolYear', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_addProcess.php');
+    $form = Form::create('schoolYear', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYear_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $statuses = array(
         'Past'     => __('Past'),
@@ -59,18 +59,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     // Display an alert to warn users that changing this will have an impact on their system.
     $row = $form->addRow()->setClass('statusChange');
-    $row->addAlert(sprintf(__('Setting the status of this school year to Current will change the current school year %1$s to %2$s. Adjustments to the Academic Year can affect the visibility of vital data in your system. It\'s recommended to use the Rollover tool in User Admin to advance school years rather than changing them here. PROCEED WITH CAUTION!'), $_SESSION[$guid]['gibbonSchoolYearNameCurrent'], $direction) );
+    $row->addAlert(sprintf(__('Setting the status of this school year to Current will change the current school year %1$s to %2$s. Adjustments to the Academic Year can affect the visibility of vital data in your system. It\'s recommended to use the Rollover tool in User Admin to advance school years rather than changing them here. PROCEED WITH CAUTION!'), $session->get('gibbonSchoolYearNameCurrent'), $direction) );
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
         $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYear')->required()->maxLength(3);
 
     $row = $form->addRow();
-        $row->addLabel('firstDay', __('First Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('firstDay', __('First Day'));
         $row->addDate('firstDay')->required();
 
     $row = $form->addRow();
-        $row->addLabel('lastDay', __('Last Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('lastDay', __('Last Day'));
         $row->addDate('lastDay')->required();
 
     $row = $form->addRow();

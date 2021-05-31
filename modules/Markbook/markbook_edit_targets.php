@@ -46,18 +46,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList, gibbonScaleIDTarget FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } elseif ($highestAction == 'Edit Markbook_multipleClassesInDepartment') {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList 
+                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList
                     FROM gibbonCourse
                     JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                     LEFT JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonCourse.gibbonDepartmentID AND gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID)
                     LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID)
-                    WHERE ((gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL AND gibbonCourseClassPerson.role='Teacher') 
+                    WHERE ((gibbonCourseClassPerson.gibbonCourseClassPersonID IS NOT NULL AND gibbonCourseClassPerson.role='Teacher')
                         OR (gibbonDepartmentStaff.gibbonDepartmentStaffID IS NOT NULL AND (gibbonDepartmentStaff.role = 'Coordinator' OR gibbonDepartmentStaff.role = 'Assistant Coordinator' OR gibbonDepartmentStaff.role= 'Teacher (Curriculum)'))
                         )
                     AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 } else {
-                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList, gibbonScaleIDTarget FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -86,11 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                     )
                     ->add(__('Set Personalised Attainment Targets'));
 
-                $form = Form::create('markbookTargets', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_targetsProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
+                $form = Form::create('markbookTargets', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_targetsProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
 
-                $selectedGradeScale = !empty($course['gibbonScaleIDTarget'])? $course['gibbonScaleIDTarget'] : $_SESSION[$guid]['defaultAssessmentScale'];
+                $selectedGradeScale = !empty($course['gibbonScaleIDTarget'])? $course['gibbonScaleIDTarget'] : $session->get('defaultAssessmentScale');
                 $row = $form->addRow();
                     $row->addLabel('gibbonScaleIDTarget', __('Target Scale'));
                     $row->addSelectGradeScale('gibbonScaleIDTarget')->selected($selectedGradeScale);
@@ -102,22 +102,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d'));
                 $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart, gibbonMarkbookTarget.gibbonScaleGradeID as currentTarget
-                        FROM gibbonCourseClassPerson 
-                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-                        LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
+                        FROM gibbonCourseClassPerson
+                        JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID
                             AND gibbonMarkbookTarget.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
-                        WHERE role='Student' AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
-                        AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                        WHERE role='Student' AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                        AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
                         ORDER BY surname, preferredName";
                 $result = $pdo->executeQuery($data, $sql);
 
                 if ($result->rowCount() > 0) {
                     $header->addContent(__('Attainment Target'))->setClass('w-64');
 
-                    $sql = "SELECT gibbonScale.gibbonScaleID, gibbonScaleGradeID as value, gibbonScaleGrade.value as name 
-                            FROM gibbonScaleGrade 
-                            JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) 
-                            WHERE gibbonScale.active='Y' 
+                    $sql = "SELECT gibbonScale.gibbonScaleID, gibbonScaleGradeID as value, gibbonScaleGrade.value as name
+                            FROM gibbonScaleGrade
+                            JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID)
+                            WHERE gibbonScale.active='Y'
                             ORDER BY gibbonScale.gibbonScaleID, sequenceNumber";
                     $resultGrades = $pdo->executeQuery(array(), $sql);
 
@@ -131,12 +131,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
                         $row = $table->addRow();
                         $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
-                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
+                            ->setURL($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Internal Assessment')
                             ->wrap('<strong>', '</strong>')
                             ->prepend($count.') ');
-                        
+
                         $row->addSelect($count.'-gibbonScaleGradeID')
                             ->fromArray($gradesOptions)
                             ->chainedTo('gibbonScaleIDTarget', $gradesChained)

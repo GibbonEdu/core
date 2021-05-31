@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 include '../../gibbon.php';
 
@@ -46,8 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             header("Location: {$URL}");
         } else {
             //Check access to person
+            $partialFail = false;
             $checkCount = 0;
             $self = false;
+
             if ($highestAction == 'Update Personal Data_any') {
                 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_personal.php&gibbonPersonID='.$gibbonPersonID;
 
@@ -220,8 +224,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     // CUSTOM FIELDS
                     $customRequireFail = false;
-                    $params = compact('student', 'staff', 'parent', 'other');
-                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params + ['dataUpdater' => 1], $customRequireFail);
+                    $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
+                    $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', $params, $customRequireFail);
 
                     // Check for data changed
                     $existingFields = json_decode($values['fields'], true);
@@ -235,6 +239,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // Don't require fields for users with _any permission
                     if ($highestAction == 'Update Personal Data_any') {
                         $customRequireFail = false;
+                    }
+
+                    // PERSONAL DOCUMENTS - data changed
+                    $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
+                    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params);
+                    foreach ($documents as $document) {
+                        $fields = json_decode($document['fields']);
+                        foreach ($fields as $field) {
+                            $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
+                            if ($document[$field] != $value) {
+                                $dataChanged = true;
+                            }
+                        }
                     }
 
                     if ($customRequireFail) {
@@ -252,19 +269,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $data['gibbonPersonIDUpdater'] = $session->get('gibbonPersonID');
                         $data['timestamp'] = date('Y-m-d H:i:s');
 
-
                         if ($existing != 'N') {
-                            $data['gibbonPersonUpdateID'] = $existing;
+                            $gibbonPersonUpdateID = $existing;
+                            $data['gibbonPersonUpdateID'] = $gibbonPersonUpdateID;
                             $sql = 'UPDATE gibbonPersonUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=:timestamp WHERE gibbonPersonUpdateID=:gibbonPersonUpdateID';
+
+                            $pdo->update($sql, $data);
                         } else {
                             $sql = 'INSERT INTO gibbonPersonUpdate SET `status`=:status, gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, dob=:dob, email=:email, emailAlternate=:emailAlternate, address1=:address1, address1District=:address1District, address1Country=:address1Country, address2=:address2, address2District=:address2District, address2Country=:address2Country, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, phone3Type=:phone3Type, phone3CountryCode=:phone3CountryCode, phone3=:phone3, phone4Type=:phone4Type, phone4CountryCode=:phone4CountryCode, phone4=:phone4, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, ethnicity=:ethnicity, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, citizenship1PassportExpiry=:citizenship1PassportExpiry, citizenship2=:citizenship2, citizenship2Passport=:citizenship2Passport, citizenship2PassportExpiry=:citizenship2PassportExpiry, religion=:religion, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, emergency1Name=:emergency1Name, emergency1Number1=:emergency1Number1, emergency1Number2=:emergency1Number2, emergency1Relationship=:emergency1Relationship, emergency2Name=:emergency2Name, emergency2Number1=:emergency2Number1, emergency2Number2=:emergency2Number2, emergency2Relationship=:emergency2Relationship, profession=:profession, employer=:employer, jobTitle=:jobTitle, vehicleRegistration=:vehicleRegistration, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, privacy=:privacy, fields=:fields, timestamp=:timestamp';
-                        }
-                        $pdo->statement($sql, $data);
 
+                            $gibbonPersonUpdateID = $pdo->insert($sql, $data);
+                        }
+
+                        // PERSONAL DOCUMENTS
+                        if ($dataChanged) {
+                            $personalDocumentFail = false;
+                            $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
+                            $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonPersonUpdate', $gibbonPersonUpdateID, $params , $personalDocumentFail);
+
+                            $partialFail &= $personalDocumentFail;
+                        }
 
                         //Update matching addresses
-                        $partialFail = false;
-
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
                                 if (!empty($_POST[$i.'-matchAddress'])) {

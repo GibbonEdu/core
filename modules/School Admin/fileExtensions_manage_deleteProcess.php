@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage_delete.php&gibbonFileExtensionID='.$gibbonFileExtensionID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage_delete.php&gibbonFileExtensionID='.$gibbonFileExtensionID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtensions_manage_delete.php') == false) {
     $URL .= '&return=error0';

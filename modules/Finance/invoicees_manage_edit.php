@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
     if ($search != '' or $allUsers == 'on') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
     if ($gibbonFinanceInvoiceeID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID);
             $sql = 'SELECT surname, preferredName, status, gibbonFinanceInvoicee.* FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
             $result = $connection2->prepare($sql);
@@ -67,9 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
                 $table->addColumn('status', __('Status'))->translatable();
             echo $table->render([$values]);
 
-            $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$search.'&allUsers='.$allUsers);
+            $form = Form::create('updateFinance', $session->get('absoluteURL').'/modules/'.$session->get('module')."/invoicees_manage_editProcess.php?gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=".$search.'&allUsers='.$allUsers);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
 
             $form->addRow()->addHeading(__('Invoice To'));

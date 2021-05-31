@@ -32,7 +32,7 @@ $search = '';
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
 }
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     $URL .= '&return=error0';

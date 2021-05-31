@@ -22,7 +22,7 @@ include '../../gibbon.php';
 $gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
 $search=$_GET["search"] ?? '';
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
+$URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {

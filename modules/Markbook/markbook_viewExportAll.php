@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $return = $_GET['return'];
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/$return";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/$return";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     $URL .= '&return=error0';

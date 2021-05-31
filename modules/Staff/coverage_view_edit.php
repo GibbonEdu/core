@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
         return;
     }
 
-    if ($coverage['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] && $coverage['gibbonPersonIDStatus'] != $_SESSION[$guid]['gibbonPersonID']) {
+    if ($coverage['gibbonPersonID'] != $session->get('gibbonPersonID') && $coverage['gibbonPersonIDStatus'] != $session->get('gibbonPersonID')) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
@@ -69,9 +69,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
     $coverageView->setCoverage($gibbonStaffCoverageID)->compose($page);
     
     // FORM
-    $form = Form::create('staffCoverageFile', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_view_editProcess.php');
+    $form = Form::create('staffCoverageFile', $session->get('absoluteURL').'/modules/Staff/coverage_view_editProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
     $form->addRow()->addHeading(__('Attachment'));
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
         $row->addLabel('file', __('File'));
         $row->addFileUpload('file')
             ->required()
-            ->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $coverage['attachmentContent'] ?? '');
+            ->setAttachment('attachment', $session->get('absoluteURL'), $coverage['attachmentContent'] ?? '');
 
     // Text
     $form->toggleVisibilityByClass('attachmentText')->onSelect('attachmentType')->when('Text');

@@ -29,17 +29,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Fee Categories'),'feeCategories_manage.php')
-        ->add(__('Add Category'));    
+        ->add(__('Add Category'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/feeCategories_manage_edit.php&gibbonFinanceFeeCategoryID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/feeCategories_manage_addProcess.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/feeCategories_manage_addProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
