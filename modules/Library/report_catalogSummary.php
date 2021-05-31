@@ -42,13 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Catalog Summary'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Search & Filter'));
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_catalogSummary.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_catalogSummary.php");
 
         $row = $form->addRow();
             $row->addLabel('ownershipType', __('Ownership Type'));
@@ -130,8 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
     $table->addColumn('purchaseDate', __('Purchase Date'))->description(__('Vendor'))
         ->format(function ($item) {
-            $output = !empty($item['purchaseDate']) 
-                ? Format::date($item['purchaseDate']) 
+            $output = !empty($item['purchaseDate'])
+                ? Format::date($item['purchaseDate'])
                 : Format::small(__('Unknown'));
             return $output.'<br/>'.Format::small($item['vendor']);
         });

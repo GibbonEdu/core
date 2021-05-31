@@ -24,8 +24,8 @@ $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
 
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
-    $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
+    $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
 
     if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_return.php') == false) {
         $URL .= '&return=error0';
@@ -67,7 +67,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 
                 //Write to database
                 try {
-                    $data = array('timestampReturn' => date('Y-m-d H:i:s', time()), 'gibbonLibraryItemEventID' => $gibbonLibraryItemEventID, 'gibbonPersonIDIn' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('timestampReturn' => date('Y-m-d H:i:s', time()), 'gibbonLibraryItemEventID' => $gibbonLibraryItemEventID, 'gibbonPersonIDIn' => $session->get('gibbonPersonID'));
                     $sql = "UPDATE gibbonLibraryItemEvent SET status='Returned', timestampReturn=:timestampReturn, gibbonPersonIDIn=:gibbonPersonIDIn WHERE gibbonLibraryItemEventID=:gibbonLibraryItemEventID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -80,7 +80,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 //No return action, so just mark the item
                 if ($returnAction == '') {
                     try {
-                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'gibbonPersonIDStatusRecorder' => $_SESSION[$guid]['gibbonPersonID'], 'timestampStatus' => date('Y-m-d H:i:s', time()));
+                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'gibbonPersonIDStatusRecorder' => $session->get('gibbonPersonID'), 'timestampStatus' => date('Y-m-d H:i:s', time()));
                         $sql = "UPDATE gibbonLibraryItem SET status='Available', gibbonPersonIDStatusResponsible=NULL, gibbonPersonIDStatusRecorder=:gibbonPersonIDStatusRecorder, timestampStatus=:timestampStatus, returnExpected=NULL, returnAction='', gibbonPersonIDReturnAction=NULL WHERE gibbonLibraryItemID=:gibbonLibraryItemID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -93,7 +93,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 //Return action, so mark the item, and create a new event
                 else {
                     try {
-                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'status' => $status, 'gibbonPersonIDStatusResponsible' => $gibbonPersonIDReturnAction, 'gibbonPersonIDOut' => $_SESSION[$guid]['gibbonPersonID'], 'timestampOut' => date('Y-m-d H:i:s', time()));
+                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'status' => $status, 'gibbonPersonIDStatusResponsible' => $gibbonPersonIDReturnAction, 'gibbonPersonIDOut' => $session->get('gibbonPersonID'), 'timestampOut' => date('Y-m-d H:i:s', time()));
                         $sql = "INSERT INTO gibbonLibraryItemEvent SET gibbonLibraryItemID=:gibbonLibraryItemID, status=:status, gibbonPersonIDStatusResponsible=:gibbonPersonIDStatusResponsible, gibbonPersonIDOut=:gibbonPersonIDOut, timestampOut=:timestampOut, returnExpected=NULL, returnAction='', gibbonPersonIDReturnAction=NULL";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -104,7 +104,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                     }
 
                     try {
-                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'status' => $status, 'gibbonPersonIDStatusResponsible' => $gibbonPersonIDReturnAction, 'gibbonPersonIDStatusRecorder' => $_SESSION[$guid]['gibbonPersonID'], 'timestampStatus' => date('Y-m-d H:i:s', time()));
+                        $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'status' => $status, 'gibbonPersonIDStatusResponsible' => $gibbonPersonIDReturnAction, 'gibbonPersonIDStatusRecorder' => $session->get('gibbonPersonID'), 'timestampStatus' => date('Y-m-d H:i:s', time()));
                         $sql = "UPDATE gibbonLibraryItem SET status=:status, gibbonPersonIDStatusResponsible=:gibbonPersonIDStatusResponsible, gibbonPersonIDStatusRecorder=:gibbonPersonIDStatusRecorder, timestampStatus=:timestampStatus, returnExpected=NULL, returnAction='', gibbonPersonIDReturnAction=NULL WHERE gibbonLibraryItemID=:gibbonLibraryItemID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

@@ -39,20 +39,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID='.$_GET['editID'].'&'.http_build_query($urlParams);
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID='.$_GET['editID'].'&'.http_build_query($urlParams);
     }
     $page->return->setEditLink($editLink);
 
     if (array_filter($urlParams)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
         echo '</div>';
 	}
 
-    $form = Form::create('libraryCatalog', $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_addProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('libraryCatalog', $session->get('absoluteURL').'/modules/Library/library_manage_catalog_addProcess.php?'.http_build_query($urlParams));
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Catalog Type'));
 

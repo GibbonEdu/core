@@ -44,16 +44,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
         $gibbonPersonID = $_GET['gibbonPersonID'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentBorrowingRecord.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentBorrowingRecord.php");
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder()->required();
+        $row->addSelectStudent('gibbonPersonID', $session->get('gibbonSchoolYearID'))->selected($gibbonPersonID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addFooter();

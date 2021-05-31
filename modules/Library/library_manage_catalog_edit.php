@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = 'SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
@@ -58,14 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
             if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
 			}
 
-			$form = Form::create('libraryCatalog', $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_editProcess.php?'.http_build_query($urlParams));
+			$form = Form::create('libraryCatalog', $session->get('absoluteURL').'/modules/Library/library_manage_catalog_editProcess.php?'.http_build_query($urlParams));
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonLibraryTypeID', $values['gibbonLibraryTypeID']);
 			$form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
 			$form->addHiddenValue('type', $values['type']);

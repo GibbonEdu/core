@@ -31,7 +31,7 @@ $queryArr = [
   "gibbonPersonIDOwnership" => $_GET['gibbonPersonIDOwnership'] ?? '',
   "typeSpecificfields" => $_GET['typeSpecificFields'] ?? ''
 ];
-$baseURL = $_SESSION[$guid]['absoluteURL'].'/index.php?';
+$baseURL = $session->get('absoluteURL').'/index.php?';
 
 if (isActionAccessible($guid, $connection2, $queryArr['q']) == false) {
     $queryArr['return'] = "error0";

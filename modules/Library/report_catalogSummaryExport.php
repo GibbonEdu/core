@@ -22,7 +22,7 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/report_catalogSummary.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/report_catalogSummary.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     $URL .= '&return=error0';

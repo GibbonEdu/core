@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }, array());
 
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setClass('noIntBorder fullWidth borderGrey mb-6');
 
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
