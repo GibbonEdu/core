@@ -38,7 +38,7 @@ class MessengerGateway extends QueryableGateway
     private static $searchableColumns = ['gibbonMessenger.subject', 'gibbonMessenger.body'];
     
     /**
-     * Queries the list of users for the Manage Users page.
+     * Queries the list of messages for the Manage Messages page, optionally filtered for the current user.
      *
      * @param QueryCriteria $criteria
      * @return DataSet
