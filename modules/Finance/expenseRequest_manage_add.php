@@ -28,13 +28,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 } else {
     //Proceed!
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-    
-    $urlParams = compact('gibbonFinanceBudgetCycleID');        
-        
+
+    $urlParams = compact('gibbonFinanceBudgetCycleID');
+
     $page->breadcrumbs
         ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
-        ->add(__('Add Expense Request'));      
-    
+        ->add(__('Add Expense Request'));
+
 
     $page->return->addReturns(['success1' => __('Your request was completed successfully, but notifications could not be sent out.')]);
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Check if have Full or Write in any budgets
-        $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+        $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
         $budgetsAccess = false;
         if (is_array($budgets) && count($budgets)>0) {
             foreach ($budgets as $budget) {
@@ -86,13 +86,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     //Ready to go!
                     if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_addProcess.php');
+                    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseRequest_manage_addProcess.php');
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('status2', $status2);
                     $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
 

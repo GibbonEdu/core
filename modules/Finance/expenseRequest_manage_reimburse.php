@@ -30,12 +30,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 } else {
     //Proceed!
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-    
-    $urlParams = compact('gibbonFinanceBudgetCycleID');        
-        
+
+    $urlParams = compact('gibbonFinanceBudgetCycleID');
+
     $page->breadcrumbs
         ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
-        ->add(__('Request Reimbursement'));    
+        ->add(__('Request Reimbursement'));
 
     //Check if params are specified
     $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                 echo '</div>';
             } else {
                 //Ready to go! Just check record exists and we have access, and load it ready to use...
-                
+
                     //Set Up filter wheres
                     $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                     $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
@@ -90,14 +90,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
 
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_reimburseProcess.php');
+                    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseRequest_manage_reimburseProcess.php');
 
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('status2', $status2);
                     $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
                     $form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
@@ -177,10 +177,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     	$row->addLabel('paymentAmount', __('Amount paid'))->description(__('Final amount paid.'));
             			$row->addCurrency('paymentAmount')->required()->maxLength(15);
 
-                    $form->addHiddenValue('gibbonPersonIDPayment', $_SESSION[$guid]['gibbonPersonID']);
+                    $form->addHiddenValue('gibbonPersonIDPayment', $session->get('gibbonPersonID'));
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('name', __('Payee'))->description(__('Staff who made, or arranged, the payment.'));
-                        $row->addTextField('name')->required()->readonly()->setValue(Format::name('', ($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Staff', true, true));
+                        $row->addTextField('name')->required()->readonly()->setValue(Format::name('', ($session->get('preferredName')), htmlPrep($session->get('surname')), 'Staff', true, true));
 
                     $methods = array(
                         'Bank Transfer' => __('Bank Transfer'),

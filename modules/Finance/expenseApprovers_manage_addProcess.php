@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     $sequenceNumber = $expenseApprovalType == 'Chain Of All'
           ? abs($_POST['sequenceNumber']?? null)
           : null;
-    
+
 
     if ($gibbonPersonID == '' or ($expenseApprovalType == 'Y' and $sequenceNumber == '')) {
         $URL .= '&return=error1';
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Write to database
             try {
-                $data = array('gibbonPersonID' => $gibbonPersonID, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                $data = array('gibbonPersonID' => $gibbonPersonID, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestampCreator' => date('Y-m-d H:i:s', time()));
                 $sql = 'INSERT INTO gibbonFinanceExpenseApprover SET gibbonPersonID=:gibbonPersonID, sequenceNumber=:sequenceNumber, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

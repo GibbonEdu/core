@@ -39,12 +39,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
     } else {
         //Proceed!
         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-    
-        $urlParams = compact('gibbonFinanceBudgetCycleID');        
-        
+
+        $urlParams = compact('gibbonFinanceBudgetCycleID');
+
         $page->breadcrumbs
             ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
-            ->add(__('Edit Expense'));        
+            ->add(__('Edit Expense'));
 
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                 $budgetsAccess = true;
             } else {
                 //Check if have Full or Write in any budgets
-                $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+                $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
                 if (is_array($budgets) && count($budgets)>0) {
                     foreach ($budgets as $budget) {
                         if ($budget[2] == 'Full' or $budget[2] == 'Write') {
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                         echo '</div>';
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
-                        
+
                             //Set Up filter wheres
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
                             $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
@@ -122,19 +122,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                                 echo '</div>';
                             }
-                            
+
                             // Get budget allocation & allocated amounts
                             $budgetAllocation = getBudgetAllocation($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
                             $budgetAllocated = getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
                             $budgetRemaining = (is_numeric($budgetAllocation) && is_numeric($budgetAllocated))? ($budgetAllocation - $budgetAllocated) : __('N/A');
-                            
-							$form = Form::create('expenseManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_editProcess.php');
+
+							$form = Form::create('expenseManage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenses_manage_editProcess.php');
 							$form->setFactory(DatabaseFormFactory::create($pdo));
 
-							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+							$form->addHiddenValue('address', $session->get('address'));
 							$form->addHiddenValue('status2', $status2);
 							$form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
 							$form->addHiddenValue('gibbonFinanceBudgetID', $gibbonFinanceBudgetID);
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 							$form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
 							$form->addRow()->addHeading(__('Basic Information'));
-							
+
 							$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 							$row = $form->addRow();
 								$row->addLabel('name', __('Budget Cycle'));
@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 								$col->addContent($values['purchaseDetails']);
 
                             $form->addRow()->addHeading(__('Budget Tracking'));
-                            
+
                             $row = $form->addRow();
                                 $row->addLabel('cost', __('Total Cost'));
                                 $row->addCurrency('cost')->required()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
@@ -203,19 +203,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 							$row = $form->addRow();
 								$row->addLabel('countAgainstBudget', __('Count Against Budget'))->description(__('For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.'));
                                 $row->addYesNo('countAgainstBudget')->required();
-                                
+
                             $form->toggleVisibilityByClass('budgetInfo')->onSelect('countAgainstBudget')->when('Y');
 
                             $budgetAllocationLabel = (is_numeric($budgetAllocation))? number_format($budgetAllocation, 2, '.', ',') : $budgetAllocation;
                             $row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetAllocation', __('Budget For Cycle'))->description(__('Numeric value of the fee.'));
                                 $row->addCurrency('budgetAllocation')->required()->readonly()->setValue($budgetAllocationLabel);
-                              
+
                             $budgetAllocatedLabel = (is_numeric($budgetAllocated))? number_format($budgetAllocated, 2, '.', ',') : $budgetAllocated;
 							$row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetForCycle', __('Amount already approved or spent'))->description(__('Numeric value of the fee.'));
                                 $row->addCurrency('budgetForCycle')->required()->readonly()->setValue($budgetAllocatedLabel);
-                                
+
                             $budgetRemainingLabel = (is_numeric($budgetRemaining))? number_format($budgetRemaining, 2, '.', ',') : $budgetRemaining;
 							$row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetRemaining', __('Budget Remaining For Cycle'))->description(__('Numeric value of the fee.'));
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                     ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
 
                             $form->addRow()->addHeading(__('Log'));
-                            
+
                             $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
                             $form->addRow()->addContent($expenseLog->getOutput());
 
@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                 } else {
                                     $row->addSelectStaff('gibbonPersonIDPayment')->required()->placeholder();
                                 }
-								
+
 
 							$methods = array(
 								'Bank Transfer' => __('Bank Transfer'),
@@ -282,7 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                             if ($values['paymentReimbursementReceipt'] != '') {
                                 $paymentID->prepend("<a target='_blank' class='floatRight' href=\"./".$values['paymentReimbursementReceipt'].'">'.__('Payment Receipt').'</a><br/>');
                             }
-                                
+
                             if ($values['status'] == 'Paid' and $values['purchaseBy'] == 'Self' and $values['paymentReimbursementStatus'] != '') {
 
                                 $row = $form->addRow()->addClass('paymentInfo');

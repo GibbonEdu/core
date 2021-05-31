@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
                 } else {
                     //Write to database
                     try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'timestampUpdate' => date('Y-m-d H:i:s', time()), 'gibbonFinanceExpenseApproverID' => $gibbonFinanceExpenseApproverID);
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'timestampUpdate' => date('Y-m-d H:i:s', time()), 'gibbonFinanceExpenseApproverID' => $gibbonFinanceExpenseApproverID);
                         $sql = 'UPDATE gibbonFinanceExpenseApprover SET gibbonPersonID=:gibbonPersonID, sequenceNumber=:sequenceNumber, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonFinanceExpenseApproverID=:gibbonFinanceExpenseApproverID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

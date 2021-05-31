@@ -26,16 +26,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
     //Proceed!
     //Check if school year specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    
+
     $urlParams = compact('gibbonSchoolYearID');
-    
+
     $page->breadcrumbs
         ->add(__('Manage Fees'),'fees_manage.php', $urlParams)
-        ->add(__('Add Fee'));     
+        ->add(__('Add Fee'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/fees_manage_edit.php&gibbonFinanceFeeID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/fees_manage_edit.php&gibbonFinanceFeeID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
     } else {
         if ($search != '') {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
             echo '</div>';
         }
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fees_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/fees_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         try {
             $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);

@@ -30,8 +30,8 @@ $gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'] ?? '';
 
 if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage_approve.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
-    $URLApprove = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage_approve.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
+    $URLApprove = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_approve.php') == false) {
         $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                     $budgetsAccess = true;
                 } else {
                     //Check if have Full or Write in any budgets
-                    $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+                    $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
                     if (is_array($budgets) && count($budgets)>0) {
                         foreach ($budgets as $budget) {
                             if ($budget[2] == 'Full' or $budget[2] == 'Write') {
@@ -100,7 +100,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 										JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
 										WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID";
                                 } else { //Access only to own budgets
-                                    $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+                                    $data['gibbonPersonID'] = $session->get('gibbonPersonID');
                                     $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
 										FROM gibbonFinanceExpense
 										JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
@@ -129,7 +129,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                     } else {
                                         //Check if school approver, if not, abort
 
-                                            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                                             $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID";
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
@@ -162,7 +162,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                     }
 
                                     //Attempt to archive notification
-                                    archiveNotification($connection2, $guid, $_SESSION[$guid]['gibbonPersonID'], "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID");
+                                    archiveNotification($connection2, $guid, $session->get('gibbonPersonID'), "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID");
 
                                     if ($approval == 'Rejection') { //REJECT!
                                         //Write back to gibbonFinanceExpense
@@ -179,7 +179,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                                         //Write rejection to log
                                         try {
-                                            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'comment' => $comment);
+                                            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment);
                                             $sql = "INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='".date('Y-m-d H:i:s')."', action='Rejection', comment=:comment";
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
@@ -198,7 +198,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                     } elseif ($approval == 'Comment') { //COMMENT!
                                         //Write comment to log
                                         try {
-                                            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'comment' => $comment);
+                                            $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment);
                                             $sql = "INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='".date('Y-m-d H:i:s')."', action='Comment', comment=:comment";
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
@@ -215,13 +215,13 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $URLApprove .= '&return=success0';
                                         header("Location: {$URLApprove}");
                                     } else { //APPROVE!
-                                        if (approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, true) == false) {
+                                        if (approvalRequired($guid, $session->get('gibbonPersonID'), $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, true) == false) {
                                             $URL .= '&return=error0';
                                             header("Location: {$URL}");
                                         } else {
                                             //Add log entry
                                             try {
-                                                $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'action' => $approval, 'comment' => $comment);
+                                                $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'action' => $approval, 'comment' => $comment);
                                                 $sql = "INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='".date('Y-m-d H:i:s')."', action=:action, comment=:comment";
                                                 $result = $connection2->prepare($sql);
                                                 $result->execute($data);
@@ -283,7 +283,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                             } elseif ($completion == 'school') { //If school completion met
                                                 //Write completion to log
                                                 try {
-                                                    $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                                    $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                                                     $sql = "INSERT INTO gibbonFinanceExpenseLog SET gibbonFinanceExpenseID=:gibbonFinanceExpenseID, gibbonPersonID=:gibbonPersonID, timestamp='".date('Y-m-d H:i:s')."', action='Approval - Final'";
                                                     $result = $connection2->prepare($sql);
                                                     $result->execute($data);

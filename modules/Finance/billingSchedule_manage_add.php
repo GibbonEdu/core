@@ -27,14 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 
     $urlParams = compact('gibbonSchoolYearID');
-    
+
     $page->breadcrumbs
         ->add(__('Manage Billing Schedule'), 'billingSchedule_manage.php', $urlParams)
         ->add(__('Add Entry'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Finance/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
 
     $page->return->setEditLink($editLink);
@@ -46,17 +46,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     } else {
         if ($search != '') {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
             echo '</div>';
         }
 
-        $form = Form::create("scheduleManageAdd", $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+        $form = Form::create("scheduleManageAdd", $session->get('absoluteURL').'/modules/'.$session->get('module')."/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
 
-        $form->addHiddenValue("address", $_SESSION[$guid]['address']);
+        $form->addHiddenValue("address", $session->get('address'));
 
         $row = $form->addRow();
         	$row->addLabel("yearName", __("School Year"));
-        	$row->addTextField("yearName")->setValue($_SESSION[$guid]['gibbonSchoolYearName'])->readonly(true)->required();
+        	$row->addTextField("yearName")->setValue($session->get('gibbonSchoolYearName'))->readonly(true)->required();
 
         $row = $form->addRow();
         	$row->addLabel("name", __("Name"));
@@ -71,11 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         	$row->addTextArea("description")->setRows(5);
 
         $row = $form->addRow();
-        	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
         	$row->addDate('invoiceIssueDate')->required();
 
         $row = $form->addRow();
-			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('Final payment date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('Final payment date.').'<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
 			$row->addDate('invoiceDueDate')->required();
 
         $row = $form->addRow();

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
     $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
 
-    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
+    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID');
 
     //Proceed!
     $page->breadcrumbs
@@ -70,14 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
+            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
             echo '</div>';
         }
-        
-        $form = Form::create('invoice', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_addProcess.php?'.http_build_query($urlParams));
+
+        $form = Form::create('invoice', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_manage_addProcess.php?'.http_build_query($urlParams));
         $form->setFactory(FinanceFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading(__('Basic Information'));
 
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
             $row->addTextField('schoolYear')->required()->readonly()->setValue($schoolYearName);
 
         $row = $form->addRow();
-            $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
+            $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
             $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID)->required()->selectMultiple();
 
         $scheduling = array('Scheduled' => __('Scheduled'), 'Ad Hoc' => __('Ad Hoc'));
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         $form->addRow()->addHeading(__('Fees'));
 
         // CUSTOM BLOCKS
-        
+
         // Fee selector
         $feeSelector = $form->getFactory()->createSelectFee('addNewFee', $gibbonSchoolYearID)->addClass('addBlock');
 
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
                 $row->addTextField('name')->setClass('w-full pr-10 title')->required()->placeholder(__('Fee Name'))
                     ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
                     ->append('<input type="hidden" id="feeType" name="feeType" value="">');
-                
+
             $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
                 $col->addSelectFeeCategory('gibbonFinanceFeeCategoryID')
                     ->setClass('w-48 m-0');
@@ -130,8 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
                 $col->addCurrency('fee')
                     ->setClass('w-48 ml-1')
                     ->required()
-                    ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
-                
+                    ->placeholder(__('Value').(!empty($session->get('currency'))? ' ('.$session->get('currency').')' : ''));
+
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('description', __('Description'));
                 $col->addTextArea('description')->setRows('auto')->setClass('w-full float-none m-0');
@@ -163,4 +163,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         echo $form->getOutput();
     }
 }
-

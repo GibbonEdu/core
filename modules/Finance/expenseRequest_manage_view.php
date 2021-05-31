@@ -29,14 +29,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 } else {
     //Proceed!
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-    
-    $urlParams = compact('gibbonFinanceBudgetCycleID');        
-        
+
+    $urlParams = compact('gibbonFinanceBudgetCycleID');
+
     $page->breadcrumbs
         ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
-        ->add(__('View Expense Request'));       
+        ->add(__('View Expense Request'));
 
-    
+
     //Check if params are specified
     $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
     $status = '';
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Check if have Full or Write in any budgets
-        $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+        $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
         $budgetsAccess = false;
         if (is_array($budgets) && count($budgets)>0) {
             foreach ($budgets as $budget) {
@@ -85,8 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                     echo '</div>';
                 } else {
                     //Ready to go! Just check record exists and we have access, and load it ready to use...
-                    
-                        $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+
+                        $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpenseID=:gibbonFinanceExpenseID AND gibbonFinanceExpense.gibbonPersonIDCreator=:gibbonPersonIDCreator';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -100,13 +100,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $values = $result->fetch();
                         if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                             echo '</div>';
                         }
 
-                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenseRequest_manage_viewProcess.php');
+                        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/expenseRequest_manage_viewProcess.php');
 
-                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->addHiddenValue('address', $session->get('address'));
                         $form->addHiddenValue('status2', $status2);
                         $form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
                         $form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);

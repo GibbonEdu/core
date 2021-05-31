@@ -44,13 +44,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
 
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-        $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
+        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
     }
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
-        
+    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
+
             $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
@@ -74,13 +74,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/invoices_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
                 echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/invoices_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
             echo __('Next Year').' ';
         }
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo __('Filters');
         echo '</h3>';
 
-        $form = Form::create('manageInvoices', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('manageInvoices', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(FinanceFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
@@ -158,10 +158,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $invoices = $invoiceGateway->queryInvoicesByYear($criteria, $gibbonSchoolYearID);
 
         // FORM
-        $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($request));
+        $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/invoices_manage_processBulk.php?'.http_build_query($request));
         $form->setFactory(FinanceFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         // BULK ACTIONS
         $bulkActions = array('export' => __('Export'));
@@ -247,8 +247,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $table->addColumn('billingSchedule', __('Schedule'));
 
-        $table->addColumn('total', __('Total').' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
-            ->description(__('Paid').' ('.$_SESSION[$guid]['currency'].')')
+        $table->addColumn('total', __('Total').' <small><i>('.$session->get('currency').')</i></small>')
+            ->description(__('Paid').' ('.$session->get('currency').')')
             ->notSortable()
             ->format(function ($invoice) use ($pdo) {
                 $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);

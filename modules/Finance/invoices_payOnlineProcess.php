@@ -23,7 +23,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_payOnline.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Finance/invoices_payOnline.php';
 
 $paid = null;
 if (isset($_GET['paid'])) {
@@ -94,7 +94,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                         if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
                             //Let's call for the payment to be done!
                             $_SESSION[$guid]['gatewayCurrencyNoSupportReturnURL'] = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_payOnline.php&return=error3';
-                            $URL = $_SESSION[$guid]['absoluteURL']."/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=".urlencode("modules/Finance/invoices_payOnlineProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key").'&fail='.urlencode("modules/Finance/invoices_payOnlineProcess?return=success2&paid=N&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key");
+                            $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=".urlencode("modules/Finance/invoices_payOnlineProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key").'&fail='.urlencode("modules/Finance/invoices_payOnlineProcess?return=success2&paid=N&feeTotal=$feeTotal&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=$key");
                             header("Location: {$URL}");
                         } else {
                             $URL .= '&return=error2';
@@ -272,17 +272,17 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                 $receiptCount = $resultPayments->rowCount();
 
                 //Prep message
-                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                 $mail = $container->get(Mailer::class);
-                $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'), sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'), sprintf(__('%1$s Finance'), $session->get('organisationName')));
                 foreach ($emails as $address) {
                     $mail->AddBCC($address);
                 }
 
                 $mail->Subject = __('Receipt from {organisation} via {system}', [
-                    'organisation' => $_SESSION[$guid]['organisationNameShort'],
-                    'system' => $_SESSION[$guid]['systemName'],
+                    'organisation' => $session->get('organisationNameShort'),
+                    'system' => $session->get('systemName'),
                 ]);
 
                 $mail->renderBody('mail/email.twig.html', [

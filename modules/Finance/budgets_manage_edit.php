@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
     if ($gibbonFinanceBudgetID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
             $sql = 'SELECT * FROM gibbonFinanceBudget WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
             $result = $connection2->prepare($sql);
@@ -54,10 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/budgets_manage_editProcess.php?gibbonFinanceBudgetID=$gibbonFinanceBudgetID");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addRow()->addHeading(__('General Settings'));
 
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                     $row = $table->addRow();
                     $row->addContent(Format::name('', $staff['preferredName'], $staff['surname'], 'Staff', true, true));
                     $row->addContent(__($staff['access']));
-                    $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$staff['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>");
+                    $row->addContent("<a onclick='return confirm(\"".__('Are you sure you wish to delete this record?')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/budgets_manage_edit_staff_deleteProcess.php?address='.$_GET['q'].'&gibbonFinanceBudgetPersonID='.$staff['gibbonFinanceBudgetPersonID']."&gibbonFinanceBudgetID=$gibbonFinanceBudgetID'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>");
                 }
             }
 

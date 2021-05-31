@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFinanceInvoiceIDs = $_SESSION[$guid]['financeInvoiceExportIDs'];
+    $gibbonFinanceInvoiceIDs = $session->get('financeInvoiceExportIDs');
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 
     if ($gibbonFinanceInvoiceIDs == '' or $gibbonSchoolYearID == '') {
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __("Schedule"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Total Value") . '(' . $session->get("currency") .')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Issue Date"));
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Date Paid"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Amount Paid") . " (" . $session->get("currency") . ")" );
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);

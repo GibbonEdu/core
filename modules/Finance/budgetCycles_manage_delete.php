@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     if ($gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
             $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
             $result = $connection2->prepare($sql);
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         } else {
             //Let's go!
             $row = $result->fetch();
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/budgetCycles_manage_deleteProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/budgetCycles_manage_deleteProcess.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID");
             echo $form->getOutput();
         }
     }
