@@ -53,12 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
 
     // FORM
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('View'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('q', '/modules/Reports/reporting_proofread.php');
 
     $criteria = $reportingAccessGateway->newQueryCriteria();
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         echo Format::alert(__('There are no active reporting cycles.'), 'message');
         return;
     }
-    
+
     $modes = ['Person' => __('Person'), 'Form Group' => __('Form Group')];
     $row = $form->addRow();
         $row->addLabel('mode', __('Proof Read By'));
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->toggleVisibilityByClass('personMode')->onSelect('mode')->when('Person');
     $form->toggleVisibilityByClass('formGroupMode')->onSelect('mode')->when('Form Group');
 
-    
+
 
     if ($highestAction == 'Proof Read_all') {
         $row = $form->addRow()->addClass('formGroupMode');
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
 
         asort($formGroups, SORT_NATURAL);
-        
+
         $row = $form->addRow()->addClass('formGroupMode');
             $row->addLabel('gibbonFormGroupID', __('Form Group'));
             $row->addSelect('gibbonFormGroupID')->fromArray($formGroups)->required()->placeholder()->selected($gibbonFormGroupID);
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         return $item['status'] == 'Done' || $item['status'] == 'Accepted' ? $total+1 : $total;
     }, 0);
 
-    echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [ 
+    echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [
         'canWriteReport' => true,
         'reportingOpen' => true,
         'totalCount' => count($proofsTotal),
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
 
             $section->addLabel("comment[{$gibbonReportingValueID}]Label", $criteriaName)
                 ->setClass('text-normal italic pt-1 pl-1');
-                
+
             if ($proof['status'] == 'Edited') {
                 $section->addContent($differ->htmlDiff(htmlPrep($criteria['comment']), htmlPrep($proof['comment'])))
                         ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-4">', '</div>');
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
             } else {
                 $section->addContent($criteria['comment'])
                     ->wrap('<div class="text-base font-sans leading-tight text-gray-900 p-1 mb-6">', '</div>');
-                    
+
                 $actions = ['Revised' => __('Edit Comment').'&nbsp;&nbsp;'];
             }
 
@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                     ->addData('id', $gibbonReportingValueID)
                     ->inline()
                     ->fromArray($actions);
-                
+
             $col = $colRow->addColumn()->setClass('mt-1');
             $col->addSubmit(__('Save'));
 
@@ -337,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                     ->placeholder('Reason (Optional)')
                     ->setValue($proof['reason'])
                     ->maxLength(255);
-                
+
             $col = $colRow->addColumn()->setClass('mt-1');
             $col->addSubmit(__('Save'));
         }

@@ -27,7 +27,7 @@ $_POST['address'] = '/modules/Reports/archive_byReport_download.php';
 
 require_once '../../gibbon.php';
 
-$returnPath = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/archive_byReport.php';
+$returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byReport.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_download.php') == false) {
     // Access denied

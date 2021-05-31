@@ -32,7 +32,7 @@ $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $contextID = $_POST['contextID'] ?? '';
 
 if (empty($gibbonLogID)) return;
-if (empty($_SESSION[$guid]['username'])) return;
+if (!$session->has('username')) return;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.php')) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);

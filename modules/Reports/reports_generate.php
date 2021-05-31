@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
 <script>
 $('.statusBar').each(function(index, element) {
     var refresh = setInterval(function () {
-        var path = "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Reports/reports_generate_ajax.php";
+        var path = "<?php echo $session->get('absoluteURL') ?>/modules/Reports/reports_generate_ajax.php";
         var postData = { gibbonLogID: $(element).data('id') };
         $(element).load(path, postData, function(responseText, textStatus, jqXHR) {
             if (responseText.indexOf('Complete') >= 0) {

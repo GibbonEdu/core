@@ -35,11 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         $page->addError(__('You do not have access to this action.'));
         return;
     }
-    
+
     $gibbonPersonID = isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage.php')
         ? $_REQUEST['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID')
         : $gibbon->session->get('gibbonPersonID');
-        
+
     $page->breadcrumbs
         ->add(__('My Reporting'), 'reporting_my.php', ['gibbonPersonID' => $gibbonPersonID])
         ->add(__('Write Reports'));
@@ -59,12 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
 
     // SIDEBAR: Dropdowns
     $sidebarForm = $container->get(ReportingSidebarForm::class)->createForm($urlParams);
-    $_SESSION[$guid]['sidebarExtra'] = $sidebarForm->getOutput();
+    $session->set('sidebarExtra', $sidebarForm->getOutput());
 
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
     $reportingScope = $container->get(ReportingScopeGateway::class)->getByID($urlParams['gibbonReportingScopeID']);
     $reportingCycle = $container->get(ReportingCycleGateway::class)->getByID($reportingScope['gibbonReportingCycleID'] ?? '');
-    
+
     if (empty($urlParams['gibbonReportingScopeID']) || $reportingScope['gibbonReportingCycleID'] != $urlParams['gibbonReportingCycleID']) {
         $page->addMessage(__('Select an option in the sidebar to get started.'));
         return;
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
         return $group;
     }, []);
 
-    echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [ 
+    echo $page->fetchFromTemplate('ui/writingListHeader.twig.html', [
         'canWriteReport' => $canWriteReport,
         'reportingOpen' => $reportingOpen,
         'scopeDetails' => $scopeDetails,
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write.ph
 
         echo $form->getOutput();
     }
-    
+
     if (!empty($progress)) {
         echo $page->fetchFromTemplate('ui/writingQueue.twig.html', [
             'progress'=> $progressByCategory,
