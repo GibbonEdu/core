@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = 'SELECT * FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=".$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status.'&gibbonPersonIDOwnership='.$gibbonPersonIDOwnership.'&typeSpecificFields='.$typeSpecificFields);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/library_manage_catalog_deleteProcess.php?gibbonLibraryItemID=$gibbonLibraryItemID&name=".$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status.'&gibbonPersonIDOwnership='.$gibbonPersonIDOwnership.'&typeSpecificFields='.$typeSpecificFields);
             echo $form->getOutput();
         }
     }

@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     if ($gibbonLibraryItemID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
             $sql = 'SELECT gibbonLibraryItem.*, gibbonLibraryType.name AS type FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItemID=:gibbonLibraryItemID';
             $result = $connection2->prepare($sql);
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             if ($name != '' or $gibbonLibraryTypeID != '' or $gibbonSpaceID != '' or $status != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_lending.php&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_lending.php&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             echo '</tr>';
             echo '</table>';
 
-            
+
             $gateway = $container->get(LibraryGateway::class);
             $criteria = $gateway->newQueryCriteria(true)
                 ->sortBy('gibbonLibraryItemEvent.timestampOut', 'DESC')
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 ->filterBy('status', $status)
                 ->fromPOST();
 
-            $item = $gateway->queryLendingDetail($criteria); 
+            $item = $gateway->queryLendingDetail($criteria);
             $table = DataTable::createPaginated('lendingLog', $criteria);
             $table->setTitle(__('Lending & Activity Log'));
 

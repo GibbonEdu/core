@@ -39,12 +39,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('View Overdue Items'));
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_viewOverdueItems.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_viewOverdueItems.php");
 
         $row = $form->addRow();
             $row->addLabel('ignoreStatus', __('Ignore Status'))->description(__('Include all users, regardless of status and current enrolment.'));

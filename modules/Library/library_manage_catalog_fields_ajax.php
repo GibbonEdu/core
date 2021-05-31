@@ -23,7 +23,7 @@ use Gibbon\Forms\FormFactory;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Library/moduleFunctions.php';
+include $session->get('absolutePath').'/modules/Library/moduleFunctions.php';
 
 //Setup variables
 $gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';

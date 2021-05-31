@@ -41,12 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Manage Catalog'));
 
-        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
         $form->setTitle(__('Search & Filter'));
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
+        $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_manage_catalog.php");
 
         $row = $form->addRow();
             $row->addLabel('name', __('ID/Name/Producer'));
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->filterBy('typeSpecificFields', $typeSpecificFields)
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
-    $items = $gateway->queryCatalog($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $items = $gateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'));
 
     $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $gibbon->session);
 

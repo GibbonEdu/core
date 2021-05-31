@@ -40,12 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     $gibbonSpaceID = $_REQUEST['gibbonSpaceID'] ?? '';
     $status = $_REQUEST['status'] ?? '';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/library_lending.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_lending.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/library_lending.php");
 
     $row = $form->addRow();
         $row->addLabel('name', __('ID/Name/Producer'));
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
                         ->filterBy('status', $status)
                         ->fromPOST();
     $items = $gateway->queryLending($criteria);
-    
+
     $table = DataTable::createPaginated('lending', $criteria);
 
     $table->setTitle(__('Lending & Activity Log'));
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
                 $statusDetail
             );
         });
-                
+
     $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
           ->addParam('name', $name)
