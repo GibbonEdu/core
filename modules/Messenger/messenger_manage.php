@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         return;
     }
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $search = $_GET['search'] ?? '';
 
     // CRITERIA
     $messengerGateway = $container->get(MessengerGateway::class);
