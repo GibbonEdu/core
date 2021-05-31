@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             externalAssessmentDetails($guid, $gibbonPersonID, $connection2, '', $manage, $search, $allStudents);
 
             //Set sidebar
-            $session->get('sidebarExtra') = getUserPhoto($guid, $row['image_240'], 240);
+            $session->set('sidebarExtra', getUserPhoto($guid, $row['image_240'], 240));
         }
     }
 }
