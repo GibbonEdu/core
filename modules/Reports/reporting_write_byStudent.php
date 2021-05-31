@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     // SIDEBAR: Dropdowns
     $sidebarForm = $container->get(ReportingSidebarForm::class)->createForm($urlParams);
-    $session->get('sidebarExtra', $sidebarForm->getOutput());
+    $session->set('sidebarExtra', $sidebarForm->getOutput());
 
     $page->scripts->add('chart');
 
