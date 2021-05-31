@@ -41,7 +41,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error load
             $partialFail = false;
             //Export
             if ($action == 'export') {
-                $session->set('financeExpenseExportIDs') = $gibbonFinanceExpenseIDs;
+                $session->set('financeExpenseExportIDs', $gibbonFinanceExpenseIDs);
 
 				include './expenses_manage_processBulkExportContents.php';
 
