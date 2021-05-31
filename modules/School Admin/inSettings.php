@@ -77,10 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     echo __('Settings');
     echo '</h3>';
 
-    $form = Form::create('inSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/inSettingsProcess.php');
+    $form = Form::create('inSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/inSettingsProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate', true);
     $row = $form->addRow();

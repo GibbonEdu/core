@@ -27,8 +27,8 @@ require_once '../../gibbon.php';
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_view_accept.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_my.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_accept.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_my.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept.php') == false) {
     $URL .= '&return=error0';
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
     $requestDates = $_POST['coverageDates'] ?? [];
 
     $data = [
-        'gibbonPersonIDCoverage' => $_SESSION[$guid]['gibbonPersonID'],
+        'gibbonPersonIDCoverage' => $session->get('gibbonPersonID'),
         'timestampCoverage'      => date('Y-m-d H:i:s'),
         'notesCoverage'          => $_POST['notesCoverage'] ?? '',
         'status'                 => 'Accepted',

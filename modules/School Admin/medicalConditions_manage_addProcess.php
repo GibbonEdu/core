@@ -21,7 +21,7 @@ use Gibbon\Domain\School\MedicalConditionGateway;
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/medicalConditions_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/medicalConditions_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_add.php') == false) {
     $URL .= '&return=error0';

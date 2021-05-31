@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_edit.php&gibbonStaffJobOpeningID='.$gibbonStaffJobOpeningID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_edit.php&gibbonStaffJobOpeningID='.$gibbonStaffJobOpeningID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_edit.php') == false) {
     $URL .= '&return=error0';

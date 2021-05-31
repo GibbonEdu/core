@@ -37,18 +37,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $date = isset($_GET['date']) ? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $dateObject = new DateTimeImmutable($date);
-    $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+    $dateFormat = $session->get('i18n')['dateFormatPHP'];
 
     $subGateway = $container->get(SubstituteGateway::class);
     
     // DATE SELECTOR
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false');
     $form->setClass('blank fullWidth');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addClass('flex flex-wrap');
 
-    $link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false';
+    $link = $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_subs_availabilityWeekly.php&sidebar=false';
 
     $lastWeek = $dateObject->modify('-1 week')->format($dateFormat);
     $thisWeek = (new DateTimeImmutable('Today'))->format($dateFormat);

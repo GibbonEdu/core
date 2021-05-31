@@ -32,9 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     //Proceed!
     $page->breadcrumbs->add(__('Behaviour Settings'));
 
-    $form = Form::create('behaviourSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/behaviourSettingsProcess.php');
+    $form = Form::create('behaviourSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/behaviourSettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('Descriptors'));
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [formGroup], [behaviourCount], [behaviourRecord]'));
+    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $session->get('systemName'), '[studentName], [formGroup], [behaviourCount], [behaviourRecord]'));
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
     $row = $form->addRow();

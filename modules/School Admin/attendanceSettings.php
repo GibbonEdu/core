@@ -84,9 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo __(__('Miscellaneous'));
     echo '</h3>';
 
-    $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php');
+    $form = Form::create('attendanceSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/attendanceSettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('Reasons'));
 

@@ -41,9 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     } else {
         //Let's go!
 
-        $form = Form::create('daysOfWeek', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/daysOfWeek_manageProcess.php');
+        $form = Form::create('daysOfWeek', $session->get('absoluteURL').'/modules/'.$session->get('module').'/daysOfWeek_manageProcess.php');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
         $hours = implode(',', $hoursArray);

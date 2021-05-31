@@ -45,7 +45,7 @@ if (!empty($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseH']) && is_n
     $schoolClose = $_POST['schoolCloseH'].':'.$_POST['schoolCloseM'].':00';
 }
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     $URL .= '&return=error0';

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/formGroup_manage_edit.php&gibbonFormGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/formGroup_manage_edit.php&gibbonFormGroupID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
     }
     $page->return->setEditLink($editLink);
 
@@ -55,10 +55,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         } else {
             $values = $result->fetch();
 
-            $form = Form::create('formGroupAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/formGroup_manage_addProcess.php');
+            $form = Form::create('formGroupAdd', $session->get('absoluteURL').'/modules/'.$session->get('module').'/formGroup_manage_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
             $row = $form->addRow();

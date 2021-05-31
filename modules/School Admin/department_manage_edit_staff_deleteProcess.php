@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $gibbonDepartmentStaffID = $_GET['gibbonDepartmentStaffID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_edit.php') == false) {
     $URL .= '&return=error0';

@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     // Proceed!
     $page->breadcrumbs->add(__('Manage Staff Absences'));
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $search = $_GET['search'] ?? '';
     $dateStart = $_GET['dateStart'] ?? '';
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
     
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
 

@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/schoolYearTerm_manage_edit.php&gibbonSchoolYearTermID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/schoolYearTerm_manage_edit.php&gibbonSchoolYearTermID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('schoolYearTerm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearTerm_manage_addProcess.php');
+    $form = Form::create('schoolYearTerm', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYearTerm_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearID', __('School Year'));

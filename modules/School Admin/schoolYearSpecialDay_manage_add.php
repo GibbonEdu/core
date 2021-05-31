@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
             echo '</div>';
         } else {
 
-            $form = Form::create('specialDayAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_addProcess.php');
+            $form = Form::create('specialDayAdd', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYearSpecialDay_manage_addProcess.php');
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
             $form->addHiddenValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
             $form->addHiddenValue('dateStamp', $dateStamp);

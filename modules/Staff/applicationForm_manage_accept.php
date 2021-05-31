@@ -69,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>'; 
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
+                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
                 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>';
 
@@ -174,8 +174,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         echo '<h4>';
                         echo __('New Staff Member Email & Website');
                         echo '</h4>';
-                        $to = $_SESSION[$guid]['organisationHREmail'];
-                        $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                        $to = $session->get('organisationHREmail');
+                        $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
                         $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
                         if ($applicantDefaultEmail != '') {
                             $body .= __('Email').': '.$email."<br/>";
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $bodyPlain = emailBodyConvert($body);
 
                         $mail = $container->get(Mailer::class);
-                        $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
+                        $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
                         $mail->AddAddress($to);
                         $mail->Subject = $subject;
                         $mail->renderBody('mail/email.twig.html', [
@@ -201,11 +201,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                         if ($mail->Send()) {
                             echo "<div class='success'>";
-                            echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationHRName']);
+                            echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $session->get('organisationHRName'));
                             echo '</div>';
                         } else {
                             echo "<div class='error'>";
-                            echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationHRName']);
+                            echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $session->get('organisationHRName'));
                             echo '</div>';
                         }
                     }
@@ -289,16 +289,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             foreach ($informApplicantArray as $informApplicantEntry) {
                                 if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
                                     $to = $informApplicantEntry['email'];
-                                    $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                                    $subject = sprintf(__('Welcome to %1$s at %2$s'), $session->get('systemName'), $session->get('organisationNameShort'));
                                     if ($notificationApplicantMessage != '') {
-                                        $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.' '.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationHRName'], $_SESSION[$guid]['systemName']);
+                                        $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.' '.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $session->get('organisationHRName'), $session->get('systemName'));
                                     } else {
-                                        $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationHRName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
+                                        $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$session->get('systemName').', '.$session->get('organisationNameShort')."'s system for managing school information. You can access the system by going to ".$session->get('absoluteURL').' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$session->get('organisationHRName').",<br/><br/>".$session->get('systemName').' Administrator';
                                     }
                                     $bodyPlain = emailBodyConvert($body);
 
                                     $mail = $container->get(Mailer::class);
-                                    $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
+                                    $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
                                     $mail->AddAddress($to);
                                     $mail->Subject = $subject;
                                     $mail->renderBody('mail/email.twig.html', [
@@ -397,7 +397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     echo '</ul>';
 
                     echo "<div class='success' style='margin-bottom: 20px'>";
-                    echo sprintf(__('Applicant has been successfully accepted into %1$s.'), $_SESSION[$guid]['organisationName']).' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
+                    echo sprintf(__('Applicant has been successfully accepted into %1$s.'), $session->get('organisationName')).' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
                     echo '<ol>';
                     echo '<li>'.__('Adjust the user\'s roles within the system.').'</li>';
                     echo '<li>'.__('Create a timetable for the applicant.').'</li>';

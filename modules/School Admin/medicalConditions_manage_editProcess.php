@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonMedicalConditionID = $_POST['gibbonMedicalConditionID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/medicalConditions_manage_edit.php&gibbonMedicalConditionID='.$gibbonMedicalConditionID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/medicalConditions_manage_edit.php&gibbonMedicalConditionID='.$gibbonMedicalConditionID;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_edit.php') == false) {
     $URL .= '&return=error0';

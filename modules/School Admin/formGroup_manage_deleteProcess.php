@@ -21,8 +21,8 @@ include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage_delete.php&gibbonFormGroupID=$gibbonFormGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage_delete.php&gibbonFormGroupID=$gibbonFormGroupID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/formGroup_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_delete.php') == false) {
     $URL .= '&return=error0';

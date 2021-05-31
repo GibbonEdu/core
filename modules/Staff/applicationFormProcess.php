@@ -25,18 +25,19 @@ use Gibbon\Forms\CustomFieldHandler;
 include '../../gibbon.php';
 
 //Check to see if system settings are set from databases
-if (empty($_SESSION[$guid]['systemSettingsSet'])) {
+if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 }
 
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/applicationForm.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/applicationForm.php';
+
 
 $proceed = false;
 $public = false;
-if (isset($_SESSION[$guid]['username']) == false) {
+if (!$session->has('username')) {
     $public = true;
     //Get public access
     $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
@@ -48,6 +49,8 @@ if (isset($_SESSION[$guid]['username']) == false) {
         $proceed = true;
     }
 }
+
+
 
 if ($proceed == false) {
     $URL .= '&return=error0';
@@ -77,7 +80,6 @@ if ($proceed == false) {
     $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
     $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
     $residencyStatus = $_POST['residencyStatus'] ?? '';
-    }
     $visaExpiryDate = null;
     if (isset($_POST['visaExpiryDate']) and $_POST['visaExpiryDate'] != '') {
         $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
@@ -93,6 +95,7 @@ if ($proceed == false) {
     $phone1CountryCode = null;
     if (isset($_POST['phone1CountryCode'])) {
         $phone1CountryCode = $_POST['phone1CountryCode'];
+    }
     $phone1 = null;
     if (isset($_POST['phone1'])) {
         $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
@@ -110,6 +113,7 @@ if ($proceed == false) {
             $agreement = 'N';
         }
     }
+
 
     //VALIDATE INPUTS
     if (count($gibbonStaffJobOpeningIDs) < 1 or ($gibbonPersonID == null and ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $languageFirst == '' or $email == '' or $homeAddress == '' or $homeAddressDistrict == '' or $homeAddressCountry == '' or $phone1 == '')) or (isset($_POST['referenceEmail1']) and $referenceEmail1 == '') or (isset($_POST['referenceEmail2']) and $referenceEmail2 == '') or (isset($_POST['agreement']) and $agreement != 'Y')) {
@@ -209,7 +213,7 @@ if ($proceed == false) {
                         // Raise a new notification event
                         $event = new NotificationEvent('Staff', 'New Application Form');
 
-                        $event->addRecipient($_SESSION[$guid]['organisationHR']);
+                        $event->addRecipient($session->get('organisationHR'));
                         $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                         $event->setActionLink("/index.php?q=/modules/Staff/applicationForm_manage_edit.php&gibbonStaffApplicationFormID=$AI&search=");
 
@@ -217,13 +221,13 @@ if ($proceed == false) {
 
                         //Email reference form link to referee
                         $applicationFormRefereeLink = unserialize(getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink'));
-                        if ($applicationFormRefereeLink[$type] != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $_SESSION[$guid]['organisationHRName'] != '' and $_SESSION[$guid]['organisationHREmail'] != '') {
+                        if ($applicationFormRefereeLink[$type] != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
                             //Prep message
                             $subject = __('Request For Reference');
-                            $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $_SESSION[$guid]['organisationHRName'], '<br/><br/>', $jobTitle);
+                            $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the job application of an individual who has nominated you as a referee: %1$s.%4$sIn assessing their application for the post of %5$s at our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), Format::name('', $preferredName, $surname, 'Staff', false, true), "<a href='" . $applicationFormRefereeLink[$type] . "' target='_blank'>" . $applicationFormRefereeLink[$type] . "</a>", $session->get('organisationHRName'), '<br/><br/>', $jobTitle);
 
                             $mail = $container->get(Mailer::class);
-                            $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
+                            $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);
                             }

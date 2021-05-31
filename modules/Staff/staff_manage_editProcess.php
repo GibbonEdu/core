@@ -24,7 +24,7 @@ include '../../gibbon.php';
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $allStaff = $_GET['allStaff'] ?? '';
 $search = $_GET['search'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     $URL .= '&return=error0';

@@ -50,15 +50,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID='.$_GET['editID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
+                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID='.$_GET['editID'].'&gibbonExternalAssessmentID='.$_GET['gibbonExternalAssessmentID'];
             }
             $page->return->setEditLink($editLink);
 
 
-            $form = Form::create('externalAssessmentField', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_addProcess.php');
+            $form = Form::create('externalAssessmentField', $session->get('absoluteURL').'/modules/'.$session->get('module').'/externalAssessments_manage_edit_field_addProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
             $row = $form->addRow();

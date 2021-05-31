@@ -46,9 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_editProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/jobOpenings_manage_editProcess.php?gibbonStaffJobOpeningID=$gibbonStaffJobOpeningID");
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $types = array('Teaching' => __('Teaching'), 'Support' => __('Support'));
             $row = $form->addRow();

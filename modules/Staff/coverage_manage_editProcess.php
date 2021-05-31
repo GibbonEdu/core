@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_manage_edit.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit.php') == false) {
     $URL .= '&return=error0';

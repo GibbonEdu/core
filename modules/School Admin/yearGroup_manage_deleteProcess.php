@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_delete.php&gibbonYearGroupID='.$gibbonYearGroupID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_delete.php&gibbonYearGroupID='.$gibbonYearGroupID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_manage_delete.php') == false) {
     $URL .= '&return=error0';

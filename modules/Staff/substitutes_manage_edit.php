@@ -68,15 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
     }
 
     if ($search != '') {
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>  ';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>  ';
     }
     echo '</div>';
 
-    $form = Form::create('subsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/substitutes_manage_editProcess.php?search=$search");
+    $form = Form::create('subsManage', $session->get('absoluteURL').'/modules/'.$session->get('module')."/substitutes_manage_editProcess.php?search=$search");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSubstituteID', $gibbonSubstituteID);
 
     $form->addRow()->addHeading(__('Basic Information'));
@@ -148,7 +148,7 @@ $(document).ready(function() {
             $.ajax({
                 url: './modules/Staff/substitutes_manage_edit_smsAjax.php',
                 data: {
-                    from: "<?php echo $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname']; ?>",    
+                    from: "<?php echo $session->get('preferredName').' '.$session->get('surname'); ?>",    
                     phoneNumber: "<?php echo $person['phone1CountryCode'].$person['phone1']; ?>"
                 },
                 type: 'POST',

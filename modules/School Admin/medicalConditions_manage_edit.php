@@ -44,9 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
         return;
     }
 
-    $form = Form::create('medicalConditionsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalConditions_manage_editProcess.php");
+    $form = Form::create('medicalConditionsManage', $session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalConditions_manage_editProcess.php");
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonMedicalConditionID', $gibbonMedicalConditionID);
 
     $row = $form->addRow();

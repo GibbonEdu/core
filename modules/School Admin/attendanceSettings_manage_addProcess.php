@@ -21,7 +21,7 @@ use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings_manage_add.php";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings_manage_add.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_add.php') == false) {
     $URL .= '&return=error0';

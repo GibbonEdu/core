@@ -41,12 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
         ->fromPOST();
 
     // SEARCH FORM
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/substitutes_manage.php');
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/substitutes_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));

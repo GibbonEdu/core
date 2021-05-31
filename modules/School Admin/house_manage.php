@@ -52,9 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
 
     $table->addColumn('logo', __('Logo'))
     ->notSortable()
-    ->format(function($values) use ($guid) { 
+    ->format(function($values) use ($session) {
         $return = null;
-        $return .= ($values['logo'] != '') ? "<img class='user' style='max-width: 75px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$values['logo']."'/>":"<img class='user' style='max-width: 75px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/>";
+        $return .= ($values['logo'] != '') ? "<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/'.$values['logo']."'/>":"<img class='user' style='max-width: 75px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/>";
         return $return;
     });
     $table->addColumn('name', __('Name'));

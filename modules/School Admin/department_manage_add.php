@@ -33,14 +33,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/department_manage_edit.php&gibbonDepartmentID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/department_manage_edit.php&gibbonDepartmentID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('departmentManageRecord', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manage_addProcess.php?address='.$_SESSION[$guid]['address']);
+    $form = Form::create('departmentManageRecord', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_manage_addProcess.php?address='.$session->get('address'));
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $types = array(
         'Learning Area' => __('Learning Area'),

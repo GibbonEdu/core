@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/substitutes_manage.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/substitutes_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_delete.php') == false) {
     $URL .= '&return=error0';

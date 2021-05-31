@@ -46,12 +46,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo __('Search & Filter');
     echo '</h2>';
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL')."/index.php", 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/staff_manage.php");
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/staff_manage.php");
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $staff = $staffGateway->queryAllStaff($criteria);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manageProcessBulk.php?search='.$search.'&allStaff='.$allStaff);
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/staff_manageProcessBulk.php?search='.$search.'&allStaff='.$allStaff);
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(

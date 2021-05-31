@@ -29,9 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
     //Proceed!
     $page->breadcrumbs->add(__('Manage Medical Conditions'));
 
-    $form = Form::create('medicalSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/medicalConditions_manageProcess.php' );
+    $form = Form::create('medicalSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/medicalConditions_manageProcess.php' );
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->setTitle(__('Settings'));
+
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'Students', 'medicalConditionIntro', true);
     $col = $form->addRow()->addColumn();
@@ -55,6 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
 
     // DATA TABLE
     $table = DataTable::createPaginated('medicalConditionsManage', $criteria);
+
+    $table->setTitle(__('Conditions'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/medicalConditions_manage_add.php')

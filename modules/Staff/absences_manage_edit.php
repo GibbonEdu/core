@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     }, []);
 
     // FORM
-    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_editProcess.php');
+    $form = Form::create('staffAbsenceEdit', $session->get('absoluteURL').'/modules/Staff/absences_manage_editProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
     $form->addRow()->addHeading(__('Basic Information'));
@@ -141,10 +141,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     $table->setTitle(__('Dates'));
     echo $table->getOutput();
 
-    $form = Form::create('staffAbsenceAdd', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/absences_manage_edit_addProcess.php');
+    $form = Form::create('staffAbsenceAdd', $session->get('absoluteURL').'/modules/Staff/absences_manage_edit_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
     $form->addRow()->addHeading(__('Add'));

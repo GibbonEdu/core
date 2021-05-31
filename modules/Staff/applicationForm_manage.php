@@ -44,12 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     echo __('Search');
     echo '</h2>';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/applicationForm_manage.php");
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/applicationForm_manage.php");
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Application ID, preferred, surname'));

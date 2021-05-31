@@ -39,6 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_d
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/Staff/substitutes_manage_deleteProcess.php?gibbonSubstituteID='.$gibbonSubstituteID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/Staff/substitutes_manage_deleteProcess.php?gibbonSubstituteID='.$gibbonSubstituteID, true);
     echo $form->getOutput();
 }

@@ -36,14 +36,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/attendanceSettings_manage_add.php&gibbonDepartmentID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('attendanceCode', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_addProcess.php');
+    $form = Form::create('attendanceCode', $session->get('absoluteURL').'/modules/'.$session->get('module').'/attendanceSettings_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));

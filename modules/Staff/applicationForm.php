@@ -26,7 +26,7 @@ include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
 $public = false;
-if (isset($_SESSION[$guid]['username']) == false) {
+if (!$session->has('username')) {
     $public = true;
     //Get public access
     $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
@@ -41,8 +41,8 @@ if (isset($_SESSION[$guid]['username']) == false) {
 
 //Set gibbonPersonID of the person completing the application
 $gibbonPersonID = null;
-if (isset($_SESSION[$guid]['gibbonPersonID'])) {
-    $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+if ($session->has('gibbonPersonID')) {
+    $gibbonPersonID = $session->get('gibbonPersonID');
 }
 
 if ($proceed == false) {
@@ -60,8 +60,8 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    if (isset($_SESSION[$guid]['username']) == false) {
-        echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Staff in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';
+    if (!$session->has('username')) {
+        echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Staff in the main menu.'), $session->get('organisationNameShort'), $session->get('systemName')).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')).'</div>';
     }
 
     $returnExtra = '';
@@ -70,8 +70,8 @@ if ($proceed == false) {
             $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$_GET['id'].'</b></u>.';
         }
     }
-    if ($_SESSION[$guid]['organisationHRName'] != '' and $_SESSION[$guid]['organisationHREmail'] != '') {
-        $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$_SESSION[$guid]['organisationHREmail']."'>".$_SESSION[$guid]['organisationHRName'].'</a>');
+    if ($session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
+        $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationHREmail')."'>".$session->get('organisationHRName').'</a>');
     }
 
     $returns = array();
@@ -100,10 +100,10 @@ if ($proceed == false) {
 
         $customFieldHandler = $container->get(CustomFieldHandler::class);
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationFormProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $form->addHeaderAction('view', __('View Current Job Openings'))
             ->setURL('/modules/Staff/applicationForm_jobOpenings_view.php')
@@ -133,11 +133,11 @@ if ($proceed == false) {
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             $row = $form->addRow();
                 $row->addLabel('surname', __('Surname'));
-                $row->addTextField('surname')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['surname']);
+                $row->addTextField('surname')->required()->maxLength(30)->readonly()->setValue($session->get('surname'));
 
             $row = $form->addRow();
                 $row->addLabel('preferredName', __('Preferred Name'));
-                $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['preferredName']);
+                $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($session->get('preferredName'));
         }
         else { //Not logged in
             $row = $form->addRow();
@@ -165,7 +165,7 @@ if ($proceed == false) {
                 $row->addSelectGender('gender')->required();
 
             $row = $form->addRow();
-                $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
                 $row->addDate('dob')->required();
 
             $form->addRow()->addHeading(__('Background Data'));
@@ -195,7 +195,7 @@ if ($proceed == false) {
                     $row->addSelectCountry('citizenship1')->required();
                 }
 
-            $countryName = (isset($_SESSION[$guid]['country']))? __($_SESSION[$guid]['country']).' ' : '';
+            $countryName = ($session->has('country'))? __($session->get('country')).' ' : '';
             $row = $form->addRow();
                 $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
                 $row->addTextField('citizenship1Passport')->maxLength(30);
@@ -214,7 +214,7 @@ if ($proceed == false) {
                 }
 
             $row = $form->addRow();
-                $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+                $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->append("<br/>".__('If relevant.'));
                 $row->addDate('visaExpiryDate');
 
             $form->addRow()->addHeading(__('Contacts'));

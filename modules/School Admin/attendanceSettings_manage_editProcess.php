@@ -22,7 +22,7 @@ use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 include '../../gibbon.php';
 
 $gibbonAttendanceCodeID = $_GET['gibbonAttendanceCodeID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID=".$gibbonAttendanceCodeID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendanceSettings_manage_edit.php&gibbonAttendanceCodeID=".$gibbonAttendanceCodeID;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings_manage_edit.php') == false) {
     $URL .= '&return=error0';

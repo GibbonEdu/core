@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     $page->addError(__('You do not have access to this action.'));
 } else {
     $viewMode = $_REQUEST['format'] ?? '';
-    $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $dateFormat = $session->get('i18n')['dateFormatPHP'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
     $month = $_GET['month'] ?? '';
 
@@ -78,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Staff Absence Summary'));
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/report_absences_summary.php');
 
         $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
@@ -151,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
         $table->addColumn('name', '')->notSortable();
 
         $baseURL = isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php')
-            ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_manage.php'
-            : $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_absences.php';
+            ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage.php'
+            : $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences.php';
 
         for ($dayCount = 1; $dayCount <= 31; $dayCount++) {
             $table->addColumn($dayCount, '')
@@ -243,10 +243,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     // COLUMNS
     $table->addColumn('fullName', __('Name'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($person) use ($guid) {
-
+        ->format(function ($person) use ($session) {
             $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$person['gibbonPersonID'];
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$person['gibbonPersonID'];
             $output = Format::link($url, $text);
             $output .= '<br/>'.Format::small($person['jobTitle']);
             return $output;

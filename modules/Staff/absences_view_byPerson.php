@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         return;
     }
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
@@ -48,14 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     if ($highestAction == 'View Absences_any') {
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('q', '/modules/Staff/absences_view_byPerson.php');
 
         $row = $form->addRow();
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 
         echo $form->getOutput();
     } else {
-        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
     

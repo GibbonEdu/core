@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummaryS
     //Proceed!
     $page->breadcrumbs->add(__('Email Summary Settings'));
 
-    $form = Form::create('emailSummarySettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/emailSummarySettingsProcess.php');
+    $form = Form::create('emailSummarySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/emailSummarySettingsProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Weekly Summary'));
 

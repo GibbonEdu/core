@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_delete.php') == false) {
     $URL .= '&return=error0';

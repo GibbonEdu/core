@@ -26,8 +26,8 @@ require_once '../../gibbon.php';
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_view_cancel.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/coverage_my.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_cancel.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
+$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_my.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_cancel.php') == false) {
     $URL .= '&return=error0';

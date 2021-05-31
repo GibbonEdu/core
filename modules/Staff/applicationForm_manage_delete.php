@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_deleteProcess.php??gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search", true);
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/applicationForm_manage_deleteProcess.php??gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search", true);
             echo $form->getOutput();
         }
     }

@@ -25,7 +25,7 @@ $description = $_POST['description'] ?? '';
 $active = $_POST['active'] ?? '';
 $allowFileUpload = $_POST['allowFileUpload'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/externalAssessments_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/externalAssessments_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_add.php') == false) {
     $URL .= '&return=error0';

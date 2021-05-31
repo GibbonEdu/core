@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     echo __('Search');
     echo '</h3>';
 
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/space_manage.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/space_manage.php');
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'));

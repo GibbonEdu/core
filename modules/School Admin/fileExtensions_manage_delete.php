@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/fileExtensions_manage_deleteProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/fileExtensions_manage_deleteProcess.php?gibbonFileExtensionID=$gibbonFileExtensionID");
             echo $form->getOutput();
         }
     }

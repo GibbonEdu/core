@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/messengerSettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/messengerSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     $URL .= '&return=error0';

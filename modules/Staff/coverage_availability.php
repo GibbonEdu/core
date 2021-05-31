@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
             ->add(__('Manage Substitutes'), 'substitutes_manage.php')
             ->add(__('Edit Availability'));
 
-        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
 
         // Display the details for who's availability we're editing
         $form = Form::create('userInfo', '#');
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
             ->add(__('My Coverage'), 'coverage_my.php')
             ->add(__('Edit Availability'));
 
-        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+        $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
     if (empty($gibbonPersonID)) {
@@ -72,14 +72,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
     $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
-    $schoolYear = $schoolYearGateway->getSchoolYearByID($_SESSION[$guid]['gibbonSchoolYearID']);
+    $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
     // CALENDAR VIEW
     $calendar = CoverageCalendar::create($coverage->toArray(), $exceptions->toArray(), $schoolYear['firstDay'], $schoolYear['lastDay']);
     echo $calendar->getOutput().'<br/>';
 
     // BULK ACTIONS
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_availability_deleteProcess.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Staff/coverage_availability_deleteProcess.php');
     $form->setTitle(__('Dates'));
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
@@ -135,10 +135,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     echo $form->getOutput();
 
     
-    $form = Form::create('staffAvailability', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_availability_addProcess.php');
+    $form = Form::create('staffAvailability', $session->get('absoluteURL').'/modules/Staff/coverage_availability_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
     $form->addRow()->addHeading(__('Add'));

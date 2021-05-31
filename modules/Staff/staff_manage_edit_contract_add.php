@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
     $editLink = '';
     if (!empty($editID)) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$editID.'&search='.$search.'&gibbonStaffID='.$gibbonStaffID;
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$editID.'&search='.$search.'&gibbonStaffID='.$gibbonStaffID;
     }
     $page->return->setEditLink($editLink);
 
@@ -58,14 +58,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_addProcess.php?gibbonStaffID=$gibbonStaffID&search=$search");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_edit_contract_addProcess.php?gibbonStaffID=$gibbonStaffID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));

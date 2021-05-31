@@ -53,10 +53,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 	        //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('attendanceCode', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettings_manage_editProcess.php?gibbonAttendanceCodeID='.$gibbonAttendanceCodeID);
+            $form = Form::create('attendanceCode', $session->get('absoluteURL').'/modules/'.$session->get('module').'/attendanceSettings_manage_editProcess.php?gibbonAttendanceCodeID='.$gibbonAttendanceCodeID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('name', $values['name']);
 
             $row = $form->addRow();

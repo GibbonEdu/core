@@ -26,10 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
     //Proceed!
     $page->breadcrumbs->add(__('Tracking Settings'));
 
-    $form = Form::create('trackingSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/trackingSettingsProcess.php');
+    $form = Form::create('trackingSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/trackingSettingsProcess.php');
 
     $form->removeClass('standardForm');
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // Get the yearGroups in a $key => $value array
     $sql = "SELECT gibbonYearGroupID as `value`, name FROM gibbonYearGroup ORDER BY sequenceNumber";

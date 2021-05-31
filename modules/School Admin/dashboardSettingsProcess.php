@@ -21,7 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dashboardSettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dashboardSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
     $URL .= '&return=error0';

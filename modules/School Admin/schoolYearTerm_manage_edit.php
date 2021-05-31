@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('schoolYearTerm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearTerm_manage_editProcess.php?gibbonSchoolYearTermID='.$gibbonSchoolYearTermID);
+            $form = Form::create('schoolYearTerm', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYearTerm_manage_editProcess.php?gibbonSchoolYearTermID='.$gibbonSchoolYearTermID);
 		    $form->setFactory(DatabaseFormFactory::create($pdo));
 
-		    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+		    $form->addHiddenValue('address', $session->get('address'));
 
 		    $row = $form->addRow();
 		        $row->addLabel('gibbonSchoolYearID', __('School Year'));

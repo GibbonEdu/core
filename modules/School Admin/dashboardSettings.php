@@ -28,9 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     //Proceed!
     $page->breadcrumbs->add(__('Dashboard Settings'));
 
-    $form = Form::create('dashboardSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dashboardSettingsProcess.php' );
+    $form = Form::create('dashboardSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dashboardSettingsProcess.php' );
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     // Staff dashboard
     $form->addRow()->addHeading(__('Staff Dashboard'));

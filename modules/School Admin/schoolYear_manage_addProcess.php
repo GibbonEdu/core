@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYear_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYear_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
                 // Update session vars so the user is warned if they're logged into a different year
                 if ($status == 'Current') {
-                    $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] = $AI;
-                    $_SESSION[$guid]['gibbonSchoolYearNameCurrent'] = $name;
-                    $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
+                    $session->set('gibbonSchoolYearIDCurrent', $AI);
+                    $session->set('gibbonSchoolYearNameCurrent', $name);
+                    $session->set('gibbonSchoolYearSequenceNumberCurrent', $sequenceNumber);
                 }
 
                 $URL .= "&return=success0&editID=$AI";

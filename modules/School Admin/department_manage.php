@@ -35,9 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     echo __('Department Access');
     echo '</h3>';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/department_manageProcess.php');
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/department_manageProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic', true);
     $row = $form->addRow();

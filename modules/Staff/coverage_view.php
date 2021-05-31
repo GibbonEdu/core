@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
 
     $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
 
-    $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
+    $gibbonPersonID = $session->get('gibbonPersonID');
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
     
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
