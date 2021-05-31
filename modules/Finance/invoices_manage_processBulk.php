@@ -39,9 +39,9 @@ $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this page!';
 } else {
     if ($action == 'issue' or $action == 'issueNoEmail') {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=Issued&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
+        $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=Issued&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID";
     } else {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
+        $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
     }
 
     if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
@@ -125,7 +125,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             } else {
                                 //Write to database
                                 try {
-                                    $data = array('status' => $status, 'separated' => $separated, 'invoiceDueDate' => $invoiceDueDate, 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                                    $data = array('status' => $status, 'separated' => $separated, 'invoiceDueDate' => $invoiceDueDate, 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                                     $sql = "UPDATE gibbonFinanceInvoice SET status=:status, separated=:separated, invoiceDueDate=:invoiceDueDate, invoiceIssueDate=:invoiceIssueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
@@ -302,17 +302,17 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                 $emailFail = true;
                             } else {
                                 //Prep message
-                                $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                                $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                                 $mail = $container->get(Mailer::class);
-                                $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                                $mail->SetFrom($from, sprintf(__('%1$s Finance'), $session->get('organisationName')));
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
                                 }
 
                                 $mail->Subject = __('Invoice from {organisation} via {system}', [
-                                    'organisation' => $_SESSION[$guid]['organisationNameShort'],
-                                    'system' => $_SESSION[$guid]['systemName'],
+                                    'organisation' => $session->get('organisationNameShort'),
+                                    'system' => $session->get('systemName'),
                                 ]);
 
                                 $mail->renderBody('mail/email.twig.html', [
@@ -327,7 +327,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                     $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
                                     $logArray=array() ;
                                     $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
-                                    $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
+                                    $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
                                 }
                             }
                         }
@@ -445,7 +445,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             }
                             $body .= '<p>Reminder '.$reminderOutput.': '.$reminderText.'</p><br/>';
                         }
-                        $body .= invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
+                        $body .= invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                         //Update reminder count
                         if ($row['reminderCount'] < 3) {
@@ -457,14 +457,14 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         }
 
                         $mail = $container->get(Mailer::class);
-                        $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                        $mail->SetFrom($from, sprintf(__('%1$s Finance'), $session->get('organisationName')));
                         foreach ($emails as $address) {
                             $mail->AddBCC($address);
                         }
 
                         $mail->Subject = __('Reminder from {organisation} via {system}', [
-                            'organisation' => $_SESSION[$guid]['organisationNameShort'],
-                            'system' => $_SESSION[$guid]['systemName'],
+                            'organisation' => $session->get('organisationNameShort'),
+                            'system' => $session->get('systemName'),
                         ]);
 
                         $mail->renderBody('mail/email.twig.html', [
@@ -479,7 +479,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
                             $logArray=array() ;
                             $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
-                            $logGateway->addLog($_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
+                            $logGateway->addLog($session->get("gibbonSchoolYearID"), $gibbonModuleID, $session->get("gibbonPersonID"), 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
                         }
                     }
                 }
@@ -527,7 +527,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             $partialFail = true;
                         } else {
                             try {
-                                $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'paidDate' => $paidDate, 'paidAmount' => $paidAmount, 'timestampUpdate' => date('Y-m-d H:i:s'), 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID']);
+                                $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'paidDate' => $paidDate, 'paidAmount' => $paidAmount, 'timestampUpdate' => date('Y-m-d H:i:s'), 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'));
                                 $sql = "UPDATE gibbonFinanceInvoice SET status='Paid', paidDate=:paidDate, paidAmount=:paidAmount, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);

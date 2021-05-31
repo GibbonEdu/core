@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
                 'gibbonPersonID' => $values['gibbonPersonID'],
                 'invoiceTo' => 'Family'
             ]);
-            
+
             if (!$inserted || !$pdo->getQuerySuccess()) {
                 $addFail = true;
             }
@@ -59,13 +59,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     $search = $_GET['search'] ?? '';
     $allUsers = $_GET['allUsers'] ?? '';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setTitle(__('Filters'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/invoicees_manage.php");
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/invoicees_manage.php");
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));

@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $financeExpenseExportIDs = $_SESSION[$guid]['financeExpenseExportIDs'];
+    $financeExpenseExportIDs = $session->get('financeExpenseExportIDs');
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
 
     if ($financeExpenseExportIDs == '' or $gibbonFinanceBudgetCycleID == '') {

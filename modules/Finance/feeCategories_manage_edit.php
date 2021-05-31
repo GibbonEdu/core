@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     if ($gibbonFinanceFeeCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonFinanceFeeCategoryID' => $gibbonFinanceFeeCategoryID);
             $sql = 'SELECT * FROM gibbonFinanceFeeCategory WHERE gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID';
             $result = $connection2->prepare($sql);
@@ -50,9 +50,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/feeCategories_manage_editProcess.php?gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
+            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/feeCategories_manage_editProcess.php?gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID");
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));

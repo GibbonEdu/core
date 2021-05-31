@@ -21,7 +21,7 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/feeCategories_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/feeCategories_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     } else {
         //Write to database
         try {
-            $data = array('name' => $name, 'nameShort' => $nameShort, 'active' => $active, 'description' => $description, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('name' => $name, 'nameShort' => $nameShort, 'active' => $active, 'description' => $description, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
             $sql = "INSERT INTO gibbonFinanceFeeCategory SET name=:name, nameShort=:nameShort, active=:active, description=:description, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator='".date('Y-m-d H:i:s')."'";
             $result = $connection2->prepare($sql);
             $result->execute($data);

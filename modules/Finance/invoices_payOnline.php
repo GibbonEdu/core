@@ -29,7 +29,7 @@ if (isset($_GET['key'])) {
     $key = $_GET['key'];
 }
 
-    $page->return->addReturns(['error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."), 'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'), 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonFinanceInvoiceID)]);
+    $page->return->addReturns(['error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."), 'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'), 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $session->get('systemName'), $gibbonFinanceInvoiceID)]);
 
 if (!isset($_GET['return'])) { //No return message, so must just be landing to make payment
     //Check variables
@@ -91,11 +91,11 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
                         echo '</h3>';
                         echo '<p>';
                         if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
-                            echo sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]['systemName']).' ';
+                            echo sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $session->get('systemName')).' ';
 
-                            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_payOnlineProcess.php');
-                
-                            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_payOnlineProcess.php');
+
+                            $form->addHiddenValue('address', $session->get('address'));
                             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
                             $form->addHiddenValue('key', $key);
 

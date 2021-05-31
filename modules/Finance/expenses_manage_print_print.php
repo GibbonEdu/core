@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                 $budgetsAccess = true;
             } else {
                 //Check if have Full or Write in any budgets
-                $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
+                $budgets = getBudgetsByPerson($connection2, $session->get('gibbonPersonID'));
                 if (is_array($budgets) && count($budgets)>0) {
                     foreach ($budgets as $budget) {
                         if ($budget[2] == 'Full' or $budget[2] == 'Write') {
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 									WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceExpenseID=:gibbonFinanceExpenseID
 									ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
                             } else { //Access only to own budgets
-                                $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+                                $data['gibbonPersonID'] = $session->get('gibbonPersonID');
                                 $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
 									FROM gibbonFinanceExpense
 									JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                             $row = $result->fetch();
 
                             echo "<div class='linkTop'>";
-                            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
                             echo '</div>';
                             ?>
 							<table class='smallIntBorder fullWidth' cellspacing='0'>
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 									<td class="right">
 										<?php
                                         $yearName = '';
-										
+
 											$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
 											$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
 											$resultYear = $connection2->prepare($sqlYear);
@@ -223,8 +223,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 											<span style="font-size: 90%">
 												<i>
 												<?php
-                                                if ($_SESSION[$guid]['currency'] != '') {
-                                                    echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                if ($session->get('currency') != '') {
+                                                    echo sprintf(__('Numeric value of the fee in %1$s.'), $session->get('currency'));
                                                 } else {
                                                     echo __('Numeric value of the fee.');
                                                 }
@@ -253,8 +253,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 												<span style="font-size: 90%">
 													<i>
 													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                    if ($session->get('currency') != '') {
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $session->get('currency'));
                                                     } else {
                                                         echo __('Numeric value of the fee.');
                                                     }
@@ -296,8 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 												<span style="font-size: 90%">
 													<i>
 													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                    if ($session->get('currency') != '') {
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $session->get('currency'));
                                                     } else {
                                                         echo __('Numeric value of the fee.');
                                                     }
@@ -344,8 +344,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 												<span style="font-size: 90%">
 													<i>
 													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                    if ($session->get('currency') != '') {
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $session->get('currency'));
                                                     } else {
                                                         echo __('Numeric value of the fee.');
                                                     }

@@ -37,27 +37,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
     $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
     $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
 
-    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
+    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID');
 
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Invoices'), 'invoices_manage.php', $urlParams)
-        ->add(__('Edit Invoice'));    
+        ->add(__('Edit Invoice'));
 
     $page->return->addReturns(['success1' => __('Your request was completed successfully, but one or more requested emails could not be sent.'), 'error3' => __('Some elements of your request failed, but others were successful.')]);
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
             $sql = "SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily, gibbonSchoolYear.name as schoolYear, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFinanceBillingSchedule.name as billingScheduleName
-                    FROM gibbonFinanceInvoice 
+                    FROM gibbonFinanceInvoice
                     JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID)
-                    LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) 
+                    LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)
                     LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID=gibbonFinanceInvoice.gibbonFinanceBillingScheduleID)
                     LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID)
-                    WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID 
+                    WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -70,14 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
             if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
-        
-            $form = Form::create('invoice', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_editProcess.php?'.http_build_query($urlParams));
+
+            $form = Form::create('invoice', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_manage_editProcess.php?'.http_build_query($urlParams));
             $form->setFactory(FinanceFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
             $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
 
@@ -128,10 +128,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             // PAYMENT INFO
             if ($values['status'] == 'Issued' or $values['status'] == 'Paid - Partial') {
                 $form->toggleVisibilityByClass('paymentInfo')->onSelect('status')->when(array('Paid', 'Paid - Partial', 'Paid - Complete'));
-                
+
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paymentType', __('Payment Type'));
-                    $row->addSelectPaymentMethod('paymentType')->required();       
+                    $row->addSelectPaymentMethod('paymentType')->required();
 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paymentTransactionID', __('Transaction ID'))->description(__('Transaction ID to identify this payment.'));
@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->required()->placeholder(__('Fee Name'))
                         ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
                         ->append('<input type="hidden" id="feeType" name="feeType" value="">');
-                    
+
                 $col = $blockTemplate->addRow()->addColumn()->addClass('inline');
                     $col->addSelectFeeCategory('gibbonFinanceFeeCategoryID')
                         ->setClass('shortWidth floatLeft noMargin');
@@ -195,8 +195,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $col->addCurrency('fee')
                         ->setClass('shortWidth floatLeft')
                         ->required()
-                        ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
-                    
+                        ->placeholder(__('Value').(!empty($session->get('currency'))? ' ('.$sesssion->get('currency').')' : ''));
+
                 $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                     $col->addLabel('description', __('Description'));
                     $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         $header->addContent(__('Name'));
                         $header->addContent(__('Category'));
                         $header->addContent(__('Description'));
-                        $header->addContent(__('Fee'))->append(' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
+                        $header->addContent(__('Fee'))->append(' <small><i>('.$session->get('currency').')</i></small>');
 
                     $feeTotal = 0;
                     while ($fee = $resultFees->fetch()) {
@@ -249,12 +249,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                             $row->addContent($fee['name']);
                             $row->addContent($fee['category']);
                             $row->addContent($fee['description']);
-                            $row->addContent(number_format($fee['fee'], 2, '.', ','))->prepend(substr($_SESSION[$guid]['currency'], 4).' ');
+                            $row->addContent(number_format($fee['fee'], 2, '.', ','))->prepend(substr($session->get('currency'), 4).' ');
                     }
 
                     $row = $table->addRow()->addClass('current');
                         $row->addTableCell(__('Invoice Total:'))->colspan(3)->wrap('<b class="floatRight">', '</b>');
-                        $row->addTableCell(number_format($feeTotal, 2, '.', ','))->prepend(substr($_SESSION[$guid]['currency'], 4).' ')->wrap('<b>', '</b>');
+                        $row->addTableCell(number_format($feeTotal, 2, '.', ','))->prepend(substr($session->get('currency'), 4).' ')->wrap('<b>', '</b>');
                 }
             }
 
