@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 echo $table->getOutput();
 
                 //Set sidebar
-                $session->set('sidebarExtra') = getUserPhoto($guid, $primaryTutor240, 240);
+                $session->set('sidebarExtra', getUserPhoto($guid, $primaryTutor240, 240));
             }
         }
     }
