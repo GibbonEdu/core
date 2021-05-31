@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         ->fromPOST();
 
     // FORM
-    $form = Form::create('archiveByReport', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
         ->sortable(['surname', 'preferredName'])
         ->width('25%')
         ->format(function ($person) use ($guid, $allStudents) {
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents='.$allStudents.'&sort=surname,preferredName';
+            $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents='.$allStudents.'&sort=surname,preferredName';
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true))
                    .'<br/>'.Format::small(Format::userStatusInfo($person));
         });

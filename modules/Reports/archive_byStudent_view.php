@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     $page->return->addReturns(['error3' => __('The selected record does not exist, or you do not have access to it.')]);
     if ($highestAction == 'View by Student') {
         $student =  $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetch();
-        
+
         if (empty($student) && $allStudents == 'on') {
             $student = $container->get(UserGateway::class)->getByID($gibbonPersonID);
         }
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
 
     if (!empty($search) || !empty($gibbonYearGroupID) || !empty($gibbonFormGroupID) || !empty($allStudents)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Reports/archive_byStudent.php&gibbonYearGroupID=$gibbonYearGroupID&gibbonFormGroupID=$gibbonFormGroupID&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Reports/archive_byStudent.php&gibbonYearGroupID=$gibbonYearGroupID&gibbonFormGroupID=$gibbonFormGroupID&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         // DATA TABLE
         $table = DataTable::create('reportsView');
         $table->setTitle($schoolYear);
-        
+
         $table->addColumn('reportName', __('Report'))
             ->width('30%')
             ->format(function ($report) {
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
                     $title = Format::name($report['parentTitle'], $report['parentPreferredName'], $report['parentSurname'], 'Parent', false).': '.Format::relativeTime($report['timestampAccessed'], false);
                     $output .= '<span class="tag ml-2 success" title="'.$title.'">'.__('Read').'</span>';
                 }
-    
+
                 return $output;
             });
 

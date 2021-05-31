@@ -126,13 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
             $title = Format::name($report['parentTitle'], $report['parentPreferredName'], $report['parentSurname'], 'Parent', false).': '.Format::relativeTime($report['timestampAccessed'], false);
 
             if ($report['timestampSent'] == '0000-00-00 00:00:00') {
-                return '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/refresh.png" title="'.__('Sending').'" class="opacity-75">';
+                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/refresh.png" title="'.__('Sending').'" class="opacity-75">';
             } elseif (!empty($report['timestampSent']) && !empty($report['timestampAccessed'])) {
-                return '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick_double.png" title="'.__('Sent & Read').': '.$title.'">';
+                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick_double.png" title="'.__('Sent & Read').': '.$title.'">';
             } elseif (!empty($report['timestampSent'])) {
-                return '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png" title="'.__('Sent').': '.Format::relativeTime($report['timestampSent'], false).'">';
+                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick.png" title="'.__('Sent').': '.Format::relativeTime($report['timestampSent'], false).'">';
             } elseif (!empty($report['timestampAccessed'])) {
-                return '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick_light.png" title="'.__('Read Online').': '.$title.'">';
+                return '<img src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick_light.png" title="'.__('Read Online').': '.$title.'">';
             }
 
             return '';

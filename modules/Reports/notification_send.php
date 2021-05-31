@@ -39,10 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
         $page->addMessage(__('There are no active reporting cycles.'));
         return;
     }
-    
+
     if ($step == 1) {
         // STEP 1
-        $form = Form::create('notificationSend', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/notification_send.php');
+        $form = Form::create('notificationSend', $session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php');
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('step', 2);
 
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
                 ->placeholder()
                 ->selected($_POST['type'] ?? '');
 
-        
+
         $row = $form->addRow();
             $row->addLabel('gibbonReportingCycleIDList', __('Reporting Cycle'));
             $row->addSelect('gibbonReportingCycleIDList')
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
         }
 
         // FORM
-        $form = Form::create('notificationSend', $_SESSION[$guid]['absoluteURL'].'/modules/Reports/notification_sendProcess.php');
+        $form = Form::create('notificationSend', $session->get('absoluteURL').'/modules/Reports/notification_sendProcess.php');
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('type', $type);
         $form->addHiddenValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList));
