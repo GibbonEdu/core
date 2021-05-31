@@ -29,7 +29,7 @@ $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? '';
 $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'] ?? '';
 $nameTarget = $_POST['nameTarget'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyForward.php') == false) {
     $URL .= '&copyForwardReturn=error0';
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 
                     //Create new unit
                     try {
-                        $data = array('gibbonCourseID' => $gibbonCourseIDTarget, 'name' => $nameTarget, 'description' => $row['description'], 'attachment' => $row['attachment'], 'details' => $row['details'], 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonCourseID' => $gibbonCourseIDTarget, 'name' => $nameTarget, 'description' => $row['description'], 'attachment' => $row['attachment'], 'details' => $row['details'], 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'));
                         $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, attachment=:attachment, details=:details, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                         $URL .= '&copyForwardReturn=error6';
                         header("Location: {$URL}");
                     } else {
-                        $URLCopy = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseIDTarget&gibbonUnitID=$gibbinUnitIDNew";
+                        $URLCopy = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseIDTarget&gibbonUnitID=$gibbinUnitIDNew";
                         $URLCopy = $URLCopy.'&return=success0';
                         header("Location: {$URLCopy}");
                     }

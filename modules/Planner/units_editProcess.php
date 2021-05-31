@@ -25,7 +25,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $classCount = $_POST['classCount'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') == false) {
     $URL .= '&return=error0';
@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'attachment' => $attachment, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonUnitID' => $gibbonUnitID);
+                            $data = array('name' => $name, 'attachment' => $attachment, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'), 'gibbonUnitID' => $gibbonUnitID);
                             $sql = 'UPDATE gibbonUnit SET name=:name, attachment=:attachment, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit WHERE gibbonUnitID=:gibbonUnitID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);

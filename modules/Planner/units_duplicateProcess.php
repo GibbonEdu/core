@@ -27,7 +27,7 @@ include './moduleFunctions.php';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_duplicate.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_duplicate.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
     $URL .= '&return=error0';
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                     $name .= ' (Copy)';
                 }
                 try {
-                    $data = array('gibbonCourseID' => $gibbonCourseIDTarget, 'name' => $name, 'description' => $row['description'], 'map' => $row['map'], 'tags' => $row['tags'], 'ordering' => $row['ordering'], 'attachment' => $row['attachment'], 'details' => $row['details'], 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonCourseID' => $gibbonCourseIDTarget, 'name' => $name, 'description' => $row['description'], 'map' => $row['map'], 'tags' => $row['tags'], 'ordering' => $row['ordering'], 'attachment' => $row['attachment'], 'details' => $row['details'], 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'));
                     $sql = 'INSERT INTO gibbonUnit SET gibbonCourseID=:gibbonCourseID, name=:name, description=:description, map=:map, tags=:tags, ordering=:ordering, attachment=:attachment, details=:details ,gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $copyOK = true;
                                     //Write to database
                                     try {
-                                        $dataCopy = array('gibbonCourseClassID' => $t, 'gibbonUnitID' => $AI, 'name' => $rowLesson['name'], 'summary' => $rowLesson['summary'], 'description' => $rowLesson['description'], 'teachersNotes' => $rowLesson['teachersNotes'], 'homework' => $rowLesson['homework'], 'homeworkDetails' => $rowLesson['homeworkDetails'], 'homeworkSubmission' => $rowLesson['homeworkSubmission'], 'homeworkSubmissionDrafts' => $rowLesson['homeworkSubmissionDrafts'], 'homeworkSubmissionType' => $rowLesson['homeworkSubmissionType'], 'viewableStudents' => $rowLesson['viewableStudents'], 'viewableParents' => $rowLesson['viewableParents'], 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDLastEdit' => $_SESSION[$guid]['gibbonPersonID']);
+                                        $dataCopy = array('gibbonCourseClassID' => $t, 'gibbonUnitID' => $AI, 'name' => $rowLesson['name'], 'summary' => $rowLesson['summary'], 'description' => $rowLesson['description'], 'teachersNotes' => $rowLesson['teachersNotes'], 'homework' => $rowLesson['homework'], 'homeworkDetails' => $rowLesson['homeworkDetails'], 'homeworkSubmission' => $rowLesson['homeworkSubmission'], 'homeworkSubmissionDrafts' => $rowLesson['homeworkSubmissionDrafts'], 'homeworkSubmissionType' => $rowLesson['homeworkSubmissionType'], 'viewableStudents' => $rowLesson['viewableStudents'], 'viewableParents' => $rowLesson['viewableParents'], 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'));
                                         $sqlCopy = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, gibbonUnitID=:gibbonUnitID, date=NULL, timeStart=NULL, timeEnd=NULL, name=:name, summary=:summary, description=:description, teachersNotes=:teachersNotes, homework=:homework, homeworkDueDateTime=NULL, homeworkDetails=:homeworkDetails, homeworkSubmission=:homeworkSubmission, homeworkSubmissionDateOpen=NULL, homeworkSubmissionDrafts=:homeworkSubmissionDrafts, homeworkSubmissionType=:homeworkSubmissionType, homeworkCrowdAssess='N', homeworkCrowdAssessOtherTeachersRead='N', homeworkCrowdAssessOtherParentsRead='N', homeworkCrowdAssessClassmatesParentsRead='N', homeworkCrowdAssessSubmitterParentsRead='N', homeworkCrowdAssessOtherStudentsRead='N', homeworkCrowdAssessClassmatesRead='N', viewableStudents=:viewableStudents, viewableParents=:viewableParents, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";
                                         $resultCopy = $connection2->prepare($sqlCopy);
                                         $resultCopy->execute($dataCopy);

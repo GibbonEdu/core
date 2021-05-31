@@ -32,7 +32,7 @@ $params = [
     'gibbonCourseClassID' => $_GET['gibbonCourseClassID'] ?? '',
 ];
 
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&".http_build_query($params);
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&".http_build_query($params);
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                             // Upload the file, return the /uploads relative path
-                            $attachment = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_'.$lesson);
+                            $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
 
                             if (empty($attachment)) {
                                 $partialFail = true;
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         } else {
                             //Write to database
                             try {
-                                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => $timestamp);
+                                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'type' => $type, 'version' => $version, 'status' => $status, 'location' => $attachment, 'count' => ($count + 1), 'timestamp' => $timestamp);
                                 $sql = 'INSERT INTO gibbonPlannerEntryHomework SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, type=:type, version=:version, status=:status, location=:location, count=:count, timestamp=:timestamp';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);

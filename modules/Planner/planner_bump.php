@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     } else {
-                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
                     }
                     $result = $connection2->prepare($sql);
@@ -111,13 +111,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                         ]), 'planner.php', $params)
                         ->add(__('Bump Lesson Plan'));
 
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
+                    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID");
 
                     $form->addHiddenValue('viewBy', $viewBy);
                     $form->addHiddenValue('subView', $subView);
                     $form->addHiddenValue('date', $date);
                     $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
-                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('address', $session->get('address'));
 
                     $row = $form->addRow();
                         $row->addLabel('direction', __('Bump Direction'));
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                 }
             }
             //Print sidebar
-            $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $_SESSION[$guid]['gibbonPersonID'], $dateStamp, $gibbonCourseClassID);
+            $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $session->get('gibbonPersonID'), $dateStamp, $gibbonCourseClassID));
         }
     }
 }

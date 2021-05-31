@@ -43,14 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
         $gibbonYearGroupID = $_POST['gibbonYearGroupID'];
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/scopeAndSequence.php");
+    $form = Form::create('action', $session->get('absoluteURL')."/index.php?q=/modules/".$session->get('module')."/scopeAndSequence.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $options = array();
     
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND map='Y' ORDER BY department, gibbonCourse.nameShort";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
         if ($highestAction == 'Unit Planner_learningAreas') {
             $departmentCount = 1 ;
             try {
-                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $dataSelect = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sqlSelect = "SELECT gibbonDepartment.gibbonDepartmentID FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonDepartment.name";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     $data['gibbonYearGroupID'] = '%'.$gibbonYearGroupID.'%';
                     $sqlWhere = ' AND gibbonYearGroupIDList LIKE :gibbonYearGroupID ';
                 }
-                $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+                $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
                 $data['gibbonCourseID'] = $gibbonCourseID;
                 $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID AND map='Y' $sqlWhere ORDER BY department, nameShort";
                 $result = $connection2->prepare($sql);
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         echo '<td>';
                         echo $rowUnit['description'].'<br/>';
                         if ($rowUnit['attachment'] != '') {
-                            echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowUnit['attachment']."'>".__('Download Unit Outline').'</a></li>';
+                            echo "<br/><br/><a href='".$session->get('absoluteURL').'/'.$rowUnit['attachment']."'>".__('Download Unit Outline').'</a></li>';
                         }
                         echo '</td>';
                         echo '<td>';
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                             $tags = explode(',', $rowUnit['tags']);
                             $tagsOutput = '' ;
                             foreach ($tags as $tag) {
-                                $tagsOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                                $tagsOutput .= "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
                             }
                             if ($tagsOutput != '')
                                 $tagsOutput = substr($tagsOutput, 0, -2);
@@ -209,9 +209,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         echo '</td>';
                         echo '<td>';
                             if ($canEdit) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_edit.php&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/units_edit.php&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             }
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('View')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
                         echo '</td>';
                         echo '</tr>';
                     }

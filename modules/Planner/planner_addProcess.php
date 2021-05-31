@@ -24,7 +24,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/planner_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/planner_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
     $URL .= '&return=error0';
@@ -172,8 +172,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $viewableParents = $_POST['viewableParents'] ?? 'Y';
             $viewableStudents = $_POST['viewableStudents'] ?? 'Y';
-            $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
-            $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+            $gibbonPersonIDCreator = $session->get('gibbonPersonID');
+            $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
             //Params to pass back (viewBy + date or classID)
             if ($viewBy == 'date') {
@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     //Jump to Markbook?
                     $markbook = $_POST['markbook'] ?? '';
                     if ($markbook == 'Y') {
-                        $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$AI&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=".$_POST['gibbonUnitID']."&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
+                        $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$AI&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=".$_POST['gibbonUnitID']."&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
                         header("Location: {$URL}");
                         exit();
                     } else {
@@ -288,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         exit();
                     }
                     while ($rowClassGroup = $resultClassGroup->fetch()) {
-                        if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+                        if ($rowClassGroup['gibbonPersonID'] != $session->get('gibbonPersonID')) {
                             $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], sprintf(__('Lesson “%1$s” has been created.'), $name), "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$AI&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID");
                         }
                     }

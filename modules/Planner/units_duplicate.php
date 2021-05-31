@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                         echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
-                        
+
                             $data = array();
                             $sql = "SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=$gibbonUnitID AND gibbonUnit.gibbonCourseID=$gibbonCourseID";
                             $result = $connection2->prepare($sql);
@@ -110,10 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                 echo __('Step 1');
                                 echo '</h2>';
 
-                                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID");
+                                $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID");
                                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                $form->addHiddenValue('address', $session->get('address'));
 
                                 $form->addRow()->addHeading(__('Source'));
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $data = array();
                                     $sql = 'SELECT gibbonCourse.gibbonSchoolYearID as chainedTo, gibbonCourseID AS value, gibbonCourse.nameShort AS name FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) ORDER BY nameShort';
                                 } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                                    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                                     $sql = "SELECT gibbonCourse.gibbonSchoolYearID as chainedTo, gibbonCourseID AS value, gibbonCourse.nameShort AS name FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonCourse.nameShort";
                                 }
                                 $row = $form->addRow();
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     echo '</div>';
                                 } else {
 
-                                    
+
                                         $dataSelect2 = array('gibbonCourseID' => $gibbonCourseIDTarget);
                                         $sqlSelect2 = 'SELECT gibbonCourse.name AS course, gibbonSchoolYear.name AS year FROM gibbonCourse JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonCourseID=:gibbonCourseID';
                                         $resultSelect2 = $connection2->prepare($sqlSelect2);
@@ -181,10 +181,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                         $year = $rowSelect2['year'];
                                     }
 
-                                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . "/modules/" . $_SESSION[$guid]['module'] ."/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
+                                    $form = Form::create('action', $session->get('absoluteURL') . "/modules/" . $session->get('module') ."/units_duplicateProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
                                     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                                    $form->addHiddenValue('address', $session->get('address'));
                                     $form->addHiddenValue('gibbonCourseIDTarget', $gibbonCourseIDTarget);
 
                                     $row = $form->addRow();
@@ -250,6 +250,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $session->get('sidebarExtra', sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
 ?>

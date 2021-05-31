@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    
+
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                         $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonCourse.gibbonDepartmentID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
                         $result = $connection2->prepare($sql);
@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         $values = $result->fetch();
                         $gibbonDepartmentID = $values['gibbonDepartmentID'];
 
-                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&address=".$_GET['q']);
+                        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/units_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&address=".$_GET['q']);
                         $form->setFactory(PlannerFormFactory::create($pdo));
 
-                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->addHiddenValue('address', $session->get('address'));
 
                         //OVERVIEW
                         $form->addRow()->addHeading(__('Overview'));
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         //CLASSES
                         $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
 
-                        if ($_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $gibbonSchoolYearID && $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
+                        if ($session->get('gibbonSchoolYearIDCurrent') == $gibbonSchoolYearID && $session->get('gibbonSchoolYearIDCurrent') == $session->get('gibbonSchoolYearID')) {
 
                             $dataClass = array('gibbonUnitID' => $gibbonUnitID);
                             $sqlClass = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort, running, gibbonUnitClassID, gibbonUnitID
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                     });
 
                                 $table->addColumn('firstLesson', __('First Lesson'))
-                                    ->description($_SESSION[$guid]['i18n']['dateFormat'] ?? 'dd/mm/yyyy')
+                                    ->description($session->get('i18n')['dateFormat'] ?? 'dd/mm/yyyy')
                                     ->width('15%')
                                     ->format(function ($class) {
                                         return !empty($class['firstLesson']) ? Format::date($class['firstLesson']) : '';
@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $column->addAlert($content, 'message');
                             $column->addEditor('details', $guid)->setRows(30)->showMedia()->setValue($unitOutline);
 
-                        
+
                             $dataExt = array();
                             $sqlExt = 'SELECT * FROM gibbonFileExtension';
                             $resultExt = $connection2->prepare($sqlExt);
@@ -277,7 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $row->addLabel('file', __('Downloadable Unit Outline'))->description(__("Available to most users."));
                             $row->addFileUpload('file')
                                 ->accepts(substr($ext, 0, -2))
-                                ->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
+                                ->setAttachment('attachment', $session->get('absoluteURL'), $values['attachment']);
 
                         //OUTCOMES
                         $form->addRow()->addHeading(__('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'));
@@ -359,6 +359,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $session->get('sidebarExtra', sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
 ?>

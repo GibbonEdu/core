@@ -32,7 +32,7 @@ if ($viewBy != 'date' and $viewBy != 'class') {
 }
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $date = dateConvert($guid, $_POST['date'] ?? '');
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 
 //Params to pass back (viewBy + date or classID)
 if ($viewBy == 'date') {
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sql = 'SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID';
                     } else {
-                        $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT gibbonPlannerEntryID, gibbonUnitID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, summary, role FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonPlannerEntryID=:gibbonPlannerEntryID";
                     }
                     $result = $connection2->prepare($sql);
@@ -194,8 +194,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     $viewableParents = $_POST['viewableParents'] ?? '';
                     $viewableStudents = $_POST['viewableStudents'] ?? '';
-                    $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
-                    $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+                    $gibbonPersonIDCreator = $session->get('gibbonPersonID');
+                    $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
                     if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDate == ''))) {
                         $URL .= "&return=error3$params";
@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
 
                             while ($rowClassGroup = $resultClassGroup->fetch()) {
-                                if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+                                if ($rowClassGroup['gibbonPersonID'] != $session->get('gibbonPersonID')) {
                                     $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], sprintf(__('Lesson “%1$s” has been updated.'), $name), "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID");
                                 }
                             }

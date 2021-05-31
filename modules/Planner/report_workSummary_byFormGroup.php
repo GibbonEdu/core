@@ -41,14 +41,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 
     $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byFormGroup.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_workSummary_byFormGroup.php');
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->required()->selected($gibbonFormGroupID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             echo '</td>';
             echo "<td style='width:15%'>";
             
-                $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID  AND (attainmentConcern='N' OR attainmentConcern IS NULL) AND (effortConcern='N' OR effortConcern IS NULL) AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
                 $resultData = $connection2->prepare($sqlData);
                 $resultData->execute($dataData);
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             echo "<td style='width:15%'>";
             //Count up unsatisfactory from markbook
             
-                $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentConcern='Y' OR effortConcern='Y') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
                 $resultData = $connection2->prepare($sqlData);
                 $resultData->execute($dataData);
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up unsatisfactory from behaviour, counting out $sqlWhere
 			
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData2['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData2 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Unacceptable' OR descriptor='Homework - Unacceptable') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere";
 				$resultData2 = $connection2->prepare($sqlData2);
 				$resultData2->execute($dataData2);
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up on time in planner
             
 				$dataData['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='On Time' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required'";
 				$resultData = $connection2->prepare($sqlData);
 				$resultData->execute($dataData);
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             echo "<td style='width:15%'>";
 			//Count up lates in markbook
 			
-				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 				$sqlData = "SELECT DISTINCT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentValue='Late' OR effortValue='Late') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
 				$resultData = $connection2->prepare($sqlData);
 				$resultData->execute($dataData);
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up lates in planner, counting out $sqlWhere
 			
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData2['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData2 = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='Late' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required' $sqlWhere";
 				$resultData2 = $connection2->prepare($sqlData2);
 				$resultData2->execute($dataData2);
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up lates from behaviour, counting out $sqlWhere2 and $sqlWhere3
 			
 				$dataData3['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData3['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData3['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData3 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Late' OR descriptor='Homework - Late') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere2 $sqlWhere3";
 				$resultData3 = $connection2->prepare($sqlData3);
 				$resultData3->execute($dataData3);
@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             echo "<td style='width:15%'>";
 			//Count up incompletes in markbook
 			
-				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 				$sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentValue='Incomplete' OR effortValue='Incomplete') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
 				$resultData = $connection2->prepare($sqlData);
 				$resultData->execute($dataData);
@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up incompletes in planner, counting out $sqlWhere
 			
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData2['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$dataData2['homeworkDueDateTime'] = date('Y-m-d H:i:s');
 				$dataData2['date'] = date('Y-m-d');
 				$sqlData2 = "SELECT * FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmission='Y' AND homeworkDueDateTime<:homeworkDueDateTime AND homeworkSubmissionRequired='Required' AND date<=:date $sqlWhere";
@@ -332,7 +332,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 			//Count up incompletes from behaviour, counting out $sqlWhere2 and $sqlWhere3
 			
 				$dataData4['gibbonPersonID'] = $row['gibbonPersonID'];
-				$dataData4['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+				$dataData4['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData4 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Incomplete' OR descriptor='Homework - Incomplete') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere2 $sqlWhere3";
 				$resultData4 = $connection2->prepare($sqlData4);
 				$resultData4->execute($dataData4);
