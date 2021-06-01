@@ -285,5 +285,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
     //Print sidebar
     $gibbonPersonID = empty($gibbonPersonID) ? $session->get('gibbonPersonID') : $gibbonPersonID ;
-    $session->get('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID));
+    $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID));
 }
