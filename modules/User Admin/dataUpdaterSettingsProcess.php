@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataUpdaterSettings.php';
@@ -51,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $fail = true;
     }
 
-    $cutoffDate = (isset($_POST['cutoffDate'])) ? dateConvert($guid, $_POST['cutoffDate'])  : NULL;
+    $cutoffDate = (isset($_POST['cutoffDate'])) ? Format::dateConvert($_POST['cutoffDate'])  : NULL;
     try {
         $data = array('value' => $cutoffDate);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='cutoffDate'";

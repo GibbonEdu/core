@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -132,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $foreignKeyID = substr($_POST['foreignKeyID'], 20);
                 }
             }
-            $date = dateConvert($guid, $_POST['date']);
+            $date = Format::dateConvert($_POST['date']);
             $timeStart = $_POST['timeStart'];
             $timeEnd = $_POST['timeEnd'];
             $repeat = $_POST['repeat'];

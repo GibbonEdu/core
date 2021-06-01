@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $attendance = new AttendanceView($gibbon, $pdo);
 
     $today = date('Y-m-d');
-    $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
+    $currentDate = isset($_GET['currentDate'])? Format::dateConvert($_GET['currentDate']) : $today;
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');

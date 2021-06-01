@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         foreach ($fieldsIn as $field) {
             $fieldName = preg_replace('/ |\(|\)/', '', $field['name']);
             if ($field['type'] == 'Date') {
-                $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName]);
+                $fieldsOut[$field['name']] = Format::dateConvert($_POST['field'.$fieldName]);
             } else {
                 $fieldsOut[$field['name']] = $_POST['field'.$fieldName];
             }

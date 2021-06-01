@@ -39,8 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $today = date('Y-m-d');
 
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-    $dateEnd = (isset($_REQUEST['dateEnd']))? dateConvert($guid, $_REQUEST['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_REQUEST['dateStart']))? dateConvert($guid, $_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $dateEnd = (isset($_REQUEST['dateEnd']))? Format::dateConvert($_REQUEST['dateEnd']) : date('Y-m-d');
+    $dateStart = (isset($_REQUEST['dateStart']))? Format::dateConvert($_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {

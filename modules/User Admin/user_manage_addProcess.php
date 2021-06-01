@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if ($dob == '') {
         $dob = null;
     } else {
-        $dob = dateConvert($guid, $dob);
+        $dob = Format::dateConvert($dob);
     }
     $email = trim($_POST['email'] ?? '');
     $emailAlternate = trim($_POST['emailAlternate'] ?? '');
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if ($visaExpiryDate == '') {
         $visaExpiryDate = null;
     } else {
-        $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
+        $visaExpiryDate = Format::dateConvert($visaExpiryDate);
     }
     $profession = $_POST['profession'] ?? '';
     $employer = $_POST['employer'] ?? '';
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     if ($dateStart == '') {
         $dateStart = null;
     } else {
-        $dateStart = dateConvert($guid, $dateStart);
+        $dateStart = Format::dateConvert($dateStart);
     }
 
     $gibbonSchoolYearIDClassOf = $_POST['gibbonSchoolYearIDClassOf'];

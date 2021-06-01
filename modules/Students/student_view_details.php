@@ -584,7 +584,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = null;
                             if (isset($_POST['ttDate'])) {
-                                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+                                $ttDate = dateConvertToTimestamp(Format::dateConvert($_POST['ttDate']));
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents#timetable");
                             if ($tt != false) {
@@ -2226,7 +2226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Timetable/moduleFunctions.php';
                             $ttDate = null;
                             if (isset($_POST['ttDate'])) {
-                                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+                                $ttDate = dateConvertToTimestamp(Format::dateConvert($_POST['ttDate']));
                             }
                             $tt = renderTT($guid, $connection2, $gibbonPersonID, $_GET['gibbonTTID'] ?? '', false, $ttDate, '/modules/Students/student_view_details.php', "&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&subpage=Timetable");
                             if ($tt != false) {

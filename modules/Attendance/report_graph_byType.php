@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $page->breadcrumbs->add(__('Attendance Trends'));
     $page->scripts->add('chart');
 
-    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $dateEnd = (isset($_POST['dateEnd']))? Format::dateConvert($_POST['dateEnd']) : date('Y-m-d');
+    $dateStart = (isset($_POST['dateStart']))? Format::dateConvert($_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
 
     // Correct inverse date ranges rather than generating an error

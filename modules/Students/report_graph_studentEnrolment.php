@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\UI\Chart\Chart;
 
@@ -63,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
     echo __('Choose Date');
     echo '</h2>';
 
-    $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $session->get('gibbonSchoolYearFirstDay');
-    $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : $session->get('gibbonSchoolYearLastDay');
+    $dateStart = (isset($_POST['dateStart']))? Format::dateConvert($_POST['dateStart']) : $session->get('gibbonSchoolYearFirstDay');
+    $dateEnd = (isset($_POST['dateEnd']))? Format::dateConvert($_POST['dateEnd']) : $session->get('gibbonSchoolYearLastDay');
     $interval =  (isset($_POST['interval']))? $_POST['interval'] : '+1 week';
     $excludeLeft = $_POST['excludeLeft'] ?? '';
 

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $date = $_POST['date'] ?? '';
@@ -69,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
         //Check unique inputs for uniquness
         try {
-            $data = array('date' => dateConvert($guid, $date));
+            $data = array('date' => Format::dateConvert($date));
             $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -89,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
             } else {
                 //Write to database
                 try {
-                    $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID, 'date' => dateConvert($guid, $date), 'type' => $type, 'name' => $name, 'description' => $description, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose);
+                    $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID, 'date' => Format::dateConvert($date), 'type' => $type, 'name' => $name, 'description' => $description, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose);
                     $sql = 'INSERT INTO gibbonSchoolYearSpecialDay SET gibbonSchoolYearTermID=:gibbonSchoolYearTermID, date=:date, type=:type, name=:name, description=:description,schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);

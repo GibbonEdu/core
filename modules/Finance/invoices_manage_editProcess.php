@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
@@ -87,7 +88,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 $order = $_POST['order'] ?? [];
 
                 if ($_POST['status'] == 'Paid' or $_POST['status'] == 'Paid - Partial' or $_POST['status'] == 'Paid - Complete') {
-                    $paidDate = dateConvert($guid, $_POST['paidDate']);
+                    $paidDate = Format::dateConvert($_POST['paidDate']);
                 } else if ($_POST['status'] == 'Refunded') {
                     $paidDate = $row['paidDate'];
                 } else {
@@ -113,7 +114,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $paymentTransactionID = $_POST['paymentTransactionID'];
                 }
                 if ($row['billingScheduleType'] == 'Ad Hoc' and ($row['status'] == 'Pending' or $row['status'] == 'Issued')) {
-                    $invoiceDueDate = dateConvert($guid, $_POST['invoiceDueDate']);
+                    $invoiceDueDate = Format::dateConvert($_POST['invoiceDueDate']);
                 } else {
                     $invoiceDueDate = $row['invoiceDueDate'];
                 }

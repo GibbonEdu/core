@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $homeworkDueDateTime = '21:00:00';
                         }
                         if ($_POST['homeworkDueDate'] != '') {
-                            $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
+                            $homeworkDueDate = Format::dateConvert($_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
                         }
 
                         // Check if the homework due date is within this class
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                         if ($_POST['homeworkSubmission'] == 'Y') {
                             $homeworkSubmission = 'Y';
                             if ($_POST['homeworkSubmissionDateOpen'] != '') {
-                                $homeworkSubmissionDateOpen = dateConvert($guid, $_POST['homeworkSubmissionDateOpen']);
+                                $homeworkSubmissionDateOpen = Format::dateConvert($_POST['homeworkSubmissionDateOpen']);
                             } else {
                                 $homeworkSubmissionDateOpen = date('Y-m-d');
                             }

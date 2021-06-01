@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include './gibbon.php';
 
@@ -44,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
     if (!empty($_POST['ttDate'])) {
-        $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+        $ttDate = dateConvertToTimestamp(Format::dateConvert($_POST['ttDate']));
     }
 
     $tt = renderTT($guid, $connection2, $gibbon->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');

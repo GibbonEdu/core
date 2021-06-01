@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         }
 
         $today = date('Y-m-d');
-        $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
+        $currentDate = isset($_GET['currentDate'])? Format::dateConvert($_GET['currentDate']) : $today;
 
         echo '<h2>'.__('Choose Form Group')."</h2>";
 

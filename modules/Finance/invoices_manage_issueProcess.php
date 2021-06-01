@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 
 include '../../gibbon.php';
@@ -91,7 +92,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                 } else {
                     //Write to database
                     try {
-                        $data = array('status' => $status, 'notes' => $notes, 'separated' => $separated, 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+                        $data = array('status' => $status, 'notes' => $notes, 'separated' => $separated, 'invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'invoiceIssueDate' => $invoiceIssueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
                         $sql = "UPDATE gibbonFinanceInvoice SET status=:status, notes=:notes, separated=:separated, invoiceDueDate=:invoiceDueDate, invoiceIssueDate=:invoiceIssueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

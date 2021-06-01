@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Services\Format;
 
+include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
@@ -63,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
                     //Write to database
                     try {
-                        $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
+                        $date = (!empty($_POST['date']))? Format::dateConvert($_POST['date']) : date('Y-m-d');
                         $data = array('gibbonUnitID' => $column['gibbonUnitID'], 'gibbonPlannerEntryID' => $column['gibbonPlannerEntryID'], 'gibbonCourseClassID' => $gibbonCourseClassID, 'name' => $column['name'], 'description' => $column['description'], 'type' => $column['type'], 'date' => $date, 'sequenceNumber' => $column['sequenceNumber'], 'attainment' => $column['attainment'], 'gibbonScaleIDAttainment' => $column['gibbonScaleIDAttainment'], 'attainmentWeighting' => $column['attainmentWeighting'], 'attainmentRaw' => $column['attainmentRaw'], 'attainmentRawMax' => $column['attainmentRawMax'], 'effort' => $column['effort'], 'gibbonScaleIDEffort' => $column['gibbonScaleIDEffort'], 'gibbonRubricIDAttainment' => $column['gibbonRubricIDAttainment'], 'gibbonRubricIDEffort' => $column['gibbonRubricIDEffort'], 'comment' => $column['comment'], 'uploadedResponse' => $column['uploadedResponse'], 'viewableStudents' => $column['viewableStudents'], 'viewableParents' => $column['viewableParents'], 'attachment' => $column['attachment'], 'gibbonPersonIDCreator' => $column['gibbonPersonIDCreator'], 'gibbonPersonIDLastEdit' => $column['gibbonPersonIDLastEdit'], 'gibbonSchoolYearTermID' => $column['gibbonSchoolYearTermID']);
                     $sql = 'INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, date=:date, sequenceNumber=:sequenceNumber, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, attainmentWeighting=:attainmentWeighting, attainmentRaw=:attainmentRaw, attainmentRawMax=:attainmentRawMax, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, gibbonRubricIDAttainment=:gibbonRubricIDAttainment, gibbonRubricIDEffort=:gibbonRubricIDEffort, comment=:comment, uploadedResponse=:uploadedResponse, viewableStudents=:viewableStudents, viewableParents=:viewableParents, attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
                         $result = $connection2->prepare($sql);

@@ -117,12 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $homeworkDetails = $row['homeworkDetails'];
                 $homeworkDueDateTime = $row['homeworkDueDateTime'];
                 if (!empty($_POST['homeworkDueDate']) && !empty($_POST['homeworkDueDateTime'])) {
-                    $homeworkDueDateTime = dateConvert($guid, $_POST['homeworkDueDate']).' '.$_POST['homeworkDueDateTime'];
+                    $homeworkDueDateTime = Format::dateConvert($_POST['homeworkDueDate']).' '.$_POST['homeworkDueDateTime'];
                 }
                 $homeworkSubmission = $row['homeworkSubmission'];
                 $homeworkSubmissionDateOpen = $row['homeworkSubmissionDateOpen'];
                 if (!empty($_POST['homeworkSubmissionDateOpen'])) {
-                    $homeworkSubmissionDateOpen = dateConvert($guid, $_POST['homeworkSubmissionDateOpen']);
+                    $homeworkSubmissionDateOpen = Format::dateConvert($_POST['homeworkSubmissionDateOpen']);
                 }
                 $homeworkSubmissionDrafts = $row['homeworkSubmissionDrafts'];
                 $homeworkSubmissionType = $row['homeworkSubmissionType'];

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -67,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $name = $_POST['name'] ?? '';
                     $description = $_POST['description'] ?? '';
                     $type = $_POST['type'] ?? '';
-                    $date = (!empty($_POST['date']))? dateConvert($guid, $_POST['date']) : date('Y-m-d');
+                    $date = (!empty($_POST['date']))? Format::dateConvert($_POST['date']) : date('Y-m-d');
                     $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
                     //Sort out attainment
                     $attainment = $_POST['attainment'] ?? '';
@@ -139,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $completeDate = null;
                         $complete = 'N';
                     } else {
-                        $completeDate = dateConvert($guid, $completeDate);
+                        $completeDate = Format::dateConvert($completeDate);
                         $complete = 'Y';
                     }
                     $viewableStudents = $_POST['viewableStudents'] ?? '';
