@@ -110,5 +110,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     echo $form->getOutput();
 
     //Print sidebar
-    $session->get('sidebarExtra', sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']));
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']));
 }
