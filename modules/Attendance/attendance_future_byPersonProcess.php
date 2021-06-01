@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 
 //Gibbon system-wide includes
@@ -78,11 +79,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $dateStart = '';
             if ($_POST['dateStart'] != '') {
-                $dateStart = dateConvert($guid, $_POST['dateStart']);
+                $dateStart = Format::dateConvert($_POST['dateStart']);
             }
             $dateEnd = $dateStart;
             if ($_POST['dateEnd'] != '') {
-                $dateEnd = dateConvert($guid, $_POST['dateEnd']);
+                $dateEnd = Format::dateConvert($_POST['dateEnd']);
             }
             $today = date('Y-m-d');
 

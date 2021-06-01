@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             echo '</div>';
         } else {
             $row = $result->fetch();
-            $startDayStamp = strtotime(dateConvert($guid, $ttDate));
+            $startDayStamp = strtotime(Format::dateConvert($ttDate));
 
             //Check which days are school days
             $daysInWeek = 0;

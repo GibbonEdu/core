@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Forms\CustomFieldHandler;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -18,6 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -62,17 +63,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             if ($dateStart == '') {
                 $dateStart = null;
             } else {
-                $dateStart = dateConvert($guid, $dateStart);
+                $dateStart = Format::dateConvert($dateStart);
             }
             $dateEnd = $_POST['dateEnd'];
             if ($dateEnd == '') {
                 $dateEnd = null;
             } else {
-                $dateEnd = dateConvert($guid, $dateEnd);
+                $dateEnd = Format::dateConvert($dateEnd);
             }
             $firstAidQualified = $_POST['firstAidQualified'] ?? '';
             $firstAidQualification = $_POST['firstAidQualification'] ?? null;
-            $firstAidExpiry = ($firstAidQualified == 'Y' and !empty($_POST['firstAidExpiry'])) ? dateConvert($guid, $_POST['firstAidExpiry']) : null;
+            $firstAidExpiry = ($firstAidQualified == 'Y' and !empty($_POST['firstAidExpiry'])) ? Format::dateConvert($_POST['firstAidExpiry']) : null;
             $countryOfOrigin = $_POST['countryOfOrigin'] ?? '';
             $qualifications = $_POST['qualifications'] ?? '';
             $biographicalGrouping = $_POST['biographicalGrouping'] ?? '';

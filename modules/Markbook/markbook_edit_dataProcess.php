@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
@@ -325,7 +326,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $completeDate = null;
                     $complete = 'N';
                 } else {
-                    $completeDate = dateConvert($guid, $completeDate);
+                    $completeDate = Format::dateConvert($completeDate);
                     $complete = 'Y';
                 }
                 try {

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 //Module includes
@@ -59,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         if ($viewBy == 'date') {
             $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman']) == true) {
-                $date = dateConvert($guid, $_GET['dateHuman']);
+                $date = Format::dateConvert($_GET['dateHuman']);
             }
             if ($date == '') {
                 $date = date('Y-m-d');

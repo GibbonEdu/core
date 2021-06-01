@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Comms\SMS;
-use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
@@ -69,19 +69,19 @@ else {
 		$date1=NULL ;
 		if (isset($_POST["date1"])) {
 			if ($_POST["date1"]!="") {
-				$date1=dateConvert($guid, $_POST["date1"]) ;
+				$date1=Format::dateConvert($_POST["date1"]) ;
 			}
 		}
 		$date2=NULL ;
 		if (isset($_POST["date2"])) {
 			if ($_POST["date2"]!="") {
-				$date2=dateConvert($guid, $_POST["date2"]) ;
+				$date2=Format::dateConvert($_POST["date2"]) ;
 			}
 		}
 		$date3=NULL ;
 		if (isset($_POST["date3"])) {
 			if ($_POST["date3"]!="") {
-				$date3=dateConvert($guid, $_POST["date3"]) ;
+				$date3=Format::dateConvert($_POST["date3"]) ;
 			}
 		}
 		$sms=NULL ;
@@ -1582,7 +1582,7 @@ else {
                     $choices=$_POST["attendanceStatus"];
                     $students=$_POST["attendanceStudents"];
                     $parents=$_POST["attendanceParents"];
-                    $selectedDate=dateConvert($guid, $_POST["attendanceDate"]);
+                    $selectedDate=Format::dateConvert($_POST["attendanceDate"]);
                     if ($choices!="") {
                         foreach ($choices as $t) {
       						try {

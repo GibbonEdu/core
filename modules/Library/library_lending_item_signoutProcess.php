@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $statusCurrent = $_POST['statusCurrent'] ?? '';
@@ -35,7 +37,7 @@ if ($status == 'Decommissioned') {
 }
 $gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? '';
 if (!empty($_POST['returnExpected'])) {
-    $returnExpected = dateConvert($guid, $_POST['returnExpected']);
+    $returnExpected = Format::dateConvert($_POST['returnExpected']);
 }
 $returnAction = $_POST['returnAction'] ?? '';
 $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';

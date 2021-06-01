@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -64,7 +66,7 @@ if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') { echo '
                 } else {
                     //Write to database
                     try {
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'active' => $active, 'description' => $description, 'invoiceIssueDate' => dateConvert($guid, $invoiceIssueDate), 'invoiceDueDate' => dateConvert($guid, $invoiceDueDate), 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID);
+                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'name' => $name, 'active' => $active, 'description' => $description, 'invoiceIssueDate' => Format::dateConvert($invoiceIssueDate), 'invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID);
                         $sql = "UPDATE gibbonFinanceBillingSchedule SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, active=:active, description=:description, invoiceIssueDate=:invoiceIssueDate, invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

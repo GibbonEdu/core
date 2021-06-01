@@ -539,8 +539,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     $name = $_POST['nextname'];
                     $status = $_POST['nextstatus'];
                     $sequenceNumber = $_POST['nextsequenceNumber'];
-                    $firstDay = dateConvert($guid, $_POST['nextfirstDay']);
-                    $lastDay = dateConvert($guid, $_POST['nextlastDay']);
+                    $firstDay = Format::dateConvert($_POST['nextfirstDay']);
+                    $lastDay = Format::dateConvert($_POST['nextlastDay']);
 
                     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
                         echo "<div class='error'>";

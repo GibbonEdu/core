@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         if ($viewBy == 'date') {
             $date = $_GET['date'];
             if (!empty($_GET['dateHuman'])) {
-                $date = dateConvert($guid, $_GET['dateHuman']);
+                $date = Format::dateConvert($_GET['dateHuman']);
             }
             if ($date == '') {
                 $date = date('Y-m-d');

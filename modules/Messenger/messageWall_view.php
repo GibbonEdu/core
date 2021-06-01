@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
     //Acess denied
@@ -73,6 +74,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	echo $form->getOutput();
 
-    echo getMessages($guid, $connection2, 'print', dateConvert($guid, $date));
+    echo getMessages($guid, $connection2, 'print', Format::dateConvert($date));
 }
 ?>

@@ -81,7 +81,7 @@ if ($proceed == false) {
         if ($dob == '') {
             $dob = null;
         } else {
-            $dob = dateConvert($guid, $dob);
+            $dob = Format::dateConvert($dob);
         }
         $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
         $languageHomeSecondary = $_POST['languageHomeSecondary'] ?? '';
@@ -98,7 +98,7 @@ if ($proceed == false) {
         if ($visaExpiryDate == '') {
             $visaExpiryDate = null;
         } else {
-            $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
+            $visaExpiryDate = Format::dateConvert($visaExpiryDate);
         }
         $email = trim($_POST['email'] ?? '');
         $phone1Type = $_POST['phone1Type'] ?? '';
@@ -134,7 +134,7 @@ if ($proceed == false) {
         if ($schoolDate1 == '') {
             $schoolDate1 = null;
         } else {
-            $schoolDate1 = dateConvert($guid, $schoolDate1);
+            $schoolDate1 = Format::dateConvert($schoolDate1);
         }
         $schoolName2 = $_POST['schoolName2'] ?? '';
         $schoolAddress2 = $_POST['schoolAddress2'] ?? '';
@@ -144,7 +144,7 @@ if ($proceed == false) {
         if ($schoolDate2 == '') {
             $schoolDate2 = null;
         } else {
-            $schoolDate2 = dateConvert($guid, $schoolDate2);
+            $schoolDate2 = Format::dateConvert($schoolDate2);
         }
 
         //GET FAMILY FEILDS
@@ -176,7 +176,7 @@ if ($proceed == false) {
         $parent1visaExpiryDate = null;
         if (isset($_POST['parent1visaExpiryDate'])) {
             if ($_POST['parent1visaExpiryDate'] != '') {
-                $parent1visaExpiryDate = dateConvert($guid, $_POST['parent1visaExpiryDate']);
+                $parent1visaExpiryDate = Format::dateConvert($_POST['parent1visaExpiryDate']);
             }
         }
         $parent1email = trim($_POST['parent1email'] ?? '');
@@ -212,7 +212,7 @@ if ($proceed == false) {
         $parent2visaExpiryDate = null;
         if (isset($_POST['parent2visaExpiryDate'])) {
             if ($_POST['parent2visaExpiryDate'] != '') {
-                $parent2visaExpiryDate = dateConvert($guid, $_POST['parent2visaExpiryDate']);
+                $parent2visaExpiryDate = Format::dateConvert($_POST['parent2visaExpiryDate']);
             }
         }
         $parent2email = trim($_POST['parent2email'] ?? '');
@@ -238,42 +238,42 @@ if ($proceed == false) {
         if ($siblingDOB1 == '') {
             $siblingDOB1 = null;
         } else {
-            $siblingDOB1 = dateConvert($guid, $siblingDOB1);
+            $siblingDOB1 = Format::dateConvert($siblingDOB1);
         }
         $siblingSchool1 = $_POST['siblingSchool1'] ?? '';
         $siblingSchoolJoiningDate1 = $_POST['siblingSchoolJoiningDate1'] ?? '';
         if ($siblingSchoolJoiningDate1 == '') {
             $siblingSchoolJoiningDate1 = null;
         } else {
-            $siblingSchoolJoiningDate1 = dateConvert($guid, $siblingSchoolJoiningDate1);
+            $siblingSchoolJoiningDate1 = Format::dateConvert($siblingSchoolJoiningDate1);
         }
         $siblingName2 = $_POST['siblingName2'] ?? '';
         $siblingDOB2 = $_POST['siblingDOB2'] ?? '';
         if ($siblingDOB2 == '') {
             $siblingDOB2 = null;
         } else {
-            $siblingDOB2 = dateConvert($guid, $siblingDOB2);
+            $siblingDOB2 = Format::dateConvert($siblingDOB2);
         }
         $siblingSchool2 = $_POST['siblingSchool2'] ?? '';
         $siblingSchoolJoiningDate2 = $_POST['siblingSchoolJoiningDate2'] ?? '';
         if ($siblingSchoolJoiningDate2 == '') {
             $siblingSchoolJoiningDate2 = null;
         } else {
-            $siblingSchoolJoiningDate2 = dateConvert($guid, $siblingSchoolJoiningDate2);
+            $siblingSchoolJoiningDate2 = Format::dateConvert($siblingSchoolJoiningDate2);
         }
         $siblingName3 = $_POST['siblingName3'] ?? '';
         $siblingDOB3 = $_POST['siblingDOB3'] ?? '';
         if ($siblingDOB3 == '') {
             $siblingDOB3 = null;
         } else {
-            $siblingDOB3 = dateConvert($guid, $siblingDOB3);
+            $siblingDOB3 = Format::dateConvert($siblingDOB3);
         }
         $siblingSchool3 = $_POST['siblingSchool3'] ?? '';
         $siblingSchoolJoiningDate3 = $_POST['siblingSchoolJoiningDate3'] ?? '';
         if ($siblingSchoolJoiningDate3 == '') {
             $siblingSchoolJoiningDate3 = null;
         } else {
-            $siblingSchoolJoiningDate3 = dateConvert($guid, $siblingSchoolJoiningDate3);
+            $siblingSchoolJoiningDate3 = Format::dateConvert($siblingSchoolJoiningDate3);
         }
 
         //GET PAYMENT FIELDS

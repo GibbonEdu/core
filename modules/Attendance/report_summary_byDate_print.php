@@ -28,8 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 } else {
     //Proceed!
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-    $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
+    $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
+    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
     $group = !empty($_GET['group'])? $_GET['group'] : '';
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';

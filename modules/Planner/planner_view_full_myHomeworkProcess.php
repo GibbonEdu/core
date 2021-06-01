@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
@@ -73,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $homeworkDueDateTime = '21:00:00';
                 }
                 if ($_POST['homeworkDueDate'] != '') {
-                    $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
+                    $homeworkDueDate = Format::dateConvert($_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
                 }
             } else {
                 $homework = 'N';

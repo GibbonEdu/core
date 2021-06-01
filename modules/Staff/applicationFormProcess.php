@@ -83,7 +83,7 @@ if ($proceed == false) {
     $residencyStatus = $_POST['residencyStatus'] ?? '';
     $visaExpiryDate = null;
     if (isset($_POST['visaExpiryDate']) and $_POST['visaExpiryDate'] != '') {
-        $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
+        $visaExpiryDate = Format::dateConvert($visaExpiryDate);
     }
     $email = $_POST['email'] ?? '';
     $phone1Type = null;

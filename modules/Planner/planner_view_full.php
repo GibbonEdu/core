@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         if ($viewBy == 'date') {
             $date = $_GET['date'] ?? date('Y-m-d');
             if (isset($_GET['dateHuman'])) {
-                $date = dateConvert($guid, $_GET['dateHuman']);
+                $date = Format::dateConvert($_GET['dateHuman']);
             }
 
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
