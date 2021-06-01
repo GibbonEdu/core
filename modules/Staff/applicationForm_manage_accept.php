@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -234,6 +235,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $informApplicantArray[0]['username'] = $username;
                                 $informApplicantArray[0]['password'] = $password;
                             }
+
+                            // Update personal document ownership
+                            $container->get(PersonalDocumentGateway::class)->updatePersonalDocumentOwnership('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, 'gibbonPerson', $gibbonPersonID);
                         }
                     }
 

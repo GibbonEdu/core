@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_criteria
     }
 
     // FORM
-    $form = Form::create('archiveByReport', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
     $form->setFactory(DatabaseFormFactory::create($pdo));

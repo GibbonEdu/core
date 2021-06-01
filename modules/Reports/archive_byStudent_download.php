@@ -32,7 +32,7 @@ require_once '../../gibbon.php';
 $accessToken = $_GET['token'] ?? '';
 $gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $gibbon->session->get('gibbonPersonID');
 
-$returnPath = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
+$returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
 
 if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_download.php') == false) {
     // Access denied

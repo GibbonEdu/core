@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -51,8 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             $name = $_POST['name'] ?? '';
             $status = $_POST['status'] ?? '';
             $sequenceNumber = $_POST['sequenceNumber'] ?? '';
-            $firstDay = dateConvert($guid, $_POST['firstDay'] ?? '');
-            $lastDay = dateConvert($guid, $_POST['lastDay'] ?? '');
+            $firstDay = !empty($_POST['firstDay']) ? Format::dateConvert($_POST['firstDay']) : null;
+            $lastDay = !empty($_POST['lastDay']) ? Format::dateConvert($_POST['lastDay']) : null;
 
             if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
                 $URL .= '&return=error3';

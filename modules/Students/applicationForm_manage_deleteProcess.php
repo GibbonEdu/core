@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 include '../../gibbon.php';
 
@@ -92,6 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 header("Location: {$URL}");
                 exit();
             }
+
+            // Personal Documents
+            $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
+            $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationForm', $gibbonApplicationFormID);
+            $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationFormParent1', $gibbonApplicationFormID);
+            $personalDocumentGateway->deletePersonalDocuments('gibbonApplicationFormParent2', $gibbonApplicationFormID);
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

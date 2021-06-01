@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
@@ -60,7 +62,7 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
                 if (is_numeric($_POST['count'])) {
                     $count = $_POST['count'];
                 }
-                $date = dateConvert($guid, $_POST['date'] ?? '');
+                $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 
                 $attachment = $_POST['attachment'] ?? $row['attachment'];
                 //Move attached image  file, if there is one

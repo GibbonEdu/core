@@ -1,0 +1,58 @@
+details:
+    type: personalDocuments
+    name: Personal Documents
+    desc: 
+    category: User
+    table: gibbonPersonalDocument
+    modes: { update: true, insert: true }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonalDocumentID
+uniqueKeys:
+    - [gibbonPersonalDocumentTypeID, foreignTable, foreignTableID]
+table:
+    foreignTable:
+        name: "Foreign Table"
+        desc: ""
+        value: gibbonPerson
+        args: {filter: nospaces, hidden: true}
+    foreignTableID:
+        name: "Username"
+        desc: "Must be unique."
+        args: {filter: nospaces, required: true}
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username|email  }
+    gibbonPersonalDocumentTypeID:
+        name: "Document Type"
+        desc: ""
+        args: {filter: string, required: true, custom: true}
+        relationship: { table: gibbonPersonalDocumentType, key: gibbonPersonalDocumentTypeID, field: name  }
+    documentName:
+        name: "Document Name"
+        desc: ""
+        args: {filter: string, custom: true}
+    documentNumber:
+        name: "Document Number"
+        desc: ""
+        args: {filter: string, custom: true}
+    country:
+        name: "Issuing Country"
+        desc: ""
+        args: {filter: string, custom: true}
+    dateIssue:
+        name: "Issue Date"
+        desc: ""
+        args: {filter: date, custom: true}
+    dateExpiry:
+        name: "Expiry Date"
+        desc: ""
+        args: {filter: date, custom: true}
+    documentType:
+        name: "Residency Type"
+        desc: "If applicable."
+        args: {filter: string, custom: true}
+    filePath:
+        name: "File Path"
+        desc: ""
+        args: {filter: string, custom: true}

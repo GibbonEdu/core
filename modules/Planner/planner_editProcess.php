@@ -17,12 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
-
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
+include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_GET['viewBy'] ?? '';
@@ -31,7 +30,7 @@ if ($viewBy != 'date' and $viewBy != 'class') {
     $viewBy = 'date';
 }
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
-$date = dateConvert($guid, $_POST['date'] ?? '');
+$date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/planner_edit.php&gibbonPlannerEntryID=$gibbonPlannerEntryID";
 
 //Params to pass back (viewBy + date or classID)

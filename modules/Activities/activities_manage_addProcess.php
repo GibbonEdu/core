@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
@@ -35,10 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $gibbonSchoolYearTermIDList =  $_POST['gibbonSchoolYearTermIDList'] ?? [];
         $gibbonSchoolYearTermIDList = implode(',', $gibbonSchoolYearTermIDList);
     } elseif ($dateType == 'Date') {
-        $listingStart = dateConvert($guid, $_POST['listingStart'] ?? '');
-        $listingEnd = dateConvert($guid, $_POST['listingEnd'] ?? '');
-        $programStart = dateConvert($guid, $_POST['programStart'] ?? '');
-        $programEnd = dateConvert($guid, $_POST['programEnd'] ?? '');
+        $listingStart = !empty($_POST['listingStart']) ? Format::dateConvert($_POST['listingStart']) : null;
+        $listingEnd = !empty($_POST['listingEnd']) ? Format::dateConvert($_POST['listingEnd']) : null;
+        $programStart = !empty($_POST['programStart']) ? Format::dateConvert($_POST['programStart']) : null;
+        $programEnd = !empty($_POST['programEnd']) ? Format::dateConvert($_POST['programEnd']) : null;
     }
     $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? array();
     $gibbonYearGroupIDList = implode(',', $gibbonYearGroupIDList);

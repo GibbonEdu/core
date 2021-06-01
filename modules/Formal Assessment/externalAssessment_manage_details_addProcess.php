@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $count = 0;
@@ -25,7 +27,7 @@ if (is_numeric($_POST['count'])) {
 }
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'] ?? '';
-$date = dateConvert($guid, $_POST['date'] ?? '');
+$date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 $search = $_GET['search'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 

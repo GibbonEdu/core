@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Forms\CustomFieldHandler;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -18,6 +16,10 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 include '../../gibbon.php';
 
@@ -68,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 }
             }
             $milestones = substr($milestones, 0, -1);
-            $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+            $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
             $notes = $_POST['notes'] ?? '';
             $gibbonStaffJobOpeningID = $_POST['gibbonStaffJobOpeningID'];
             $questions = $_POST['questions'] ?? '';
@@ -79,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $officialName = $_POST['officialName'] ?? '';
             $nameInCharacters = $_POST['nameInCharacters'] ?? '';
             $gender = $_POST['gender'] ?? '';
-            $dob = dateConvert($guid, $_POST['dob'] ?? '');
+            $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
             $languageFirst = $_POST['languageFirst'] ?? '';
             $languageSecond = $_POST['languageSecond'] ?? '';
             $languageThird = $_POST['languageThird'] ?? '';
@@ -88,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
             $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
             $residencyStatus = $_POST['residencyStatus'] ?? '';
-            $visaExpiryDate = dateConvert($guid, $_POST['visaExpiryDate'] ?? '');
+            $visaExpiryDate = !empty($_POST['visaExpiryDate']) ? Format::dateConvert($_POST['visaExpiryDate']) : null;
             $email = $_POST['email'] ?? '';
             $phone1Type = null;
             if (isset($_POST['phone1Type'])) {
@@ -116,7 +118,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $fields = $customFieldHandler->getFieldDataFromPOST('User', ['staff' => 1, 'applicationForm' => 1], $customRequireFail);
                 $staffFields = $customFieldHandler->getFieldDataFromPOST('Staff', ['applicationForm' => 1, 'prefix' => 'customStaff'], $customRequireFail);
 
-                if ($customRequireFail) {
+                // PERSONAL DOCUMENTS
+                $personalDocumentFail = false;
+                $params = ['staff' => true, 'applicationForm' => true];
+                $container->get(PersonalDocumentHandler::class)->updateDocumentsFromPOST('gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $params, $personalDocumentFail);
+
+                if ($customRequireFail || $personalDocumentFail) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
