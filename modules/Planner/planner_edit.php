@@ -418,6 +418,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             }
         }
         //Print sidebar
-        $session->get('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $session->get('gibbonPersonID'), $dateStamp, $gibbonCourseClassID));
+        $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $todayStamp, $session->get('gibbonPersonID'), $dateStamp, $gibbonCourseClassID));
     }
 }
