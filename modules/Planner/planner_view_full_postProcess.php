@@ -27,7 +27,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $comment = tinymceStyleStripTags($comment, $connection2);
 
                 try {
-                    $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'comment' => $comment, 'replyTo' => $replyTo);
+                    $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
                     $sqlInsert = 'INSERT INTO gibbonPlannerEntryDiscuss SET gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonPersonID=:gibbonPersonID, comment=:comment, gibbonPlannerEntryDiscussIDReplyTo=:replyTo';
                     $resultInsert = $connection2->prepare($sqlInsert);
                     $resultInsert->execute($dataInsert);
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $resultClassGroup = $connection2->prepare($sqlClassGroup);
                 $resultClassGroup->execute($dataClassGroup);
                 while ($rowClassGroup = $resultClassGroup->fetch()) {
-                    if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] and $rowClassGroup['gibbonPersonID'] != $replyToID) {
+                    if ($rowClassGroup['gibbonPersonID'] != $session->get('gibbonPersonID') and $rowClassGroup['gibbonPersonID'] != $replyToID) {
                         $notificationText = sprintf(__('Someone has commented on your lesson plan "%1$s".'), $row['name']);
 
                         $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');

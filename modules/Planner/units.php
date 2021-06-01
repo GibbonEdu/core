@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $unitGateway = $container->get(UnitGateway::class);
 
     // School Year Info
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $_SESSION[$guid]['gibbonSchoolYearID'];
-    $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
 
-    if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
         $schoolYear = $schoolYearGateway->getByID($gibbonSchoolYearID);
         $gibbonSchoolYearName = $schoolYear['name'];
     }
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
     if ($gibbonCourseID != '') {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonCourseIDPrevious = '';
     $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
-        
+
             $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
             $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
             $resultPrevious = $connection2->prepare($sqlPrevious);
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonCourseIDNext = '';
     $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
-        
+
             $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
             $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
             $resultNext = $connection2->prepare($sqlNext);
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $units = $unitGateway->queryUnitsByCourse($criteria, $gibbonCourseID);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/Planner/unitsProcessBulk.php');
+    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/Planner/unitsProcessBulk.php');
     $form->setTitle($course['name']);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
     $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $table->addCheckboxColumn('gibbonUnitID');
 
     echo $form->getOutput();
-    
+
     // Print sidebar
     $gibbon->session->set('sidebarExtra',sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }

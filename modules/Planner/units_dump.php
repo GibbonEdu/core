@@ -379,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                     echo '});';
                                     echo '</script>';
                                     if ($rowBlocks['content'] != '') {
-                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                                     }
                                     echo '</td>';
                                     echo '</tr>';
@@ -441,7 +441,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                                         //Print chats
                                         echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
-                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false);
+                                        echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $session->get('gibbonPersonID'), 'Teacher', false);
                                     }
                                 }
                                 echo '</div>';

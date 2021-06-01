@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= '$(document).ready(function() {';
     $output .= 'var optionsSearch={';
     $output .= 'target: $(".'.$id.'resourceSlider"),';
-    $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_insert_ajax.php?id=$id',";
+    $output .= "url: '".$session->get('absoluteURL')."/modules/Planner/resources_insert_ajax.php?id=$id',";
     $output .= "type: 'POST'";
     $output .= '};';
 
@@ -69,9 +69,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= "<table cellspacing='0' style='width: 100%'>";
     $output .= "<tr id='".$id."resourceInsert'>";
     $output .= "<td colspan=2 style='padding-top: 0px'>";
-    $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
+    $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__('Close')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/></a></div>";
     $output .= "<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>";
-    $output .= '<p>'.sprintf(__('The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
+    $output .= '<p>'.sprintf(__('The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
     
     $form = Form::create($id.'ajaxFormSearch', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -192,9 +192,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             if ($row['type'] == 'Link') {
                 $output .= "<a target='_blank' style='font-weight: bold' href='".$row['content']."'>".$row['name'].'</a><br/>';
             } elseif ($row['type'] == 'File') {
-                $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'>".$row['name'].'</a><br/>';
+                $output .= "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'>".$row['name'].'</a><br/>';
             } elseif ($row['type'] == 'HTML') {
-                $output .= "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_view_standalone.php?gibbonResourceID='.$row['gibbonResourceID']."'>".$row['name'].'</a><br/>';
+                $output .= "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/modules/Planner/resources_view_standalone.php?gibbonResourceID='.$row['gibbonResourceID']."'>".$row['name'].'</a><br/>';
             }
             $output .= "<span style='font-size: 85%; font-style: italic'>".Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
             $output .= '</td>';
@@ -259,14 +259,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             } elseif ($row['type'] == 'File') {
                 $extension = strrchr($row['content'], '.');
                 if (strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'></a>";
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'><img class='resource' style='max-width: 500px' src='".$session->get('absoluteURL').'/'.$row['content']."'></a>";
                 } else {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['content']."'>".$row['name'].'</a>';
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'>".$row['name'].'</a>';
                 }
             } elseif ($row['type'] == 'HTML') {
                 $html = $row['content'];
             }
-            $output .= "<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"".htmlPrep(addslashes($html)).'"); formResetSearch(); $(".'.$id."resourceSlider\").slideUp();'><img title='".__('Insert')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+            $output .= "<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"".htmlPrep(addslashes($html)).'"); formResetSearch(); $(".'.$id."resourceSlider\").slideUp();'><img title='".__('Insert')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
             $output .= '</td>';
             $output .= '</tr>';
         }

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
 $time = time();
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_edit.php') == false) {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                         $data = array('gibbonResourceID' => $gibbonResourceID);
                         $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResourceID=:gibbonResourceID ORDER BY timestamp DESC';
                     } elseif ($highestAction == 'Manage Resources_my') {
-                        $data = array('gibbonResourceID' => $gibbonResourceID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonResourceID' => $gibbonResourceID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND gibbonResourceID=:gibbonResourceID ORDER BY timestamp DESC';
                     }
                     $result = $connection2->prepare($sql);
@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
 
                     //Write to database
 
-                        $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonResourceID' => $gibbonResourceID);
+                        $data = array('type' => $type, 'content' => $content, 'name' => $name, 'category' => $category, 'purpose' => $purpose, 'tags' => substr($tagList, 0, -1), 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'description' => $description, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonResourceID' => $gibbonResourceID);
                         $sql = 'UPDATE gibbonResource SET type=:type, content=:content, name=:name, category=:category, purpose=:purpose, tags=:tags, gibbonYearGroupIDList=:gibbonYearGroupIDList, description=:description, gibbonPersonID=:gibbonPersonID WHERE gibbonResourceID=:gibbonResourceID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

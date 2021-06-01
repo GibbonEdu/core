@@ -45,11 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     //Display filters
 
-    $form = Form::create('resourcesView', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('resourcesView', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/resources_view.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/resources_view.php');
 
     $sql = "SELECT tag as value, CONCAT(tag, ' <i>(', count, ')</i>') as name FROM gibbonResourceTag WHERE count>0 ORDER BY tag";
     $row = $form->addRow();
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             $sqlWhere = substr($sqlWhere, 0, -5);
         }
         $sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY timestamp DESC";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $sqlPage = $sql.' LIMIT '.$session->get('pagination').' OFFSET '.(($page - 1) * $session->get('pagination'));
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     }
 
     echo "<div class='linkTop'>";
-    echo " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/resources_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo " <a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/resources_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
     echo '</div>';
 
     if ($result->rowCount() < 1) {
@@ -136,8 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
+        if ($result->rowCount() > $session->get('pagination')) {
+            printPagination($guid, $result->rowCount(), $page, $session->get('pagination'), 'top', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
 
         echo "<table cellspacing='0' style='width: 100%'>";
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
         $count = 0;
         $rowNum = 'odd';
-        
+
             $resultPage = $connection2->prepare($sqlPage);
             $resultPage->execute($data);
         while ($row = $resultPage->fetch()) {
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             echo substr($output, 0, -2);
             echo '</td>';
             echo '<td>';
-            
+
                 $dataYears = array();
                 $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
                 $resultYears = $connection2->prepare($sqlYears);
@@ -230,12 +230,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         }
         echo '</table>';
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
+        if ($result->rowCount() > $session->get('pagination')) {
+            printPagination($guid, $result->rowCount(), $page, $session->get('pagination'), 'bottom', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
         }
     }
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraResources($guid, $connection2);
+    $session->set('sidebarExtra', sidebarExtraResources($guid, $connection2));
 }
 ?>

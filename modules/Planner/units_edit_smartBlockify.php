@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
 
     // Proceed!
     // Check if course & school year specified
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -92,23 +92,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_smartBl
     echo $table->render([$values]);
 
     // FORM
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/units_edit_smartBlockifyProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/units_edit_smartBlockifyProcess.php?'.http_build_query($urlParams));
 
     $form->setTitle(__('Smart Blockify'));
     $form->setDescription(sprintf(__('This function allows you to take all of the lesson content (Details and Teacher\'s Notes) from the selected working unit (%1$s in %2$s) and use them to create new Smart Blocks in the master unit, which are then used to replace the original content in the working unit. In this way you can quickl "smart blockify" an existing unit.'), $values['name'], Format::courseClassName($values['course'], $values['class'])));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);
 
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addContent(__('Are you sure you want to proceed with this request?'))->wrap('<strong>', '</strong>');
         $col->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
-            
+
     $form->addRow()->addConfirmSubmit();
 
     echo $form->getOutput();
 
     // Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']);
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']));
 }

@@ -25,8 +25,8 @@ $filter2 = $_GET['filter2'] ?? '';
 
 
 $gibbonOutcomeID = $_POST['gibbonOutcomeID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes.php&filter2=$filter2";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes.php&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.php') == false) {
     $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                         $data = array('gibbonOutcomeID' => $gibbonOutcomeID);
                         $sql = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
                     } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT * FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonOutcome.gibbonDepartmentID IS NULL WHERE gibbonOutcomeID=:gibbonOutcomeID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
                     }
                     $result = $connection2->prepare($sql);

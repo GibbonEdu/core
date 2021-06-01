@@ -25,7 +25,7 @@ include '../../gibbon.php';
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
     die('error0');
 } else {
-    $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
     if ($category != 'Student') {
         die('error0');
     } else {
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
 
         $data = [
             'gibbonPlannerEntryID' => $_POST['gibbonPlannerEntryID'] ?? '',
-            'gibbonPersonID'       => $_SESSION[$guid]['gibbonPersonID'] ?? '',
+            'gibbonPersonID'       => $session->get('gibbonPersonID') ?? '',
         ];
 
         if (empty($complete) || empty($type) || empty($data['gibbonPlannerEntryID']) || empty($data['gibbonPersonID'])) {

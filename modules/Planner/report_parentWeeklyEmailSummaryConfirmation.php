@@ -44,22 +44,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
     $weekOfYear = isset($_GET['weekOfYear'])? $_GET['weekOfYear'] : null;
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_parentWeeklyEmailSummaryConfirmation.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/report_parentWeeklyEmailSummaryConfirmation.php');
 
     $row = $form->addRow();
         $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonFormGroupID);
+        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->required()->selected($gibbonFormGroupID);
 
-    $begin = new DateTime($_SESSION[$guid]['gibbonSchoolYearFirstDay']);
+    $begin = new DateTime($session->get('gibbonSchoolYearFirstDay'));
     $end = new DateTime();
     $dateRange = new DatePeriod($begin, new DateInterval('P1W'), $end);
 
     $weeks = array();
     foreach ($dateRange as $date) {
-        $weeks[$date->format('W')] = __('Week').' '.$date->format('W').': '.$date->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
+        $weeks[$date->format('W')] = __('Week').' '.$date->format('W').': '.$date->format($session->get('i18n')['dateFormatPHP']);
     }
     $weeks = array_reverse($weeks, true);
 
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         echo __('Report Data');
         echo '</h2>';
 
-        
+
             $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
             $sql = "SELECT student.surname AS studentSurname, student.preferredName AS studentPreferredName, parent.surname AS parentSurname, parent.preferredName AS parentPreferredName, parent.title AS parentTitle, gibbonFormGroup.name, student.gibbonPersonID AS gibbonPersonIDStudent, parent.gibbonPersonID AS gibbonPersonIDParent FROM gibbonPerson AS student JOIN gibbonStudentEnrolment ON (student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) LEFT JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE (gibbonFamilyAdult.contactPriority=1 OR gibbonFamilyAdult.contactPriority IS NULL) AND student.status='Full' AND parent.status='Full' AND (student.dateStart IS NULL OR student.dateStart<='".date('Y-m-d')."') AND (student.dateEnd IS NULL OR student.dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID ORDER BY student.surname, student.preferredName, parent.surname, parent.preferredName";
             $result = $connection2->prepare($sql);
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
             echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDStudent']."&subpage=Homework'>".Format::name('', $row['studentPreferredName'], $row['studentSurname'], 'Student', true).'</a>';
             echo '</td>';
 
-            $dataData = array('gibbonPersonIDStudent' => $row['gibbonPersonIDStudent'],  'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'weekOfYear' => $weekOfYear);
+            $dataData = array('gibbonPersonIDStudent' => $row['gibbonPersonIDStudent'],  'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'weekOfYear' => $weekOfYear);
             $sqlData = 'SELECT gibbonPlannerParentWeeklyEmailSummary.*, gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname FROM gibbonPlannerParentWeeklyEmailSummary LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPlannerParentWeeklyEmailSummary.gibbonPersonIDParent) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonSchoolYearID=:gibbonSchoolYearID AND weekOfYear=:weekOfYear';
 
             $rowData = $pdo->selectOne($sqlData, $dataData);
@@ -134,13 +134,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
                     : '<br/>';
             }
             echo '</td>';
-            
+
             echo "<td style='width:15%'>";
-            
+
             if (!empty($rowData)) {
-                echo "<img title='".__('Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                echo "<img title='".__('Sent')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
             } else {
-                echo "<img title='".__('Not Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                echo "<img title='".__('Not Sent')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
             }
             echo '</td>';
             echo "<td style='width:15%'>";
@@ -148,9 +148,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
                 echo __('NA');
             } else {
                 if ($rowData['confirmed'] == 'Y') {
-                    echo "<img title='".__('Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                    echo "<img title='".__('Confirmed')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ";
                 } else {
-                    echo "<img title='".__('Not Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                    echo "<img title='".__('Not Confirmed')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
                 }
             }
             echo '</td>';

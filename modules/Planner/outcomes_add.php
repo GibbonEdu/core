@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             //Proceed!
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes_edit.php&gibbonOutcomeID='.$_GET['editID'].'&filter2='.$_GET['filter2'];
+                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Planner/outcomes_edit.php&gibbonOutcomeID='.$_GET['editID'].'&filter2='.$_GET['filter2'];
             }
             $page->return->setEditLink($editLink);
 
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 
             if ($filter2 != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
 			}
 
@@ -67,10 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
                 'Learning Area' => __('Learning Area'),
             );
 
-			$form = Form::create('outcomes', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_addProcess.php?filter2='.$filter2);
+			$form = Form::create('outcomes', $session->get('absoluteURL').'/modules/'.$session->get('module').'/outcomes_addProcess.php?filter2='.$filter2);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('address', $session->get('address'));
 
 			$row = $form->addRow();
                 $row->addLabel('scope', __('Scope'));
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
 				$data = array();
 				$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
 			} elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-				$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+				$data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
 				$sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
 			}
 

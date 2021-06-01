@@ -30,7 +30,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $viewBy = $_GET['viewBy'] ?? '';
 $subView = $_GET['subView'] ?? '';
 $search = $_POST['search'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$search";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     $URL .= '&return=error0';

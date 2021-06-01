@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                         $data = array('gibbonOutcomeID' => $gibbonOutcomeID);
                         $sql = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
                     } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT * FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonOutcome.gibbonDepartmentID IS NULL WHERE gibbonOutcomeID=:gibbonOutcomeID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
                     }
                     $result = $connection2->prepare($sql);
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                     echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
-                    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/outcomes_deleteProcess.php?gibbonOutcomeID=$gibbonOutcomeID&filter2=".$filter2);
+                    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/outcomes_deleteProcess.php?gibbonOutcomeID=$gibbonOutcomeID&filter2=".$filter2);
                     echo $form->getOutput();
                 }
             }

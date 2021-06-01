@@ -39,12 +39,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
     $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : null;
 
-	$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+	$form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
 
-	$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/curriculumMapping_outcomesByCourse.php');
+	$form->addHiddenValue('q', '/modules/'.$session->get('module').'/curriculumMapping_outcomesByCourse.php');
 
 
-	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+	$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 	$sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, gibbonCourse.nameShort";
 	$result = $pdo->executeQuery($data, $sql);
 
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
         //Check course exists
         
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseID' => $gibbonCourseID);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonCourseID' => $gibbonCourseID);
             $sql = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' AND gibbonCourseID=:gibbonCourseID ORDER BY department, nameShort";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -192,9 +192,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 								}
 							}
 							if ($outcomeCount < 1) {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
 							} else {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
+								echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 							}
 							echo '</td>';
 							echo '<td>';
@@ -205,9 +205,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 								}
 							}
 							if ($outcomeCount < 1) {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+								echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
 							} else {
-								echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
+								echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 							}
 							echo '</td>';
 						}
@@ -270,9 +270,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 									}
 								}
 								if ($outcomeCount < 1) {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+									echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
 								} else {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
+									echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 								}
 								echo '</td>';
 								echo '<td>';
@@ -283,9 +283,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 									}
 								}
 								if ($outcomeCount < 1) {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+									echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
 								} else {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
+									echo "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/>&nbsp;x&nbsp;".$outcomeCount;
 								}
 								echo '</td>';
 							}

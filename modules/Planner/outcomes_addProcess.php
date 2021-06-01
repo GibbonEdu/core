@@ -23,7 +23,7 @@ include './moduleFunctions.php';
 
 $filter2 = $_GET['filter2'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_add.php&filter2=$filter2";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_add.php&filter2=$filter2";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php') == false) {
     $URL .= '&return=error0';
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_add.php')
             } else {
                 //Write to database
                 try {
-                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'nameShort' => $nameShort, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('scope' => $scope, 'gibbonDepartmentID' => $gibbonDepartmentID, 'name' => $name, 'nameShort' => $nameShort, 'active' => $active, 'category' => $category, 'description' => $description, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                     $sql = 'INSERT INTO gibbonOutcome SET scope=:scope, gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, active=:active, category=:category, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, gibbonPersonIDCreator=:gibbonPersonIDCreator';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);

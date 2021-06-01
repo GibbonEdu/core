@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     $data = array('gibbonResourceID' => $gibbonResourceID);
                     $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) AND gibbonResourceID=:gibbonResourceID ORDER BY timestamp DESC';
                 } elseif ($highestAction == 'Manage Resources_my') {
-                    $data = array('gibbonResourceID' => $gibbonResourceID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $data = array('gibbonResourceID' => $gibbonResourceID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                     $sql = 'SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonResource.gibbonPersonID=:gibbonPersonID AND gibbonResourceID=:gibbonResourceID ORDER BY timestamp DESC';
                 }
                 $result = $connection2->prepare($sql);
@@ -73,14 +73,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
 
                 if (!empty($search)) {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/resources_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
+                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/resources_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                     echo '</div>';
                 }
 
-                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/resources_manage_editProcess.php?gibbonResourceID='.$gibbonResourceID.'&search='.$search);
+                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/resources_manage_editProcess.php?gibbonResourceID='.$gibbonResourceID.'&search='.$search);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('type', $values['type']);
 
                 $form->addRow()->addHeading(__('Resource Contents'));
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                         $row->addLabel('file', __('File'));
                         $row->addFileUpload('file')
                             ->required()
-                            ->setAttachment('content', $_SESSION[$guid]['absoluteURL'], $values['content']);
+                            ->setAttachment('content', $session->get('absoluteURL'), $values['content']);
                 } else if ($values['type'] == 'HTML') {
                     // HTML
                     $row = $form->addRow()->addClass('resourceHTML');

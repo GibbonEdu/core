@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
-            
+
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
@@ -88,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $gibbonYearGroupIDList = $rowCourse['gibbonYearGroupIDList'];
                         $gibbonDepartmentID = $rowCourse['gibbonDepartmentID'];
 
-                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
+                        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/units_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q']);
                         $form->setFactory(PlannerFormFactory::create($pdo));
 
-                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                        $form->addHiddenValue('address', $session->get('address'));
 
                         //OVERVIEW
                         $form->addRow()->addHeading(__('Overview'));
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         //CLASSES
                         $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
 
-                        
+
                             $dataClass = array();
                             $sqlClass = "SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name";
                             $resultClass = $connection2->prepare($sqlClass);
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             $column->addAlert($content, 'message');
                             $column->addEditor('details', $guid)->setRows(30)->showMedia()->setValue($unitOutline);
 
-                        
+
                             $dataExt = array();
                             $sqlExt = 'SELECT * FROM gibbonFileExtension';
                             $resultExt = $connection2->prepare($sqlExt);
@@ -262,6 +262,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
 ?>

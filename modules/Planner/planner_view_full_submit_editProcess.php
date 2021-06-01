@@ -24,7 +24,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
     $URL .= '&return=error0';
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                                 $file = (isset($_FILES['file']))? $_FILES['file'] : null;
 
                                 // Upload the file, return the /uploads relative path
-                                $attachment = $fileUploader->uploadFromPost($file, $_SESSION[$guid]['username'].'_'.$lesson);
+                                $attachment = $fileUploader->uploadFromPost($file, $session->get('username').'_'.$lesson);
 
                                 if (empty($attachment)) {
                                     $partialFail = true;
