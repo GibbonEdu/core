@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
 
             if ($filter2 != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__('Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/outcomes.php&filter2='.$filter2."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                         $data = array('gibbonOutcomeID' => $gibbonOutcomeID);
                         $sql = 'SELECT * FROM gibbonOutcome WHERE gibbonOutcomeID=:gibbonOutcomeID';
                     } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                        $data = array('gibbonOutcomeID' => $gibbonOutcomeID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
                         $sql = "SELECT gibbonOutcome.* FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) AND NOT gibbonOutcome.gibbonDepartmentID IS NULL WHERE gibbonOutcomeID=:gibbonOutcomeID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND gibbonPersonID=:gibbonPersonID AND scope='Learning Area'";
                     }
                     $result = $connection2->prepare($sql);
@@ -84,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
                     //Let's go!
 					$values = $result->fetch(); 
 					
-					$form = Form::create('outcomes', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/outcomes_editProcess.php?gibbonOutcomeID='.$gibbonOutcomeID.'&filter2='.$filter2);
+					$form = Form::create('outcomes', $session->get('absoluteURL').'/modules/'.$session->get('module').'/outcomes_editProcess.php?gibbonOutcomeID='.$gibbonOutcomeID.'&filter2='.$filter2);
 					$form->setFactory(DatabaseFormFactory::create($pdo));
 					
-					$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					$form->addHiddenValue('address', $session->get('address'));
 
 					$row = $form->addRow();
                         $row->addLabel('scope', 'Scope');

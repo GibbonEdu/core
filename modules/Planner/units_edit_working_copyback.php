@@ -50,14 +50,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
 
     // Proceed!
     // Check if course & school year specified
     if ($urlParams['gibbonCourseID'] == '' or $urlParams['gibbonSchoolYearID'] == '' or $urlParams['gibbonCourseClassID'] == '' or $urlParams['gibbonUnitClassID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
 
@@ -71,15 +71,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
-            
+    }
+
     $values = $result->fetch();
 
     // Check if unit specified
     if ($urlParams['gibbonUnitID'] == '' or $urlParams['gibbonUnitBlockID'] == '' or $urlParams['gibbonUnitClassBlockID'] == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $data = ['gibbonUnitID' => $urlParams['gibbonUnitID'], 'gibbonCourseID' => $urlParams['gibbonCourseID'], 'gibbonUnitBlockID' => $urlParams['gibbonUnitBlockID'], 'gibbonUnitClassBlockID' => $urlParams['gibbonUnitClassBlockID']];
     $sql = 'SELECT gibbonUnitClassBlock.title AS block, gibbonCourse.nameShort AS courseName, gibbonUnit.name as unit FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonUnitBlock ON (gibbonUnitBlock.gibbonUnitID=gibbonUnit.gibbonUnitID) JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID AND gibbonUnit.gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
@@ -103,12 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     echo $table->render([$values]);
 
     // FORM
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/units_edit_working_copybackProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/units_edit_working_copybackProcess.php?'.http_build_query($urlParams));
 
     $form->setTitle(__('Copy Back Block'));
     $form->setDescription(__('This action will use the selected block to replace the equivalent block in the master unit. The option below also lets you replace the equivalent block in all other working units within the unit.'));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);
 
     $row = $form->addRow();
@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $form->addRow()->addConfirmSubmit();
 
     echo $form->getOutput();
-    
+
     // Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']);
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']));
 }

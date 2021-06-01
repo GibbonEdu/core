@@ -41,7 +41,7 @@ if ($makeUnitsPublic != 'Y') {
     if ($gibbonUnitID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonUnitID' => $gibbonUnitID);
             $sql = "SELECT gibbonCourse.nameShort AS courseName, gibbonSchoolYearID, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND sharedPublic='Y'";
             $result = $connection2->prepare($sql);
@@ -64,7 +64,7 @@ if ($makeUnitsPublic != 'Y') {
 					});
 				});
 			</script>
-			
+
 			<?php
             echo '<h2>';
             echo $row['name'];
@@ -72,7 +72,7 @@ if ($makeUnitsPublic != 'Y') {
 
             echo "<div id='tabs' style='width: 100%; margin: 20px 0'>";
                 //Prep classes in this unit
-                
+
                     $dataClass = array('gibbonUnitID' => $gibbonUnitID);
                     $sqlClass = 'SELECT gibbonUnitClass.gibbonCourseClassID, gibbonCourseClass.nameShort FROM gibbonUnitClass JOIN gibbonCourseClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonUnitID=:gibbonUnitID ORDER BY nameShort';
                     $resultClass = $connection2->prepare($sqlClass);
@@ -111,7 +111,7 @@ if ($makeUnitsPublic != 'Y') {
             }
             echo '</div>';
             echo "<div id='tabs2'>";
-            
+
                 $dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
                 $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
                 $resultBlocks = $connection2->prepare($sqlBlocks);
@@ -159,7 +159,7 @@ if ($makeUnitsPublic != 'Y') {
             echo "<div id='tabs3'>";
 			//Resources
 			$noReosurces = true;
-            
+
             if (!empty($resourceContents)) {
                 $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
 
@@ -249,7 +249,7 @@ if ($makeUnitsPublic != 'Y') {
                     $noReosurces = false;
                 }
             }
-            
+
 			//No resources!
 			if ($noReosurces) {
 				echo "<div class='error'>";
@@ -259,7 +259,7 @@ if ($makeUnitsPublic != 'Y') {
             echo '</div>';
             echo "<div id='tabs4'>";
 				//Spit out outcomes
-				
+
 					$dataBlocks = array('gibbonUnitID' => $gibbonUnitID);
 					$sqlBlocks = "SELECT gibbonUnitOutcome.*, scope, name, nameShort, category, gibbonYearGroupIDList FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
 					$resultBlocks = $connection2->prepare($sqlBlocks);
@@ -319,7 +319,7 @@ if ($makeUnitsPublic != 'Y') {
                     echo '});';
                     echo '</script>';
                     if ($rowBlocks['content'] != '') {
-                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
+                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                     }
                     echo '</td>';
                     echo '</tr>';

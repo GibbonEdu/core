@@ -36,13 +36,13 @@ $output .= "<script type='text/javascript'>";
             $output .= 'success: function(response) {';
                 $output .= "tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\".".$id.'resourceQuickSlider").slideUp();';
             $output .= '}, ';
-            $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_addQuick_ajaxProcess.php',";
+            $output .= "url: '".$session->get('absoluteURL')."/modules/Planner/resources_addQuick_ajaxProcess.php',";
             $output .= "type: 'POST'";
         $output .= '};';
 
         $output .= "$('#".$id."ajaxForm').submit(function() {";
             $output .= '$(this).ajaxSubmit(options);';
-            $output .= '$(".'.$id."resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.($_SESSION[$guid]['gibbonThemeName'] ?? 'Default')."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
+            $output .= '$(".'.$id."resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$session->get('absoluteURL').'/themes/'.($session->get('gibbonThemeName') ?? 'Default')."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
             $output .= 'return false;';
         $output .= '});';
     $output .= '});';
@@ -55,10 +55,10 @@ $output .= '</script>';
 $form = Form::create($id.'ajaxForm', '')->addClass('resourceQuick');
 
 $form->addHiddenValue('id', $id);
-$form->addHiddenValue($id.'address', $_SESSION[$guid]['address']);
+$form->addHiddenValue($id.'address', $session->get('address'));
 
 $row = $form->addRow();
-    $row->addWebLink("<img title='".__('Close')."' src='./themes/".($_SESSION[$guid]['gibbonThemeName'] ?? 'Default')."/img/iconCross.png'/>")
+    $row->addWebLink("<img title='".__('Close')."' src='./themes/".($session->get('gibbonThemeName') ?? 'Default')."/img/iconCross.png'/>")
         ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")->addClass('right');
 
 for ($i = 1; $i < 5; ++$i) {

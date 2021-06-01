@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 } else {
     //Proceed!
     //Get all concepts in current year and convert to ordered array
-    $tagsAll = getTagList($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $tagsAll = getTagList($connection2, $session->get('gibbonSchoolYearID'));
 
     //Deal with paramaters
     $tags = array();
@@ -48,17 +48,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         echo '<h2>';
         echo __('Concept Cloud');
         echo '</h2>';
-        echo getTagCloud($guid, $connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+        echo getTagCloud($guid, $connection2, $session->get('gibbonSchoolYearID'));
     }
 
     //Allow tag selection
-    $form = Form::create('conceptExplorer', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('conceptExplorer', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
     $form->setTitle(__('Choose Concept'));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/conceptExplorer.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/conceptExplorer.php');
 
     $row = $form->addRow();
         $row->addLabel('tags', __('Concepts & Keywords'));
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         if ($highestAction == 'Unit Planner_learningAreas') {
             $departmentCount = 1 ;
             try {
-                $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $dataSelect = array('gibbonPersonID' => $session->get('gibbonPersonID'));
                 $sqlSelect = "SELECT gibbonDepartment.gibbonDepartmentID FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') ORDER BY gibbonDepartment.name";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
             }
 
 
-            $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+            $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
             $sql = "SELECT gibbonUnitID, gibbonUnit.name, gibbonUnit.description, attachment, tags, gibbonCourse.name AS course, gibbonDepartmentID, gibbonCourse.gibbonCourseID, gibbonSchoolYearID FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonUnit.map='Y' AND gibbonCourse.map='Y' $sqlWhere ORDER BY gibbonUnit.name";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 echo '<td>';
                 echo $row['description'].'<br/>';
                 if ($row['attachment'] != '') {
-                    echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>".__('Download Unit Outline').'</a></li>';
+                    echo "<br/><br/><a href='".$session->get('absoluteURL').'/'.$row['attachment']."'>".__('Download Unit Outline').'</a></li>';
                 }
                 echo '</td>';
                 echo '<td>';
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                             $style = 'style=\'color: #000; font-weight: bold\'';
                         }
                     }
-                    $tagsOutput .= "<a $style href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
+                    $tagsOutput .= "<a $style href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/conceptExplorer.php&tag=$tag'>".$tag.'</a>, ';
                 }
                 if ($tagsOutput != '')
                     $tagsOutput = substr($tagsOutput, 0, -2);
@@ -205,8 +205,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 echo '</td>';
                 echo '<td>';
                     if ($canEdit) {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__('View')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
                     }
                 echo '</td>';
                 echo '</tr>';

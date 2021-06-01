@@ -32,7 +32,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'] ?? '';
 $date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 $duplicateReturnYear = 'current';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID_org";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID_org";
 
 //Params to pass back (viewBy + date or classID)
 if ($viewBy == 'date') {
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             header("Location: {$URL}");
         } else {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPlannerEntryID' => $gibbonPlannerEntryID_org);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPlannerEntryID' => $gibbonPlannerEntryID_org);
                 $sql = 'SELECT *, gibbonPlannerEntry.description AS description FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $summary = $row['summary'];
                 $description = $row['description'];
                 //Add to smart blocks to description if copying to another year
-                if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID'] or @$_POST['keepUnit'] != 'Y') {
+                if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID') or @$_POST['keepUnit'] != 'Y') {
                     try {
                         $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                         $sqlBlocks = 'SELECT * FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPlannerEntryID IS NOT NULL';
@@ -136,8 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $homeworkCrowdAssessOtherParentsRead = $row['homeworkCrowdAssessOtherParentsRead'];
                 $viewableParents = $row['viewableParents'];
                 $viewableStudents = $row['viewableStudents'];
-                $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
-                $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
+                $gibbonPersonIDCreator = $session->get('gibbonPersonID');
+                $gibbonPersonIDLastEdit = $session->get('gibbonPersonID');
 
                 if ($viewBy == '' or $gibbonCourseClassID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $name == '' or $homework == '' or $viewableParents == '' or $viewableStudents == '' or ($homework == 'Y' and ($homeworkDetails == '' or $homeworkDueDateTime == ''))) {
                     $URL .= "&return=error3$params";
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         }
                         while ($rowMarkbook = $resultMarkbook->fetch()) {
                             try {
-                                $dataMarkbookInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonPlannerEntryID' => $AI, 'gibbonCourseClassID' => $gibbonCourseClassID, 'name' => $rowMarkbook['name'], 'description' => $rowMarkbook['description'], 'type' => $rowMarkbook['type'], 'attainment' => $rowMarkbook['attainment'], 'gibbonScaleIDAttainment' => $rowMarkbook['gibbonScaleIDAttainment'], 'effort' => $rowMarkbook['effort'], 'gibbonScaleIDEffort' => $rowMarkbook['gibbonScaleIDEffort'], 'comment' => $rowMarkbook['comment'], 'viewableStudents' => $rowMarkbook['viewableStudents'], 'viewableParents' => $rowMarkbook['viewableParents'], 'attachment' => $rowMarkbook['attachment'], 'gibbonPersonID1' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                                $dataMarkbookInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonPlannerEntryID' => $AI, 'gibbonCourseClassID' => $gibbonCourseClassID, 'name' => $rowMarkbook['name'], 'description' => $rowMarkbook['description'], 'type' => $rowMarkbook['type'], 'attainment' => $rowMarkbook['attainment'], 'gibbonScaleIDAttainment' => $rowMarkbook['gibbonScaleIDAttainment'], 'effort' => $rowMarkbook['effort'], 'gibbonScaleIDEffort' => $rowMarkbook['gibbonScaleIDEffort'], 'comment' => $rowMarkbook['comment'], 'viewableStudents' => $rowMarkbook['viewableStudents'], 'viewableParents' => $rowMarkbook['viewableParents'], 'attachment' => $rowMarkbook['attachment'], 'gibbonPersonID1' => $session->get('gibbonPersonID'), 'gibbonPersonID2' => $session->get('gibbonPersonID'));
                                 $sqlMarkbookInsert = "INSERT INTO gibbonMarkbookColumn SET gibbonUnitID=:gibbonUnitID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonCourseClassID=:gibbonCourseClassID, name=:name, description=:description, type=:type, attainment=:attainment, gibbonScaleIDAttainment=:gibbonScaleIDAttainment, effort=:effort, gibbonScaleIDEffort=:gibbonScaleIDEffort, comment=:comment, completeDate=NULL, complete='N' ,viewableStudents=:viewableStudents, viewableParents=:viewableParents ,attachment=:attachment, gibbonPersonIDCreator=:gibbonPersonID1, gibbonPersonIDLastEdit=:gibbonPersonID2";
                                 $resultMarkbookInsert = $connection2->prepare($sqlMarkbookInsert);
                                 $resultMarkbookInsert->execute($dataMarkbookInsert);
@@ -228,8 +228,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $URL .= "&return=warning1$params";
                         header("Location: {$URL}");
                     } else {
-                        if ($gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
-                            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_edit.php&gibbonPlannerEntryID=$AI";
+                        if ($gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
+                            $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_edit.php&gibbonPlannerEntryID=$AI";
                             $URL .= "&return=success1$params";
                         } else {
                             $URL .= "&return=success0$params";

@@ -77,13 +77,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $output .= 'success: function(response) {';
         $output .= "tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, response); formReset(); \$(\".".$id.'resourceAddSlider").slideUp();';
         $output .= '}, ';
-        $output .= "url: '".$_SESSION[$guid]['absoluteURL']."/modules/Planner/resources_add_ajaxProcess.php',";
+        $output .= "url: '".$session->get('absoluteURL')."/modules/Planner/resources_add_ajaxProcess.php',";
         $output .= "type: 'POST'";
         $output .= '};';
 
         $output .= "$('#".$id."ajaxForm').submit(function() {";
         $output .= '$(this).ajaxSubmit(options);';
-        $output .= '$(".'.$id."resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
+        $output .= '$(".'.$id."resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
         $output .= 'return false;';
         $output .= '});';
         $output .= '});';
@@ -97,14 +97,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addHiddenValue('id', $id);
-        $form->addHiddenValue($id.'address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue($id.'address', $session->get('address'));
 
         $col = $form->addRow()->addColumn();
-            $col->addWebLink("<img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
+            $col->addWebLink("<img title='".__('Close')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/>")
                 ->onClick("formReset(); \$(\".".$id."resourceAddSlider\").slideUp();")->addClass('right');
             $col->addContent(__('Add & Insert A New Resource'))->wrap('<h3 style="margin-top: 0;">', '</h3>');
             $col->addContent(__('Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you  cannot create HTML resources here (you have to go to the Planner module for that).'))->wrap('<p>', '</p>');
-        
+
         $form->addRow()->addSubheading(__('Resource Contents'));
 
         $types = array('File' => __('File'), 'Link' => __('Link'));
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
-        
+
         $output .= $form->getOutput();
     }
 }

@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
         return;
     }
 
-    
+
     // DETAILS
     $table = DataTable::createDetails('unit');
 
@@ -92,23 +92,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     echo $table->render([$values]);
 
     // FORM
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/units_edit_copyBackProcess.php?'.http_build_query($urlParams));
+    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/units_edit_copyBackProcess.php?'.http_build_query($urlParams));
 
     $form->setTitle(__('Copy Unit Back'));
     $form->setDescription(sprintf(__('This function allows you to take all of the blocks from the selected working unit (%1$s in %2$s) and use them to replace the blocks in the master unit. In this way you can use your refined and improved unit as your master next time you deploy.'), $values['name'], Format::courseClassName($values['course'], $values['class'])));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);
 
     $row = $form->addRow();
         $col = $row->addColumn();
         $col->addContent(__('Are you sure you want to proceed with this request?'))->wrap('<strong>', '</strong>');
         $col->addContent(__('This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'))->wrap('<span style="color: #cc0000"><i>', '</i></span>');
-            
+
     $form->addRow()->addConfirmSubmit();
 
     echo $form->getOutput();
 
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']);
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $urlParams['gibbonCourseID'], $urlParams['gibbonSchoolYearID']));
 }

@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
-echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/css/main.css' />";
+echo "<link rel='stylesheet' type='text/css' href='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/css/main.css' />";
 ?>
 
 <div id="wrap">
 	<div id="header">
 		<div id="header-left">
-			<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" title="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo']; ?>"/></a>
+			<a href='<?php echo $session->get('absoluteURL') ?>'><img height='100px' width='400px' class="logo" alt="Logo" title="Logo" src="<?php echo $session->get('absoluteURL').'/'.$session->get('organisationLogo'); ?>"/></a>
 		</div>
 		<div id="header-right">
 
@@ -51,7 +51,7 @@ echo "<link rel='stylesheet' type='text/css' href='".$_SESSION[$guid]['absoluteU
                 }
                 //Check existence of and access to this resource.
                 else {
-                    
+
                         $data = array('gibbonResourceID' => $gibbonResourceID);
                         $sql = 'SELECT * FROM gibbonResource WHERE gibbonResourceID=:gibbonResourceID';
                         $result = $connection2->prepare($sql);
