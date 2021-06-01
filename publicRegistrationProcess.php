@@ -55,7 +55,7 @@ if ($proceed == false) {
     if ($dob == '') {
         $dob = null;
     } else {
-        $dob = dateConvert($guid, $dob);
+        $dob = Format::dateConvert($dob);
     }
     $email = trim($_POST['email']);
     $emailAlternate = (!empty($_POST['emailAlternate']) ? trim($_POST['emailAlternate']) : '');

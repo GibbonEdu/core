@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             $ttDate = null;
             if (isset($_REQUEST['ttDate'])) {
-                $date = dateConvert($guid, $_REQUEST['ttDate']);
+                $date = Format::dateConvert($_REQUEST['ttDate']);
                 $ttDate = strtotime('last Sunday +1 day', strtotime($date));
             }
 

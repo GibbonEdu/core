@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
@@ -221,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $completeDate = null;
                     $complete = 'N';
                 } else {
-                    $completeDate = dateConvert($guid, $completeDate);
+                    $completeDate = Format::dateConvert($completeDate);
                     $complete = 'Y';
                 }
                 try {

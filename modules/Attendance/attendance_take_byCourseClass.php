@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     echo '<h2>' . __('Choose Class') . "</h2>";
 
     $today = date('Y-m-d');
-    $currentDate = isset($_GET['currentDate']) ? dateConvert($guid, $_GET['currentDate']) : $today;
+    $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : $today;
 
     $form = Form::create('filter', $session->get('absoluteURL') . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));

@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $date = $_GET['date'];
             }
             if (isset($_GET['dateHuman'])) {
-                $date = dateConvert($guid, $_GET['dateHuman']);
+                $date = Format::dateConvert($_GET['dateHuman']);
             }
             if ($date == '') {
                 $date = date('Y-m-d');

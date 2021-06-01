@@ -29,8 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
     $today = date('Y-m-d');
 
-    $dateEnd = (isset($_GET['dateEnd']))? dateConvert($guid, $_GET['dateEnd']) : date('Y-m-d');
-    $dateStart = (isset($_GET['dateStart']))? dateConvert($guid, $_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
+    $dateEnd = (isset($_GET['dateEnd']))? Format::dateConvert($_GET['dateEnd']) : date('Y-m-d');
+    $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -4 days') );
 
     $datediff = strtotime($dateEnd) - strtotime($dateStart);
     $daysBetweenDates = floor($datediff / (60 * 60 * 24)) + 1;

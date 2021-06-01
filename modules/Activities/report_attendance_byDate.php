@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 } else {
     //Proceed!
     $today = date('Y-m-d');
-    $date = (isset($_GET['date']))? dateConvert($guid, $_GET['date']) : date('Y-m-d');
+    $date = (isset($_GET['date']))? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $sort = (isset($_GET['sort']))? $_GET['sort'] : 'surname';
     $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
