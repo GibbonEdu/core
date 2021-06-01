@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     // Build a set of theme data, flagging orphaned themes that do not appear to be in the themes folder.
     // Also checks for available updates by comparing version numbers
-    $themes->transform(function (&$theme) use ($session, &$orphans, &$themeFolders, &$themeGateway) {
+    $themes->transform(function (&$theme) use ($session, &$orphans, &$themeFolders, &$themeGateway, $guid) {
         if (array_search($session->get('absolutePath').'/themes/'.$theme['name'], $themeFolders) === false) {
             $theme['orphaned'] = true;
             $orphans[] = $theme;
