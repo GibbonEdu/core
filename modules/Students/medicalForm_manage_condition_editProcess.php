@@ -59,7 +59,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                 if ($_POST['lastEpisode'] == '') {
                     $lastEpisode = null;
                 } else {
-                    $lastEpisode = dateConvert($guid, $_POST['lastEpisode'] ?? '');
+                    $lastEpisode = !empty($_POST['lastEpisode']) ? Format::dateConvert($_POST['lastEpisode']) : null;
                 }
                 $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'] ?? '';
                 $comment = $_POST['comment'] ?? '';

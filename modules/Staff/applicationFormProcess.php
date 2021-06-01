@@ -72,7 +72,7 @@ if ($proceed == false) {
     $officialName = $_POST['officialName'] ?? '';
     $nameInCharacters = $_POST['nameInCharacters'] ?? '';
     $gender = $_POST['gender'] ?? 'Unspecified';
-    $dob = dateConvert($guid, $_POST['dob'] ?? '');
+    $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
     $languageFirst = $_POST['languageFirst'] ?? '';
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
