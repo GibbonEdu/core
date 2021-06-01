@@ -250,6 +250,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
         }
     }
     //Print sidebar
-    $session->get('sidebarExtra', sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
+    $session->set('sidebarExtra', sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID));
 }
 ?>
