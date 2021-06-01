@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
@@ -504,7 +505,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             // Mark as Paid
             elseif ($action == 'paid') {
                 $paymentType = $_POST['paymentType'] ?? '';
-                $paidDate = dateConvert($guid, $_POST['paidDate'] ?? '');
+                $paidDate = !empty($_POST['paidDate']) ? Format::dateConvert($_POST['paidDate']) : null;
 
                 if (empty($paymentType) || empty($paidDate)) {
                     $URL .= '&return=error1';

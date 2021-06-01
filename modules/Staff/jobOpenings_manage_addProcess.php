@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/jobOpenings_manage_add.php';
@@ -29,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
     //Validate Inputs
     $type = $_POST['type'] ?? '';
     $jobTitle = $_POST['jobTitle'] ?? '';
-    $dateOpen = dateConvert($guid, $_POST['dateOpen'] ?? '');
+    $dateOpen = !empty($_POST['dateOpen']) ? Format::dateConvert($_POST['dateOpen']) : null;
     $active = $_POST['active'] ?? '';
     $description = $_POST['description'] ?? '';
 

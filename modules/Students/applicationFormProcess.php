@@ -123,7 +123,7 @@ if ($proceed == false) {
         }
         $gibbonSchoolYearIDEntry = $_POST['gibbonSchoolYearIDEntry'] ?? '';
         $dayType = $_POST['dayType'] ?? null;
-        $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
+        $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
         $gibbonYearGroupIDEntry = $_POST['gibbonYearGroupIDEntry'] ?? '';
         $referenceEmail = $_POST['referenceEmail'] ?? '';
         $schoolName1 = $_POST['schoolName1'] ?? '';

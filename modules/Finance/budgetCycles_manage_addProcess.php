@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgetCycles_manage_add.php';
@@ -30,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $name = $_POST['name'] ?? '';
     $status = $_POST['status'] ?? '';
     $sequenceNumber = $_POST['sequenceNumber'] ?? '';
-    $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
-    $dateEnd = dateConvert($guid, $_POST['dateEnd'] ?? '');
+    $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
+    $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null;
 
     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $dateStart == '' or $dateEnd == '') {
         $URL .= '&return=error1';

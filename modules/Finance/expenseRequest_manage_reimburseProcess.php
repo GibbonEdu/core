@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -95,7 +97,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $row = $result->fetch();
 
                         //Get relevant
-                        $paymentDate = dateConvert($guid, $_POST['paymentDate'] ?? '');
+                        $paymentDate = !empty($_POST['paymentDate']) ? Format::dateConvert($_POST['paymentDate']) : null;
                         $paymentAmount = $_POST['paymentAmount'] ?? '';
                         $gibbonPersonIDPayment = $_POST['gibbonPersonIDPayment'] ?? '';
                         $paymentMethod = $_POST['paymentMethod'] ?? '';

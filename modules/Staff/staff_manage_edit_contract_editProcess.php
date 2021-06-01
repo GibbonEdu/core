@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
@@ -56,8 +58,8 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 
                 $title = $_POST['title'] ?? '';
                 $status = $_POST['status'] ?? '';
-                $dateStart = dateConvert($guid, $_POST['dateStart'] ?? '');
-                $dateEnd = (!empty($_POST['dateEnd'])) ? dateConvert($guid, $_POST['dateEnd']) : null;
+                $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
+                $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null;
                 $salaryScale = $_POST['salaryScale'] ?? '';
                 $salaryAmount = $_POST['salaryAmount'] ?? '';
                 $salaryPeriod = $_POST['salaryPeriod'] ?? '';

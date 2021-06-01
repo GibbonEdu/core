@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
@@ -52,7 +54,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 header("Location: {$URL}");
             } else {
                 //Validate Inputs
-                $returnExpected = dateConvert($guid, $_POST['returnExpected'] ?? '');
+                $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
 
                 //Write to database
                 try {

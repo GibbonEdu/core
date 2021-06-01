@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
@@ -28,7 +30,7 @@ if ($viewBy != 'date' and $viewBy != 'class') {
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonPlannerEntryID_org = $_POST['gibbonPlannerEntryID_org'] ?? '';
-$date = dateConvert($guid, $_POST['date'] ?? '');
+$date = !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : null;
 $duplicateReturnYear = 'current';
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID_org";
 

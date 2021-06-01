@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -57,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $name = $_POST['name'] ?? '';
             $producer = $_POST['producer'] ?? '';
             $vendor = $_POST['vendor'] ?? '';
-            $purchaseDate = dateConvert($guid, $_POST['purchaseDate'] ?? null);
+            $purchaseDate = !empty($_POST['purchaseDate']) ? Format::dateConvert($_POST['purchaseDate']) : null;
 
             $invoiceNumber = $_POST['invoiceNumber'] ?? '';
             $imageType = $_POST['imageType'] ?? '';
