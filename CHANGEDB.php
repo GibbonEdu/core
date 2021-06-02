@@ -961,4 +961,7 @@ UPDATE gibbonAction SET helpURL = 'teachers/people/behaviour/' WHERE name LIKE '
 UPDATE gibbonAction SET helpURL = 'teachers/people/behaviour/' WHERE name LIKE 'View Behaviour Records%' AND gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE name = 'Behaviour');end
 UPDATE gibbonAction SET helpURL = 'teachers/people/student-profiles/' WHERE name LIKE 'View Student Profile%' AND gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE name = 'Students');end
 ALTER TABLE `gibbonBehaviour` ADD `fields` TEXT NULL AFTER `timestamp`;end
+ALTER TABLE `gibbonIN` ADD `fields` TEXT NULL AFTER `notes`;end
+ALTER TABLE `gibbonINArchive` ADD `fields` TEXT NULL AFTER `archiveTimestamp`;end
+
 ";
