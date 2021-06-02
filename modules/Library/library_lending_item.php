@@ -234,8 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
               });
             echo $table->render($item);
 
-            $session->set('sidebarExtra', '');
-            $_SESSION[$guid]['sidebarExtra'] .= getImage($guid, $row['imageType'], $row['imageLocation']);
+            $session->set('sidebarExtra', getImage($guid, $row['imageType'], $row['imageLocation']));
         }
     }
 }
