@@ -162,5 +162,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
     }
 
     // Print the sidebar
-    $session->get('sidebarExtra', sidebarExtra($guid, $pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit_targets.php'));
+    $session->set('sidebarExtra', sidebarExtra($guid, $pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit_targets.php'));
 }
