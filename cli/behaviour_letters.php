@@ -31,8 +31,8 @@ setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
 if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['i18n']['code']);
-    setlocale(LC_ALL, $session->get('i18n')['i18n']['code']);
+    putenv('LC_ALL='.$session->get('i18n')['code']);
+    setlocale(LC_ALL, $session->get('i18n')['code']);
     bindtextdomain('gibbon', getcwd().'/../i18n');
     textdomain('gibbon');
 }
