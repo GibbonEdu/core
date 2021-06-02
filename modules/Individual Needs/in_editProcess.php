@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
@@ -83,6 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $strategies = $_POST['strategies'] ?? '';
                 $targets = $_POST['targets'] ?? '';
                 $notes = $_POST['notes'] ?? '';
+
+                $customRequireFail = false;
+                $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Individual Needs', [], $customRequireFail);
+
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID);
                     $sql = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
@@ -91,15 +96,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 } catch (PDOException $e) {
                     $partialFail = true;
                 }
-                if ($result->rowCount() > 1) {
+                if ($result->rowCount() > 1 || $customRequireFail) {
                     $partialFail = true;
                 } else {
                     try {
-                        $data = array('strategies' => $strategies, 'targets' => $targets, 'notes' => $notes, 'gibbonPersonID' => $gibbonPersonID);
+                        $data = array('strategies' => $strategies, 'targets' => $targets, 'notes' => $notes, 'fields' => $fields, 'gibbonPersonID' => $gibbonPersonID);
                         if ($result->rowCount() == 1) {
-                            $sql = 'UPDATE gibbonIN SET strategies=:strategies, targets=:targets, notes=:notes WHERE gibbonPersonID=:gibbonPersonID';
+                            $sql = 'UPDATE gibbonIN SET strategies=:strategies, targets=:targets, notes=:notes, fields=:fields WHERE gibbonPersonID=:gibbonPersonID';
                         } else {
-                            $sql = 'INSERT INTO gibbonIN SET gibbonPersonID=:gibbonPersonID, strategies=:strategies, targets=:targets, notes=:notes';
+                            $sql = 'INSERT INTO gibbonIN SET gibbonPersonID=:gibbonPersonID, strategies=:strategies, targets=:targets, notes=:notes, fields=:fields';
                         }
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
