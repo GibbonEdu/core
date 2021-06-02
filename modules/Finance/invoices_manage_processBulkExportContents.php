@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			$r++;
 		}
 
-		$session->get('financeInvoiceExportIDs', null);
+		$session->set('financeInvoiceExportIDs', null);
 		$excel->exportWorksheet();
 	}
 }
