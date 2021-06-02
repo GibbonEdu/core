@@ -45,6 +45,7 @@ class CustomFieldHandler
                 'Staff' => __('Staff'),
             ],
             __('Students') => [
+                'Behaviour' => __('Behaviour'),
                 'First Aid'    => __('First Aid'),
                 'Medical Form' => __('Medical Form'),
             ],
@@ -96,6 +97,10 @@ class CustomFieldHandler
                 'Basic Information' => __('Basic Information'),
                 'First Aid'         => __('First Aid'),
                 'Biography'         => __('Biography'),
+            ],
+            'Behaviour' => [
+                'Step 1' => __('Step 1'),
+                'Details' => __('Details'),
             ],
             'First Aid' => [
                 'Basic Information' => __('Basic Information'),

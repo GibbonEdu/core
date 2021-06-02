@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -88,6 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
+                $form->addRow()->addClass('hidden')->addHeading(__('Step 1'));
 
                 //Student
                 $row = $form->addRow();
@@ -134,6 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     	$row->addLabel('level', __('Level'));
                     	$row->addSelect('level')->fromArray($optionsLevels)->selected($values['level'])->placeholder();
                 }
+
+                $form->addRow()->addHeading(__('Details'));
 
                 //Incident
                 $row = $form->addRow();
@@ -195,6 +199,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $row->addSelect('gibbonPlannerEntryID')->fromArray($lessons)->placeholder()->selected($values['gibbonPlannerEntryID']);
                     }
 
+                // CUSTOM FIELDS
+                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', [], $values['fields']);
+                
                 $row = $form->addRow();
                     $row->addFooter();
                     $row->addSubmit();
