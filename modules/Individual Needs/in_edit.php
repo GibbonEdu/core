@@ -18,11 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
-use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -206,9 +208,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // DISPLAY AND EDIT IEP
-            $form->addRow()->addSubheading(__('Individual Education Plan'))->setClass('mt-4 mb-2');
+           
 
-            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+            $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
+
+            $table->addRow()->addHeading(__('Individual Education Plan'))->setClass('mt-4 mb-2');
 
             if (!empty($gibbonINArchiveID)) {
                 // ARCHIVED IEP
@@ -223,6 +227,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $col = $table->addRow()->addColumn();
                     $col->addContent(__('Notes & Review'))->wrap('<strong style="font-size: 135%;">', '</strong>');
                     $col->addContent($archivedIEP['notes'])->wrap('<p>', '</p>');
+
+                // CUSTOM FIELDS
+                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table, 'readonly' => true], $archivedIEP['fields']);
             } else {
                 if (empty($IEP)) { // New record, get templates if they exist
                     $IEP['targets'] = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
@@ -254,15 +261,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     } else {
                         $col->addContent($IEP['notes'])->wrap('<p>', '</p>');
                     }
+
+                // CUSTOM FIELDS
+                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table], $IEP['fields']);
             }
 
             if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
-                $table->addRow()->addSubmit();
+                $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')->addRow()->addSubmit();
             }
 
             echo $form->getOutput();
         }
     }
     //Set sidebar
-    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $student['image_240'] ?? '', 240);
+    $session->set('sidebarExtra', getUserPhoto($guid, $student['image_240'] ?? '', 240));
 }

@@ -46,6 +46,7 @@ class CustomFieldHandler
             ],
             __('Students') => [
                 'Behaviour' => __('Behaviour'),
+                'Individual Needs' => __('Individual Needs'),
                 'First Aid'    => __('First Aid'),
                 'Medical Form' => __('Medical Form'),
             ],
@@ -101,6 +102,9 @@ class CustomFieldHandler
             'Behaviour' => [
                 'Step 1' => __('Step 1'),
                 'Details' => __('Details'),
+            ],
+            'Individual Needs' => [
+                'Individual Education Plan' => __('Individual Education Plan'),
             ],
             'First Aid' => [
                 'Basic Information' => __('Basic Information'),
@@ -181,13 +185,19 @@ class CustomFieldHandler
         $existingFields = !empty($fields) && is_string($fields)? json_decode($fields, true) : (is_array($fields) ? $fields : []);
         $customFieldsGrouped = $this->customFieldGateway->selectCustomFields($context, $params)->fetchGrouped();
         $prefix = $params['prefix'] ?? 'custom';
+        $table = $context == 'Individual Needs' ? $params['table'] : $form;
 
         if (empty($customFieldsGrouped)) {
             return;
         }
 
         if (!empty($params['heading'])) {
-            $form->addRow()->addClass($params['class'] ?? '')->addHeading(__($params['heading']), $params['headingLevel'] ?? 'h3');
+            $table = $context == 'Individual Needs' 
+                ? $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')
+                : $form;
+
+            $row = $table->addRow()->addClass($params['class'] ?? '');
+            $row->addHeading(__($params['heading']), $params['headingLevel'] ?? 'h3');
         }
 
         foreach ($customFieldsGrouped as $heading => $customFields) {
@@ -205,7 +215,12 @@ class CustomFieldHandler
             
             // Handle creating a new heading if the form doesn't already have one
             if (!empty($heading) && !$form->hasHeading($heading)) {
-                $form->addRow()->addClass($params['class'] ?? '')->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
+                $table = $context == 'Individual Needs' 
+                    ? $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')
+                    : $form;
+                
+                $row = $table->addRow()->addClass($params['class'] ?? '');
+                $row->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
             }
 
             foreach ($customFields as $field) {
@@ -217,12 +232,14 @@ class CustomFieldHandler
                 }
 
                 $name = $prefix.$field['gibbonCustomFieldID'];
-                $row = $field['type'] == 'editor' 
-                    ? $form->addRow()->addClass($params['class'] ?? '')->setHeading($heading)->addColumn() 
-                    : $form->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
-                    $row->addLabel($name, $field['name'])->description($field['description']);
-                    $row->addCustomField($name, $field)->setValue($fieldValue);
+                $row = $table->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
 
+                if ($field['type'] == 'editor') {
+                    $row = $row->addColumn();
+                }
+
+                $row->addLabel($name, $field['name'])->description($field['description']);
+                $row->addCustomField($name, $field)->setValue($fieldValue)->readonly($params['readonly'] ?? false);
             }
         }
     }

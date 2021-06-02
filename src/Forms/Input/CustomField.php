@@ -202,6 +202,15 @@ class CustomField extends Input
     }
 
     /**
+     * Set a custom field as readonly.
+     * @return  string
+     */
+    public function readonly($value = true)
+    {
+        return $this->customField->setReadonly($value)->setDisabled($value);
+    }
+
+    /**
      * Gets the internal Input object
      * @return  object Input
      */
