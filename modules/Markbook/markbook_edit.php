@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     $page = 1;
                 }
 
-                
+
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
                     $result = $connection2->prepare($sql);
@@ -265,5 +265,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
     }
 
     // Print the sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $gibbon->session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit.php');
+    $session->set('sidebarExtra', sidebarExtra($guid, $pdo, $gibbon->session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit.php'));
 }

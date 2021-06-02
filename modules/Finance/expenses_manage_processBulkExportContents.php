@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Status'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Cost')." (".$_SESSION[$guid]['currency'].')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Cost')." (".$session->get('currency').')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __('Staff'));
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
  			//Column A
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $count, __('There are no records to display.'));
         }
-	    $_SESSION[$guid]['financeExpenseExportIDs'] = null;
+	    $session->set('financeExpenseExportIDs', null);
 		$excel->exportWorksheet();
     }
 }

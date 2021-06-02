@@ -21,7 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/personalDocumentSettings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/personalDocumentSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings.php') == false) {
     $URL .= '&return=error0';

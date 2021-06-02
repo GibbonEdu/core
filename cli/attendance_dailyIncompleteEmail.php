@@ -28,10 +28,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
+if (isset($session->get('i18n')['code'])) {
+    if ($session->get('i18n')['code'] != null) {
+        putenv('LC_ALL='.$session->get('i18n')['i18n']['code']);
+        setlocale(LC_ALL, $session->get('i18n')['i18n']['code']);
         bindtextdomain('gibbon', getcwd().'/../i18n');
         textdomain('gibbon');
     }
@@ -62,7 +62,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         if ($enabledByFormGroup == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
                 // Looks for form groups with attendance='Y', also grabs primary tutor name
                 $sql = "SELECT gibbonFormGroupID, gibbonFormGroup.name, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonStudentEnrolment WHERE gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) AS studentCount
@@ -192,7 +192,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $event->setActionLink('/index.php?q=/modules/Attendance/report_formGroupsNotRegistered_byDate.php');
 
         // Add admin, then push the event to the notification sender
-        $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+        $event->addRecipient($session->get('organisationAdministrator'));
         $event->pushNotifications($notificationGateway, $notificationSender);
 
         // Send all notifications

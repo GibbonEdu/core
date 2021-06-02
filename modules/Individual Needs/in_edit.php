@@ -264,5 +264,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         }
     }
     //Set sidebar
-    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $student['image_240'] ?? '', 240);
+    $session->set('sidebarExtra', getUserPhoto($guid, $student['image_240'] ?? '', 240));
 }

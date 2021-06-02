@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 $sidebarExtra .= $form->getOutput();
                 $sidebarExtra .= '</div>';
 
-                $_SESSION[$guid]['sidebarExtra'] .= $sidebarExtra;
+                $session->set('sidebarExtra', $session->get('sidebarExtra'), $sidebarExtra);
             }
         }
     }

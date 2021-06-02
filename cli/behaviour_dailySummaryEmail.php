@@ -27,10 +27,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
+if (isset($session->get('i18n')['code'])) {
+    if ($session->get('i18n')['code'] != null) {
+        putenv('LC_ALL='.$session->get('i18n')['code']);
+        setlocale(LC_ALL, $session->get('i18n')['code']);
         bindtextdomain('gibbon', getcwd().'/../i18n');
         textdomain('gibbon');
     }
@@ -48,7 +48,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $partialFail = false;
 
         try {
-            $data = array('date' => $currentDate, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('date' => $currentDate, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
             $sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonStudentEnrolment.gibbonYearGroupID, gibbonBehaviour.gibbonBehaviourID, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, staff.surname as staffSurname, staff.preferredName as staffPreferredName, gibbonBehaviour.descriptor, gibbonBehaviour.level, gibbonBehaviour.comment, gibbonBehaviour.followup, gibbonBehaviour.timestamp
                     FROM gibbonBehaviour
@@ -81,7 +81,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 $report .= '<br/>';
 
                 $report .= sprintf(__('%1$s (%2$s) received a report for %3$s from %4$s'), '<b>'.$studentName.'</b>', $row['formGroup'], $row['descriptor'], $staffName);
-                $report .= ' &raquo; <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&gibbonFormGroupID=&gibbonYearGroupID=&type=">'.__('View').'</a>';
+                $report .= ' &raquo; <a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID'].'&gibbonPersonID='.$row['gibbonPersonID'].'&gibbonFormGroupID=&gibbonYearGroupID=&type=">'.__('View').'</a>';
 
                 $report .= '<br/><br/>';
             }

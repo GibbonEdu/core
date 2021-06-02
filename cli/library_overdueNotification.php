@@ -28,10 +28,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
+if (isset($session->get('i18n')['code'])) {
+    if ($session->get('i18n')['code'] != null) {
+        putenv('LC_ALL='.$session->get('i18n')['code']);
+        setlocale(LC_ALL, $session->get('i18n')['code']);
         bindtextdomain('gibbon', getcwd().'/../i18n');
         textdomain('gibbon');
     }
@@ -45,7 +45,7 @@ else {
     //SCAN THROUGH ALL OVERDUE LOANS
     $today = date('Y-m-d');
 
-    
+
         $data = array('today' => $today);
         $sql = "SELECT gibbonLibraryItem.*, surname, preferredName, email FROM gibbonLibraryItem JOIN gibbonPerson ON (gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID) WHERE gibbonLibraryItem.status='On Loan' AND borrowable='Y' AND returnExpected<:today AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
         $result = $connection2->prepare($sql);
