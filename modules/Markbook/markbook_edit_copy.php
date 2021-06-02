@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                 //Get teacher list
                 $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
                 $teaching = isset($teacherList[$session->get('gibbonPersonID')]);
-                $isCoordinator = isDepartmentCoordinator($pdo, $_SESSION[$guid]['gibbonPersonID']);
+                $isCoordinator = isDepartmentCoordinator($pdo, $session->get('gibbonPersonID'));
 
                 $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
 
@@ -155,5 +155,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
     }
 
     // Print the sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit.php');
+    $session->set('sidebarExtra', sidebarExtra($guid, $pdo, $session->get('gibbonPersonID'), $gibbonCourseClassID, 'markbook_edit.php'));
 }

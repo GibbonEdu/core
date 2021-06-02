@@ -209,9 +209,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 <script type='text/javascript'>
 	$(document).ready(function(){
 		$('#gibbonLibraryTypeID').change(function(){
-			var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
+			var path = '<?php echo $session->get('absoluteURL').'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
 
-            $('#detailsRow .general').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
+            $('#detailsRow .general').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $session->get('absoluteURL'); ?>/themes/<?php echo $session->get('gibbonThemeName'); ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
 
 			$('#detailsRow .general').load(path, { 'gibbonLibraryTypeID': $(this).val() });
 		});

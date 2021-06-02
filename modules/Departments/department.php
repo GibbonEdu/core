@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Get role within learning area
             $role = null;
-            if (isset($_SESSION[$guid]['username'])) {
+            if ($session->has('username')) {
                 $role = getRole($session->get('gibbonPersonID'), $gibbonDepartmentID, $connection2);
             }
 
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 $sidebarExtra .= '</div>';
             }
 
-            $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
+            $session->set('sidebarExtra', $sidebarExtra);
         }
     }
 }

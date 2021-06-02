@@ -28,13 +28,11 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', getcwd().'/../i18n');
-        textdomain('gibbon');
-    }
+if (!empty($session->get('i18n')['code'])) {
+    putenv('LC_ALL='.$session->get('i18n')['code']);
+    setlocale(LC_ALL, $session->get('i18n')['code']);
+    bindtextdomain('gibbon', getcwd().'/../i18n');
+    textdomain('gibbon');
 }
 
 //Check for CLI, so this cannot be run through browser
@@ -61,7 +59,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         //Produce array of attendance data for Classes ------------------------------------------------------------------------------------------------------
         if ($enabledByClass == 'Y') {
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $currentDate, 'time' => date("H:i:s"));
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => $currentDate, 'time' => date("H:i:s"));
 
                 // Looks for only courses that are scheduled on the current day and have attendance='Y', also grabs tutor name
                 $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.name as class, gibbonCourse.name as course, gibbonCourse.nameShort as courseShort,  gibbonCourseClassPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson AS student ON (gibbonCourseClassPerson.gibbonPersonID=student.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND student.status='Full' AND (student.dateStart IS NULL OR student.dateStart<=:date) AND (student.dateEnd IS NULL OR student.dateEnd>=:date)) AS studentCount
@@ -207,7 +205,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         $event->setActionLink('/index.php?q=/modules/Attendance/report_courseClassesNotRegistered_byDate.php');
 
         // Add admin, then push the event to the notification sender
-        $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+        $event->addRecipient($session->get('organisationAdministrator'));
         $event->pushNotifications($notificationGateway, $notificationSender);
 
         // Send all notifications

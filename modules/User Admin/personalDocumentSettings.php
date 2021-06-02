@@ -76,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     echo $table->render($absenceTypes);
 
     // FORM
-    $form = Form::create('personalDocumentSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/personalDocumentSettingsProcess.php');
+    $form = Form::create('personalDocumentSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/personalDocumentSettingsProcess.php');
     $form->setTitle(__('Settings'));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'residencyStatus', true);
     $row = $form->addRow();

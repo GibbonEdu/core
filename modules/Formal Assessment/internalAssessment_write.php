@@ -623,6 +623,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
 
         //Print sidebar
-        $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $gibbonCourseClassID, 'write');
+        $session->set('sidebarExtra', sidebarExtra($guid, $connection2, $gibbonCourseClassID, 'write'));
     }
 }

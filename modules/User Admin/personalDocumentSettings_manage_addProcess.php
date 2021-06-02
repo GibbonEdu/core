@@ -21,7 +21,7 @@ use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
 require_once '../../gibbon.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/personalDocumentSettings_manage_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/personalDocumentSettings_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumentSettings_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     $data['activePersonStaff'] = in_array('activePersonStaff', $roleCategories);
     $data['activePersonParent'] = in_array('activePersonParent', $roleCategories);
     $data['activePersonOther'] = in_array('activePersonOther', $roleCategories);
-    
+
     if (empty($data['name']) || empty($data['document'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

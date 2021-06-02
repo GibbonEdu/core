@@ -30,13 +30,11 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', getcwd().'/../i18n');
-        textdomain('gibbon');
-    }
+if (!empty($session->get('i18n')['code'])) {
+    putenv('LC_ALL='.$session->get('i18n')['code']);
+    setlocale(LC_ALL, $session->get('i18n')['code']);
+    bindtextdomain('gibbon', getcwd().'/../i18n');
+    textdomain('gibbon');
 }
 
 //Check for CLI, so this cannot be run through browser
@@ -67,8 +65,8 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         if ($behaviourLettersLetter1Count != '' and $behaviourLettersLetter1Text != '' and $behaviourLettersLetter2Count != '' and $behaviourLettersLetter2Text != '' and $behaviourLettersLetter3Count != '' and $behaviourLettersLetter3Text != '' and is_numeric($behaviourLettersLetter1Count) and is_numeric($behaviourLettersLetter2Count) and is_numeric($behaviourLettersLetter3Count)) {
             //SCAN THROUGH ALL STUDENTS
-            
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS formGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -79,16 +77,16 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     $formGroup = $row['formGroup'];
 
                     //Check count of negative behaviour records in the current year
-                    
-                        $dataBehaviour = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                        $dataBehaviour = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                         $sqlBehaviour = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative'";
                         $resultBehaviour = $connection2->prepare($sqlBehaviour);
                         $resultBehaviour->execute($dataBehaviour);
                     $behaviourCount = $resultBehaviour->rowCount();
                     if ($behaviourCount > 0) { //Only worry about students with more than zero negative records in the current year
                         //Get most recent letter entry
-                        
-                            $dataLetters = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                            $dataLetters = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sqlLetters = 'SELECT * FROM gibbonBehaviourLetter WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC LIMIT 0, 1';
                             $resultLetters = $connection2->prepare($sqlLetters);
                             $resultLetters->execute($dataLetters);
@@ -179,8 +177,8 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                             }
                             //Prepare behaviour record for replacement
                             $behaviourRecord = '<ul>';
-                            
-                                $dataBehaviourRecord = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                                $dataBehaviourRecord = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                                 $sqlBehaviourRecord = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' ORDER BY timestamp DESC";
                                 $resultBehaviourRecord = $connection2->prepare($sqlBehaviourRecord);
                                 $resultBehaviourRecord->execute($dataBehaviourRecord);
@@ -202,7 +200,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                             $body = str_replace('[formGroup]', $formGroup, $body);
                             $body = str_replace('[behaviourCount]', $behaviourCount, $body);
                             $body = str_replace('[behaviourRecord]', $behaviourRecord, $body);
-                            $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>', $body);
+                            $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $session->get('systemName'), $session->get('organisationName')).'</i>', $body);
                         }
 
                         if ($issueExistingLetter) { //Issue existing letter
@@ -237,7 +235,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                             if ($newLetterRequiredStatus == 'Warning') { //It's a warning
                                 //Create new record
                                 try {
-                                    $dataLetter = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
+                                    $dataLetter = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
                                     $sqlLetter = "INSERT INTO gibbonBehaviourLetter SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, letterLevel=:letterLevel, status='Warning', recordCountAtCreation=:recordCountAtCreation, body=:body";
                                     $resultLetter = $connection2->prepare($sqlLetter);
                                     $resultLetter->execute($dataLetter);
@@ -262,7 +260,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                                     //Notify teachers
                                     $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
-                                    
+
                                         $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
                                         $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
                                         $resultTeachers = $connection2->prepare($sqlTeachers);
@@ -274,7 +272,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                             } else { //It's being issued
                                 //Create new record
                                 try {
-                                    $dataLetter = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
+                                    $dataLetter = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
                                     $sqlLetter = "INSERT INTO gibbonBehaviourLetter SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, letterLevel=:letterLevel, status='Issued', recordCountAtCreation=:recordCountAtCreation, body=:body";
                                     $resultLetter = $connection2->prepare($sqlLetter);
                                     $resultLetter->execute($dataLetter);
@@ -307,7 +305,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                         if ($email) {
                             $recipientList = '';
                             //Send emails
-                            
+
                                 $dataMember = array('gibbonPersonID' => $row['gibbonPersonID']);
                                 $sqlMember = "SELECT DISTINCT email, preferredName, surname FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND contactEmail='Y' ORDER BY contactPriority, surname, preferredName";
                                 $resultMember = $connection2->prepare($sqlMember);
@@ -321,12 +319,12 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
                                     // Send message
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
-                                    if ($_SESSION[$guid]['organisationEmail'] != '') {
-                                        $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
+                                    if ($session->get('organisationEmail') != '') {
+                                        $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
                                     } else {
-                                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                        $mail->SetFrom($session->get('organisationAdministratorEmail'), $session->get('organisationAdministratorName'));
                                     }
-                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['formGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
+                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['formGroup'].')', $session->get('systemName'), $session->get('organisationName'));
                                     $mail->Subject = $subject;
                                     $mail->renderBody('mail/message.twig.html', [
                                         'title'  => $subject,
@@ -346,7 +344,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                 $recipientList = substr($recipientList, 0, -2);
 
                                 //Record email recipients in letter record
-                                
+
                                     $dataUpdate = array('recipientList' => $recipientList, 'gibbonBehaviourLetterID' => $gibbonBehaviourLetterID);
                                     $sqlUpdate = 'UPDATE gibbonBehaviourLetter set recipientList=:recipientList WHERE gibbonBehaviourLetterID=:gibbonBehaviourLetterID';
                                     $resultUpdate = $connection2->prepare($sqlUpdate);
@@ -376,7 +374,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_letters.php');
 
     // Add admin, then push the event to the notification sender
-    $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+    $event->addRecipient($session->get('organisationAdministrator'));
     $event->pushNotifications($notificationGateway, $notificationSender);
 
     // Send all notifications

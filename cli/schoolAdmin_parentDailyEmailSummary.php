@@ -38,12 +38,12 @@ if (!isCommandLineInterface()) {
     return;
 }
 
-if (isSchoolOpen($guid, date('Y-m-d'), $connection2, true) == false) { 
+if (isSchoolOpen($guid, date('Y-m-d'), $connection2, true) == false) {
     echo __('School is not open, so no emails will be sent.');
     return;
 }
 
-if ($_SESSION[$guid]['organisationEmail'] == '') {
+if ($session->get('organisationEmail') == '') {
     echo __('This script cannot be run, as no school email address has been set.');
     return;
 }
@@ -59,7 +59,7 @@ set_time_limit(1800);
 // Prep for email sending later
 $mail = $container->get(Mailer::class);
 $mail->SMTPKeepAlive = true;
-                
+
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');

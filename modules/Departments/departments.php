@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
         echo $table->render(new DataSet([]));
     }
 
-    if (isset($_SESSION[$guid]['username'])) {
+    if ($session->has('username')) {
         //Print sidebar
         $sidebarExtra = '';
 
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
             $sidebarExtra .= '</ul>';
             $sidebarExtra .= '</div>';
 
-            $_SESSION[$guid]['sidebarExtra'] = $sidebarExtra;
+            $session->set('sidebarExtra', $sidebarExtra);
         }
     }
 }
