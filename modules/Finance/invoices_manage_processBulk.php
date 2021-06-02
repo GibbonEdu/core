@@ -498,7 +498,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
             }
             //Export
             elseif ($action == 'export') {
-                $session->get('financeInvoiceExportIDs', $gibbonFinanceInvoiceIDs);
+                $session->set('financeInvoiceExportIDs', $gibbonFinanceInvoiceIDs);
 
 				include ('./invoices_manage_processBulkExportContents.php');
             }
