@@ -22,7 +22,7 @@ v22.0.00
         New core theme for Gibbon's 2021 look and feel
         Ability to manage and customize personal documents
         Improved custom fields system
-        Added custom fields to Medical Forms, Staff records, Courses and Classes
+        Added custom fields to Behaviour, Medical Forms, Staff records, Courses and Classes
 
     Significant Changes
         System Admin: improved support for custom themes

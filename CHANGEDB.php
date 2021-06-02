@@ -960,4 +960,5 @@ UPDATE gibbonAction SET helpURL = 'teachers/other/messenger/#getting-started' WH
 UPDATE gibbonAction SET helpURL = 'teachers/people/behaviour/' WHERE name LIKE 'Manage Behaviour Records%' AND gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE name = 'Behaviour');end
 UPDATE gibbonAction SET helpURL = 'teachers/people/behaviour/' WHERE name LIKE 'View Behaviour Records%' AND gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE name = 'Behaviour');end
 UPDATE gibbonAction SET helpURL = 'teachers/people/student-profiles/' WHERE name LIKE 'View Student Profile%' AND gibbonModuleID = (SELECT gibbonModuleID FROM gibbonModule WHERE name = 'Students');end
+ALTER TABLE `gibbonBehaviour` ADD `fields` TEXT NULL AFTER `timestamp`;end
 ";
