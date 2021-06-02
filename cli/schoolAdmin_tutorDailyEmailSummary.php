@@ -46,7 +46,7 @@ if (isSchoolOpen($guid, date('Y-m-d'), $connection2, true) == false) {
     return;
 }
 
-if ($_SESSION[$guid]['organisationEmail'] == '') {
+if ($session->get('organisationEmail') == '') {
     echo __('This script cannot be run, as no school email address has been set.');
     return;
 }
@@ -194,7 +194,7 @@ $event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>
 $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');
 
 // Notify admin
-$event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+$event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
 $event->sendNotifications($pdo, $gibbon->session);

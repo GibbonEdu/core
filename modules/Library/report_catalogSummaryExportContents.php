@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 	$result = $pdo->executeQuery($data, $sql, '_');
 
     //Cache TypeFields
-    
+
         $dataTypeFields = array() ;
         $sqlTypeFields = "SELECT gibbonLibraryType.* FROM gibbonLibraryType";
         $resultTypeFields = $connection2->prepare($sqlTypeFields);
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		//Column E
 		$x = '';
 		if ($row['ownershipType'] == 'School') {
-            $x = $_SESSION[$guid]['organisationNameShort'];
+            $x = $session->get('organisationNameShort');
         } elseif ($row['ownershipType'] == 'Individual') {
             $x = 'Individual';
         }

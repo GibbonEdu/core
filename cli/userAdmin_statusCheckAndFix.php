@@ -26,13 +26,11 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code'])) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
-        setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
-        bindtextdomain('gibbon', getcwd().'/../i18n');
-        textdomain('gibbon');
-    }
+if (!empty($session->get('i18n')['code'])) {
+    putenv('LC_ALL='.$session->get('i18n')['code']);
+    setlocale(LC_ALL, $session->get('i18n')['code']);
+    bindtextdomain('gibbon', getcwd().'/../i18n');
+    textdomain('gibbon');
 }
 
 //Check for CLI, so this cannot be run through browser
@@ -41,8 +39,8 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $count = 0;
 
     //Scan through every user to correct own status
-    
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = 'SELECT gibbonPersonID, status, dateEnd, dateStart, gibbonRoleIDAll FROM gibbonPerson ORDER BY gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -50,7 +48,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     while ($row = $result->fetch()) {
         //Check for status=='Expected' when met or exceeded start date and set to 'Full'
         if ($row['dateStart'] != '' and date('Y-m-d') >= $row['dateStart'] and $row['status'] == 'Expected') {
-            
+
                 $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlUpdate = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                 $resultUpdate = $connection2->prepare($sqlUpdate);
@@ -60,7 +58,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         //Check for status=='Full' when end date exceeded, and set to 'Left'
         if ($row['dateEnd'] != '' and date('Y-m-d') > $row['dateEnd'] and $row['status'] == 'Full') {
-            
+
                 $dataUpdate = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlUpdate = "UPDATE gibbonPerson SET status='Left' WHERE gibbonPersonID=:gibbonPersonID";
                 $resultUpdate = $connection2->prepare($sqlUpdate);
@@ -70,7 +68,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     }
 
     // Look for parents who are set to Full and counts the active children (also catches parents with no children)
-    
+
         $data = array();
         $sql = "SELECT adult.gibbonPersonID,
                 COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
@@ -88,10 +86,10 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
         if ($row['activeChildren'] > 0) continue;
 
         // Mark parents as Left only if they don't have other non-parent roles
-        
+
             $data = array('gibbonPersonID' => $row['gibbonPersonID']);
-            $sql = "UPDATE gibbonPerson SET gibbonPerson.status='Left' 
-                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID 
+            $sql = "UPDATE gibbonPerson SET gibbonPerson.status='Left'
+                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                     AND (SELECT COUNT(*) FROM gibbonRole WHERE FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND category<>'Parent') = 0";
             $resultUpdate = $connection2->prepare($sql);
             $resultUpdate->execute($data);
@@ -107,7 +105,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php');
 
     //Notify admin
-    $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+    $event->addRecipient($session->get('organisationAdministrator'));
 
     // Send all notifications
     $sendReport = $event->sendNotifications($pdo, $gibbon->session);

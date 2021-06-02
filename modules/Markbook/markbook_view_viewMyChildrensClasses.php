@@ -499,19 +499,19 @@ use Gibbon\Services\Format;
                                 $resultEntry2 = $connection2->prepare($sqlEntry2);
                                 $resultEntry2->execute($dataEntry2);
                             if ($resultEntry2->rowCount() > 0) {
-                                $_SESSION[$guid]['sidebarExtra'] = "<h2 class='sidebar'>";
-                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('Recent Marks');
-                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
+                                $session->set('sidebarExtra', "<h2 class='sidebar'>");
+                                $session->set('sidebarExtra', $session->get('sidebarExtra').__('Recent Marks'));
+                                $session->set('sidebarExtra', $session->get('sidebarExtra').'</h2>');
 
-                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ol>';
+                                $session-set('sidebarExtra', $session->get('sidebarExtra').'<ol>');
                                 $count = 0;
 
                                 while ($rowEntry2 = $resultEntry2->fetch() and $count < 5) {
-                                    $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<li><a href='#".$rowEntry2['gibbonMarkbookEntryID']."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
+                                    $session->set('sidebarExtra', $session->get('sidebarExtra')."<li><a href='#".$rowEntry2['gibbonMarkbookEntryID']."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>');
                                     ++$count;
                                 }
 
-                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</ol>';
+                                $session->set('sidebarExtra', $session->get('sidebarExtra').'</ol>');
                             }
                         }
                     }

@@ -28,7 +28,7 @@ require getcwd().'/../gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { 
+if (!isCommandLineInterface()) {
     echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     setCurrentSchoolYear($guid, $connection2);
@@ -36,18 +36,18 @@ if (!isCommandLineInterface()) {
     require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
     require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
-    
+
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
-    $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
-    
+    $dateFormat = $session->get('i18n')['dateFormat'];
+
     $dateEnd = new DateTime();
     $dateStart = new DateTime();
     $dateStart->modify("$firstDayOfTheWeek this week");
 
     $data = array(
-        'dateStart' => $dateStart->format('Y-m-d'), 
-        'dateEnd' => $dateEnd->format('Y-m-d'), 
+        'dateStart' => $dateStart->format('Y-m-d'),
+        'dateEnd' => $dateEnd->format('Y-m-d'),
         'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID')
     );
     $sql = "SELECT gibbonFormGroup.nameShort as formGroupName, gibbonYearGroup.gibbonYearGroupID, gibbonAttendanceLogPerson.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonCourseClass.gibbonCourseClassID
@@ -88,7 +88,7 @@ if (!isCommandLineInterface()) {
                 $carry[$id]['preferredName'] = $item['preferredName'];
                 $carry[$id]['surname'] = $item['surname'];
                 $carry[$id]['days'][$item['date']][] = array_intersect_key($item, $fields);
-                
+
                 return $carry;
             }, array());
 
@@ -109,7 +109,7 @@ if (!isCommandLineInterface()) {
                     $filtered = array_filter($filtered, function($log) use (&$attendance)  {
                         return $attendance->isTypeAbsent($log['type']) || $attendance->isTypeLate($log['type']);
                     });
-                    
+
                     return $filtered;
                 }, $item['days']);
 
@@ -132,7 +132,7 @@ if (!isCommandLineInterface()) {
 
             foreach ($logsByStudent as $gibbonPersonID => $student) {
                 $report .= '<li>';
-                $report .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$gibbonPersonID.'" target="_blank">';
+                $report .= '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Attendance/report_studentHistory.php&gibbonPersonID='.$gibbonPersonID.'" target="_blank">';
                 $report .= Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true);
                 $report .= '</a>';
 
@@ -155,7 +155,7 @@ if (!isCommandLineInterface()) {
             $reportByYearGroup[$gibbonYearGroupID][$formGroupName] = $report;
         }
     }
-    
+
     if (!empty($reportByYearGroup)) {
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
