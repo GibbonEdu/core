@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -133,6 +134,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 	$row->addSelect('level')->fromArray($optionsLevels)->placeholder();
             }
 
+            $form->addRow()->addHeading(__('Details'));
+
 			//Incident
             $row = $form->addRow();
                 $column = $row->addColumn();
@@ -144,6 +147,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             	$column = $row->addColumn();
             	$column->addLabel('followup', __('Follow Up'));
             	$column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
 
             //Copy to Notes
             $row = $form->addRow();
