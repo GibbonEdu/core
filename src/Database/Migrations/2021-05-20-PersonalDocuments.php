@@ -46,11 +46,13 @@ class PersonalDocuments extends Migration
 
             // Citizenship 1
             $data = [
-                'country'        => $user['citizenship1'],
-                'documentNumber' => $user['citizenship1Passport'],
-                'dateExpiry'     => $user['citizenship1PassportExpiry'],
-                'filePath'       => $user['citizenship1PassportScan'],
+                'country'        => !empty($user['citizenship1']) ? $user['citizenship1'] : null,
+                'documentNumber' => !empty($user['citizenship1Passport']) ? $user['citizenship1Passport'] : null,
+                'dateExpiry'     => !empty($user['citizenship1PassportExpiry']) ? $user['citizenship1PassportExpiry'] : null,
+                'filePath'       => !empty($user['citizenship1PassportScan']) ? $user['citizenship1PassportScan'] : null,
             ];
+
+            if ($data['dateExpiry'] == '0000-00-00') $data['dateExpiry'] = null;
 
             if (count(array_filter($data)) > 0 && $data['filePath'] != 'Deleted File') {
                 $partialFail &= !$this->personalDocumentGateway->insert($data + [
@@ -63,10 +65,12 @@ class PersonalDocuments extends Migration
 
             // Citizenship 2
             $data = [
-                'country'        => $user['citizenship2'],
-                'documentNumber' => $user['citizenship2Passport'],
-                'dateExpiry'     => $user['citizenship2PassportExpiry'],
+                'country'        => !empty($user['citizenship2']) ? $user['citizenship2'] : null,
+                'documentNumber' => !empty($user['citizenship2Passport']) ? $user['citizenship2Passport'] : null,
+                'dateExpiry'     => !empty($user['citizenship2PassportExpiry']) ? $user['citizenship2PassportExpiry'] : null,
             ];
+
+            if ($data['dateExpiry'] == '0000-00-00') $data['dateExpiry'] = null;
 
             if (count(array_filter($data)) > 0) {
                 $partialFail &= !$this->personalDocumentGateway->insert($data + [
@@ -79,8 +83,8 @@ class PersonalDocuments extends Migration
 
             // National ID Card
             $data = [
-                'documentNumber' => $user['nationalIDCardNumber'],
-                'filePath'       => $user['nationalIDCardScan'],
+                'documentNumber' => !empty($user['nationalIDCardNumber']) ? $user['nationalIDCardNumber'] : null,
+                'filePath'       => !empty($user['nationalIDCardScan']) ? $user['nationalIDCardScan'] : null,
             ];
 
             if (count(array_filter($data)) > 0 && $data['filePath'] != 'Deleted File') {
@@ -94,9 +98,11 @@ class PersonalDocuments extends Migration
 
             // Residency/Visa
             $data = [
-                'documentType' => $user['residencyStatus'],
-                'dateExpiry'   => $user['visaExpiryDate'],
+                'documentType' => !empty($user['residencyStatus']) ? $user['residencyStatus'] : null,
+                'dateExpiry'   => !empty($user['visaExpiryDate']) ? $user['visaExpiryDate'] : null,
             ];
+
+            if ($data['dateExpiry'] == '0000-00-00') $data['dateExpiry'] = null;
 
             if (count(array_filter($data)) > 0) {
                 $partialFail &= !$this->personalDocumentGateway->insert($data + [
@@ -109,8 +115,8 @@ class PersonalDocuments extends Migration
 
             // Birth Certificate
             $data = [
-                'country'  => $user['countryOfBirth'],
-                'filePath' => $user['birthCertificateScan'],
+                'country'  => !empty($user['countryOfBirth']) ? $user['countryOfBirth'] : null,
+                'filePath' => !empty($user['birthCertificateScan']) ? $user['birthCertificateScan'] : null,
             ];
 
             if (count(array_filter($data)) > 0 && $data['filePath'] != 'Deleted File') {
