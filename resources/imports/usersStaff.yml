@@ -195,42 +195,6 @@ table:
         name: "Religion"
         desc: ""
         args: {filter: string}
-    citizenship1:
-        name: "Citizenship 1"
-        desc: ""
-        args: {filter: country}
-    citizenship1Passport:
-        name: "Citizenship 1 Passport"
-        desc: ""
-        args: {filter: string}
-    citizenship1PassportScan:
-        name: "Citizenship 1 Passport Scan"
-        desc: "Less than 1440px by 900px"
-        args: {filter: string}
-    citizenship2:
-        name: "Citizenship 2"
-        desc: ""
-        args: {filter: country}
-    citizenship2Passport:
-        name: "Citizenship 2 Passport"
-        desc: ""
-        args: {filter: string}
-    nationalIDCardNumber:
-        name: "National ID Card Number"
-        desc: ""
-        args: {filter: string}
-    nationalIDCardScan:
-        name: "National ID Card Scan"
-        desc: "Less than 1440px by 900px"
-        args: {filter: string}
-    residencyStatus:
-        name: "Residency Status"
-        desc: ""
-        args: {filter: string}
-    visaExpiryDate:
-        name: "Visa Expiry Date"
-        desc: ""
-        args: {filter: date}
 
     emergency1Name:
         name: "Emergency 1 Name"

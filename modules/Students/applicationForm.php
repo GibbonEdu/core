@@ -267,41 +267,6 @@ if ($proceed == false) {
     $params = ['student' => true, 'applicationForm' => true];
     $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
 
-    // $row = $form->addRow();
-    //     $row->addLabel('citizenship1', __('Citizenship'));
-    //     
-    //     if (!empty($nationalityList)) {
-    //         $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
-    //     } else {
-    //         $row->addSelectCountry('citizenship1')->required();
-    //     }
-
-    // 
-    // $row = $form->addRow();
-    //     $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
-    //     $row->addTextField('citizenship1Passport')->maxLength(30);
-
-    // $row = $form->addRow();
-    //     $row->addLabel('citizenship1PassportExpiry', __('Citizenship 1 Passport Expiry Date'));
-    //     $row->addDate('citizenship1PassportExpiry');
-
-    // $row = $form->addRow();
-    //     $row->addLabel('nationalIDCardNumber', $countryName.__('National ID Card Number'));
-    //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
-
-    // $row = $form->addRow();
-    //     $row->addLabel('residencyStatus', $countryName.__('Residency/Visa Type'));
-    //     
-    //     if (!empty($residencyStatusList)) {
-    //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-    //     } else {
-    //         $row->addTextField('residencyStatus')->maxLength(30);
-    //     }
-
-    // $row = $form->addRow();
-    //     $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-    //     $row->addDate('visaExpiryDate');
-
     // STUDENT CONTACT
     $form->addRow()->addSubheading(__('Student Contact'));
 
@@ -589,30 +554,6 @@ if ($proceed == false) {
             // PERSONAL DOCUMENTS
             $params = ['parent' => true, 'applicationForm' => true, 'prefix' => "parent{$i}", 'class' => "parentSection{$i}"];
             $personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
-
-            // $row = $form->addRow()->setClass("parentSection{$i}");
-            //     $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
-            //     if (!empty($nationalityList)) {
-            //         $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder()->loadFrom($application);
-            //     } else {
-            //         $row->addSelectCountry("parent{$i}citizenship1")->loadFrom($application);
-            //     }
-
-            // $row = $form->addRow()->setClass("parentSection{$i}");
-            //     $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
-            //     $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30)->loadFrom($application);
-
-            // $row = $form->addRow()->setClass("parentSection{$i}");
-            //     $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
-            //     if (!empty($residencyStatusList)) {
-            //         $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder()->loadFrom($application);
-            //     } else {
-            //         $row->addTextField("parent{$i}residencyStatus")->maxLength(30)->loadFrom($application);
-            //     }
-
-            // $row = $form->addRow()->setClass("parentSection{$i}");
-            //     $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-            //     $row->addDate("parent{$i}visaExpiryDate")->loadFrom($application);
 
             // PARENT CONTACT
             $row = $form->addRow()->setClass("parentSection{$i}");

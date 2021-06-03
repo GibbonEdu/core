@@ -92,13 +92,6 @@ $editFormValues = array(
     'countryOfBirth'            => 'Antarctica',
     'ethnicity'                 => 'Ethnicity 2',
     'religion'                  => 'Religion 3',
-    // 'citizenship1'              => 'Nationality 1',
-    // 'citizenship1Passport'      => '1234ABC',
-    // 'citizenship2'              => 'Nationality 2',
-    // 'citizenship2Passport'      => 'ABC1234',
-    // 'nationalIDCardNumber'      => '1234-5678',
-    // 'visaExpiryDate'            => '30/01/2001',
-    // 'residencyStatus'           => 'Status 3',
 );
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
@@ -193,12 +186,5 @@ $editFormValues = array(
     'countryOfBirth'            => 'Antarctica',
     'ethnicity'                 => 'Ethnicity 2',
     'religion'                  => 'Religion 3',
-    // 'citizenship1'              => 'Nationality 1',
-    // 'citizenship1Passport'      => '1234ABC',
-    // 'citizenship2'              => 'Nationality 2',
-    // 'citizenship2Passport'      => 'ABC1234',
-    // 'nationalIDCardNumber'      => '1234-5678',
-    // 'visaExpiryDate'            => '30/01/2001',
-    // 'residencyStatus'           => 'Status 3',
 );
 $I->submitForm('#content form', $editFormValues, 'Submit');

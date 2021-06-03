@@ -44,7 +44,7 @@ class StaffApplicationFormGateway extends QueryableGateway implements Scrubbable
     private static $searchableColumns = ['gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.preferredName', 'gibbonStaffApplicationForm.surname', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffJobOpening.jobTitle'];
     
     private static $scrubbableKey = 'timestamp';
-    private static $scrubbableColumns = ['gender' => null, 'dob' => null, 'email' => null, 'homeAddress' => null, 'homeAddressDistrict' => null, 'homeAddressCountry' => null, 'phone1Type' => null, 'phone1CountryCode' => null, 'phone1' => null, 'countryOfBirth' => null, 'citizenship1' => null, 'citizenship1Passport' => null, 'nationalIDCardNumber' => null, 'residencyStatus' => null, 'visaExpiryDate' => null, 'languageFirst' => null, 'languageSecond' => null, 'languageThird' => null, 'notes' => '', 'questions' => '', 'fields' => '', 'referenceEmail1' => '', 'referenceEmail2' => ''];
+    private static $scrubbableColumns = ['gender' => null, 'dob' => null, 'email' => null, 'homeAddress' => null, 'homeAddressDistrict' => null, 'homeAddressCountry' => null, 'phone1Type' => null, 'phone1CountryCode' => null, 'phone1' => null, 'countryOfBirth' => null, 'languageFirst' => null, 'languageSecond' => null, 'languageThird' => null, 'notes' => '', 'questions' => '', 'fields' => '', 'referenceEmail1' => '', 'referenceEmail2' => ''];
 
     /**
      * @param QueryCriteria $criteria

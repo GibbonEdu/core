@@ -121,24 +121,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'countryOfBirth'         => __('Country of Birth'),
                 'ethnicity'              => __('Ethnicity'),
                 'religion'               => __('Religion'),
-                'citizenship1'           => __('Citizenship 1'),
-                'citizenship1Passport'   => __('Citizenship 1 Passport Number'),
-                'citizenship1PassportExpiry'   => __('Citizenship 1 Passport Expiry Date'),
-                'citizenship2'           => __('Citizenship 2'),
-                'citizenship2Passport'   => __('Citizenship 2 Passport Number'),
-                'citizenship2PassportExpiry'   => __('Citizenship 2 Passport Expiry Date'),
-                'nationalIDCardNumber'   => __('National ID Card Number'),
-                'residencyStatus'        => __('Residency/Visa Type'),
-                'visaExpiryDate'         => __('Visa Expiry Date'),
                 'vehicleRegistration'    => __('Vehicle Registration'),
             );
-
-            //Adjust country in field label
-            if (!empty($session->get('country'))) {
-                $compare['nationalIDCardNumber'] = $session->get('country').' '.__('ID Card Number');
-                $compare['residencyStatus'] = $session->get('country').' '.__('Residency/Visa Type');
-                $compare['visaExpiryDate'] = $session->get('country').' '.__('Visa Expiry Date');
-            }
 
             if ($student || $staff) {
                 $compare['emergency1Name']         = __('Emergency 1 Name');
@@ -179,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $isMatching = ($oldValue != $newValue);
                 $isNonUnique = false;
 
-                if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
+                if ($fieldName == 'dob') {
                     $oldValue = Format::date($oldValue);
                     $newValue = Format::date($newValue);
                 }

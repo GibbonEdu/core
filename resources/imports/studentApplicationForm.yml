@@ -82,26 +82,6 @@ table:
         name: "Country of Birth"
         desc: ""
         args: {filter: country, custom: true}
-    citizenship1:
-        name: "Citizenship 1"
-        desc: ""
-        args: {filter: country, custom: true}
-    citizenship1Passport:
-        name: "Citizenship 1 Passport"
-        desc: ""
-        args: {filter: string, custom: true}
-    nationalIDCardNumber:
-        name: "National ID Card Number"
-        desc: ""
-        args: {filter: string, custom: true}
-    residencyStatus:
-        name: "Residency Status"
-        desc: ""
-        args: {filter: string, custom: true}
-    visaExpiryDate:
-        name: "Visa Expiry Date"
-        desc: ""
-        args: {filter: date, custom: true}
     sen:
         name: "Special Education Needs"
         desc: ""

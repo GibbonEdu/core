@@ -41,16 +41,12 @@ all stylesheets and scripts with a 'head' context.
 
     {% if includeCitizenship %}
 
-        {% if adult.citizenship1 or adult.citizenship1Passport %}
-        <i>{{ __('Passport') }}</i>: {{ adult.citizenship1 }} {{ adult.citizenship1Passport }}<br/>
-        {% endif %}
-
-        {% if adult.nationalIDCardNumber %}
-            <i>{{ __('National ID Card') }}</i>: {{ adult.nationalIDCardNumber }}<br/>
+        {% if adult.citizenship %}
+        <i>{{ __('Nationality') }}</i>: {{ adult.citizenship }}
         {% endif %}
 
     {% endif %}
 
-    {% if not loop.last %}<br/>{% endif%}
+    {% if not loop.last %}<br/><br/>{% endif%}
 
 {% endfor %}

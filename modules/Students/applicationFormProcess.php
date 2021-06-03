@@ -77,29 +77,13 @@ if ($proceed == false) {
         $officialName = trim($_POST['officialName'] ?? '');
         $nameInCharacters = $_POST['nameInCharacters'] ?? '';
         $gender = $_POST['gender'] ?? '';
-        $dob = $_POST['dob'] ?? '';
-        if ($dob == '') {
-            $dob = null;
-        } else {
-            $dob = Format::dateConvert($dob);
-        }
+        $dob = !empty($_POST['dob']) ? Format::dateConvert($_POST['dob']) : null;
         $languageHomePrimary = $_POST['languageHomePrimary'] ?? '';
         $languageHomeSecondary = $_POST['languageHomeSecondary'] ?? '';
         $languageFirst = $_POST['languageFirst'] ?? '';
         $languageSecond = $_POST['languageSecond'] ?? '';
         $languageThird = $_POST['languageThird'] ?? '';
         $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-        $citizenship1 = $_POST['citizenship1'] ?? '';
-        $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
-        $citizenship1PassportExpiry = !empty($_POST['citizenship1PassportExpiry']) ? Format::dateConvert($_POST['citizenship1PassportExpiry']) : null;
-        $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
-        $residencyStatus = $_POST['residencyStatus'] ?? '';
-        $visaExpiryDate = $_POST['visaExpiryDate'] ?? '';
-        if ($visaExpiryDate == '') {
-            $visaExpiryDate = null;
-        } else {
-            $visaExpiryDate = Format::dateConvert($visaExpiryDate);
-        }
         $email = trim($_POST['email'] ?? '');
         $phone1Type = $_POST['phone1Type'] ?? '';
         if (!empty($_POST['phone1']) and $phone1Type == '') {
@@ -130,30 +114,16 @@ if ($proceed == false) {
         $schoolAddress1 = $_POST['schoolAddress1'] ?? '';
         $schoolGrades1 = $_POST['schoolGrades1'] ?? '';
         $schoolLanguage1 = $_POST['schoolLanguage1'] ?? '';
-        $schoolDate1 = $_POST['schoolDate1'] ?? '';
-        if ($schoolDate1 == '') {
-            $schoolDate1 = null;
-        } else {
-            $schoolDate1 = Format::dateConvert($schoolDate1);
-        }
+        $schoolDate1 = !empty($_POST['schoolDate1']) ? Format::dateConvert($_POST['schoolDate1']) : null;
         $schoolName2 = $_POST['schoolName2'] ?? '';
         $schoolAddress2 = $_POST['schoolAddress2'] ?? '';
         $schoolGrades2 = $_POST['schoolGrades2'] ?? '';
         $schoolLanguage2 = $_POST['schoolLanguage2'] ?? '';
-        $schoolDate2 = $_POST['schoolDate2'] ?? '';
-        if ($schoolDate2 == '') {
-            $schoolDate2 = null;
-        } else {
-            $schoolDate2 = Format::dateConvert($schoolDate2);
-        }
+        $schoolDate2 = !empty($_POST['schoolDate2']) ? Format::dateConvert($_POST['schoolDate2']) : null;
 
         //GET FAMILY FEILDS
         $gibbonFamily = $_POST['gibbonFamily'] ?? '';
-        if ($gibbonFamily == 'TRUE') {
-            $gibbonFamilyID = $_POST['gibbonFamilyID'];
-        } else {
-            $gibbonFamilyID = null;
-        }
+        $gibbonFamilyID = $gibbonFamily == 'TRUE' && !empty($_POST['gibbonFamilyID']) ? $_POST['gibbonFamilyID'] : null;
         $homeAddress = $_POST['homeAddress'] ?? null;
         $homeAddressDistrict = $_POST['homeAddressDistrict'] ?? null;
         $homeAddressCountry = $_POST['homeAddressCountry'] ?? null;
@@ -170,15 +140,6 @@ if ($proceed == false) {
         $parent1relationship = $_POST['parent1relationship'] ?? null;
         $parent1languageFirst = $_POST['parent1languageFirst'] ?? null;
         $parent1languageSecond = $_POST['parent1languageSecond'] ?? null;
-        $parent1citizenship1 = $_POST['parent1citizenship1'] ?? null;
-        $parent1nationalIDCardNumber = $_POST['parent1nationalIDCardNumber'] ?? null;
-        $parent1residencyStatus = $_POST['parent1residencyStatus'] ?? null;
-        $parent1visaExpiryDate = null;
-        if (isset($_POST['parent1visaExpiryDate'])) {
-            if ($_POST['parent1visaExpiryDate'] != '') {
-                $parent1visaExpiryDate = Format::dateConvert($_POST['parent1visaExpiryDate']);
-            }
-        }
         $parent1email = trim($_POST['parent1email'] ?? '');
         $parent1phone1Type = $_POST['parent1phone1Type'] ?? null;
         if (isset($_POST['parent1phone1']) and $parent1phone1Type == '') {
@@ -206,15 +167,6 @@ if ($proceed == false) {
         $parent2relationship = $_POST['parent2relationship'] ?? null;
         $parent2languageFirst = $_POST['parent2languageFirst'] ?? null;
         $parent2languageSecond = $_POST['parent2languageSecond'] ?? null;
-        $parent2citizenship1 = $_POST['parent2citizenship1'] ?? null;
-        $parent2nationalIDCardNumber = $_POST['parent2nationalIDCardNumber'] ?? null;
-        $parent2residencyStatus = $_POST['parent2residencyStatus'] ?? null;
-        $parent2visaExpiryDate = null;
-        if (isset($_POST['parent2visaExpiryDate'])) {
-            if ($_POST['parent2visaExpiryDate'] != '') {
-                $parent2visaExpiryDate = Format::dateConvert($_POST['parent2visaExpiryDate']);
-            }
-        }
         $parent2email = trim($_POST['parent2email'] ?? '');
         $parent2phone1Type = $_POST['parent2phone1Type'] ?? null;
         if (isset($_POST['parent2phone1']) and $parent2phone1Type == '') {
@@ -234,47 +186,17 @@ if ($proceed == false) {
 
         //GET SIBLING FIELDS
         $siblingName1 = $_POST['siblingName1'] ?? '';
-        $siblingDOB1 = $_POST['siblingDOB1'] ?? '';
-        if ($siblingDOB1 == '') {
-            $siblingDOB1 = null;
-        } else {
-            $siblingDOB1 = Format::dateConvert($siblingDOB1);
-        }
+        $siblingDOB1 = !empty($_POST['siblingDOB1']) ? Format::dateConvert($_POST['siblingDOB1']) : null;
         $siblingSchool1 = $_POST['siblingSchool1'] ?? '';
-        $siblingSchoolJoiningDate1 = $_POST['siblingSchoolJoiningDate1'] ?? '';
-        if ($siblingSchoolJoiningDate1 == '') {
-            $siblingSchoolJoiningDate1 = null;
-        } else {
-            $siblingSchoolJoiningDate1 = Format::dateConvert($siblingSchoolJoiningDate1);
-        }
+        $siblingSchoolJoiningDate1 = !empty($_POST['siblingSchoolJoiningDate1']) ? Format::dateConvert($_POST['siblingSchoolJoiningDate1']) : null;
         $siblingName2 = $_POST['siblingName2'] ?? '';
-        $siblingDOB2 = $_POST['siblingDOB2'] ?? '';
-        if ($siblingDOB2 == '') {
-            $siblingDOB2 = null;
-        } else {
-            $siblingDOB2 = Format::dateConvert($siblingDOB2);
-        }
+        $siblingDOB2 = !empty($_POST['siblingDOB2']) ? Format::dateConvert($_POST['siblingDOB2']) : null;
         $siblingSchool2 = $_POST['siblingSchool2'] ?? '';
-        $siblingSchoolJoiningDate2 = $_POST['siblingSchoolJoiningDate2'] ?? '';
-        if ($siblingSchoolJoiningDate2 == '') {
-            $siblingSchoolJoiningDate2 = null;
-        } else {
-            $siblingSchoolJoiningDate2 = Format::dateConvert($siblingSchoolJoiningDate2);
-        }
+        $siblingSchoolJoiningDate2 = !empty($_POST['siblingSchoolJoiningDate2']) ? Format::dateConvert($_POST['siblingSchoolJoiningDate2']) : null;
         $siblingName3 = $_POST['siblingName3'] ?? '';
-        $siblingDOB3 = $_POST['siblingDOB3'] ?? '';
-        if ($siblingDOB3 == '') {
-            $siblingDOB3 = null;
-        } else {
-            $siblingDOB3 = Format::dateConvert($siblingDOB3);
-        }
+        $siblingDOB3 = !empty($_POST['siblingDOB3']) ? Format::dateConvert($_POST['siblingDOB3']) : null;
         $siblingSchool3 = $_POST['siblingSchool3'] ?? '';
-        $siblingSchoolJoiningDate3 = $_POST['siblingSchoolJoiningDate3'] ?? '';
-        if ($siblingSchoolJoiningDate3 == '') {
-            $siblingSchoolJoiningDate3 = null;
-        } else {
-            $siblingSchoolJoiningDate3 = Format::dateConvert($siblingSchoolJoiningDate3);
-        }
+        $siblingSchoolJoiningDate3 = !empty($_POST['siblingSchoolJoiningDate3']) ? Format::dateConvert($_POST['siblingSchoolJoiningDate3']) : null;
 
         //GET PAYMENT FIELDS
         $payment =  $_POST['payment'] ?? '';
@@ -286,16 +208,7 @@ if ($proceed == false) {
         $companyPhone = $_POST['companyPhone'] ?? null;
         $companyAll = $_POST['companyAll'] ?? null;
 
-        $gibbonFinanceFeeCategoryIDList = null;
-        if (isset($_POST['gibbonFinanceFeeCategoryIDList'])) {
-            $gibbonFinanceFeeCategoryIDArray = $_POST['gibbonFinanceFeeCategoryIDList'];
-            if (count($gibbonFinanceFeeCategoryIDArray) > 0) {
-                foreach ($gibbonFinanceFeeCategoryIDArray as $gibbonFinanceFeeCategoryID) {
-                    $gibbonFinanceFeeCategoryIDList .= $gibbonFinanceFeeCategoryID.',';
-                }
-                $gibbonFinanceFeeCategoryIDList = substr($gibbonFinanceFeeCategoryIDList, 0, -1);
-            }
-        }
+        $gibbonFinanceFeeCategoryIDList = !empty($_POST['gibbonFinanceFeeCategoryIDList']) ? implode(',', $_POST['gibbonFinanceFeeCategoryIDList']) : null;
 
         //GET OTHER FIELDS
         $languageChoice = $_POST['languageChoice'] ?? null;
@@ -305,28 +218,8 @@ if ($proceed == false) {
         $howDidYouHear = $_POST['howDidYouHear'] ?? null;
         $howDidYouHearMore = $_POST['howDidYouHearMore'] ?? null;
 
-        $agreement = null;
-        if (isset($_POST['agreement'])) {
-            if ($_POST['agreement'] == 'on') {
-                $agreement = 'Y';
-            } else {
-                $agreement = 'N';
-            }
-        }
-        $privacy = null;
-        if (isset($_POST['privacyOptions'])) {
-            $privacyOptions = $_POST['privacyOptions'];
-            foreach ($privacyOptions as $privacyOption) {
-                if ($privacyOption != '') {
-                    $privacy .= $privacyOption.', ';
-                }
-            }
-            if ($privacy != '') {
-                $privacy = substr($privacy, 0, -2);
-            } else {
-                $privacy = null;
-            }
-        }
+        $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
+        $privacy = isset($_POST['privacyOptions']) ? implode(',', $_POST['privacyOptions']) : null;
 
         //VALIDATE INPUTS
         $familyFail = false;
