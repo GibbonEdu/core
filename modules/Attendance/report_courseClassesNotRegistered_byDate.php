@@ -164,8 +164,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
             $count = 0;
 
-            $timestampStart = dateConvertToTimestamp($dateStart);
-            $timestampEnd = dateConvertToTimestamp($dateEnd);
+            $timestampStart = Format::timestamp($dateStart);
+            $timestampEnd = Format::timestamp($dateEnd);
 
             //Loop through each form group
             foreach ($classes as $row) {

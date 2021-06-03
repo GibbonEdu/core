@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     }
 
     //Turn $date into UNIX timestamp and extract day of week
-    $dayOfWeek = date('l', dateConvertToTimestamp($date));
+    $dayOfWeek = date('l', Format::timestamp($date));
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 
     $activityGateway = $container->get(ActivityReportGateway::class);

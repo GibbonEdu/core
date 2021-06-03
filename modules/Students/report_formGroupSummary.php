@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_formGroupS
             $dateFrom = date($session->get('i18n')['dateFormatPHP']);
         }
         if (empty($dateTo) && !empty($dateFrom)) {
-            if (dateConvertToTimestamp(Format::dateConvert($dateFrom))>$today) {
+            if (Format::timestamp(Format::dateConvert($dateFrom))>$today) {
                 $dateTo = $dateFrom;
             }
             else {

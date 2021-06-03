@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     include './modules/Timetable/moduleFunctions.php';
     $ttDate = '';
     if (!empty($_POST['ttDate'])) {
-        $ttDate = dateConvertToTimestamp(Format::dateConvert($_POST['ttDate']));
+        $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
     }
 
     $tt = renderTT($guid, $connection2, $gibbon->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');

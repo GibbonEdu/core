@@ -550,7 +550,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             if ($classes != false or $grades != false or $deadlines != false) {
                 $params = '&tab=1';
             }
-            $timetableOutputTemp = renderTT($guid, $connection2, $gibbonPersonID, null, null, dateConvertToTimestamp($date), '', $params, 'narrow');
+            $timetableOutputTemp = renderTT($guid, $connection2, $gibbonPersonID, null, null, Format::timestamp($date), '', $params, 'narrow');
             if ($timetableOutputTemp != false) {
                 $timetable = true;
                 $timetableOutput .= $timetableOutputTemp;

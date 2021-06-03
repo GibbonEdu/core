@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 echo '<h3>';
                 echo $row['name'];
                 echo '</h3>';
-                $firstDayStamp = dateConvertToTimestamp($row['firstDay']);
-                $lastDayStamp = dateConvertToTimestamp($row['lastDay']);
+                $firstDayStamp = Format::timestamp($row['firstDay']);
+                $lastDayStamp = Format::timestamp($row['lastDay']);
 
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
                     if (isset($rowSpecial)) {
                         if ($rowSpecial == true) {
-                            $specialDayStamp = dateConvertToTimestamp($rowSpecial['date']);
+                            $specialDayStamp = Format::timestamp($rowSpecial['date']);
                         }
                     }
 

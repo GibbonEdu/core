@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
 
                 //Get last 5 school days from currentDate within the last 100
-                $timestamp = dateConvertToTimestamp($currentDate);
+                $timestamp = Format::timestamp($currentDate);
 
                 // Get school-wide attendance logs
                 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
