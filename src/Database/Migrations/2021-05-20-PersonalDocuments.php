@@ -39,9 +39,10 @@ class PersonalDocuments extends Migration
     {
         $partialFail = false;
 
-        $users = $this->userGateway->selectBy([]); 
+        $users = $this->userGateway->selectBy([]);
 
         foreach ($users as $user) {
+            $timestamp = !empty($user['lastTimestamp']) ? $user['lastTimestamp'] : date('Y-m-d H:i:s');
 
             // Citizenship 1
             $data = [
@@ -56,6 +57,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 001,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -71,6 +73,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 002,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -85,6 +88,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 003,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -99,6 +103,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 004,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -113,6 +118,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 005,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
         }

@@ -33,6 +33,7 @@ use Gibbon\Domain\IndividualNeeds\INGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 use Gibbon\Domain\Students\ApplicationFormGateway;
@@ -66,6 +67,12 @@ class DataRetentionGateway extends QueryableGateway
     public function getDomains()
     {
         return [
+            'Personal Documents' => [
+                'description' => __('Clear all personal documents such as passports, ID cards, birth certificates and visas.'),
+                'gateways' => [
+                    PersonalDocumentGateway::class,
+                ],
+            ],
             'Student Personal Data' => [
                 'description' => __('Clear personal data such as passwords, addresses, phone numbers, id numbers, etc.'),
                 'context' => ['Student'],
