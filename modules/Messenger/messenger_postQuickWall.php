@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -64,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 	$row = $form->addRow();
         $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 		$col = $row->addColumn('date1')->addClass('stacked');
-		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->required();
+		$col->addDate('date1')->setValue(Format::date(date('Y-m-d')))->required();
 		$col->addDate('date2');
 		$col->addDate('date3');
 

@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 				$values = $result->fetch();
 
 				// target of the planner
-				$target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : dateConvertBack($guid, $date);
+				$target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
 
 				$page->breadcrumbs
 					->add(__('Planner for {classDesc}', [
@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         }
                         $row = $form->addRow();
                             $row->addLabel('date', __('Date'));
-                            $row->addDate('date')->setValue(dateConvertBack($guid, $next['date']))->required();
+                            $row->addDate('date')->setValue(Format::date($next['date']))->required();
 
                         $row = $form->addRow();
                             $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
@@ -300,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
                             $row = $form->addRow();
                                 $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));
-                                $row->addDate('homeworkDueDate')->setValue(dateConvertBack($guid, $next['date2']))->required();
+                                $row->addDate('homeworkDueDate')->setValue(Format::date($next['date2']))->required();
 
                             $row = $form->addRow();
                                 $row->addLabel('homeworkDueDateTime', __('{homeworkName} Due Date Time', ['homeworkName' => __($homeworkNameSingular)]))->description("Format: hh:mm (24hr)");
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             if ($values['homeworkSubmission'] == 'Y') {
                                 $row = $form->addRow();
                                     $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
-                                    $row->addDate('homeworkSubmissionDateOpen')->setValue(dateConvertBack($guid, $next['date']))->required();
+                                    $row->addDate('homeworkSubmissionDateOpen')->setValue(Format::date($next['date']))->required();
                             }
                         }
 

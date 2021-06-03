@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
     // Access denied
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addDate($setting['name'])->required()->setValue(dateConvertBack($guid, $setting['value']));
+        $row->addDate($setting['name'])->required()->setValue(Format::date($setting['value']));
 
     $sql = "SELECT DISTINCT category as value, category as name FROM gibbonRole ORDER BY category";
     $setting = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory', true);

@@ -85,11 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
+        $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
+        $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
     $typeOptions = array_map('__', $typeOptions);

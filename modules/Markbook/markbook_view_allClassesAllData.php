@@ -388,11 +388,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
             }
 
             if ($markbook->getSetting('enableGroupByTerm') == 'Y' && $column->getData('date') != '') {
-                $info .= '<li>'. __('Assigned on ').' '.dateConvertBack($guid, $column->getData('date') ).'</li>';
+                $info .= '<li>'. __('Assigned on ').' '.Format::date($column->getData('date') ).'</li>';
             }
 
             if ($column->getData('completeDate') != '') {
-                $info .= '<li>'. __('Marked on').' '.dateConvertBack($guid, $column->getData('completeDate') ).'</li>';
+                $info .= '<li>'. __('Marked on').' '.Format::date($column->getData('completeDate') ).'</li>';
             } else {
                 $info .= '<li>'. __('Unmarked').'</li>';
                 $weightInfo .= __('Unmarked').'<br/>';
@@ -453,7 +453,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
                     // Add mini checkmarks if the column is marked and included in calculations
                     if ( $includeMarks ) {
-                        $weightInfo = __('Marked on').' '.dateConvertBack($guid, $column->getData('completeDate') ).'<br/>';
+                        $weightInfo = __('Marked on').' '.Format::date($column->getData('completeDate') ).'<br/>';
                         echo "<img title='$weightInfo' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/iconTick_double.png'/>";
                     } else {
                         if ($markbook->getSetting('enableColumnWeighting') == 'Y' ) {
@@ -687,7 +687,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                         $resultEntry->execute($dataEntry);
                     if ($resultEntry->rowCount() >= 1) {
                         $rowEntry = $resultEntry->fetch();
-                        echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.dateConvertBack($guid, $rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
+                        echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.Format::date($rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
                     }
                     echo '</td>';
                 }
@@ -880,11 +880,11 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
                             }
 
                             if ($rowWork['type'] == 'File') {
-                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$gibbon->session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
+                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$gibbon->session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
                             } elseif ($rowWork['type'] == 'Link') {
-                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                             } else {
-                                echo "<span title='$status. ".__('Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
+                                echo "<span title='$status. ".__('Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
                             }
                         } else {
                             if (date('Y-m-d H:i:s') < $column->getData('homeworkDueDateTime') ) {

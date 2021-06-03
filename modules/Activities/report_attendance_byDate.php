@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         $row = $form->addRow();
             $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-            $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required();
+            $row->addDate('date')->setValue(Format::date($date))->required();
 
         $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'formGroup' => __('Form Group'));
         $row = $form->addRow();

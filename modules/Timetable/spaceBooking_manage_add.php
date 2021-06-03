@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $facilities = array();
 
             $foreignKeyID = isset($_GET['gibbonSpaceID'])? 'gibbonSpaceID-'.$_GET['gibbonSpaceID'] : '';
-            $date = isset($_GET['date'])? dateConvertBack($guid, $_GET['date']) : '';
+            $date = isset($_GET['date'])? Format::date($_GET['date']) : '';
             $timeStart = isset($_GET['timeStart'])? $_GET['timeStart'] : '';
             $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
@@ -194,11 +194,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         $available = isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd);
                         if ($available == true) {
                             $row = $form->addRow()->addClass('current');
-                            $row->addLabel('dates[]', dateConvertBack($guid, $date))->description(__('Available'));
+                            $row->addLabel('dates[]', Format::date($date))->description(__('Available'));
                             $row->addCheckbox('dates[]')->setValue($date)->checked($date);
                         } else {
                             $row = $form->addRow()->addClass('error');
-                            $row->addLabel('dates[]', dateConvertBack($guid, $date))->description(__('Not Available'));
+                            $row->addLabel('dates[]', Format::date($date))->description(__('Not Available'));
                             $row->addCheckbox('dates[]')->setValue($date)->disabled();
                         }
                     } elseif ($repeat == 'Daily' and $repeatDaily >= 2 and $repeatDaily <= 20) {
@@ -218,11 +218,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 //Print days
                                 if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd) == true) {
                                     $row = $form->addRow()->addClass('current');
-                                    $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Available'));
+                                    $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Available'));
                                     $row->addCheckbox('dates[]')->setValue($dateTemp)->checked($dateTemp);
                                 } else {
                                     $row = $form->addRow()->addClass('error');
-                                    $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Not Available'));
+                                    $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
                                     $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
                                 }
                             } else {
@@ -250,11 +250,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 //Print days
                                 if (isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $dateTemp, $timeStart, $timeEnd) == true) {
                                     $row = $form->addRow()->addClass('current');
-                                    $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Available'));
+                                    $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Available'));
                                     $row->addCheckbox('dates[]')->setValue($dateTemp)->checked($dateTemp);
                                 } else {
                                     $row = $form->addRow()->addClass('error');
-                                    $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Not Available'));
+                                    $row->addLabel('dates[]', Format::date($dateTemp))->description(__('Not Available'));
                                     $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
                                 }
                             } else {

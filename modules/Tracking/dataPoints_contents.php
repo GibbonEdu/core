@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                             ->setCellValue('A'.$activeRow, $row['username'])
                             ->setCellValue('B'.$activeRow, $row['surname'])
                             ->setCellValue('C'.$activeRow, $row['preferredName'])
-                            ->setCellValue('D'.$activeRow, dateConvertBack($guid, $row['dob']))
+                            ->setCellValue('D'.$activeRow, Format::date($row['dob']))
                             ->setCellValue('E'.$activeRow, $row['formGroup'])
                             ->setCellValue('F'.$activeRow, $row['status']);
                         $excel->getActiveSheet()->getStyle('A'.$activeRow)->applyFromArray($style_border);

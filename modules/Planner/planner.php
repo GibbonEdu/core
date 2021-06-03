@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -402,7 +402,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 echo "<tr class=$rowNum>";
                                                 echo '<td>';
                                                 if (!(is_null($row['date']))) {
-                                                    echo '<b>'.dateConvertBack($guid, $row['date']).'</b><br/>';
+                                                    echo '<b>'.Format::date($row['date']).'</b><br/>';
                                                     echo Format::dateReadable($row['date'], '%A');
                                                 }
                                                 echo '</td>';
@@ -475,7 +475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             $gibbonPersonID = $session->get('gibbonPersonID');
             if ($viewBy == 'date') {
                 $page->breadcrumbs->add(__('Planner for {classDesc}', [
-                    'classDesc' => dateConvertBack($guid, $date),
+                    'classDesc' => Format::date($date),
                 ]));
 
                 if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2) == false) {
@@ -766,7 +766,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo "<tr class=$rowNum>";
                                         echo '<td>';
                                         if (!(is_null($row['date']))) {
-                                            echo '<b>'.dateConvertBack($guid, $row['date']).'</b><br/>';
+                                            echo '<b>'.Format::date($row['date']).'</b><br/>';
                                             echo Format::dateReadable($row['date'], '%A');
                                         }
                                         echo '</td>';
@@ -934,18 +934,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             $currentName = $rowSpecial['name'];
                                             $specials[$specialCount][0] = $rowSpecial['date'];
                                             $specials[$specialCount][1] = $rowSpecial['name'];
-                                            $specials[$specialCount][2] = dateConvertBack($guid, $rowSpecial['date']);
-                                            $originalDate = dateConvertBack($guid, $rowSpecial['date']);
+                                            $specials[$specialCount][2] = Format::date($rowSpecial['date']);
+                                            $originalDate = Format::date($rowSpecial['date']);
                                             ++$specialCount;
                                         } else {
                                             if ((strtotime($currentDate) - strtotime($lastDate)) == 86400) {
-                                                $specials[$specialCount - 1][2] = $originalDate.' - '.dateConvertBack($guid, $rowSpecial['date']);
+                                                $specials[$specialCount - 1][2] = $originalDate.' - '.Format::date($rowSpecial['date']);
                                             } else {
                                                 $currentName = $rowSpecial['name'];
                                                 $specials[$specialCount][0] = $rowSpecial['date'];
                                                 $specials[$specialCount][1] = $rowSpecial['name'];
-                                                $specials[$specialCount][2] = dateConvertBack($guid, $rowSpecial['date']);
-                                                $originalDate = dateConvertBack($guid, $rowSpecial['date']);
+                                                $specials[$specialCount][2] = Format::date($rowSpecial['date']);
+                                                $originalDate = Format::date($rowSpecial['date']);
                                                 ++$specialCount;
                                             }
                                         }
@@ -1009,7 +1009,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 echo '<b>'.$terms[$termCount][1].'</b>';
                                                 echo '</td>';
                                                 echo '<td colspan=6>';
-                                                echo dateConvertBack($guid, $terms[$termCount][0]);
+                                                echo Format::date($terms[$termCount][0]);
                                                 echo '</td>';
                                                 echo '</tr>';
                                                 ++$termCount;
@@ -1036,7 +1036,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo "<b>".__('Lesson')." ".($classCount + 1)."</b>";
                                             echo "</td>";
                                             echo "<td $style>";
-                                            echo '<b>'.dateConvertBack($guid, $lesson['1']).'</b><br/>';
+                                            echo '<b>'.Format::date($lesson['1']).'</b><br/>';
                                             echo Format::dateReadable($lesson['1'], '%A').'<br/>';
                                             echo Format::dateReadable($lesson['1'], '%B').'<br/>';
                                             if ($lesson[8] == 'Timing Change') {
@@ -1087,7 +1087,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo '<b>'.$terms[$termCount][1].'</b>';
                                             echo '</td>';
                                             echo '<td colspan=6>';
-                                            echo dateConvertBack($guid, $terms[$termCount][0]);
+                                            echo Format::date($terms[$termCount][0]);
                                             echo '</td>';
                                             echo '</tr>';
                                             ++$termCount;
@@ -1100,7 +1100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo '<b><u>'.$terms[$termCount][1].'</u></b>';
                                         echo '</td>';
                                         echo '<td colspan=6>';
-                                        echo dateConvertBack($guid, $terms[$termCount][0]);
+                                        echo Format::date($terms[$termCount][0]);
                                         echo '</td>';
                                         echo '</tr>';
                                     }

@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     while ($attendance = $attendanceResult->fetch()) {
         $sessionAttendanceData[ $attendance['date'] ] = array(
             'data' => (!empty($attendance['attendance'])) ? unserialize($attendance['attendance']) : array(),
-            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), Format::name('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
+            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), Format::date(substr($attendance['timestampTaken'], 0, 10)), Format::name('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
         );
     }
 

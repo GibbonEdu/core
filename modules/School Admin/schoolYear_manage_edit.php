@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_manage_edit.php') == false) {
@@ -85,11 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
             $row = $form->addRow();
                 $row->addLabel('firstDay', __('First Day'));
-                $row->addDate('firstDay')->required()->setValue(dateConvertBack($guid, $values['firstDay']));
+                $row->addDate('firstDay')->required()->setValue(Format::date($values['firstDay']));
 
             $row = $form->addRow();
                 $row->addLabel('lastDay', __('Last Day'));
-                $row->addDate('lastDay')->required()->setValue(dateConvertBack($guid, $values['lastDay']));
+                $row->addDate('lastDay')->required()->setValue(Format::date($values['lastDay']));
 
             $row = $form->addRow();
                 $row->addFooter();

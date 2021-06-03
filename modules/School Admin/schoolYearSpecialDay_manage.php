@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -190,13 +192,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                     } else {
                         echo "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
                         if ($i == $specialDayStamp) {
-                            echo "<span style='color: #ff0000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
+                            echo "<span style='color: #ff0000'>".Format::date(date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
                             echo '<br/>';
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
                         } else {
-                            echo "<span style='color: #000000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
+                            echo "<span style='color: #000000'>".Format::date(date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
                             echo '<br/>';
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> ";
                         }

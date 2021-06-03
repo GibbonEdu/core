@@ -239,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
 							$row = $form->addRow()->addClass('paymentInfo');
 								$row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));
-								$row->addDate('paymentDate')->required()->setValue(dateConvertBack($guid, $values['paymentDate']))->readonly($isPaid);
+								$row->addDate('paymentDate')->required()->setValue(Format::date($values['paymentDate']))->readonly($isPaid);
 
 							$row = $form->addRow()->addClass('paymentInfo');
 								$row->addLabel('paymentAmount', __('Amount Paid'))->description(__('Final amount paid.'));

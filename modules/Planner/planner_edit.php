@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $values = $result->fetch();
 
                 if ($viewBy == 'date') {
-                    $extra = dateConvertBack($guid, $date);
+                    $extra = Format::date($date);
                 } else {
                     $extra = $values['course'].'.'.$values['class'];
                     $gibbonDepartmentID = $values['gibbonDepartmentID'];
