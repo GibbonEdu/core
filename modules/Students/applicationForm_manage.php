@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $table->addColumn('student', __('Student'))
             ->description(__('Application Date'))
             ->sortable(['surname', 'preferredName'])
-            ->format(function ($application) use ($applicationGateway, $guid) {
+            ->format(function ($application) use ($applicationGateway, $session) {
                 $output = '';
 
                 // Add a list of linked sibling appplications as an icon with hover-over text
