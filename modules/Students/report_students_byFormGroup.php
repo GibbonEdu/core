@@ -118,17 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                     ? Format::age($values['dob'], true).'<br/>'.Format::small(Format::date($values['dob']))
                     : '';
             });
-        $table->addColumn('citizenship1', __('Nationality'))
-            ->format(function ($values) {
-                $output = '';
-                if (!empty($values['citizenship1'])) {
-                    $output .= $values['citizenship1'].'<br/>';
-                }
-                if (!empty($values['citizenship2'])) {
-                    $output .= $values['citizenship2'].'<br/>';
-                }
-                return $output;
-            });
+        $table->addColumn('citizenship', __('Nationality'));
         $table->addColumn('transport', __('Transport'));
         $table->addColumn('house', __('House'));
         $table->addColumn('lockerNumber', __('Locker'));

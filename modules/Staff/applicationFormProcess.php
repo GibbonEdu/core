@@ -65,7 +65,7 @@ if ($proceed == false) {
 
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
     $questions = $_POST['questions'] ?? '';
-    $gibbonPersonID = $_POST['gibbonPersonID'] ?? null;
+    $gibbonPersonID = !empty($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : null;
     $surname = $_POST['surname'] ?? '';
     $firstName = $_POST['firstName'] ?? '';
     $preferredName = $_POST['preferredName'] ?? '';
@@ -77,14 +77,6 @@ if ($proceed == false) {
     $languageSecond = $_POST['languageSecond'] ?? '';
     $languageThird = $_POST['languageThird'] ?? '';
     $countryOfBirth = $_POST['countryOfBirth'] ?? '';
-    $citizenship1 = $_POST['citizenship1'] ?? '';
-    $citizenship1Passport = $_POST['citizenship1Passport'] ?? '';
-    $nationalIDCardNumber = $_POST['nationalIDCardNumber'] ?? '';
-    $residencyStatus = $_POST['residencyStatus'] ?? '';
-    $visaExpiryDate = null;
-    if (isset($_POST['visaExpiryDate']) and $_POST['visaExpiryDate'] != '') {
-        $visaExpiryDate = Format::dateConvert($visaExpiryDate);
-    }
     $email = $_POST['email'] ?? '';
     $phone1Type = null;
     if (isset($_POST['phone1Type'])) {
@@ -106,14 +98,7 @@ if ($proceed == false) {
     $homeAddressCountry = $_POST['homeAddressCountry'] ?? '';
     $referenceEmail1 = $_POST['referenceEmail1'] ?? '';
     $referenceEmail2 = $_POST['referenceEmail2'] ?? '';
-    $agreement = null;
-    if (isset($_POST['agreement'])) {
-        if ($_POST['agreement'] == 'on') {
-            $agreement = 'Y';
-        } else {
-            $agreement = 'N';
-        }
-    }
+    $agreement = isset($_POST['agreement']) ? ($_POST['agreement'] == 'on' ? 'Y' : 'N') : null;
 
 
     //VALIDATE INPUTS
@@ -183,8 +168,8 @@ if ($proceed == false) {
 
                     //Write to database
                     try {
-                        $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID, 'questions' => $questions, 'gibbonPersonID' => $gibbonPersonID, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'citizenship1' => $citizenship1, 'citizenship1Passport' => $citizenship1Passport, 'nationalIDCardNumber' => $nationalIDCardNumber, 'residencyStatus' => $residencyStatus, 'visaExpiryDate' => $visaExpiryDate, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'referenceEmail1' => $referenceEmail1, 'referenceEmail2' => $referenceEmail2, 'agreement' => $agreement, 'staffFields' => $staffFields, 'fields' => $fields, 'timestamp' => date('Y-m-d H:i:s'));
-                        $sql = 'INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, agreement=:agreement, fields=:fields, staffFields=:staffFields, timestamp=:timestamp';
+                        $data = array('gibbonStaffJobOpeningID' => $gibbonStaffJobOpeningID, 'questions' => $questions, 'gibbonPersonID' => $gibbonPersonID, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'nameInCharacters' => $nameInCharacters, 'gender' => $gender, 'dob' => $dob, 'languageFirst' => $languageFirst, 'languageSecond' => $languageSecond, 'languageThird' => $languageThird, 'countryOfBirth' => $countryOfBirth, 'email' => $email, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'phone1Type' => $phone1Type, 'phone1CountryCode' => $phone1CountryCode, 'phone1' => $phone1, 'referenceEmail1' => $referenceEmail1, 'referenceEmail2' => $referenceEmail2, 'agreement' => $agreement, 'staffFields' => $staffFields, 'fields' => $fields, 'timestamp' => date('Y-m-d H:i:s'));
+                        $sql = 'INSERT INTO gibbonStaffApplicationForm SET gibbonStaffJobOpeningID=:gibbonStaffJobOpeningID, questions=:questions, gibbonPersonID=:gibbonPersonID, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, email=:email, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, referenceEmail1=:referenceEmail1, referenceEmail2=:referenceEmail2, agreement=:agreement, fields=:fields, staffFields=:staffFields, timestamp=:timestamp';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

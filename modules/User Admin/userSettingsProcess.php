@@ -29,7 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $ethnicity = $_POST['ethnicity'] ?? '';
     $religions = $_POST['religions'] ?? '';
     $nationality = $_POST['nationality'] ?? '';
-    $residencyStatus = $_POST['residencyStatus'] ?? '';
     $departureReasons = $_POST['departureReasons'] ?? '';
     $privacy = $_POST['privacy'] ?? '';
     $privacyBlurb = $_POST['privacyBlurb'] ?? null;
