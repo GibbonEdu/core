@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Attendance;
 
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\session;
 use Gibbon\Services\Format;
 
 /**
@@ -92,7 +91,7 @@ class AttendanceView
         }
 
         // Get the current date
-        $currentDate = (isset($_GET['currentDate'])) ? dateConvert($this->guid, $_GET['currentDate']) : date('Y-m-d');
+        $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 
         // Get attendance reasons
         $this->genericReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceReasons'));
