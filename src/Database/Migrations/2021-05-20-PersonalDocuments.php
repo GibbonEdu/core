@@ -14,7 +14,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
+along with this program. If not, see <http: //www.gnu.org/licenses/>.
 */
 
 use Gibbon\Database\Migrations\Migration;
@@ -31,7 +31,7 @@ class PersonalDocuments extends Migration
 
     public function __construct(UserGateway $userGateway, PersonalDocumentGateway $personalDocumentGateway)
     {
-        $this->userGateway = $userGateway;
+        $this->userGateway             = $userGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
     }   
 
@@ -39,9 +39,10 @@ class PersonalDocuments extends Migration
     {
         $partialFail = false;
 
-        $users = $this->userGateway->selectBy([]); 
+        $users = $this->userGateway->selectBy([]);
 
         foreach ($users as $user) {
+            $timestamp = !empty($user['lastTimestamp']) ? $user['lastTimestamp'] : date('Y-m-d H:i:s');
 
             // Citizenship 1
             $data = [
@@ -56,6 +57,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 001,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -71,6 +73,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 002,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -85,6 +88,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 003,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -99,6 +103,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 004,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
 
@@ -113,6 +118,7 @@ class PersonalDocuments extends Migration
                     'gibbonPersonalDocumentTypeID' => 005,
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
+                    'timestamp'                    => $timestamp,
                 ]);
             }
         }
