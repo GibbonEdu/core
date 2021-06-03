@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $col->addCurrency('fee')
                         ->setClass('shortWidth floatLeft')
                         ->required()
-                        ->placeholder(__('Value').(!empty($session->get('currency'))? ' ('.$sesssion->get('currency').')' : ''));
+                        ->placeholder(__('Value').(!empty($session->get('currency'))? ' ('.$session->get('currency').')' : ''));
 
                 $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                     $col->addLabel('description', __('Description'));

@@ -35,12 +35,10 @@ if ($status == 'Decommissioned') {
 } elseif ($status == 'Reserved') {
     $type = 'Reserve';
 }
-$gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? '';
-if (!empty($_POST['returnExpected'])) {
-    $returnExpected = Format::dateConvert($_POST['returnExpected']);
-}
+$gibbonPersonIDStatusResponsible = $_POST['gibbonPersonIDStatusResponsible'] ?? null;
+$returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
 $returnAction = $_POST['returnAction'] ?? '';
-$gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
+$gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;
 
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
@@ -54,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 } else {
     //Proceed!
     //Validate Inputs
-    if ($gibbonLibraryItemID == '' or $status == '' or $gibbonPersonIDStatusResponsible == '' or $statusCurrent != 'Available') {
+    if ($gibbonLibraryItemID == '' or $status == '' or empty($gibbonPersonIDStatusResponsible) or $statusCurrent != 'Available') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

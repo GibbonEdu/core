@@ -21,12 +21,12 @@ use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
 
-$gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? null;
+$gibbonDepartmentID = !empty($_POST['gibbonDepartmentID']) ? $_POST['gibbonDepartmentID'] : null;
 $name = $_POST['name'] ?? '';
 $nameShort = $_POST['nameShort'] ?? '';
 $orderBy = $_POST['orderBy'] ?? '';
 $description = $_POST['description'] ?? '';
-$map = $_POST['map'] ?? '';
+$map = $_POST['map'] ?? 'N';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
 

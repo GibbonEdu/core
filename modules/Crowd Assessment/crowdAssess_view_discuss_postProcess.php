@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             header("Location: {$URL}");
                             exit();
                         }
-                        $hash = '#'.($_GET['replyTo'] ?? null);
+                        $hash = '#'.$replyTo;
 
 
                         //Work out who we are replying too
