@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'));
-                $row->addDate('returnExpected')->setValue(dateConvertBack($guid, $values['returnExpected']))->required();
+                $row->addDate('returnExpected')->setValue(Format::date($values['returnExpected']))->required();
 
 
             $row = $form->addRow()->addHeading(__('On Return'));

@@ -184,7 +184,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                 $resultBehaviourRecord->execute($dataBehaviourRecord);
                             while ($rowBehaviourRecord = $resultBehaviourRecord->fetch()) {
                                 $behaviourRecord .= '<li>';
-                                $behaviourRecord .= dateConvertBack($guid, substr($rowBehaviourRecord['timestamp'], 0, 10));
+                                $behaviourRecord .= Format::date(substr($rowBehaviourRecord['timestamp'], 0, 10));
                                 if ($enableDescriptors == 'Y' and $rowBehaviourRecord['descriptor'] != '') {
                                     $behaviourRecord .= ' - '.$rowBehaviourRecord['descriptor'];
                                 }

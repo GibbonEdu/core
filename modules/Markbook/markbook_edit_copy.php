@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                                 $row->addContent($column['name'])->wrap('<strong>', '</strong>');
                                 $row->addContent($column['type']);
                                 $row->addContent($column['description']);
-                                $row->addContent(!empty($column['date'])? dateConvertBack($guid, $column['date']) : '');
+                                $row->addContent(!empty($column['date'])? Format::date($column['date']) : '');
                         }
 
                         $row = $form->addRow();

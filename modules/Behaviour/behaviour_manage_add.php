@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                             if ($submission != '') {
                                 $submission = ' - '.$submission;
                             }
-                            $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(dateConvertBack($guid, $rowSelect['date']), 0, 5).$submission;
+                            $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(Format::date($rowSelect['date']), 0, 5).$submission;
                         }
                     }
 

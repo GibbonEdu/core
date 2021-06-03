@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Module\Rubrics\Visualise;
 
 function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $search = '', $filter2 = '')
@@ -260,7 +261,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
                 if ($resultContext->rowCount() > 0) {
                     while ($rowContext = $resultContext->fetch()) {
-                        $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.dateConvertBack($guid, $rowContext[$contextDBTableDateField]).')';
+                        $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.Format::date($rowContext[$contextDBTableDateField]).')';
                         $cells[$rowContext['gibbonRubricRowID']][$rowContext['gibbonRubricColumnID']]['context'][] = $context;
 
                         array_push($contexts, array('gibbonRubricEntry' => $rowContext['gibbonRubricEntry'], 'gibbonRubricID' => $rowContext['gibbonRubricID'], 'gibbonPersonID' => $rowContext['gibbonPersonID'], 'gibbonRubricCellID' => $rowContext['gibbonRubricCellID'], 'contextDBTable' => $rowContext['contextDBTable'], 'contextDBTableID' => $rowContext['contextDBTableID']));

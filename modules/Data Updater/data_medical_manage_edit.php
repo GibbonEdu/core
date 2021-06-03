@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 }
 
                 if ($fieldName == 'lastEpisode') {
-                    $oldValue = dateConvertBack($guid, $oldValue);
-                    $newValue = dateConvertBack($guid, $newValue);
+                    $oldValue = Format::date($oldValue);
+                    $newValue = Format::date($newValue);
                 }
 
                 if ($fieldName == 'attachment') {

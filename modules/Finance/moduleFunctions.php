@@ -104,7 +104,7 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 //COLOR ROW BY STATUS!
                 $return .= "<tr class=$rowNum>";
                 $return .= '<td>';
-                $return .= dateConvertBack($guid, substr($row['timestamp'], 0, 10));
+                $return .= Format::date(substr($row['timestamp'], 0, 10));
                 $return .= '</td>';
                 $return .= '<td>';
                 $return .= __($row['status']);
@@ -878,11 +878,11 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '<tr>';
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice Issue Date').'</span><br/>';
-        $return .= dateConvertBack($guid, $row['invoiceIssueDate']);
+        $return .= Format::date($row['invoiceIssueDate']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Due Date').'</span><br/>';
-        $return .= dateConvertBack($guid, $row['invoiceDueDate']);
+        $return .= Format::date($row['invoiceDueDate']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice Number').'</span><br/>';
@@ -1239,11 +1239,11 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '<tr>';
         $return .= "<td style='width: 33%; padding-top: 15px; padding-left: 10px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Due Date').'</span><br/>';
-        $return .= dateConvertBack($guid, $row['invoiceDueDate']);
+        $return .= Format::date($row['invoiceDueDate']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Date Paid').'</span><br/>';
-        $return .= dateConvertBack($guid, $row['paidDate']);
+        $return .= Format::date($row['paidDate']);
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice Number').'</span><br/>';

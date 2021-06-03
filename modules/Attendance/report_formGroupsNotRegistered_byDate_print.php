@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     //Proceed!
     echo '<h2>';
     if ($dateStart != $dateEnd) {
-        echo __('Form Groups Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
+        echo __('Form Groups Not Registered').', '.Format::date($dateStart).'-'.Format::date($dateEnd);
     } else {
-        echo __('Form Groups Not Registered').', '.dateConvertBack($guid, $dateStart);
+        echo __('Form Groups Not Registered').', '.Format::date($dateStart);
     }
     echo '</h2>';
 

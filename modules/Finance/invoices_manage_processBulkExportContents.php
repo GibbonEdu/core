@@ -198,14 +198,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 			}
             $excel->getActiveSheet()->getStyleByColumnAndRow(6, $r)->applyFromArray($style_border);
 			//Column H
-		    $excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, dateConvertBack($guid, $row["invoiceIssueDate"]));
+		    $excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, Format::date($row["invoiceIssueDate"]));
             $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
 			//Column I
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, dateConvertBack($guid, $row["invoiceDueDate"]));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, Format::date($row["invoiceDueDate"]));
             $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->applyFromArray($style_border);
 			//Column J
             if ($row["paidDate"]!="")
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, dateConvertBack($guid, $row["paidDate"]));
+				$excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, Format::date($row["paidDate"]));
             else
                 $excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, '');
             $excel->getActiveSheet()->getStyleByColumnAndRow(9, $r)->applyFromArray($style_border);

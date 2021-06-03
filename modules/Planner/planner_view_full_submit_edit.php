@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 $values = $result->fetch();
 
                 // target of the planner
-                $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : dateConvertBack($guid, $date);
+                $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
 
                 // planner's parameters
                 $params = [];

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Activities;
 
+use Gibbon\Services\Format;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -138,7 +139,7 @@ class ActivityReportGateway extends QueryableGateway
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where("gibbonActivity.active = 'Y'")
             ->where('gibbonDaysOfWeek.name=:dayOfWeek')
-            ->bindValue('dayOfWeek', date('l', dateConvertToTimestamp($date)))
+            ->bindValue('dayOfWeek', date('l', Format::timestamp($date)))
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID')
             ->where("gibbonActivityStudent.status='Accepted'")
             ->where("gibbonPerson.status = 'Full'")

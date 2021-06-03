@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
@@ -25,7 +27,7 @@ include './moduleFunctions.php';
 
 $gibbonAttendanceLogPersonID = $_POST['gibbonAttendanceLogPersonID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$currentDate = $_POST['currentDate'] ?? dateConvertBack($guid, date('Y-m-d'));
+$currentDate = $_POST['currentDate'] ?? Format::date(date('Y-m-d'));
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 

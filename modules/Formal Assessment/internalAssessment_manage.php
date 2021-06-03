@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     echo '</td>';
                     echo '<td>';
                     if ($row['complete'] == 'Y') {
-                        echo dateConvertBack($guid, $row['completeDate']);
+                        echo Format::date($row['completeDate']);
                     }
                     echo '</td>';
                     echo '<td>';

@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 }
 
                 $archiveOptions = array_map(function($item) use ($guid) {
-                    return $item['archiveTitle'].' ('.dateConvertBack($guid, substr($item['archiveTimestamp'], 0, 10)).')';
+                    return $item['archiveTitle'].' ('.Format::date(substr($item['archiveTimestamp'], 0, 10)).')';
                 }, $archivedIEPs);
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");

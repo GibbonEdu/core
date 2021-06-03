@@ -323,7 +323,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $gradesOutput .= '<td>';
                 $gradesOutput .= "<span title='".htmlPrep($rowEntry['description'])."'>".$rowEntry['name'].'</span><br/>';
                 $gradesOutput .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-                $gradesOutput .= __('Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
+                $gradesOutput .= __('Marked on').' '.Format::date($rowEntry['completeDate']).'<br/>';
                 $gradesOutput .= '</span>';
                 $gradesOutput .= '</td>';
                 if ($enableModifiedAssessment == 'Y') {
@@ -481,11 +481,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             }
 
                             if ($rowWork['type'] == 'File') {
-                                $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
                             } elseif ($rowWork['type'] == 'Link') {
-                                $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                             } else {
-                                $gradesOutput .= "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
+                                $gradesOutput .= "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
                             }
                         } else {
                             if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
@@ -550,7 +550,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             if ($classes != false or $grades != false or $deadlines != false) {
                 $params = '&tab=1';
             }
-            $timetableOutputTemp = renderTT($guid, $connection2, $gibbonPersonID, null, null, dateConvertToTimestamp($date), '', $params, 'narrow');
+            $timetableOutputTemp = renderTT($guid, $connection2, $gibbonPersonID, null, null, Format::timestamp($date), '', $params, 'narrow');
             if ($timetableOutputTemp != false) {
                 $timetable = true;
                 $timetableOutput .= $timetableOutputTemp;

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage.php') == false) {
     // Access denied
@@ -184,10 +185,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 echo '<b>'.$row['name'].'</b><br/>';
                 echo '</td>';
                 echo '<td>';
-                echo dateConvertBack($guid, $row['invoiceIssueDate']);
+                echo Format::date($row['invoiceIssueDate']);
                 echo '</td>';
                 echo '<td>';
-                echo dateConvertBack($guid, $row['invoiceDueDate']);
+                echo Format::date($row['invoiceDueDate']);
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";

@@ -268,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 								$row = $form->addRow();
 									$row->addLabel('lastEpisode'.$count, __('Last Episode Date'));
-									$row->addDate('lastEpisode'.$count)->setValue(dateConvertBack($guid, $rowCond['lastEpisode']) );
+									$row->addDate('lastEpisode'.$count)->setValue(Format::date($rowCond['lastEpisode']) );
 
 								$row = $form->addRow();
 									$row->addLabel('lastEpisodeTreatment'.$count, __('Last Episode Treatment'));

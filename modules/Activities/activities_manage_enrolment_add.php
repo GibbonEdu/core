@@ -90,11 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             if ($dateType == 'Date') {
                 $row = $form->addRow();
                 $row->addLabel('listingDatesLabel', __('Listing Dates'));
-                $row->addTextField('listingDates')->readOnly()->setValue(dateConvertBack($guid, $values['listingStart']).'-'.dateConvertBack($guid, $values['listingEnd']));
+                $row->addTextField('listingDates')->readOnly()->setValue(Format::date($values['listingStart']).'-'.Format::date($values['listingEnd']));
 
                 $row = $form->addRow();
                 $row->addLabel('programDatesLabel', __('Program Dates'));
-                $row->addTextField('programDates')->readOnly()->setValue(dateConvertBack($guid, $values['programStart']).'-'.dateConvertBack($guid, $values['programEnd']));
+                $row->addTextField('programDates')->readOnly()->setValue(Format::date($values['programStart']).'-'.Format::date($values['programEnd']));
             } else {
                 $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
                 $termList = array_filter(array_map(function ($item) use ($schoolTerms) {

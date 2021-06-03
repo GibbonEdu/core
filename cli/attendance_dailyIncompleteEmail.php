@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -124,10 +125,10 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                 if ( isset($adminReport['formGroup']) && count($adminReport['formGroup']) > 0) {
                     $reportInner = implode('<br>', $adminReport['formGroup']);
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['formGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['formGroup']), Format::date($currentDate) ).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+                    $report .= sprintf(__('All form groups have been registered today (%1$s).'), Format::date($currentDate));
                 }
             }
         }
@@ -157,7 +158,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     }
                 }
 
-                $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance.php&currentDate='.dateConvertBack($guid, date('Y-m-d')));
+                $notificationSender->addNotification($gibbonPersonID, $notificationText, 'Attendance', '/index.php?q=/modules/Attendance/attendance.php&currentDate='.Format::date(date('Y-m-d')));
             }
 
             // Notify Additional Users

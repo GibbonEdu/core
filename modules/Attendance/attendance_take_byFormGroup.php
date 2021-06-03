@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
-            $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
+            $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session);
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             echo __('Attendance has been taken at the following times for the specified date for this group:');
                             echo '<ul>';
                             while ($rowLog = $resultLog->fetch()) {
-                                echo '<li>'.sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
+                                echo '<li>'.sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), Format::date(substr($rowLog['timestampTaken'], 0, 10)), Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
                             }
                             echo '</ul>';
                             echo '</div>';

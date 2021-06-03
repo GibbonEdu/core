@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $row = $result->fetch();
 
                 // target of the planner
-                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
+                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : Format::date($date);
 
                 // planner parameters
                 $params = [];

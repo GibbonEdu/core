@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));
-                $row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required()->readonly();
+                $row->addDate('date')->setValue(Format::date($values['date']))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeIn', __('Time In'));

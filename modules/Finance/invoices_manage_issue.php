@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 				$row = $form->addRow();
 					$row->addLabel('billingScheduleName', __('Billing Schedule'));
 					$row->addTextField('billingScheduleName')->required()->readonly();
-					$form->addHiddenValue('invoiceDueDate', dateConvertBack($guid, $values['billingScheduleInvoiceDueDate']));
+					$form->addHiddenValue('invoiceDueDate', Format::date($values['billingScheduleInvoiceDueDate']));
 			} else {
 				$row = $form->addRow();
 					$row->addLabel('invoiceDueDate', __('Invoice Due Date'));
