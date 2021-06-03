@@ -85,7 +85,7 @@ class AbsenceDates
         $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php');
         $canDelete = count($dates) > 1;
 
-        if ($canManage || $absence['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+        if ($canManage || $absence['gibbonPersonID'] == $this->session->get('gibbonPersonID')) {
             $table->addActionColumn()
                 ->addParam('gibbonStaffAbsenceID', $gibbonStaffAbsenceID)
                 ->addParam('gibbonStaffAbsenceDateID')
