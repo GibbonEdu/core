@@ -986,5 +986,7 @@ UPDATE `gibbonPlannerEntry` SET `gibbonUnitID`=NULL WHERE `gibbonUnitID`=0;end
 UPDATE `gibbonUnit` SET `gibbonPersonIDLastEdit`=gibbonPersonIDCreator WHERE `gibbonPersonIDLastEdit`=0;end
 UPDATE `gibbonStaffApplicationForm` SET `gibbonPersonID`=NULL WHERE `gibbonPersonID`=0;end
 UPDATE `gibbonTTDayRowClass` SET `gibbonSpaceID`=NULL WHERE `gibbonSpaceID`=0;end
+UPDATE `gibbonPerson` SET `dob`=NULL WHERE `dob`='0000-00-00';end
+UPDATE `gibbonPersonUpdate` SET `dob`=NULL WHERE `dob`='0000-00-00';end
 
 ";

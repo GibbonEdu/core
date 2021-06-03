@@ -22,20 +22,28 @@ namespace Gibbon\Domain\User;
 use Gibbon\Services\Format;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\ScrubbableGateway;
+use Gibbon\Domain\Traits\Scrubbable;
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\ScrubByTimestamp;
 
 /**
  * @version v22
  * @since   v22
  */
-class PersonalDocumentGateway extends QueryableGateway
+class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGateway
 {
     use TableAware;
+    use Scrubbable;
+    use ScrubByTimestamp;
 
     private static $tableName = 'gibbonPersonalDocument';
     private static $primaryKey = 'gibbonPersonalDocumentID';
 
     private static $searchableColumns = [];
+
+    private static $scrubbableKey = 'timestamp';
+    private static $scrubbableColumns = ['documentNumber' => null,'documentName' => null,'documentType' => null,'dateIssue' => null,'dateExpiry' => null,'filePath' => 'deleteFile','country' => null];
 
     /**
      * @param QueryCriteria $criteria
