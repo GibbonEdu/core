@@ -328,7 +328,7 @@ else {
 								$row->addContent($recipient['contactType']);
 								$row->addContent($recipient['contactDetail']);
 								$row->addContent($confirmationIndicator($recipient));
-								$row->addContent(dateConvertBack($guid, substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
+								$row->addContent(Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
 
 								if ($sender == true) {
 									$row->onlyIf($recipient['confirmed'] == 'N')

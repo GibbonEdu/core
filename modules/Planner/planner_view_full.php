@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     }
 
                     // target of the planner
-                    $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : dateConvertBack($guid, $date);
+                    $target = ($viewBy === 'class') ? $values['course'].'.'.$values['class'] : Format::date($date);
 
                     // planner's parameters
                     $params = [];
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Date').'</span><br/>';
-                        echo dateConvertBack($guid, $values['date']);
+                        echo Format::date($values['date']);
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Time').'</span><br/>';
@@ -538,7 +538,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo Format::alert(__('Your teacher has indicated a <b><u>{timeCap} minute</u></b> time cap for this work. Aim to spend no more than {timeCap} minutes on this {homeworkName} and let your teacher know if you were unable to complete it within this time frame.', ['timeCap' => $values['homeworkTimeCap'], 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]), 'message');
                             }
 
-                            echo "<span style='font-weight: bold; color: #CC0000'>".sprintf(__('Due on %1$s at %2$s.'), dateConvertBack($guid, substr($values['homeworkDueDateTime'], 0, 10)), substr($values['homeworkDueDateTime'], 11, 5)).'</span><br/>';
+                            echo "<span style='font-weight: bold; color: #CC0000'>".sprintf(__('Due on %1$s at %2$s.'), Format::date(substr($values['homeworkDueDateTime'], 0, 10)), substr($values['homeworkDueDateTime'], 11, 5)).'</span><br/>';
                             echo $values['homeworkDetails'].'<br/>';
                             if ($values['homeworkSubmission'] == 'Y') {
                                 if ($values['role'] == 'Student' and ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses')) {
@@ -606,7 +606,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 															<?php echo $rowVersion['status'] ?><br/>
 														</td>
 														<td>
-															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.Format::date(substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
@@ -707,7 +707,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     echo "<span style='font-size: 115%; font-weight: bold'>Online Submission</span><br/>";
                                     echo '<i>'.__('Online submission is {required} for this {homeworkName}.', ['homeworkName' => mb_strtolower(__($homeworkNameSingular)), 'required' => '<b>'.strtolower($values['homeworkSubmissionRequired']).'</b>']).'</i><br/>';
                                     if (date('Y-m-d') < $values['homeworkSubmissionDateOpen']) {
-                                        echo '<i>Submission opens on '.dateConvertBack($guid, $values['homeworkSubmissionDateOpen']).'</i>';
+                                        echo '<i>Submission opens on '.Format::date($values['homeworkSubmissionDateOpen']).'</i>';
                                     } else {
                                         //Check previous submissions!
 
@@ -763,7 +763,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 															<?php echo $rowVersion['status'] ?><br/>
 														</td>
 														<td>
-															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+															<?php echo substr($rowVersion['timestamp'], 11, 5).' '.Format::date(substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 														</td>
 														<td style='max-width: 180px; word-wrap: break-word;'>
 															<?php
@@ -897,7 +897,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 														?>
 															</td>
 															<td>
-																<?php echo substr($rowVersion['timestamp'], 11, 5).' '.dateConvertBack($guid, substr($rowVersion['timestamp'], 0, 10)) ?><br/>
+																<?php echo substr($rowVersion['timestamp'], 11, 5).' '.Format::date(substr($rowVersion['timestamp'], 0, 10)) ?><br/>
 															</td>
 															<td>
 																<?php
@@ -1001,7 +1001,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 												<b><?php echo __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]) ?> *</b><br/>
 											</td>
 											<td>
-												<?php if ($rowMyHomework['homework'] == 'Y') { echo dateConvertBack($guid, substr($rowMyHomework['homeworkDueDateTime'], 0, 10)); } ?>
+												<?php if ($rowMyHomework['homework'] == 'Y') { echo Format::date(substr($rowMyHomework['homeworkDueDateTime'], 0, 10)); } ?>
 											</td>
 										</tr>
 										<tr >

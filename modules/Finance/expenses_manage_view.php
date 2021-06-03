@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                                 <span class="emphasis small"><?php echo __('Date of payment, not entry to system.') ?></span>
                                             </td>
                                             <td class="right">
-                                                <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['paymentDate']) ?>" type="text" class="standardWidth">
+                                                <input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo Format::date($row['paymentDate']) ?>" type="text" class="standardWidth">
                                             </td>
                                         </tr>
                                         <tr id="paymentAmountRow">

@@ -193,10 +193,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
                             $row = $form->addRow();
                                 $row->addLabel('date', __('Date'));
-                                $row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required();
+                                $row->addDate('date')->setValue(Format::date($values['date']))->required();
                         } else {
                             $form->addHiddenValue('gibbonSchoolYearTermID',$values['gibbonSchoolYearTermID']);
-                            $form->addHiddenValue('date', dateConvertBack($guid, $values['date']));
+                            $form->addHiddenValue('date', Format::date($values['date']));
                         }
 
                         $form->addRow()->addHeading(__('Assessment'));

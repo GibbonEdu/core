@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+
 use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage_add.php') == false) {
@@ -147,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $results = $pdo->executeQuery($data, $sql);
                 $classSlots = array_reduce($results->fetchAll(), function($array, $item) use ($guid) {
                     $key = $item['gibbonTTDayRowClassID'].'-'.$item['date'];
-                    $array[$key] = dateConvertBack($guid, $item['date']).' ('.$item['day'].' - '.$item['period'].')';
+                    $array[$key] = Format::date($item['date']).' ('.$item['day'].' - '.$item['period'].')';
                     return $array;
                 }, array());
 

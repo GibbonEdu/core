@@ -93,11 +93,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 } else {
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Start Date').'</span><br/>';
-                    echo dateConvertBack($guid, $row['programStart']);
+                    echo Format::date($row['programStart']);
                     echo '</td>';
                     echo "<td style='width: 33%; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".__('End Date').'</span><br/>';
-                    echo dateConvertBack($guid, $row['programEnd']);
+                    echo Format::date($row['programEnd']);
                     echo '</td>';
                 }
                 echo "<td style='width: 33%; vertical-align: top'>";

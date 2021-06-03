@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 }
             }
         } else {
-            $extra = dateConvertBack($guid, $date);
+            $extra = Format::date($date);
         }
 
         if ($proceed == false) {
@@ -247,12 +247,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($viewBy == 'date') {
                 $row = $form->addRow();
                     $row->addLabel('date', __('Date'));
-                    $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required()->readonly();
+                    $row->addDate('date')->setValue(Format::date($date))->required()->readonly();
             }
             else {
                 $row = $form->addRow();
                     $row->addLabel('date', __('Date'));
-                    $row->addDate('date')->setValue(dateConvertBack($guid, $nextDate))->required();
+                    $row->addDate('date')->setValue(Format::date($nextDate))->required();
             }
 
             $nextTimeStart = (isset($nextTimeStart)) ? substr($nextTimeStart, 0, 5) : null;

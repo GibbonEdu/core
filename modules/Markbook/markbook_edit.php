@@ -213,12 +213,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         echo '</td>';
                         echo '<td>';
                         if (!empty($row['date']) && $row['date'] != '0000-00-00') {
-                            echo dateConvertBack($guid, $row['date']);
+                            echo Format::date($row['date']);
                         }
                         echo '</td>';
                         echo '<td>';
                         if ($row['complete'] == 'Y') {
-                            echo dateConvertBack($guid, $row['completeDate']);
+                            echo Format::date($row['completeDate']);
                         }
                         echo '</td>';
                         echo '<td>';

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //$role can be teacher, student or parent. If no role is specified, the default is teacher.
 function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role = 'teacher')
@@ -111,7 +112,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['name'].'</u></b></span><br/>';
                     $output .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                     if ($rowInternalAssessment['completeDate'] != '') {
-                        $output .= __('Marked on').' '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
+                        $output .= __('Marked on').' '.Format::date($rowInternalAssessment['completeDate']).'<br/>';
                     } else {
                         $output .= __('Unmarked').'<br/>';
                     }

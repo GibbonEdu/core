@@ -665,9 +665,9 @@ if ($proceed == false) {
 
             $row = $table->addRow();
             $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);
-            $row->addDate('siblingDOB'.$rowCount)->setSize(10)->setValue(dateConvertBack($guid, $rowSibling['dob']));
+            $row->addDate('siblingDOB'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dob']));
             $row->addTextField('siblingSchool'.$rowCount)->maxLength(50)->setSize(30)->setValue($session->get('organisationName'));
-            $row->addDate('siblingSchoolJoiningDate'.$rowCount)->setSize(10)->setValue(dateConvertBack($guid, $rowSibling['dateStart']));
+            $row->addDate('siblingSchoolJoiningDate'.$rowCount)->setSize(10)->setValue(Format::date($rowSibling['dateStart']));
 
             $rowCount++;
         }
@@ -684,7 +684,7 @@ if ($proceed == false) {
         // Fill in some info from any sibling applications
         if (!empty($linkedApplications[$i-1])) {
             $nameField->setValue($linkedApplications[$i-1]['officialName']);
-            $dobField->setValue(dateConvertBack($guid, $linkedApplications[$i-1]['dob']));
+            $dobField->setValue(Format::date($linkedApplications[$i-1]['dob']));
         }
     }
 

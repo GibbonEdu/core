@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Start Date').'</span><br/>';
-            echo '<i>'.dateConvertBack($guid, $row['dateStart']).'</i>';
+            echo '<i>'.Format::date($row['dateStart']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year of Entry').'</span><br/>';
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Date of Birth').'</span><br/>';
-            echo '<i>'.dateConvertBack($guid, $row['dob']).'</i>';
+            echo '<i>'.Format::date($row['dob']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Current/Last School').'</span><br/>';
@@ -570,7 +570,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
-                        echo '<i>'.dateConvertBack($guid, $row["siblingDOB$i"]).'</i>';
+                        echo '<i>'.Format::date($row["siblingDOB$i"]).'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s School'), $siblingCount).'</span><br/>';
@@ -597,7 +597,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
-                            echo '<i>'.dateConvertBack($guid, $rowMember['dob']).'</i>';
+                            echo '<i>'.Format::date($rowMember['dob']).'</i>';
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s School'), $siblingCount).'</span><br/>';

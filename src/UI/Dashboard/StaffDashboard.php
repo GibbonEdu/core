@@ -333,10 +333,10 @@ class StaffDashboard implements OutputableInterface
                         $formGroups[$count][3] .= '<td>';
                         $formGroups[$count][3] .= '<b>'.Format::name('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
                         if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
-                            $formGroups[$count][3] .= __('Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
-                            $formGroups[$count][3] .= __('Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
+                            $formGroups[$count][3] .= __('Date Updated').': '.Format::date(substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
+                            $formGroups[$count][3] .= __('Incident Date').': '.Format::date($rowBehaviour['date']).'<br/>';
                         } else {
-                            $formGroups[$count][3] .= dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
+                            $formGroups[$count][3] .= Format::date($rowBehaviour['date']).'<br/>';
                         }
                         $formGroups[$count][3] .= '</td>';
                         $formGroups[$count][3] .= "<td style='text-align: center'>";

@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
     $row = $form->addRow();
         $row->addLabel('currentDate', __('Date'));
-        $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
+        $row->addDate('currentDate')->required()->setValue(Format::date($currentDate));
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
 
                 //Get last 5 school days from currentDate within the last 100
-                $timestamp = dateConvertToTimestamp($currentDate);
+                $timestamp = Format::timestamp($currentDate);
 
                 // Get school-wide attendance logs
                 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);

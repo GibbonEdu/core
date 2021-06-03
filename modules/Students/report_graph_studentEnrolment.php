@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\UI\Chart\Chart;
 
 //Module includes
@@ -95,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
+        $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
+        $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $row = $form->addRow();
         $row->addLabel('interval', __('Interval'));

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use DateTime;
+use Gibbon\Services\Format;
 
 /**
  * Date
@@ -59,7 +60,7 @@ class Date extends TextField
     {
         global $guid;
 
-        $this->setAttribute('value', dateConvertBack($guid, $value));
+        $this->setAttribute('value', Format::date($value));
 
         return $this;
     }
@@ -159,7 +160,7 @@ class Date extends TextField
 
         $this->addValidation('Validate.Format', $validationFormat);
 
-        $today = dateConvertBack($guid, date('Y-m-d'));
+        $today = Format::date(date('Y-m-d'));
 
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 

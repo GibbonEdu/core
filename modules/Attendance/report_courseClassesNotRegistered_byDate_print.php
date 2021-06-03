@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     //Proceed!
     echo '<h2>';
     if ($dateStart != $dateEnd) {
-        echo __('Classes Not Registered').', '.dateConvertBack($guid, $dateStart).'-'.dateConvertBack($guid, $dateEnd);
+        echo __('Classes Not Registered').', '.Format::date($dateStart).'-'.Format::date($dateEnd);
     } else {
-        echo __('Classes Not Registered').', '.dateConvertBack($guid, $dateStart);
+        echo __('Classes Not Registered').', '.Format::date($dateStart);
     }
     echo '</h2>';
 

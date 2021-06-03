@@ -142,9 +142,9 @@ else {
 					$row = $form->addRow()->addClass('messageWall');
 				        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 						$col = $row->addColumn('date1')->addClass('stacked');
-						$col->addDate('date1')->setValue(dateConvertBack($guid, $values['messageWall_date1']))->required();
-						$col->addDate('date2')->setValue(dateConvertBack($guid, $values['messageWall_date2']));
-						$col->addDate('date3')->setValue(dateConvertBack($guid, $values['messageWall_date3']));
+						$col->addDate('date1')->setValue(Format::date($values['messageWall_date1']))->required();
+						$col->addDate('date2')->setValue(Format::date($values['messageWall_date2']));
+						$col->addDate('date3')->setValue(Format::date($values['messageWall_date3']));
 				}
 
 				//Delivery by SMS

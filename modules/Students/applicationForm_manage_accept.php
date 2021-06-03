@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $body .= __('Form Group').': '.$formGroupName."<br/>";
                     }
                     if ($values['dateStart'] != '') {
-                        $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                        $body .= __('Start Date').': '.Format::date($values['dateStart'])."<br/>";
                     }
 
                     $mail = $container->get(Mailer::class);

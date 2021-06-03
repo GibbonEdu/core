@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -100,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             } else {
                 // Redirect back to View Timetable by Facility if we started there
                 if (isset($_POST['source']) && $_POST['source'] == 'tt') {
-                    $ttDate = dateConvertBack($guid, $dates[0]);
+                    $ttDate = Format::date($dates[0]);
                     $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$foreignKeyID.'&ttDate='.$ttDate;
                 }
 

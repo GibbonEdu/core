@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
+        $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
+        $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
             $formGroups = $result->fetchAll();
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_formGroupsNotRegistered_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd)."'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
             echo "<table cellspacing='0' style='width: 100%'>";

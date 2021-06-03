@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo '</div>';
 	    } else {
             $values = $resultPerson->fetch();
-            $currentDate = dateConvertBack($guid, $values['date']);
+            $currentDate = Format::date($values['date']);
 
 			$form = Form::create('attendanceEdit', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/attendance_take_byPerson_editProcess.php');
 			$form->setAutocomplete('off');
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 			$row = $form->addRow();
 				$row->addLabel('time', __('Time'));
-				$row->addTextField('time')->readonly()->setValue(substr($values['timestampTaken'], 11) . ' ' . dateConvertBack($guid, substr($values['timestampTaken'], 0, 10)));
+				$row->addTextField('time')->readonly()->setValue(substr($values['timestampTaken'], 11) . ' ' . Format::date(substr($values['timestampTaken'], 0, 10)));
 
 			$row = $form->addRow();
 				$row->addLabel('where', __('Where'));

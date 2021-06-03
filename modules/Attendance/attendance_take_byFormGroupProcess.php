@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
@@ -29,7 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".Format::date($currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byFormGroup.php') == false) {
     $URL .= '&return=error0';

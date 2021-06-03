@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
-                	$row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required()->readonly();
+                	$row->addDate('date')->setValue(Format::date($values['date']))->required()->readonly();
 
                 //Date
                 $row = $form->addRow();
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         if ($rowSelect['gibbonPlannerEntryID'] == $values['gibbonPlannerEntryID']) {
                             $selected = 'selected';
                         }
-                        $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(dateConvertBack($guid, $rowSelect['date']), 0, 5).$submission;
+                        $lessons[$rowSelect['gibbonPlannerEntryID']] = htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).' '.htmlPrep($rowSelect['lesson']).' - '.substr(Format::date($rowSelect['date']), 0, 5).$submission;
                     }
                 }
 

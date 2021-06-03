@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
-
 
 //Get's a count of absent days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
 function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd, $gibbonCourseClassID = 0)
@@ -93,7 +93,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 
 //Get last N school days from currentDate within the last 100
 function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = false ) {
-    $timestamp = dateConvertToTimestamp($date);
+    $timestamp = Format::timestamp($date);
     if ($inclusive == true)  $timestamp += 86400;
 
     $count = 0;

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_edit.php') == false) {
     // Access denied
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
             $row = $form->addRow();
                 $row->addLabel('dateDisplay', __('Date'))->description(__('Must be unique.'));
-                $row->addTextField('dateDisplay')->readonly()->setValue(dateConvertBack($guid, $values['date']));
+                $row->addTextField('dateDisplay')->readonly()->setValue(Format::date($values['date']));
 
             $types = array(
                 'School Closure' => __('School Closure'),

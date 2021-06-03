@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage_edit.php') == false) {
     // Access denied
@@ -90,11 +91,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $row = $form->addRow();
                 $row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
-                $row->addDate('invoiceIssueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceIssueDate']))->required();
+                $row->addDate('invoiceIssueDate')->setValue(Format::date($resultRow['invoiceIssueDate']))->required();
 
             $row = $form->addRow();
                 $row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('Final payment date.').'<br/>')->append(__('Format:').' ')->append($session->get('i18n')['dateFormat']);
-                $row->addDate('invoiceDueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceDueDate']))->required();
+                $row->addDate('invoiceDueDate')->setValue(Format::date($resultRow['invoiceDueDate']))->required();
 
             $row = $form->addRow();
                 $row->addFooter();

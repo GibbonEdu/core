@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         if ($row['purchaseDate'] == '') {
             $x .= __('Unknown');
         } else {
-            $x .= dateConvertBack($guid, $row['purchaseDate']);
+            $x .= Format::date($row['purchaseDate']);
         }
         if ($row['vendor'] != '') {
             $x .= "; ".$row['vendor'];

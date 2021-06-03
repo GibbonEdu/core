@@ -215,7 +215,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                         }
                     }
                     if ($rowEntry['completeDate'] != '') {
-                        echo __('Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
+                        echo __('Marked on').' '.Format::date($rowEntry['completeDate']).'<br/>';
                     } else {
                         echo __('Unmarked').'<br/>';
                     }
@@ -377,11 +377,11 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                                 }
 
                                 if ($rowWork['type'] == 'File') {
-                                    echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
+                                    echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$session->get('absoluteURL').'/'.$rowWork['location']."'>$linkText</a></span>";
                                 } elseif ($rowWork['type'] == 'Link') {
-                                    echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                    echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                 } else {
-                                    echo "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
+                                    echo "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), Format::date(substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
                                 }
                             } else {
                                 if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {

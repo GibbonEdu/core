@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 //Let's go!
                 $row = $result->fetch();
                 if ($viewBy == 'date') {
-                    $extra = dateConvertBack($guid, $date);
+                    $extra = Format::date($date);
                 } else {
                     $extra = $row['course'].'.'.$row['class'];
                 }

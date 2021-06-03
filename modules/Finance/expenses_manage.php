@@ -313,7 +313,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 $row->addContent(__($expense['status']))
                                     ->append('<br/><span class="small emphasis">'.__($expense['paymentReimbursementStatus']).'</span>');
                                 $row->addContent(number_format($expense['cost'], 2, '.', ','));
-                                $row->addContent(dateConvertBack($guid, substr($expense['timestampCreator'], 0, 10)));
+                                $row->addContent(Format::date(substr($expense['timestampCreator'], 0, 10)));
 
                             if ($budgetsActionAccess) {
                                 $col = $row->addColumn()->addClass('inline');

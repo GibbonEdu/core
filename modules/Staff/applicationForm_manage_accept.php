@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $body .= __('Website').': '.$website."<br/>";
                         }
                         if ($values['dateStart'] != '') {
-                            $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                            $body .= __('Start Date').': '.Format::date($values['dateStart'])."<br/>";
                         }
                         $body .= __('Job Type').': '.__($values['type'])."<br/>";
                         $body .= __('Job Title').': '.__($values['jobTitle'])."<br/>";

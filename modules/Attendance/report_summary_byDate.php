@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
+        $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
+        $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         } else {
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module').'/report_summary_byDate_print.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
             echo '</div>';
 
             echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
@@ -272,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
             if ($reportType == 'types') {
 
-                $href= $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_summary_byDate.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
+                $href= $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/report_summary_byDate.php&dateStart='.Format::date($dateStart).'&dateEnd='.Format::date($dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&group=' . $group . '&sort=' . $sort;
 
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.__($attendanceCodes['In'][$i]['scope']).'">';

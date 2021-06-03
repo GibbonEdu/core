@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 }
 
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
-                echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
+                echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".Format::date($row['dob']).'</span><br/>';
                 echo '<b>'.$session->get('organisationNameShort').' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
                 echo '<b>'.__('Year/Form')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['form'].'</span><br/>';
                 echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$session->get('gibbonSchoolYearName').'</span><br/>';

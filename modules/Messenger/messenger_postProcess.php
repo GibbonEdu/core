@@ -2078,7 +2078,7 @@ else {
                     }
 
                     $sender = Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff');
-                    $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
+                    $date = Format::date(date('Y-m-d')).' '.date('H:i:s');
 
                     $mail->renderBody('mail/email.twig.html', [
 						'title'  => $subject,

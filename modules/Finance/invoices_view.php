@@ -314,9 +314,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             if (is_null($row['invoiceIssueDate'])) {
                                 echo 'NA<br/>';
                             } else {
-                                echo dateConvertBack($guid, $row['invoiceIssueDate']).'<br/>';
+                                echo Format::date($row['invoiceIssueDate']).'<br/>';
                             }
-                            echo "<span style='font-style: italic; font-size: 75%'>".dateConvertBack($guid, $row['invoiceDueDate']).'</span>';
+                            echo "<span style='font-style: italic; font-size: 75%'>".Format::date($row['invoiceDueDate']).'</span>';
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] == 'Issued') {

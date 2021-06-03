@@ -158,10 +158,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $infoRowLines = max($infoRowLines, count($termList));
         } else {
             $excel->getActiveSheet()->setCellValue('B2', __('Start Date'))
-                ->setCellValue('B3', dateConvertBack($guid, $activity['programStart']));
+                ->setCellValue('B3', Format::date($activity['programStart']));
 
             $excel->getActiveSheet()->setCellValue('C2', __('End Date'))
-                ->setCellValue('C3', dateConvertBack($guid, $activity['programEnd']));
+                ->setCellValue('C3', Format::date($activity['programEnd']));
         }
 
         // SCHOOL YEAR
@@ -266,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             $excel->getActiveSheet()->getStyle(num2alpha($i + 1).($columnStart + 1 + $columnEnd))->getAlignment()->setWrapText(true);
 
             $excel->getActiveSheet()->setCellValue(num2alpha($i + 1).($columnStart + 1 + $columnEnd),
-                substr($sessions[$i]['timestampTaken'], 11)."\r".dateConvertBack($guid, substr($sessions[$i]['timestampTaken'], 0, 10)));
+                substr($sessions[$i]['timestampTaken'], 11)."\r".Format::date(substr($sessions[$i]['timestampTaken'], 0, 10)));
 
             $excel->getActiveSheet()->setCellValue(num2alpha($i + 1).($columnStart + 2 + $columnEnd),
                 Format::name('', $sessions[$i]['preferredName'], $sessions[$i]['surname'], 'Staff', false, true));

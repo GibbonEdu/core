@@ -94,8 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             } else {
                 //Scroll through days
 
-                $dateStartStamp = dateConvertToTimestamp($dateStart);
-                $dateEndStamp = dateConvertToTimestamp($dateEnd);
+                $dateStartStamp = Format::timestamp($dateStart);
+                $dateEndStamp = Format::timestamp($dateEnd);
                 for ($i = $dateStartStamp; $i <= $dateEndStamp; $i = ($i + 86400)) {
                     $date = date('Y-m-d', $i);
 
