@@ -295,64 +295,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $set .= 'gibbonPerson.ethnicity=:ethnicity, ';
                     }
                 }
-                if (isset($_POST['newcitizenship1On'])) {
-                    if ($_POST['newcitizenship1On'] == 'on') {
-                        $data['citizenship1'] = $_POST['newcitizenship1'];
-                        $set .= 'gibbonPerson.citizenship1=:citizenship1, ';
-                    }
-                }
-                if (isset($_POST['newcitizenship1PassportOn'])) {
-                    if ($_POST['newcitizenship1PassportOn'] == 'on') {
-                        $data['citizenship1Passport'] = $_POST['newcitizenship1Passport'];
-                        $set .= 'gibbonPerson.citizenship1Passport=:citizenship1Passport, ';
-                    }
-                }
-                if (isset($_POST['newcitizenship1PassportExpiryOn'])) {
-                    if ($_POST['newcitizenship1PassportExpiryOn'] == 'on') {
-                        $data['citizenship1PassportExpiry'] = $_POST['newcitizenship1PassportExpiry'] ?? null;
-                        $set .= 'gibbonPerson.citizenship1PassportExpiry=:citizenship1PassportExpiry, ';
-                    }
-                }
-                if (isset($_POST['newcitizenship2On'])) {
-                    if ($_POST['newcitizenship2On'] == 'on') {
-                        $data['citizenship2'] = $_POST['newcitizenship2'];
-                        $set .= 'gibbonPerson.citizenship2=:citizenship2, ';
-                    }
-                }
-                if (isset($_POST['newcitizenship2PassportOn'])) {
-                    if ($_POST['newcitizenship2PassportOn'] == 'on') {
-                        $data['citizenship2Passport'] = $_POST['newcitizenship2Passport'];
-                        $set .= 'gibbonPerson.citizenship2Passport=:citizenship2Passport, ';
-                    }
-                }
-                if (isset($_POST['newcitizenship2PassportExpiryOn'])) {
-                    if ($_POST['newcitizenship2PassportExpiryOn'] == 'on') {
-                        $data['citizenship2PassportExpiry'] = $_POST['newcitizenship2PassportExpiry'] ?? null;
-                        $set .= 'gibbonPerson.citizenship2PassportExpiry=:citizenship2PassportExpiry, ';
-                    }
-                }
                 if (isset($_POST['newreligionOn'])) {
                     if ($_POST['newreligionOn'] == 'on') {
                         $data['religion'] = $_POST['newreligion'];
                         $set .= 'gibbonPerson.religion=:religion, ';
-                    }
-                }
-                if (isset($_POST['newnationalIDCardNumberOn'])) {
-                    if ($_POST['newnationalIDCardNumberOn'] == 'on') {
-                        $data['nationalIDCardNumber'] = $_POST['newnationalIDCardNumber'];
-                        $set .= 'gibbonPerson.nationalIDCardNumber=:nationalIDCardNumber, ';
-                    }
-                }
-                if (isset($_POST['newresidencyStatusOn'])) {
-                    if ($_POST['newresidencyStatusOn'] == 'on') {
-                        $data['residencyStatus'] = $_POST['newresidencyStatus'];
-                        $set .= 'gibbonPerson.residencyStatus=:residencyStatus, ';
-                    }
-                }
-                if (isset($_POST['newvisaExpiryDateOn'])) {
-                    if ($_POST['newvisaExpiryDateOn'] == 'on') {
-                        $data['visaExpiryDate'] = !empty($_POST['newvisaExpiryDate'])? $_POST['newvisaExpiryDate'] : null;
-                        $set .= 'gibbonPerson.visaExpiryDate=:visaExpiryDate, ';
                     }
                 }
                 if (isset($_POST['newprofessionOn'])) {

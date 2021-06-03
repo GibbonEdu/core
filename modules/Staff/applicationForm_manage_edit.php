@@ -219,37 +219,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 // PERSONAL DOCUMENTS
                 $params = ['staff' => true, 'applicationForm' => true];
                 $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToForm($form, 'gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $params);
-                
-                // $row = $form->addRow();
-                //     $row->addLabel('citizenship1', __('Citizenship'));
-                //     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-                //     if (!empty($nationalityList)) {
-                //         $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
-                //     } else {
-                //         $row->addSelectCountry('citizenship1')->required();
-                //     }
-
-                // $countryName = ($session->has('country'))? __($session->get('country')).' ' : '';
-                // $row = $form->addRow();
-                //     $row->addLabel('citizenship1Passport', __('Citizenship Passport Number'))->description('');
-                //     $row->addTextField('citizenship1Passport')->maxLength(30);
-
-                // $row = $form->addRow();
-                //     $row->addLabel('nationalIDCardNumber', $countryName.__('National ID Card Number'));
-                //     $row->addTextField('nationalIDCardNumber')->maxLength(30);
-
-                // $row = $form->addRow();
-                //     $row->addLabel('residencyStatus', $countryName.__('Residency/Visa Type'));
-                //     $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-                //     if (!empty($residencyStatusList)) {
-                //         $row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
-                //     } else {
-                //         $row->addTextField('residencyStatus')->maxLength(30);
-                //     }
-
-                // $row = $form->addRow();
-                //     $row->addLabel('visaExpiryDate', $countryName.__('Visa Expiry Date'))->append("<br>".__('If relevant.'));
-                //     $row->addDate('visaExpiryDate');
 
                 $form->addRow()->addHeading(__('Contacts'));
 

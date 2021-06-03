@@ -169,52 +169,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</tr>';
                 echo '<tr>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Country of Birth').'</span><br/>';
-                echo '<i>'.htmlPrep($row['countryOfBirth']).'</i>';
-                echo '</td>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship').'</span><br/>';
-                echo '<i>'.htmlPrep($row['citizenship1']).'</i>';
-                echo '</td>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__('Passport Number').'</span><br/>';
-                echo '<i>'.htmlPrep($row['citizenship1Passport']).'</i>';
-                echo '</td>';
-                echo '</tr>';
-                echo '<tr>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>";
-                if ($session->get('country') == '') {
-                    echo '<b>'.__('National ID Card Number').'</b>';
-                } else {
-                    echo '<b>'.$session->get('country').' '.__('ID Card Number').'</b>';
-                }
-                echo '</span><br/>';
-                echo '<i>'.htmlPrep($row['nationalIDCardNumber']).'</i>';
-                echo '</td>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>";
-                if ($session->get('country') == '') {
-                    echo '<b>'.__('Residency/Visa Type').'</b>';
-                } else {
-                    echo '<b>'.$session->get('country').' '.__('Residency/Visa Type').'</b>';
-                }
-                echo '</span><br/>';
-                echo '<i>'.htmlPrep($row['residencyStatus']).'</i>';
-                echo '</td>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>";
-                if ($session->get('country') == '') {
-                    echo '<b>'.__('Visa Expiry Date').'</b>';
-                } else {
-                    echo '<b>'.$session->get('country').' '.__('Visa Expiry Date').'</b>';
-                }
-                echo '</span><br/>';
-                echo '<i>'.dateConvertBack($guid, $row['visaExpiryDate']).'</i>';
-                echo '</td>';
-                echo '</tr>';
-                echo '<tr>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                 echo '<i>'.htmlPrep($row['email']).'</i>';
                 echo '</td>';
