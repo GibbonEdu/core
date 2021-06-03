@@ -101,14 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                         $resultPlannerUpdate->execute($dataPlannerUpdate);
                 }
 
-                $keepUnit = null;
                 $gibbonUnitClassID = null;
-                if (isset($_POST['keepUnit'])) {
-                    $keepUnit = $_POST['keepUnit'];
-                }
+                $keepUnit = $_POST['keepUnit'] ?? null;
+
                 if ($keepUnit == 'Y') {
-                    $gibbonUnitClassID = $_POST['gibbonUnitClassID'];
-                    $gibbonUnitID = $row['gibbonUnitID'];
+                    $gibbonUnitClassID = $_POST['gibbonUnitClassID'] ?? null;
+                    $gibbonUnitID = !empty($row['gibbonUnitID']) ? $row['gibbonUnitID'] : null;
                 } else {
                     $gibbonUnitID = null;
                 }

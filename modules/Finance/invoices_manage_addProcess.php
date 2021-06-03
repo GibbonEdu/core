@@ -43,12 +43,12 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $invoiceDueDate = null;
         } elseif ($scheduling == 'Ad Hoc') {
             $gibbonFinanceBillingScheduleID = null;
-            $invoiceDueDate = $_POST['invoiceDueDate'] ?? '';
+            $invoiceDueDate = !empty($_POST['invoiceDueDate']) ? Format::dateConvert($_POST['invoiceDueDate']) : null;
         }
         $notes = $_POST['notes'] ?? '';
         $order = $_POST['order'] ?? array();
 
-        if (count($gibbonFinanceInvoiceeIDs) == 0 or $scheduling == '' or ($scheduling == 'Scheduled' and $gibbonFinanceBillingScheduleID == '') or ($scheduling == 'Ad Hoc' and $invoiceDueDate == '') or count($order) == 0) {
+        if (count($gibbonFinanceInvoiceeIDs) == 0 or $scheduling == '' or ($scheduling == 'Scheduled' and $gibbonFinanceBillingScheduleID == '') or ($scheduling == 'Ad Hoc' and empty($invoiceDueDate)) or count($order) == 0) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
@@ -185,7 +185,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                             $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                                             $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
                                         } else {
-                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => $invoiceDueDate, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                                             $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Family', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
                                         }
                                         $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
@@ -251,7 +251,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         $dataInvoiceAdd = array('gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
                                         $sqlInvoiceAdd = "UPDATE gibbonFinanceInvoice SET gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                     } else {
-                                        $dataInvoiceAdd = array('invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
+                                        $dataInvoiceAdd = array('invoiceDueDate' => $invoiceDueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
                                         $sqlInvoiceAdd = "UPDATE gibbonFinanceInvoice SET invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                     }
                                     $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
@@ -317,7 +317,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                             $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                                             $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Scheduled', gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID, notes=:notes, `key`=:key, status='Pending', separated='N', gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
                                         } else {
-                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
+                                            $dataInvoiceAdd = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID, 'invoiceDueDate' => $invoiceDueDate, 'notes' => $notes, 'key' => $key, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'));
                                             $sqlInvoiceAdd = "INSERT INTO gibbonFinanceInvoice SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID, invoiceTo='Company', billingScheduleType='Ad Hoc', status='Pending', invoiceDueDate=:invoiceDueDate, notes=:notes, `key`=:key, gibbonPersonIDCreator=:gibbonPersonIDCreator, timeStampCreator='".date('Y-m-d H:i:s')."'";
                                         }
                                         $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);
@@ -383,7 +383,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
                                         $dataInvoiceAdd = array('gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
                                         $sqlInvoiceAdd = "UPDATE gibbonFinanceInvoice SET gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                     } else {
-                                        $dataInvoiceAdd = array('invoiceDueDate' => Format::dateConvert($invoiceDueDate), 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
+                                        $dataInvoiceAdd = array('invoiceDueDate' => $invoiceDueDate, 'gibbonPersonIDUpdate' => $session->get('gibbonPersonID'), 'notes' => $rowInvoice['notes'].' '.$notes, 'gibbonFinanceInvoiceID' => $rowInvoice['gibbonFinanceInvoiceID']);
                                         $sqlInvoiceAdd = "UPDATE gibbonFinanceInvoice SET invoiceDueDate=:invoiceDueDate, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, notes=:notes, timeStampUpdate='".date('Y-m-d H:i:s')."' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
                                     }
                                     $resultInvoiceAdd = $connection2->prepare($sqlInvoiceAdd);

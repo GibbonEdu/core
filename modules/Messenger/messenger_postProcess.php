@@ -1941,7 +1941,7 @@ else {
 						$confirmed = 'N';
 					}
 					$data=array("gibbonMessengerID"=>$AI, "gibbonPersonID"=>$reportEntry[0], "targetType"=>$reportEntry[1], "targetID"=>$reportEntry[2], "contactType"=>$reportEntry[3], "contactDetail"=>$reportEntry[4], "key"=>$reportEntry[5], "confirmed" => $confirmed, "gibbonPersonIDListStudent" => $reportEntry[6]);
-					$sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, gibbonPersonIDListStudent=:gibbonPersonIDListStudent" ;
+					$sql="INSERT INTO gibbonMessengerReceipt SET gibbonMessengerID=:gibbonMessengerID, gibbonPersonID=:gibbonPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, confirmedTimestamp=NULL, gibbonPersonIDListStudent=:gibbonPersonIDListStudent" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

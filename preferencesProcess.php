@@ -30,8 +30,8 @@ $_POST = $validator->sanitize($_POST);
 
 $calendarFeedPersonal = $_POST['calendarFeedPersonal'] ?? '';
 $personalBackground = $_POST['personalBackground'] ?? '';
-$gibbonThemeIDPersonal = $_POST['gibbonThemeIDPersonal'] ?? null;
-$gibboni18nIDPersonal = $_POST['gibboni18nIDPersonal'] ?? null;
+$gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal']) ? $_POST['gibbonThemeIDPersonal'] : null;
+$gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal']) ? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=preferences.php';
