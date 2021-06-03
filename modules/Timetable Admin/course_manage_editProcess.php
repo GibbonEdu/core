@@ -50,11 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            if ($_POST['gibbonDepartmentID'] != '') {
-                $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
-            } else {
-                $gibbonDepartmentID = null;
-            }
+            $gibbonDepartmentID = !empty($_POST['gibbonDepartmentID']) ? $_POST['gibbonDepartmentID'] : null;
             $name = $_POST['name'] ?? '';
             $nameShort = $_POST['nameShort'] ?? '';
             $orderBy = $_POST['orderBy'] ?? '';

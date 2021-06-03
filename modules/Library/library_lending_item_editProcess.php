@@ -69,7 +69,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
                 }
                 $returnExpected = !empty($_POST['returnExpected']) ? Format::dateConvert($_POST['returnExpected']) : null;
                 $returnAction = $_POST['returnAction'] ?? '';
-                $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? '';
+                $gibbonPersonIDReturnAction = $_POST['gibbonPersonIDReturnAction'] ?? null;
 
 
                 //Write to database

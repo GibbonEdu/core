@@ -99,6 +99,7 @@ v22.0.00
         System: fixed translation issue in hooked Dashboard tabs
         System: fixed validation of the username field in Public Registration
         System: fixed installer not running migrations for cutting edge code
+        System: fixed blank IDs and blank date fields in the database
         Attendance: fixed non-prefillable logic for Take Attendance by Roll Group
         Attendance: fixed student attendance history when first weekday is Saturday
         Formal Assessment: fixed courses with multiple year groups causing duplicate Internal Assessment columns
