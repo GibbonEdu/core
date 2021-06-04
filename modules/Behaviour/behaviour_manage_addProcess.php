@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             //Proceed!
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+            $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
             $AI = $_GET['editID'] ?? '';
 
 
