@@ -112,8 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 $row->addContent(__('New Value'));
                 $row->addContent(__('Accept'));
 
+            $changeCount = 0;
+
             // Create a reusable function for adding comparisons to the form
-            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($conditions, $alerts) {
+            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($conditions, $alerts, $changeCount) {
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
                 $isNotMatching = ($oldValue != $newValue);
@@ -146,6 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 if ($isNotMatching) {
                     $row->addCheckbox($fieldName.'On'.$count)->checked(true)->setClass('textCenter');
                     $form->addHiddenValue($fieldName.$count, $newValues[$fieldName]);
+                    $changeCount++;
                 } else {
                     $row->addContent();
                 }
@@ -213,8 +216,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $form->addHiddenValue('count', $count);
             $form->addHiddenValue('count2', $count2);
 
-            $row = $form->addRow();
-                $row->addSubmit();
+            if ($changeCount > 0) {
+                $row = $form->addRow();
+                    $row->addSubmit();
+            }
 
             echo $form->getOutput();
         }
