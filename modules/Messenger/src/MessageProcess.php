@@ -52,6 +52,7 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $guid = $gibbon->getConfig('guid');
         $pdo = $container->get(Connection::class);
         $connection2 = $pdo->getConnection();
+        $session = $gibbon->session;
 
         // Setup session variables for this user
         $gibbon->session->loadSystemSettings($pdo);

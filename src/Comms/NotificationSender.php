@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\NotificationGateway;
@@ -206,7 +207,7 @@ class NotificationSender
      */
     protected function getNotificationSubject()
     {
-        return sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $this->session->get('systemName'), $this->session->get('organisationNameShort'), date('H:i'), dateConvertBack($this->session->guid(), date('Y-m-d')));
+        return sprintf(__('You have received a notification on %1$s at %2$s (%3$s %4$s)'), $this->session->get('systemName'), $this->session->get('organisationNameShort'), date('H:i'), Format::date(date('Y-m-d')));
     }
 
     /**
