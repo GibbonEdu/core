@@ -244,10 +244,15 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($staff) {
         $sqlWhere = '(';
         
+        try {
             $dataFormGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
             $sqlFormGroup = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
             $resultFormGroup = $connection2->prepare($sqlFormGroup);
             $resultFormGroup->execute($dataFormGroup);
+        } catch (\PDOException $e) {
+            $resultFormGroup = new \Gibbon\Database\Result();
+        }
+
         if ($resultFormGroup->rowCount() > 0) {
             while ($rowFormGroup = $resultFormGroup->fetch()) {
                 $dataPosts['form'.$rowFormGroup['gibbonFormGroupID']] = $rowFormGroup['gibbonFormGroupID'];
