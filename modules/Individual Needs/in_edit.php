@@ -263,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     }
 
                 // CUSTOM FIELDS
-                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table], $IEP['fields']);
+                $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table], $IEP['fields'] ?? []);
             }
 
             if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
