@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         $table->addActionColumn()
             ->addParam('gibbonRubricID')
             ->addParam('search', $criteria->getSearchText(true))
-            ->format(function ($rubric, $actions) use ($guid, $highestAction, $departmentGateway) {
+            ->format(function ($rubric, $actions) use ($session, $highestAction, $departmentGateway) {
                 $canEdit = false;
                 if ($highestAction == 'Manage Rubrics_viewEditAll') {
                     $canEdit = true;

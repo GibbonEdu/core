@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->addParam('gibbonSpacePersonID')
                     ->addParam('gibbonStaffID', $gibbonStaffID)
                     ->addParam('search', $search)
-                    ->format(function ($room, $actions) use ($guid) {
+                    ->format(function ($room, $actions) {
                         if ($room['usageType'] != 'Form Group' and $room['usageType'] != 'Timetable') {
                             $actions->addAction('delete', __('Delete'))
                                     ->setURL('/modules/Staff/staff_manage_edit_facility_delete.php');
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->addParam('gibbonStaffContractID')
                     ->addParam('gibbonStaffID', $gibbonStaffID)
                     ->addParam('search', $search)
-                    ->format(function ($staff, $actions) use ($guid) {
+                    ->format(function ($staff, $actions) {
                         $actions->addAction('edit', __('Edit'))
                             ->setURL('/modules/Staff/staff_manage_edit_contract_edit.php');
                     });

@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->addParam('gibbonActivityID')
         ->addParam('search', $criteria->getSearchText(true))
         ->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
-        ->format(function ($activity, $actions) use ($guid) {
+        ->format(function ($activity, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Activities/activities_manage_edit.php');
 

@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $table->setDescription(Format::alert(__('Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.'), 'warning'));
 
             $table->addColumn('name', __('Name'))
-                ->format(function ($adult) use ($guid) {
+                ->format(function ($adult) {
                     $name = Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent');
                     return Format::link('./index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=' . $adult['gibbonPersonID'], $name);
                 });

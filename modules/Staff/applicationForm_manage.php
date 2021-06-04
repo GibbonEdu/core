@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     $table->addActionColumn()
         ->addParam('gibbonStaffApplicationFormID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($row, $actions) use ($guid) {
+        ->format(function ($row, $actions) {
             if ($row['status'] == 'Pending' || $row['status'] == 'Waiting List') {
                 $actions->addAction('accept', __('Accept'))
                         ->setIcon('iconTick')

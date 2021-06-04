@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonHouseID')
-        ->format(function ($facilities, $actions) use ($guid) {
+        ->format(function ($facilities, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/School Admin/house_manage_edit.php');
 

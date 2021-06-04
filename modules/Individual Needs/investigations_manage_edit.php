@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                                 return $output;
                             });
                         $table->addColumn('name', __('Name'))
-                            ->format(function ($person) use ($guid) {
+                            ->format(function ($person) {
                                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
                             });
                         $table->addColumn('type', __('Type'))->translatable();

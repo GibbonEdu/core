@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $table->addActionColumn()
         ->addParam('gibbonStaffID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid) {
+        ->format(function ($person, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Staff/staff_manage_edit.php');
 

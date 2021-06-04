@@ -143,8 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $table->addMetaData('hidePagination', true);
 
-    $table->modifyRows(function ($i18n, $row) use ($guid) {
-        // if ($i18n['isInstalled']) return null;
+    $table->modifyRows(function ($i18n, $row) {
         if ($i18n['active'] == 'N') $row->addClass('error');
         return $row;
     });

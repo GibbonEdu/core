@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $table->addActionColumn()
         ->addParam('gibbonStringID')
-        ->format(function ($row, $actions) use ($guid) {
+        ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/System Admin/stringReplacement_manage_edit.php');
 

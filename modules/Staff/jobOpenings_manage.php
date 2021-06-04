@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     $table->addActionColumn()
         ->addParam('gibbonStaffJobOpeningID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid) {
+        ->format(function ($person, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Staff/jobOpenings_manage_edit.php');
 

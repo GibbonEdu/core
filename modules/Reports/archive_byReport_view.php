@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->width('25%')
-            ->format(function ($person) use ($guid) {
+            ->format(function ($person) {
                 return Format::nameLinked($person['gibbonPersonID'],'', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);
             });
 
