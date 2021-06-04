@@ -704,7 +704,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('countryOfBirth', __('Country of Birth'))->translatable();
                         $col->addColumn('ethnicity', __('Ethnicity'));
                         $col->addColumn('religion', __('Religion'));
-                
+
                         $col->addColumn('languageFirst', __('First Language'));
                         $col->addColumn('languageSecond', __('Second Language'));
                         $col->addColumn('languageThird', __('Third Language'));
@@ -755,7 +755,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
                         }
-                        
+
 
                     } elseif ($subpage == 'Family') {
 
@@ -1200,7 +1200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'], $table);
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'], $table) ?? '';
 
                         $col->addColumn('medicalConditions', __('Medical Conditions?'))
                             ->addClass('col-span-3')
@@ -1216,7 +1216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
 
-                        $fields = is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
+                        $fields = !empty($medical['fields']) && is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
                         echo $table->render(!empty($medical) ? [$medical + $fields] : []);
 
                         // MEDICAL CONDITIONS
