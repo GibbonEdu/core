@@ -233,9 +233,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
                     $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params);
                     foreach ($documents as $document) {
-                        $fields = json_decode($document['fields']);
-                        foreach ($fields as $field) {
-                            $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? null;
+                        $documentFields = json_decode($document['fields']);
+                        foreach ($documentFields as $field) {
+                            $value = !empty($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field]) ? $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] : null;
+
+                            if ($field == 'dateExpiry' || $field == 'dateIssue') {
+                                $value = Format::dateConvert($value);
+                            }
+
                             if ($document[$field] != $value) {
                                 $dataChanged = true;
                             }
