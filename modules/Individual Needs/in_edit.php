@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     $archivedIEP = $archivedIEPs[$gibbonINArchiveID];
                 }
 
-                $archiveOptions = array_map(function($item) use ($guid) {
+                $archiveOptions = array_map(function($item) {
                     return $item['archiveTitle'].' ('.Format::date(substr($item['archiveTimestamp'], 0, 10)).')';
                 }, $archivedIEPs);
 

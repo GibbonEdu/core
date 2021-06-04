@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSearchSubmit($gibbon->session);
+            $row->addSearchSubmit($session);
 
         echo $form->getOutput();
     }
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $activityAttendance = $activityGateway->queryActivityAttendanceByDate($criteria, $session->get('gibbonSchoolYearID'), $dateType, $date);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('attendance_byDate', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('attendance_byDate', $criteria)->setViewMode($viewMode, $session);
 
     $table->setTitle(__('Activity Attendance by Date'));
 
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $table->addColumn('attendance', __('Attendance'))->translatable();
     $table->addColumn('activity', __('Activity'));
     $table->addColumn('provider', __('Provider'))
-        ->format(function($activity) use ($guid){
+        ->format(function($activity) use ($session){
             return ($activity['provider'] == 'School')? $session->get('organisationNameShort') : __('External');
         });
 

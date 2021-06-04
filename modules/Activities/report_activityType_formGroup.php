@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $session);
 
     $table->setTitle(__('Activity Type by Form Group'));
 
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $table->addColumn('student', __('Student'))
         ->width('25%')
         ->sortable(['surname', 'preferredName'])
-        ->format(function ($student) use ($guid) {
+        ->format(function ($student) use ($session) {
             $title = implode('<br>', $student['activities']);
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities';

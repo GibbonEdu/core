@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_myStudentH
     $table->addColumn('student')
         ->notSortable()
         ->addClass('h-full')
-        ->format(function($values) use ($guid, $gibbon) {
+        ->format(function($values) {
             $photo = Format::userPhoto($values['image_240'], 'md', '');
             $title = Format::name('', $values['preferredName'], $values['surname'], 'Student', false, true).'<br/>'.Format::date($values['dob']);
             

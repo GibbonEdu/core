@@ -60,8 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // Build a set of module data, flagging orphaned modules that do not appear to be in the modules folder.
     // Also checks for available updates by comparing version numbers for Additional modules.
-    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$moduleFolders, $gibbon) {
-        if (array_search($gibbon->session->get('absolutePath').'/modules/'.$module['name'], $moduleFolders) === false) {
+    $modules->transform(function (&$module) use ($session, $version, &$orphans, &$moduleFolders) {
+        if (array_search($session->get('absolutePath').'/modules/'.$module['name'], $moduleFolders) === false) {
             $module['orphaned'] = true;
             $orphans[] = $module;
             return;
@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // Build a set of uninstalled modules by checking the $modules DataSet.
     // Validates the manifest file and grabs the module details from there.
-    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames, $gibbon, $version) {
-        $moduleName = substr($modulePath, strlen($gibbon->session->get('absolutePath').'/modules/'));
+    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames, $session, $version) {
+        $moduleName = substr($modulePath, strlen($session->get('absolutePath').'/modules/'));
         if (!in_array($moduleName, $moduleNames)) {
             $module = getModuleManifest($moduleName, $guid);
             $versionFromFile = getModuleVersion($module['name'], $guid);

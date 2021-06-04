@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     $table->addActionColumn()
         ->addParam('gibbonSpaceID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($facilities, $actions) use ($guid) {
+        ->format(function ($facilities, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/School Admin/space_manage_edit.php');
 

@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo $form->getOutput();
 
-            $linkedName = function ($person) use ($guid) {
+            $linkedName = function ($person) {
                 $isStudent = stripos($person['role'], 'Student') !== false;
                 $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
                 return $isStudent

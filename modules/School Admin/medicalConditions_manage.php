@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonMedicalConditionID')
-        ->format(function ($facilities, $actions) use ($guid) {
+        ->format(function ($facilities, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/School Admin/medicalConditions_manage_edit.php');
 

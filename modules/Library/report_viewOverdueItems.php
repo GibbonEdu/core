@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     $table->addActionColumn()
         ->addParam('gibbonLibraryItemID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid) {
+        ->format(function ($person, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Library/library_lending_item.php');
         });

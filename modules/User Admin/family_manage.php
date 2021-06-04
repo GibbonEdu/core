@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $table->addActionColumn()
         ->addParam('gibbonFamilyID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($family, $actions) use ($guid) {
+        ->format(function ($family, $actions) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/family_manage_edit.php');
 
