@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         'required'              => $_POST['required'] ?? 'N',
         'document'              => $_POST['document'] ?? '',
         'fields'                => $_POST['fields'] ?? [],
-        'sequenceNumber'        => $_POST['sequenceNumber'] ?? 0,
         'activePersonStudent'   => $_POST['activePersonStudent'] ?? 0,
         'activePersonStaff'     => $_POST['activePersonStaff'] ?? 0,
         'activePersonParent'    => $_POST['activePersonParent'] ?? 0,

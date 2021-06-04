@@ -67,10 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         $row->addLabel('required', __('Required'));
         $row->addYesNo('required')->required();
 
-    $row = $form->addRow();
-        $row->addLabel('sequenceNumber', __('Sequence Number'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonPersonalDocumentType', $values['sequenceNumber'])->maxLength(3);
-
     $form->addRow()->addHeading(__('Configure'));
 
     $row = $form->addRow();
