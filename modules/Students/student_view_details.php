@@ -1200,7 +1200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     : Format::small(__('Unknown'));
                             });
 
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'], $table) ?? '';
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Medical Form', [], $medical['fields'] ?? '', $table);
 
                         $col->addColumn('medicalConditions', __('Medical Conditions?'))
                             ->addClass('col-span-3')
