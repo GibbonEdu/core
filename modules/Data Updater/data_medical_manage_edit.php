@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $changeCount = 0;
 
             // Create a reusable function for adding comparisons to the form
-            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($conditions, $alerts, $changeCount) {
+            $comparisonFields = function ($form, $oldValues, $newValues, $fieldName, $label, $count = '') use ($conditions, $alerts, &$changeCount) {
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
                 $isNotMatching = ($oldValue != $newValue);
