@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Reports\Sources;
 
 use Gibbon\Module\Reports\DataSource;
+use Gibbon\Services\Format;
 
 class ClassTeachers extends DataSource
 {
@@ -60,7 +61,7 @@ class ClassTeachers extends DataSource
             $values = $result->fetchAll();
 
             foreach ($values as $key => &$value) {
-                $value['fullName'] = formatName($value['title'], substr($value['preferredName'], 0, 1).'.', $value['surname'], 'Staff', false, false);
+                $value['fullName'] = Format::name($value['title'], substr($value['preferredName'], 0, 1).'.', $value['surname'], 'Staff', false, false);
             }
         }
 
