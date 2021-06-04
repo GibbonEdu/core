@@ -98,8 +98,9 @@ class PersonalDocuments extends Input
                 $output .= '<span class="font-normal text-xxs">'.__('N/A');
                 $output .= '<input class="document-omit ml-2" type="checkbox" value="Y" name="'.$name.'['.$document['gibbonPersonalDocumentTypeID'].'][omit]" '.(!empty($document['gibbonPersonalDocumentID']) && $fieldsUsed == 0? 'checked' : '').'>';
                 $output .= '</span>';
-                $output .= '</div>';
             }
+
+            $output .= '</div>';
 
             $output .= !empty($document['description']) ? '<p class="m-0 p-4 pb-0 font-normal text-xxs text-gray-600">'.$document['description'].'</p>' : '';
 
