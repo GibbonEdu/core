@@ -989,5 +989,6 @@ UPDATE `gibbonTTDayRowClass` SET `gibbonSpaceID`=NULL WHERE `gibbonSpaceID`=0;en
 UPDATE `gibbonPerson` SET `dob`=NULL WHERE `dob`='0000-00-00';end
 UPDATE `gibbonPersonUpdate` SET `dob`=NULL WHERE `dob`='0000-00-00';end
 UPDATE `gibbonSetting` SET value='fe4abccf405facac24e05de854d764a6' WHERE scope='System Admin' AND name='composerLockHash';end
+UPDATE gibbonNotificationEvent SET actionName='Parent Weekly Email Summary' WHERE event='Parent Daily Email Summary' OR event='Tutor Daily Email Summary';end
 
 ";
