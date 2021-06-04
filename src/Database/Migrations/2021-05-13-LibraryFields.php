@@ -44,6 +44,7 @@ class LibraryFields extends Migration
 
         foreach ($items as $item) {
             if (empty($item['fields'])) continue;
+            if (substr($item['fields'], 0, 2) != 'a:') continue;
 
             $fieldData = unserialize($item['fields']);
             $partialFail &= !$this->libraryGateway->update($item['gibbonLibraryItemID'], [
@@ -56,6 +57,7 @@ class LibraryFields extends Migration
 
         foreach ($types as $type) {
             if (empty($type['fields'])) continue;
+            if (substr($type['fields'], 0, 2) != 'a:') continue;
 
             $fieldData = unserialize($type['fields']);
             $partialFail &= !$this->libraryTypeGateway->update($type['gibbonLibraryTypeID'], [
