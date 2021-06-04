@@ -91,6 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
                 $row->addContent(__('New Value'));
                 $row->addContent(__('Accept'));
 
+            $changeCount = 0;
             foreach ($compare as $fieldName => $label) {
                 $isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
 
@@ -102,13 +103,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
                 if ($isMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
                     $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
+                    $changeCount++;
                 } else {
                     $row->addContent();
                 }
             }
 
-            $row = $form->addRow();
-                $row->addSubmit();
+            if ($changeCount > 0) {
+                $row = $form->addRow();
+                    $row->addSubmit();
+            }
 
             echo $form->getOutput();
         }

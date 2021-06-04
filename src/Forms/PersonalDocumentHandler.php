@@ -142,6 +142,8 @@ class PersonalDocumentHandler
         $documentsNew = $this->personalDocumentGateway->selectPersonalDocuments('gibbonPersonUpdate', $gibbonPersonUpdateID, $params + ['notEmpty' => true])->fetchGroupedUnique();
         if (empty($documentsOld) && empty($documentsNew)) return;
 
+        $changeCount = 0;
+
         foreach ($documentsOld as $gibbonPersonalDocumentTypeID => $document) {
             $row = $form->addRow()->setClass('head heading')->addContent(__($document['name']));
 
@@ -159,30 +161,34 @@ class PersonalDocumentHandler
                     $newValue = $oldValue;
                 }
 
+                $oldValueLabel = $oldValue;
                 $newValueLabel = $newValue;
                 if ($field == 'dateIssue' || $field == 'dateExpiry') {
                     $oldValue = Format::date($oldValue);
                     $newValue = Format::date($newValue);
                 } elseif ($field == 'filePath') {
-                    $oldValue = !empty($oldValue) ? Format::link('./'.$oldValue, __('Attachment'), ['target' => '_blank']) : '';
+                    $oldValueLabel = !empty($oldValue) ? Format::link('./'.$oldValue, __('Attachment'), ['target' => '_blank']) : '';
                     $newValueLabel = !empty($newValue) ? Format::link('./'.$newValue, __('Attachment'), ['target' => '_blank']) : '';
                 }
 
-                $isMatching = ($oldValue != $newValue);
+                $isNotMatching = ($oldValue != $newValue);
 
                 $row = $form->addRow();
                 $row->addLabel('document'.$field.'On', __($this->fields[$field]));
-                $row->addContent($oldValue);
-                $row->addContent($newValueLabel)->addClass($isMatching ? 'matchHighlightText' : '');
+                $row->addContent($oldValueLabel);
+                $row->addContent($newValueLabel)->addClass($isNotMatching ? 'matchHighlightText' : '');
 
-                if ($isMatching) {
+                if ($isNotMatching) {
                     $row->addCheckbox("document[$gibbonPersonalDocumentTypeID][{$field}On]")->checked(true)->setClass('textCenter');
                     $form->addHiddenValue("document[$gibbonPersonalDocumentTypeID][{$field}]", $newValue);
+                    $changeCount++;
                 } else {
                     $row->addContent();
                 }
             }
         }
+
+        return $changeCount;
     }
 
     public function updatePersonalDocumentsFromDataUpdate($gibbonPersonID, $gibbonPersonUpdateID, $params = [])

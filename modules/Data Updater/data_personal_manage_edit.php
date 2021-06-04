@@ -157,10 +157,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row->addContent(__('New Value'));
                 $row->addContent(__('Accept'));
 
+            $changeCount = 0;
             foreach ($compare as $fieldName => $label) {
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
-                $isMatching = ($oldValue != $newValue);
+                $isNotMatching = ($oldValue != $newValue);
                 $isNonUnique = false;
 
                 if ($fieldName == 'dob') {
@@ -181,13 +182,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row = $form->addRow();
                 $row->addLabel('new'.$fieldName.'On', $label);
                 $row->addContent($oldValue);
-                $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
+                $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
 
                 if ($isNonUnique) {
                     $row->addContent(__('Must be unique.'));
-                } else if ($isMatching) {
+                } else if ($isNotMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
                     $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
+                    $changeCount++;
                 } else {
                     $row->addContent();
                 }
@@ -195,14 +197,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
             // CUSTOM FIELDS
             $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
-            $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'User', $params, $oldValues, $newValues);
+            $changeCount += $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'User', $params, $oldValues, $newValues);
 
             // PERSONAL DOCUMENTS
             $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
-            $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToDataUpdate($form, $oldValues['gibbonPersonID'], $gibbonPersonUpdateID, $params);
+            $changeCount += $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToDataUpdate($form, $oldValues['gibbonPersonID'], $gibbonPersonUpdateID, $params);
 
-            $row = $form->addRow();
-                $row->addSubmit();
+            if ($changeCount > 0) { 
+                $row = $form->addRow();
+                    $row->addSubmit();
+            }
 
             echo $form->getOutput();
         }

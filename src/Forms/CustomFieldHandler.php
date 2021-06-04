@@ -316,6 +316,7 @@ class CustomFieldHandler
         $newFields = !empty($newValues['fields'])? json_decode($newValues['fields'], true) : [];
 
         $customFields = $this->customFieldGateway->selectCustomFields($context, $params)->fetchAll();
+        $changeCount = 0;
 
         foreach ($customFields as $field) {
             $fieldID = $field['gibbonCustomFieldID'];
@@ -329,20 +330,23 @@ class CustomFieldHandler
                 $newValue = Format::date($newValue);
             }
 
-            $isMatching = ($oldValue != $newValue);
+            $isNotMatching = ($oldValue != $newValue);
 
             $row = $form->addRow();
             $row->addLabel('new'.$fieldID.'On', $label);
             $row->addContent($oldValue);
-            $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
+            $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
 
-            if ($isMatching) {
+            if ($isNotMatching) {
                 $row->addCheckbox('newcustom'.$fieldID.'On')->checked(true)->setClass('textCenter');
                 $form->addHiddenValue('newcustom'.$fieldID, $newValue);
+                $changeCount++;
             } else {
                 $row->addContent();
             }
         }
+
+        return $changeCount;
     }
 
     public function getFieldDataFromDataUpdate($context, $params = [], $fields = [])
