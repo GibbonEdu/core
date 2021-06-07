@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
@@ -36,6 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $search = $_GET['search'] ?? '';
+
+    $partialFailures = [];
 
     $page->breadcrumbs
         ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
@@ -338,6 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $houseFail = false;
                     if ($values['gibbonYearGroupIDEntry'] == '' or $values['gibbonSchoolYearIDEntry'] == '' and $values['gender'] == '') { //No year group or school year set, so return error
                         $houseFail = true;
+                        $partialFailures[] = 'houseFail';
                     } else {
                         //Check boys and girls in each house in year group
                         try {
@@ -355,6 +359,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $resultHouse->execute($dataHouse);
                         } catch (PDOException $e) {
                             $houseFail = true;
+                            $partialFailures[] = 'houseFail';
                         }
                         if ($resultHouse->rowCount() > 0) {
                             $rowHouse = $resultHouse->fetch();
@@ -362,6 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $house = $rowHouse['house'];
                         } else {
                             $houseFail = true;
+                            $partialFailures[] = 'houseFail';
                         }
                     }
 
@@ -386,6 +392,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     } catch (PDOException $e) {
                         $insertOK = false;
                         echo "<div class='error'>".$e->getMessage().'</div>';
+                        $partialFailures[] = 'insertOK';
                     }
                     if ($insertOK == true) {
                         $gibbonPersonID = $connection2->lastInsertID();
@@ -464,6 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                         } else {
                             $enrolmentOK = false;
+                            $partialFailures[] = 'enrolmentOK';
                         }
 
                         //Report back
@@ -473,7 +481,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</div>';
                         } else {
                             echo '<h4>';
-                            echo 'Student Enrolment';
+                            echo __('Student Enrolment');
                             echo '</h4>';
                             echo '<ul>';
                             echo '<li>'.__('The student has successfully been enrolled in the specified school year, year group and form group.').'</li>';
@@ -487,6 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if (!$inserted) {
                                     echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
+                                    $partialFailures[] = 'autoEnrolStudent';
                                 } else {
                                     echo '<li>'.__('The student has automatically been enrolled in courses for Form Group.').'</li>';
                                 }
@@ -535,6 +544,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     } catch (PDOException $e) {
                         $paymentOK = false;
                         echo "<div class='error'>".$e->getMessage().'</div>';
+                        $partialFailures[] = 'paymentOK';
                     }
 
                     if ($paymentOK == false) {
@@ -570,6 +580,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 } catch (PDOException $e) {
                                     $insertFail == true;
                                     echo "<div class='error'>".$e->getMessage().'</div>';
+                                    $partialFailures[] = 'failFamily1';
                                 }
                                 if ($insertFail == false) {
                                     $failFamily = false;
@@ -663,6 +674,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo "<div class='warning'>";
                             echo __('Student could not be linked to family!');
                             echo '</div>';
+                            $partialFailures[] = 'failFamily2';
                         } else {
                             echo '<h4>';
                             echo __('Family');
@@ -706,6 +718,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         } catch (PDOException $e) {
                             $insertOK = false;
                             echo "<div class='error'>".$e->getMessage().'</div>';
+                            $partialFailures[] = 'failFamily3';
                         }
 
                         if ($insertOK == true) {
@@ -750,6 +763,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         } catch (PDOException $e) {
                                             $insertOK = false;
                                             echo "<div class='error'>".$e->getMessage().'</div>';
+                                            $partialFailures[] = 'failFamily4';
                                         }
                                         if ($insertOK == true) {
                                             $failFamily = false;
@@ -814,6 +828,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo "<div class='warning'>";
                                         echo __('Parent 1 could not be linked to family!');
                                         echo '</div>';
+                                        $partialFailures[] = 'failFamily5';
                                     }
                                 }
 
@@ -873,6 +888,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='error'>";
                                     echo __('Parent 1 could not be created!');
                                     echo '</div>';
+                                    $partialFailures[] = 'failFamily6';
                                 } else {
                                     echo '<h4>';
                                     echo __('Parent 1');
@@ -917,6 +933,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             echo "<div class='warning'>";
                                             echo __('Parent 1 could not be linked to family!');
                                             echo '</div>';
+                                            $partialFailures[] = 'failFamily7';
                                         }
 
                                         //Set parent relationship
@@ -982,6 +999,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo "<div class='error'>";
                                     echo __('Parent 2 could not be created!');
                                     echo '</div>';
+                                    $partialFailures[] = 'failFamily8';
                                 } else {
                                     echo '<h4>';
                                     echo __('Parent 2');
@@ -1026,6 +1044,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             echo "<div class='warning'>";
                                             echo __('Parent 2 could not be linked to family!');
                                             echo '</div>';
+                                            $partialFailures[] = 'failFamily9';
                                         }
 
                                         //Set parent relationship
@@ -1178,12 +1197,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     } catch (PDOException $e) {
                         $failStatus = true;
                         echo "<div class='error'>".$e->getMessage().'</div>';
+                        $partialFailures[] = 'failStatus';
+                    }
+
+                    if (!empty($partialFailures)) {
+                        $container->get(LogGateway::class)->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleIDFromName($connection2, 'Students'), $session->get('gibbonPersonID'), 'Application Form - Partial Fail', array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'partialFailures' => implode(',', $partialFailures)), $_SERVER['REMOTE_ADDR']);
                     }
 
                     if ($failStatus == true) {
                         echo "<div class='error'>";
                         echo __('Student status could not be updated: student is in the system, but acceptance has failed.');
                         echo '</div>';
+
+                        
                     } else {
                         echo '<h4>';
                         echo __('Application Status');
