@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -256,6 +257,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '</tr>';
             }
             echo '</table>';
+
+            $params = ['student' => true, 'notEmpty' => true];
+            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationForm', $gibbonApplicationFormID, $params)->fetchAll();
+
+            echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents]);
 
             echo '<h4>'.__('Parents/Guardians').'</h4>';
             //No family in Gibbon
