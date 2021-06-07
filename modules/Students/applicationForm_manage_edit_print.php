@@ -295,6 +295,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $resultMember->execute($dataMember);
 
                     while ($rowMember = $resultMember->fetch()) {
+                        echo '<h5 class="mt-4">'.__('Parent 1').'</h5>';
+
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -360,6 +362,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</tr>';
                         echo '</table>';
                     }
+
+                    $params = ['parent' => true, 'notEmpty' => true];
+                    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $row['parent1gibbonPersonID'], $params)->fetchAll();
+
+                    echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
                 }
                 //Parent 1 not in Gibbon
                 else {
@@ -367,6 +374,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
                 for ($i = $start;$i < 3;++$i) {
                     //Spit out parent1/parent2 data from application, depending on parent1 status above.
+                    echo '<h5 class="mt-4">'.($i > 1 ? __('Parent 2') : __('Parent 1')).'</h5>';
+
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -428,6 +437,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '</td>';
                     echo '</tr>';
                     echo '</table>';
+
+                    $params = ['parent' => true, 'notEmpty' => true];
+                    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationFormParent1', $gibbonApplicationFormID, $params)->fetchAll();
+
+                    echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
                 }
             }
             //Yes family
@@ -556,6 +570,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</td>';
                             echo '</tr>';
                             echo '</table>';
+
+                            $params = ['parent' => true, 'notEmpty' => true];
+                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationFormParent'.$count, $gibbonApplicationFormID, $params)->fetchAll();
+
+                            echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
+
                             ++$count;
                         }
                     }
