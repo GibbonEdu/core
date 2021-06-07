@@ -439,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '</table>';
 
                     $params = ['parent' => true, 'notEmpty' => true];
-                    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationFormParent1', $gibbonApplicationFormID, $params)->fetchAll();
+                    $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationFormParent'.$i, $gibbonApplicationFormID, $params)->fetchAll();
 
                     echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
                 }
@@ -501,6 +501,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             $resultMember->execute($dataMember);
 
                         while ($rowMember = $resultMember->fetch()) {
+                            echo '<h5 class="mt-4">'.($count > 1 ? __('Parent 2') : __('Parent 1')).'</h5>';
+
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -572,7 +574,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</table>';
 
                             $params = ['parent' => true, 'notEmpty' => true];
-                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonApplicationFormParent'.$count, $gibbonApplicationFormID, $params)->fetchAll();
+                            $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $rowMember['gibbonPersonID'], $params)->fetchAll();
 
                             echo $page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
 
