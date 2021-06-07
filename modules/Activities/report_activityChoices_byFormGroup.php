@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         echo '</td>';
                         echo '<td width="15%">';
                         if (!empty($timeStatus)) {
-                            echo '<span class="emphasis" title="'.formatDateRange('@'.$timespan['start'], '@'.$timespan['end']).'">';
+                            echo '<span class="emphasis" title="'.Format::dateRangeReadable('@'.$timespan['start'], '@'.$timespan['end']).'">';
                             echo (time() < $timespan['start'])? __('Upcoming') : (time() > $timespan['end']? __('Ended') : __('Current'));
                             echo '</span>';
                         } else {
