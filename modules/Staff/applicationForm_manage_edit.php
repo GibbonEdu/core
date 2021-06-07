@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -165,6 +166,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $row = $form->addRow();
                     $row->addLabel('preferredName', __('Preferred Name'));
                     $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($session->get('preferredName'));
+
+                // PERSONAL DOCUMENTS
+                $params = ['staff' => true, 'notEmpty' => true];
+                $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $values['gibbonPersonID'], $params)->fetchAll();
+
+                if (!empty($documents)) {
+                    $col = $form->addRow()->addColumn();
+                    $col->addLabel('personalDocuments', __('Personal Documents'));
+                    $col->addContent($page->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]));
+                }
             }
             else { //Not logged in
                 $row = $form->addRow();
