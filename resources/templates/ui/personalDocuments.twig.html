@@ -7,9 +7,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
 
 {% if documents %}
+    {% if not noTitle %}
     <h4>
         {{ __('Personal Documents') }}
     </h4>
+    {% endif %}
 
     {% for document in documents %}
         {% if document.documentNumber != 'N/A' %}
