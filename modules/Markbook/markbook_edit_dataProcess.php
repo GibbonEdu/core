@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                             // Create a log of failed uploads
                             $errorMessage = $fileUploader->getLastError();
-                            if (!empty($errorMessage) || filesize($attachment) == 0) {
+                            if (!empty($errorMessage) || filesize($attachment) === 0) {
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
                                 $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                     'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
