@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 					echo '</tr>';
 					try {
 						$dataOutcomes = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-						$sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $where ORDER BY category, name";
+						$sqlOutcomes = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' ORDER BY category, name";
 						$resultOutcomes = $connection2->prepare($sqlOutcomes);
 						$resultOutcomes->execute($dataOutcomes);
 					} catch (PDOException $e) {
