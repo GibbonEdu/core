@@ -2256,7 +2256,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
                     $targetDate = date('Y-m-d', ($startDayStamp + (86400 * $count)));
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
-                        $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}'><img style='' title='".__('Add Facility Change')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png' width=20 height=20/></a>";
+                        $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}'><img style='' title='".__('Add Facility Change')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/copyforward.png' width=20 height=20/></a>";
                     }
 
                     if ($canEditTTDays) {
