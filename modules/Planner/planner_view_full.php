@@ -1295,7 +1295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $cell->addContent($person['role']);
                         }
 
-                        if ($canTakeAttendance) {
+                        if ($canTakeAttendance && date('Y-m-d') >= $values['date']) {
                             $form->addHiddenValue('address', $gibbon->session->get('address'));
                             $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
                             $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
