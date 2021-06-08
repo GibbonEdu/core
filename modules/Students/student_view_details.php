@@ -1051,59 +1051,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $resultFamily = $connection2->prepare($sqlFamily);
                             $resultFamily->execute($dataFamily);
 
-                        if ($resultFamily->rowCount() != 1) {
+                        if ($resultFamily->rowCount() == 0) {
                             echo "<div class='error'>";
                             echo __('There are no records to display.');
                             echo '</div>';
                         } else {
-                            $rowFamily = $resultFamily->fetch();
-                            $count = 1;
-                            //Get adults
+                            while ($rowFamily = $resultFamily->fetch()) {
+                                $count = 1;
+                                //Get adults
 
                                 $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                 $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                                 $resultMember = $connection2->prepare($sqlMember);
                                 $resultMember->execute($dataMember);
 
-                            while ($rowMember = $resultMember->fetch()) {
-                                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                                echo '<tr>';
-                                echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
-                                echo '</td>';
-                                echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
+                                while ($rowMember = $resultMember->fetch()) {
+                                    echo "<table class='smallIntBorder mb-2' cellspacing='0' style='width: 100%'>";
+                                    echo '<tr>';
+                                    echo "<td style='width: 33%; vertical-align: top'>";
+                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+                                    echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    echo '</td>';
+                                    echo "<td style='width: 33%; vertical-align: top'>";
+                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
 
                                     $dataRelationship = array('gibbonPersonID1' => $rowMember['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID, 'gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                     $sqlRelationship = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2 AND gibbonFamilyID=:gibbonFamilyID';
                                     $resultRelationship = $connection2->prepare($sqlRelationship);
                                     $resultRelationship->execute($dataRelationship);
-                                if ($resultRelationship->rowCount() == 1) {
-                                    $rowRelationship = $resultRelationship->fetch();
-                                    echo $rowRelationship['relationship'];
-                                } else {
-                                    echo '<i>'.__('Unknown').'</i>';
-                                }
-
-                                echo '</td>';
-                                echo "<td style='width: 34%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
-                                for ($i = 1; $i < 5; ++$i) {
-                                    if ($rowMember['phone'.$i] != '') {
-                                        if ($rowMember['phone'.$i.'Type'] != '') {
-                                            echo $rowMember['phone'.$i.'Type'].':</i> ';
-                                        }
-                                        if ($rowMember['phone'.$i.'CountryCode'] != '') {
-                                            echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
-                                        }
-                                        echo __($rowMember['phone'.$i]).'<br/>';
+                                    if ($resultRelationship->rowCount() == 1) {
+                                        $rowRelationship = $resultRelationship->fetch();
+                                        echo $rowRelationship['relationship'];
+                                    } else {
+                                        echo '<i>'.__('Unknown').'</i>';
                                     }
+
+                                    echo '</td>';
+                                    echo "<td style='width: 34%; vertical-align: top'>";
+                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
+                                    for ($i = 1; $i < 5; ++$i) {
+                                        if ($rowMember['phone'.$i] != '') {
+                                            if ($rowMember['phone'.$i.'Type'] != '') {
+                                                echo $rowMember['phone'.$i.'Type'].':</i> ';
+                                            }
+                                            if ($rowMember['phone'.$i.'CountryCode'] != '') {
+                                                echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
+                                            }
+                                            echo __($rowMember['phone'.$i]).'<br/>';
+                                        }
+                                    }
+                                    echo '</td>';
+                                    echo '</tr>';
+                                    echo '</table>';
+                                    ++$count;
                                 }
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '</table>';
-                                ++$count;
                             }
                         }
 
