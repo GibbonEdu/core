@@ -119,7 +119,7 @@ class Session implements SessionInterface
         $exists = !empty($keys);
 
         foreach ($keys as $key) {
-            $exists &= array_key_exists($key, $_SESSION[$this->guid]);
+            $exists &= isset($_SESSION[$this->guid][$key]);
         }
 
         return $exists;
@@ -166,7 +166,7 @@ class Session implements SessionInterface
             return $retrieve($_SESSION[$this->guid], $key, $default);
         }
 
-        return !empty($_SESSION[$this->guid][$key])? $_SESSION[$this->guid][$key] : $default;
+        return isset($_SESSION[$this->guid][$key])? $_SESSION[$this->guid][$key] : $default;
     }
 
     /**

@@ -30,7 +30,7 @@ $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbon->session->get('gibbon
 $gibbon->session->set('gibbonSchoolYearNameCurrent', $gibbon->session->get('gibbonSchoolYearName'));
 $gibbon->session->set('gibbonSchoolYearSequenceNumberCurrent', $gibbon->session->get('gibbonSchoolYearSequenceNumber'));
 
-$gibbon->session->set('pageLoads', null);
+$gibbon->session->forget('pageLoads');
 
 $URL = './index.php';
 
