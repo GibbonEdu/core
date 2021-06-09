@@ -60,7 +60,7 @@ if ($isLoggedIn && $module = $page->getModule()) {
  *
  * TODO: When we implement routing, these can become part of the HTTP middleware.
  */
-$session->set('pageLoads', !$session->exists('pageLoads') ? 0 : $session->get('pageLoads', -1)+1);
+$session->set('pageLoads', !$session->exists('pageLoads') ? 0 : $session->get('pageLoads', -1) + 1);
 
 $cacheLoad = true;
 $caching = $gibbon->getConfig('caching');
@@ -161,7 +161,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                                     '/index.php?q=/modules/Attendance'.
                                     '/attendance_studentSelfRegister.php'.
                                     '&redirect=true';
-                                $session->set('pageLoads', null);
+                                $session->forget('pageLoads');
                                 header("Location: {$URL}");
                                 exit;
                             }
@@ -190,7 +190,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
 
                     if ($updatesRequiredCount > 0) {
                         $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
-                        $session->set('pageLoads', null);
+                        $session->forget('pageLoads');
                         header("Location: {$URL}");
                         exit;
                     }
