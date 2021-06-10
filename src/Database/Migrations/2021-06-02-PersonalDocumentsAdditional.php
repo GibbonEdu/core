@@ -17,25 +17,28 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Database\Migrations\Migration;
 use Gibbon\Domain\User\PersonalDocumentGateway;
-use Gibbon\Domain\Staff\StaffApplicationFormGateway;
-use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
+use Gibbon\Domain\Students\ApplicationFormGateway;
+use Gibbon\Domain\Staff\StaffApplicationFormGateway;
 
 /**
  * Personal Document Migration - move additional documents from application forms and data updates.
  */
 class PersonalDocumentsAdditional extends Migration
 {
+    protected $db;
     protected $personalDocumentGateway;
     protected $studentApplicationFormGateway;
     protected $staffApplicationFormGateway;
     protected $personUpdateGateway;
 
 
-    public function __construct(PersonalDocumentGateway $personalDocumentGateway, ApplicationFormGateway $studentApplicationFormGateway, StaffApplicationFormGateway $staffApplicationFormGateway, PersonUpdateGateway $personUpdateGateway)
+    public function __construct(Connection $db, PersonalDocumentGateway $personalDocumentGateway, ApplicationFormGateway $studentApplicationFormGateway, StaffApplicationFormGateway $staffApplicationFormGateway, PersonUpdateGateway $personUpdateGateway)
     {
+        $this->db = $db;
         $this->studentApplicationFormGateway = $studentApplicationFormGateway;
         $this->staffApplicationFormGateway = $staffApplicationFormGateway;
         $this->personUpdateGateway = $personUpdateGateway;
@@ -45,6 +48,10 @@ class PersonalDocumentsAdditional extends Migration
     public function migrate()
     {
         $partialFail = false;
+
+        // Prevent running this migration if the field has already been removed/does not exist
+        $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPerson` LIKE 'citizenship1'");
+        if (empty($fieldPresent)) return true;
 
         // STUDENT APPLICATIONS
         $results = $this->studentApplicationFormGateway->selectBy([])->fetchAll();
