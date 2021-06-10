@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->required()->setValue();
+        $row->addTextField('name')->required()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('members', __('Members'));

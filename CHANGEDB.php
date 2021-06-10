@@ -996,5 +996,6 @@ ALTER TABLE `gibbonPersonalDocument` ADD `document` ENUM('Passport','ID Card','V
 UPDATE `gibbonPersonalDocumentType` SET `document`='Visa' WHERE `gibbonPersonalDocumentType`.name LIKE '%Visa%';end
 UPDATE `gibbonPersonalDocument` SET `document`=(SELECT type.document FROM gibbonPersonalDocumentType as type WHERE type.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
 INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES (006, (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Staff Data_my'));end
+ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 
 ";
