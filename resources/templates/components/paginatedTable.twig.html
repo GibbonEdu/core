@@ -81,12 +81,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 {% block filters %}
     {% for name, label in filterCriteria %}
-        <button type="button" class="filter -mx-px py-2 px-3 border border-blue-700 bg-blue-500 hover:bg-blue-700 z-10 text-white font-bold" data-filter="{{ name }}">
+        <button type="button" class="filter -mx-px py-2 px-3 text-xxs border border-blue-700 bg-blue-500 hover:bg-blue-700 z-10 text-white font-bold" data-filter="{{ name }}">
             {{ label|raw }}
         </button>
     {% endfor %}
     
-    <button type="button" class="filter p-2 rounded-r border border-gray-500 text-gray-600 bg-gray-200 font-bold hover:bg-gray-400 clear">
+    <button type="button" class="filter p-2 rounded-r text-xxs border border-gray-500 text-gray-600 bg-gray-200 font-bold hover:bg-gray-400 clear">
         {{ __('Clear') }}
     </button>
 
