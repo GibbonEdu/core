@@ -991,5 +991,9 @@ UPDATE `gibbonPersonUpdate` SET `dob`=NULL WHERE `dob`='0000-00-00';end
 UPDATE `gibbonSetting` SET value='fe4abccf405facac24e05de854d764a6' WHERE scope='System Admin' AND name='composerLockHash';end
 UPDATE gibbonNotificationEvent SET actionName='Parent Weekly Email Summary' WHERE event='Parent Daily Email Summary' OR event='Tutor Daily Email Summary';end
 SELECT NULL;end
+ALTER TABLE `gibbonPersonalDocumentType` CHANGE `document` `document` ENUM('Passport','ID Card','Visa','Document') NOT NULL DEFAULT 'Document';end
+ALTER TABLE `gibbonPersonalDocument` ADD `document` ENUM('Passport','ID Card','Visa','Document') NOT NULL DEFAULT 'Document' AFTER `foreignTableID`;end
+UPDATE `gibbonPersonalDocumentType` SET `document`='Visa' WHERE `gibbonPersonalDocumentType`.name LIKE '%Visa%';end
+UPDATE `gibbonPersonalDocument` SET `document`=(SELECT type.document FROM gibbonPersonalDocumentType as type WHERE type.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
 
 ";
