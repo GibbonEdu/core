@@ -10282,16 +10282,16 @@ LOCK TABLES `gibbonTTDay` WRITE;
 
 INSERT INTO `gibbonTTDay` (`gibbonTTDayID`, `gibbonTTID`, `gibbonTTColumnID`, `name`, `nameShort`, `color`, `fontColor`)
 VALUES
-	(0000000061,00000010,000038,'Mon 1 Red','Mo1R','cc0000','ffffff'),
-	(0000000062,00000010,000039,'Tue 1 Red','Tu1R','cc0000','ffffff'),
-	(0000000063,00000010,000040,'Wed 1 Red','We1R','cc0000','ffffff'),
-	(0000000064,00000010,000041,'Thu 1 Red','Th1R','cc0000','ffffff'),
-	(0000000065,00000010,000042,'Fri 1 Red','Fr1R','cc0000','ffffff'),
-	(0000000066,00000010,000038,'Mon 2 Blue','Mo2B','0000cc','ffffff'),
-	(0000000067,00000010,000039,'Tue 2 Blue ','Tu2B','0000cc','ffffff'),
-	(0000000068,00000010,000040,'Wed 2 Blue','We2B','0000cc','ffffff'),
-	(0000000069,00000010,000041,'Thu 2 Blue','Th2B','0000cc','ffffff'),
-	(0000000070,00000010,000042,'Fri 2 Blue','Fr2B','0000cc','ffffff');
+	(0000000061,00000010,000038,'Mon 1 Red','Mo1R','#cc0000','#ffffff'),
+	(0000000062,00000010,000039,'Tue 1 Red','Tu1R','#cc0000','#ffffff'),
+	(0000000063,00000010,000040,'Wed 1 Red','We1R','#cc0000','#ffffff'),
+	(0000000064,00000010,000041,'Thu 1 Red','Th1R','#cc0000','#ffffff'),
+	(0000000065,00000010,000042,'Fri 1 Red','Fr1R','#cc0000','#ffffff'),
+	(0000000066,00000010,000038,'Mon 2 Blue','Mo2B','#0000cc','#ffffff'),
+	(0000000067,00000010,000039,'Tue 2 Blue ','Tu2B','#0000cc','#ffffff'),
+	(0000000068,00000010,000040,'Wed 2 Blue','We2B','#0000cc','#ffffff'),
+	(0000000069,00000010,000041,'Thu 2 Blue','Th2B','#0000cc','#ffffff'),
+	(0000000070,00000010,000042,'Fri 2 Blue','Fr2B','#0000cc','#ffffff');
 
 /*!40000 ALTER TABLE `gibbonTTDay` ENABLE KEYS */;
 UNLOCK TABLES;
