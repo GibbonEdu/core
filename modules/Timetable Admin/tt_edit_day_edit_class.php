@@ -54,9 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             // DISPLAY TIMETABLE DATA
             $table = DataTable::createDetails('ttDay');
-                        $table->addColumn('ttName', __('Timetable'));
-                        $table->addColumn('dayName', __('Day'));
-                        $table->addColumn('rowName', __('Period'));
+
+            $table->addColumn('ttName', __('Timetable'));
+            $table->addColumn('dayName', __('Day'));
+            $table->addColumn('rowName', __('Period'));
 
             echo $table->render([$values]);
 
@@ -64,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             // DATA TABLE
             $table = DataTable::create('timetableDayRowClasses');
+            $table->setTitle(__('Classes in Period'));
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_add.php')
