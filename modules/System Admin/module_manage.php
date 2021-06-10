@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     // Build a set of module data, flagging orphaned modules that do not appear to be in the modules folder.
     // Also checks for available updates by comparing version numbers for Additional modules.
-    $modules->transform(function (&$module) use ($session, $version, &$orphans, &$moduleFolders) {
+    $modules->transform(function (&$module) use ($session, $guid, $version, &$orphans, &$moduleFolders) {
         if (array_search($session->get('absolutePath').'/modules/'.$module['name'], $moduleFolders) === false) {
             $module['orphaned'] = true;
             $orphans[] = $module;
