@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Database\Migrations\Migration;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Database\Migrations\Migration;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 /**
@@ -26,11 +27,13 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
  */
 class PersonalDocuments extends Migration
 {
+    protected $db;
     protected $userGateway;
     protected $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway, PersonalDocumentGateway $personalDocumentGateway)
+    public function __construct(Connection $db, UserGateway $userGateway, PersonalDocumentGateway $personalDocumentGateway)
     {
+        $this->db = $db;
         $this->userGateway = $userGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
     }   
@@ -38,6 +41,10 @@ class PersonalDocuments extends Migration
     public function migrate()
     {
         $partialFail = false;
+
+        // Prevent running this migration if the field has already been removed/does not exist
+        $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPerson` LIKE 'citizenship1'");
+        if (empty($fieldPresent)) return true;
 
         $users = $this->userGateway->selectBy([]);
 

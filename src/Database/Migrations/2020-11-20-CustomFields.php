@@ -47,6 +47,7 @@ class CustomFields extends Migration
 
         foreach ($users as $user) {
             if (empty($user['fields'])) continue;
+            if (substr($user['fields'], 0, 2) != 'a:') continue;
 
             $fieldData = unserialize($user['fields']);
             $partialFail &= !$this->userGateway->update($user['gibbonPersonID'], [
@@ -59,6 +60,7 @@ class CustomFields extends Migration
 
         foreach ($updates as $update) {
             if (empty($update['fields'])) continue;
+            if (substr($update['fields'], 0, 2) != 'a:') continue;
 
             $fieldData = unserialize($update['fields']);
             $partialFail &= !$this->personUpdateGateway->update($update['gibbonPersonUpdateID'], [
@@ -72,9 +74,9 @@ class CustomFields extends Migration
         foreach ($applications as $application) {
             if (empty($application['fields']) && empty($application['parent1fields']) && empty($application['parent2fields'])) continue;
 
-            $fieldData = unserialize($application['fields']);
-            $parent1fieldData = unserialize($application['parent1fields']);
-            $parent2fieldData = unserialize($application['parent2fields']);
+            $fieldData = substr($application['fields'], 0, 2) == 'a:' ? unserialize($application['fields']) : $application['fields'];
+            $parent1fieldData = substr($application['parent1fields'], 0, 2) == 'a:' ? unserialize($application['parent1fields']) : $application['parent1fields'];
+            $parent2fieldData = substr($application['parent2fields'], 0, 2) == 'a:' ? unserialize($application['parent2fields']) : $application['parent2fields'];
 
             $partialFail &= !$this->applicationGateway->update($application['gibbonApplicationFormID'], [
                 'fields' => !empty($fieldData) ? json_encode($fieldData) : '',
