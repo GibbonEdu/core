@@ -55,6 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
             $row->addTextField('departureReason')->maxLength(30)->required();
         }
 
+    $schools = $pdo->select("SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool")->fetchAll(\PDO::FETCH_COLUMN);
+    $row = $form->addRow();
+        $row->addLabel('nextSchool', __('Next School'));
+        $row->addTextField('nextSchool')->maxLength(100)->autocomplete($schools);
+
     // NOTES
     $form->addRow()->addHeading(__('Notes'));
 
