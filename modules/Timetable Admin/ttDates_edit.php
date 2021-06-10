@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         $result->execute($data);
 
         $table = DataTable::create('ttDay');
-        $table->setTitle(__('ttDay'));
+        $table->setTitle(__('Edit Days in Date'));
 
         $table->addHeaderAction('add', __('Add'))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
