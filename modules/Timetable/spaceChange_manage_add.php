@@ -48,11 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
         //Step 1
         if ($step == 1) {
-            echo '<h2>';
-            echo __('Step 1 - Choose Class');
-            echo '</h2>';
-
             $form = Form::create('spaceChangeStep1', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/spaceChange_manage_add.php&step=2');
+            $form->setTitle(__('Step 1 - Choose Class'));
 
             $form->addHiddenValue('address', $session->get('address'));
 
@@ -147,7 +144,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date1' => date('Y-m-d'), 'date2' => date('Y-m-d'), 'time' => date('H:i:s'));
                 $sql = 'SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name AS period, timeStart, timeEnd, gibbonTTDay.name AS day, gibbonTTDayDate.date, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID AND (gibbonTTDayDate.date>:date1 OR (gibbonTTDayDate.date=:date2 AND timeEnd>:time)) ORDER BY gibbonTTDayDate.date, timeStart';
                 $results = $pdo->executeQuery($data, $sql);
-                $classSlots = array_reduce($results->fetchAll(), function($array, $item) {
+                $classSlots = array_reduce($results->fetchAll(), function($array, $item) use ($guid, $connection2) {
+                    if (!isSchoolOpen($guid, $item['date'], $connection2)) return $array;
+
                     $key = $item['gibbonTTDayRowClassID'].'-'.$item['date'];
                     $array[$key] = Format::date($item['date']).' ('.$item['day'].' - '.$item['period'].')';
                     return $array;
