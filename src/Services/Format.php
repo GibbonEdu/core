@@ -832,10 +832,12 @@ class Format
 
     public static function userStatusInfo($person = [])
     {
-        if (!empty($person['status']) && $person['status'] != 'Full') {
-            return __($person['status']);
-        }
         if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
+            $departureReason = !empty($person['departureReason']) ? ', '.$person['departureReason'] : '';
+
+            if (!empty($person['status']) && $person['status'] != 'Full') {
+                return __($person['status']) . $departureReason;
+            }
             if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) {
                 return __('Before Start Date');
             }
@@ -843,12 +845,15 @@ class Format
                 return __('After End Date');
             }
             if (!empty($person['dateEnd']) && $person['dateEnd'] <= date('Y-m-d', strtotime('today + 60 days'))) {
-                return __('Leaving');
+                return __('Leaving') . $departureReason;
             }
             if (empty($person['yearGroup'])) {
                 return __('Not Enrolled');
             }
         } else {
+            if (!empty($person['status']) && $person['status'] != 'Full') {
+                return __($person['status']);
+            }
             if (!empty($person['staffType'])) {
                 return __($person['staffType']);
             }
