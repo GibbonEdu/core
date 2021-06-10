@@ -357,13 +357,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			if ($student || $staff) {
-                $sql = "SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool";
-                $result = $pdo->executeQuery(array(), $sql);
-                $schools = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
+                $schools = $pdo->select("SELECT DISTINCT nextSchool FROM gibbonPerson ORDER BY lastSchool")->fetchAll(\PDO::FETCH_COLUMN);
 
                 $row = $form->addRow();
                 $row->addLabel('nextSchool', __('Next School'));
-                $row->addTextField('nextSchool')->autocomplete($schools);
+                $row->addTextField('nextSchool')->maxLength(100)->autocomplete($schools);
 
 				$departureReasonsList = getSettingByScope($connection2, 'User Admin', 'departureReasons');
 

@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
         'status'          => $_POST['status'] ?? '',
         'dateEnd'         => isset($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : null,
         'departureReason' => $_POST['departureReason'] ?? '',
+        'nextSchool'      => $_POST['nextSchool'] ?? '',
     ];
 
     // Validate the required values are present
