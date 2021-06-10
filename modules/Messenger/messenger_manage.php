@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
     $table->addColumn('recipients', __('Recipients'))
         ->notSortable()
-        ->format(function ($values) use (&$pdo) {
+        ->format(function ($values) use (&$pdo, &$sendingMessages) {
             $output = '';
             if (!empty($sendingMessages[$values['gibbonMessengerID']])) {
                 $output .= '<div class="statusBar" data-id="'.$sendingMessages[$values['gibbonMessengerID']].'">';
