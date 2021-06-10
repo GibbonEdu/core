@@ -113,6 +113,7 @@ class PersonalDocumentHandler
             if (count(array_filter($data)) == 0 && $omit != 'Y' && !$exists) continue;
 
             $data['gibbonPersonalDocumentTypeID'] = $document['gibbonPersonalDocumentTypeID'];
+            $data['document'] = $document['document'];
             $data['foreignTable'] = $foreignTable;
             $data['foreignTableID'] = $foreignTableID;
             $data['timestamp'] = date('Y-m-d H:i:s');
@@ -219,6 +220,7 @@ class PersonalDocumentHandler
             if (count(array_filter($data)) == 0 && !$exists) continue;
 
             $data['gibbonPersonalDocumentTypeID'] = $document['gibbonPersonalDocumentTypeID'];
+            $data['document'] = $document['document'];
             $data['foreignTable'] = 'gibbonPerson';
             $data['foreignTableID'] = $gibbonPersonID;
             $data['timestamp'] = date('Y-m-d H:i:s');

@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $row = $form->addRow();
         $row->addLabel('document', __('Type'));
-        $row->addSelect('document')->fromArray($personalDocumentHandler->getDocuments())->required()->placeholder();
+        $row->addSelect('document')->fromArray($personalDocumentHandler->getDocuments())->required()->readonly();
 
     $fieldOptions = $personalDocumentHandler->getFields();
     $fields = json_decode($values['fields'] ?? '');
