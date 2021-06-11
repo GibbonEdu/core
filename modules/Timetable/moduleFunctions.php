@@ -1344,7 +1344,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                 if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
                                     $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'</span>';
                                 } else {
-                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__('No Facility Allocated').'</span>';
+                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__('No Facility').'</span>';
                                 }
                             }
                         } else {
