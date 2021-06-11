@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 							$row->addTextArea('longTermMedicationDetails')->setRows(5);
 
                         // CUSTOM FIELDS
-                        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields']);
+                        $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Medical Form', ['dataUpdater' => 1], $values['fields'] ?? '');
 
                         $row = $form->addRow();
 							$row->addLabel('comment', __('Comment'));
