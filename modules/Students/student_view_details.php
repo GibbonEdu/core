@@ -667,12 +667,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         $col = $table->addColumn('School Information', __('School Information'));
 
-                        $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
-                            return $student['yearGroupName'];
-                        });
-                        $col->addColumn('gibbonFormGroupID', __('Form Group'))->format(function ($values) use ($student) {
-                            return Format::link('./index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['formGroupName']);
-                        });
+                        if (!empty($student)) {
+                            $col->addColumn('yearGroup', __('Year Group'))->format(function ($values) use ($student) {
+                                return $student['yearGroupName'];
+                            });
+                            $col->addColumn('gibbonFormGroupID', __('Form Group'))->format(function ($values) use ($student) {
+                                return Format::link('./index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID'], $student['formGroupName']);
+                            });
+                        }
                         $col->addColumn('email', __('Tutors'))->format(function ($values) use ($tutors) {
                             if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
                             return Format::nameList($tutors, 'Staff', false, true);
