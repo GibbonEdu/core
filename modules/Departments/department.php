@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
 
             $page->breadcrumbs
-                ->add(__('View All'), 'departments.php')
+                ->add(__('View All'), $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php')
                 ->add($row['name'], 'departments.php', $urlParams);
 
             //Print overview
