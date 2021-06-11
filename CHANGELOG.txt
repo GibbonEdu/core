@@ -96,6 +96,7 @@ v22.0.00
         Timetable: added green cell background, and day colour highlight, to dates with days tied in Tie Days to Dates
         Timetable: added This Week button to View Timetable by Facility
         Timetable: enabled editing timetable spaces and adding facility changes from View Timetable by Facility
+        Timetable: tweaked timetable to highlight the current period in green, even if there is no lesson
 
     Bug Fixes
         System: disabled context menu in TinyMCE which interferes with right clicking
