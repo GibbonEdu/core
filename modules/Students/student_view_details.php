@@ -2135,8 +2135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                               ->addExpandableColumn('details')
                               ->format(function ($item) {
                                 $detailTable = "<table>";
-                                $fields = unserialize($item['fields']);
-                                foreach (unserialize($item['typeFields']) as $typeField) {
+                                $fields = json_decode($item['fields'], true) ?? [];
+                                $typeFields = json_decode($item['typeFields'], true) ?? [];
+                                foreach ($typeFields as $typeField) {
                                     $detailTable .= sprintf('<tr><td><b>%1$s</b></td><td>%2$s</td></tr>', $typeField['name'], $fields[$typeField['name']]);
                                 }
                                 $detailTable .= '</table>';
