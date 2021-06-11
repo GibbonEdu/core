@@ -15,11 +15,14 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-Certain code below was taken from the PHPExcel examples, which are licensed under the GNU GPL.
 */
 
 use Gibbon\Services\Format;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
@@ -35,18 +38,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    // Create new PHPExcel object
-    $excel = new PHPExcel();
+    $excel = new Spreadsheet();
 
     //Create border style for use locale_filter_matches
-    $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
-    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
-    $style_head_fill2 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'C5D9F1')));
-    $style_head_fill3 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => '8DB4E2')));
-    $style_head_fill4 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => '538CD6')));
-    $style_head_fill5 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'EBF1DF')));
-    $style_head_fill6 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'D8E3BE')));
-    $style_head_fill7 = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'C4D69E')));
+    $style_border = array('borders' => array('right' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
+    $style_head_fill = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+    $style_head_fill2 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'C5D9F1')));
+    $style_head_fill3 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => '8DB4E2')));
+    $style_head_fill4 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => '538CD6')));
+    $style_head_fill5 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'EBF1DF')));
+    $style_head_fill6 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'D8E3BE')));
+    $style_head_fill7 = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'C4D69E')));
 
     // Set document properties
     $excel->getProperties()->setCreator(Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'))
@@ -59,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
     $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
 
-    if (empty($externalAssessmentDataPoints) and count($internalAssessmentDataPoints)) { //Seems like things are not configured, so show error
+    if (empty($externalAssessmentDataPoints) and empty($internalAssessmentDataPoints)) { //Seems like things are not configured, so show error
         $excel->setActiveSheetIndex(0)->setCellValue('A1', __('An error has occurred.'));
     } else { //Seems like things are configured, so proceed
         //Get year groups and create sheets
@@ -141,13 +143,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                                 $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'3', $row['field']);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_border);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_head_fill7);
-                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->applyFromArray($style_border);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->applyFromArray($style_head_fill6);
-                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->applyFromArray($style_border);
                                 $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->applyFromArray($style_head_fill5);
-                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                 $excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
 
                                 //Cache column for later user
@@ -217,14 +219,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                                     $excel->getActiveSheet()->setCellValue(num2alpha($activeColumn).'3', trim(str_replace($row['yearGroup'], '', $row['course'])));
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_border);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->applyFromArray($style_head_fill4);
-                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->applyFromArray($style_border);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->applyFromArray($style_head_fill3);
-                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'2')->getAlignment()->setWrapText(true);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->applyFromArray($style_border);
                                     $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->applyFromArray($style_head_fill2);
-                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                                    $excel->getActiveSheet()->getStyle(num2alpha($activeColumn).'3')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                                     $excel->getActiveSheet()->getColumnDimension(num2alpha($activeColumn))->setAutoSize(true);
 
                                     //Cache column for later user
@@ -301,8 +303,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     // Set active sheet index to the first sheet, so Excel opens this as the first sheet
     $excel->setActiveSheetIndex(0);
 
+    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    $objWriter = IOFactory::createWriter($excel, 'Xlsx');
+
     // Redirect output to a client’s web browser (Excel2007)
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    header('Content-Type: '.$mimetype);
     header('Content-Disposition: attachment;filename="Data Points.xlsx"');
     header('Cache-Control: max-age=0');
     // If you're serving to IE 9, then the following may be needed
@@ -314,7 +319,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
     header('Pragma: public'); // HTTP/1.0
 
-    $objWriter = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
     $objWriter->save('php://output');
     exit;
 }

@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     //Check Settings
     $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
     $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
-    if (count($externalAssessmentDataPoints) == 0 and count($internalAssessmentDataPoints) == 0) { //Seems like things are not configured, so give appropriate information according to access
+    if (empty($externalAssessmentDataPoints) and empty($internalAssessmentDataPoints)) { //Seems like things are not configured, so give appropriate information according to access
         echo "<div class='warning'>";
         if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSettings.php') == false) { //No access, just give warning
                 echo sprintf(__('Data Points needs to be configured before use, but you do not have permission to do this. Please contact %1$s for help with this issue.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
