@@ -73,7 +73,7 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
     {
         if (is_array($gibbonPersonIDList)) {
             $gibbonPersonIDList = array_map(function($item) {
-                return str_pad($item, 12, 0, STR_PAD_LEFT);
+                return str_pad($item, 10, 0, STR_PAD_LEFT);
             }, $gibbonPersonIDList);
             $gibbonPersonIDList = implode(',', $gibbonPersonIDList);
         }
@@ -81,7 +81,7 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
-            ->cols(['gibbonPersonalDocumentID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.name as formGroup', 'gibbonPersonalDocumentType.name as documentTypeName', 'gibbonPersonalDocumentType.document', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.filePath'])
+            ->cols(['gibbonPersonalDocument.gibbonPersonalDocumentID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.name as formGroup', 'gibbonPersonalDocumentType.name as documentTypeName', 'gibbonPersonalDocumentType.document', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.filePath'])
             ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonPersonalDocument.foreignTableID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
