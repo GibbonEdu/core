@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
@@ -90,16 +91,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
 
     $changeCount = 0;
     foreach ($compare as $fieldName => $label) {
-        $isMatching = ($oldValues[$fieldName] != $newValues[$fieldName]);
+        $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
+        $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
+        $isNotMatching = ($oldValue != $newValue);
+
+        if ($fieldName == 'firstAidExpiry') {
+            $oldValue = Format::date($oldValue);
+            $newValue = Format::date($newValue);
+        }
 
         $row = $form->addRow();
             $row->addLabel('new'.$fieldName.'On', $label);
-            $row->addContent($oldValues[$fieldName]);
-            $row->addContent($newValues[$fieldName])->addClass($isMatching ? 'matchHighlightText' : '');
+            $row->addContent($oldValue);
+            $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
 
-        if ($isMatching) {
+        if ($isNotMatching) {
             $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
-            $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
+            $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName] ?? '');
             $changeCount++;
         } else {
             $row->addContent();
