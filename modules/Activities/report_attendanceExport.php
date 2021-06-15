@@ -18,6 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
@@ -33,11 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    // Create new PHPExcel object
-    $excel = new PHPExcel();
+    $excel = new Spreadsheet();
 
     //Create border styles
-    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),'borders' => array('top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444'))),);
+    $style_head_fill = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),'borders' => array('top' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '444444')), 'bottom' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '444444'))),);
 
     // Set document properties
     $excel->getProperties()->setCreator(Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'))
@@ -224,12 +227,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         // Setup the column heading for students
         $excel->getActiveSheet()->setCellValue('A'.($columnStart), __('Days'))
             ->setCellValue('A'.($columnStart + 1), __('Student'));
-        $excel->getActiveSheet()->getStyle('A'.($columnStart))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $excel->getActiveSheet()->getStyle('A'.($columnStart))->getAlignment();
         $excel->getActiveSheet()->getStyle('A'.($columnStart + 1))->applyFromArray($style_head_fill);
 
         $excel->getActiveSheet()->setCellValue(num2alpha(count($sessions) + 1).($columnStart + 1), __('Attended:'));
         $excel->getActiveSheet()->getStyle(num2alpha(count($sessions) + 1).($columnStart + 1))
-            ->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            ->getAlignment();
 
         // Iterate over the students and output each row
         $columnStart += 2;
@@ -277,9 +280,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Set active sheet index to the first sheet, so Excel opens this as the first sheet
     $excel->setActiveSheetIndex(0);
 
+    $filename .= '.xlsx';
+    $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+    $objWriter = IOFactory::createWriter($excel, 'Xlsx');
+
     // Redirect output to a client’s web browser (Excel2007)
-    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="'.$filename.'.xlsx"');
+    header('Content-Type: '.$mimetype);
+    header('Content-Disposition: attachment;filename="'.$filename.'"');
     header('Cache-Control: max-age=0');
     // If you're serving to IE 9, then the following may be needed
     header('Cache-Control: max-age=1');
@@ -290,7 +297,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
     header('Pragma: public'); // HTTP/1.0
 
-    $objWriter = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
     $objWriter->save('php://output');
     exit;
 }
