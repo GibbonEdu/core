@@ -55,6 +55,7 @@ class LibraryReportGateway extends QueryableGateway
                 'gibbonLibraryItemEvent.timestampOut',
                 'gibbonLibraryItemEvent.returnExpected',
                 'gibbonLibraryItemEvent.status',
+                'gibbonLibraryItemEvent.timestampReturn',
                 "IF(gibbonLibraryItemEvent.returnExpected <= CURRENT_TIMESTAMP,'Y','N') as pastDue"
             ])
             ->innerJoin('gibbonLibraryType', 'gibbonLibraryType.gibbonLibraryTypeID = gibbonLibraryItem.gibbonLibraryTypeID')
