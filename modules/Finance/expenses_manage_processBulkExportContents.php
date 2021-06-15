@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 include '../../config.php';
 
@@ -70,8 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 		$excel->getProperties()->setDescription('Expense Export');
 
         //Create border and fill style
-        $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
-        $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+        $style_border = array('borders' => array('right' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
+        $style_head_fill = array('fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
 
         //Auto set column widths
         for($col = 'A'; $col !== 'I'; $col++)

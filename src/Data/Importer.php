@@ -19,9 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\Data\ImportType;
 use Gibbon\Data\ParseCSV;
+use Gibbon\Data\ImportType;
 use Gibbon\Contracts\Database\Connection;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 
 /**
  * Extended Import class
@@ -248,17 +250,17 @@ class Importer
             // Try to use the best reader if available, otherwise catch any read errors
             try {
                 if ($fileType == 'xml') {
-                    $objReader = \PHPExcel_IOFactory::createReader('Excel2003XML');
-                    $objPHPExcel = $objReader->load($filePath);
+                    $objReader = IOFactory::createReader('Xml');
+                    $spreadsheet = $objReader->load($filePath);
                 } else {
-                    $objPHPExcel = \PHPExcel_IOFactory::load($filePath);
+                    $spreadsheet = IOFactory::load($filePath);
                 }
-            } catch (\PHPExcel_Reader_Exception $e) {
+            } catch (ReaderException $e) {
                 $this->errorID = Importer::ERROR_IMPORT_FILE;
                 return false;
             }
 
-            $objWorksheet = $objPHPExcel->getActiveSheet();
+            $objWorksheet = $spreadsheet->getActiveSheet();
             $lastColumn = $objWorksheet->getHighestColumn();
 
             // Grab the header & first row for Step 1
@@ -272,7 +274,7 @@ class Importer
                 }
             }
 
-            $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'CSV');
+            $objWriter = IOFactory::createWriter($spreadsheet, 'Csv');
 
             // Export back to CSV
             ob_start();
@@ -859,7 +861,7 @@ class Importer
         $this->importLog['error'][] = array(
             'index'      => $rowNum,
             'row'        => $rowNum+2,
-            'info'       => $sql.'<br/><br/>'.json_encode($data, \ JSON_PRETTY_PRINT),
+            'info'       => $sql.'<br/><br/>'.json_encode($data, \JSON_PRETTY_PRINT),
             'field_name' => $context,
             'field'      => '',
             'type'       => 'error'

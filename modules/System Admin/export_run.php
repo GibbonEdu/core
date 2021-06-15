@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\ImportType;
 use Gibbon\Services\Format;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 // Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 7200);
@@ -56,13 +60,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
         exit;
     }
 
-    // Create new PHPExcel object
-    $excel = new \PHPExcel();
+    $excel = new Spreadsheet();
 
     //Create border styles
     $style_head_fill= array(
-        'fill' => array('type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),
-        'borders' => array('top' => array('style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444'), ), 'bottom' => array('style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '444444'), )),
+        'fill' => array('fillType' => Fill::FILL_SOLID, 'color' => array('rgb' => 'eeeeee')),
+        'borders' => array('top' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '444444'), ), 'bottom' => array('borderStyle' => Border::BORDER_THIN, 'color' => array('argb' => '444444'), )),
     );
 
     // Set document properties
@@ -238,15 +241,27 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
         $exportFileType = 'Excel2007';
     }
 
-    switch ($exportFileType) {
-        case 'Excel2007':       $filename .= '.xlsx';
-                                $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; break;
-        case 'Excel5':          $filename .= '.xls';
-                                $mimetype = 'application/vnd.ms-excel'; break;
-        case 'OpenDocument':    $filename .= '.ods';
-                                $mimetype = 'application/vnd.oasis.opendocument.spreadsheet'; break;
-        case 'CSV':             $filename .= '.csv';
-                                $mimetype = 'text/csv'; break;
+    switch($exportFileType) {
+        case 'Excel2007':
+            $filename .= '.xlsx';
+            $mimetype = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+            $objWriter = IOFactory::createWriter($excel, 'Xlsx');
+            break;
+        case 'Excel5':
+            $filename .= '.xls';
+            $mimetype = 'application/vnd.ms-excel';
+            $objWriter = IOFactory::createWriter($excel, 'Xls');
+            break;
+        case 'OpenDocument':
+            $filename .= '.ods';
+            $mimetype = 'application/vnd.oasis.opendocument.spreadsheet';
+            $objWriter = IOFactory::createWriter($excel, 'Ods');
+            break;
+        case 'CSV':
+            $filename .= '.csv';
+            $mimetype = 'text/csv';
+            $objWriter = IOFactory::createWriter($excel, 'Csv');
+            break;
     }
 
     // FINALIZE THE DOCUMENT SO IT IS READY FOR DOWNLOAD
@@ -266,7 +281,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
     header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
     header('Pragma: public'); // HTTP/1.0
 
-    $objWriter = \PHPExcel_IOFactory::createWriter($excel, $exportFileType);
     $objWriter->save('php://output');
     exit;
 }

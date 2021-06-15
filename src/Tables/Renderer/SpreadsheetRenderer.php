@@ -23,10 +23,11 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Element;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 /**
  * SpreadsheetRenderer
@@ -156,7 +157,7 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $cellContent = $this->stripTags($column->getOutput($data));
 
-                    $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, \PHPExcel_Cell_DataType::TYPE_STRING);
+                    $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_STRING);
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
