@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
             ->addColumn('timestampOut', __('Return Date'))
             ->description(__('Borrow Date'))
             ->format(function ($item) {
-                return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : 'N/A', Format::small(Format::date($item['timestampOut'])));
+                return sprintf('<b>%1$s</b><br/>%2$s', $item['status'] == 'On Loan' ? Format::date($item['returnExpected']) : Format::date($item['timestampReturn']), Format::small(Format::date($item['timestampOut'])));
             });
         $table
             ->addColumn('status', __('Status'))->translatable();
