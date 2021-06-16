@@ -13,7 +13,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </h3>
 
     {% for course, criteriaList in reportCriteria %}
-        {% set criteriaCheck = criteriaList|last %}
+        {% set criteriaCheck = criteriaList|filter(v => v.criteriaTarget == 'Per Student')|last %}
         
 
         <div class="mb-3">
@@ -25,7 +25,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {{ criteriaCheck.scopeName }}
                     </h5>
                     <span class="font-normal leading-normal">
-                        {{ formatUsing('name', '', criteriaCheck.preferredName, criteriaCheck.surname, 'Staff') }}
+                        {% if criteriaCheck.teachers %}
+                            {{ criteriaCheck.teachers }}
+
+                            {% if (criteriaCheck.preferredName~" "~criteriaCheck.surname) not in criteriaCheck.teachers %}
+                                ({{__('Edited by {name}', {'name': criteriaCheck.preferredName~" "~criteriaCheck.surname })}})
+                            {% endif %}
+                        {% else %}
+                            {{ criteriaCheck.preferredName~" "~criteriaCheck.surname }}
+                        {% endif %}
                     </span>
                 </th>
                 <th class="p-2 text-right font-normal {{ canWriteReport and criteriaCheck.progress == 'Complete' ? 'success'}}">

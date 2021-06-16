@@ -324,7 +324,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonReportingCycle')
             ->cols(['gibbonReportingScope.gibbonReportingScopeID  as groupBy', 'gibbonReportingScope.name as scopeName', '0 as orderBy',
             'gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingCriteriaType.valueType', 'gibbonReportingCriteriaType.characterLimit', 'gibbonReportingCriteriaType.gibbonScaleID', 'gibbonReportingValue.gibbonScaleGradeID', "(CASE WHEN gibbonReportingCriteriaType.valueType='Grade Scale' THEN gibbonScaleGrade.descriptor ELSE gibbonReportingValue.value END) as value", 'gibbonReportingValue.comment', 'gibbonReportingProgress.status as progress',
-            'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget'])
+            'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget', 'NULL as teachers'])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID
                 AND gibbonReportingCriteria.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
@@ -350,7 +350,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->from('gibbonReportingCycle')
             ->cols(['gibbonReportingScope.gibbonReportingScopeID  as groupBy', 'gibbonReportingScope.name as scopeName', '0 as orderBy',
             'gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingCriteriaType.valueType', 'gibbonReportingCriteriaType.characterLimit', 'gibbonReportingCriteriaType.gibbonScaleID', 'gibbonReportingValue.gibbonScaleGradeID', "(CASE WHEN gibbonReportingCriteriaType.valueType='Grade Scale' THEN gibbonScaleGrade.descriptor ELSE gibbonReportingValue.value END) as value", 'gibbonReportingValue.comment', 'gibbonReportingProgress.status as progress',
-            'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget'])
+            'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget', 'NULL as teachers'])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID
                 AND gibbonReportingCriteria.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
@@ -371,10 +371,11 @@ class ReportingAccessGateway extends QueryableGateway
             ->where("gibbonReportingScope.scopeType = 'Form Group'")
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'");
 
+        // COURSE
         $query->unionAll()
             ->from('gibbonReportingCycle')
             ->cols(['gibbonCourse.gibbonCourseID as groupBy', 'gibbonCourse.name as scopeName', 'gibbonCourse.orderBy as orderBy',
-            'gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingCriteriaType.valueType', 'gibbonReportingCriteriaType.characterLimit', 'gibbonReportingCriteriaType.gibbonScaleID', 'gibbonReportingValue.gibbonScaleGradeID', "(CASE WHEN gibbonReportingCriteriaType.valueType='Grade Scale' THEN gibbonScaleGrade.descriptor ELSE gibbonReportingValue.value END) as value", 'gibbonReportingValue.comment', 'gibbonReportingProgress.status as progress', 'created.title', 'created.preferredName', 'created.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget'])
+            'gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonReportingCriteria.name', 'gibbonReportingCriteria.description', 'gibbonReportingCriteria.category', 'gibbonReportingCriteriaType.name as criteriaName', 'gibbonReportingCriteriaType.valueType', 'gibbonReportingCriteriaType.characterLimit', 'gibbonReportingCriteriaType.gibbonScaleID', 'gibbonReportingValue.gibbonScaleGradeID', "(CASE WHEN gibbonReportingCriteriaType.valueType='Grade Scale' THEN gibbonScaleGrade.descriptor ELSE gibbonReportingValue.value END) as value", 'gibbonReportingValue.comment', 'gibbonReportingProgress.status as progress', 'editor.title', 'editor.preferredName', 'editor.surname', 'gibbonReportingScope.sequenceNumber as scopeSequence', 'gibbonReportingCriteria.sequenceNumber as criteriaSequence', 'gibbonReportingCriteria.target as criteriaTarget', "GROUP_CONCAT(CONCAT(teacher.preferredName, ' ', teacher.surname) ORDER BY teacher.surname SEPARATOR ', ' ) AS teachers"])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonSchoolYearID=gibbonReportingCycle.gibbonSchoolYearID')
             ->innerJoin('gibbonReportingCriteria', 'gibbonReportingCriteria.gibbonReportingCycleID=gibbonReportingCycle.gibbonReportingCycleID
                 AND gibbonReportingCriteria.gibbonCourseID IS NOT NULL')
@@ -391,7 +392,9 @@ class ReportingAccessGateway extends QueryableGateway
             ->leftJoin('gibbonReportingProgress', 'gibbonReportingProgress.gibbonReportingScopeID=gibbonReportingCriteria.gibbonReportingScopeID
                 AND gibbonReportingProgress.gibbonCourseClassID=gibbonReportingValue.gibbonCourseClassID
                 AND gibbonReportingProgress.gibbonPersonIDStudent=gibbonReportingValue.gibbonPersonIDStudent')
-            ->leftJoin('gibbonPerson as created', 'gibbonReportingValue.gibbonPersonIDCreated=created.gibbonPersonID')
+            ->leftJoin('gibbonPerson as editor', 'gibbonReportingValue.gibbonPersonIDModified=editor.gibbonPersonID')
+            ->leftJoin('gibbonCourseClassPerson AS teachers', "teachers.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND teachers.role='Teacher'")
+            ->leftJoin('gibbonPerson as teacher', 'teachers.gibbonPersonID=teacher.gibbonPersonID')
             ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->where("gibbonCourseClassPerson.role='Student'")
             ->where("gibbonCourseClassPerson.reportable='Y'")
@@ -400,7 +403,8 @@ class ReportingAccessGateway extends QueryableGateway
             ->where('gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID')
             ->bindValue('gibbonReportingCycleID', $gibbonReportingCycleID)
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'")
-            ->where("gibbonReportingScope.scopeType = 'Course'");
+            ->where("gibbonReportingScope.scopeType = 'Course'")
+            ->groupBy(['gibbonReportingCriteria.gibbonReportingCriteriaID']);
 
         $query->orderBy([
             'scopeSequence',
