@@ -67,6 +67,7 @@ class StudentDashboard implements OutputableInterface
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
         $gibbonPersonID = $this->session->get('gibbonPersonID');
+        $session = $this->session;
 
         $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
 

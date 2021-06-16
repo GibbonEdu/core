@@ -73,6 +73,7 @@ class StaffDashboard implements OutputableInterface
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
         $gibbonPersonID = $this->session->get('gibbonPersonID');
+        $session = $this->session;
 
         $return = false;
 
