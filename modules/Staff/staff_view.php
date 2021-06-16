@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         ->filterBy('biographicalGrouping', $urlParams['grouping'])
         ->filterBy('all', $urlParams['allStaff'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
-        ->fromPOST();
+        ->fromPOST('staffDirectory');
 
     // FILTERS
     if (empty($viewMode)) {
