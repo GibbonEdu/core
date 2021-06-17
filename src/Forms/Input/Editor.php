@@ -118,6 +118,10 @@ class Editor extends Input
      */
     protected function getElement()
     {
-        return getEditor($this->guid, true, $this->getName(), $this->getValue(), $this->rows, $this->showMedia, $this->getRequired(), $this->initiallyHidden, $this->allowUpload, $this->initialFilter, $this->resourceAlphaSort);
+        if ($this->getReadonly()) {
+            return '<p>'.$this->getValue().'</p>';
+        } else {
+            return getEditor($this->guid, true, $this->getName(), $this->getValue(), $this->rows, $this->showMedia, $this->getRequired(), $this->initiallyHidden, $this->allowUpload, $this->initialFilter, $this->resourceAlphaSort);
+        }
     }
 }
