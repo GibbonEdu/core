@@ -2084,23 +2084,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</ul>';
                             }
 
-
                             echo '<h3>';
                             echo __('Individual Education Plan');
                             echo '</h3>';
 
-                                $dataIN = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlIN = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
-                                $resultIN = $connection2->prepare($sqlIN);
-                                $resultIN->execute($dataIN);
+                            $dataIN = array('gibbonPersonID' => $gibbonPersonID);
+                            $sqlIN = 'SELECT * FROM gibbonIN WHERE gibbonPersonID=:gibbonPersonID';
+                            $rowIN = $pdo->select($sqlIN, $dataIN)->fetch();
 
-                            if ($resultIN->rowCount() != 1) {
-                                echo "<div class='error'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
+                            if (empty($rowIN)) {
+                                echo Format::alert(__('There are no records to display.'));
                             } else {
-                                $rowIN = $resultIN->fetch();
-
                                 echo "<div style='font-weight: bold'>".__('Targets').'</div>';
                                 echo '<p>'.$rowIN['targets'].'</p>';
 
@@ -2109,6 +2103,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 echo "<div style='font-weight: bold; margin-top: 30px'>".__('Notes & Review').'s</div>';
                                 echo '<p>'.$rowIN['notes'].'</p>';
+                            }
+
+                            // CUSTOM FIELDS
+                            if (!empty($rowIN['fields'])) {
+                                $table = DataTable::createDetails('inFields');
+
+                                $container->get(CustomFieldHandler::class)->addCustomFieldsToTable($table, 'Individual Needs', ['student' => 1], $rowIN['fields']);
+
+                                echo $table->render([$rowIN]);
                             }
                         }
                     } elseif ($subpage == 'Library Borrowing') {
