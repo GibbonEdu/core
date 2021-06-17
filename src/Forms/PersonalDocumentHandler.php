@@ -49,8 +49,8 @@ class PersonalDocumentHandler
         ];
 
         $this->fields = [
-            'documentName'   => __('Name on Document'),
             'documentNumber' => __('Document Number'),
+            'documentName'   => __('Name on Document'),
             'documentType'   => __('Residency/Visa Type'),
             'country'        => __('Issuing Country'),
             'dateIssue'      => __('Issue Date'),

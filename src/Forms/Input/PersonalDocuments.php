@@ -106,7 +106,7 @@ class PersonalDocuments extends Input
 
             $output .= '<div class="document-details border-t sm:grid grid-cols-2 grid-flow-col auto-rows-fr py-2" style="grid-template-rows: repeat('.(ceil(count($fields)/2)).',auto);">';
 
-            foreach ($fields as $field) {
+            foreach ($fields as $index => $field) {
                 $output .= '<div class="px-4 py-2 flex flex-col sm:flex-row justify-between sm:items-center content-center p-0">';
                 $row = $this->factory->createRow()->addClass($this->getClass());
 
@@ -127,28 +127,29 @@ class PersonalDocuments extends Input
                         $label = $row->addLabel($field, __('Residency/Visa Type'));
                         $input = !empty($this->residencyStatus)
                             ? $row->addSelect($field)->fromString($this->residencyStatus)->placeholder()
-                            : $row->addTextField($field)->maxLength(60);
+                            : $row->addTextField($field)->maxLength(60)->required($document['required'] == 'Y');
                         break;
                     case 'country':
                         $label = $row->addLabel($field, __('Issuing Country'));
                         $input = !empty($this->nationalityList)
                             ? $row->addSelect($field)->fromString($this->nationalityList)->placeholder()
-                            : $row->addSelectCountry($field);
+                            : $row->addSelectCountry($field)->required($document['required'] == 'Y');
                         break;
                     case 'dateIssue':
                         $label = $row->addLabel($field, __('Issue Date'));
-                        $input = $row->addDate($field);
+                        $input = $row->addDate($field)->required($document['required'] == 'Y' && $index == 0);
                         break;
                     case 'dateExpiry':
                         $label = $row->addLabel($field, __('Expiry Date'));
-                        $input = $row->addDate($field);
+                        $input = $row->addDate($field)->required($document['required'] == 'Y' && $index == 0);
                         break;
                     case 'filePath':
                         $fieldName = $fieldID;
                         $label = $row->addLabel($field, __('Scanned Copy'));
                         $input = $row->addFileUpload($field)
                                      ->accepts('.jpg,.jpeg,.gif,.png,.pdf,.doc,.docx')
-                                     ->setMaxUpload(false);
+                                     ->setMaxUpload(false)
+                                     ->required($document['required'] == 'Y' && $index == 0);
                         if (!empty($document['filePath'])) {
                             $input->setAttachment($name.'['.$document['gibbonPersonalDocumentTypeID'].']['.$field.']', $this->absoluteURL, $document['filePath']);
                         }
