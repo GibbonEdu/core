@@ -26,6 +26,9 @@ use Gibbon\Contracts\Database\Connection;
  */
 class EngineUpdate extends Migration
 {
+    public $tablesTotal = 0;
+    public $tablesInnoDB = 0;
+
     protected $db;
 
     public function __construct(Connection $db)
@@ -52,16 +55,17 @@ class EngineUpdate extends Migration
     public function canMigrate() : bool
     {
         $tables = $this->db->select("SHOW TABLE STATUS")->fetchAll();
-        
-        if (empty($tables)) {
+        $this->tablesTotal = count($tables);
+
+        if (empty($this->tablesTotal)) {
             return false;
         }
 
-        $tablesInnoDB = array_filter($tables, function ($table) {
+        $this->tablesInnoDB = count(array_filter($tables, function ($table) {
             return $table['Engine'] == 'InnoDB' || $table['Engine'] === null;
-        });
+        }));
 
-        if (count($tables) - count($tablesInnoDB) > 0) {
+        if ($this->tablesTotal - $this->tablesInnoDB > 0) {
             return true;
         }
         
@@ -71,12 +75,12 @@ class EngineUpdate extends Migration
     public function migrate()
     {
         $partialFail = false;
-        $tables = $this->db->select("SHOW TABLE STATUS");
+        $tables = $this->db->select("SHOW TABLE STATUS")->fetchAll();
 
         foreach ($tables as $table) {
             if ($table['Engine'] == 'InnoDB') continue;
 
-            $partialFail &= !$this->db->statement("ALTER TABLE ".$table['Name']." ENGINE=InnoDB;");
+            $partialFail &= !$this->db->statement("ALTER TABLE `".$table['Name']."` ENGINE=InnoDB;");
         }
 
         return !$partialFail;

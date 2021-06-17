@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     header("Location: {$URL}");
 } else {
     // Proceed!
-    $type = $_POST['type'] ?? '';
+    $type = $_REQUEST['type'] ?? '';
 
     // Validate Inputs
     if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
@@ -45,19 +45,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
     $updater = $container->get(Updater::class);
 
-    if (!$updater->isVersionValid()) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-        exit;
-    }
-
-    if (!$updater->isUpdateRequired()) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-        exit;
-    }
-
     if ($type == 'regularRelease' || $type == 'cuttingEdge') {
+        if (!$updater->isVersionValid()) {
+            $URL .= '&return=error3';
+            header("Location: {$URL}");
+            exit;
+        }
+    
+        if (!$updater->isUpdateRequired()) {
+            $URL .= '&return=error3';
+            header("Location: {$URL}");
+            exit;
+        }
+
         // Do the update
         $errors = $updater->update();
 
