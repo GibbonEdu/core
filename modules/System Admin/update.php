@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                     $output .= Format::alert(sprintf(__('Your current default database engine is: %1$s.'), $currentEngine).' '.__('It is advised that you change your server config so that your default storage engine is set to InnoDB.'), 'warning');
                 }
 
-                $output .= Format::alert(sprintf(__('%1$s of your tables are not set to InnoDB.'), $tablesTotal - $tablesInnoDB).' <b>'.__('Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), 'warning');
+                $output .= Format::alert(sprintf(__('%1$s of your tables are not set to InnoDB.'), $engineUpdate->tablesTotal - $engineUpdate->tablesInnoDB).' <b>'.__('Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), 'warning');
 
                 $form->addRow()->addSubmit();
             }
