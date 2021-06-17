@@ -34,6 +34,7 @@ v22.0.00
         Staff: addded a Staff Data Updater to enable requests for updates to staff records
 
     Changes With Important Notices
+        System: changed custom fields to store data as JSON rather than serialized data (as of v21.0.00)
         System: removed all personal document data from gibbonPerson and related tables
         System: removed the vendor folder for Cutting Edge Code installations
         System: renamed the gibbonPersonField table to gibbonCustomField
