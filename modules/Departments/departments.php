@@ -37,13 +37,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     // QUERY
     $criteria = $departmentGateway->newQueryCriteria(true)
-        ->sortBy(['sequenceNumber', 'name']);
+        ->sortBy(['sequenceNumber', 'name'])
+        ->fromPOST('departments');
 
     // Data Table
     $gridRenderer = new GridView($container->get('twig'));
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
     $table->getRenderer()->setCriteria($criteria);
     $table->setTitle(__('Departments'));
+    $table->addMetaData('gridClass', 'flex flex-wrap rounded-sm bg-gray-100 border py-4');
 
     $table->addColumn('logo')
         ->format(function ($department) {
