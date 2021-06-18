@@ -108,11 +108,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         ->description(__('Last Update'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) use ($cutoffDate) {
-            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/><br/>';
+            $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/>';
 
             $output .= ($student['lastPersonalUpdate'] < $cutoffDate) ? '<span style="color: #ff0000; font-weight: bold"><i>' : '<span><i>';
             $output .= !empty($student['lastPersonalUpdate']) ? Format::date($student['lastPersonalUpdate']) : __('N/A');
             $output .= '</i></span>';
+
+            $output .= '<br/><br/>';
+            $output .= '<i>'.__('Email').'</i>: '.$student['email'].'<br/>';
+            $output .= Format::phone($student['phone1'], $student['phone1CountryCode'], '<i>'.$student['phone1Type'].'<i>');
 
             return $output;
         });
@@ -124,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
-                ['familyAdults' => $student['familyAdults']]
+                ['familyAdults' => $student['familyAdults'], 'includePhoneNumbers' => true]
             );
         });
 
