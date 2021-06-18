@@ -963,31 +963,31 @@ UPDATE gibbonAction SET helpURL = 'teachers/people/student-profiles/' WHERE name
 ALTER TABLE `gibbonBehaviour` ADD `fields` TEXT NULL AFTER `timestamp`;end
 ALTER TABLE `gibbonIN` ADD `fields` TEXT NULL AFTER `notes`;end
 ALTER TABLE `gibbonINArchive` ADD `fields` TEXT NULL AFTER `archiveTimestamp`;end
-UPDATE `gibbonApplicationForm` SET `siblingDOB1`=NULL WHERE `siblingDOB1`='0000-00-00';end
-UPDATE `gibbonApplicationForm` SET `siblingDOB2`=NULL WHERE `siblingDOB2`='0000-00-00';end
-UPDATE `gibbonApplicationForm` SET `siblingDOB3`=NULL WHERE `siblingDOB3`='0000-00-00';end
-UPDATE `gibbonFinanceInvoice` SET `paidDate`=NULL WHERE `paidDate`='0000-00-00';end
-UPDATE `gibbonFinanceInvoice` SET `invoiceDueDate`=NULL WHERE `invoiceDueDate`='0000-00-00';end
-UPDATE `gibbonLibraryItem` SET `purchaseDate`=NULL WHERE `purchaseDate`='0000-00-00';end
-UPDATE `gibbonMessengerReceipt` SET `confirmedTimestamp`=NULL WHERE `confirmedTimestamp`='0000-00-00 00:00:00';end
-UPDATE `gibbonCourse` SET `gibbonDepartmentID`=NULL WHERE `gibbonDepartmentID`=0;end
-UPDATE `gibbonCrowdAssessDiscuss` SET `gibbonCrowdAssessDiscussIDReplyTo`=NULL WHERE `gibbonCrowdAssessDiscussIDReplyTo`=0;end
-UPDATE `gibbonFormGroup` SET `gibbonFormGroupIDNext`=NULL WHERE `gibbonFormGroupIDNext`=0;end
-UPDATE `gibbonInternalAssessmentEntry` SET `gibbonPersonIDLastEdit`=NULL WHERE `gibbonPersonIDLastEdit`=0;end
-UPDATE `gibbonLibraryItem` SET `gibbonPersonIDReturnAction`=NULL WHERE `gibbonPersonIDReturnAction`=0;end
-UPDATE `gibbonLibraryItemEvent` SET `gibbonPersonIDReturnAction`=NULL WHERE `gibbonPersonIDReturnAction`=0;end
-UPDATE `gibbonLibraryItemEvent` SET `gibbonPersonIDStatusResponsible`=NULL WHERE `gibbonPersonIDStatusResponsible`=0;end
-UPDATE `gibbonMarkbookColumn` SET `gibbonPersonIDCreator`=NULL WHERE `gibbonPersonIDCreator`=0;end
-UPDATE `gibbonMarkbookColumn` SET `gibbonPersonIDLastEdit`=NULL WHERE `gibbonPersonIDLastEdit`=0;end
-UPDATE `gibbonPayment` SET `gibbonPersonID`=NULL WHERE `gibbonPersonID`=0;end
-UPDATE `gibbonPerson` SET `gibboni18nIDPersonal`=NULL WHERE `gibboni18nIDPersonal`=0;end
-UPDATE `gibbonPerson` SET `gibbonThemeIDPersonal`=NULL WHERE `gibbonThemeIDPersonal`=0;end
-UPDATE `gibbonPlannerEntry` SET `gibbonUnitID`=NULL WHERE `gibbonUnitID`=0;end
-UPDATE `gibbonUnit` SET `gibbonPersonIDLastEdit`=gibbonPersonIDCreator WHERE `gibbonPersonIDLastEdit`=0;end
-UPDATE `gibbonStaffApplicationForm` SET `gibbonPersonID`=NULL WHERE `gibbonPersonID`=0;end
-UPDATE `gibbonTTDayRowClass` SET `gibbonSpaceID`=NULL WHERE `gibbonSpaceID`=0;end
-UPDATE `gibbonPerson` SET `dob`=NULL WHERE `dob`='0000-00-00';end
-UPDATE `gibbonPersonUpdate` SET `dob`=NULL WHERE `dob`='0000-00-00';end
+UPDATE IGNORE `gibbonApplicationForm` SET `siblingDOB1`=NULL WHERE `siblingDOB1`='0000-00-00';end
+UPDATE IGNORE `gibbonApplicationForm` SET `siblingDOB2`=NULL WHERE `siblingDOB2`='0000-00-00';end
+UPDATE IGNORE `gibbonApplicationForm` SET `siblingDOB3`=NULL WHERE `siblingDOB3`='0000-00-00';end
+UPDATE IGNORE `gibbonFinanceInvoice` SET `paidDate`=NULL WHERE `paidDate`='0000-00-00';end
+UPDATE IGNORE `gibbonFinanceInvoice` SET `invoiceDueDate`=NULL WHERE `invoiceDueDate`='0000-00-00';end
+UPDATE IGNORE `gibbonLibraryItem` SET `purchaseDate`=NULL WHERE `purchaseDate`='0000-00-00';end
+UPDATE IGNORE `gibbonMessengerReceipt` SET `confirmedTimestamp`=NULL WHERE `confirmedTimestamp`='0000-00-00 00:00:00';end
+UPDATE IGNORE `gibbonCourse` SET `gibbonDepartmentID`=NULL WHERE `gibbonDepartmentID`=0;end
+UPDATE IGNORE `gibbonCrowdAssessDiscuss` SET `gibbonCrowdAssessDiscussIDReplyTo`=NULL WHERE `gibbonCrowdAssessDiscussIDReplyTo`=0;end
+UPDATE IGNORE `gibbonFormGroup` SET `gibbonFormGroupIDNext`=NULL WHERE `gibbonFormGroupIDNext`=0;end
+UPDATE IGNORE `gibbonInternalAssessmentEntry` SET `gibbonPersonIDLastEdit`=NULL WHERE `gibbonPersonIDLastEdit`=0;end
+UPDATE IGNORE `gibbonLibraryItem` SET `gibbonPersonIDReturnAction`=NULL WHERE `gibbonPersonIDReturnAction`=0;end
+UPDATE IGNORE `gibbonLibraryItemEvent` SET `gibbonPersonIDReturnAction`=NULL WHERE `gibbonPersonIDReturnAction`=0;end
+UPDATE IGNORE `gibbonLibraryItemEvent` SET `gibbonPersonIDStatusResponsible`=NULL WHERE `gibbonPersonIDStatusResponsible`=0;end
+UPDATE IGNORE `gibbonMarkbookColumn` SET `gibbonPersonIDCreator`=NULL WHERE `gibbonPersonIDCreator`=0;end
+UPDATE IGNORE `gibbonMarkbookColumn` SET `gibbonPersonIDLastEdit`=NULL WHERE `gibbonPersonIDLastEdit`=0;end
+UPDATE IGNORE `gibbonPayment` SET `gibbonPersonID`=NULL WHERE `gibbonPersonID`=0;end
+UPDATE IGNORE `gibbonPerson` SET `gibboni18nIDPersonal`=NULL WHERE `gibboni18nIDPersonal`=0;end
+UPDATE IGNORE `gibbonPerson` SET `gibbonThemeIDPersonal`=NULL WHERE `gibbonThemeIDPersonal`=0;end
+UPDATE IGNORE `gibbonPlannerEntry` SET `gibbonUnitID`=NULL WHERE `gibbonUnitID`=0;end
+UPDATE IGNORE `gibbonUnit` SET `gibbonPersonIDLastEdit`=gibbonPersonIDCreator WHERE `gibbonPersonIDLastEdit`=0;end
+UPDATE IGNORE `gibbonStaffApplicationForm` SET `gibbonPersonID`=NULL WHERE `gibbonPersonID`=0;end
+UPDATE IGNORE `gibbonTTDayRowClass` SET `gibbonSpaceID`=NULL WHERE `gibbonSpaceID`=0;end
+UPDATE IGNORE `gibbonPerson` SET `dob`=NULL WHERE `dob`='0000-00-00';end
+UPDATE IGNORE `gibbonPersonUpdate` SET `dob`=NULL WHERE `dob`='0000-00-00';end
 UPDATE `gibbonSetting` SET value='fe4abccf405facac24e05de854d764a6' WHERE scope='System Admin' AND name='composerLockHash';end
 UPDATE gibbonNotificationEvent SET actionName='Parent Weekly Email Summary' WHERE event='Parent Daily Email Summary' OR event='Tutor Daily Email Summary';end
 SELECT NULL;end
