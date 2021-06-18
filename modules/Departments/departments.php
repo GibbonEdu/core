@@ -36,8 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     $departmentGateway = $container->get(DepartmentGateway::class);
 
     // QUERY
-    $criteria = $departmentGateway->newQueryCriteria(true)
+    $criteria = $departmentGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber', 'name'])
+        ->pageSize(0)
         ->fromPOST('departments');
 
     // Data Table
@@ -45,7 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
     $table->getRenderer()->setCriteria($criteria);
     $table->setTitle(__('Departments'));
-    $table->addMetaData('gridClass', 'flex flex-wrap rounded-sm bg-gray-100 border py-4');
 
     $table->addColumn('logo')
         ->format(function ($department) {
