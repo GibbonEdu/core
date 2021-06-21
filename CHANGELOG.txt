@@ -19,10 +19,15 @@ CHANGELOG
 v23.0.00
 --------
     Headlines
+
     Significant Changes
+
     Changes With Important Notices
+
     Tweaks & Additions
+
     Bug Fixes
+        System: fixed lesson plan content in demo data
 
 v22.0.00
 --------
