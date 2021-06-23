@@ -170,7 +170,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
 
         if (!$allUsers) $sql .= " AND gibbonPerson.status='Full'";
 
-        $sql .= " GROUP BY gibbonFamilyAdult.gibbonPersonID ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
+        $sql .= " GROUP BY gibbonFamilyChild.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyAdultID ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
     }
