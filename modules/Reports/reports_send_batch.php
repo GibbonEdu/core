@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $search = $_GET['search'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Send Reports'), 'reports_generate.php')
+        ->add(__('Send Reports'), 'reports_send.php')
         ->add(__('Select Reports'));
 
     $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
