@@ -25,11 +25,13 @@ v23.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        System: updated table actions to enable additional modules to use their own icon paths
         Students: updated student enrolment dropdown to include students with Expected status
 
     Bug Fixes
         System: fixed lesson plan content in demo data
         System: fixed parent dashboard hooks missing access to session object
+        
 
 v22.0.00
 --------
