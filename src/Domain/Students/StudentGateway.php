@@ -188,7 +188,7 @@ class StudentGateway extends QueryableGateway
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                     LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE
-                    status='Full'
+                    (status='Full' OR status='Expected')
                     AND gibbonFormGroup.name IS NULL
                     AND gibbonRole.category='Student'
                 ORDER BY name, surname, preferredName";
