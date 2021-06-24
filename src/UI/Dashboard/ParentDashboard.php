@@ -144,6 +144,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
+        $session = $this->session;
 
         $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
 
