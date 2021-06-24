@@ -25,6 +25,7 @@ v23.0.00
     Changes With Important Notices
 
     Tweaks & Additions
+        Students: updated student enrolment dropdown to include students with Expected status
 
     Bug Fixes
         System: fixed lesson plan content in demo data
