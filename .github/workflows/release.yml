@@ -29,7 +29,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
         with:
-          submodules: "recursive"
           fetch-depth: 1
 
       # Reuse composer cache from test
@@ -56,12 +55,6 @@ jobs:
       # Install PHP libraries with composer
       - name: Setup PHP vendor folder for release
         run: composer install --prefer-dist --no-interaction  --no-dev --optimize-autoloader
-
-      # Clear the i18n folder
-      - name: Clear i18n submodule folder
-        run: |
-          rm -Rf i18n
-          mkdir i18n
 
       # Create the zip and tar.gz bundle
       - name: Create Install Bundles
