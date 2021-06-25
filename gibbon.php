@@ -20,6 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\Page;
 use Gibbon\View\View;
 
+// Handle fatal errors more gracefully
+register_shutdown_function(function () {
+    $lastError = error_get_last();
+    if ($lastError && ($lastError['type'] === E_ERROR || $lastError['type'] === E_CORE_ERROR || $lastError['type'] === E_COMPILE_ERROR) ) {
+        include __DIR__.'/error.php';
+    }
+    exit;
+});
+
 // Check for the autoloader file
 if (!file_exists(__DIR__.'/vendor/autoload.php')) {
     $message = 'Fatal Error: Missing composer autoloader. Your vendor folder is likely not installed. If you are running cutting edge code, navigate to your base dir in a terminal window and run the "composer install" command. See the Cutting Edge Code documentation for more information: https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/cutting-edge-code/';
