@@ -671,7 +671,7 @@ if (!$session->has('address')) {
         if (is_file('./'.$address)) {
             $page->writeFromFile('./'.$address, $globals);
         } else {
-            $page->writeFromFile('./error.php', $globals);
+            $page->writeFromTemplate('error.twig.html');
         }
     }
 }
