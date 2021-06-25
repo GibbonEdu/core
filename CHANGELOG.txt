@@ -26,6 +26,7 @@ v23.0.00
 
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths
+        System: improved the appearance of the fatal error message page
         Students: updated student enrolment dropdown to include students with Expected status
 
     Bug Fixes
