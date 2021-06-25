@@ -29,7 +29,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
         with:
-          submodules: "recursive"
           fetch-depth: 1
 
       # Reuse composer cache from test
@@ -70,7 +69,7 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Create Bundle (zip)"
-          zip --quiet -r "./dist/GibbonEduCore-InstallBundle.zip" . -x "dist/**/*" -x ".git/**/*"
+          zip -9 --quiet -r "./dist/GibbonEduCore-InstallBundle.zip" . -x "dist/**/*" -x ".git/**/*"
           echo "::endgroup::"
 
           echo "::group::Examine Bundle"
