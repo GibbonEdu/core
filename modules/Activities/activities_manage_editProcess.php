@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonActivityID specified
     $activityGateway = $container->get(ActivityGateway::class);
 
     if (!$activityGateway->exists($gibbonActivityID)) {

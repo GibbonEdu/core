@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonPersonID and currentDate specified
     if ($gibbonPersonID == '' and $currentDate == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

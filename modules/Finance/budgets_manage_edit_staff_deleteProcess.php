@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 } else {
     //Proceed!
 
-    //Check if school year specified
+    //Check if gibbonFinanceBudgetID specified
     if ($gibbonFinanceBudgetID == '' or $gibbonFinanceBudgetPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

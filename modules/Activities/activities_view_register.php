@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo __('Registration is closed, or you do not have permission to register.');
                 echo '</div>';
             } else {
-                //Check if school year specified
+                //Check if gibbonActivityID specified
                 $gibbonActivityID = $_GET['gibbonActivityID'];
                 if ($gibbonActivityID == 'Y') {
                     echo "<div class='error'>";

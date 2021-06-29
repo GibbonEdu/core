@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceBudgetID specified
     if ($gibbonFinanceBudgetID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

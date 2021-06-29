@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceExpenseApproverID specified
     $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
     if ($gibbonFinanceExpenseApproverID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceFeeCategoryID specified
     if ($gibbonFinanceFeeCategoryID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
