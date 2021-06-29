@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
         echo '</div>';
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonResourceID specified
         $gibbonResourceID = $_GET['gibbonResourceID'];
         if ($gibbonResourceID == 'Y') {
             echo "<div class='error'>";

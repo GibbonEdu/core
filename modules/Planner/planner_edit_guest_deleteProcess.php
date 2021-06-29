@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
     } else {
         //Proceed!
 
-        //Check if school year specified
+        //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
         if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryGuestID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             $URL .= "&return=error1$params";
             header("Location: {$URL}");

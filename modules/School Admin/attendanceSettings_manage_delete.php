@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonAttendanceCodeID specified
     $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
     if ($gibbonAttendanceCodeID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
