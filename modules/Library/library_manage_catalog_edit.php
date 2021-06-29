@@ -105,7 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$row = $form->addRow();
 				$row->addLabel('invoiceNumber', __('Invoice Number'));
 				$row->addTextField('invoiceNumber')->maxLength(50);
-
+            
+            $row = $form->addRow();
+				$row->addLabel('cost', __('Cost'));
+				$row->addCurrency('cost')->maxLength(9);
+            
 			$row = $form->addRow();
 				$row->addLabel('imageType', __('Image Type'));
 				$row->addSelect('imageType')->fromArray(array('File' => __('File'), 'Link' => __('Link')))->placeholder();
