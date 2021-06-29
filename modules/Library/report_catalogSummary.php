@@ -135,6 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
                 : Format::small(__('Unknown'));
             return $output.'<br/>'.Format::small($item['vendor']);
         });
-
+    if (empty($viewMode)) {
+        $table->addActionColumn()
+            ->addParam('gibbonLibraryItemID')
+            ->format(function ($catalog, $actions) use ($gibbon) {
+                $actions->addAction('view', __('View Details'))
+                        ->setURL('/modules/' . $gibbon->session->get('module') . '/report_catalogSummary_view.php');
+                });
+    }
     echo $table->render($catalog);
 }
