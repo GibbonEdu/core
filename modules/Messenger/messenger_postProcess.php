@@ -1949,6 +1949,32 @@ else {
 					$partialFail = true;
 				}
             }
+
+            if ($sms=="Y") {
+				if ($countryCode=="") {
+					$partialFail = true;
+				} else {
+                    $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
+                        if ($reportEntry[3] == 'SMS') $phoneNumbers[] = '+'.$reportEntry[4];
+                        return $phoneNumbers;
+                    }, []));
+
+                    $sms = $container->get(SMS::class);
+
+                    $result = $sms
+                        ->content($body)
+                        ->send($recipients);
+
+                    $smsCount = count($recipients);
+                    $smsBatchCount = count($result);
+
+                    $smsStatus = $result ? 'OK' : 'Not OK';
+                    $partialFail &= !empty($result);
+
+					//Set log
+					$logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $_POST["address"]), $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
+				}
+			}
             
 			if ($email=="Y") {
 				//Set up email
@@ -2088,32 +2114,6 @@ else {
                 }
 
                 $mail->smtpClose();
-			}
-
-			if ($sms=="Y") {
-				if ($countryCode=="") {
-					$partialFail = true;
-				} else {
-                    $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
-                        if ($reportEntry[3] == 'SMS') $phoneNumbers[] = '+'.$reportEntry[4];
-                        return $phoneNumbers;
-                    }, []));
-
-                    $sms = $container->get(SMS::class);
-
-                    $result = $sms
-                        ->content($body)
-                        ->send($recipients);
-
-                    $smsCount = count($recipients);
-                    $smsBatchCount = count($result);
-
-                    $smsStatus = $result ? 'OK' : 'Not OK';
-                    $partialFail &= !empty($result);
-
-					//Set log
-					$logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), getModuleID($connection2, $_POST["address"]), $session->get('gibbonPersonID'), 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
-				}
 			}
 
             return [

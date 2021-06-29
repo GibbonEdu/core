@@ -348,16 +348,12 @@ class Page extends View
             'gibbonThemeName' => 'Default',
             'absolutePath'    => $absolutePath,
             'absoluteURL'     => $absoluteURL,
+            'themeColour'     => 'purple',
         ]);
 
         $this->stylesheets->add('main', 'themes/Default/css/main.css');
         $this->stylesheets->add('theme', 'resources/assets/css/theme.min.css');
         $this->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
-        $this->stylesheets->add(
-            'personal-background',
-            'body { background: url("'.$absoluteURL.'/themes/Default/img/backgroundPage.jpg'.'") repeat fixed center top #626cd3!important; }',
-            ['type' => 'inline']
-        );
 
         return $this;
     }
