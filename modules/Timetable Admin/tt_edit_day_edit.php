@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if school year specified
+    //Check if gibbonTTDayID, gibbonTTID, and gibbonSchoolYearID specified
     $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
     $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';

@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Form'));
 
-    //Check if school year specified
+    //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

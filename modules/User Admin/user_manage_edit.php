@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
     $page->return->addReturns($returns);
 
-    //Check if school year specified
+    //Check if gibbonPersonID specified
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

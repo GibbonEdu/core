@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
         ->add(__('Edit Year Group'));
 
-    //Check if school year specified
+    //Check if gibbonYearGroupID specified
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
     if ($gibbonYearGroupID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

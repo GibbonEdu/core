@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
             ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
             ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
-        //Check if school year specified
+        //Check if gibbonStaffID specified
         $gibbonStaffID = $_GET['gibbonStaffID'];
         if ($gibbonStaffID == '') {
             echo "<div class='error'>";

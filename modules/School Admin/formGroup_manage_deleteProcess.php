@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFormGroupID specified
     if ($gibbonFormGroupID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

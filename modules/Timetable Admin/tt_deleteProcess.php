@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonTTID specified
     if ($gibbonTTID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
