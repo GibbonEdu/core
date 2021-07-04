@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->add(__('Activity Enrolment'), 'activities_manage_enrolment.php',  $urlParams)
         ->add(__('Edit Enrolment'));
 
-    //Check if school year specified
+    //Check if gibbonActivityID and gibbonPersonID specified
     $gibbonActivityID = $_GET['gibbonActivityID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];
     if ($gibbonPersonID == '' or $gibbonActivityID == '') {

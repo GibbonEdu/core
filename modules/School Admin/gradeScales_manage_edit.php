@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
         ->add(__('Edit Grade Scale'));
 
-    //Check if school year specified
+    //Check if gibbonScaleID specified
     $gibbonScaleID = (isset($_GET['gibbonScaleID']))? $_GET['gibbonScaleID'] : null;
     if (empty($gibbonScaleID)) {
         $page->addError(__('You have not specified one or more required parameters.'));

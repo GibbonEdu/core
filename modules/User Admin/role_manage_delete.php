@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_del
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonRoleID specified
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonSchoolYearSpecialDayID and gibbonSchoolYearID specified
     $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';

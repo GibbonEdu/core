@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         $page->return->setEditLink($editLink);
 
 
-        //Check if school year specified
+        //Check if gibbonFinanceBudgetCycleID specified
         $status2 = $_GET['status2'];
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
         if ($gibbonFinanceBudgetCycleID == '') {

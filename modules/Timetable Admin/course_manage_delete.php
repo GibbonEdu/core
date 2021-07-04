@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 } else {
     //Proceed!
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-    //Check if school year specified
+    //Check if gibbonCourseID specified
     if ($gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

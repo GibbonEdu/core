@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
 
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $URL .= '&return=error1';

@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if school year specified
+    //Check if gibbonCourseClassID and gibbonCourseID specified
     $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];

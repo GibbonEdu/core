@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonMessengerCannedResponseID specified
     $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];
     if ($gibbonMessengerCannedResponseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
         ->add(__('Edit Expense Approver'));
 
-    //Check if school year specified
+    //Check if gibbonFinanceExpenseApproverID specified
     $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'];
     if ($gibbonFinanceExpenseApproverID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

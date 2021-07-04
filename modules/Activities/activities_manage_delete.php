@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonActivityID specified
     $gibbonActivityID = $_GET['gibbonActivityID'];
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

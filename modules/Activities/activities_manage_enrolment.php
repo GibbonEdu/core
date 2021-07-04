@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->add(__('Manage Activities'), 'activities_manage.php')
         ->add(__('Activity Enrolment'));    
 
-    //Check if school year specified
+    //Check if gibbonActivityID specified
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

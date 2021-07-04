@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonMarkbookColumnID and gibbonCourseClassID specified
             if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonTTID specified
     $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     if ($gibbonTTID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
     $allStaff = $_GET['allStaff'] ?? '';
     $search = $_GET['search'] ?? '' ;
 
-    //Check if school year specified
+    //Check if gibbonStaffID specified
     $gibbonStaffID = $_GET['gibbonStaffID'];
     if ($gibbonStaffID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

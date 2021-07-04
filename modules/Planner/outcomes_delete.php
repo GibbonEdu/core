@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.ph
                 $filter2 = $_GET['filter2'];
             }
 
-            //Check if school year specified
+            //Check if gibbonOutcomeID specified
             $gibbonOutcomeID = $_GET['gibbonOutcomeID'];
             if ($gibbonOutcomeID == '') {
                 echo "<div class='error'>";

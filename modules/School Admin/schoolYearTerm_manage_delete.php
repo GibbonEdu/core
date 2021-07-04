@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonSchoolYearTermID specified
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
     if ($gibbonSchoolYearTermID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

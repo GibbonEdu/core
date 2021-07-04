@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFirstAidID specified
     if ($gibbonFirstAidID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

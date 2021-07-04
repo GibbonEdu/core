@@ -23,7 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if school year specified
+    //Check if gibbonTTColumnRowID and gibbonTTColumnID specified
     $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
     $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
     if ($gibbonTTColumnRowID == '' or $gibbonTTColumnID == '') {

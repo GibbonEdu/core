@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
     }
     $page->return->setEditLink($editLink);
 
-    //Check if school year specified
+    //Check if gibbonStaffID specified
     if ($gibbonStaffID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

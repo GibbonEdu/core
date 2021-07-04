@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonHouseID specified
     if ($gibbonHouseID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

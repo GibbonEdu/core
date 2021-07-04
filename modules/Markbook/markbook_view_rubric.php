@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo '</div>';
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonCourseClassID and gibbonMarkbookColumnID and gibbonPersonID and gibbonRubricID specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
     $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];

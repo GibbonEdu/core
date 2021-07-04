@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonRubricID specified
             if ($gibbonRubricID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

@@ -29,7 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
     $gibbonFinanceInvoiceID = isset($_GET['gibbonFinanceInvoiceID'])? $_GET['gibbonFinanceInvoiceID'] : '';
     $status = isset($_GET['status'])? $_GET['status'] : '';
@@ -50,6 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
     $page->return->addReturns(['error4' => 'Some aspects of your request failed, but others were successful. Because of the errors, the system did not attempt to send any requested emails.']);
 
+    //Check if gibbonFinanceInvoiceID and gibbonSchoolYearID specified
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

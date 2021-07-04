@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
     $page->return->setEditLink($editLink);
 
-    //Check if school year specified
+    //Check if search and gibbonSchoolYearID specified
     $search = $_GET['search'];
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

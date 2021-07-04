@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
         ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonStaffID' => $gibbonStaffID, 'gibbonSpacePersonID' => $gibbonSpacePersonID])
         ->add(__('Add Facility'));
 
-    //Check if school year specified
+    //Check if gibbonStaffID and gibbonPersonIDspecified
     if ($gibbonStaffID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

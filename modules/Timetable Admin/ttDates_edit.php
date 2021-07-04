@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         ->add(__('Tie Days to Dates'), 'ttDates.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Days in Date'));
 
-    //Check if school year specified
+    //Check if gibbonSchoolYearID and dateStamp specified
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $dateStamp = $_GET['dateStamp'];
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {

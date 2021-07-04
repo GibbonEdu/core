@@ -70,7 +70,7 @@ else {
 			print "</div>" ;
 		}
 
-		//Check if school year specified
+		//Check if gibbonMessengerID specified
 		$gibbonMessengerID=$_GET["gibbonMessengerID"] ;
 		if ($gibbonMessengerID=="") {
 			print "<div class='error'>" ;

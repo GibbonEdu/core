@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 }
 else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonCourseClassID and currentDate specified
     if ($gibbonCourseClassID=="" AND $currentDate=="") {
         //Fail1
         $URL.="&return=error1" ;

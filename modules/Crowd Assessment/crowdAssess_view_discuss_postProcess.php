@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonPlannerEntryID, gibbonPlannerEntryHomeworkID, and gibbonPersonID specified
     if ($gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '' or $gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

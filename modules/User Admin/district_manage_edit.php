@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
         ->add(__('Manage Districts'), 'district_manage.php')
         ->add(__('Edit District'));        
 
-    //Check if school year specified
+    //Check if gibbonDistrictID specified
     $gibbonDistrictID = $_GET['gibbonDistrictID'];
     if ($gibbonDistrictID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

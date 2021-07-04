@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Check if school year specified
+        //Check if gibbonCourseClassID and gibbonMarkbookColumnID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {

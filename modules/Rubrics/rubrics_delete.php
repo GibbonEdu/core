@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             echo '</div>';
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonRubricID specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
                 echo "<div class='error'>";

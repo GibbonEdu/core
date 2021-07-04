@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonHouseID specified
     $gibbonHouseID = $_GET['gibbonHouseID'];
     if ($gibbonHouseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

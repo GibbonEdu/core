@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFamilyID specified
     if ($gibbonFamilyID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

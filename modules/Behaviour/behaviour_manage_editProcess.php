@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonBehaviourID specified
         if ($gibbonBehaviourID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

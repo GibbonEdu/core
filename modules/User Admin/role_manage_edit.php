@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
         ->add(__('Manage Roles'),'role_manage.php')
         ->add(__('Edit Role'));     
 
-    //Check if school year specified
+    //Check if gibbonRoleID specified
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

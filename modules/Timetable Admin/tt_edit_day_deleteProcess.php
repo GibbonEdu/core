@@ -33,7 +33,7 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonTTDayID specified
         if ($gibbonTTDayID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

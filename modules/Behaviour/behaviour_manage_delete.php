@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo '</div>';
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
         if ($gibbonBehaviourID == '') {
             echo "<div class='error'>";

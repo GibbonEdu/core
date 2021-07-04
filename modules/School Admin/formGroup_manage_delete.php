@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 
-    //Check if school year specified
+    //Check if gibbonFormGroupID specified
     if ($gibbonFormGroupID == '' and $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

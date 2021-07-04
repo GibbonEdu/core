@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
         ->add(__('Individual Needs Settings'), 'inSettings.php')
         ->add(__('Edit Descriptor'));
 
-    //Check if school year specified
+    //Check if gibbonINDescriptorID specified
     $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'];
     if ($gibbonINDescriptorID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

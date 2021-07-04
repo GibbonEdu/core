@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
-        //Check if school year specified
+        //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
         $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
         $gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {

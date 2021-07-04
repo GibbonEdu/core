@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonStaffJobOpeningID specified
     $gibbonStaffJobOpeningID = $_GET['gibbonStaffJobOpeningID'];
     if ($gibbonStaffJobOpeningID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

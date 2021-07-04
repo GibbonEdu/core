@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonSchoolYearSpecialDayID specified
     if ($gibbonSchoolYearSpecialDayID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

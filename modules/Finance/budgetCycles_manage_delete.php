@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceBudgetCycleID specified
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     if ($gibbonFinanceBudgetCycleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

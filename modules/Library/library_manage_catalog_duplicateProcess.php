@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonLibraryItemID specified
     if ($gibbonLibraryItemID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

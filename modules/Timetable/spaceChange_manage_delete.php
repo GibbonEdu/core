@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         echo '</div>';
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonTTSpaceChangeID and gibbonCourseClassID specified
         $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'];
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
         if ($gibbonTTSpaceChangeID == '' OR $gibbonCourseClassID == '') {
