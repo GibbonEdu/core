@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $page->return->addReturns($returns);
 
-    //Check if school year specified
+    //Check if gibbonPersonID specified
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

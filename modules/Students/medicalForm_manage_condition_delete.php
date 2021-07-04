@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    //Check if school year specified
+    //Check if gibbonPersonMedicalID and gibbonPersonMedicalConditionID specified
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

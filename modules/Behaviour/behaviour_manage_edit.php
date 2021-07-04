@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
             ->add(__('Edit'));
 
-        //Check if school year specified
+        //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
         if ($gibbonBehaviourID == '') {
             echo "<div class='error'>";

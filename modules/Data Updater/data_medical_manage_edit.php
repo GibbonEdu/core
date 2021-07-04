@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         ->add(__('Medical Data Updates'), 'data_medical_manage.php', $urlParams)
         ->add(__('Edit Request'));
 
-    //Check if school year specified
+    //Check if gibbonPersonMedicalUpdateID specified
     $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
     if ($gibbonPersonMedicalUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));

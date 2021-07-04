@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         $search = $_GET['search'];
     }
 
-    //Check if school year specified
+    //Check if gibbonStringID specified
     $gibbonStringID = $_GET['gibbonStringID'];
     if ($gibbonStringID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

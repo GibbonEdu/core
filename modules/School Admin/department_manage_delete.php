@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     echo '</div>';
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonDepartmentID specified
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     if ($gibbonDepartmentID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

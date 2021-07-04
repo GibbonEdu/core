@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonDistrictID specified
     $gibbonDistrictID = $_GET['gibbonDistrictID'];
     if ($gibbonDistrictID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

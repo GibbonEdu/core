@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonActivityID and gibbonPersonID specified
             if ($gibbonActivityID == '' or $gibbonPersonID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

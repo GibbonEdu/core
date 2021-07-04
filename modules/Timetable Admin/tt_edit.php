@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
 
     $timetableGateway = $container->get(TimetableGateway::class);
 
-    //Check if school year specified
+    //Check if gibbonTTID and gibbonSchoolYearID specified
     $gibbonTTID = $_GET['gibbonTTID'];
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' || $gibbonSchoolYearID == '') {

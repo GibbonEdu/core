@@ -23,7 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if school year specified
+    //Check if gibbonScaleGradeID and gibbonScaleID specified
     $gibbonScaleGradeID = $_GET['gibbonScaleGradeID'] ?? '';
     $gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
     if ($gibbonScaleGradeID == '' or $gibbonScaleID == '') {

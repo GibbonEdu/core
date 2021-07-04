@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonPersonID and gibbonSchoolYearID specified
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
     $type = isset($_GET['type'])? $_GET['type'] : '';

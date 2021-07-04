@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
-        //Check if school year specified
+        //Check if gibbonPlannerEntryID and gibbonCourseClassID specified
         $gibbonCourseClassID = null;
         if (isset($_GET['gibbonCourseClassID'])) {
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];

@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->add(__('Manage Applications'), 'applicationForm_manage.php')
         ->add(__('Edit Form'));
 
-    //Check if school year specified
+    //Check if gibbonStaffApplicationFormID specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {

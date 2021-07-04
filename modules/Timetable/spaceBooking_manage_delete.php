@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         echo '</div>';
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonTTSpaceBookingID specified
         $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'];
         if ($gibbonTTSpaceBookingID == '') {
             echo "<div class='error'>";

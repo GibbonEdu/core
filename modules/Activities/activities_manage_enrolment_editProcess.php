@@ -34,7 +34,7 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if status specified
         $status = $_POST['status'] ?? '';
         if ($status == '') {
             $URL .= '&return=error1';

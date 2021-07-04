@@ -27,7 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Check if school year specified
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
     $status = isset($_GET['status'])? $_GET['status'] : '';
     $gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '';

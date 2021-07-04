@@ -33,7 +33,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonPersonID specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

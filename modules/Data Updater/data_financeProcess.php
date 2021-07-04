@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceInvoiceeID specified
     if ($gibbonFinanceInvoiceeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
