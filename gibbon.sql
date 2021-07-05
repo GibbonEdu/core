@@ -2447,6 +2447,7 @@ CREATE TABLE `gibbonLibraryItem` (
   `vendor` varchar(100) NOT NULL,
   `purchaseDate` date DEFAULT NULL,
   `invoiceNumber` varchar(50) NOT NULL,
+  `cost` decimal(10,2) DEFAULT NULL,
   `imageType` enum('','Link','File') NOT NULL DEFAULT '' COMMENT 'Type of image. Image should be 240px x 240px, or smaller.',
   `imageLocation` varchar(255) NOT NULL COMMENT 'URL or local FS path of image.',
   `comment` text NOT NULL,
