@@ -79,7 +79,7 @@ class PaginatedView extends DataTableView implements RendererInterface
         if (!empty($this->criteria)) {
             $this->addData([
                 'url'            => Url::fromRoute()->withQueryParams(['view' => ''] + $_GET),
-                'path'           => './fullscreen.php?'.http_build_query($_GET),
+                'path'           => Url::fromHandlerRoute('fullscreen.php')->withQueryParams($_GET),
                 'headers'        => $this->getTableHeaders($table),
                 'identifier'     => $this->criteria->getIdentifier(),
                 'searchText'     => $this->criteria->getSearchText(),

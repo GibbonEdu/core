@@ -317,9 +317,13 @@ class Action extends WebLink
         if ($this->external) {
             $this->setAttribute('href', $this->url.$this->urlFragment);
         } else if ($this->direct) {
-            $this->setAttribute('href', $session->get('absoluteURL').$this->url.'?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromHandlerRoute(ltrim($this->url, '/'))
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         } else if ($this->modal) {
-            $this->setAttribute('href', $session->get('absoluteURL').'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         } else {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
