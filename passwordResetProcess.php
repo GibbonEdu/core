@@ -122,7 +122,12 @@ else {
                 'title'  => __('Password Reset'),
                 'body'   => nl2br(trim($body, "\n")),
                 'button' => [
-                    'url'  => "/index.php?q=/passwordReset.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key",
+                    'url'  => Url::fromRoute('passwordReset')->withQueryParams([
+                        'input' => $input,
+                        'step' => 2,
+                        'gibbonPersonResetID' => $gibbonPersonResetID,
+                        'key' => $key,
+                    ]),
                     'text' => __('Click Here'),
                 ],
             ]);
