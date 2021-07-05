@@ -111,7 +111,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $output .= '<section class="flex flex-col sm:flex-row">';
 
                 $output .= '<div class="w-24 text-center mx-auto mb-4 sm:ml-0 sm:mr-4">'.
-                    getUserPhoto($guid, $student['image_240'], 75).
+                    Format::userPhoto($student['image_240'], 75).
                     "<div style='height: 5px'></div>".
                     "<span style='font-size: 70%'>".
                     "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';

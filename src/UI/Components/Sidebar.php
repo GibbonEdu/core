@@ -25,6 +25,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Services\Format;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 
@@ -123,7 +124,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 unset($_GET['return']);
 
                 $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
-                
+
                 $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -381,7 +382,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 echo "<p style='padding-top: 0px; text-align: right'>";
                 echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php'>";
-                
+
                 echo __('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]);
                 echo '</a>';
                 echo '</p>';
@@ -550,7 +551,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         //Show year switcher if user is staff and has access to multiple years
         if ($this->session->exists('username') && $this->category == 'Staff' && $this->session->get('address') == '') {
             //Check for multiple-year login
-            
+
                 $data = array('gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'));
                 $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
                 $result = $connection2->prepare($sql);
@@ -637,7 +638,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
             } else { //Photo, so show image and removal link
                 $output .= '<p>';
-                $output .= getUserPhoto($guid, $this->session->get('image_240'), 240);
+                $output .= Format::userPhoto($this->session->get('image_240'), 240);
                 $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
                 $output .= "<a href='".$this->session->get('absoluteURL').'/index_parentPhotoDeleteProcess.php?gibbonPersonID='.$this->session->get('gibbonPersonID')."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
                 $output .= '</div>';
