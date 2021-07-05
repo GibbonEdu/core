@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
     $lastError = error_get_last();
@@ -46,7 +48,7 @@ $container->add('autoloader', $autoloader);
 
 $container->inflector(\League\Container\ContainerAwareInterface::class)
           ->invokeMethod('setContainer', [$container]);
-          
+
 $container->inflector(\Gibbon\Services\BackgroundProcess::class)
           ->invokeMethod('setProcessor', [\Gibbon\Services\BackgroundProcessor::class]);
 
@@ -70,8 +72,8 @@ if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
 // Initialize the database connection
 if ($gibbon->isInstalled()) {
     $mysqlConnector = new Gibbon\Database\MySqlConnector();
-    
-    // Display a static error message for database connections after install. 
+
+    // Display a static error message for database connections after install.
     if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
         // Add the database to the container
         $connection2 = $pdo->getConnection();
@@ -80,6 +82,9 @@ if ($gibbon->isInstalled()) {
 
         // Initialize core
         $gibbon->initializeCore($container);
+
+        // Setup Url class baseUrl
+        Url::setBaseUrl($gibbon->session->get('absoluteURL'));
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
