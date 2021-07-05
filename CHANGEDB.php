@@ -1003,4 +1003,6 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 //v23.0.00
 ++$count;
 $sql[$count][0] = '23.0.00';
-$sql[$count][1] = "ALTER TABLE `gibbonLibraryItem` ADD `cost` decimal(10,2) DEFAULT NULL AFTER `invoiceNumber`;end";
+$sql[$count][1] = "
+ALTER TABLE `gibbonLibraryItem` ADD `cost` decimal(10,2) DEFAULT NULL AFTER `invoiceNumber`;end
+";
