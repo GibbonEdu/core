@@ -206,11 +206,19 @@ class StudentDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Student') {
-
+            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php');
+            $jsonQuery = [
+                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
+                'ttDate' => $_POST['ttDate'] ?? '',
+                'fromTT' => $_POST['fromTT'] ?? '',
+                'personalCalendar' => $_POST['personalCalendar'] ?? '',
+                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
+                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
+            ];
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load("'.$this->session->get('absoluteURL').'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
                 });
             </script>';
 

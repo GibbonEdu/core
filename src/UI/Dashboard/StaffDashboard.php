@@ -234,13 +234,21 @@ class StaffDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
-
+            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php');
+            $jsonQuery = [
+                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
+                'ttDate' => $_POST['ttDate'] ?? '',
+                'fromTT' => $_POST['fromTT'] ?? '',
+                'personalCalendar' => $_POST['personalCalendar'] ?? '',
+                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
+                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
+            ];
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load("'.$this->session->get('absoluteURL').'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
                 });
-            </script>   ';
+            </script>';
 
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
             $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
