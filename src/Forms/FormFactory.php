@@ -26,6 +26,7 @@ use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Url;
 
 /**
  * FormFactory
@@ -272,12 +273,12 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\Person($name);
     }
-    
+
     public function createScanner($name)
     {
         return new Input\Scanner($name);
     }
-    
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createAlert($content, $level = 'warning')
@@ -295,7 +296,7 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
+        $clearURL = Url::fromRoute()->withQueryParams($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createSubmit('Go')->prepend($clearLink);

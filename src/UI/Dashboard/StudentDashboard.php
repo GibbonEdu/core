@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Url;
 
 /**
  * Student Dashboard View Composer
@@ -110,7 +111,7 @@ class StudentDashboard implements OutputableInterface
                 $planner .= '</div>';
             } else {
                 $planner .= "<div class='linkTop'>";
-                $planner .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
+                $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner')."'>".__('View Planner').'</a>';
                 $planner .= '</div>';
 
                 $planner .= "<table cellspacing='0' style='width: 100%'>";
@@ -189,7 +190,11 @@ class StudentDashboard implements OutputableInterface
                         $planner .= Format::truncate($row['summary'], 360);
                         $planner .= '</td>';
                         $planner .= '<td>';
-                        $planner .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
+                        $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
+                            'viewBy' => 'class',
+                            'gibbonCourseClassID' => $row['gibbonCourseClassID'],
+                            'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
+                        ])."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
                         $planner .= '</td>';
                         $planner .= '</tr>';
                     }

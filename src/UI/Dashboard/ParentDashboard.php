@@ -24,6 +24,7 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Url;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 
@@ -113,10 +114,10 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     Format::userPhoto($student['image_240'], 75).
                     "<div style='height: 5px'></div>".
                     "<span style='font-size: 70%'>".
-                    "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID']."'>".__('Student Profile').'</a><br/>';
+                    "<a href='".Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $student['gibbonPersonID'])."'>".__('Student Profile').'</a><br/>';
 
                 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
-                    $output .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Form Groups/formGroups_details.php&gibbonFormGroupID='.$student['gibbonFormGroupID']."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
+                    $output .= "<a href='".Url::fromModuleRoute('Form Group', 'formGroups_details')->withQueryParam('gibbonFormGroupID', $student['gibbonFormGroupID'])."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
                 }
                 if ($student['formGroupWebsite'] != '') {
                     $output .= "<a target='_blank' href='".$student['formGroupWebsite']."'>".$student['formGroup'].' '.__('Website').'</a>';
@@ -578,7 +579,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $activities = true;
 
             $activitiesOutput .= "<div class='linkTop'>";
-            $activitiesOutput .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=".$gibbonPersonID."'>".__('View Available Activities').'</a>';
+            $activitiesOutput .= "<a href='".Url::fromModuleRoute('Activities', 'activities_view')->withQueryParam('gibbonPersonID', $gibbonPersonID).
+                "'>".__('View Available Activities').'</a>';
             $activitiesOutput .= '</div>';
 
             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
+use Gibbon\Url;
 
 /**
  * Action link representation for HTML listings.
@@ -320,7 +321,9 @@ class Action extends WebLink
         } else if ($this->modal) {
             $this->setAttribute('href', $session->get('absoluteURL').'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
         } else {
-            $this->setAttribute('href', $session->get('absoluteURL').'/index.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromRoute()
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         }
 
         return parent::getOutput();

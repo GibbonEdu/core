@@ -82,9 +82,6 @@ if ($gibbon->isInstalled()) {
 
         // Initialize core
         $gibbon->initializeCore($container);
-
-        // Setup Url class baseUrl
-        Url::setBaseUrl($gibbon->session->get('absoluteURL'));
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
@@ -98,6 +95,9 @@ if ($gibbon->isInstalled()) {
 $gibbon->session = $container->get('session');
 $session = $container->get('session');
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
+
+// Setup global absoluteURL for all urls.
+Url::setBaseUrl($session->get('absoluteURL'));
 
 // Autoload the current module namespace
 if (!empty($gibbon->session->get('module'))) {

@@ -18,13 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Url;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
+$URL = Url::fromRoute();
 if (isset($_GET['timeout'])) {
-    $URL = './index.php?timeout='.$_GET['timeout'];
+    $URL = $URL->withQueryParam('timeout', 'true');
 }
 
 // Update current session to detach it from this user

@@ -26,6 +26,7 @@ use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Services\Format;
+use Gibbon\Url;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 
@@ -75,7 +76,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             } elseif ($loginReturn == 'fail5') {
                 $loginReturnMessage = __('Your request failed due to a database error.');
             } elseif ($loginReturn == 'fail6') {
-                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=/passwordReset.php'>", '</a>');
+                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
             } elseif ($loginReturn == 'fail7') {
                 $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
             } elseif ($loginReturn == 'fail8') {
@@ -174,12 +175,12 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $row = $form->addRow();
                     $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
-                        ->append(' . <a href="'.$this->session->get('absoluteURL').'/index.php?q=passwordReset.php">'.__('Forgot Password?').'</a>')
+                        ->append(' . <a href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
                         ->wrap('<span class="small">', '</span>')
                         ->setClass('right');
 
                 $row = $form->addRow();
-                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.$this->session->get('absoluteURL').'/index.php?q=/publicRegistration.php"');
+                    $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
                     $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();
@@ -275,7 +276,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
 
                                 //Title
-                                $URL = $this->session->get('absoluteURL').'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['gibbonMessengerID'];
+                                $URL = Url::fromModuleRoute('Messenger', 'messageWall_view')->withFragment($message['gibbonMessengerID']);
                                 if (strlen($message['subject']) <= 16) {
                                     echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
                                 } else {
@@ -353,7 +354,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                                 </script>";
                         }
                         echo "<p style='padding-top: 5px; text-align: right'>";
-                        echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php'>".__('View Message Wall').'</a>';
+                        echo "<a href='".Url::fromModuleRoute('Messenger', 'messageWall_view')."'>".__('View Message Wall').'</a>';
                         echo '</p>';
                         echo '</div>';
                     }
@@ -383,7 +384,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 ]);
 
                 echo "<p style='padding-top: 0px; text-align: right'>";
-                echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php'>";
+                echo "<a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')."'>";
 
                 echo __('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]);
                 echo '</a>';
@@ -414,7 +415,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     $count = 0;
 
                     while ($rowEntry = $resultEntry->fetch() and $count < 5) {
-                        echo "<li><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php#'.$rowEntry['gibbonMarkbookEntryID']."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
+                        echo "<li><a href='".Url::fromModuleRoute('Markbook', 'markbook_view')->withFragment($rowEntry['gibbonMarkbookEntryID'])."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
                         ++$count;
                     }
 
@@ -478,30 +479,30 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo "<td style='word-wrap: break-word'>";
-                    echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a>';
+                    echo "<a href='".Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."'>".$row['course'].'.'.$row['class'].'</a>';
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&viewBy=class' title='".__('View Planner')."'><img style='margin-top: 3px' alt='".__('View Planner')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/planner.png'/></a> ";
+                        echo "<a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParams(['gibbonCourseClassID' => $row['gibbonCourseClassID'], 'viewBy' => 'class'])."' title='".__('View Planner')."'><img style='margin-top: 3px' alt='".__('View Planner')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/planner.png'/></a> ";
                         echo '</td>';
                     }
                     if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."' title='".__('View Markbook')."'><img style='margin-top: 3px' alt='".__('View Markbook')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
+                        echo "<a href='".Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."' title='".__('View Markbook')."'><img style='margin-top: 3px' alt='".__('View Markbook')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                         echo '</td>';
                     }
                     echo "<td style='text-align: center'>";
                     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php') && $row['attendance'] == 'Y') {
-                        echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'title='".__('Take Attendance')."' ><img alt='".__('Take Attendance')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
+                        echo "<a href='".Url::fromModuleRoute('Attendance', 'attendance_take_byCourseClass')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])."'title='".__('Take Attendance')."' ><img alt='".__('Take Attendance')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
                     } else {
-                        echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants' title='".__('Participants')."' ><img alt='".__('Participants')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
+                        echo "<a href='".Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $row['gibbonCourseClassID'])->withFragment('participants')."' title='".__('Participants')."' ><img alt='".__('Participants')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/attendance.png'/></a>";
                     }
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                         $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
 
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'  title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."'><img style='margin-top: 3px' alt='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
+                        echo "<a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('gibbonCourseClassIDFilter', $row['gibbonCourseClassID'])."'  title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."'><img style='margin-top: 3px' alt='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";
                         echo '</td>';
                     }
                     echo '</tr>';
@@ -520,7 +521,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             echo '</h2>';
             echo getResourcesTagCloud($guid, $connection2, 20);
             echo "<p style='margin-bototm: 20px; text-align: right'>";
-            echo "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/resources_view.php'>".__('View Resources').'</a>';
+            echo "<a href='".Url::fromModuleRoute('Planner', 'resources_view')."'>".__('View Resources').'</a>';
             echo '</p>';
             echo '</div>';
         }

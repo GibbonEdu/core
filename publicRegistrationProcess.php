@@ -21,13 +21,14 @@ use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Url;
 
 include './gibbon.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/publicRegistration.php';
+$URL = Url::fromRoute('publicRegistration');
 
 $proceed = false;
 
@@ -39,8 +40,7 @@ if ($session->exists('username') == false) {
 }
 
 if ($proceed == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error0')}");
 } else {
     // Sanitize the whole $_POST array
     $validator = $container->get(Validator::class);
@@ -69,8 +69,7 @@ if ($proceed == false) {
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;
 
     if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $email == '' or $username == '' or $password == '' or $gibbonRoleIDPrimary == '' or $gibbonRoleIDPrimary == '' or ($status != 'Pending Approval' and $status != 'Full')) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error1')}");
         exit;
     }
 
@@ -83,8 +82,7 @@ if ($proceed == false) {
             return stripos($email, $domain) !== false;
         });
         if (empty($emailCheck)) {
-            $URL .= '&return=error8';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error8')}");
             exit;
         }
     }
@@ -93,8 +91,7 @@ if ($proceed == false) {
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('User', ['publicRegistration' => 1], $customRequireFail);
 
     if ($customRequireFail) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error1')}");
         exit;
     }
 
@@ -102,8 +99,7 @@ if ($proceed == false) {
     $passwordMatch = doesPasswordMatchPolicy($connection2, $password);
 
     if ($passwordMatch == false) {
-        $URL .= '&return=error6';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error6')}");
         exit;
     }
 
@@ -120,8 +116,7 @@ if ($proceed == false) {
     }
 
     if (!empty($result)) {
-        $URL .= '&return=error7';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error7')}");
         exit;
     }
 
@@ -129,8 +124,7 @@ if ($proceed == false) {
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
 
     if (!empty($publicRegistrationMinimumAge) > 0 and $publicRegistrationMinimumAge > (new DateTime('@'.Format::timestamp($dob)))->diff(new DateTime())->y) {
-        $URL .= '&return=error5';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error5')}");
         exit;
     }
 
@@ -141,8 +135,7 @@ if ($proceed == false) {
     $gibbonPersonID = $pdo->insert($sql, $data);
 
     if (empty($gibbonPersonID)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit;
     }
 
@@ -152,23 +145,27 @@ if ($proceed == false) {
 
         $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
-        $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
+        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withQueryParams([
+            'gibbonPersonID' => $gibbonPersonID,
+            'search' => '',
+        ]));
 
         $event->sendNotifications($pdo, $session);
 
-        $URL .= '&return=success1';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('success1')}");
     } else {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
         $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
-        $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
+        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withQueryParams([
+            'gibbonPersonID' => $gibbonPersonID,
+            'search' => '',
+        ]));
 
         $event->sendNotifications($pdo, $session);
 
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('success0')}");
     }
 }
