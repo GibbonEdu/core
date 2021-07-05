@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     exit();
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonDepartmentID specified
     if ($gibbonDepartmentID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

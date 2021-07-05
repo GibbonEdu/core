@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Check if school year specified
+        //Check if gibbonCourseClassID and gibbonMarkbookCopyClassID specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonMarkbookCopyClassID = (isset($_POST['gibbonMarkbookCopyClassID']))? $_POST['gibbonMarkbookCopyClassID'] : null;
 

@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonSpacePersonID and gibbonStaffID specified
     if ($gibbonSpacePersonID == '' and $gibbonStaffID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

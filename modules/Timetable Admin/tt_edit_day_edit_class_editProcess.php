@@ -37,7 +37,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
         //Proceed!
         $gibbonSpaceID = !empty($_POST['gibbonSpaceID']) ? $_POST['gibbonSpaceID'] : null;
 
-        //Check if school year specified
+        //Check if gibbonTTDayID specified
         if ($gibbonTTDayID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");

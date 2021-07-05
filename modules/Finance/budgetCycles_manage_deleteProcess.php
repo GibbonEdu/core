@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonFinanceBudgetCycleID specified
     if ($gibbonFinanceBudgetCycleID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     //Proceed!
     $gibbonGroupID = (isset($_GET['gibbonGroupID']))? $_GET['gibbonGroupID'] : null;
 
-    //Check if school year specified
+    //Check if gibbonGroupID specified
     if ($gibbonGroupID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

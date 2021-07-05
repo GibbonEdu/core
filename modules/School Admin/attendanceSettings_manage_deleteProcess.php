@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonAttendanceCodeID specified
     if ($gibbonAttendanceCodeID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");

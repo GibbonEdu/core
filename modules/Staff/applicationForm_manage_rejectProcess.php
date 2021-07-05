@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonStaffApplicationFormID specified
 
     if ($gibbonStaffApplicationFormID == '') {
         $URL .= '&return=error1';
