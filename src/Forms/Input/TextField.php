@@ -135,12 +135,12 @@ class TextField extends Input
         if ($this->scanner) {
             $output = '<div class="input-box border-0 standardWidth">';
             $output .= '<input type="text" '.$this->getAttributeString().'>';
-            $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)">+</div>';
+            $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)"><img src="./themes/Default/img/search.png"/></div>';
             $output .= '</div>';
             $output .= '<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
             $output .= '<script type="text/javascript">
                 function scanner(self) {
-                    $(self).parent().parent().append(\'<video id="preview"></video>\');
+                    $(self).parent().parent().append(\'<video id="preview" class="standardWidth"></video>\');
                     let scanner = new Instascan.Scanner({ video: document.getElementById("preview") });
                       scanner.addListener("scan", function (content) {
                         $("input", $(self).parent()).val(content);
