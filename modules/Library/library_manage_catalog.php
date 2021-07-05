@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
             ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
         $row->addTextField('typeSpecificFields')
-            ->setValue($typeSpecificFields);
+            ->setValue($typeSpecificFields)->scanner(true);
 
         $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));

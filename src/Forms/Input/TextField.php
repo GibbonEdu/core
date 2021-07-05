@@ -31,6 +31,7 @@ class TextField extends Input
 {
     protected $autocomplete;
     protected $unique;
+    protected $scanner = false;
 
     /**
      * Set a max character count for this text field.
@@ -117,15 +118,49 @@ class TextField extends Input
 
         return false;
     }
-
+    
+    public function scanner($value)
+    {
+        $this->scanner = $value;
+        return $this;
+    }
+    
     /**
      * Gets the HTML output for this form element.
      * @return  string
      */
     protected function getElement()
     {
-        $output = '<input type="text" '.$this->getAttributeString().'>';
-
+        
+        if ($this->scanner) {
+            $output = '<div class="input-box border-0 standardWidth">';
+            $output .= '<input type="text" '.$this->getAttributeString().'>';
+            $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)">+</div>';
+            $output .= '</div>';
+            $output .= '<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
+            $output .= '<script type="text/javascript">
+                function scanner(self) {
+                    $(self).parent().parent().append(\'<video id="preview"></video>\');
+                    let scanner = new Instascan.Scanner({ video: document.getElementById("preview") });
+                      scanner.addListener("scan", function (content) {
+                        $("input", $(self).parent()).val(content);
+                        document.getElementById("preview").remove()
+                      });
+                      Instascan.Camera.getCameras().then(function (cameras) {
+                        if (cameras.length > 0) {
+                          scanner.start(cameras[0]);
+                        } else {
+                          console.error("No cameras found.");
+                        }
+                      }).catch(function (e) {
+                        console.error(e);
+                      });
+                }
+            </script>';
+        } else {
+            $output = '<input type="text" '.$this->getAttributeString().'>';
+        }
+        
         if (!empty($this->autocomplete)) {
             $source = implode(',', array_map(function ($str) { return sprintf('"%s"', $str); }, $this->autocomplete));
             $output .= '<script type="text/javascript">';
