@@ -164,7 +164,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 $plannerOutput .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($result->rowCount() > 0) {
@@ -269,7 +269,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDStudent=:gibbonPersonID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' ORDER BY completeDate DESC LIMIT 0, 3";
             $resultEntry = $connection2->prepare($sqlEntry);
             $resultEntry->execute($dataEntry);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultEntry->rowCount() > 0) {
@@ -443,7 +443,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
                         $resultSub = $connection2->prepare($sqlSub);
                         $resultSub->execute($dataSub);
-                    } catch (PDOException $e) {
+                    } catch (\PDOException $e) {
                         $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultSub->rowCount() != 1) {
@@ -459,7 +459,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $sqlWork = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC';
                             $resultWork = $connection2->prepare($sqlWork);
                             $resultWork->execute($dataWork);
-                        } catch (PDOException $e) {
+                        } catch (\PDOException $e) {
                             $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultWork->rowCount() > 0) {
@@ -582,7 +582,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $sqlYears = "SELECT * FROM gibbonStudentEnrolment JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' AND gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
                 $resultYears = $connection2->prepare($sqlYears);
                 $resultYears->execute($dataYears);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
             }
 
@@ -599,7 +599,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $sql = "SELECT gibbonActivity.*, gibbonActivityStudent.status, NULL AS role FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
-                    } catch (PDOException $e) {
+                    } catch (\PDOException $e) {
                         $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                     }
 
@@ -682,7 +682,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                                     $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS dayOfWeek, gibbonSpace.name AS facility FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
                                     $resultSlots = $connection2->prepare($sqlSlots);
                                     $resultSlots->execute($dataSlots);
-                                } catch (PDOException $e) {
+                                } catch (\PDOException $e) {
                                     $activitiesOutput .= "<div class='error'>".$e->getMessage().'</div>';
                                 }
                                 $count = 0;
@@ -722,7 +722,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Parental Dashboard'";
             $resultHooks = $connection2->prepare($sqlHooks);
             $resultHooks->execute($dataHooks);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $return .= "<div class='error'>".$e->getMessage().'</div>';
         }
         if ($resultHooks->rowCount() > 0) {
