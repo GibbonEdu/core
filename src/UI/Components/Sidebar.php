@@ -629,7 +629,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $output .= __('Please upload a passport photo to use as a profile picture.').' '.__('240px by 320px').'.';
                 $output .= '</p>';
 
-                $form = Form::create('photoUpload', $this->session->get('absoluteURL').'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$this->session->get('gibbonPersonID'));
+                $form = Form::create('photoUpload', Url::fromHandlerRoute('index_parentPhotoUploadProcess.php')->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID')));
                 $form->addHiddenValue('address', $this->session->get('address'));
                 $form->setClass('smallIntBorder w-full');
 
@@ -643,7 +643,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $output .= '<p>';
                 $output .= Format::userPhoto($this->session->get('image_240'), 240);
                 $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
-                $output .= "<a href='".$this->session->get('absoluteURL').'/index_parentPhotoDeleteProcess.php?gibbonPersonID='.$this->session->get('gibbonPersonID')."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
+                $output .= "<a href='".Url::fromHandlerRoute('index_parentPhotoDeleteProcess.php')->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'))."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/garbage.png'/></a><br/><br/>";
                 $output .= '</div>';
                 $output .= '</p>';
             }
