@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Url;
 
 function getIPAddress() {
     $return = false;
@@ -946,7 +947,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('IN'),
                 'title'           => $title,
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Individual Needs',
+                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
             ];
         }
 
@@ -992,7 +994,12 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('A'),
                     'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$session->get('gibbonSchoolYearID'),
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParams([
+                                                'gibbonPersonID' => $gibbonPersonID,
+                                                'subpage' => 'Markbook',
+                                                'filter' => $session->get('gibbonSchoolYearID'),
+                                            ]),
                 ];
             }
         }
@@ -1029,7 +1036,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('B'),
                     'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Behaviour',
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
                 ];
             }
         }
@@ -1042,7 +1050,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestColourBG' => $alert[4],
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Medical',
+                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
             ];
         }
 
@@ -1056,7 +1065,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID,
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParam('gibbonPersonID', $gibbonPersonID),
                 ];
             }
         }
