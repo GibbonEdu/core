@@ -137,24 +137,43 @@ class TextField extends Input
             $output .= '<input type="text" '.$this->getAttributeString().'>';
             $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)"><img src="./themes/Default/img/search.png"/></div>';
             $output .= '</div>';
-            $output .= '<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
+            $output .= '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js"></script>';
+            $output .= '<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
             $output .= '<script type="text/javascript">
                 function scanner(self) {
-                    $(self).parent().parent().append(\'<video id="preview" class="standardWidth"></video>\');
+                    if ($("#preview").length > 0) {
+                        document.getElementById("preview").remove()
+                    } else {
+                        $(self).parent().parent().append(\'<video id="preview" class="standardWidth"></video>\');
+                    }
                     let scanner = new Instascan.Scanner({ video: document.getElementById("preview") });
                       scanner.addListener("scan", function (content) {
+                        scanner.stop()
                         $("input", $(self).parent()).val(content);
                         document.getElementById("preview").remove()
                       });
                       Instascan.Camera.getCameras().then(function (cameras) {
+                        count = 0;
                         if (cameras.length > 0) {
-                          scanner.start(cameras[0]);
+                          scanner.start(cameras[count]);
+                          if (cameras.length > 1) {
+                            
+                            $(self).parent().parent().append(\'<div class="button border rounded-r-sm text-base text-gray-600" id="cameraButton" style="height: 36px;">Change Camera</div>\');
+                            $("#cameraButton").on("click", function(){
+                                count++;
+                                if (count > cameras.length) {
+                                    count = 0;
+                                }
+                                scanner.start(cameras[count]);
+                            });
+                          }
                         } else {
-                          console.error("No cameras found.");
+                          scanner.stop()
+                          $("input", $(self).parent()).val("No camera available");
                         }
                       }).catch(function (e) {
-                        console.error(e);
-                      });
+                        $("input", $(self).parent()).val("Camera Error");
+                      });   
                 }
             </script>';
         } else {

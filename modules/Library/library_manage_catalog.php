@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $row = $form->addRow();
             $row->addLabel('name', __('ID/Name/Producer'));
-            $row->addTextField('name')->setValue($name);
+            $row->addTextField('name')->setValue($name)->scanner(true);
 
         $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
         $row = $form->addRow();
