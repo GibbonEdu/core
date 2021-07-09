@@ -159,7 +159,7 @@ class TextField extends Input
                         if (cameras.length > 0) {
                           scanner.start(cameras[count]);
                           if (cameras.length > 1) {
-                            if ($("#cameraButton").length < 1 && $("#preview").length < 1) {
+                            if ($("#cameraButton").length < 1 && $("#preview").length > 0) {
                                 $(self).parent().parent().append(\'<button type="button" class="button border rounded-r-sm text-base text-gray-600" id="cameraButton" style="height: 36px;">Change Camera</button>\');
                             }
                             $("#cameraButton").on("click", function(){
