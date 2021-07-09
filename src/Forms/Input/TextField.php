@@ -142,7 +142,8 @@ class TextField extends Input
             $output .= '<script type="text/javascript">
                 function scanner(self) {
                     if ($("#preview").length > 0) {
-                        document.getElementById("preview").remove()
+                        document.getElementById("preview").remove();
+                        document.getElementById("cameraButton").remove();
                     } else {
                         $(self).parent().parent().append(\'<video id="preview" class="standardWidth"></video>\');
                     }
@@ -151,6 +152,7 @@ class TextField extends Input
                         scanner.stop()
                         $("input", $(self).parent()).val(content);
                         document.getElementById("preview").remove()
+                        document.getElementById("cameraButton").remove();
                       });
                       Instascan.Camera.getCameras().then(function (cameras) {
                         count = 0;
