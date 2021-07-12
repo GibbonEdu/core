@@ -136,7 +136,7 @@ class TextField extends Input
             $output .= '<input type="text" '.$this->getAttributeString().'>';
             $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)"><img src="./themes/Default/img/search.png"/></div>';
             $output .= '</div>';
-            $output .= '<script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
+            $output .= '<script type="text/javascript" src="./lib/instascan/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
             $output .= '<script type="text/javascript">
                 function scanner(self) {
                     if ($("#preview").length > 0) {
