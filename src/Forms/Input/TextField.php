@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 namespace Gibbon\Forms\Input;
-
 use Gibbon\Forms\Element;
 
 /**
