@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../gibbon.php' ;
+require_once __DIR__ . '/../../functions.php' ;
 include "../../config.php" ;
 
 @session_start() ;
