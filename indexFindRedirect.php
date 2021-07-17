@@ -1,19 +1,22 @@
 <?php
+
+use Gibbon\Url;
+
 include './gibbon.php';
 
 $type = substr($_GET['fastFinderSearch'] ?? '', 0, 3);
 $id = substr($_GET['fastFinderSearch'] ?? '', 4);
-$URL = './index.php';
+$URL = Url::fromRoute();
 
 if ($gibbon->session->has('absoluteURL')) {
     if ($type == 'Stu') {
-        $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$id;
+        $URL = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $id);
     } elseif ($type == 'Act') {
-        $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$id;
+        $URL = Url::fromRoute()->withQueryParam('q', '/modules/'.$id);
     } elseif ($type == 'Sta') {
-        $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$id;
+        $URL = Url::fromModuleRoute('Staff', 'staff_view_details')->withQueryParam('gibbonPersonID', $id);
     } elseif ($type == 'Cla') {
-        $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$id;
+        $URL = Url::fromModuleRoute('Departments', 'department_course_class')->withQueryParam('gibbonCourseClassID', $id);
     }
 }
 

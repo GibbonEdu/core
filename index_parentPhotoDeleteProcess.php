@@ -18,16 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
+
+use Gibbon\Url;
+
 include './gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = Url::fromRoute();
 
 //Proceed!
 //Check if planner specified
 if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPersonID')) {
-    $URL .= '?return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
 } else {
     try {
         $data = array('gibbonPersonID' => $gibbonPersonID);
@@ -35,14 +37,12 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPer
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $URL .= '?return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        $URL .= '?return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
     } else {
         //UPDATE
         try {
@@ -51,8 +51,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPer
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '?return=error2';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error2')}");
             exit();
         }
 
@@ -62,8 +61,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $gibbon->session->get('gibbonPer
         //Clear cusotm sidebar
         unset($_SESSION[$guid]['index_customSidebar.php']);
 
-        $URL .= '?return=success0';
         //Success 0
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('success0')}");
     }
 }

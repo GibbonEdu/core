@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 include './gibbon.php';
 
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = Url::fromRoute();
 
 try {
     $data = array('gibbonPersonIDTutor' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $gibbon->session->get('gibbonPersonID'));
@@ -28,27 +30,24 @@ try {
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    $URL .= '?return=error0';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error0')}");
 }
 
 if ($result) {
     if ($gibbonFormGroupID == '') {
-        $URL .= '?return=error1';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error1')}");
     } else {
         if ($result->rowCount() < 1) {
-            $URL .= '?return=error3';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error3')}");
         } else {
             //Proceed!
             $data = ['gibbonFormGroupID' => $gibbonFormGroupID, 'today' => date('Y-m-d')];
-            $sql = "SELECT surname, preferredName, email 
-                    FROM gibbonStudentEnrolment 
-                    JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' 
-                    AND (dateStart IS NULL OR dateStart<=:today) 
-                    AND (dateEnd IS NULL  OR dateEnd>=:today) 
+            $sql = "SELECT surname, preferredName, email
+                    FROM gibbonStudentEnrolment
+                    JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                    WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full'
+                    AND (dateStart IS NULL OR dateStart<=:today)
+                    AND (dateEnd IS NULL  OR dateEnd>=:today)
                     ORDER BY surname, preferredName";
 
             $result = $pdo->select($sql, $data);

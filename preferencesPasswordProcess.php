@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
@@ -32,38 +34,33 @@ $forceReset = $gibbon->session->get('passwordForceReset');
 
 if ($forceReset != 'Y') {
     $forceReset = 'N';
-    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
+    $URLSuccess = Url::fromRoute('preferences')->withQueryParam('forceReset', 'N');
 } else {
-    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?forceReset=Y";
+    $URLSuccess = Url::fromRoute()->withQueryParam('forceReset', 'Y');
 }
-$URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=".$forceReset;
+$URL = $URLSuccess = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset);
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
 } else {
     //Check that new password is not same as old password
     if ($password == $passwordNew) {
-        $URL .= '&return=error7';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error7')}");
     } else {
         //Check strength of password
         $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
 
         if ($passwordMatch == false) {
-            $URL .= '&return=error6';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error6')}");
         } else {
             //Check new passwords match
             if ($passwordNew != $passwordConfirm) {
-                $URL .= '&return=error4';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error4')}");
             } else {
                 //Check current password
                 if (hash('sha256', $gibbon->session->get('passwordStrongSalt').$password) != $gibbon->session->get('passwordStrong')) {
-                    $URL .= '&return=error3';
-                    header("Location: {$URL}");
+                    header("Location: {$URL->withReturn('error3')}");
                 } else {
                     //If answer insert fails...
                     $salt = getSalt();
@@ -74,8 +71,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header("Location: {$URL->withReturn('error2')}");
                         exit();
                     }
 
@@ -88,24 +84,21 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=errora';
-                            header("Location: {$URL}");
+                            header("Location: {$URL->withReturn('errora')}");
                             exit();
                         }
                         $gibbon->session->set('passwordForceReset', 'N');
                         $gibbon->session->set('passwordStrongSalt', $salt);
                         $gibbon->session->set('passwordStrong', $passwordStrong);
                         $gibbon->session->set('pageLoads', null);
-                        $URLSuccess .= '&return=successa';
-                        header("Location: {$URLSuccess}");
+                        header("Location: {$URL->withReturn('successa')}");
                         exit() ;
                     }
 
                     $gibbon->session->set('passwordStrongSalt', $salt);
                     $gibbon->session->set('passwordStrong', $passwordStrong);
                     $gibbon->session->set('pageLoads', null);
-                    $URLSuccess .= '&return=success0';
-                    header("Location: {$URLSuccess}");
+                    header("Location: {$URL->withReturn('success0')}");
                 }
             }
         }

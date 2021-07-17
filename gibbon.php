@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
 use Gibbon\View\Page;
 use Gibbon\View\View;
 
@@ -92,6 +93,9 @@ if ($gibbon->isInstalled() == true) {
         $connection2 = $pdo->getConnection();
 
         $gibbon->initializeCore($container);
+
+        // Setup Url class baseUrl
+        Url::setBaseUrl($gibbon->session->get('absoluteURL'));
     } else {
         // We need to handle failed database connections after install. Display an error if no connection 
         // can be established. Needs a specific error page once header/footer is split out of index.

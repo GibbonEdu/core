@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
+use Gibbon\Url;
 
 /**
  * Action
@@ -226,7 +227,7 @@ class Action extends WebLink
 
         if ($icon = $this->getIcon()) {
             // Allow modules to specify their own icons if needed
-            $icon = substr($icon, 0, 4) != 'http' 
+            $icon = substr($icon, 0, 4) != 'http'
                 ? $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/'.$icon.'.png'
                 : $icon;
 
@@ -254,11 +255,17 @@ class Action extends WebLink
         if ($this->external) {
             $this->setAttribute('href', $this->url.$this->urlFragment);
         } else if ($this->direct) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromHandlerRoute(ltrim($this->url, '/'))
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         } else if ($this->modal) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         } else {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', Url::fromRoute()
+                ->withQueryParams($queryParams)
+                ->withFragment(ltrim($this->urlFragment, '#')));
         }
 
         return parent::getOutput();

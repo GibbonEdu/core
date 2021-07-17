@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 include './gibbon.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
+$URL = Url::fromRoute('notifications');
 
 if (!isset($_GET['gibbonNotificationID'])) {
-    $URL = $URL.'&return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
     exit();
 } else {
     $gibbonNotificationID = $_GET['gibbonNotificationID'];
@@ -36,14 +37,12 @@ if (!isset($_GET['gibbonNotificationID'])) {
         $result->execute($data);
     } catch (PDOException $e) {
         echo $e->getMessage();
-        $URL = $URL.'&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        $URL = $URL.'&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     } else {
         //Delete notification
@@ -53,13 +52,12 @@ if (!isset($_GET['gibbonNotificationID'])) {
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error2')}");
             exit();
         }
 
         //Success 0
-        $URL = $URL.'&return=success0';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('success0')}");
+        exit();
     }
 }

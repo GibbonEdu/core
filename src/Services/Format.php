@@ -22,6 +22,7 @@ namespace Gibbon\Services;
 use DateTime;
 use Gibbon\Session;
 use DateTimeImmutable;
+use Gibbon\Url;
 
 /**
  * Format values based on locale and system settings.
@@ -355,10 +356,10 @@ class Format
             'Other'       => __('Other'),
             'Unspecified' => __('Unspecified')
             ];
-        
+
         return $translate ? __($genderNames[$value]) : $genderNames[$value];
-    }    
-    
+    }
+
     /**
      * Formats a filesize in bytes to display in KB, MB, etc.
      *
@@ -659,16 +660,12 @@ class Format
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
-            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
-            if (!empty($params)) {
-                $url .= '&'.http_build_query($params);
-            }
+            $url = Url::fromModuleRoute('Staff', 'staff_view_details')
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
-            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
-            if (!empty($params)) {
-                $url .= '&'.http_build_query($params);
-            }
+            $url = Url::fromModuleRoute('Students', 'staff_view_details')
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } else {
             $output = $name;

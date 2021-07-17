@@ -21,6 +21,7 @@ namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Tables\DataTable;
+use Gibbon\Url;
 
 /**
  * FormFactory
@@ -270,7 +271,7 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
+        $clearURL = Url::fromRoute()->withQueryParams($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createSubmit('Go')->prepend($clearLink);

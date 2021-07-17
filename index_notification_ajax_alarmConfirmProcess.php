@@ -18,13 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\AlarmGateway;
+use Gibbon\Url;
 
 //Gibbon system-wide includes
 include './gibbon.php';
 
 $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = Url::fromRoute();
 
 //Proceed!
 if (empty($gibbonAlarmID) or empty($gibbonPersonID)) {
@@ -32,7 +33,7 @@ if (empty($gibbonAlarmID) or empty($gibbonPersonID)) {
 } else {
     //Check alarm
     $alarmGateway = $container->get(AlarmGateway::class);
-    
+
     $alarm = $alarmGateway->getByID($gibbonAlarmID);
 
     if (!empty($alarm)) {

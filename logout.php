@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
+$URL = Url::fromRoute();
 if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
-    $URL = './index.php?timeout=true';
+    $URL = $URL->withQueryParam('timeout', 'true');
 }
 
 unset($_SESSION[$guid]['googleAPIAccessToken']);

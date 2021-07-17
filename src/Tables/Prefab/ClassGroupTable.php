@@ -26,6 +26,7 @@ use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Url;
 
 /**
  * ClassGroupTable
@@ -57,7 +58,7 @@ class ClassGroupTable extends DataTable
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
 
-        $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') 
+        $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
             || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
         $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes'  || $highestAction == 'View Student Profile_fullEditAllNotes';
 
@@ -106,30 +107,34 @@ class ClassGroupTable extends DataTable
             ->format(function ($person) use ($canViewStaff, $canViewStudents) {
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
-                
+
                 if ($person['role'] == 'Student') {
-                    $url = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    $url = Url::fromModuleRoute('Students', 'student_view_details')
+                        ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
                     return $canViewStudents
                         ? Format::link($url, $photo).$icon
                         : $photo.$icon;
                 } else {
-                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    $url = Url::fromModuleRoute('Staff', 'staff_view_details')
+                        ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
                     return $canViewStaff
                         ? Format::link($url, $photo).$icon
                         : $photo.$icon;
                 }
             });
-            
+
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
             ->format(function ($person) use ($canViewStaff, $canViewStudents) {
                 if ($person['role'] == 'Student') {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
-                    $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    $url = Url::fromModuleRoute('Students', 'student_view_details')
+                        ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
                     $canViewProfile = $canViewStudents;
                 } else {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, false);
-                    $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                    $url = Url::fromModuleRoute('Staff', 'staff_view_details')
+                        ->withQueryParams(['gibbonPersonID' => $person['gibbonPersonID']]);
                     $canViewProfile = $canViewStaff;
                 }
 

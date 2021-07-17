@@ -26,6 +26,7 @@ use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Url;
 
 /**
  * FormGroupTable
@@ -54,9 +55,9 @@ class FormGroupTable extends DataTable
         $connection2 = $this->db->getConnection();
 
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-        
+
         $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');
-        
+
         if ($canViewConfidential && !$canViewStudents) {
             $canViewConfidential = false;
         }
@@ -77,7 +78,7 @@ class FormGroupTable extends DataTable
 
         $this->addMetaData('gridClass', 'rounded-sm bg-blue-100 border');
         $this->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 md:w-1/5 my-2 sm:my-4 text-center');
-        
+
 
         if ($canPrint) {
             $this->addHeaderAction('print', __('Print'))
@@ -113,7 +114,7 @@ class FormGroupTable extends DataTable
         $this->addColumn('image_240')
             ->setClass('relative')
             ->format(function ($person) use ($canViewStudents) {
-                $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
                 $photo = Format::userPhoto($person['image_240'], 'md', '');
                 $icon = Format::userBirthdayIcon($person['dob'], $person['preferredName']);
 
@@ -121,12 +122,12 @@ class FormGroupTable extends DataTable
                     ? Format::link($url, $photo).$icon
                     : $photo.$icon;
             });
-            
+
         $this->addColumn('name')
             ->setClass('text-xs font-bold mt-1')
             ->format(function ($person) use ($canViewStudents) {
                 $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Student', false, true);
-                $url =  './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+                $url =  Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $person['gibbonPersonID']);
 
                 return $canViewStudents
                     ? Format::link($url, $name)

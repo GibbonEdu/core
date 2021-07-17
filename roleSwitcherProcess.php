@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Url;
+
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
 $role = $_GET['gibbonRoleID'] ?? '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
 
@@ -28,7 +29,7 @@ $gibbon->session->set('pageLoads', null);
 
 //Check for parameter
 if (empty(intval($role))) {
-    $URL .= '?return=error0';
+    $URL = Url::fromRoute()->withReturn('error0');
     header("Location: {$URL}");
     exit;
 } else {
@@ -41,13 +42,13 @@ if (empty(intval($role))) {
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $URL .= '?return=error2';
+        $URL = Url::fromRoute()->withReturn('error2');
         header("Location: {$URL}");
         exit;
     }
 
     if ($result->rowCount() != 1) {
-        $URL .= '?return=error1';
+        $URL = Url::fromRoute()->withReturn('error1');
         header("Location: {$URL}");
         exit;
     } else {
@@ -60,7 +61,7 @@ if (empty(intval($role))) {
         // Clear the main menu from session cache
         $gibbon->session->forget('menuMainItems');
 
-        $URL .= '?return=success0';
+        $URL = Url::fromRoute()->withReturn('success0');
         header("Location: {$URL}");
         exit;
     }

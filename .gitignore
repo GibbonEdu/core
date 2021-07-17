@@ -16,6 +16,7 @@ themes/*
 # Tests Folder
 tests/log/*
 tests/config/support/_generated/*
+tests/.phpunit.result.cache
 
 # Template Cache
 /resources/templates/cache/*

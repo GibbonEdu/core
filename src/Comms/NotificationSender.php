@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Url;
 
 /**
  * Notification Sender
@@ -216,7 +217,10 @@ class NotificationSender
      */
     protected function getNotificationLink()
     {
-        return sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'), $this->session->get('systemName'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=notifications.php'>", '</a>');
+        return sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'),
+            $this->session->get('systemName'),
+            "<a href='".Url::fromRoute('notifications')."'>",
+            '</a>');
     }
 
     /**
@@ -228,7 +232,10 @@ class NotificationSender
         $output = '<br/><br/>';
         $output .= '<hr/>';
         $output .= "<p style='font-style: italic; font-size: 85%'>";
-        $output .= sprintf(__('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $this->session->get('systemName'), "<a href='".$this->session->get('absoluteURL')."/index.php?q=preferences.php'>", '</a>');
+        $output .= sprintf(__('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'),
+            $this->session->get('systemName'),
+            "<a href='".Url::fromRoute('preferences')."'>",
+            '</a>');
         $output .= '<br/><br/>';
         $output .= sprintf(__('Email sent via %1$s at %2$s.'), $this->session->get('systemName'), $this->session->get('organisationName'));
         $output .= '</p>';
