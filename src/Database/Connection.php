@@ -100,11 +100,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Run a select statement against the database.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return object
+     * {@inheritDoc}
      */
     public function select($query, $bindings = [])
     {
@@ -180,9 +176,8 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return mixed
      *
-     * @throws \PDOException
+     * @return \Gibbon\Database\Result The database query result.
      */
     protected function run($query, $bindings = [])
     {
@@ -250,7 +245,7 @@ class Connection implements ConnectionInterface
     {
         return $this->result;
     }
-    
+
     /**
      * Start a new database transaction.
      *
