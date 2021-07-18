@@ -26,7 +26,7 @@ use Psr\Container\ContainerInterface;
 /**
  * Session Class
  *
- * @version	v13
+ * @version	v23
  * @since	v12
  */
 class Session implements SessionInterface
@@ -43,9 +43,44 @@ class Session implements SessionInterface
 
     /**
      * Construct
+     *
+     * @param string $guid
+     *   The guid of the session.
+     * @param string $address
+     *   Optional string of the current address.
+     * @param string $module
+     *   Optional string name of the current module.
+     * @param string $action
+     *   Optional string of the current action.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(
+        string $guid,
+        string $address = '',
+        string $module = '',
+        string $action = ''
+    )
     {
+        // Backwards compatibility for external modules.
+        $this->guid = $guid;
+
+        // Set session variables.
+        $this->set('guid', $guid);
+        $this->set('address', $address);
+        $this->set('module', $module);
+        $this->set('action', $action);
+    }
+
+    /**
+     * Method for creating Session from ContainerInterface and
+     * environment variables (i.e. $guid, $_GET, $_POST).
+     *
+     * @param \Psr\Container\ContainerInterface $container
+     *   The container to retrieve \Gibbon\Core ('config') or
+     *   other dependencies from.
+     *
+     * @return \Gibbon\Session The newly created session object.
+     */
+    public static function create(ContainerInterface $container): Session {
         global $guid;
 
         // Start the session (this should be the first time called)
@@ -68,18 +103,19 @@ class Session implements SessionInterface
             header('X-Frame-Options: SAMEORIGIN');
         }
 
-        // Backwards compatibility for external modules
-        $this->guid = $container->has('config')? $container->get('config')->guid() : $guid;
+        // If session guid is not set, fallback to global $guid.
+        $_guid = $container->get('config')->guid() ?: $guid;
 
         // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
         // which is currently used in many Process pages.
         // TODO: replace this logic when switching to routing.
         $address = $_GET['q'] ?? $_POST['address'] ?? '';
+        $module = $address ? getModuleName($address) : '';
+        $action = $address ? getActionName($address) : '';
 
-        $this->set('address', $address);
-        $this->set('module', $address ? getModuleName($address) : '');
-        $this->set('action', $address ? getActionName($address) : '');
-        $this->set('guid', $this->guid);
+        // Create the instance from information of container
+        // and environment.
+        return new static($_guid, $address, $module, $action);
     }
 
     public function setGuid(string $_guid)

@@ -88,7 +88,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getContainer();
 
         $container->share('config', new Core($this->absolutePath));
-        $container->share('session', new Session($container));
+        $container->share('session', Session::create($container));
         $container->share('locale', new Locale($this->absolutePath, $container->get('session')));
 
         $container->share(\Gibbon\Contracts\Services\Session::class, $container->get('session'));
@@ -109,7 +109,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $session = $container->get('session');
 
         // Logging removed until properly setup & tested
-        
+
         // $container->share('gibbon_logger', function () use ($container) {
         //     $factory = new LoggerFactory($container->get(SettingGateway::class));
         //     return $factory->getLogger('gibbon');
@@ -182,12 +182,12 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 'moduleName'   => $session->get('module'),
                 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
             ];
-            $sql = "SELECT gibbonAction.* 
+            $sql = "SELECT gibbonAction.*
                     FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
                     LEFT JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID AND gibbonPermission.gibbonRoleID=:gibbonRoleID)
                     LEFT JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
-                    WHERE gibbonAction.URLList LIKE :actionName 
+                    WHERE gibbonAction.URLList LIKE :actionName
                     AND gibbonModule.name=:moduleName";
 
             $actionData = $this->getContainer()->get('db')->selectOne($sql, $data);
