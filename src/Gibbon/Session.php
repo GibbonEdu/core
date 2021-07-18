@@ -215,8 +215,9 @@ class Session implements SessionInterface
     public function loadSystemSettings(Connection $pdo)
     {
         // System settings from gibbonSetting
-        $sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
-        $result = $pdo->executeQuery(array(), $sql);
+        $result = $pdo->select('SELECT name, value FROM gibbonSetting WHERE scope=:scope', [
+            ':scope' => 'System',
+        ]);
 
         while ($row = $result->fetch()) {
             $this->set($row['name'], $row['value']);
@@ -226,8 +227,9 @@ class Session implements SessionInterface
     public function loadLanguageSettings(Connection $pdo)
     {
         // Language settings from gibboni18n
-        $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
-        $result = $pdo->executeQuery(array(), $sql);
+        $result = $pdo->select('SELECT * FROM gibboni18n WHERE systemDefault=:systemDefault', [
+            ':systemDefault' => 'Y',
+        ]);
 
         while ($row = $result->fetch()) {
             $this->set('i18n', $row);
