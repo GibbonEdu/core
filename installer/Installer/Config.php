@@ -199,6 +199,7 @@ class Config
     public function setFlagDemoData(bool $flag)
     {
         $this->flagDemoData = $flag;
+        return $this;
     }
 
     /**
@@ -232,6 +233,7 @@ class Config
     public function setLocale(string $locale)
     {
         $this->locale = $locale;
+        return $this;
     }
 
     /**
