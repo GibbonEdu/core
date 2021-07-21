@@ -85,7 +85,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      */
     public function boot()
     {
-        $container = $this->getContainer();
+        $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
         $container->share('session', Session::create($container));
@@ -104,7 +104,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      */
     public function register()
     {
-        $container = $this->getContainer();
+        $container = $this->getLeagueContainer();
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
 
