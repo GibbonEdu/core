@@ -304,7 +304,7 @@ if ($canInstall == false) {
 
     if ($pdo instanceof Connection) {
         //Set up config.php
-        include './installerFunctions.php';
+        require_once './installerFunctions.php';
         $configData = $config->getDatabaseInfo() + ['guid' => $guid];
         $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
@@ -601,6 +601,8 @@ if ($canInstall == false) {
 
     // check if correctly created the PDO object.
     if ($pdo instanceof Connection) {
+        require_once './installerFunctions.php';
+
         //Get user account details
         $title = $_POST['title'];
         $surname = $_POST['surname'];
@@ -665,167 +667,26 @@ if ($canInstall == false) {
 
                 if ($userFail == false) {
                     $settingsFail = false;
-                    try {
-                        $data = array('absoluteURL' => $absoluteURL);
-                        $sql = "UPDATE gibbonSetting SET value=:absoluteURL WHERE scope='System' AND name='absoluteURL'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
 
-                    try {
-                        $data = array('absolutePath' => $absolutePath);
-                        $sql = "UPDATE gibbonSetting SET value=:absolutePath WHERE scope='System' AND name='absolutePath'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('systemName' => $systemName);
-                        $sql = "UPDATE gibbonSetting SET value=:systemName WHERE scope='System' AND name='systemName'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationName' => $organisationName);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationName WHERE scope='System' AND name='organisationName'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationNameShort' => $organisationNameShort);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationNameShort WHERE scope='System' AND name='organisationNameShort'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationEmail' => $email); //Use user email as organisation email, initially
-                        $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('currency' => $currency);
-                        $sql = "UPDATE gibbonSetting SET value=:currency WHERE scope='System' AND name='currency'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $fail = true;
-                    }
-
-                    try {
-                        $data = array('organisationAdministrator' => 1);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationAdministrator WHERE scope='System' AND name='organisationAdministrator'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationDBA' => 1);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationDBA WHERE scope='System' AND name='organisationDBA'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationHR' => 1);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationHR WHERE scope='System' AND name='organisationHR'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('organisationAdmissions' => 1);
-                        $sql = "UPDATE gibbonSetting SET value=:organisationAdmissions WHERE scope='System' AND name='organisationAdmissions'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('country' => $country);
-                        $sql = "UPDATE gibbonSetting SET value=:country WHERE scope='System' AND name='country'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('gibboneduComOrganisationName' => $gibboneduComOrganisationName);
-                        $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationName WHERE scope='System' AND name='gibboneduComOrganisationName'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('gibboneduComOrganisationKey' => $gibboneduComOrganisationKey);
-                        $sql = "UPDATE gibbonSetting SET value=:gibboneduComOrganisationKey WHERE scope='System' AND name='gibboneduComOrganisationKey'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('timezone' => $timezone);
-                        $sql = "UPDATE gibbonSetting SET value=:timezone WHERE scope='System' AND name='timezone'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('installType' => $installType);
-                        $sql = "UPDATE gibbonSetting SET value=:installType WHERE scope='System' AND name='installType'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('statsCollection' => $statsCollection);
-                        $sql = "UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
-
-                    try {
-                        $data = array('email' => $email); //Use organisation email as finance email, initially
-                        $sql = "UPDATE gibbonSetting SET value=:email WHERE scope='Finance' AND name='email'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absoluteURL', $absoluteURL);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absolutePath', $absolutePath);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'systemName', $systemName);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationName', $organisationName);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationNameShort', $organisationNameShort);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationEmail', $email);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdministrator', 1);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationDBA', 1);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationHR', 1);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdmissions', 1);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationName', $gibboneduComOrganisationName);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'currency', $currency);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'country', $country);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'timezone', $timezone);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'installType', $installType);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'statsCollection', $statsCollection);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'cuttingEdgeCode', $cuttingEdgeCode);
+                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'Finance', 'email', $email);
 
                     if ($statsCollection == 'Y') {
                         $absolutePathProtocol = '';
@@ -840,14 +701,6 @@ if ($canInstall == false) {
                         echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&type='.urlencode($installType).'&version='.urlencode($version).'&country='.$country."&usersTotal=1&usersFull=1'></iframe>";
                     }
 
-                    try {
-                        $data = array('cuttingEdgeCode' => $cuttingEdgeCode);
-                        $sql = "UPDATE gibbonSetting SET value=:cuttingEdgeCode WHERE scope='System' AND name='cuttingEdgeCode'";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $settingsFail = true;
-                    }
                     if ($cuttingEdgeCode == 'Y') {
                         $updater = $container->get(Updater::class);
                         $errors = $updater->update();
@@ -855,14 +708,8 @@ if ($canInstall == false) {
                         if (!empty($errors)) {
                             echo Format::alert(__('Some aspects of your update failed.'));
                         }
-                        
-                        try {
-                            $data = array('cuttingEdgeCodeLine' => $updater->cuttingEdgeMaxLine);
-                            $sql = "UPDATE gibbonSetting SET value=:cuttingEdgeCodeLine WHERE scope='System' AND name='cuttingEdgeCodeLine'";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
+
+                        $settingsFail = $settingsFail && !install_setting_set($connection2, 'System', 'cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
                     }
 
                     // Update DB version for existing languages (installed manually?)

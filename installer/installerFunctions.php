@@ -196,3 +196,29 @@ function process_config_vars(array $variables): array {
         return var_export((string) $value, true); // force render into string literals
     }, $variables);
 }
+
+/**
+ * Set system settings.
+ *
+ * @param \PDO    $conneciton     The PDO connection for the gibbon database.
+ * @param string  $scope          The scope for the setting.
+ * @param string  $name           The key for the setting.
+ * @param mixed   $value          The value for the setting.
+ * @param bool    $throw_on_error To throw exception / error instead of just returning false. Default false.
+ *
+ * @return boolean If the setting query is run successfully.
+ *
+ * @throws \PDOException
+ */
+function install_setting_set(\PDO $connection, string $scope, string $name, $value, bool $throw_on_error=false): bool {
+    if ($throw_on_error) {
+        $result = $connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+        return $result->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
+    }
+    try {
+        $result = $connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+        return $result->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
+    } catch (\PDOException $e) {
+        return false;
+    }
+}
