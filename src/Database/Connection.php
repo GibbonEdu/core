@@ -104,7 +104,8 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return object
+     *
+     * @return \PDOStatement|false The PDO statement, or false if query failed.
      */
     public function select($query, $bindings = [])
     {
@@ -180,7 +181,8 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return mixed
+     *
+     * @return \PDOStatement|false The PDO statement, or false if query failed.
      *
      * @throws \PDOException
      */

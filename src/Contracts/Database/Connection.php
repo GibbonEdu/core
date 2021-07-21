@@ -49,7 +49,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return object
+     *
+     * @return \PDOStatement|false The PDO statement, or false if query failed.
      */
     public function select($query, $bindings = []);
 
