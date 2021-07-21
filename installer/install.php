@@ -94,14 +94,15 @@ $config = (new Config)
 
 // Attempt to download & install the required language files
 if ($step >= 1) {
-    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $config->getLocale())
-        ? i18nFileInstall($gibbon->session->get('absolutePath'), $config->getLocale())
+    $locale_code = $_POST['code'] ?? 'en_GB';
+    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $locale_code)
+        ? i18nFileInstall($gibbon->session->get('absolutePath'), $locale_code)
         : true;
 }
 
 //Set language pre-install
 if (function_exists('gettext')) {
-    $gibbon->locale->setLocale($config->getLocale());
+    $gibbon->locale->setLocale($_POST['code'] ?? 'en_GB');
     bindtextdomain('gibbon', '../i18n');
     textdomain('gibbon');
 }
@@ -215,9 +216,10 @@ if ($canInstall == false) {
 
     $form->addRow()->addHeading(__('Language Settings'));
 
+    // Use default language, or language submitted by previous attempt.
     $row = $form->addRow();
         $row->addLabel('code', __('System Language'));
-        $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($config->getLocale())->required();
+        $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($_POST['code'] ?? 'en_GB')->required();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -239,7 +241,7 @@ if ($canInstall == false) {
 
     $form->addHiddenValue('guid', $guid);
     $form->addHiddenValue('nonce', $nonce);
-    $form->addHiddenValue('code', $config->getLocale());
+    $form->addHiddenValue('code', $_POST['code'] ?? 'en_GB'); // Use language assigned in previous step, or default
 
     $form->addRow()->addHeading(__('Database Settings'));
 
