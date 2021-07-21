@@ -48,15 +48,7 @@ $step = min(max($step, 0), 3);
 // Deal with $guid setup, otherwise get and filter the existing $guid
 if (empty($step)) {
     $step = 0;
-    $charList = 'abcdefghijkmnopqrstuvwxyz023456789';
-    $guid = '';
-    for ($i = 0;$i < 36;++$i) {
-        if ($i == 9 or $i == 14 or $i == 19 or $i == 24) {
-            $guid .= '-';
-        } else {
-            $guid .= substr($charList, rand(1, strlen($charList)), 1);
-        }
-    }
+    $guid = Config::randomGuid();
 } else {
     $guid = $_POST['guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
@@ -88,17 +80,17 @@ $page = new Page($container->get('twig'), [
 
 ob_start();
 
-$config = new Config;
-
-//Get and set database variables (not set until step 1)
-$config->setDatabaseInfo(
-    $_POST['databaseServer'] ?? '',
-    $_POST['databaseName'] ?? '',
-    $_POST['databaseUsername'] ?? '',
-    $_POST['databasePassword'] ?? ''
-);
-$config->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y');
-$config->setLocale($_POST['code'] ?? 'en_GB');
+// Get and set database variables (not set until step 1)
+$config = (new Config)
+    ->setGuid($guid)
+    ->setDatabaseInfo(
+        $_POST['databaseServer'] ?? '',
+        $_POST['databaseName'] ?? '',
+        $_POST['databaseUsername'] ?? '',
+        $_POST['databasePassword'] ?? ''
+    )
+    ->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y')
+    ->setLocale($_POST['code'] ?? 'en_GB');
 
 // Attempt to download & install the required language files
 if ($step >= 1) {
