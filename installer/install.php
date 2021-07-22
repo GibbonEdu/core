@@ -96,7 +96,6 @@ if (function_exists('gettext')) {
 }
 
 $isConfigValid = true;
-$canInstall = true;
 
 $steps = [
     1 => __('System Requirements'),
@@ -121,20 +120,16 @@ try {
     if ($step < 3) {
         if (file_exists('../config.php')) { // Make sure system is not already installed
             if (filesize('../config.php') > 0 or is_writable('../config.php') == false) {
-                $canInstall = false;
+                throw new \Exception(__('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.'));
             }
-        } else { //No config, so continue installer
-            if (is_writable('../') == false) { // Ensure that home directory is writable
-                $canInstall = false;
-            }
+        } elseif (is_writable('../') == false) {
+            // No config, so continue installer
+            // Block installation if home directory is not writable
+            throw new \Exception(__('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.'));
         }
     }
 
-    if ($canInstall == false) {
-        echo '<div class="error">';
-        echo __('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.');
-        echo '</div>';
-    } else if ($step == 0) { //Choose language
+    if ($step == 0) { //Choose language
 
         //PROCEED
         $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
