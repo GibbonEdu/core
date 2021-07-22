@@ -491,7 +491,7 @@ try {
                             '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
                             '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
                         ]);
-                        $page->addHeadExtra("
+                        echo "
                         <script type='text/javascript'>
                         window.gibboninstaller = {
                             version: {$js_version},
@@ -501,7 +501,7 @@ try {
                             },
                         };
                         </script>
-                        ");
+                        ";
 
                         $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                         $row = $form->addRow();
