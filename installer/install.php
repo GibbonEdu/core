@@ -287,289 +287,285 @@ try {
             }
         }
 
-        if ($pdo instanceof Connection) {
-            //Set up config.php
-            require_once './installerFunctions.php';
-            $configData = $config->getDatabaseInfo() + ['guid' => $guid];
-            $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
+        if (!$pdo instanceof Connection) {
+            throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
+        }
 
-            //Write config
-            $fp = fopen('../config.php', 'wb');
-            fwrite($fp, $configFileContents);
-            fclose($fp);
+        //Set up config.php
+        include './installerFunctions.php';
+        $configData = $config->getDatabaseInfo() + ['guid' => $guid];
+        $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
-            if (file_exists('../config.php') == false) { //Something went wrong, config.php could not be created.
+        //Write config
+        $fp = fopen('../config.php', 'wb');
+        fwrite($fp, $configFileContents);
+        fclose($fp);
+
+        if (file_exists('../config.php') == false) { //Something went wrong, config.php could not be created.
+            throw new \Exception(__('../config.php could not be created, and so the installer cannot proceed.'));
+        }
+        // Config, exists, let's press on
+
+        // Let's read the SQL file for basic schema and data creation.
+        if (file_exists('../gibbon.sql') == false) {
+            throw new \Exception(__('../gibbon.sql does not exist, and so the installer cannot proceed.'));
+        }
+        if (($query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql'))) === false) {
+            throw new \Exception(__('Unable to read ../gibbon.sql, and so the installer cannot proceed.'));
+        }
+
+        // Let's populate the database with the SQL queries from the file.
+        $query = remove_remarks($query);
+        $query = split_sql_file($query, ';');
+
+        $i = 1;
+        foreach ($query as $sql) {
+            ++$i;
+            try {
+                $connection2->query($sql);
+            } catch (PDOException $e) {
+                throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
+            }
+        }
+
+        // Try to install the demo data, report error but don't stop if any issues
+        if ($config->getFlagDemoData()) {
+            if (file_exists('../gibbon_demo.sql') == false) {
                 echo "<div class='error'>";
-                echo __('../config.php could not be created, and so the installer cannot proceed.');
+                echo __('../gibbon_demo.sql does not exist, so we will continue without demo data.');
                 echo '</div>';
-            } else { //Config, exists, let's press on
-                //Let's populate the database
-                if (file_exists('../gibbon.sql') == false) {
+            } else {
+                $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
+                $query = remove_remarks($query);
+                $query = split_sql_file($query, ';');
+
+                $i = 1;
+                $demoFail = false;
+                foreach ($query as $sql) {
+                    ++$i;
+                    try {
+                        $connection2->query($sql);
+                    } catch (PDOException $e) {
+                        echo $sql.'<br/>';
+                        echo $e->getMessage().'<br/><br/>';
+                        $demoFail = true;
+                    }
+                }
+
+                if ($demoFail) {
                     echo "<div class='error'>";
-                    echo __('../gibbon.sql does not exist, and so the installer cannot proceed.');
+                    echo __('There were some issues installing the demo data, but we will continue anyway.');
                     echo '</div>';
-                } else {
-                    $query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql')) or die('Encountered a problem.');
-                    $query = remove_remarks($query);
-                    $query = split_sql_file($query, ';');
-
-                    $i = 1;
-                    $partialFail = false;
-                    foreach ($query as $sql) {
-                        ++$i;
-                        try {
-                            $connection2->query($sql);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-                    }
-
-                    if ($partialFail == true) {
-                        echo "<div class='error'>";
-                        echo __('Errors occurred in populating the database; empty your database, remove ../config.php and try again.');
-                        echo '</div>';
-                    } else {
-                        //Try to install the demo data, report error but don't stop if any issues
-                        if ($config->getFlagDemoData()) {
-                            if (file_exists('../gibbon_demo.sql') == false) {
-                                echo "<div class='error'>";
-                                echo __('../gibbon_demo.sql does not exist, so we will continue without demo data.');
-                                echo '</div>';
-                            } else {
-                                $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
-                                $query = remove_remarks($query);
-                                $query = split_sql_file($query, ';');
-
-                                $i = 1;
-                                $demoFail = false;
-                                foreach ($query as $sql) {
-                                    ++$i;
-                                    try {
-                                        $connection2->query($sql);
-                                    } catch (PDOException $e) {
-                                        echo $sql.'<br/>';
-                                        echo $e->getMessage().'<br/><br/>';
-                                        $demoFail = true;
-                                    }
-                                }
-
-                                if ($demoFail) {
-                                    echo "<div class='error'>";
-                                    echo __('There were some issues installing the demo data, but we will continue anyway.');
-                                    echo '</div>';
-                                }
-                            }
-                        }
-
-                        //Set default language
-                        try {
-                            $data = array('code' => $config->getLocale());
-                            $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
-                        try {
-                            $data = array('code' => $config->getLocale());
-                            $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                        }
-
-                        //Let's gather some more information
-
-                        $form = Form::create('installer', "./install.php?step=3");
-                        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-                        $form->setFactory(DatabaseFormFactory::create($pdo));
-                        $form->setMultiPartForm($steps, 3);
-
-                        $form->addHiddenValue('guid', $guid);
-                        $form->addHiddenValue('nonce', $nonce);
-                        $form->addHiddenValue('code', $config->getLocale());
-                        $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
-
-                        $form->addRow()->addHeading(__('User Account'));
-
-                        $row = $form->addRow();
-                            $row->addLabel('title', __('Title'));
-                            $row->addSelectTitle('title');
-
-                        $row = $form->addRow();
-                            $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-                            $row->addTextField('surname')->required()->maxLength(30);
-
-                        $row = $form->addRow();
-                            $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-                            $row->addTextField('firstName')->required()->maxLength(30);
-
-                        $row = $form->addRow();
-                            $row->addLabel('email', __('Email'));
-                            $row->addEmail('email')->required();
-
-                        $row = $form->addRow();
-                            $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
-                            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
-
-                        $row = $form->addRow();
-                            $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-                            $row->addTextField('username')->required()->maxLength(20);
-
-                        $policy = getPasswordPolicy($guid, $connection2);
-                        if ($policy != false) {
-                            $form->addRow()->addAlert($policy, 'warning');
-                        }
-                        $row = $form->addRow();
-                            $row->addLabel('passwordNew', __('Password'));
-                            $password = $row->addPassword('passwordNew')
-                                ->required()
-                                ->maxLength(30);
-
-                        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-                        $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-                        $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-                        $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-
-                        if ($alpha == 'Y') {
-                            $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
-                        }
-                        if ($numeric == 'Y') {
-                            $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-                        }
-                        if ($punctuation == 'Y') {
-                            $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-                        }
-                        if (!empty($minLength) && is_numeric($minLength)) {
-                            $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
-                        }
-
-                        $row = $form->addRow();
-                            $row->addLabel('passwordConfirm', __('Confirm Password'));
-                            $row->addPassword('passwordConfirm')
-                                ->required()
-                                ->maxLength(30)
-                                ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
-
-                        $form->addRow()->addHeading(__('System Settings'));
-
-                        $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-                        $port = '';
-                        if ($_SERVER['SERVER_PORT'] != '80') {
-                            $port = ':'.$_SERVER['SERVER_PORT'];
-                        }
-                        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-                        $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
-
-                        $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
-
-                        $setting = getSettingByScope($connection2, 'System', 'systemName', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
-
-                        $installTypes = array(
-                            'Production'  => __('Production'),
-                            'Testing'     => __('Testing'),
-                            'Development' => __('Development')
-                        );
-
-                        $setting = getSettingByScope($connection2, 'System', 'installType', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
-
-                        // Expose version information and translation strings to installer.js functions
-                        // for check and set cutting edge code based on gibbonedu.org services value
-                        $js_version = json_encode($version);
-                        $js_i18n = json_encode([
-                            '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
-                            '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
-                        ]);
-                        echo "
-                        <script type='text/javascript'>
-                        window.gibboninstaller = {
-                            version: {$js_version},
-                            i18n: {$js_i18n},
-                            msg: function (msg) {
-                                return this.i18n[msg] || msg;
-                            },
-                        };
-                        </script>
-                        ";
-
-                        $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
-                        $row = $form->addRow();
-                            $row->addContent($statusInitial);
-                        $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue('No')->readonly();
-
-                        $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addYesNo($setting['name'])->selected('Y')->required();
-
-                        $form->addRow()->addHeading(__('Organisation Settings'));
-
-                        $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
-
-                        $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
-
-                        $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
-
-                        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue();
-
-                        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addTextField($setting['name'])->setValue();
-
-                        $form->addRow()->addHeading(__('Miscellaneous'));
-
-                        $setting = getSettingByScope($connection2, 'System', 'country', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addSelectCountry($setting['name'])->required();
-
-                        $setting = getSettingByScope($connection2, 'System', 'currency', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addSelectCurrency($setting['name'])->required();
-
-                        $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
-                            $group[$item] = __($item);
-                            return $group;
-                        }, array());
-                        $setting = getSettingByScope($connection2, 'System', 'timezone', true);
-                        $row = $form->addRow();
-                            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                            $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
-
-                        $row = $form->addRow();
-                            $row->addFooter();
-                            $row->addSubmit();
-
-                        echo $form->getOutput();
-                    }
                 }
             }
         }
+
+        //Set default language
+        try {
+            $data = array('code' => $config->getLocale());
+            $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+        }
+        try {
+            $data = array('code' => $config->getLocale());
+            $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+        }
+
+        //Let's gather some more information
+
+        $form = Form::create('installer', "./install.php?step=3");
+        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setMultiPartForm($steps, 3);
+
+        $form->addHiddenValue('guid', $guid);
+        $form->addHiddenValue('nonce', $nonce);
+        $form->addHiddenValue('code', $config->getLocale());
+        $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
+
+        $form->addRow()->addHeading(__('User Account'));
+
+        $row = $form->addRow();
+            $row->addLabel('title', __('Title'));
+            $row->addSelectTitle('title');
+
+        $row = $form->addRow();
+            $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+            $row->addTextField('surname')->required()->maxLength(30);
+
+        $row = $form->addRow();
+            $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+            $row->addTextField('firstName')->required()->maxLength(30);
+
+        $row = $form->addRow();
+            $row->addLabel('email', __('Email'));
+            $row->addEmail('email')->required();
+
+        $row = $form->addRow();
+            $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
+            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
+
+        $row = $form->addRow();
+            $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+            $row->addTextField('username')->required()->maxLength(20);
+
+        $policy = getPasswordPolicy($guid, $connection2);
+        if ($policy != false) {
+            $form->addRow()->addAlert($policy, 'warning');
+        }
+        $row = $form->addRow();
+            $row->addLabel('passwordNew', __('Password'));
+            $password = $row->addPassword('passwordNew')
+                ->required()
+                ->maxLength(30);
+
+        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
+        $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
+        $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
+        $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+
+        if ($alpha == 'Y') {
+            $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
+        }
+        if ($numeric == 'Y') {
+            $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+        }
+        if ($punctuation == 'Y') {
+            $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
+        }
+        if (!empty($minLength) && is_numeric($minLength)) {
+            $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
+        }
+
+        $row = $form->addRow();
+            $row->addLabel('passwordConfirm', __('Confirm Password'));
+            $row->addPassword('passwordConfirm')
+                ->required()
+                ->maxLength(30)
+                ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
+
+        $form->addRow()->addHeading(__('System Settings'));
+
+        $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+        $port = '';
+        if ($_SERVER['SERVER_PORT'] != '80') {
+            $port = ':'.$_SERVER['SERVER_PORT'];
+        }
+        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
+        $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
+
+        $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
+
+        $setting = getSettingByScope($connection2, 'System', 'systemName', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
+
+        $installTypes = array(
+            'Production'  => __('Production'),
+            'Testing'     => __('Testing'),
+            'Development' => __('Development')
+        );
+
+        $setting = getSettingByScope($connection2, 'System', 'installType', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
+
+        // Expose version information and translation strings to installer.js functions
+        // for check and set cutting edge code based on gibbonedu.org services value
+        $js_version = json_encode($version);
+        $js_i18n = json_encode([
+            '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
+            '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
+        ]);
+        echo "
+        <script type='text/javascript'>
+        window.gibboninstaller = {
+            version: {$js_version},
+            i18n: {$js_i18n},
+            msg: function (msg) {
+                return this.i18n[msg] || msg;
+            },
+        };
+        </script>
+        ";
+
+        $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
+        $row = $form->addRow();
+            $row->addContent($statusInitial);
+        $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue('No')->readonly();
+
+        $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addYesNo($setting['name'])->selected('Y')->required();
+
+        $form->addRow()->addHeading(__('Organisation Settings'));
+
+        $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
+
+        $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
+
+        $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
+
+        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue();
+
+        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextField($setting['name'])->setValue();
+
+        $form->addRow()->addHeading(__('Miscellaneous'));
+
+        $setting = getSettingByScope($connection2, 'System', 'country', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelectCountry($setting['name'])->required();
+
+        $setting = getSettingByScope($connection2, 'System', 'currency', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelectCurrency($setting['name'])->required();
+
+        $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
+            $group[$item] = __($item);
+            return $group;
+        }, array());
+        $setting = getSettingByScope($connection2, 'System', 'timezone', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
+
     } elseif ($step == 3) {
         //New PDO DB connection
         require_once './installerFunctions.php';
