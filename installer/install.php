@@ -264,14 +264,11 @@ try {
             ->setLocale($_POST['code'] ?? 'en_GB');
 
         // Check config values for ' " \ / chars which will cause errors in config.php
-        $isConfigValid = $config->validateDatbaseInfo();
-        if (!$isConfigValid) {
-            echo '<div class="error">';
-            echo __('Your request failed because your inputs were invalid.');
-            echo '</div>';
+        if (!$config->validateDatbaseInfo()) {
+            throw new \Exception(__('Your request failed because your inputs were invalid.'));
         }
 
-        if ($isConfigValid && $config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
+        if ($config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
             //Check for db values
 
             //Establish db connection without database name
@@ -290,9 +287,9 @@ try {
             }
         }
 
-        if ($isConfigValid && $pdo instanceof Connection) {
+        if ($pdo instanceof Connection) {
             //Set up config.php
-            include './installerFunctions.php';
+            require_once './installerFunctions.php';
             $configData = $config->getDatabaseInfo() + ['guid' => $guid];
             $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
 
@@ -575,6 +572,7 @@ try {
         }
     } elseif ($step == 3) {
         //New PDO DB connection
+        require_once './installerFunctions.php';
         $mysqlConnector = new MySqlConnector();
 
         try {
@@ -737,7 +735,7 @@ try {
     }
 
 } catch (\Exception $e) {
-    $page->addError($e->getMessage);
+    $page->addError($e->getMessage());
 }
 
 $page->write(ob_get_clean());
