@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\View\Page;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
+use Gibbon\Install\Config;
+use Gibbon\Install\Context;
 use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Install\Config;
-use Gibbon\Install\Context;
 
 include '../version.php';
 include '../gibbon.php';
@@ -80,18 +80,6 @@ $page = new Page($container->get('twig'), [
 
 ob_start();
 
-// Get and set database variables (not set until step 1)
-$config = (new Config)
-    ->setGuid($guid)
-    ->setDatabaseInfo(
-        $_POST['databaseServer'] ?? '',
-        $_POST['databaseName'] ?? '',
-        $_POST['databaseUsername'] ?? '',
-        $_POST['databasePassword'] ?? ''
-    )
-    ->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y')
-    ->setLocale($_POST['code'] ?? 'en_GB');
-
 // Attempt to download & install the required language files
 if ($step >= 1) {
     $locale_code = $_POST['code'] ?? 'en_GB';
@@ -128,9 +116,6 @@ if ($step >= 1) {
     }
 }
 
-// Check config values for ' " \ / chars which will cause errors in config.php
-$isConfigValid = $config->validateDatbaseInfo();
-
 // Check for the presence of a config file (if it hasn't been created yet)
 if ($step < 3) {
     if (file_exists('../config.php')) { // Make sure system is not already installed
@@ -151,10 +136,6 @@ if ($canInstall == false) {
 } else if ($isNonceValid == false) {
     echo '<div class="error">';
     echo __('Your request failed because you do not have access to this action.');
-    echo '</div>';
-} else if ($isConfigValid == false) {
-    echo '<div class="error">';
-    echo __('Your request failed because your inputs were invalid.');
     echo '</div>';
 } else if ($step == 0) { //Choose language
 
@@ -278,8 +259,29 @@ if ($canInstall == false) {
     echo $form->getOutput();
 } elseif ($step == 2) {
 
-    //Check for db values
-    if ($config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
+    // Get and set database variables (not set until step 1)
+    $config = (new Config)
+        ->setGuid($guid)
+        ->setDatabaseInfo(
+            $_POST['databaseServer'] ?? '',
+            $_POST['databaseName'] ?? '',
+            $_POST['databaseUsername'] ?? '',
+            $_POST['databasePassword'] ?? ''
+        )
+        ->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y')
+        ->setLocale($_POST['code'] ?? 'en_GB');
+
+    // Check config values for ' " \ / chars which will cause errors in config.php
+    $isConfigValid = $config->validateDatbaseInfo();
+    if (!$isConfigValid) {
+        echo '<div class="error">';
+        echo __('Your request failed because your inputs were invalid.');
+        echo '</div>';
+    }
+
+    if ($isConfigValid && $config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
+        //Check for db values
+
         //Establish db connection without database name
         $mysqlConnector = new MySqlConnector();
 
@@ -296,7 +298,7 @@ if ($canInstall == false) {
         }
     }
 
-    if ($pdo instanceof Connection) {
+    if ($isConfigValid && $pdo instanceof Connection) {
         //Set up config.php
         require_once './installerFunctions.php';
         $configData = $config->getDatabaseInfo() + ['guid' => $guid];
