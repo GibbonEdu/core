@@ -27,15 +27,13 @@ use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Install\Installer;
 
 include '../version.php';
 include '../gibbon.php';
 
 //Module includes
 require_once '../modules/System Admin/moduleFunctions.php';
-
-// autoload the installer namespace
-$autoloader->addPsr4('Gibbon\\Install\\', realpath(__DIR__).'/Installer');
 
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
@@ -77,6 +75,9 @@ $page = new Page($container->get('twig'), [
     'title'   => __('Gibbon Installer'),
     'address' => '/installer/install.php',
 ]);
+
+// Generate installer object.
+$installer = new Installer($container->get('twig'));
 
 // Generate installation context from the environment.
 $context = (Context::fromEnvironment())
@@ -313,22 +314,8 @@ try {
             throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
         }
 
-        //Set up config.php
-        include './installerFunctions.php';
-        $configFileContents = $page->fetchFromTemplate(
-            'installer/config.twig.html',
-            process_config_vars($config->getVars())
-        );
-
-        //Write config
-        $fp = fopen('../config.php', 'wb');
-        fwrite($fp, $configFileContents);
-        fclose($fp);
-
-        if (file_exists('../config.php') == false) { //Something went wrong, config.php could not be created.
-            throw new \Exception(__('../config.php could not be created, and so the installer cannot proceed.'));
-        }
-        // Config, exists, let's press on
+        // create and check existance of the config file.
+        $installer->createConfigFile($context, $config);
 
         // Let's read the SQL file for basic schema and data creation.
         if (file_exists('../gibbon.sql') == false) {
@@ -337,6 +324,8 @@ try {
         if (($query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql'))) === false) {
             throw new \Exception(__('Unable to read ../gibbon.sql, and so the installer cannot proceed.'));
         }
+
+        include './installerFunctions.php';
 
         // Let's populate the database with the SQL queries from the file.
         $query = remove_remarks($query);
