@@ -101,13 +101,11 @@ $context = (Context::fromEnvironment())
 ob_start();
 
 // Attempt to download & install the required language files
-if ($step >= 1) {
-    $locale_code = $_POST['code'] ?? 'en_GB';
-}
+$locale_code = $_POST['code'] ?? 'en_GB';
 
 //Set language pre-install
 if (function_exists('gettext')) {
-    $gibbon->locale->setLocale($_POST['code'] ?? 'en_GB');
+    $gibbon->locale->setLocale($locale_code);
     bindtextdomain('gibbon', '../i18n');
     textdomain('gibbon');
 }
