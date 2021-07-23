@@ -623,115 +623,112 @@ try {
             $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
 
             if ($surname == '' or $firstName == '' or $preferredName == '' or $email == '' or $username == '' or $password == '' or $passwordConfirm == '' or $email == '' or $absoluteURL == '' or $absolutePath == '' or $systemName == '' or $organisationName == '' or $organisationNameShort == '' or $timezone == '' or $country == '' or $installType == '' or $statsCollection == '' or $cuttingEdgeCode == '') {
-                echo "<div class='error'>";
-                echo __('Some required fields have not been set, and so installation cannot proceed.');
-                echo '</div>';
-            } elseif ($password != $passwordConfirm) {
-                echo "<div class='error'>";
-                echo __('Your request failed because your passwords did not match.');
-                echo '</div>';
-            } else {
-                $salt = getSalt();
-                $passwordStrong = hash('sha256', $salt.$password);
+                throw new \Exception(__('Some required fields have not been set, and so installation cannot proceed.'));
+            }
+            if ($password != $passwordConfirm) {
+                throw new \Exception(__('Your request failed because your passwords did not match.'));
+            }
 
-                $userFail = false;
-                //Write to database
-                try {
-                    $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => ($firstName.' '.$surname), 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => 'Full', 'canLogin' => 'Y', 'passwordForceReset' => 'N', 'gibbonRoleIDPrimary' => '001', 'gibbonRoleIDAll' => '001', 'email' => $email);
-                    $sql = "INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (\PDOException $e) {
-                    $userFail = true;
-                    echo "<div class='error'>";
-                    echo sprintf(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
-                    echo '</div>';
+            $salt = getSalt();
+            $passwordStrong = hash('sha256', $salt.$password);
+
+            $userFail = false;
+            //Write to database
+            try {
+                $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => ($firstName.' '.$surname), 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => 'Full', 'canLogin' => 'Y', 'passwordForceReset' => 'N', 'gibbonRoleIDPrimary' => '001', 'gibbonRoleIDAll' => '001', 'email' => $email);
+                $sql = "INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (\PDOException $e) {
+                $userFail = true;
+                echo "<div class='error'>";
+                echo sprintf(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
+                echo '</div>';
+            }
+
+            try {
+                $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
+                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
+                $resultStaff = $connection2->prepare($sqlStaff);
+                $resultStaff->execute($dataStaff);
+            } catch (\PDOException $e) {
+            }
+
+            if ($userFail == false) {
+                $settingsFail = false;
+
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absoluteURL', $absoluteURL);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absolutePath', $absolutePath);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'systemName', $systemName);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationName', $organisationName);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationNameShort', $organisationNameShort);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationEmail', $email);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdministrator', 1);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationDBA', 1);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationHR', 1);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdmissions', 1);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationName', $gibboneduComOrganisationName);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'currency', $currency);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'country', $country);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'timezone', $timezone);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'installType', $installType);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'statsCollection', $statsCollection);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'cuttingEdgeCode', $cuttingEdgeCode);
+                $settingsFail = $settingsFail || !install_setting_set($connection2, 'Finance', 'email', $email);
+
+                if ($statsCollection == 'Y') {
+                    $absolutePathProtocol = '';
+                    $absolutePath = '';
+                    if (substr($absoluteURL, 0, 7) == 'http://') {
+                        $absolutePathProtocol = 'http';
+                        $absolutePath = substr($absoluteURL, 7);
+                    } elseif (substr($absoluteURL, 0, 8) == 'https://') {
+                        $absolutePathProtocol = 'https';
+                        $absolutePath = substr($absoluteURL, 8);
+                    }
+                    echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&type='.urlencode($installType).'&version='.urlencode($version).'&country='.$country."&usersTotal=1&usersFull=1'></iframe>";
                 }
 
-                try {
-                    $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                    $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
-                    $resultStaff = $connection2->prepare($sqlStaff);
-                    $resultStaff->execute($dataStaff);
-                } catch (\PDOException $e) {
+                if ($cuttingEdgeCode == 'Y') {
+                    $updater = $container->get(Updater::class);
+                    $errors = $updater->update();
+
+                    if (!empty($errors)) {
+                        echo Format::alert(__('Some aspects of your update failed.'));
+                    }
+
+                    $settingsFail = $settingsFail && !install_setting_set($connection2, 'System', 'cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
                 }
 
-                if ($userFail == false) {
-                    $settingsFail = false;
+                // Update DB version for existing languages (installed manually?)
+                i18nCheckAndUpdateVersion($container, $version);
 
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absoluteURL', $absoluteURL);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absolutePath', $absolutePath);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'systemName', $systemName);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationName', $organisationName);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationNameShort', $organisationNameShort);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationEmail', $email);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdministrator', 1);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationDBA', 1);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationHR', 1);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdmissions', 1);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationName', $gibboneduComOrganisationName);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'currency', $currency);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'country', $country);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'timezone', $timezone);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'installType', $installType);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'statsCollection', $statsCollection);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'cuttingEdgeCode', $cuttingEdgeCode);
-                    $settingsFail = $settingsFail || !install_setting_set($connection2, 'Finance', 'email', $email);
-
-                    if ($statsCollection == 'Y') {
-                        $absolutePathProtocol = '';
-                        $absolutePath = '';
-                        if (substr($absoluteURL, 0, 7) == 'http://') {
-                            $absolutePathProtocol = 'http';
-                            $absolutePath = substr($absoluteURL, 7);
-                        } elseif (substr($absoluteURL, 0, 8) == 'https://') {
-                            $absolutePathProtocol = 'https';
-                            $absolutePath = substr($absoluteURL, 8);
-                        }
-                        echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&type='.urlencode($installType).'&version='.urlencode($version).'&country='.$country."&usersTotal=1&usersFull=1'></iframe>";
+                //Deal with request to receive welcome email by calling gibbonedu.org iframe
+                if ($support == true) {
+                    $absolutePathProtocol = '';
+                    $absolutePath = '';
+                    if (substr($absoluteURL, 0, 7) == 'http://') {
+                        $absolutePathProtocol = 'http';
+                        $absolutePath = substr($absoluteURL, 7);
+                    } elseif (substr($absoluteURL, 0, 8) == 'https://') {
+                        $absolutePathProtocol = 'https';
+                        $absolutePath = substr($absoluteURL, 8);
                     }
+                    echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/support/supportRegistration.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&email='.urlencode($email).'&title='.urlencode($title).'&surname='.urlencode($surname).'&preferredName='.urlencode($preferredName)."'></iframe>";
+                }
 
-                    if ($cuttingEdgeCode == 'Y') {
-                        $updater = $container->get(Updater::class);
-                        $errors = $updater->update();
+                $form = Form::create('installer', "./install.php?step=4");
+                $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+                $form->setMultiPartForm($steps, 4);
+                echo $form->getOutput();
 
-                        if (!empty($errors)) {
-                            echo Format::alert(__('Some aspects of your update failed.'));
-                        }
-
-                        $settingsFail = $settingsFail && !install_setting_set($connection2, 'System', 'cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
-                    }
-
-                    // Update DB version for existing languages (installed manually?)
-                    i18nCheckAndUpdateVersion($container, $version);
-
-                    //Deal with request to receive welcome email by calling gibbonedu.org iframe
-                    if ($support == true) {
-                        $absolutePathProtocol = '';
-                        $absolutePath = '';
-                        if (substr($absoluteURL, 0, 7) == 'http://') {
-                            $absolutePathProtocol = 'http';
-                            $absolutePath = substr($absoluteURL, 7);
-                        } elseif (substr($absoluteURL, 0, 8) == 'https://') {
-                            $absolutePathProtocol = 'https';
-                            $absolutePath = substr($absoluteURL, 8);
-                        }
-                        echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/support/supportRegistration.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&email='.urlencode($email).'&title='.urlencode($title).'&surname='.urlencode($surname).'&preferredName='.urlencode($preferredName)."'></iframe>";
-                    }
-
-                    $form = Form::create('installer', "./install.php?step=4");
-                    $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-                    $form->setMultiPartForm($steps, 4);
-                    echo $form->getOutput();
-
-                    if ($settingsFail == true) {
-                        $page->addError(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.', ["<a href='$absoluteURL'>", '</a>']));
-                        $page->addError(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.', ["<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>']));
-                    } else {
-                        $page->addSuccess(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.', ["<a href='$absoluteURL'>", '</a>']));
-                        echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
-                    }
+                if ($settingsFail == true) {
+                    $page->addError(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.', ["<a href='$absoluteURL'>", '</a>']));
+                    $page->addError(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.', ["<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>']));
+                } else {
+                    $page->addSuccess(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.', ["<a href='$absoluteURL'>", '</a>']));
+                    echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
                 }
             }
         }
