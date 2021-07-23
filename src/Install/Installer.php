@@ -184,21 +184,22 @@ class Installer
      * @version v23
      * @since   v23
      *
-     * @param string $name             The name of the setting.
-     * @param string $scope            Optional. The scope of the setting. Default 'System'.
-     * @param boolean $throw_on_error  Throw exception when encountered one in database query. Default false.
+     * @param string $name         The name of the setting.
+     * @param string $scope        Optional. The scope of the setting. Default 'System'.
+     * @param boolean $return_row  Return whole setting data row instead of just value. Default false.
      *
-     * @return string|false The value of the setting. Or false if setting not found.
+     * @return string|array|false The value of the setting. Or an array of data row for the setting.
+     *                            Or false if setting not found.
      */
-    public function getSetting(string $name, string $scope = 'System')
+    public function getSetting(string $name, string $scope = 'System', bool $return_row = false)
     {
         $statement = $this->connection->prepare('SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name');
         $statement->execute(['scope' => $scope, 'name' => $name]);
-        if ($statement->rowCount() == 1) {
-            $row = $statement->fetch();
-            return $row['value'];
+        if ($statement->rowCount() != 1) {
+            return false;
         }
-        return false;
+        $row = $statement->fetch();
+        return $return_row ? $row : $row['value'];
     }
 
     /**

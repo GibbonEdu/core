@@ -156,7 +156,6 @@ try {
 
         $pdo = $installer->connectByConfig($config);
         $connection2 = $pdo->getConnection();
-        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
         $installer->setConnection($connection2);
 
         if (!$pdo instanceof Connection) {
