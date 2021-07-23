@@ -326,8 +326,6 @@ try {
             throw new \Exception(__('Unable to read ../gibbon.sql, and so the installer cannot proceed.'));
         }
 
-        include './installerFunctions.php';
-
         // Let's populate the database with the SQL queries from the file.
         $query = Installer::removeSqlRemarks($query);
         $query = Installer::splitSql($query);
@@ -582,7 +580,6 @@ try {
 
     } elseif ($step == 3) {
         //New PDO DB connection
-        require_once './installerFunctions.php';
         $mysqlConnector = new MySqlConnector();
 
         try {
