@@ -120,11 +120,6 @@ try {
         }
     }
 
-    // Check for the presence of a config file (if it hasn't been created yet)
-    if ($step < 3) {
-        $context->validateConfigPath();
-    }
-
     if ($step == 0) { //Choose language
 
         //PROCEED
@@ -138,9 +133,10 @@ try {
         $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
         $phpRequirement = $gibbon->getSystemRequirement('php');
 
+        $readyToInstall = true;
+
         $form = Form::create('installer', "./install.php?step=1");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setDescription(Format::alert(__('The directory containing the Gibbon files is writable, so the installation may proceed.'), 'success'));
         $form->setClass('smallIntBorder w-full');
         $form->setMultiPartForm($steps, 1);
 
@@ -148,11 +144,13 @@ try {
         $form->addHiddenValue('nonce', $nonce);
         $form->addRow()->addHeading(__('System Requirements'));
 
+        $readyToInstall = $readyToInstall && version_compare($phpVersion, $phpRequirement, '>=');
         $row = $form->addRow();
             $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
             $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
             $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
 
+        $readyToInstall = $readyToInstall && @extension_loaded('pdo') && extension_loaded('pdo_mysql');
         $row = $form->addRow();
             $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
             $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
@@ -162,6 +160,7 @@ try {
             // Check Gibbon required Apache modules.
             $apacheRequirement = $gibbon->getSystemRequirement('apache');
             foreach ($context->checkApacheModules($apacheRequirement) as $moduleName => $active) {
+                $readyToInstall = $readyToInstall && $active;
                 $row = $form->addRow();
                     $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
                     $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
@@ -173,12 +172,36 @@ try {
         $extensions = $gibbon->getSystemRequirement('extensions');
         if (!empty($extensions) && is_array($extensions)) {
             foreach ($context->checkPhpExtensions($extensions) as $extension => $installed) {
+                $readyToInstall = $readyToInstall && $installed;
                 $row = $form->addRow();
                     $row->addLabel('extensionLabel', 'PHP ' .__('Extension').' '. $extension);
                     $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
                     $row->addContent(($installed)? $trueIcon : $falseIcon);
             }
         }
+
+        $directoryError = '';
+        try {
+            $context->validateConfigPath();
+        } catch (\Exception $e) {
+            $directoryError = $e->getMessage();
+            $readyToInstall = false;
+        }
+        $row = $form->addRow();
+            $row->addLabel('systemLabel', 'Directory');
+            $row->addTextField('directory')->setValue(empty($directoryError) ? __('Ready') : __('Not Ready'))->readonly();
+            $row->addContent(empty($directoryError) ? $trueIcon : $falseIcon);
+
+        // Finally check if the environment is ready for installation
+        if ($readyToInstall) {
+            $form->setDescription(Format::alert(__('Ready to install.'), 'success'));
+        } elseif (!empty($directoryError)) {
+            $form->setDescription(Format::alert($directoryError, 'error'));
+        } else {
+            $form->setDescription(Format::alert(__('Not ready to install.'), 'error'));
+        }
+
+
 
         $form->addRow()->addHeading(__('Language Settings'));
 
@@ -189,11 +212,14 @@ try {
 
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSubmit();
+            if ($readyToInstall) $row->addSubmit();
 
         echo $form->getOutput();
 
     } else if ($step == 1) { //Set database options
+
+        // Check for the presence of a config file (if it hasn't been created yet)
+        $context->validateConfigPath();
 
         if (!$languageInstalled) {
             echo "<div class='error'>";
@@ -243,6 +269,9 @@ try {
 
         echo $form->getOutput();
     } elseif ($step == 2) {
+
+        // Check for the presence of a config file (if it hasn't been created yet)
+        $context->validateConfigPath();
 
         // Get and set database variables (not set until step 1)
         $config = (new Config)
