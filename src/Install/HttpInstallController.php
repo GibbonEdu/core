@@ -8,7 +8,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
-use Twig\Environment;
 
 class HttpInstallController
 {
@@ -144,7 +143,10 @@ class HttpInstallController
      *
      * @return string
      */
-    public function viewStepZero(string $nonce, string $version): string
+    public function viewStepOne(
+        string $nonce,
+        string $version
+    ): string
     {
         $step = isset($_GET['step']) ? intval($_GET['step']) : 0;
         $step = min(max($step, 0), 3);
@@ -244,7 +246,7 @@ class HttpInstallController
         return $form->getOutput();
     }
 
-    public function viewStepOne(
+    public function viewStepTwo(
         string $locale_code,
         string $nonce
     ): string
@@ -270,7 +272,7 @@ class HttpInstallController
 
         $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $_POST['code'] ?? 'en_GB'); // Use language assigned in previous step, or default
+        $form->addHiddenValue('code', $locale_code); // Use language assigned in previous step, or default
 
         $form->addRow()->addHeading(__('Database Settings'));
 
@@ -305,5 +307,40 @@ class HttpInstallController
             $row->addSubmit();
 
         return $form->getOutput();
+    }
+
+    /**
+     * Parse a given request into Config object.
+     *
+     * @param array $request
+     *
+     * @return \Gibbon\Install\Config
+     *
+     * @throws \Exception
+     */
+    public function parseConfigSubmission(array $request): Config
+    {
+        // Get and set database variables (not set until step 1)
+        $config = (new Config)
+            ->setGuid($this->guid)
+            ->setDatabaseInfo(
+                $request['databaseServer'] ?? '',
+                $request['databaseName'] ?? '',
+                $request['databaseUsername'] ?? '',
+                $request['databasePassword'] ?? ''
+            )
+            ->setFlagDemoData(($request['demoData'] ?? '') === 'Y')
+            ->setLocale($request['code'] ?? 'en_GB');
+
+        if (!$config->hasDatabaseInfo()) {
+            throw new \Exception(__('You have not provide appropriate database info.'));
+        }
+
+        // Check config values for ' " \ / chars which will cause errors in config.php
+        if (!$config->validateDatbaseInfo()) {
+            throw new \Exception(__('Your request failed because your inputs were invalid.'));
+        }
+
+        return $config;
     }
 }

@@ -133,25 +133,16 @@ try {
     }
 
     if ($step == 0) { //Choose language
-        echo $controller->viewStepZero($nonce, $gibbon->getConfig('version'));
+        echo $controller->viewStepOne($nonce, $gibbon->getConfig('version'));
     } else if ($step == 1) { //Set database options
-        echo $controller->viewStepOne($locale_code, $nonce);
+        echo $controller->viewStepTwo($locale_code, $nonce);
     } elseif ($step == 2) {
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
 
         // Get and set database variables (not set until step 1)
-        $config = (new Config)
-            ->setGuid($guid)
-            ->setDatabaseInfo(
-                $_POST['databaseServer'] ?? '',
-                $_POST['databaseName'] ?? '',
-                $_POST['databaseUsername'] ?? '',
-                $_POST['databasePassword'] ?? ''
-            )
-            ->setFlagDemoData(($_POST['demoData'] ?? '') === 'Y')
-            ->setLocale($_POST['code'] ?? 'en_GB');
+        $config = $controller->parseConfigSubmission($_POST);
 
         // Check config values for ' " \ / chars which will cause errors in config.php
         if (!$config->validateDatbaseInfo()) {
