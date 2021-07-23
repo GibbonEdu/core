@@ -343,4 +343,19 @@ class HttpInstallController
 
         return $config;
     }
+
+    /**
+     * Parse password policies into HTML list.
+     *
+     * @param string[] $policies
+     *
+     * @return string HTML list.
+     */
+    public static function renderPasswordPolicies(array $policies): string
+    {
+        $html = implode("\n", array_map(function ($policy) {
+            return "<li>{$policy}</li>";
+        }, $policies));
+        return !empty($html) ? "<ul>$html</ul>" : '';
+    }
 }

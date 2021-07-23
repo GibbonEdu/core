@@ -144,74 +144,13 @@ try {
         // Get and set database variables (not set until step 1)
         $config = $controller->parseConfigSubmission($_POST);
 
-        // Check config values for ' " \ / chars which will cause errors in config.php
-        if (!$config->validateDatbaseInfo()) {
-            throw new \Exception(__('Your request failed because your inputs were invalid.'));
-        }
-
-        // Connect to database by raw config.
-        if (!$config->hasDatabaseInfo()) {
-            throw new \Exception(__('Your request failed because your inputs were incomplete.'));
-        }
-
-        $pdo = $installer->connectByConfig($config);
-        $connection2 = $pdo->getConnection();
-        $installer->setConnection($connection2);
-
-        if (!$pdo instanceof Connection) {
-            throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
-        }
-
-        // create and check existance of the config file.
-        $installer->createConfigFile($context, $config);
-
-        // Let's populate the database with the SQL queries from the file.
-        $sql = $installer->getInstallSql($context);
-        $sql = Installer::removeSqlRemarks($sql);
-        $queries = Installer::splitSql($sql);
-        try {
-            $installer->runQueries($connection2, $queries);
-        } catch (\PDOException $e) {
-            throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
-        }
-
-        // Try to install the demo data, report error but don't stop if any issues
-        if ($config->getFlagDemoData()) {
-            try {
-                $sql = $installer->getDemoSql($context);
-                $sql = Installer::removeSqlRemarks($sql);
-                $queries = Installer::splitSql($sql);
-            } catch (\Exception $e) {
-                echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
-            }
-            try {
-                $installer->runQueries($connection2, $queries);
-            } catch (\PDOException $e) {
-                echo Format::alert(__('There were some issues installing the demo data, but we will continue anyway.'), 'warning');
-            }
-        }
-
-        //Set default language
-        try {
-            $data = array('code' => $config->getLocale());
-            $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (\PDOException $e) {
-        }
-        try {
-            $data = array('code' => $config->getLocale());
-            $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (\PDOException $e) {
-        }
+        // Run database installation of the config.
+        $installer->install($context, $config);
 
         //Let's gather some more information
-
         $form = Form::create('installer', "./install.php?step=3");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setFactory(DatabaseFormFactory::create($pdo));
+        //$form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setMultiPartForm($steps, 3);
 
         $form->addHiddenValue('guid', $guid);
@@ -245,20 +184,27 @@ try {
             $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
             $row->addTextField('username')->required()->maxLength(20);
 
-        $policy = getPasswordPolicy($guid, $connection2);
-        if ($policy != false) {
-            $form->addRow()->addAlert($policy, 'warning');
+        try {
+            $message = HttpInstallController::renderPasswordPolicies(
+                $installer->getPasswordPolicies()
+            );
+            if (!empty($message)) {
+                $form->addRow()->addAlert($policy, 'warning');
+            }
+        } catch (\Exception $e) {
+            $form->addRow()->addAlert(__('An error occurred.'), 'warning');
         }
+
         $row = $form->addRow();
             $row->addLabel('passwordNew', __('Password'));
             $password = $row->addPassword('passwordNew')
                 ->required()
                 ->maxLength(30);
 
-        $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-        $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-        $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-        $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+        $alpha = $installer->getSetting('passwordPolicyAlpha');
+        $numeric = $installer->getSetting('passwordPolicyNumeric');
+        $punctuation = $installer->getSetting('passwordPolicyNonAlphaNumeric');
+        $minLength = $installer->getSetting('passwordPolicyMinLength');
 
         if ($alpha == 'Y') {
             $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');

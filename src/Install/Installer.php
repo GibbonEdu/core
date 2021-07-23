@@ -5,6 +5,7 @@ namespace Gibbon\Install;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Install\Config;
+use Gibbon\Services\Format;
 use Twig\Environment;
 
 /**
@@ -261,6 +262,81 @@ class Installer
         return array_map(function ($value) {
             return var_export((string) $value, true); // force render into string literals
         }, $variables);
+    }
+
+    /**
+     * Run installation according to the given context and config.
+     *
+     * @param Context $context
+     * @param Config $config
+     *
+     * @throws \Exception
+     */
+    public function install(Context $context, Config $config)
+    {
+        // Check config values for ' " \ / chars which will cause errors in config.php
+        if (!$config->validateDatbaseInfo()) {
+            throw new \Exception(__('Your request failed because your inputs were invalid.'));
+        }
+
+        // Connect to database by raw config.
+        if (!$config->hasDatabaseInfo()) {
+            throw new \Exception(__('Your request failed because your inputs were incomplete.'));
+        }
+
+        $pdo = $this->connectByConfig($config);
+        $connection2 = $pdo->getConnection();
+        $this->setConnection($connection2);
+
+        if (!$pdo instanceof Connection) {
+            throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
+        }
+
+        // create and check existance of the config file.
+        $this->createConfigFile($context, $config);
+
+        // Let's populate the database with the SQL queries from the file.
+        $sql = $this->getInstallSql($context);
+        $sql = static::removeSqlRemarks($sql);
+        $queries = static::splitSql($sql);
+        try {
+            $this->runQueries($connection2, $queries);
+        } catch (\PDOException $e) {
+            throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
+        }
+
+        // Try to install the demo data, report error but don't stop if any issues
+        if ($config->getFlagDemoData()) {
+            try {
+                $sql = $this->getDemoSql($context);
+                $sql = static::removeSqlRemarks($sql);
+                $queries = static::splitSql($sql);
+            } catch (\Exception $e) {
+                echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
+            }
+            try {
+                $this->runQueries($connection2, $queries);
+            } catch (\PDOException $e) {
+                echo Format::alert(__('There were some issues installing the demo data, but we will continue anyway.'), 'warning');
+            }
+        }
+
+        //Set default language
+        try {
+            $data = array('code' => $config->getLocale());
+            $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (\PDOException $e) {
+        }
+        try {
+            $data = array('code' => $config->getLocale());
+            $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (\PDOException $e) {
+        }
+
     }
 
     /**
