@@ -293,8 +293,10 @@ try {
 
         //Set up config.php
         include './installerFunctions.php';
-        $configData = $config->getDatabaseInfo() + ['guid' => $guid];
-        $configFileContents = $page->fetchFromTemplate('installer/config.twig.html', process_config_vars($configData));
+        $configFileContents = $page->fetchFromTemplate(
+            'installer/config.twig.html',
+            process_config_vars($config->getVars())
+        );
 
         //Write config
         $fp = fopen('../config.php', 'wb');
