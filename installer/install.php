@@ -280,10 +280,10 @@ try {
                 $connection2 = $pdo->getConnection();
                 $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
             } catch (\Exception $e) {
-                echo "<div class='error'>";
-                echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-                echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
-                echo '</div>';
+                throw new \Exception(
+                    __('A database connection could not be established. Please %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']) . '<br>' .
+                    __('Error details: {error_message}', ['error_message' => $e->getMessage()])
+                );
             }
         }
 
@@ -713,16 +713,10 @@ try {
                     echo $form->getOutput();
 
                     if ($settingsFail == true) {
-                        echo "<div class='error'>";
-                        echo sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>');
-                        echo '<br/><br/>';
-                        echo sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>');
-                        echo '</div>';
+                        $page->addError(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.', ["<a href='$absoluteURL'>", '</a>']));
+                        $page->addError(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.', ["<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>']));
                     } else {
-                        echo "<div class='success'>";
-                        echo sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>');
-                        echo '</div>';
-
+                        $page->addSuccess(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.', ["<a href='$absoluteURL'>", '</a>']));
                         echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
                     }
                 }
@@ -731,6 +725,8 @@ try {
     }
 
 } catch (\Exception $e) {
+    // Catch exception that stops installation at any step and
+    // proerly display it on the page.
     $page->addError($e->getMessage());
 }
 
