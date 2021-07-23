@@ -173,4 +173,36 @@ class Installer
             return var_export((string) $value, true); // force render into string literals
         }, $variables);
     }
+
+    /**
+     * Remove remarks (e.g. comments) from SQL string.
+     *
+     * @param string $sql  The SQL string to process.
+     *
+     * @return string The resulted SQL string.
+     */
+    public static function removeSqlRemarks(string $sql): string
+    {
+        $lines = explode("\n", $sql);
+
+        // try to keep mem. use down
+        $sql = '';
+
+        $linecount = count($lines);
+        $output = '';
+
+        for ($i = 0; $i < $linecount; ++$i) {
+            if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
+                if (isset($lines[$i][0]) && $lines[$i][0] != '#') {
+                    $output .= $lines[$i]."\n";
+                } else {
+                    $output .= "\n";
+                }
+                // Trading a bit of speed for lower mem. use here.
+                $lines[$i] = '';
+            }
+        }
+
+        return $output;
+    }
 }

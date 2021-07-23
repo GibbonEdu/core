@@ -329,7 +329,7 @@ try {
         include './installerFunctions.php';
 
         // Let's populate the database with the SQL queries from the file.
-        $query = remove_remarks($query);
+        $query = Installer::removeSqlRemarks($query);
         $query = split_sql_file($query, ';');
 
         $i = 1;
@@ -350,7 +350,7 @@ try {
                 echo '</div>';
             } else {
                 $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
-                $query = remove_remarks($query);
+                $query = Installer::removeSqlRemarks($query);
                 $query = split_sql_file($query, ';');
 
                 $i = 1;

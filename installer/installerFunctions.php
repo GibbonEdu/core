@@ -64,34 +64,6 @@ function remove_comments(&$output)
 }
 
 //
-// remove_remarks will strip the sql comment lines out of an uploaded sql file
-//
-function remove_remarks($sql)
-{
-    $lines = explode("\n", $sql);
-
-   // try to keep mem. use down
-   $sql = '';
-
-    $linecount = count($lines);
-    $output = '';
-
-    for ($i = 0; $i < $linecount; ++$i) {
-        if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
-            if (isset($lines[$i][0]) && $lines[$i][0] != '#') {
-                $output .= $lines[$i]."\n";
-            } else {
-                $output .= "\n";
-            }
-         // Trading a bit of speed for lower mem. use here.
-         $lines[$i] = '';
-        }
-    }
-
-    return $output;
-}
-
-//
 // split_sql_file will split an uploaded sql file into single sql statements.
 // Note: expects trim() to have already been run on $sql.
 //
