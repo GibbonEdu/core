@@ -123,6 +123,20 @@ class Config
     }
 
     /**
+     * Get an assoc array of all the config file required variables
+     * for config file rendering or else.
+     *
+     * @return array Associated array of all config file variables, includes
+     *               everything from getDatabaseInfo() and 'guid'.
+     */
+    public function getVars(): array
+    {
+        return $this->getDatabaseInfo() + [
+            'guid' => $this->getGuid(),
+        ];
+    }
+
+    /**
      * Get database related configurations.
      *
      * @return array
