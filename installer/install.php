@@ -330,7 +330,7 @@ try {
 
         // Let's populate the database with the SQL queries from the file.
         $query = Installer::removeSqlRemarks($query);
-        $query = split_sql_file($query, ';');
+        $query = Installer::splitSql($query);
 
         $i = 1;
         foreach ($query as $sql) {
@@ -351,7 +351,7 @@ try {
             } else {
                 $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
                 $query = Installer::removeSqlRemarks($query);
-                $query = split_sql_file($query, ';');
+                $query = Installer::splitSql($query, ';');
 
                 $i = 1;
                 $demoFail = false;
