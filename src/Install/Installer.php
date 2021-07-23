@@ -341,6 +341,25 @@ class Installer
     }
 
     /**
+     * Get the content of gibbon.sql
+     *
+     * @param \Gibbon\Install\Context $context
+     *
+     * @return string The SQL text.
+     */
+    public function getDemoSql(Context $context): string
+    {
+        // Let's read the SQL file for basic schema and data creation.
+        if (!file_exists($context->getPath('gibbon_demo.sql'))) {
+            throw new \Exception(__('../gibbon_demo.sql does not exist.'));
+        }
+        if (($sql = @fread(@fopen($context->getPath('gibbon_demo.sql'), 'r'), @filesize($context->getPath('gibbon_demo.sql')))) === false) {
+            throw new \Exception(__('Unable to read ../gibbon_demo.sql.'));
+        }
+        return $sql;
+    }
+
+    /**
      * Execute queries providede by an iterable.
      *
      * @param \PDO $connection

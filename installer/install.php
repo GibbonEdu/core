@@ -178,33 +178,17 @@ try {
 
         // Try to install the demo data, report error but don't stop if any issues
         if ($config->getFlagDemoData()) {
-            if (file_exists('../gibbon_demo.sql') == false) {
-                echo "<div class='error'>";
-                echo __('../gibbon_demo.sql does not exist, so we will continue without demo data.');
-                echo '</div>';
-            } else {
-                $query = @fread(@fopen('../gibbon_demo.sql', 'r'), @filesize('../gibbon_demo.sql')) or die('Encountered a problem.');
-                $query = Installer::removeSqlRemarks($query);
-                $query = Installer::splitSql($query, ';');
-
-                $i = 1;
-                $demoFail = false;
-                foreach ($query as $sql) {
-                    ++$i;
-                    try {
-                        $connection2->query($sql);
-                    } catch (\PDOException $e) {
-                        echo $sql.'<br/>';
-                        echo $e->getMessage().'<br/><br/>';
-                        $demoFail = true;
-                    }
-                }
-
-                if ($demoFail) {
-                    echo "<div class='error'>";
-                    echo __('There were some issues installing the demo data, but we will continue anyway.');
-                    echo '</div>';
-                }
+            try {
+                $sql = $installer->getDemoSql($context);
+                $sql = Installer::removeSqlRemarks($sql);
+                $queries = Installer::splitSql($sql);
+            } catch (\Exception $e) {
+                echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
+            }
+            try {
+                $installer->runQueries($connection2, $queries);
+            } catch (\PDOException $e) {
+                echo Format::alert(__('There were some issues installing the demo data, but we will continue anyway.'), 'warning');
             }
         }
 
