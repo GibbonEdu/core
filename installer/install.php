@@ -27,6 +27,7 @@ use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
 
 include '../version.php';
@@ -51,25 +52,37 @@ if (empty($step)) {
     $guid = $_POST['guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
 }
+
+ /**
+  * @var \Gibbon\Core $gibbon
+  * @var \Gibbon\Session\Session $session
+  */
 // Use the POSTed GUID in place of "undefined".
 // Later steps have the guid in the config file but without
 // a way to store variables relibly prior to that, installation can fail
-$gibbon->session->setGuid($guid);
-$gibbon->session->set('absolutePath', realpath('../'));
+$session->setGuid($guid);
+$session->set('guid', $guid);
+$session->set('absolutePath', realpath(__DIR__ . '/../'));
 
 // Generate and save a nonce for forms on this page to use
 $nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
-$sessionNonce = $gibbon->session->get('nonce', []);
+$sessionNonce = $session->get('nonce', []);
 $sessionNonce[$step+1] = $nonce;
-$gibbon->session->set('nonce', $sessionNonce);
+$session->set('nonce', $sessionNonce);
 
 // Deal with non-existent stringReplacement session
-$gibbon->session->set('stringReplacement', []);
+$session->set('stringReplacement', []);
 
 // Fix missing locale causing failed page load
 if (empty($gibbon->locale->getLocale())) {
     $gibbon->locale->setLocale('en_GB');
 }
+
+// Create a controller instance.
+$controller = HttpInstallController::create(
+    $container,
+    $session
+);
 
 $page = new Page($container->get('twig'), [
     'title'   => __('Gibbon Installer'),
@@ -88,8 +101,8 @@ ob_start();
 // Attempt to download & install the required language files
 if ($step >= 1) {
     $locale_code = $_POST['code'] ?? 'en_GB';
-    $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $locale_code)
-        ? i18nFileInstall($gibbon->session->get('absolutePath'), $locale_code)
+    $languageInstalled = !i18nFileExists($session->get('absolutePath'), $locale_code)
+        ? i18nFileInstall($session->get('absolutePath'), $locale_code)
         : true;
 }
 
@@ -122,101 +135,7 @@ try {
     }
 
     if ($step == 0) { //Choose language
-
-        //PROCEED
-        $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
-        $falseIcon = "<img title='" . __('No'). "' src='../themes/Default/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
-
-        $versionTitle = __('%s Version');
-        $versionMessage = __('%s requires %s version %s or higher');
-
-        $phpVersion = phpversion();
-        $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
-        $phpRequirement = $gibbon->getSystemRequirement('php');
-
-        $readyToInstall = true;
-
-        $form = Form::create('installer', "./install.php?step=1");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setClass('smallIntBorder w-full');
-        $form->setMultiPartForm($steps, 1);
-
-        $form->addHiddenValue('guid', $guid);
-        $form->addHiddenValue('nonce', $nonce);
-        $form->addRow()->addHeading(__('System Requirements'));
-
-        $readyToInstall = $readyToInstall && version_compare($phpVersion, $phpRequirement, '>=');
-        $row = $form->addRow();
-            $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
-            $row->addTextField('phpVersion')->setValue($phpVersion)->readonly();
-            $row->addContent((version_compare($phpVersion, $phpRequirement, '>='))? $trueIcon : $falseIcon);
-
-        $readyToInstall = $readyToInstall && @extension_loaded('pdo') && extension_loaded('pdo_mysql');
-        $row = $form->addRow();
-            $row->addLabel('pdoSupportLabel', __('MySQL PDO Support'));
-            $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
-            $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
-
-        if ($apacheVersion !== false) {
-            // Check Gibbon required Apache modules.
-            $apacheRequirement = $gibbon->getSystemRequirement('apache');
-            foreach ($context->checkApacheModules($apacheRequirement) as $moduleName => $active) {
-                $readyToInstall = $readyToInstall && $active;
-                $row = $form->addRow();
-                    $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
-                    $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
-                    $row->addContent(($active)? $trueIcon : $falseIcon);
-            }
-        }
-
-        // Check Gibbon required extensions.
-        $extensions = $gibbon->getSystemRequirement('extensions');
-        if (!empty($extensions) && is_array($extensions)) {
-            foreach ($context->checkPhpExtensions($extensions) as $extension => $installed) {
-                $readyToInstall = $readyToInstall && $installed;
-                $row = $form->addRow();
-                    $row->addLabel('extensionLabel', 'PHP ' .__('Extension').' '. $extension);
-                    $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
-                    $row->addContent(($installed)? $trueIcon : $falseIcon);
-            }
-        }
-
-        $directoryError = '';
-        try {
-            $context->validateConfigPath();
-        } catch (\Exception $e) {
-            $directoryError = $e->getMessage();
-            $readyToInstall = false;
-        }
-        $row = $form->addRow();
-            $row->addLabel('systemLabel', 'Directory');
-            $row->addTextField('directory')->setValue(empty($directoryError) ? __('Ready') : __('Not Ready'))->readonly();
-            $row->addContent(empty($directoryError) ? $trueIcon : $falseIcon);
-
-        // Finally check if the environment is ready for installation
-        if ($readyToInstall) {
-            $form->setDescription(Format::alert(__('Ready to install.'), 'success'));
-        } elseif (!empty($directoryError)) {
-            $form->setDescription(Format::alert($directoryError, 'error'));
-        } else {
-            $form->setDescription(Format::alert(__('Not ready to install.'), 'error'));
-        }
-
-
-
-        $form->addRow()->addHeading(__('Language Settings'));
-
-        // Use default language, or language submitted by previous attempt.
-        $row = $form->addRow();
-            $row->addLabel('code', __('System Language'));
-            $row->addSelectSystemLanguage('code')->addClass('w-64')->selected($_POST['code'] ?? 'en_GB')->required();
-
-        $row = $form->addRow();
-            $row->addFooter();
-            if ($readyToInstall) $row->addSubmit();
-
-        echo $form->getOutput();
-
+        echo $controller->viewStepOne($nonce, $gibbon->getConfig('version'));
     } else if ($step == 1) { //Set database options
 
         // Check for the presence of a config file (if it hasn't been created yet)
@@ -224,7 +143,7 @@ try {
 
         if (!$languageInstalled) {
             echo "<div class='error'>";
-            echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$gibbon->session->get('absolutePath').'/i18n/</u></b>');
+            echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$session->get('absolutePath').'/i18n/</u></b>');
             echo '</div>';
         }
 
