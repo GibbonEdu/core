@@ -128,6 +128,29 @@ class Installer
     }
 
     /**
+     * Set a certain setting to the value.
+     *
+     * @param string $name             The name of the setting.
+     * @param string $value            The value of the setting.
+     * @param string $scope            Optional. The scope of the setting. Default 'System'.
+     * @param boolean $throw_on_error  Throw exception when encountered one in database query. Default false.
+     *
+     * @return boolean  True on success, or false on failure.
+     */
+    public function setSetting(string $name, string $value, string $scope = 'System', bool $throw_on_error=false): bool {
+        if ($throw_on_error) {
+            $statement = $this->connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+            return $statement->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
+        }
+        try {
+            $statement = $this->connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+            return $statement->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
+    /**
      * Process config variables into string literals stored in string.
      *
      * @param array variables

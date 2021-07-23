@@ -668,25 +668,25 @@ try {
             if ($userFail == false) {
                 $settingsFail = false;
 
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absoluteURL', $absoluteURL);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'absolutePath', $absolutePath);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'systemName', $systemName);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationName', $organisationName);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationNameShort', $organisationNameShort);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationEmail', $email);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdministrator', 1);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationDBA', 1);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationHR', 1);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'organisationAdmissions', 1);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationName', $gibboneduComOrganisationName);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'currency', $currency);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'country', $country);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'timezone', $timezone);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'installType', $installType);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'statsCollection', $statsCollection);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'System', 'cuttingEdgeCode', $cuttingEdgeCode);
-                $settingsFail = $settingsFail || !install_setting_set($connection2, 'Finance', 'email', $email);
+                $settingsFail = $settingsFail || !$installer->setSetting('absoluteURL', $absoluteURL);
+                $settingsFail = $settingsFail || !$installer->setSetting('absolutePath', $absolutePath);
+                $settingsFail = $settingsFail || !$installer->setSetting('systemName', $systemName);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationName', $organisationName);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationNameShort', $organisationNameShort);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationEmail', $email);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationAdministrator', 1);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationDBA', 1);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationHR', 1);
+                $settingsFail = $settingsFail || !$installer->setSetting('organisationAdmissions', 1);
+                $settingsFail = $settingsFail || !$installer->setSetting('gibboneduComOrganisationName', $gibboneduComOrganisationName);
+                $settingsFail = $settingsFail || !$installer->setSetting('gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
+                $settingsFail = $settingsFail || !$installer->setSetting('currency', $currency);
+                $settingsFail = $settingsFail || !$installer->setSetting('country', $country);
+                $settingsFail = $settingsFail || !$installer->setSetting('timezone', $timezone);
+                $settingsFail = $settingsFail || !$installer->setSetting('installType', $installType);
+                $settingsFail = $settingsFail || !$installer->setSetting('statsCollection', $statsCollection);
+                $settingsFail = $settingsFail || !$installer->setSetting('cuttingEdgeCode', $cuttingEdgeCode);
+                $settingsFail = $settingsFail || !$installer->setSetting('email', $email, 'Finance');
 
                 if ($statsCollection == 'Y') {
                     $absolutePathProtocol = '';
@@ -709,7 +709,7 @@ try {
                         echo Format::alert(__('Some aspects of your update failed.'));
                     }
 
-                    $settingsFail = $settingsFail && !install_setting_set($connection2, 'System', 'cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
+                    $settingsFail = $settingsFail && !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
                 }
 
                 // Update DB version for existing languages (installed manually?)
