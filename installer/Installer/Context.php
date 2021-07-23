@@ -26,6 +26,13 @@ class Context
     private $installedPhpExtensions = [];
 
     /**
+     * Installation path.
+     *
+     * @var string
+     */
+    private $installPath = '';
+
+    /**
      * Class constructor.
      *
      * @param array|null $installedApacheModules
@@ -105,4 +112,59 @@ class Context
         }
         return $checks;
     }
+
+    /**
+     * Validate if the config file path is valid.
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function validateConfigPath(): void
+    {
+        if (file_exists($this->getConfigPath())) {
+            if (filesize($this->getConfigPath()) > 0) {
+                throw new \Exception(__('The file config.php already exists in the root folder and is not empty.'));
+            } elseif (!is_writable($this->getConfigPath())) {
+                throw new \Exception(__('The file config.php already exists in the root folder and is not writable.'));
+            }
+        } elseif (!is_writable($this->getInstallPath())) {
+            throw new \Exception(__('The directory containing the Gibbon files is not currently writable. Unable to create config.php.'));
+        }
+    }
+
+    /**
+     * Get the path to the supposed location of the config file.
+     * Will return the file path even if it is not there.
+     *
+     * @return string
+     */
+    public function getConfigPath(): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [$this->getInstallPath(), 'config.php']);
+    }
+
+    /**
+     * Set the installation path for the installation.
+     *
+     * @param string $path
+     *
+     * @return self
+     */
+    public function setInstallPath(string $path): Context
+    {
+        $this->installPath = $path;
+        return $this;
+    }
+
+    /**
+     * Get the installation path for the installation.
+     *
+     * @return string
+     */
+    public function getInstallPath(): string
+    {
+        return $this->installPath;
+    }
+
 }

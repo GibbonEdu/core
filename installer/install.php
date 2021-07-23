@@ -78,6 +78,10 @@ $page = new Page($container->get('twig'), [
     'address' => '/installer/install.php',
 ]);
 
+// Generate installation context from the environment.
+$context = (Context::fromEnvironment())
+    ->setInstallPath(dirname(__DIR__));
+
 ob_start();
 
 // Attempt to download & install the required language files
@@ -118,15 +122,7 @@ try {
 
     // Check for the presence of a config file (if it hasn't been created yet)
     if ($step < 3) {
-        if (file_exists('../config.php')) { // Make sure system is not already installed
-            if (filesize('../config.php') > 0 or is_writable('../config.php') == false) {
-                throw new \Exception(__('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.'));
-            }
-        } elseif (is_writable('../') == false) {
-            // No config, so continue installer
-            // Block installation if home directory is not writable
-            throw new \Exception(__('The directory containing the Gibbon files is not currently writable, or config.php already exists in the root folder and is not empty or is not writable, so the installer cannot proceed.'));
-        }
+        $context->validateConfigPath();
     }
 
     if ($step == 0) { //Choose language
@@ -141,9 +137,6 @@ try {
         $phpVersion = phpversion();
         $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
         $phpRequirement = $gibbon->getSystemRequirement('php');
-
-        // Generate installation context from the environment.
-        $context = Context::fromEnvironment();
 
         $form = Form::create('installer', "./install.php?step=1");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
