@@ -3,9 +3,16 @@
 namespace Gibbon\Install;
 
 use Gibbon\Install\Config;
-use phpDocumentor\Reflection\Types\Iterable_;
 use Twig\Environment;
 
+/**
+ * Gibbon installer object / method collection. For writing installer
+ * of Gibbon for different situation (e.g. web, cli).
+ *
+ * @version v23
+ * @since   v23
+ *
+ */
 class Installer
 {
 
@@ -26,6 +33,9 @@ class Installer
     /**
      * Constructor
      *
+     * @version v23
+     * @since   v23
+     *
      * @param string      $installPath     The system path for installing Gibbon.
      * @param Environment $templateEngine  The template engine to generate config file from.
      */
@@ -37,6 +47,9 @@ class Installer
 
     /**
      * Generate configuration file from twig template.
+     *
+     * @version v23
+     * @since   v23
      *
      * @param Config $config    The config object to generate file from.
      * @param string $path      The full path (includes filename) to generate.
@@ -69,6 +82,9 @@ class Installer
     /**
      * Set the internal connection for database operations.
      *
+     * @version v23
+     * @since   v23
+     *
      * @param \PDO $connection
      *
      * @return self
@@ -81,6 +97,9 @@ class Installer
 
     /**
      * Create a user from data in the given assoc array.
+     *
+     * @version v23
+     * @since   v23
      *
      * @param array $user
      *
@@ -116,6 +135,9 @@ class Installer
     /**
      * Set a user of given gibbonPersonID as staff.
      *
+     * @version v23
+     * @since   v23
+     *
      * @param int $gibbonPersonID  The ID of the user.
      * @param string $type         Optional. The type of user. Default 'Teaching'.
      */
@@ -130,6 +152,9 @@ class Installer
 
     /**
      * Set a certain setting to the value.
+     *
+     * @version v23
+     * @since   v23
      *
      * @param string $name             The name of the setting.
      * @param string $value            The value of the setting.
@@ -153,6 +178,9 @@ class Installer
 
     /**
      * Process config variables into string literals stored in string.
+     *
+     * @version v23
+     * @since   v23
      *
      * @param array variables
      *      An array of config variables to be passed into config
