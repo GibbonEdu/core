@@ -103,9 +103,6 @@ ob_start();
 // Attempt to download & install the required language files
 if ($step >= 1) {
     $locale_code = $_POST['code'] ?? 'en_GB';
-    $languageInstalled = !i18nFileExists($session->get('absolutePath'), $locale_code)
-        ? i18nFileInstall($session->get('absolutePath'), $locale_code)
-        : true;
 }
 
 //Set language pre-install
@@ -138,59 +135,9 @@ try {
     }
 
     if ($step == 0) { //Choose language
-        echo $controller->viewStepOne($nonce, $gibbon->getConfig('version'));
+        echo $controller->viewStepZero($nonce, $gibbon->getConfig('version'));
     } else if ($step == 1) { //Set database options
-
-        // Check for the presence of a config file (if it hasn't been created yet)
-        $context->validateConfigPath();
-
-        if (!$languageInstalled) {
-            echo "<div class='error'>";
-            echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$session->get('absolutePath').'/i18n/</u></b>');
-            echo '</div>';
-        }
-
-        $form = Form::create('installer', "./install.php?step=2");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setMultiPartForm($steps, 2);
-
-        $form->addHiddenValue('guid', $guid);
-        $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $_POST['code'] ?? 'en_GB'); // Use language assigned in previous step, or default
-
-        $form->addRow()->addHeading(__('Database Settings'));
-
-        $row = $form->addRow();
-            $row->addLabel('type', __('Database Type'));
-            $row->addTextField('type')->setValue('MySQL')->readonly()->required();
-
-        $row = $form->addRow();
-            $row->addLabel('databaseServer', __('Database Server'))->description(__('Localhost, IP address or domain.'));
-            $row->addTextField('databaseServer')->required()->maxLength(255);
-
-        $row = $form->addRow();
-            $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
-            $row->addTextField('databaseName')->required()->maxLength(50);
-
-        $row = $form->addRow();
-            $row->addLabel('databaseUsername', __('Database Username'));
-            $row->addTextField('databaseUsername')->required()->maxLength(50);
-
-        $row = $form->addRow();
-            $row->addLabel('databasePassword', __('Database Password'));
-            $row->addPassword('databasePassword')->required()->maxLength(255);
-
-        $row = $form->addRow();
-            $row->addLabel('demoData', __('Install Demo Data?'));
-            $row->addYesNo('demoData')->selected('N');
-
-
-        //FINISH & OUTPUT FORM
-        $row = $form->addRow();
-            $row->addFooter();
-            $row->addSubmit();
-
-        echo $form->getOutput();
+        echo $controller->viewStepOne($locale_code, $nonce);
     } elseif ($step == 2) {
 
         // Check for the presence of a config file (if it hasn't been created yet)
