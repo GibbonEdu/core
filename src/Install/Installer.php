@@ -177,6 +177,29 @@ class Installer
     }
 
     /**
+     * Get a certain setting by name.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @param string $name             The name of the setting.
+     * @param string $scope            Optional. The scope of the setting. Default 'System'.
+     * @param boolean $throw_on_error  Throw exception when encountered one in database query. Default false.
+     *
+     * @return string|false The value of the setting. Or false if setting not found.
+     */
+    public function getSetting(string $name, string $scope = 'System')
+    {
+        $statement = $this->connection->prepare('SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name');
+        $statement->execute(['scope' => $scope, 'name' => $name]);
+        if ($statement->rowCount() == 1) {
+            $row = $statement->fetch();
+            return $row['value'];
+        }
+        return false;
+    }
+
+    /**
      * Process config variables into string literals stored in string.
      *
      * @version v23
