@@ -149,25 +149,15 @@ try {
             throw new \Exception(__('Your request failed because your inputs were invalid.'));
         }
 
-        if ($config->hasDatabaseInfo() && $config->hasFlagDemoData()) {
-            //Check for db values
-
-            //Establish db connection without database name
-            $mysqlConnector = new MySqlConnector();
-
-            try {
-                $pdo = $mysqlConnector->connect($config->getDatabaseInfo(), true);
-                $mysqlConnector->useDatabase($pdo, $config->getDatabaseName());
-                $connection2 = $pdo->getConnection();
-                $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
-                $installer->setConnection($connection2);
-            } catch (\Exception $e) {
-                throw new \Exception(
-                    __('A database connection could not be established. Please %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']) . '<br>' .
-                    __('Error details: {error_message}', ['error_message' => $e->getMessage()])
-                );
-            }
+        // Connect to database by raw config.
+        if (!$config->hasDatabaseInfo()) {
+            throw new \Exception(__('Your request failed because your inputs were incomplete.'));
         }
+
+        $pdo = $installer->connectByConfig($config);
+        $connection2 = $pdo->getConnection();
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+        $installer->setConnection($connection2);
 
         if (!$pdo instanceof Connection) {
             throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));

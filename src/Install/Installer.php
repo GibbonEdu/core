@@ -2,6 +2,8 @@
 
 namespace Gibbon\Install;
 
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Database\MySqlConnector;
 use Gibbon\Install\Config;
 use Twig\Environment;
 
@@ -296,6 +298,28 @@ class Installer
         return $output;
     }
 
+    /**
+     * Create database connection from config.
+     *
+     * @param \Gibbon\Install\Config $config
+     *
+     * @return \Gibbon\Contracts\Database\Connection
+     */
+    public function connectByConfig(Config $config): Connection
+    {
+        // Establish db connection without database name
+        try {
+            $mysqlConnector = new MySqlConnector();
+            $connection = $mysqlConnector->connect($config->getDatabaseInfo(), true);
+            $mysqlConnector->useDatabase($connection, $config->getDatabaseName());
+            return $connection;
+        } catch (\Exception $e) {
+            throw new \Exception(
+                sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '<br>' .
+                __('Error details: {error_message}', ['error_message' => $e->getMessage()])
+            );
+        }
+    }
 
     /**
      * Split a very long SQL string (with multiple statements) into iterable
