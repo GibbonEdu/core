@@ -323,7 +323,7 @@ try {
             ++$i;
             try {
                 $connection2->query($sql);
-            } catch (PDOException $e) {
+            } catch (\PDOException $e) {
                 throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
             }
         }
@@ -345,7 +345,7 @@ try {
                     ++$i;
                     try {
                         $connection2->query($sql);
-                    } catch (PDOException $e) {
+                    } catch (\PDOException $e) {
                         echo $sql.'<br/>';
                         echo $e->getMessage().'<br/><br/>';
                         $demoFail = true;
@@ -366,14 +366,14 @@ try {
             $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
         }
         try {
             $data = array('code' => $config->getLocale());
             $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
         }
 
         //Let's gather some more information
@@ -628,7 +628,7 @@ try {
                     $sql = "INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                     $userFail = true;
                     echo "<div class='error'>";
                     echo sprintf(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
@@ -640,7 +640,7 @@ try {
                     $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
                     $resultStaff = $connection2->prepare($sqlStaff);
                     $resultStaff->execute($dataStaff);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                 }
 
                 if ($userFail == false) {
