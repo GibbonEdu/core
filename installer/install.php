@@ -289,17 +289,17 @@ try {
             $port = ':'.$_SERVER['SERVER_PORT'];
         }
         $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-        $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
+        $setting = $installer->getSetting('absoluteURL', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
 
-        $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
+        $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
 
-        $setting = getSettingByScope($connection2, 'System', 'systemName', true);
+        $setting = $installer->getSetting('systemName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
@@ -310,7 +310,7 @@ try {
             'Development' => __('Development')
         );
 
-        $setting = getSettingByScope($connection2, 'System', 'installType', true);
+        $setting = $installer->getSetting('installType', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
@@ -337,48 +337,49 @@ try {
         $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
         $row = $form->addRow();
             $row->addContent($statusInitial);
-        $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
+
+        $setting = $installer->getSetting('cuttingEdgeCode', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue('No')->readonly();
 
-        $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
+        $setting = $installer->getSetting('statsCollection', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addYesNo($setting['name'])->selected('Y')->required();
 
         $form->addRow()->addHeading(__('Organisation Settings'));
 
-        $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
+        $setting = $installer->getSetting('organisationName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
 
-        $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
+        $setting = $installer->getSetting('organisationNameShort', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
 
         $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
 
-        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
+        $setting = $installer->getSetting('gibboneduComOrganisationName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue();
 
-        $setting = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
+        $setting = $installer->getSetting('gibboneduComOrganisationKey', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue();
 
         $form->addRow()->addHeading(__('Miscellaneous'));
 
-        $setting = getSettingByScope($connection2, 'System', 'country', true);
+        $setting = $installer->getSetting('country', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelectCountry($setting['name'])->required();
 
-        $setting = getSettingByScope($connection2, 'System', 'currency', true);
+        $setting = $installer->getSetting('currency', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelectCurrency($setting['name'])->required();
@@ -387,7 +388,7 @@ try {
             $group[$item] = __($item);
             return $group;
         }, array());
-        $setting = getSettingByScope($connection2, 'System', 'timezone', true);
+        $setting = $installer->getSetting('timezone', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
