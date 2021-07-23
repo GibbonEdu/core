@@ -16,6 +16,13 @@ class Installer
     protected $templateEngine;
 
     /**
+     * A PDO connection to database server.
+     *
+     * @var \PDO
+     */
+    protected $connection;
+
+    /**
      * Constructor
      *
      * @param string      $installPath     The system path for installing Gibbon.
@@ -56,6 +63,68 @@ class Installer
             throw new \Exception(__('../config.php could not be created.'));
         }
         return $this;
+    }
+
+    /**
+     * Set the internal connection for database operations.
+     *
+     * @param \PDO $connection
+     *
+     * @return self
+     */
+    public function setConnection(\PDO $connection): Installer
+    {
+        $this->connection = $connection;
+        return $this;
+    }
+
+    /**
+     * Create a user from data in the given assoc array.
+     *
+     * @param array $user
+     *
+     * @return bool  True on success or fail on failure.
+     *
+     * @throws \PDOException On error if PDO::ERRMODE_EXCEPTION option is set to true
+     *                       in the instance's \PDO connection.
+     */
+    public function createUser(array $user): bool
+    {
+        // TODO: add some default values to $user in case any field(s) is / are missed.
+        $statement = $this->connection->prepare('INSERT INTO gibbonPerson SET
+            gibbonPersonID=1,
+            title=:title,
+            surname=:surname,
+            firstName=:firstName,
+            preferredName=:preferredName,
+            officialName=:officialName,
+            username=:username,
+            password="",
+            passwordStrong=:passwordStrong,
+            passwordStrongSalt=:passwordStrongSalt,
+            status=:status,
+            canLogin=:canLogin,
+            passwordForceReset=:passwordForceReset,
+            gibbonRoleIDPrimary=:gibbonRoleIDPrimary,
+            gibbonRoleIDAll=:gibbonRoleIDAll,
+            email=:email'
+        );
+        return $statement->execute($user);
+    }
+
+    /**
+     * Set a user of given gibbonPersonID as staff.
+     *
+     * @param int $gibbonPersonID  The ID of the user.
+     * @param string $type         Optional. The type of user. Default 'Teaching'.
+     */
+    public function setPersonAsStaff(int $gibbonPersonID, string $type = 'Teaching')
+    {
+        $statement = $this->connection->prepare('INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type');
+        return $statement->execute([
+            'gibbonPersonID' => $gibbonPersonID,
+            'type' => $type,
+        ]);
     }
 
     /**

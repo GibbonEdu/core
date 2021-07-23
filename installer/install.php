@@ -302,6 +302,7 @@ try {
                 $mysqlConnector->useDatabase($pdo, $config->getDatabaseName());
                 $connection2 = $pdo->getConnection();
                 $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+                $installer->setConnection($connection2);
             } catch (\Exception $e) {
                 throw new \Exception(
                     __('A database connection could not be established. Please %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']) . '<br>' .
@@ -587,6 +588,7 @@ try {
         try {
             $pdo = $mysqlConnector->connect($gibbon->getConfig(), true);
             $connection2 = $pdo->getConnection();
+            $installer->setConnection($connection2);
         } catch (Exception $e) {
             echo "<div class='error'>";
             echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
@@ -635,10 +637,22 @@ try {
             $userFail = false;
             //Write to database
             try {
-                $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => ($firstName.' '.$surname), 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => 'Full', 'canLogin' => 'Y', 'passwordForceReset' => 'N', 'gibbonRoleIDPrimary' => '001', 'gibbonRoleIDAll' => '001', 'email' => $email);
-                $sql = "INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $installer->createUser([
+                    'title' => $title,
+                    'surname' => $surname,
+                    'firstName' => $firstName,
+                    'preferredName' => $preferredName,
+                    'officialName' => ($firstName.' '.$surname),
+                    'username' => $username,
+                    'passwordStrong' => $passwordStrong,
+                    'passwordStrongSalt' => $salt,
+                    'status' => 'Full',
+                    'canLogin' => 'Y',
+                    'passwordForceReset' => 'N',
+                    'gibbonRoleIDPrimary' => '001',
+                    'gibbonRoleIDAll' => '001',
+                    'email' => $email,
+                ]);
             } catch (\PDOException $e) {
                 $userFail = true;
                 echo "<div class='error'>";
@@ -647,10 +661,7 @@ try {
             }
 
             try {
-                $dataStaff = array('gibbonPersonID' => 1, 'type' => 'Teaching');
-                $sqlStaff = "INSERT INTO gibbonStaff SET gibbonPersonID=1, type='Teaching'";
-                $resultStaff = $connection2->prepare($sqlStaff);
-                $resultStaff->execute($dataStaff);
+                $installer->setPersonAsStaff(1, 'Teaching');
             } catch (\PDOException $e) {
             }
 
@@ -737,7 +748,9 @@ try {
 } catch (\Exception $e) {
     // Catch exception that stops installation at any step and
     // proerly display it on the page.
-    $page->addError($e->getMessage());
+    $page->addError(__('Installation failed: {reason}', [
+        'reason' => $e->getMessage(),
+    ]));
 }
 
 $page->write(ob_get_clean());
