@@ -322,6 +322,45 @@ class Installer
     }
 
     /**
+     * Get the content of gibbon.sql
+     *
+     * @param \Gibbon\Install\Context $context
+     *
+     * @return string The SQL text.
+     */
+    public function getInstallSql(Context $context): string
+    {
+        // Let's read the SQL file for basic schema and data creation.
+        if (!file_exists($context->getPath('gibbon.sql'))) {
+            throw new \Exception(__('../gibbon.sql does not exist, and so the installer cannot proceed.'));
+        }
+        if (($sql = @fread(@fopen($context->getPath('gibbon.sql'), 'r'), @filesize($context->getPath('gibbon.sql')))) === false) {
+            throw new \Exception(__('Unable to read ../gibbon.sql, and so the installer cannot proceed.'));
+        }
+        return $sql;
+    }
+
+    /**
+     * Execute queries providede by an iterable.
+     *
+     * @param \PDO $connection
+     * @param iterable $queries
+     *
+     * @return integer Number of queries run.
+     *
+     * @throws \PDOException
+     */
+    public function runQueries(\PDO $connection, iterable $queries): int
+    {
+        $i = 1;
+        foreach ($queries as $query) {
+            ++$i;
+            $connection->query($query);
+        }
+        return $i;
+    }
+
+    /**
      * Split a very long SQL string (with multiple statements) into iterable
      * of the individual SQL statements. Based on split_sql_file() of previous
      * Gibbon versions.

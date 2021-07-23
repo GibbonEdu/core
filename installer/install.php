@@ -166,26 +166,14 @@ try {
         // create and check existance of the config file.
         $installer->createConfigFile($context, $config);
 
-        // Let's read the SQL file for basic schema and data creation.
-        if (file_exists('../gibbon.sql') == false) {
-            throw new \Exception(__('../gibbon.sql does not exist, and so the installer cannot proceed.'));
-        }
-        if (($query = @fread(@fopen('../gibbon.sql', 'r'), @filesize('../gibbon.sql'))) === false) {
-            throw new \Exception(__('Unable to read ../gibbon.sql, and so the installer cannot proceed.'));
-        }
-
         // Let's populate the database with the SQL queries from the file.
-        $query = Installer::removeSqlRemarks($query);
-        $query = Installer::splitSql($query);
-
-        $i = 1;
-        foreach ($query as $sql) {
-            ++$i;
-            try {
-                $connection2->query($sql);
-            } catch (\PDOException $e) {
-                throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
-            }
+        $sql = $installer->getInstallSql($context);
+        $sql = Installer::removeSqlRemarks($sql);
+        $queries = Installer::splitSql($sql);
+        try {
+            $installer->runQueries($connection2, $queries);
+        } catch (\PDOException $e) {
+            throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
         }
 
         // Try to install the demo data, report error but don't stop if any issues

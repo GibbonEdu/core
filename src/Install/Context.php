@@ -141,7 +141,22 @@ class Context
      */
     public function getConfigPath(): string
     {
-        return implode(DIRECTORY_SEPARATOR, [$this->getInstallPath(), 'config.php']);
+        return $this->getPath('config.php');
+    }
+
+    /**
+     * Get the actual system path based on the installation path.
+     *
+     * @param string $path  The path to a resource relative to installation path.
+     *
+     * @return string The actual system path of it.
+     */
+    public function getPath($path): string
+    {
+        return implode(DIRECTORY_SEPARATOR, [
+            $this->getInstallPath(),
+            trim($path, DIRECTORY_SEPARATOR)
+        ]);
     }
 
     /**
