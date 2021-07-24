@@ -34,7 +34,6 @@ v23.0.00
     Bug Fixes
         System: fixed lesson plan content in demo data
         System: fixed parent dashboard hooks missing access to session object
-        System: adjusted new student order in Staff Dashboard Enrolment tab
         Students: fixed ID card background image alignment
 
 v22.0.00
