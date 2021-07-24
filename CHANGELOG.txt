@@ -27,14 +27,15 @@ v23.0.00
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths
         System: improved the appearance of the fatal error message page
+        System: adjusted new student order in Staff Dashboard Enrolment tab
         Messenger: updated New Message process to send SMS messages before emails
         Students: updated student enrolment dropdown to include students with Expected status
 
     Bug Fixes
         System: fixed lesson plan content in demo data
         System: fixed parent dashboard hooks missing access to session object
+        System: adjusted new student order in Staff Dashboard Enrolment tab
         Students: fixed ID card background image alignment
-        
 
 v22.0.00
 --------
