@@ -34,6 +34,7 @@ v23.0.00
     Bug Fixes
         System: fixed lesson plan content in demo data
         System: fixed parent dashboard hooks missing access to session object
+        Individual Needs: fixed some IN columns not visible on small screens
         Students: fixed ID card background image alignment
 
 v22.0.00

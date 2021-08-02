@@ -110,10 +110,11 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
     $dataset = new DataSet($results);
 
     $table = DataTable::create('descriptors');
-    $table->addColumn('gibbonINDescriptorName', __('Descriptor'));
+    $table->addColumn('gibbonINDescriptorName', __('Descriptor'))->context('primary');
     foreach ($alertLevels as $alertLevel) {
         $table
         ->addColumn("alert_${alertLevel['name']}", $alertLevel['name'])
+        ->context('primary')
         ->format(function ($level) use ($alertLevel, $mode) {
             $checked = $level["alert_${alertLevel['name']}"] == true ? 'checked' : '';
             $disabled = $mode == 'disabled' ? 'disabled' : '';
