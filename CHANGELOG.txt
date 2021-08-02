@@ -35,6 +35,7 @@ v23.0.00
         System: fixed lesson plan content in demo data
         System: fixed parent dashboard hooks missing access to session object
         Individual Needs: fixed some IN columns not visible on small screens
+        Reports: fixed missing data in CustomFields template data source
         Students: fixed ID card background image alignment
 
 v22.0.00
