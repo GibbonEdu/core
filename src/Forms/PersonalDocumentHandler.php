@@ -31,7 +31,7 @@ class PersonalDocumentHandler
     protected $fileUploader;
     protected $settingGateway;
     protected $view;
-    
+
     protected $documents;
     protected $fields;
 
@@ -152,7 +152,7 @@ class PersonalDocumentHandler
             if (!empty($documentsNew[$gibbonPersonalDocumentTypeID])) {
                 $form->addHiddenValue("document[$gibbonPersonalDocumentTypeID][gibbonPersonalDocumentID]", $documentsNew[$gibbonPersonalDocumentTypeID]['gibbonPersonalDocumentID']);
             }
-                
+
             $fields = json_decode($document['fields']);
             foreach ($fields as $field) {
                 $oldValue = $documentsOld[$gibbonPersonalDocumentTypeID][$field] ?? null;
@@ -165,8 +165,8 @@ class PersonalDocumentHandler
                 $oldValueLabel = $oldValue;
                 $newValueLabel = $newValue;
                 if ($field == 'dateIssue' || $field == 'dateExpiry') {
-                    $oldValue = Format::date($oldValue);
-                    $newValue = Format::date($newValue);
+                    $oldValueLabel = Format::date($oldValue);
+                    $newValueLabel = Format::date($newValue);
                 } elseif ($field == 'filePath') {
                     $oldValueLabel = !empty($oldValue) ? Format::link('./'.$oldValue, __('Attachment'), ['target' => '_blank']) : '';
                     $newValueLabel = !empty($newValue) ? Format::link('./'.$newValue, __('Attachment'), ['target' => '_blank']) : '';
