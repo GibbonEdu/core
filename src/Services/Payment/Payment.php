@@ -100,7 +100,7 @@ class Payment implements PaymentInterface
         if (!$this->isEnabled()) {
             return self::RETURN_ERROR_NOT_ENABLED;
         }
-        
+
         $configured = $this->setupPaymentGateway();
 
         if (!$configured) {
@@ -115,7 +115,6 @@ class Payment implements PaymentInterface
         $options = $this->getPaymentRequestOptions($amount, $reason);
         $response = $this->omnipay->purchase($options)->setCurrency($this->currency)->send();
 
-        echo $response->getMessage();
         if ($response->isSuccessful()) {
             // Payment request was successful, continue redirect
             $responseData = $response->getData();
@@ -195,7 +194,7 @@ class Payment implements PaymentInterface
 
         // Setup the Omnipay payment gateway based on Third Party Settings
         switch ($this->paymentGatewaySetting) {
-            case 'Paypal':
+            case 'PayPal':
                 $this->omnipay = Omnipay::create('PayPal_Express');
                 $this->omnipay->setUsername($this->settingGateway->getSettingByScope('System', 'paymentAPIUsername'));
                 $this->omnipay->setPassword($this->settingGateway->getSettingByScope('System', 'paymentAPIPassword'));
@@ -220,7 +219,7 @@ class Payment implements PaymentInterface
         ];
 
         switch ($this->paymentGatewaySetting) {
-            case 'Paypal':
+            case 'PayPal':
                 $options = [
                     'amount' => $amount,
                     'returnUrl' => $this->returnURL.'&paymentState=confirm&'.http_build_query($params),
@@ -263,8 +262,8 @@ class Payment implements PaymentInterface
         $response = false;
 
         switch ($this->paymentGatewaySetting) {
-            case 'Paypal':
-                // Finalize the Paypal transaction using the returned token and payerid
+            case 'PayPal':
+                // Finalize the PayPal transaction using the returned token and payerid
                 $options = $this->getPaymentRequestOptions($amount, $_GET['reason'] ?? '');
                 $response = $this->omnipay->completePurchase($options + [
                     'amount' => $amount,
@@ -288,7 +287,7 @@ class Payment implements PaymentInterface
     protected function handlePaymentResponse($response)
     {
         if (empty($response)) {
-            return ['status' => 'Failed'];
+            return ['success' => false, 'status' => 'Failed'];
         }
 
         // Get common transaction information
@@ -302,7 +301,7 @@ class Payment implements PaymentInterface
 
         // Transform transaction information unique to each gateway into a common format
         switch ($this->paymentGatewaySetting) {
-            case 'Paypal':
+            case 'PayPal':
                 $status = $data['PAYMENTINFO_0_PAYMENTSTATUS'] ?? '';
                 $result += [
                     'status'        => $status == 'Completed' ? 'Complete' : ($response->isPending()? 'Pending' : 'Failed'),

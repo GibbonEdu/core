@@ -32,7 +32,7 @@ interface Payment
     public function setCancelURL($url);
 
     public function setForeignTable($foreignTable, $foreignTableID);
-
+    
     public function incomingPayment() : bool;
 
     public function requestPayment($amount, $name = '') : string;
