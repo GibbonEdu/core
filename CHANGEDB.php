@@ -1016,4 +1016,5 @@ UPDATE `gibbonSetting` SET name='paymentAPIPassword', nameDisplay='API Password'
 UPDATE `gibbonSetting` SET name='paymentAPISignature', nameDisplay='API Signature', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPISignature';end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentAPIKey', 'API Key', 'API details are provided by the payment gateway provider', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentGateway', 'Payment Gateway', 'Choose a payment gateway. You must create and configure an account with the selected service to get the required API details.', '');end
+ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ";
