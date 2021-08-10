@@ -74,29 +74,50 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     // PAYPAL
-    $form->addRow()->addHeading(__('PayPal Payment Gateway'));
+    $form->addRow()->addHeading(__('Payment Gateway'))->append(__('Gibbon can handle payments using a payment gateway API. These are external services, not affiliated with Gibbon, and you must create your own account with them before being able to accept payments. Gibbon does not store or process any credit card details.'));
 
     $setting = getSettingByScope($connection2, 'System', 'enablePayments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('Y');
+    $form->toggleVisibilityByClass('paymentGateway')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'System', 'paypalAPIUsername', true);
+    $paymentGateways = [
+        'Paypal' => __('Paypal'),
+        'Stripe' => __('Stripe'),
+    ];
+    $setting = getSettingByScope($connection2, 'System', 'paymentGateway', true);
+    $row = $form->addRow()->addClass('paymentGateway');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
+            ->fromArray($paymentGateways)
+            ->selected($setting['value'])
+            ->placeholder()
+            ->required();
+
+    $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('Paypal');
+    $form->toggleVisibilityByClass('stripeSettings')->onSelect($setting['name'])->when('Stripe');
+
+    $setting = getSettingByScope($connection2, 'System', 'paymentAPIUsername', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'System', 'paypalAPIPassword', true);
+    $setting = getSettingByScope($connection2, 'System', 'paymentAPIPassword', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'System', 'paypalAPISignature', true);
+    $setting = getSettingByScope($connection2, 'System', 'paymentAPISignature', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
+
+    $setting = getSettingByScope($connection2, 'System', 'paymentAPIKey', true);
+    $row = $form->addRow()->addClass('stripeSettings');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
     // SMS
     $form->addRow()->addHeading(__('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));

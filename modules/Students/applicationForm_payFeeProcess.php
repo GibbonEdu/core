@@ -53,11 +53,11 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
     if ($paid != 'Y' && empty($paymentToken)) {
         // Make payment
         $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-        $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-        $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-        $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+        $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+        $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+        $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
 
-        if ($enablePayments != 'Y' || empty($paypalAPIUsername) || empty($paypalAPIPassword) || empty($paypalAPISignature)) {
+        if ($enablePayments != 'Y' || empty($paymentAPIUsername) || empty($paymentAPIPassword) || empty($paymentAPISignature)) {
             $URL .= '&return=error4';
             header("Location: {$URL}");
             exit;

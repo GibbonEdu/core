@@ -78,11 +78,11 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
 
                 $currency = getSettingByScope($connection2, 'System', 'currency');
                 $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-                $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-                $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-                $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+                $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+                $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+                $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
 
-                if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $feeTotal > 0) {
+                if ($enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '' and $feeTotal > 0) {
                     $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
                     $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
                     if ($financeOnlinePaymentEnabled == 'Y') {

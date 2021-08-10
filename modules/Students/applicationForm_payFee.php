@@ -53,10 +53,10 @@ if (!empty($application['gibbonPaymentID2']) || $application['paymentMade2'] != 
 }
 
 $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-$paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-$paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-$paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
-if ($enablePayments != 'Y' || empty($paypalAPIUsername) || empty($paypalAPIPassword) || empty($paypalAPISignature)) {
+$paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+$paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+$paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
+if ($enablePayments != 'Y' || empty($paymentAPIUsername) || empty($paymentAPIPassword) || empty($paymentAPISignature)) {
     echo Format::alert(__('Online payment options are not available at this time.'));
     return;
 }

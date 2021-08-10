@@ -1015,11 +1015,11 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
 
         //Online payment
         $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-        $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-        $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-        $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+        $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+        $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+        $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
 
-        if (!$preview && $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
+        if (!$preview && $enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
             $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
             $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
             if ($financeOnlinePaymentEnabled == 'Y') {

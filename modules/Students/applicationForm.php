@@ -132,9 +132,9 @@ if ($proceed == false) {
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+    $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+    $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 
     if (!empty($applicationFee) || !empty($applicationProcessFee)) {
@@ -145,7 +145,7 @@ if ($proceed == false) {
         if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
             echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
         }
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' && !empty($applicationFee)) {
+        if ($enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '' && !empty($applicationFee)) {
             echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
         }
         echo '</div>';

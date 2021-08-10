@@ -1011,4 +1011,9 @@ UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateNa
 UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
 ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
+UPDATE `gibbonSetting` SET name='paymentAPIUsername', nameDisplay='API Username', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPIUsername';end
+UPDATE `gibbonSetting` SET name='paymentAPIPassword', nameDisplay='API Password', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPIPassword';end
+UPDATE `gibbonSetting` SET name='paymentAPISignature', nameDisplay='API Signature', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPISignature';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentAPIKey', 'API Key', 'API details are provided by the payment gateway provider', '');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentGateway', 'Payment Gateway', 'Choose a payment gateway. You must create and configure an account with the selected service to get the required API details.', '');end
 ";

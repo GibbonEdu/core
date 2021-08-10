@@ -439,11 +439,11 @@ if ($proceed == false) {
                 //Attempt payment if everything is set up for it
                 $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
                 $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-                $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-                $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-                $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+                $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+                $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+                $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
 
-                if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '') {
+                if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '') {
                     $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI");
                     $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
                     header("Location: {$URL}");
