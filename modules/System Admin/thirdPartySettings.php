@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Contracts\Services\Payment;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -29,8 +30,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     //Proceed!
     $page->breadcrumbs->add(__('Third Party Settings'));
 
-    $form = Form::create('thirdPartySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/thirdPartySettingsProcess.php');
+    // Add return messages for test payments
+    $payment = $container->get(Payment::class);
+    $page->return->addReturns($payment->getReturnMessages());
 
+    // Add return messages for test emails
+    $emailError = $session->get('testEmailError');
+    $emailRecipient = $session->get('testEmailRecipient');
+    $page->return->addReturns(['error10' => sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), $emailError, $emailRecipient)]);
+
+    // FORM
+    $form = Form::create('thirdPartySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/thirdPartySettingsProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
 
     // GOOGLE
@@ -73,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    // PAYPAL
+    // PAYMENTS
     $form->addRow()->addHeading(__('Payment Gateway'))->append(__('Gibbon can handle payments using a payment gateway API. These are external services, not affiliated with Gibbon, and you must create your own account with them before being able to accept payments. Gibbon does not store or process any credit card details.'));
 
     $setting = getSettingByScope($connection2, 'System', 'enablePayments', true);
@@ -84,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->toggleVisibilityByClass('paymentGateway')->onSelect($setting['name'])->when('Y');
 
     $paymentGateways = [
-        'Paypal' => __('Paypal'),
+        'PayPal' => __('PayPal'),
         'Stripe' => __('Stripe'),
     ];
     $setting = getSettingByScope($connection2, 'System', 'paymentGateway', true);
@@ -96,8 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             ->placeholder()
             ->required();
 
-    $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('Paypal');
+    $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('PayPal');
     $form->toggleVisibilityByClass('stripeSettings')->onSelect($setting['name'])->when('Stripe');
+    $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('Please select...');
 
     $setting = getSettingByScope($connection2, 'System', 'paymentAPIUsername', true);
     $row = $form->addRow()->addClass('paypalSettings');
@@ -118,6 +129,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $row = $form->addRow()->addClass('stripeSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->required();
+
+    // Test Payment
+    if ($session->get('enablePayments') == 'Y') {
+        $row = $form->addRow()->addClass('paymentTest');
+            $row->addLabel('paymentTest', __('Test Payment'))->description(__('You can use this tool to make a small payment in {currency} to test your gateway configuration.', ['currency' => $session->get('currency')]));
+            $col = $row->addColumn();
+            $col->addCurrency('paymentTest')->setValue(10)->addClass('w-full');
+            $col->addButton(__('Go'), 'testPayment()')->addClass('-ml-px w-24');
+    }
 
     // SMS
     $form->addRow()->addHeading(__('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));
@@ -219,9 +239,32 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addPassword($setting['name'])->setValue($setting['value']);
 
+    // Test Email
+    if ($session->get('enableMailerSMTP') == 'Y') {
+        $row = $form->addRow()->addClass('emailTest');
+            $row->addLabel('emailTest', __('Test Email'))->description(__('You can use this tool to send an email to test your SMTP configuration.'));
+            $col = $row->addColumn();
+            $col->addEmail('emailTest')->setValue($session->get('email'))->addClass('w-full');
+            $col->addButton(__('Go'), 'testEmail()')->addClass('-ml-px w-24');
+    }
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
     echo $form->getOutput();
 }
+
+?>
+
+<script>
+    function testPayment() {
+        var amount = $('#paymentTest').val();
+        location.href = "<?php echo $session->get('absoluteURL'); ?>/modules/System Admin/thirdPartySettings_paymentProcess.php?amount="+amount;
+    }
+
+    function testEmail() {
+        var email = $('#emailTest').val();
+        location.href = "<?php echo $session->get('absoluteURL'); ?>/modules/System Admin/thirdPartySettings_emailProcess.php?email="+email;
+    }
+</script>
