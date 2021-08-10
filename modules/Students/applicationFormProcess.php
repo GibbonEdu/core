@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Services\Payment;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
@@ -38,6 +39,7 @@ include '../User Admin/moduleFunctions.php';
 include '../Finance/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Students/applicationForm.php';
+$URLPayment = $session->get('absoluteURL').'/modules/Students/applicationFormProcess.php?payment=true';
 
 $proceed = false;
 $public = false;
@@ -59,12 +61,10 @@ if ($proceed == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $id = null;
-    if (isset($_GET['id'])) {
-        $id = $_GET['id'];
-    }
+    $applicationFormHash = $_GET['id'] ?? null;
+
     //IF ID IS NOT SET IT IS A NEW APPLICATION, SO PROCESS AND SAVE.
-    if (is_null($id)) {
+    if (is_null($applicationFormHash)) {
         //Proceed!
 
         // Sanitize the whole $_POST array
@@ -438,15 +438,21 @@ if ($proceed == false) {
 
                 //Attempt payment if everything is set up for it
                 $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
-                $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-                $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
-                $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
-                $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
 
-                if ($applicationFee > 0 and is_numeric($applicationFee) and $enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '') {
-                    $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm.php&return=success4&id=$secureAI");
-                    $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$applicationFee&return=".urlencode("modules/Students/applicationFormProcess.php?return=success1&id=$secureAI&applicationFee=$applicationFee").'&fail='.urlencode("modules/Students/applicationFormProcess.php?return=success2&id=$secureAI&applicationFee=$applicationFee");
-                    header("Location: {$URL}");
+                $payment = $container->get(Payment::class);
+                $payment->setReturnURL($URLPayment.'&id='.$secureAI);
+                $payment->setCancelURL($URLPayment.'&id='.$secureAI);
+                $payment->setForeignTable('gibbonApplicationForm', $AI);
+
+                if ($payment->isEnabled() && $applicationFee > 0 and is_numeric($applicationFee)) {
+                    $_FILES = []; // This speeds up the request object, which does not need files anymore
+                    $return = $payment->requestPayment($applicationFee, __('Application Fee'));
+
+                    if (!empty($return)) {
+                        $URL .= '&return='.$return;
+                        header("Location: " . $URL);
+                        exit;
+                    }
                 } else {
                     $URL .= "&return=success0&id=$secureAI";
                     header("Location: {$URL}");
@@ -456,42 +462,34 @@ if ($proceed == false) {
     }
     //IF ID IS SET WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PAYMENT, SO LET'S DO IT.
     else {
-        //Get returned paypal tokens, ids, etc
-        $paymentMade = 'N';
-        if ($_GET['return'] == 'success1') {
-            $paymentMade = 'Y';
-        }
-        $paymentToken = null;
-        if (isset($_GET['token'])) {
-            $paymentToken = $_GET['token'];
-        }
-        $paymentPayerID = null;
-        if (isset($_GET['PayerID'])) {
-            $paymentPayerID = $_GET['PayerID'];
-        }
-        $gibbonApplicationFormID = null;
-        if (isset($_GET['id'])) {
-            // Find the ID based on the hash provided for added security
-            $data = array( 'gibbonApplicationFormHash' => $_GET['id'] );
-            $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
-            $resultID = $pdo->executeQuery($data, $sql);
+        $paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
+        $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+        
+        $paymentToken = $_GET['token'] ?? '';
+        $paymentPayerID = $_GET['PayerID'] ?? '';
 
-            if ($resultID && $resultID->rowCount() == 1) {
-                $gibbonApplicationFormID = $resultID->fetchColumn(0);
-            }
+        // Find the ID based on the hash provided for added security
+        $gibbonApplicationFormID = null;
+        $data = ['gibbonApplicationFormHash' => $applicationFormHash];
+        $sql = "SELECT gibbonApplicationFormID FROM gibbonApplicationForm WHERE gibbonApplicationFormHash=:gibbonApplicationFormHash";
+        $resultID = $pdo->executeQuery($data, $sql);
+
+        if ($resultID && $resultID->rowCount() == 1) {
+            $gibbonApplicationFormID = $resultID->fetchColumn(0);
         }
-        $applicationFee = null;
-        if (isset($_GET['applicationFee'])) {
-            $applicationFee = $_GET['applicationFee'];
-        }
+
+        $payment = $container->get(Payment::class);
+        $payment->setReturnURL($URLPayment);
+        $payment->setCancelURL($URLPayment);
+        $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
 
         //Get email parameters ready to send messages for to admissions for payment problems
         $to = $session->get('organisationAdmissionsEmail');
         $subject = $session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
 
         //Check return values to see if we can proceed
-        if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
-            $body = __('Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+        if (!$payment->isEnabled() or empty($gibbonApplicationFormID) or empty($applicationFee)) {
+            $body = __('Payment via {gateway} may or may not have been successful, but has not been recorded either way due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
             $mail = $container->get(Mailer::class);
             $mail->Subject = $subject;
@@ -505,31 +503,24 @@ if ($proceed == false) {
             $mail->Send();
 
             //Success 2
-            $URL .= '&return=success2&id='.$_GET['id'];
+            $URL .= '&return=success2&id='.$applicationFormHash;
             header("Location: {$URL}");
             exit();
         } else {
             //PROCEED AND FINALISE PAYMENT
-            require '../../lib/paypal/paypalfunctions.php';
 
-            //Ask paypal to finalise the payment
-            $confirmPayment = confirmPayment($guid, $applicationFee, $paymentToken, $paymentPayerID);
-
-            $ACK = $confirmPayment['ACK'];
-            $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
-            $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
+            $return = $payment->confirmPayment();
+            $result = $payment->getPaymentResult();
+            $gibbonPaymentID = $result['gibbonPaymentID'];
 
             //Payment was successful. Yeah!
-            if ($ACK == 'Success') {
+            if ($result['success']) {
                 $updateFail = false;
-
-                //Save payment details to gibbonPayment
-                $gibbonPaymentID = setPaymentLog($connection2, $guid, 'gibbonApplicationForm', $gibbonApplicationFormID, 'Online', 'Complete', $applicationFee, 'Paypal', 'Success', $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID);
 
                 //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
                 if ($gibbonPaymentID != '') {
                     try {
-                        $data = array('paymentMade' => $paymentMade, 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
+                        $data = array('paymentMade' => 'Y', 'gibbonPaymentID' => $gibbonPaymentID, 'gibbonApplicationFormID' => $gibbonApplicationFormID);
                         $sql = 'UPDATE gibbonApplicationForm SET paymentMade=:paymentMade, gibbonPaymentID=:gibbonPaymentID WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -541,7 +532,7 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __('Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+                    $body = __('Payment via {gateway} was successful, but has not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
@@ -554,18 +545,15 @@ if ($proceed == false) {
 
                     $mail->Send();
 
-                    $URL .= '&return=success3&id='.$_GET['id'];
+                    $URL .= '&return=success3&id='.$applicationFormHash;
                     header("Location: {$URL}");
                     exit;
                 }
 
-                $URL .= '&return=success1&id='.$_GET['id'];
+                $URL .= '&return=success1&id='.$applicationFormHash;
                 header("Location: {$URL}");
             } else {
                 $updateFail = false;
-
-                //Save payment details to gibbonPayment
-                $gibbonPaymentID = setPaymentLog($connection2, $guid, 'gibbonApplicationForm', $gibbonApplicationFormID, 'Online', 'Failure', $applicationFee, 'Paypal', 'Failure', $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID);
 
                 //Link gibbonPayment record to gibbonApplicationForm, and make note that payment made
                 if ($gibbonPaymentID != '') {
@@ -582,7 +570,7 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __('Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
+                    $body = __('Payment via {gateway} was unsuccessful, and has also not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $paymentGateway])."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$session->get('systemName').' '.__('Admissions Administrator');
 
                     $mail = $container->get(Mailer::class);
                     $mail->Subject = $subject;
@@ -596,13 +584,13 @@ if ($proceed == false) {
                     $mail->Send();
 
                     //Success 2
-                    $URL .= '&return=success2&id='.$_GET['id'];
+                    $URL .= '&return=success2&id='.$applicationFormHash;
                     header("Location: {$URL}");
                     exit;
                 }
 
                 //Success 2
-                $URL .= '&return=success2&id='.$_GET['id'];
+                $URL .= '&return=success2&id='.$applicationFormHash;
                 header("Location: {$URL}");
             }
         }

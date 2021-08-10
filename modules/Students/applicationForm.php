@@ -21,9 +21,10 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Contracts\Services\Payment;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -101,6 +102,13 @@ if ($proceed == false) {
         $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationAdmissionsEmail')."'>".$session->get('organisationAdmissionsName').'</a>');
     }
 
+    $payment = $container->get(Payment::class);
+
+    if ($payment->isEnabled()) {
+        $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
+        $page->return->addReturns($payment->getReturnMessages());
+    }
+
     $returns = array();
     $returns['success0'] = __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra;
     $returns['success1'] = __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra;
@@ -112,7 +120,7 @@ if ($proceed == false) {
     // JS success return addition
     $return = (isset($_GET['return']))? $_GET['return'] : '';
 
-    if ($return == 'success0' or $return == 'success1' or $return == 'success2'  or $return == 'success4') {
+    if ($return == 'success0' or $return == 'success1' or $return == 'success2' or $return == 'success3' or $return == 'success4') {
         echo "<script type='text/javascript'>";
         echo '$(document).ready(function(){';
         echo "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;";
@@ -131,11 +139,8 @@ if ($proceed == false) {
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
-    $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
-    $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
 
     if (!empty($applicationFee) || !empty($applicationProcessFee)) {
         echo "<div class='warning'>";
@@ -145,8 +150,8 @@ if ($proceed == false) {
         if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
             echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
         }
-        if ($enablePayments == 'Y' and $paymentAPIUsername != '' and $paymentAPIPassword != '' and $paymentAPISignature != '' && !empty($applicationFee)) {
-            echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
+        if ($payment->isEnabled() && !empty($applicationFee)) {
+            echo ' '.__('Payment must be made by credit card, using our secure {gateway} payment gateway. When you press Submit at the end of this form, you will be directed to {gateway} in order to make payment. During this process we do not see or store your credit card details.', ['gateway' => $paymentGateway]);
         }
         echo '</div>';
     }

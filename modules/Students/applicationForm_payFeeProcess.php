@@ -18,20 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
-use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Services\Payment;
+use Gibbon\Domain\Students\ApplicationFormGateway;
 
 include '../../gibbon.php';
 
 include '../../modules/Finance/moduleFunctions.php';
 
-$paid = $_GET['paid'] ?? '';
-$paymentToken = $_GET['token'] ?? '';
-
 $gibbonApplicationFormID = $_REQUEST['gibbonApplicationFormID'];
 $key = $_REQUEST['key'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_payFee.php&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key";
+$URLPayment = $session->get('absoluteURL')."/modules/Students/applicationForm_payFeeProcess.php?gibbonApplicationFormID=$gibbonApplicationFormID&key=$key";
 
 if (empty($key) || empty($gibbonApplicationFormID)) {
     $URL .= '&return=error1';
@@ -43,6 +42,11 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
     $currency = getSettingByScope($connection2, 'System', 'currency');
     $feeTotal = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
 
+    $payment = $container->get(Payment::class);
+    $payment->setReturnURL($URLPayment);
+    $payment->setCancelURL($URLPayment);
+    $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
+
     $application = $applicationFormGateway->selectBy(['gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonApplicationFormHash' => $key])->fetch();
     if (empty($application)) {
         $URL .= '&return=error2';
@@ -50,60 +54,31 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
         exit;
     }
 
-    if ($paid != 'Y' && empty($paymentToken)) {
-        // Make payment
-        $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-        $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
-        $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
-        $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
-
-        if ($enablePayments != 'Y' || empty($paymentAPIUsername) || empty($paymentAPIPassword) || empty($paymentAPISignature)) {
-            $URL .= '&return=error4';
-            header("Location: {$URL}");
-            exit;
-        }
-
-        $session->set('gatewayCurrencyNoSupportReturnURL', $session->get('absoluteURL').'/index.php?q=/modules/Students/applicationForm_payFee.php&return=error3');
-
-        $URL = $session->get('absoluteURL')."/lib/paypal/expresscheckout.php?Payment_Amount=$feeTotal&return=".urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success1&paid=Y&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key").'&fail='.urlencode("modules/Students/applicationForm_payFeeProcess.php?return=success2&paid=N&feeTotal=$feeTotal&gibbonApplicationFormID=$gibbonApplicationFormID&key=$key");
+    if (!$payment->isEnabled()) {
+        $URL .= '&return=error4';
         header("Location: {$URL}");
         exit;
+    }
+
+    if (!$payment->incomingPayment()) {
+        // Make payment
+        $return = $payment->requestPayment($feeTotal, __('Application Fee'));
+
+        if (!empty($return)) {
+            $URL .= '&return='.$return;
+            header("Location: " . $URL);
+            exit;
+        }
 
     } else {
         // Finalize payment
-        $returnCode = $_GET['return'] ?? '';
-        $paymentMade = $returnCode == 'success1' ? 'Y' : 'N';
-        $paymentToken = $_GET['token'] ?? '';
-        $paymentPayerID = $_GET['PayerID'] ?? '';
-        $feeTotal = $_GET['feeTotal'] ?? '';
-
-        if (empty($paymentToken) || empty($paymentPayerID) || empty($feeTotal)) {
-            header("Location: {$URL}");
-            exit;
-        }
-
-        // PROCEED AND FINALISE PAYMENT
-        require '../../lib/paypal/paypalfunctions.php';
-
-        // Ask paypal to finalise the payment
-        $confirmPayment = confirmPayment($guid, $feeTotal, $paymentToken, $paymentPayerID);
-
-        $ACK = $confirmPayment['ACK'];
-        $paymentTransactionID = $confirmPayment['PAYMENTINFO_0_TRANSACTIONID'] ?? '';
-        $paymentReceiptID = $confirmPayment['PAYMENTINFO_0_RECEIPTID'] ?? '';
+        $return = $payment->confirmPayment();
+        $result = $payment->getPaymentResult();
+        $gibbonPaymentID = $result['gibbonPaymentID'];
 
         // Payment was successful. Yeah!
-        if ($ACK == 'Success') {
-            // Save payment details to gibbonPayment
-            $gibbonPaymentID = setPaymentLog($connection2, $guid, 'gibbonApplicationForm', $gibbonApplicationFormID, 'Online', 'Complete', $feeTotal, 'Paypal', 'Success', $paymentToken, $paymentPayerID, $paymentTransactionID, $paymentReceiptID);
-
-            $updated = $applicationFormGateway->update($gibbonApplicationFormID, ['paymentMade2' => $paymentMade, 'gibbonPaymentID2' => $gibbonPaymentID]);
-
-            if (empty($gibbonPaymentID) || !$updated) {
-                $URL .= '&return=success3';
-                header("Location: {$URL}");
-                exit;
-            }
+        if ($result['success']) {
+            $updated = $applicationFormGateway->update($gibbonApplicationFormID, ['paymentMade2' => 'Y', 'gibbonPaymentID2' => $gibbonPaymentID]);
 
             // Send a receipt
             $subject = __('Receipt from {organisation} via {system}', [
@@ -129,12 +104,12 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
 
             $receiptSent = $mail->Send();
 
-            $URL .= '&return=success1&receipt='.$receiptSent;
+            $URL .= '&return='.$return.'&receipt='.$receiptSent;
             header("Location: {$URL}");
             exit;
         } else {
             // Payment did not go through, or something else happened.
-            $URL .= '&return=success2';
+            $URL .= '&return='.$return;
             header("Location: {$URL}");
             exit;
         }
