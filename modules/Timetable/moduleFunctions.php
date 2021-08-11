@@ -17,9 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model\Event;
+use Microsoft\Graph\Model\Location;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -172,6 +175,56 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
 function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDayStamp)
 {
     global $container, $session;
+
+    if (isset($_SESSION[$guid]['microsoftAPIAccessToken'])) {
+        $eventsSchool = array();
+
+        // Create a Graph client
+        $graph = new Graph();
+        $graph->setAccessToken($_SESSION[$guid]['microsoftAPIAccessToken']);
+
+        $startOfWeek = new \DateTimeImmutable('sunday -1 week');
+        $endOfWeek = new \DateTimeImmutable('sunday');
+
+        // $startOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $startDayStamp));
+        // $endOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $endDayStamp+ 86399));
+
+        $queryParams = array(
+            'startDateTime' => $startOfWeek->format(\DateTimeInterface::ISO8601),
+            'endDateTime' => $endOfWeek->format(\DateTimeInterface::ISO8601),
+            // Only request the properties used by the app
+            '$select' => 'subject,start,end,location,webLink',
+            // Sort them by start time
+            '$orderby' => 'start/dateTime',
+            // Limit results to 25
+            '$top' => 25
+          );
+
+        $getEventsUrl = '/me/calendarView?'.http_build_query($queryParams);
+
+        $events = $graph->createRequest('GET', $getEventsUrl)
+            // Add the user's timezone to the Prefer header
+            ->addHeaders(array(
+            'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
+            ))
+            ->setReturnType(Event::class)
+            ->execute();
+
+        foreach ($events as $event) {
+            $properties = $event->getProperties();
+
+            $eventsSchool[] = [
+                $event->getSubject(),
+                'Specified Time',
+                strtotime($properties['start']['dateTime']),
+                strtotime($properties['end']['dateTime']),
+                $properties['location']['displayName'],
+                $event->getWebLink(),
+            ];
+        }
+        
+        return $eventsSchool;
+    }
 
     $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
 
@@ -779,7 +832,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                     $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
-                    if ($session->get('calendarFeed') != '' and $session->get('googleAPIAccessToken') != null) {
+
+                    $displayCalendars = $session->has('googleAPIAccessToken') || $session->has('microsoftAPIAccessToken');
+                    if ($session->has('calendarFeed') and $displayCalendars) {
                         $checked = '';
                         if ($session->get('viewCalendarSchool') == 'Y') {
                             $checked = 'checked';
@@ -788,7 +843,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
                         $output .= '</span>';
                     }
-                    if ($session->get('calendarFeedPersonal') != '' and $session->has('googleAPIAccessToken')) {
+                    if ($session->has('calendarFeed') and $displayCalendars) {
                         $checked = '';
                         if ($session->get('viewCalendarPersonal') == 'Y') {
                             $checked = 'checked';

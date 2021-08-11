@@ -103,17 +103,20 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             if ($googleOAuth == 'Y') {
                 echo '<div class="column-no-break">';
                 echo '<h2>';
-                echo __('Login with Google');
+                echo __('Single Sign-on');
                 echo '</h2>';
 
                 ?>
                 <script>
                     $(function(){
-                        $('#siteloader').load('lib/google/index.php');
+                        $('#googleloader').load('lib/google/index.php');
+                        $('#microsoftloader').load('lib/google/microsoft.php');
                     });
                 </script>
-                <div id="siteloader" style="min-height:73px"></div>
+                <div id="microsoftloader" style="min-height:66px"></div>
+                <div id="googleloader" style="min-height:73px"></div>
                 <?php
+
                 echo '</div>';
 
             } //End Check for Google Auth
