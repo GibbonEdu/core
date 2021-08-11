@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->addHiddenValue('address', $session->get('address'));
 
     // SINGLE SIGN-ON
-    $form->addRow()->addHeading(__('Single Sign-On Integration'))->append(__('If your school uses services that offer OAuth2 authentication, you can enable single sign on for these platforms. This adds a login button to the home screen and enables users to sign into Gibbon without a username and password, provided they have an active account that matches their email address in Gibbon.'));
+    $form->addRow()->addHeading(__('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon.'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $ssoGoogle = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         ],
         [
             'sso' => 'Other',
-            'name' => __('Other'),
+            'name' => !empty($ssoOther['clientName']) ? $ssoOther['clientName'] : __('Other'),
             'service' => __('Generic OAuth2 Provider'),
             'url' => '',
             'enabled' => $ssoOther['enabled'] ?? 'N',

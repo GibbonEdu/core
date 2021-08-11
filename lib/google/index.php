@@ -2,6 +2,7 @@
 
 use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\System\SettingGateway;
 
 include "../../gibbon.php";
 
@@ -16,7 +17,10 @@ $session->set("pageLoads", NULL);
 
 $URL = "index.php";
 
-$redirect_uri = getSettingByScope($connection2, "System", "googleRedirectUri" );
+$ssoSettings = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'ssoGoogle');
+$ssoSettings = json_decode($ssoSettings, true);
+
+$redirect_uri = $ssoSettings['redirectUri'];
 
 /************************************************
   Make an API request on behalf of a user. In
@@ -70,6 +74,7 @@ if ($session->has('googleAPIAccessToken')) {
   $client->setAccessToken($session->get('googleAPIAccessToken'));
 } else {
   $authUrl = $client->createAuthUrl();
+  $authUrl .= '&pass';
 }
 
 
@@ -79,62 +84,13 @@ if (isset($authUrl)){
 	//show login url
     echo '<div>';
         $themeName = $session->has('gibbonThemeName')? $session->get('gibbonThemeName') : 'Default';
-        echo '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)">';
+        echo '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addOAuth2LoginParams(this)">';
             echo '<button class="w-full bg-white rounded shadow border border-gray-400 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">';
                 echo '<img class="w-10 h-10" src="themes/'.$themeName.'/img/google-login.svg">';
                 echo '<span class="flex-grow text-lg">'.__('Sign in with Google').'</span>';
             echo '</button>';
         echo '</a>';
-
-        $form = \Gibbon\Forms\Form::create('loginFormGoogle', '#');
-        $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
-        $form->setClass('blank fullWidth loginTableGoogle');
-
-        $loginIcon = '<img src="'.$session->get('absoluteURL').'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
-
-        $row = $form->addRow()->setClass('loginOptionsGoogle');
-            $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
-            $row->addSelectSchoolYear('gibbonSchoolYearIDGoogle')
-                ->setClass('fullWidth p-1')
-                ->placeholder(null)
-                ->selected($session->get('gibbonSchoolYearID'));
-
-        $row = $form->addRow()->setClass('loginOptionsGoogle');
-            $row->addContent(sprintf($loginIcon, 'language', __('Language')));
-            $row->addSelectI18n('gibboni18nIDGoogle')
-                ->setClass('fullWidth p-1')
-                ->placeholder(null)
-                ->selected($session->get('i18n')['gibboni18nID']);
-
-        $row = $form->addRow();
-            $row->addContent('<a class="showGoogleOptions" onclick="false" href="#">'.__('Options').'</a>')
-                ->wrap('<span class="small">', '</span>')
-                ->setClass('right');
-
-        echo $form->getOutput();
-        ?>
-
-        <script>
-        $(".loginOptionsGoogle").hide();
-        $(".showGoogleOptions").click(function(){
-            if ($('.loginOptionsGoogle').is(':hidden')) $(".loginTableGoogle").removeClass('blank').addClass('noIntBorder');
-            $(".loginOptionsGoogle").fadeToggle(1000, function() {
-                if ($('.loginOptionsGoogle').is(':hidden')) $(".loginTableGoogle").removeClass('noIntBorder').addClass('blank');
-            });
-        });
-
-        function addGoogleLoginParams(element)
-        {
-            $(element).attr('href', function() {
-                if ($('#gibbonSchoolYearIDGoogle').is(':visible')) {
-                    var googleSchoolYear = $('#gibbonSchoolYearIDGoogle').val();
-                    var googleLanguage = $('#gibboni18nIDGoogle').val();
-                    return this.href.replace('&state&', '&state='+googleSchoolYear+':'+googleLanguage+'&');
-                }
-            });
-        }
-        </script>
-        <?php
+        
 	echo '</div>';
 } else {
 	$user = $service->userinfo->get(); //get user info
@@ -154,7 +110,7 @@ if (isset($authUrl)){
 
     // If available, load school year and language from state passed back from OAuth redirect
     if (isset($_GET['state']) && stripos($_GET['state'], ':') !== false) {
-        list($gibbonSchoolYearID, $gibboni18nID) = explode(':', $_GET['state']);
+        list($gibbonSchoolYearID, $gibboni18nID, $state) = explode(':', $_GET['state']);
     }
 
 	//Test to see if email exists in logintable

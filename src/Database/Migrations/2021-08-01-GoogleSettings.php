@@ -50,7 +50,6 @@ class GoogleSettings extends Migration
             'clientSecret' => $this->settingGateway->getSettingByScope('System', 'googleClientSecret'),
             'redirectUri'  => $this->settingGateway->getSettingByScope('System', 'googleRedirectUri'),
             'developerKey' => $this->settingGateway->getSettingByScope('System', 'googleDeveloperKey'),
-            'calendarFeed' => $this->settingGateway->getSettingByScope('System', 'calendarFeed'),
         ];
 
         $updated = $this->settingGateway->updateSettingByScope('System Admin', 'ssoGoogle', json_encode($data));
@@ -63,7 +62,6 @@ class GoogleSettings extends Migration
             $this->settingGateway->deleteWhere(['scope' => 'System', 'name' => 'googleClientSecret']);
             $this->settingGateway->deleteWhere(['scope' => 'System', 'name' => 'googleRedirectUri']);
             $this->settingGateway->deleteWhere(['scope' => 'System', 'name' => 'googleDeveloperKey']);
-            $this->settingGateway->deleteWhere(['scope' => 'System', 'name' => 'calendarFeed']);
         }
 
         return !$partialFail;

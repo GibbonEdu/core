@@ -59,7 +59,6 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         ob_start();
 
-        $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
         if (isset($_GET['loginReturn'])) {
             $loginReturn = $_GET['loginReturn'];
         } else {
@@ -100,7 +99,11 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         // Add Google Login Button
         if (!$this->session->exists('username') && !$this->session->exists('email')) {
-            if ($googleOAuth == 'Y') {
+            $googleSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoGoogle'), true);
+            $microsoftSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoMicrosoft'), true);
+            $genericSSOSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoOther'), true);
+
+            if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
                 echo '<div class="column-no-break">';
                 echo '<h2>';
                 echo __('Single Sign-on');
@@ -109,12 +112,72 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 ?>
                 <script>
                     $(function(){
-                        $('#googleloader').load('lib/google/index.php');
-                        $('#microsoftloader').load('lib/google/microsoft.php');
+                        <?php if ($googleSettings['enabled'] == 'Y') echo "$('#googleloader').load('lib/google/index.php');"; ?>
+                        <?php if ($microsoftSettings['enabled'] == 'Y') echo "$('#microsoftloader').load('lib/google/microsoft.php');"; ?>
+                        <?php if ($genericSSOSettings['enabled'] == 'Y') echo "$('#genericloader').load('lib/google/other.php');"; ?>
                     });
                 </script>
-                <div id="microsoftloader" style="min-height:66px"></div>
-                <div id="googleloader" style="min-height:73px"></div>
+                <?php
+                
+                if ($googleSettings['enabled'] == 'Y') {
+                    echo ' <div id="googleloader" style="min-height:66px"></div>';
+                }
+                if ($microsoftSettings['enabled'] == 'Y') {
+                    echo '<div id="microsoftloader" style="min-height:66px"></div>';
+                }
+                if ($genericSSOSettings['enabled'] == 'Y') {
+                    echo '<div id="genericloader" style="min-height:66px"></div>';
+                }
+
+                $form = Form::create('loginFormOAuth2', '#');
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setClass('blank fullWidth loginTableOAuth2');
+
+                $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
+
+                $row = $form->addRow()->setClass('loginOptionsOAuth2');
+                    $row->addContent(sprintf($loginIcon, 'planner', __('School Year')))->setClass('flex-none');
+                    $row->addSelectSchoolYear('gibbonSchoolYearIDOAuth2')
+                        ->setClass('w-full p-1')
+                        ->placeholder(null)
+                        ->selected($_SESSION[$guid]['gibbonSchoolYearID'] ?? '');
+
+                $row = $form->addRow()->setClass('loginOptionsOAuth2');
+                    $row->addContent(sprintf($loginIcon, 'language', __('Language')))->setClass('flex-none');
+                    $row->addSelectI18n('gibboni18nIDOAuth2')
+                        ->setClass('w-full p-1')
+                        ->placeholder(null)
+                        ->selected($_SESSION[$guid]['i18n']['gibboni18nID'] ?? '');
+
+                $row = $form->addRow();
+                    $row->addContent('<a class="showOAuth2Options" onclick="false" href="#">'.__('Options').'</a>')
+                        ->wrap('<span class="small">', '</span>')
+                        ->setClass('right');
+
+                echo $form->getOutput();
+
+                ?>
+
+                <script>
+                $(".loginOptionsOAuth2").hide();
+                $(".showOAuth2Options").click(function(){
+                    if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('blank').addClass('noIntBorder');
+                    $(".loginOptionsOAuth2").fadeToggle(1000, function() {
+                        if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('noIntBorder').addClass('blank');
+                    });
+                });
+
+                function addOAuth2LoginParams(element)
+                {
+                    $(element).attr('href', function() {
+                        if ($('#gibbonSchoolYearIDOAuth2').is(':visible')) {
+                            var googleSchoolYear = $('#gibbonSchoolYearIDOAuth2').val();
+                            var googleLanguage = $('#gibboni18nIDOAuth2').val();
+                            return this.href.replace('&state=', '&state='+googleSchoolYear+':'+googleLanguage+':');
+                        }
+                    });
+                }
+                </script>
                 <?php
 
                 echo '</div>';

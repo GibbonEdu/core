@@ -42,22 +42,34 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $values = json_decode($values, true) ?? [];
 
     $data = [
-        'enabled'      => $_POST['enabled'] ?? 'N',
-        'clientName'   => $_POST['clientName'] ?? '',
-        'clientID'     => $_POST['clientID'] ?? '',
-        'clientSecret' => $_POST['clientSecret'] ?? '',
-        'redirectUri'  => $_POST['redirectUri'] ?? '',
-        'developerKey' => $_POST['developerKey'] ?? '',
-        'calendarFeed' => $_POST['calendarFeed'] ?? '',
+        'enabled'           => $_POST['enabled'] ?? 'N',
+        'clientName'        => $_POST['clientName'] ?? '',
+        'clientID'          => $_POST['clientID'] ?? '',
+        'clientSecret'      => $_POST['clientSecret'] ?? '',
+        'developerKey'      => $_POST['developerKey'] ?? '',
+        'authorizeEndpoint' => $_POST['authorizeEndpoint'] ?? '',
+        'tokenEndpoint'     => $_POST['tokenEndpoint'] ?? '',
+        'userEndpoint'      => $_POST['userEndpoint'] ?? '',
     ];
 
-    if ($data['enabled'] == 'Y' && (empty($data['clientID']) || empty($data['clientSecret']) || empty($data['redirectUri']))) {
+    $calendarFeed = $_POST['calendarFeed'] ?? '';
+
+    if ($data['enabled'] == 'Y' && (empty($data['clientID']) || empty($data['clientSecret']))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
+    if ($data['enabled'] == 'N') {
+        $data = array_filter($data);
+    }
+
     $settingGateway->updateSettingByScope('System Admin', 'sso'.$sso, json_encode(array_merge($values, $data)));
+    $settingGateway->updateSettingByScope('System', 'calendarFeed', $calendarFeed);
+
+    // Update all the system settings that are stored in the session
+    getSystemSettings($guid, $connection2);
+    $session->set('pageLoads', null);
 
     $URL .= '&return=success0';
     header("Location: {$URL}");
