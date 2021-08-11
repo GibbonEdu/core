@@ -1047,5 +1047,9 @@ UPDATE `gibbonSetting` SET name='behaviourLettersNegativeLetter2Count', nameDisp
 UPDATE `gibbonSetting` SET name='behaviourLettersNegativeLetter3Count', nameDisplay='Negative Letter 3 Count' WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count';end
 UPDATE `gibbonSetting` SET name='enableNegativeBehaviourLetters', nameDisplay='Enable Negative Behaviour Letters' WHERE scope='Behaviour' AND name='enableBehaviourLetters';end
 ALTER TABLE `gibbonPerson` ADD `microsoftAPIRefreshToken` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `googleAPIRefreshToken`;end 
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoGoogle', 'Google Integration', '', '{\"enabled\":\"N\"}');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoMicrosoft', 'Microsoft Integration', '', '{\"enabled\":\"N\"}');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoOther', 'Generic OAuth2 Provider', '', '{\"enabled\":\"N\"}');end
+ALTER TABLE `gibbonPerson` ADD `genericAPIRefreshToken` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `microsoftAPIRefreshToken`;end
 
 ";
