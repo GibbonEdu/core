@@ -207,10 +207,6 @@ class PersonalDocumentHandler
 
                 $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? '';
 
-                if ($field == 'dateIssue' || $field == 'dateExpiry') {
-                    $value = Format::dateConvert($value);
-                }
-
                 $data[$field] = $value;
             }
 
