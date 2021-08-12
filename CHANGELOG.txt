@@ -39,6 +39,7 @@ v23.0.00
         Data Updater: fixed submit button on data updates with no changes
         Individual Needs: fixed some IN columns not visible on small screens
         Reports: fixed missing data in CustomFields template data source
+        Reports: fixed Left students showing up in the Archive by Student list
         Students: fixed ID card background image alignment
 
 v22.0.00

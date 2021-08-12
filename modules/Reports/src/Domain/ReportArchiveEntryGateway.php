@@ -157,7 +157,8 @@ class ReportArchiveEntryGateway extends QueryableGateway
                     ->where("gibbonRole.category='Student'");
         } else {
             $query->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
-                  ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+                  ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+                  ->where("gibbonPerson.status <> 'Left'");
         }
 
         $query = $this->applyArchiveAccessLogic($query, $roleCategory, $viewDraft, $viewPast);
