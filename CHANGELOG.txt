@@ -36,6 +36,7 @@ v23.0.00
         System: fixed parent dashboard hooks missing access to session object
         Data Updater: fixed personal documents date bug
         Data Updater: fixed personal documents to only use nationality list for passport and ID documents
+        Data Updater: fixed submit button on data updates with no changes
         Individual Needs: fixed some IN columns not visible on small screens
         Reports: fixed missing data in CustomFields template data source
         Students: fixed ID card background image alignment
