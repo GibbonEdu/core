@@ -219,6 +219,26 @@ class Installer
     }
 
     /**
+     * Get the default locale code from database.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @return string The value of the system default locale.
+     *                Or 'en_GB' if setting not found.
+     */
+    public function getDefaultLocale(): string
+    {
+        $statement = $this->connection->prepare('SELECT code FROM gibboni18n WHERE systemDefault="Y"');
+        $statement->execute();
+        if ($statement->rowCount() < 1) {
+            return 'en_GB';
+        }
+        $row = $statement->fetch();
+        return $row['code'];
+    }
+
+    /**
      * Get password policy string messages.
      *
      * @return array

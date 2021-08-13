@@ -54,6 +54,38 @@ class Config
     private $locale = 'en_GB';
 
     /**
+     * Create config instance for given config file path.
+     *
+     * @param string $path
+     *
+     * @return Config The config instance with information from config file, includes
+     *   database connection info and guid.
+     */
+    public static function fromFile(string $path): Config
+    {
+        if (!file_exists($path) || !is_file($path)) {
+            throw new \Exception('Provided path does not exists or is not a file.');
+        }
+        if (!is_readable($path)) {
+            throw new \Exception('Provided path is not readable.');
+        }
+
+        $config = (function () use ($path) {
+            include($path);
+            return compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
+        })();
+
+        return (new static())
+            ->setDatabaseInfo(
+                $config['databaseServer'],
+                $config['databaseName'],
+                $config['databaseUsername'],
+                $config['databasePassword']
+            )
+            ->setGuid($config['guid']);
+    }
+
+    /**
      * Set the database related variables.
      *
      * @param string $databaseServer
