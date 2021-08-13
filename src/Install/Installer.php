@@ -345,6 +345,24 @@ class Installer
     }
 
     /**
+     * Render the Gibbon services URL.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @param string $service
+     *    The unprefixed service path (after "/services/" and without .php).
+     * @param array $details
+     *    An array of all the variables to call the service for.
+     *
+     * @return string The URL string.
+     */
+    public static function gibbonServiceURL(string $service, array $details): string
+    {
+        return 'https://gibbonedu.org/services/' . $service . '.php?' . http_build_query($details);
+    }
+
+    /**
      * Remove remarks (e.g. comments) from SQL string.
      *
      * @version v23

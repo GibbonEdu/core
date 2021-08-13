@@ -413,7 +413,7 @@ class HttpInstallController
         $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
+            $row->addTextField($setting['name'])->setValue(rtrim($context->getPath(''), '/'))->maxLength(255)->required();
 
         $setting = $installer->getSetting('systemName', 'System', true);
         $row = $form->addRow();
@@ -514,6 +514,73 @@ class HttpInstallController
             $row->addSubmit();
 
         return $form->getOutput();
+    }
+
+    public function viewStepFour(
+        Installer $installer,
+        string $version,
+        array $user
+    ) {
+        $step = 3;
+        $output = '';
+
+        // Get settings for rendering below.
+        $absoluteURL = $installer->getSetting('absoluteURL');
+        $statsCollection = $installer->getSetting('statsCollection');
+        $organisationName = $installer->getSetting('organisationName');
+        $installType = $installer->getSetting('installType');
+        $country = $installer->getSetting('country');
+
+        // parse absolute path and protocol for gibbon registration or support.
+        $absolutePathProtocol = '';
+        $absolutePath = '';
+        if (substr($absoluteURL, 0, 7) == 'http://') {
+            $absolutePathProtocol = 'http';
+            $absolutePath = substr($absoluteURL, 7);
+        } elseif (substr($absoluteURL, 0, 8) == 'https://') {
+            $absolutePathProtocol = 'https';
+            $absolutePath = substr($absoluteURL, 8);
+        }
+
+        if ($statsCollection == 'Y') {
+            // TODO: ideally, this should be an HTTP call in backend instead of
+            // an iframe in the frontend.
+            $url = Installer::gibbonServiceURL('tracker/tracker', [
+                'absolutePathProtocol' => $absolutePathProtocol,
+                'absolutePath' => $absolutePath,
+                'organisationName' => $organisationName,
+                'type' => $installType,
+                'version' => $version,
+                'country' => $country,
+                'usersTotal' => 1,
+                'usersFull' => 1,
+            ]);
+            $output .= "<iframe style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
+        }
+
+        //Deal with request to receive welcome email by calling gibbonedu.org iframe
+        $support = isset($_POST['support']) and $_POST['support'] == 'true';
+        if ($support == true) {
+            // TODO: ideally, this should be an HTTP call in backend instead of
+            // an iframe in the frontend.
+            $url = Installer::gibbonServiceURL('support/supportRegistration', [
+                'absolutePathProtocol' => $absolutePathProtocol,
+                'absolutePath' => $absolutePath,
+                'organisationName' => $organisationName,
+                'email' => $user['email'],
+                'title' => $user['title'],
+                'surname' => $user['surname'],
+                'preferredName' => $user['preferredName'],
+            ]);
+            $output .= "<iframe class='support' style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
+        }
+
+        $form = Form::create('installer', "./install.php?step=4");
+        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form->setMultiPartForm(static::getSteps(), 4);
+        $output .= $form->getOutput();
+
+        return $output;
     }
 
     /**

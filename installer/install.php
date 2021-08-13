@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\View\Page;
-use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
 use Gibbon\Install\Config;
 use Gibbon\Install\Context;
@@ -130,9 +129,12 @@ try {
         }
     }
 
-    if ($step == 0) { //Choose language
+    if ($step == 0) {
+        // Validate the installation context and show warning.
+        // If suitable for installation, show form to choose language.
         echo $controller->viewStepOne($nonce, $gibbon->getConfig('version'));
-    } else if ($step == 1) { //Set database options
+    } else if ($step == 1) {
+        // Show the form to input database options.
         echo $controller->viewStepTwo($locale_code, $nonce);
     } elseif ($step == 2) {
         // Check for the presence of a config file (if it hasn't been created yet)
@@ -152,10 +154,13 @@ try {
             $version
         );
     } elseif ($step == 3) {
-        //New PDO DB connection
+        // TODO: move db connection into the Installer class
+        // New PDO DB connection
         $mysqlConnector = new MySqlConnector();
-
         try {
+            // TODO: instead of using $gibbon, should use Config object
+            // parsed from the raw config file. Remove dependency to
+            // the installed Gibbon environment for clarity.
             $pdo = $mysqlConnector->connect($gibbon->getConfig(), true);
             $connection2 = $pdo->getConnection();
             $installer->setConnection($connection2);
@@ -171,7 +176,7 @@ try {
             HttpInstallController::validateUserSubmission($_POST);
             HttpInstallController::validatePostInstallSettingsSubmission($_POST);
         } catch (\InvalidArgumentException $e) {
-            throw new \Exception(__('Installation cannot proceed. {message}', ['message' => $e->getMessage()]));
+            throw new \Exception(__('Installation cannot proceed. {reason}', ['reason' => $e->getMessage()]));
         }
 
         // Write the submitted user to database.
@@ -211,62 +216,13 @@ try {
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
 
-
-        // Get settings for rendering below.
-        $absoluteURL = $installer->getSetting('absoluteURL');
-        $statsCollection = $installer->getSetting('statsCollection');
-        $organisationName = $installer->getSetting('organisationName');
-        $installType = $installer->getSetting('installType');
-        $country = $installer->getSetting('country');
-
-        // parse absolute path and protocol for gibbon registration or support.
-        $absolutePathProtocol = '';
-        $absolutePath = '';
-        if (substr($absoluteURL, 0, 7) == 'http://') {
-            $absolutePathProtocol = 'http';
-            $absolutePath = substr($absoluteURL, 7);
-        } elseif (substr($absoluteURL, 0, 8) == 'https://') {
-            $absolutePathProtocol = 'https';
-            $absolutePath = substr($absoluteURL, 8);
-        }
-
-        if ($statsCollection == 'Y') {
-            // TODO: ideally, this should be an HTTP call in backend instead of
-            // an iframe in the frontend.
-            $url = Installer::parseGibbonServiceURL('tracker/tracker', [
-                'absolutePathProtocol' => $absolutePathProtocol,
-                'absolutePath' => $absolutePath,
-                'organisationName' => $organisationName,
-                'type' => $installType,
-                'version' => $version,
-                'country' => $country,
-                'usersTotal' => 1,
-                'usersFull' => 1,
-            ]);
-            echo "<iframe style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
-        }
-
-        //Deal with request to receive welcome email by calling gibbonedu.org iframe
-        $support = isset($request['support']) and $request['support'] == 'true';
-        if ($support == true) {
-            // TODO: ideally, this should be an HTTP call in backend instead of
-            // an iframe in the frontend.
-            $url = Installer::parseGibbonServiceURL('support/supportRegistration', [
-                'absolutePathProtocol' => $absolutePathProtocol,
-                'absolutePath' => $absolutePath,
-                'organisationName' => $organisationName,
-                'email' => $user['email'],
-                'title' => $user['title'],
-                'surname' => $user['surname'],
-                'preferredName' => $user['preferredName'],
-            ]);
-            echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
-        }
-
-        $form = Form::create('installer', "./install.php?step=4");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setMultiPartForm($steps, 4);
-        echo $form->getOutput();
+        // Display step four (step three results with Gibbon
+        // registration result).
+        echo $controller->viewStepFour(
+            $installer,
+            $version,
+            $user
+        );
 
         if ($settingsFail == true) {
             $page->addError(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.', ["<a href='$absoluteURL'>", '</a>']));
