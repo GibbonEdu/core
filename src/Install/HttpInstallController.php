@@ -553,6 +553,143 @@ class HttpInstallController
     }
 
     /**
+     * Validates the request array for post install user creation.
+     *
+     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException If the submission of any field is not correct.
+     */
+    public static function validateUserSubmission(array $request)
+    {
+        static::validateRequredFields($request, [
+            'title',
+            'surname',
+            'firstName',
+            'username',
+            'passwordNew',
+            'passwordConfirm',
+            'email',
+        ]);
+    }
+
+    /**
+     * Parse user information for user creation in the install process.
+     *
+     * @param array $request
+     *
+     * @return string[]
+     */
+    public static function parseUserSubmission(array $request): array
+    {
+        // Get user account details
+        $salt = \getSalt();
+        $passwordStrong = hash('sha256', $salt.$request['passwordNew']);
+        return [
+            'title' => $request['title'],
+            'surname' => $request['surname'],
+            'firstName' => $request['firstName'],
+            'preferredName' => $request['firstName'],
+            'officialName' => ($request['firstName'].' '.$request['surname']),
+            'username' => $request['username'],
+            'passwordStrong' => $passwordStrong,
+            'passwordStrongSalt' => $salt,
+            'status' => 'Full',
+            'canLogin' => 'Y',
+            'passwordForceReset' => 'N',
+            'gibbonRoleIDPrimary' => '001',
+            'gibbonRoleIDAll' => '001',
+            'email' => $request['email'],
+        ];
+    }
+
+    /**
+     * Validates the request array for post install settings.
+     *
+     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException If the submission of any field is not correct.
+     */
+    public static function validatePostInstallSettingsSubmission(array $request)
+    {
+        static::validateRequredFields($request, [
+            'absoluteURL',
+            'absolutePath',
+            'systemName',
+            'organisationName',
+            'organisationNameShort',
+            'timezone',
+            'country',
+            'installType',
+            'statsCollection',
+            'cuttingEdgeCode',
+            'email',
+        ]);
+
+        if ($request['passwordNew'] !== $request['passwordConfirm']) {
+            throw new \InvalidArgumentException(__('Your request failed because your passwords did not match.'));
+        }
+    }
+
+    /**
+     * Parse post installation settings for the install process.
+     *
+     * @param array $request
+     *
+     * @return mixed[]
+     */
+    public static function parsePostInstallSettings(array $request)
+    {
+        $settings = [];
+
+        // Get system settings
+        $settings['System']['absoluteURL'] = $request['absoluteURL'];
+        $settings['System']['absolutePath'] = $request['absolutePath'];
+        $settings['System']['systemName'] = $request['systemName'];
+        $settings['System']['organisationName'] = $request['organisationName'];
+        $settings['System']['organisationNameShort'] = $request['organisationNameShort'];
+        $settings['System']['organisationEmail'] = $request['email'] ?? '';
+        $settings['System']['organisationAdministrator'] = 1;
+        $settings['System']['organisationDBA'] = 1;
+        $settings['System']['organisationHR'] = 1;
+        $settings['System']['organisationAdmissions'] = 1;
+        $settings['System']['gibboneduComOrganisationName'] = $request['gibboneduComOrganisationName'];
+        $settings['System']['gibboneduComOrganisationKey'] = $request['gibboneduComOrganisationKey'];
+        $settings['System']['currency'] = $request['currency'];
+        $settings['System']['country'] = $request['country'];
+        $settings['System']['timezone'] = $request['timezone'];
+        $settings['System']['installType'] = $request['installType'];
+        $settings['System']['statsCollection'] = $request['statsCollection'];
+        $settings['System']['cuttingEdgeCode'] = $request['cuttingEdgeCodeHidden'];
+
+        // Get finance settings
+        $settings['Finance']['email'] = $request['email'];
+
+        return $settings;
+    }
+
+    /**
+     * Validates the request array for post install settings.
+     *
+     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException If the submission of any field is not correct.
+     */
+    public static function validateRequredFields(array $request, array $requiredFields)
+    {
+        foreach ($requiredFields as $name) {
+            if (!isset($request[$name]) || empty($request[$name])) {
+                throw new \InvalidArgumentException(__('The required field "{name}" is not set.', ['name' => $name]));
+            }
+        }
+    }
+
+    /**
      * Parse password policies into HTML list.
      *
      * @param string[] $policies

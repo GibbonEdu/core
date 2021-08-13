@@ -339,6 +339,11 @@ class Installer
 
     }
 
+    public static function parseGibbonServiceURL(string $service, array $details)
+    {
+        return 'https://gibbonedu.org/services/' . $service . '.php?' . http_build_query($details);
+    }
+
     /**
      * Remove remarks (e.g. comments) from SQL string.
      *

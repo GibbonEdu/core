@@ -24,7 +24,6 @@ use Gibbon\Install\Config;
 use Gibbon\Install\Context;
 use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
-use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
@@ -161,141 +160,107 @@ try {
             $connection2 = $pdo->getConnection();
             $installer->setConnection($connection2);
         } catch (Exception $e) {
-            echo "<div class='error'>";
-            echo '<div>' . sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '</div>';
-            echo '<div>' . sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()])) . '</div>';
-            echo '</div>';
+            throw new \Exception(
+                sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . "<br>\n" .
+                sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()]))
+            );
         }
 
-        // check if correctly created the PDO object.
-        if (!$pdo instanceof Connection) {
-            throw new \Exception('Internal Error: Connection type incorrect.');
-        }
-
-        // Get user account details
-        $title = $_POST['title'];
-        $surname = $_POST['surname'];
-        $firstName = $_POST['firstName'];
-        $preferredName = $_POST['firstName'];
-        $username = $_POST['username'];
-        $password = $_POST['passwordNew'];
-        $passwordConfirm = $_POST['passwordConfirm'];
-        $email = $_POST['email'];
-        $support = isset($_POST['support']) and $_POST['support'] == 'true';
-
-        // Get system settings
-        $absoluteURL = $_POST['absoluteURL'];
-        $absolutePath = $_POST['absolutePath'];
-        $systemName = $_POST['systemName'];
-        $organisationName = $_POST['organisationName'];
-        $organisationNameShort = $_POST['organisationNameShort'];
-        $currency = $_POST['currency'];
-        $timezone = $_POST['timezone'];
-        $country = $_POST['country'];
-        $installType = $_POST['installType'];
-        $statsCollection = $_POST['statsCollection'];
-        $cuttingEdgeCode = $_POST['cuttingEdgeCodeHidden'];
-        $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
-        $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
-
-        if ($surname == '' or $firstName == '' or $preferredName == '' or $email == '' or $username == '' or $password == '' or $passwordConfirm == '' or $email == '' or $absoluteURL == '' or $absolutePath == '' or $systemName == '' or $organisationName == '' or $organisationNameShort == '' or $timezone == '' or $country == '' or $installType == '' or $statsCollection == '' or $cuttingEdgeCode == '') {
-            throw new \Exception(__('Some required fields have not been set, and so installation cannot proceed.'));
-        }
-        if ($password != $passwordConfirm) {
-            throw new \Exception(__('Your request failed because your passwords did not match.'));
-        }
-
-        $salt = getSalt();
-        $passwordStrong = hash('sha256', $salt.$password);
-
-        $userFail = false;
-        //Write to database
+        // parse the submission from POST.
         try {
-            $installer->createUser([
-                'title' => $title,
-                'surname' => $surname,
-                'firstName' => $firstName,
-                'preferredName' => $preferredName,
-                'officialName' => ($firstName.' '.$surname),
-                'username' => $username,
-                'passwordStrong' => $passwordStrong,
-                'passwordStrongSalt' => $salt,
-                'status' => 'Full',
-                'canLogin' => 'Y',
-                'passwordForceReset' => 'N',
-                'gibbonRoleIDPrimary' => '001',
-                'gibbonRoleIDAll' => '001',
-                'email' => $email,
-            ]);
+            HttpInstallController::validateUserSubmission($_POST);
+            HttpInstallController::validatePostInstallSettingsSubmission($_POST);
+        } catch (\InvalidArgumentException $e) {
+            throw new \Exception(__('Installation cannot proceed. {message}', ['message' => $e->getMessage()]));
+        }
+
+        // Write the submitted user to database.
+        try {
+            $user = HttpInstallController::parseUserSubmission($_POST);
+            $installer->createUser($user);
         } catch (\PDOException $e) {
             throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']));
         }
 
+        // Set the new user as teaching staff.
         try {
             $installer->setPersonAsStaff(1, 'Teaching');
         } catch (\PDOException $e) {
         }
 
+        // Parse all submitted settings and store to Gibbon database.
         $settingsFail = false;
-        $settingsFail = $settingsFail || !$installer->setSetting('absoluteURL', $absoluteURL);
-        $settingsFail = $settingsFail || !$installer->setSetting('absolutePath', $absolutePath);
-        $settingsFail = $settingsFail || !$installer->setSetting('systemName', $systemName);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationName', $organisationName);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationNameShort', $organisationNameShort);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationEmail', $email);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationAdministrator', 1);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationDBA', 1);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationHR', 1);
-        $settingsFail = $settingsFail || !$installer->setSetting('organisationAdmissions', 1);
-        $settingsFail = $settingsFail || !$installer->setSetting('gibboneduComOrganisationName', $gibboneduComOrganisationName);
-        $settingsFail = $settingsFail || !$installer->setSetting('gibboneduComOrganisationKey', $gibboneduComOrganisationKey);
-        $settingsFail = $settingsFail || !$installer->setSetting('currency', $currency);
-        $settingsFail = $settingsFail || !$installer->setSetting('country', $country);
-        $settingsFail = $settingsFail || !$installer->setSetting('timezone', $timezone);
-        $settingsFail = $settingsFail || !$installer->setSetting('installType', $installType);
-        $settingsFail = $settingsFail || !$installer->setSetting('statsCollection', $statsCollection);
-        $settingsFail = $settingsFail || !$installer->setSetting('cuttingEdgeCode', $cuttingEdgeCode);
-        $settingsFail = $settingsFail || !$installer->setSetting('email', $email, 'Finance');
-
-        if ($statsCollection == 'Y') {
-            $absolutePathProtocol = '';
-            $absolutePath = '';
-            if (substr($absoluteURL, 0, 7) == 'http://') {
-                $absolutePathProtocol = 'http';
-                $absolutePath = substr($absoluteURL, 7);
-            } elseif (substr($absoluteURL, 0, 8) == 'https://') {
-                $absolutePathProtocol = 'https';
-                $absolutePath = substr($absoluteURL, 8);
+        $settings = HttpInstallController::parsePostInstallSettings($_POST);
+        foreach ($settings as $scope => $scopeSettings) {
+            foreach ($scopeSettings as $key => $value) {
+                $settingsFail = $settingsFail || !$installer->setSetting($key, $value, $scope);
             }
-            echo "<iframe style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/tracker/tracker.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&type='.urlencode($installType).'&version='.urlencode($version).'&country='.$country."&usersTotal=1&usersFull=1'></iframe>";
         }
 
-        if ($cuttingEdgeCode == 'Y') {
+        // If is cutting edge mode, run updater.
+        if ($installer->getSetting('cuttingEdgeCode') === 'Y') {
             $updater = $container->get(Updater::class);
             $errors = $updater->update();
 
             if (!empty($errors)) {
                 echo Format::alert(__('Some aspects of your update failed.'));
             }
-
             $settingsFail = $settingsFail && !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
         }
 
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
 
+
+        // Get settings for rendering below.
+        $absoluteURL = $installer->getSetting('absoluteURL');
+        $statsCollection = $installer->getSetting('statsCollection');
+        $organisationName = $installer->getSetting('organisationName');
+        $installType = $installer->getSetting('installType');
+        $country = $installer->getSetting('country');
+
+        // parse absolute path and protocol for gibbon registration or support.
+        $absolutePathProtocol = '';
+        $absolutePath = '';
+        if (substr($absoluteURL, 0, 7) == 'http://') {
+            $absolutePathProtocol = 'http';
+            $absolutePath = substr($absoluteURL, 7);
+        } elseif (substr($absoluteURL, 0, 8) == 'https://') {
+            $absolutePathProtocol = 'https';
+            $absolutePath = substr($absoluteURL, 8);
+        }
+
+        if ($statsCollection == 'Y') {
+            // TODO: ideally, this should be an HTTP call in backend instead of
+            // an iframe in the frontend.
+            $url = Installer::parseGibbonServiceURL('tracker/tracker', [
+                'absolutePathProtocol' => $absolutePathProtocol,
+                'absolutePath' => $absolutePath,
+                'organisationName' => $organisationName,
+                'type' => $installType,
+                'version' => $version,
+                'country' => $country,
+                'usersTotal' => 1,
+                'usersFull' => 1,
+            ]);
+            echo "<iframe style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
+        }
+
         //Deal with request to receive welcome email by calling gibbonedu.org iframe
+        $support = isset($request['support']) and $request['support'] == 'true';
         if ($support == true) {
-            $absolutePathProtocol = '';
-            $absolutePath = '';
-            if (substr($absoluteURL, 0, 7) == 'http://') {
-                $absolutePathProtocol = 'http';
-                $absolutePath = substr($absoluteURL, 7);
-            } elseif (substr($absoluteURL, 0, 8) == 'https://') {
-                $absolutePathProtocol = 'https';
-                $absolutePath = substr($absoluteURL, 8);
-            }
-            echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='https://gibbonedu.org/services/support/supportRegistration.php?absolutePathProtocol=".urlencode($absolutePathProtocol).'&absolutePath='.urlencode($absolutePath).'&organisationName='.urlencode($organisationName).'&email='.urlencode($email).'&title='.urlencode($title).'&surname='.urlencode($surname).'&preferredName='.urlencode($preferredName)."'></iframe>";
+            // TODO: ideally, this should be an HTTP call in backend instead of
+            // an iframe in the frontend.
+            $url = Installer::parseGibbonServiceURL('support/supportRegistration', [
+                'absolutePathProtocol' => $absolutePathProtocol,
+                'absolutePath' => $absolutePath,
+                'organisationName' => $organisationName,
+                'email' => $user['email'],
+                'title' => $user['title'],
+                'surname' => $user['surname'],
+                'preferredName' => $user['preferredName'],
+            ]);
+            echo "<iframe class='support' style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
         }
 
         $form = Form::create('installer', "./install.php?step=4");
