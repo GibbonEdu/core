@@ -23,7 +23,6 @@ use Gibbon\Install\Config;
 use Gibbon\Install\Context;
 use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
-use Gibbon\Database\MySqlConnector;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
 
