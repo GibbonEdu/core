@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
+use Gibbon\Install\NonceService;
 
 include '../version.php';
 include '../gibbon.php';
@@ -51,22 +52,23 @@ if (empty($step)) {
     error_log(sprintf('Installer: Step %s: Using guid from $_POST: %s', var_export($step, true), isset($_POST['guid']) ? var_export($_POST['guid'], true): 'undefined'));
 }
 
- /**
-  * @var \Gibbon\Core $gibbon
-  * @var \Gibbon\Session\Session $session
-  */
+/**
+ * @var \Gibbon\Core $gibbon
+ * @var \Gibbon\Session\Session $session
+ */
+
 // Use the POSTed GUID in place of "undefined".
 // Later steps have the guid in the config file but without
 // a way to store variables relibly prior to that, installation can fail
 $session->setGuid($guid);
 $session->set('guid', $guid);
-$session->set('absolutePath', realpath(__DIR__ . '/../'));
+$session->set('absolutePath', realpath('../'));
+if (!$session->has('nonceToken')) {
+    $session->set('nonceToken', \getSalt());
+}
 
 // Generate and save a nonce for forms on this page to use
-$nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
-$sessionNonce = $session->get('nonce', []);
-$sessionNonce[$step+1] = $nonce;
-$session->set('nonce', $sessionNonce);
+$nonceService = new NonceService($session->get('nonceToken'));
 
 // Deal with non-existent stringReplacement session
 $session->set('stringReplacement', []);
@@ -107,26 +109,22 @@ if (function_exists('gettext')) {
 }
 
 try {
-
-    // Check session for the presence of a valid nonce; if found, remove it so it's used only once.
-    if ($step >= 1) {
-        $checkNonce = $_POST['nonce'] ?? '';
-        if (!empty($sessionNonce[$step]) && $sessionNonce[$step] == $checkNonce) {
-            unset($sessionNonce[$step]);
-        } else {
-            error_log(sprintf('Debug: expected nonce %s, got %s', var_export($sessionNonce[$step], true), var_export($checkNonce, true)));
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
-        }
-    }
-
     if ($step == 0) {
         // Validate the installation context and show warning.
         // If suitable for installation, show form to choose language.
-        echo $controller->viewStepOne($nonce, $gibbon->getConfig('version'));
+        echo $controller->viewStepOne($nonceService->create('step:0'), $gibbon->getConfig('version'));
     } else if ($step == 1) {
+        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:0')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
+
         // Show the form to input database options.
-        echo $controller->viewStepTwo($locale_code, $nonce);
+        echo $controller->viewStepTwo($locale_code, $nonceService->create('step:1'));
     } elseif ($step == 2) {
+        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:1')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
+
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
 
@@ -147,10 +145,13 @@ try {
         echo $controller->viewStepThree(
             $context,
             $installer,
-            $nonce,
+            $nonceService->create('step:2'),
             $version
         );
     } elseif ($step == 3) {
+        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:2')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
