@@ -99,6 +99,21 @@ class Installer
     }
 
     /**
+     * Get the internal connection for database operations.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @param \PDO $connection
+     *
+     * @return self
+     */
+    public function getConnection(): \PDO
+    {
+        return $this->connection;
+    }
+
+    /**
      * Create a user from data in the given assoc array.
      *
      * @version v23
@@ -265,14 +280,16 @@ class Installer
     }
 
     /**
-     * Run installation according to the given context and config.
+     * Installer will initialize internal database
+     * connection with the provided config data.
      *
-     * @param Context $context
-     * @param Config $config
+     * @param \Gibbon\Install\Config $config
      *
      * @throws \Exception
+     *
+     * @return self
      */
-    public function install(Context $context, Config $config)
+    public function useConfigConnection(Config $config): Installer
     {
         // Check config values for ' " \ / chars which will cause errors in config.php
         if (!$config->validateDatbaseInfo()) {
@@ -285,15 +302,29 @@ class Installer
         }
 
         $pdo = $this->connectByConfig($config);
-        $connection2 = $pdo->getConnection();
-        $this->setConnection($connection2);
-
         if (!$pdo instanceof Connection) {
             throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
         }
 
-        // create and check existance of the config file.
-        $this->createConfigFile($context, $config);
+        $connection2 = $pdo->getConnection();
+        $this->setConnection($connection2);
+        return $this;
+    }
+
+    /**
+     * Run installation according to the given context and config.
+     *
+     * @param \Gibbon\Install\Context $context
+     * @param \Gibbon\Install\Config $config
+     *
+     * @return self
+     *
+     * @throws \Exception
+     */
+    public function install(Context $context, Config $config): Installer
+    {
+        // Get internal connection.
+        $connection2 = $this->getConnection();
 
         // Let's populate the database with the SQL queries from the file.
         $sql = $this->getInstallSql($context);
@@ -337,11 +368,7 @@ class Installer
         } catch (\PDOException $e) {
         }
 
-    }
-
-    public static function parseGibbonServiceURL(string $service, array $details)
-    {
-        return 'https://gibbonedu.org/services/' . $service . '.php?' . http_build_query($details);
+        return $this;
     }
 
     /**

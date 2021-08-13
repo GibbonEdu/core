@@ -107,15 +107,6 @@ if (function_exists('gettext')) {
     textdomain('gibbon');
 }
 
-$isConfigValid = true;
-
-$steps = [
-    1 => __('System Requirements'),
-    2 => __('Database Settings'),
-    3 => __('User Account'),
-    4 => __('Installation Complete'),
-];
-
 try {
 
     // Check session for the presence of a valid nonce; if found, remove it so it's used only once.
@@ -143,7 +134,14 @@ try {
         // Get and set database variables (not set until step 1)
         $config = HttpInstallController::parseConfigSubmission($guid, $_POST);
 
-        // Run database installation of the config.
+        // Initialize database for the installer with the config data.
+        $installer->useConfigConnection($config);
+
+        // Create and check existance of the config file.
+        $installer->createConfigFile($context, $config);
+
+        // Run database installation of the config if (1) and (2) are
+        // successful.
         $installer->install($context, $config);
 
         // Render step 3 form.
