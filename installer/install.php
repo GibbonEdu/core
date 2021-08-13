@@ -146,7 +146,7 @@ try {
 
         // Render step 3 form.
         echo $controller->viewStepThree(
-            $config,
+            $context,
             $installer,
             $nonce,
             $version

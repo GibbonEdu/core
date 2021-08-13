@@ -310,13 +310,20 @@ class HttpInstallController
     }
 
     public function viewStepThree(
-        Config $config,
+        Context $context,
         Installer $installer,
         string $nonce,
         string $version
     )
     {
         $step = 2;
+
+        // Connect database according to config file information.
+        $config = Config::fromFile($context->getConfigPath());
+        $config->setLocale($installer->getDefaultLocale()); // In case needed.
+
+        // Initialize database for the installer with the config data.
+        $installer->useConfigConnection($config);
 
         //Let's gather some more information
         $form = Form::create('installer', "./install.php?step=3");
