@@ -152,22 +152,11 @@ try {
             $version
         );
     } elseif ($step == 3) {
-        // TODO: move db connection into the Installer class
-        // New PDO DB connection
-        $mysqlConnector = new MySqlConnector();
-        try {
-            // TODO: instead of using $gibbon, should use Config object
-            // parsed from the raw config file. Remove dependency to
-            // the installed Gibbon environment for clarity.
-            $pdo = $mysqlConnector->connect($gibbon->getConfig(), true);
-            $connection2 = $pdo->getConnection();
-            $installer->setConnection($connection2);
-        } catch (Exception $e) {
-            throw new \Exception(
-                sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . "<br>\n" .
-                sprintf(__('Error details: {error_message}', ['error_message' => $e->getMessage()]))
-            );
-        }
+
+        // Connect database according to config file information.
+        $config = Config::fromFile($context->getConfigPath());
+        $installer->useConfigConnection($config);
+        $config->setLocale($installer->getDefaultLocale()); // In case needed.
 
         // parse the submission from POST.
         try {
