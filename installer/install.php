@@ -26,7 +26,6 @@ use Gibbon\Services\Format;
 use Gibbon\Database\Updater;
 use Gibbon\Database\Connection;
 use Gibbon\Database\MySqlConnector;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
 
@@ -137,213 +136,22 @@ try {
     } else if ($step == 1) { //Set database options
         echo $controller->viewStepTwo($locale_code, $nonce);
     } elseif ($step == 2) {
-
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
 
         // Get and set database variables (not set until step 1)
-        $config = $controller->parseConfigSubmission($_POST);
+        $config = HttpInstallController::parseConfigSubmission($guid, $_POST);
 
         // Run database installation of the config.
         $installer->install($context, $config);
 
-        //Let's gather some more information
-        $form = Form::create('installer', "./install.php?step=3");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        //$form->setFactory(DatabaseFormFactory::create($pdo));
-        $form->setMultiPartForm($steps, 3);
-
-        $form->addHiddenValue('guid', $guid);
-        $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $config->getLocale());
-        $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
-
-        $form->addRow()->addHeading(__('User Account'));
-
-        $row = $form->addRow();
-            $row->addLabel('title', __('Title'));
-            $row->addSelectTitle('title');
-
-        $row = $form->addRow();
-            $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-            $row->addTextField('surname')->required()->maxLength(30);
-
-        $row = $form->addRow();
-            $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-            $row->addTextField('firstName')->required()->maxLength(30);
-
-        $row = $form->addRow();
-            $row->addLabel('email', __('Email'));
-            $row->addEmail('email')->required();
-
-        $row = $form->addRow();
-            $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
-            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
-
-        $row = $form->addRow();
-            $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-            $row->addTextField('username')->required()->maxLength(20);
-
-        try {
-            $message = HttpInstallController::renderPasswordPolicies(
-                $installer->getPasswordPolicies()
-            );
-            if (!empty($message)) {
-                $form->addRow()->addAlert($policy, 'warning');
-            }
-        } catch (\Exception $e) {
-            $form->addRow()->addAlert(__('An error occurred.'), 'warning');
-        }
-
-        $row = $form->addRow();
-            $row->addLabel('passwordNew', __('Password'));
-            $password = $row->addPassword('passwordNew')
-                ->required()
-                ->maxLength(30);
-
-        $alpha = $installer->getSetting('passwordPolicyAlpha');
-        $numeric = $installer->getSetting('passwordPolicyNumeric');
-        $punctuation = $installer->getSetting('passwordPolicyNonAlphaNumeric');
-        $minLength = $installer->getSetting('passwordPolicyMinLength');
-
-        if ($alpha == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if ($numeric == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /.*[0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if ($punctuation == 'Y') {
-            $password->addValidation('Validate.Format', 'pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-        if (!empty($minLength) && is_numeric($minLength)) {
-            $password->addValidation('Validate.Length', 'minimum: '.$minLength.', failureMessage: "'.__('Does not meet password policy.').'"');
-        }
-
-        $row = $form->addRow();
-            $row->addLabel('passwordConfirm', __('Confirm Password'));
-            $row->addPassword('passwordConfirm')
-                ->required()
-                ->maxLength(30)
-                ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
-
-        $form->addRow()->addHeading(__('System Settings'));
-
-        $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        $port = '';
-        if ($_SERVER['SERVER_PORT'] != '80') {
-            $port = ':'.$_SERVER['SERVER_PORT'];
-        }
-        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
-        $setting = $installer->getSetting('absoluteURL', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
-
-        $setting = $installer->getSetting('absolutePath', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
-
-        $setting = $installer->getSetting('systemName', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
-
-        $installTypes = array(
-            'Production'  => __('Production'),
-            'Testing'     => __('Testing'),
-            'Development' => __('Development')
+        // Render step 3 form.
+        echo $controller->viewStepThree(
+            $config,
+            $installer,
+            $nonce,
+            $version
         );
-
-        $setting = $installer->getSetting('installType', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
-
-        // Expose version information and translation strings to installer.js functions
-        // for check and set cutting edge code based on gibbonedu.org services value
-        $js_version = json_encode($version);
-        $js_i18n = json_encode([
-            '__edge_code_check_success__' => __('Cutting Edge Code check successful.'),
-            '__edge_code_check_failed__' => __('Cutting Edge Code check failed'),
-        ]);
-        echo "
-        <script type='text/javascript'>
-        window.gibboninstaller = {
-            version: {$js_version},
-            i18n: {$js_i18n},
-            msg: function (msg) {
-                return this.i18n[msg] || msg;
-            },
-        };
-        </script>
-        ";
-
-        $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
-        $row = $form->addRow();
-            $row->addContent($statusInitial);
-
-        $setting = $installer->getSetting('cuttingEdgeCode', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue('No')->readonly();
-
-        $setting = $installer->getSetting('statsCollection', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addYesNo($setting['name'])->selected('Y')->required();
-
-        $form->addRow()->addHeading(__('Organisation Settings'));
-
-        $setting = $installer->getSetting('organisationName', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
-
-        $setting = $installer->getSetting('organisationNameShort', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
-
-        $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
-
-        $setting = $installer->getSetting('gibboneduComOrganisationName', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue();
-
-        $setting = $installer->getSetting('gibboneduComOrganisationKey', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue();
-
-        $form->addRow()->addHeading(__('Miscellaneous'));
-
-        $setting = $installer->getSetting('country', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelectCountry($setting['name'])->required();
-
-        $setting = $installer->getSetting('currency', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelectCurrency($setting['name'])->required();
-
-        $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
-            $group[$item] = __($item);
-            return $group;
-        }, array());
-        $setting = $installer->getSetting('timezone', 'System', true);
-        $row = $form->addRow();
-            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
-
-        $row = $form->addRow();
-            $row->addFooter();
-            $row->addSubmit();
-
-        echo $form->getOutput();
-
     } elseif ($step == 3) {
         //New PDO DB connection
         $mysqlConnector = new MySqlConnector();
