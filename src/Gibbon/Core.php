@@ -36,13 +36,13 @@ class Core
     protected $basePath;
 
     /**
-     * Core classes available to all Gibbon scripts 
+     * Core classes available to all Gibbon scripts
      * TODO: These need removed & replaced with DI
-     * @var  object
+     * @var  \Gibbon\Session Session object.
      */
     public $session;
     public $locale;
-    
+
     /**
      * Configuration variables
      * @var  array
