@@ -4,6 +4,7 @@ namespace Gibbon\Install;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Core;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
@@ -328,7 +329,7 @@ class HttpInstallController
         //Let's gather some more information
         $form = Form::create('installer', "./install.php?step=3");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        //$form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
         $form->setMultiPartForm(static::getSteps(), 3);
 
         $form->addHiddenValue('guid', $this->guid);
