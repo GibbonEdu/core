@@ -29,7 +29,7 @@ class Installer
     /**
      * A PDO connection to database server.
      *
-     * @var \PDO
+     * @var \Gibbon\Contracts\Database\Connection $connection
      */
     protected $connection;
 
@@ -88,14 +88,29 @@ class Installer
      * @version v23
      * @since   v23
      *
-     * @param \PDO $connection
+     * @param \Gibbon\Contracts\Database\Connection $connection
      *
      * @return self
      */
-    public function setConnection(\PDO $connection): Installer
+    public function setConnection(Connection $connection): Installer
     {
         $this->connection = $connection;
         return $this;
+    }
+
+    /**
+     * Get the internal connection for database operations.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @param \Gibbon\Contracts\Database\Connection $connection
+     *
+     * @return self
+     */
+    public function getConnection(): Connection
+    {
+        return $this->connection;
     }
 
     /**
@@ -108,9 +123,9 @@ class Installer
      *
      * @return self
      */
-    public function getConnection(): \PDO
+    public function getPDO(): \PDO
     {
-        return $this->connection;
+        return $this->connection->getConnection();
     }
 
     /**
@@ -129,7 +144,7 @@ class Installer
     public function createUser(array $user): bool
     {
         // TODO: add some default values to $user in case any field(s) is / are missed.
-        $statement = $this->connection->prepare('INSERT INTO gibbonPerson SET
+        $statement = $this->getPDO()->prepare('INSERT INTO gibbonPerson SET
             gibbonPersonID=1,
             title=:title,
             surname=:surname,
@@ -161,7 +176,7 @@ class Installer
      */
     public function setPersonAsStaff(int $gibbonPersonID, string $type = 'Teaching')
     {
-        $statement = $this->connection->prepare('INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type');
+        $statement = $this->getPDO()->prepare('INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type');
         return $statement->execute([
             'gibbonPersonID' => $gibbonPersonID,
             'type' => $type,
@@ -183,11 +198,11 @@ class Installer
      */
     public function setSetting(string $name, string $value, string $scope = 'System', bool $throw_on_error=false): bool {
         if ($throw_on_error) {
-            $statement = $this->connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+            $statement = $this->getPDO()->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
             return $statement->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
         }
         try {
-            $statement = $this->connection->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
+            $statement = $this->getPDO()->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
             return $statement->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);
         } catch (\PDOException $e) {
             return false;
@@ -209,13 +224,21 @@ class Installer
      */
     public function getSetting(string $name, string $scope = 'System', bool $return_row = false)
     {
-        $statement = $this->connection->prepare('SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name');
+        $statement = $this->getPDO()->prepare('SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name');
         $statement->execute(['scope' => $scope, 'name' => $name]);
         if ($statement->rowCount() != 1) {
             return false;
         }
         $row = $statement->fetch();
         return $return_row ? $row : $row['value'];
+    }
+
+    public function getGibbonPerson($id)
+    {
+        $statement = $this->getPDO()->prepare('SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID');
+        $statement->execute(['gibbonPersonID' => $id]);
+        if ($statement->rowCount() < 1) return null;
+        return $statement->fetch();
     }
 
     /**
@@ -229,7 +252,7 @@ class Installer
      */
     public function getDefaultLocale(): string
     {
-        $statement = $this->connection->prepare('SELECT code FROM gibboni18n WHERE systemDefault="Y"');
+        $statement = $this->getPDO()->prepare('SELECT code FROM gibboni18n WHERE systemDefault="Y"');
         $statement->execute();
         if ($statement->rowCount() < 1) {
             return 'en_GB';
@@ -321,13 +344,12 @@ class Installer
             throw new \Exception(__('Your request failed because your inputs were incomplete.'));
         }
 
-        $pdo = $this->connectByConfig($config);
-        if (!$pdo instanceof Connection) {
+        $connection = $this->connectByConfig($config);
+        if (!$connection instanceof Connection) {
             throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
         }
 
-        $connection2 = $pdo->getConnection();
-        $this->setConnection($connection2);
+        $this->setConnection($connection);
         return $this;
     }
 
@@ -344,14 +366,14 @@ class Installer
     public function install(Context $context, Config $config): Installer
     {
         // Get internal connection.
-        $connection2 = $this->getConnection();
+        $pdo = $this->getPDO();
 
         // Let's populate the database with the SQL queries from the file.
         $sql = $this->getInstallSql($context);
         $sql = static::removeSqlRemarks($sql);
         $queries = static::splitSql($sql);
         try {
-            $this->runQueries($connection2, $queries);
+            $this->runQueries($pdo, $queries);
         } catch (\PDOException $e) {
             throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
         }
@@ -366,7 +388,7 @@ class Installer
                 echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
             }
             try {
-                $this->runQueries($connection2, $queries);
+                $this->runQueries($pdo, $queries);
             } catch (\PDOException $e) {
                 echo Format::alert(__('There were some issues installing the demo data, but we will continue anyway.'), 'warning');
             }
@@ -376,14 +398,14 @@ class Installer
         try {
             $data = array('code' => $config->getLocale());
             $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
-            $result = $connection2->prepare($sql);
+            $result = $pdo->prepare($sql);
             $result->execute($data);
         } catch (\PDOException $e) {
         }
         try {
             $data = array('code' => $config->getLocale());
             $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
-            $result = $connection2->prepare($sql);
+            $result = $pdo->prepare($sql);
             $result->execute($data);
         } catch (\PDOException $e) {
         }
@@ -452,7 +474,7 @@ class Installer
      *
      * @return \Gibbon\Contracts\Database\Connection
      */
-    public function connectByConfig(Config $config): Connection
+    protected function connectByConfig(Config $config): Connection
     {
         // Establish db connection without database name
         try {
