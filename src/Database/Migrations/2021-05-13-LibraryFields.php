@@ -40,7 +40,7 @@ class LibraryFields extends Migration
         $partialFail = false;
 
         // Migrate library item fields
-        $items = $this->libraryGateway->selectBy([], ['gibbonLibraryItemID', 'fields']); 
+        $items = $this->libraryGateway->selectBy([], ['gibbonLibraryItemID', 'fields'])->fetchAll(); 
 
         foreach ($items as $item) {
             if (empty($item['fields'])) continue;
@@ -53,7 +53,7 @@ class LibraryFields extends Migration
         }
 
         // Migrate library type fields
-        $types = $this->libraryTypeGateway->selectBy([], ['gibbonLibraryTypeID', 'fields']); 
+        $types = $this->libraryTypeGateway->selectBy([], ['gibbonLibraryTypeID', 'fields'])->fetchAll(); 
 
         foreach ($types as $type) {
             if (empty($type['fields'])) continue;
