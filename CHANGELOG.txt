@@ -30,6 +30,7 @@ v23.0.00
         System: adjusted new student order in Staff Dashboard Enrolment tab
         Messenger: updated New Message process to send SMS messages before emails
         Students: updated student enrolment dropdown to include students with Expected status
+        Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
 
     Bug Fixes
         System: fixed lesson plan content in demo data
