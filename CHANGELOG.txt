@@ -23,6 +23,7 @@ v22.0.01
     Bug Fixes
         System: fixed checks for existing fields in database migrations
         Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
+        Departments: fixed Left student role appearing in class list export
         Messenger: fixed sanitization of text when creating new messages
 
     Deprecations:
