@@ -21,8 +21,6 @@ use Gibbon\View\Page;
 use Gibbon\Data\Validator;
 use Gibbon\Install\Config;
 use Gibbon\Install\Context;
-use Gibbon\Services\Format;
-use Gibbon\Database\Updater;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
 use Gibbon\Install\NonceService;
@@ -119,16 +117,25 @@ try {
         }
 
         // Show the form to input database options.
-        echo $controller->viewStepTwo($locale_code, $nonceService);
+        echo $controller->viewStepTwo(
+            $nonceService,
+            "./install.php?step={$step}",
+            $locale_code,
+            $_POST
+        );
     } elseif ($step == 2) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $controller->handleStepTwoSubmit(
-                $context,
-                $installer,
-                $nonceService,
-                $guid,
-                $_POST
-            );
+            try {
+                $controller->handleStepTwoSubmit(
+                    $context,
+                    $installer,
+                    $nonceService,
+                    $guid,
+                    $_POST
+                );
+            } catch (\Exception $e) {
+                $page->addError($e->getMessage());
+            }
         }
 
         // Render step 3 form.
@@ -136,27 +143,36 @@ try {
             $context,
             $installer,
             $nonceService,
-            $version
+            "./install.php?step={$step}",
+            $version,
+            $_POST
         );
     } elseif ($step == 3) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $result = $controller->handleStepThreeSubmit(
-                $container,
-                $context,
-                $installer,
-                $nonceService,
-                $version,
-                $_POST
-            );
+            try {
+                $controller->handleStepThreeSubmit(
+                    $container,
+                    $context,
+                    $installer,
+                    $nonceService,
+                    $version,
+                    $_POST
+                );
+
+                // Redirect to next step
+                header('Location: ./install.php?step=' . ($step+1));
+                exit;
+            } catch (\Exception $e) {
+                $page->addError($e->getMessage());
+            }
         }
 
         // Display step four (step three results with Gibbon
         // registration result).
         echo $controller->viewStepFour(
+            $context,
             $installer,
-            $version,
-            $_POST,
-            isset($result['user']) ? $result['user'] : null
+            $version
         );
 
         if ($settingsFail == true) {

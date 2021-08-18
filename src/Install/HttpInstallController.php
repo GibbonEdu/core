@@ -261,8 +261,10 @@ class HttpInstallController
     }
 
     public function viewStepTwo(
+        NonceService $nonceService,
+        string $current_url,
         string $locale_code,
-        NonceService $nonceService
+        array $data
     ): string
     {
         $nonce = $nonceService->create('install:setDbConfig');
@@ -297,15 +299,15 @@ class HttpInstallController
 
         $row = $form->addRow();
             $row->addLabel('databaseServer', __('Database Server'))->description(__('Localhost, IP address or domain.'));
-            $row->addTextField('databaseServer')->required()->maxLength(255);
+            $row->addTextField('databaseServer')->setValue($data['databaseServer'] ?? '')->required()->maxLength(255);
 
         $row = $form->addRow();
             $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
-            $row->addTextField('databaseName')->required()->maxLength(50);
+            $row->addTextField('databaseName')->setValue($data['databaseName'] ?? '')->required()->maxLength(50);
 
         $row = $form->addRow();
             $row->addLabel('databaseUsername', __('Database Username'));
-            $row->addTextField('databaseUsername')->required()->maxLength(50);
+            $row->addTextField('databaseUsername')->setValue($data['databaseUsername'] ?? '')->required()->maxLength(50);
 
         $row = $form->addRow();
             $row->addLabel('databasePassword', __('Database Password'));
@@ -313,7 +315,7 @@ class HttpInstallController
 
         $row = $form->addRow();
             $row->addLabel('demoData', __('Install Demo Data?'));
-            $row->addYesNo('demoData')->selected('N');
+            $row->addYesNo('demoData')->selected($data['demoData'] ?? 'N');
 
 
         //FINISH & OUTPUT FORM
@@ -357,7 +359,9 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
-        string $version
+        string $current_url,
+        string $version,
+        array $data
     )
     {
         $nonce = $nonceService->create('install:postInstallSettings');
@@ -385,27 +389,27 @@ class HttpInstallController
 
         $row = $form->addRow();
             $row->addLabel('title', __('Title'));
-            $row->addSelectTitle('title');
+            $row->addSelectTitle('title')->selected($data['title'] ?? '');
 
         $row = $form->addRow();
             $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-            $row->addTextField('surname')->required()->maxLength(30);
+            $row->addTextField('surname')->setValue($data['surname'] ?? '')->required()->maxLength(30);
 
         $row = $form->addRow();
             $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-            $row->addTextField('firstName')->required()->maxLength(30);
+            $row->addTextField('firstName')->setValue($data['firstName'] ?? '')->required()->maxLength(30);
 
         $row = $form->addRow();
             $row->addLabel('email', __('Email'));
-            $row->addEmail('email')->required();
+            $row->addEmail('email')->setValue($data['email'] ?? '')->required();
 
         $row = $form->addRow();
             $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
-            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked('on')->setID('support');
+            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked(($data['support'] ?? 'off') === 'on')->setID('support');
 
         $row = $form->addRow();
             $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-            $row->addTextField('username')->required()->maxLength(20);
+            $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
         try {
             $message = HttpInstallController::renderPasswordPolicies(
@@ -460,7 +464,7 @@ class HttpInstallController
         $setting = $installer->getSetting('absoluteURL', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
+            $row->addURL($setting['name'])->setValue($data[$setting['name']] ?? $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
 
         $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
@@ -470,7 +474,7 @@ class HttpInstallController
         $setting = $installer->getSetting('systemName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
+            $row->addTextField($setting['name'])->maxLength(50)->required()->setValue($data[$setting['name']] ?? 'Gibbon');
 
         $installTypes = array(
             'Production'  => __('Production'),
@@ -481,7 +485,7 @@ class HttpInstallController
         $setting = $installer->getSetting('installType', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
+            $row->addSelect($setting['name'])->fromArray($installTypes)->selected($data[$setting['name']] ?? 'Testing')->required();
 
         // Expose version information and translation strings to installer.js functions
         // for check and set cutting edge code based on gibbonedu.org services value
@@ -514,43 +518,43 @@ class HttpInstallController
         $setting = $installer->getSetting('statsCollection', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addYesNo($setting['name'])->selected('Y')->required();
+            $row->addYesNo($setting['name'])->selected(($data[$setting['name']] ?? 'N') == 'Y')->required();
 
         $form->addRow()->addHeading(__('Organisation Settings'));
 
         $setting = $installer->getSetting('organisationName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
+            $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '')->maxLength(50)->required();
 
         $setting = $installer->getSetting('organisationNameShort', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
+            $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '')->maxLength(50)->required();
 
         $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
 
         $setting = $installer->getSetting('gibboneduComOrganisationName', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue();
+            $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '');
 
         $setting = $installer->getSetting('gibboneduComOrganisationKey', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextField($setting['name'])->setValue();
+            $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '');
 
         $form->addRow()->addHeading(__('Miscellaneous'));
 
         $setting = $installer->getSetting('country', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelectCountry($setting['name'])->required();
+            $row->addSelectCountry($setting['name'])->selected($data[$setting['name']] ?? '')->required();
 
         $setting = $installer->getSetting('currency', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelectCurrency($setting['name'])->required();
+            $row->addSelectCurrency($setting['name'])->selected($data[$setting['name']] ?? '')->required();
 
         $tzlist = array_reduce(\DateTimeZone::listIdentifiers(\DateTimeZone::ALL), function($group, $item) {
             $group[$item] = __($item);
@@ -559,7 +563,7 @@ class HttpInstallController
         $setting = $installer->getSetting('timezone', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
+            $row->addSelect($setting['name'])->fromArray($tzlist)->selected($data[$setting['name']] ?? '')->required()->placeholder();
 
         $row = $form->addRow();
             $row->addFooter();
@@ -575,7 +579,7 @@ class HttpInstallController
         NonceService $nonceService,
         string $version,
         array $data
-    ): array
+    )
     {
         if (!$nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings')) {
             throw new \Exception(__('Your request failed because you do not have access to this action.'));
@@ -619,6 +623,9 @@ class HttpInstallController
 
         // If is cutting edge mode, run updater.
         if ($installer->getSetting('cuttingEdgeCode') === 'Y') {
+            // Note: must create the updater after settings are all set
+            //       or the updater won't get the correct absolutePath
+            //       to get the correct version.php path with.
             $updater = $container->get(Updater::class);
             $errors = $updater->update();
 
@@ -630,18 +637,20 @@ class HttpInstallController
 
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
-
-        return ['user' => $user];
     }
 
     public function viewStepFour(
+        Context $context,
         Installer $installer,
-        string $version,
-        array $data,
-        ?array $user
+        string $version
     ) {
         $step = 3;
         $output = '';
+
+        // Connect database according to config file information.
+        $config = Config::fromFile($context->getConfigPath());
+        $installer->useConfigConnection($config);
+        $config->setLocale($installer->getDefaultLocale()); // In case needed.
 
         // Get settings for rendering below.
         $absoluteURL = $installer->getSetting('absoluteURL');
@@ -649,6 +658,7 @@ class HttpInstallController
         $organisationName = $installer->getSetting('organisationName');
         $installType = $installer->getSetting('installType');
         $country = $installer->getSetting('country');
+        $registerGibbonSupport = $installer->getSetting('registerGibbonSupport');
 
         // parse absolute path and protocol for gibbon registration or support.
         $absolutePathProtocol = '';
@@ -678,8 +688,10 @@ class HttpInstallController
         }
 
         //Deal with request to receive welcome email by calling gibbonedu.org iframe
-        $support = isset($data['support']) and $data['support'] == 'true';
-        if ($support == true) {
+        if ($registerGibbonSupport === 'Y') {
+            // Get the installing administrator, supposedly.
+            $user = $installer->getGibbonPerson(1);
+
             // TODO: ideally, this should be an HTTP call in backend instead of
             // an iframe in the frontend.
             $url = Installer::gibbonServiceURL('support/supportRegistration', [
@@ -850,6 +862,7 @@ class HttpInstallController
         $settings['System']['installType'] = $data['installType'];
         $settings['System']['statsCollection'] = $data['statsCollection'];
         $settings['System']['cuttingEdgeCode'] = $data['cuttingEdgeCodeHidden'];
+        $settings['System']['registerGibbonSupport'] = !empty($data['support']) ? 'Y' : 'N';
 
         // Get finance settings
         $settings['Finance']['email'] = $data['email'];
