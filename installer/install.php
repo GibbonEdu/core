@@ -167,6 +167,9 @@ try {
             }
         }
 
+        // Forget installation details in session.
+        unset($_SESSION['installLocale']);
+
         // Display step four (step three results with Gibbon
         // registration result).
         echo $controller->viewStepFour(
