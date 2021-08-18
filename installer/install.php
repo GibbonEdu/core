@@ -109,6 +109,10 @@ if (function_exists('gettext')) {
 }
 
 try {
+    // Prevent memory or time limit issues.
+    ini_set('memory_limit', '5120M');
+    set_time_limit(0);
+
     if ($step == 0) {
         // Validate the installation context and show warning.
         // If suitable for installation, show form to choose language.
