@@ -132,11 +132,6 @@ class HttpInstallController
         ];
     }
 
-    public static function generateNonce(): string
-    {
-        return hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
-    }
-
     /**
      * Render the view for step one.
      *
