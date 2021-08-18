@@ -4,6 +4,7 @@ namespace Gibbon\Install;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Core;
+use Gibbon\Database\Updater;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -247,6 +248,17 @@ class HttpInstallController
         return $form->getOutput();
     }
 
+    public function handleStepOneSubmit(
+        NonceService $nonceService,
+        array $data
+    )
+    {
+        if (!$nonceService->verify($data['nonce'] ?? '', 'install:setLocale')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
+        $_SESSION['installLocale'] = $data['code'] ?? 'en_GB';
+    }
+
     public function viewStepTwo(
         string $locale_code,
         string $nonce
@@ -308,6 +320,35 @@ class HttpInstallController
             $row->addSubmit();
 
         return $form->getOutput();
+    }
+
+    public function handleStepTwoSubmit(
+        Context $context,
+        Installer $installer,
+        NonceService $nonceService,
+        string $guid,
+        array $data
+    )
+    {
+        if (!$nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
+
+        // Check for the presence of a config file (if it hasn't been created yet)
+        $context->validateConfigPath();
+
+        // Get and set database variables (not set until step 1)
+        $config = static::parseConfigSubmission($guid, $_POST);
+
+        // Initialize database for the installer with the config data.
+        $installer->useConfigConnection($config);
+
+        // Create and check existance of the config file.
+        $installer->createConfigFile($context, $config);
+
+        // Run database installation of the config if (1) and (2) are
+        // successful.
+        $installer->install($context, $config);
     }
 
     public function viewStepThree(
@@ -524,6 +565,70 @@ class HttpInstallController
         return $form->getOutput();
     }
 
+    public function handleStepThreeSubmit(
+        ContainerInterface $container,
+        Context $context,
+        Installer $installer,
+        NonceService $nonceService,
+        string $version,
+        array $data
+    )
+    {
+        if (!$nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings')) {
+            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        }
+
+        // Connect database according to config file information.
+        $config = Config::fromFile($context->getConfigPath());
+        $installer->useConfigConnection($config);
+        $config->setLocale($installer->getDefaultLocale()); // In case needed.
+
+        // parse the submission from POST.
+        try {
+            static::validateUserSubmission($data);
+            static::validatePostInstallSettingsSubmission($data);
+        } catch (\InvalidArgumentException $e) {
+            throw new \Exception(__('Installation cannot proceed. {reason}', ['reason' => $e->getMessage()]));
+        }
+
+        // Write the submitted user to database.
+        try {
+            $user = static::parseUserSubmission($data);
+            $installer->createUser($user);
+        } catch (\PDOException $e) {
+            throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']));
+        }
+
+        // Set the new user as teaching staff.
+        try {
+            $installer->setPersonAsStaff(1, 'Teaching');
+        } catch (\PDOException $e) {
+        }
+
+        // Parse all submitted settings and store to Gibbon database.
+        $settingsFail = false;
+        $settings = static::parsePostInstallSettings($data);
+        foreach ($settings as $scope => $scopeSettings) {
+            foreach ($scopeSettings as $key => $value) {
+                $settingsFail = $settingsFail || !$installer->setSetting($key, $value, $scope);
+            }
+        }
+
+        // If is cutting edge mode, run updater.
+        if ($installer->getSetting('cuttingEdgeCode') === 'Y') {
+            $updater = $container->get(Updater::class);
+            $errors = $updater->update();
+
+            if (!empty($errors)) {
+                echo Format::alert(__('Some aspects of your update failed.'));
+            }
+            $settingsFail = $settingsFail || !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
+        }
+
+        // Update DB version for existing languages (installed manually?)
+        i18nCheckAndUpdateVersion($container, $version);
+    }
+
     public function viewStepFour(
         Installer $installer,
         string $version,
@@ -595,25 +700,25 @@ class HttpInstallController
      * Parse a given request into Config object.
      *
      * @param string $guid
-     * @param array $request
+     * @param array $data
      *
      * @return \Gibbon\Install\Config
      *
      * @throws \Exception
      */
-    public static function parseConfigSubmission(string $guid, array $request): Config
+    public static function parseConfigSubmission(string $guid, array $data): Config
     {
         // Get and set database variables (not set until step 1)
         $config = (new Config)
             ->setGuid($guid)
             ->setDatabaseInfo(
-                $request['databaseServer'] ?? '',
-                $request['databaseName'] ?? '',
-                $request['databaseUsername'] ?? '',
-                $request['databasePassword'] ?? ''
+                $data['databaseServer'] ?? '',
+                $data['databaseName'] ?? '',
+                $data['databaseUsername'] ?? '',
+                $data['databasePassword'] ?? ''
             )
-            ->setFlagDemoData(($request['demoData'] ?? '') === 'Y')
-            ->setLocale($request['code'] ?? 'en_GB');
+            ->setFlagDemoData(($data['demoData'] ?? '') === 'Y')
+            ->setLocale($data['code'] ?? 'en_GB');
 
         if (!$config->hasDatabaseInfo()) {
             throw new \Exception(__('You have not provide appropriate database info.'));
@@ -630,15 +735,15 @@ class HttpInstallController
     /**
      * Validates the request array for post install user creation.
      *
-     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     * @param array $data The submitted array. Use $_POST or equivlant submission array.
      *
      * @return void
      *
      * @throws \InvalidArgumentException If the submission of any field is not correct.
      */
-    public static function validateUserSubmission(array $request)
+    public static function validateUserSubmission(array $data)
     {
-        static::validateRequredFields($request, [
+        static::validateRequredFields($data, [
             'title',
             'surname',
             'firstName',
@@ -652,22 +757,22 @@ class HttpInstallController
     /**
      * Parse user information for user creation in the install process.
      *
-     * @param array $request
+     * @param array $data
      *
      * @return string[]
      */
-    public static function parseUserSubmission(array $request): array
+    public static function parseUserSubmission(array $data): array
     {
         // Get user account details
         $salt = \getSalt();
-        $passwordStrong = hash('sha256', $salt.$request['passwordNew']);
+        $passwordStrong = hash('sha256', $salt.$data['passwordNew']);
         return [
-            'title' => $request['title'],
-            'surname' => $request['surname'],
-            'firstName' => $request['firstName'],
-            'preferredName' => $request['firstName'],
-            'officialName' => ($request['firstName'].' '.$request['surname']),
-            'username' => $request['username'],
+            'title' => $data['title'],
+            'surname' => $data['surname'],
+            'firstName' => $data['firstName'],
+            'preferredName' => $data['firstName'],
+            'officialName' => ($data['firstName'].' '.$data['surname']),
+            'username' => $data['username'],
             'passwordStrong' => $passwordStrong,
             'passwordStrongSalt' => $salt,
             'status' => 'Full',
@@ -675,22 +780,22 @@ class HttpInstallController
             'passwordForceReset' => 'N',
             'gibbonRoleIDPrimary' => '001',
             'gibbonRoleIDAll' => '001',
-            'email' => $request['email'],
+            'email' => $data['email'],
         ];
     }
 
     /**
      * Validates the request array for post install settings.
      *
-     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     * @param array $data The submitted array. Use $_POST or equivlant submission array.
      *
      * @return void
      *
      * @throws \InvalidArgumentException If the submission of any field is not correct.
      */
-    public static function validatePostInstallSettingsSubmission(array $request)
+    public static function validatePostInstallSettingsSubmission(array $data)
     {
-        static::validateRequredFields($request, [
+        static::validateRequredFields($data, [
             'absoluteURL',
             'absolutePath',
             'systemName',
@@ -704,7 +809,7 @@ class HttpInstallController
             'email',
         ]);
 
-        if ($request['passwordNew'] !== $request['passwordConfirm']) {
+        if ($data['passwordNew'] !== $data['passwordConfirm']) {
             throw new \InvalidArgumentException(__('Your request failed because your passwords did not match.'));
         }
     }
@@ -712,36 +817,36 @@ class HttpInstallController
     /**
      * Parse post installation settings for the install process.
      *
-     * @param array $request
+     * @param array $data
      *
      * @return mixed[]
      */
-    public static function parsePostInstallSettings(array $request)
+    public static function parsePostInstallSettings(array $data)
     {
         $settings = [];
 
         // Get system settings
-        $settings['System']['absoluteURL'] = $request['absoluteURL'];
-        $settings['System']['absolutePath'] = $request['absolutePath'];
-        $settings['System']['systemName'] = $request['systemName'];
-        $settings['System']['organisationName'] = $request['organisationName'];
-        $settings['System']['organisationNameShort'] = $request['organisationNameShort'];
-        $settings['System']['organisationEmail'] = $request['email'] ?? '';
+        $settings['System']['absoluteURL'] = $data['absoluteURL'];
+        $settings['System']['absolutePath'] = $data['absolutePath'];
+        $settings['System']['systemName'] = $data['systemName'];
+        $settings['System']['organisationName'] = $data['organisationName'];
+        $settings['System']['organisationNameShort'] = $data['organisationNameShort'];
+        $settings['System']['organisationEmail'] = $data['email'] ?? '';
         $settings['System']['organisationAdministrator'] = 1;
         $settings['System']['organisationDBA'] = 1;
         $settings['System']['organisationHR'] = 1;
         $settings['System']['organisationAdmissions'] = 1;
-        $settings['System']['gibboneduComOrganisationName'] = $request['gibboneduComOrganisationName'];
-        $settings['System']['gibboneduComOrganisationKey'] = $request['gibboneduComOrganisationKey'];
-        $settings['System']['currency'] = $request['currency'];
-        $settings['System']['country'] = $request['country'];
-        $settings['System']['timezone'] = $request['timezone'];
-        $settings['System']['installType'] = $request['installType'];
-        $settings['System']['statsCollection'] = $request['statsCollection'];
-        $settings['System']['cuttingEdgeCode'] = $request['cuttingEdgeCodeHidden'];
+        $settings['System']['gibboneduComOrganisationName'] = $data['gibboneduComOrganisationName'];
+        $settings['System']['gibboneduComOrganisationKey'] = $data['gibboneduComOrganisationKey'];
+        $settings['System']['currency'] = $data['currency'];
+        $settings['System']['country'] = $data['country'];
+        $settings['System']['timezone'] = $data['timezone'];
+        $settings['System']['installType'] = $data['installType'];
+        $settings['System']['statsCollection'] = $data['statsCollection'];
+        $settings['System']['cuttingEdgeCode'] = $data['cuttingEdgeCodeHidden'];
 
         // Get finance settings
-        $settings['Finance']['email'] = $request['email'];
+        $settings['Finance']['email'] = $data['email'];
 
         return $settings;
     }
@@ -749,16 +854,16 @@ class HttpInstallController
     /**
      * Validates the request array for post install settings.
      *
-     * @param array $request The submitted array. Use $_POST or equivlant submission array.
+     * @param array $data The submitted array. Use $_POST or equivlant submission array.
      *
      * @return void
      *
      * @throws \InvalidArgumentException If the submission of any field is not correct.
      */
-    public static function validateRequredFields(array $request, array $requiredFields)
+    public static function validateRequredFields(array $data, array $requiredFields)
     {
         foreach ($requiredFields as $name) {
-            if (!isset($request[$name]) || empty($request[$name])) {
+            if (!isset($data[$name]) || empty($data[$name])) {
                 throw new \InvalidArgumentException(__('The required field "{name}" is not set.', ['name' => $name]));
             }
         }
