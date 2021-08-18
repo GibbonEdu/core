@@ -122,6 +122,11 @@ class HttpInstallController
         );
     }
 
+    /**
+     * Get the key and localized name of each steps of installation.
+     *
+     * @return string[] Steps with step number as key and name as value. Starts from 1.
+     */
     public static function getSteps(): array
     {
         return [
@@ -244,6 +249,18 @@ class HttpInstallController
         return $form->getOutput();
     }
 
+    /**
+     * Remember the installation locale submitted from step 1.
+     * And try to install the associated locale file, if not in the system.
+     *
+     * @param Context $context
+     * @param NonceService $nonceService
+     * @param array $data
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function handleStepOneSubmit(
         NonceService $nonceService,
         array $data
@@ -321,6 +338,21 @@ class HttpInstallController
         return $form->getOutput();
     }
 
+    /**
+     * Do basic installation of config file, database
+     * table and data. Will also insert the demo data
+     * if needed.
+     *
+     * @param Context $context
+     * @param Installer $installer
+     * @param NonceService $nonceService
+     * @param string $guid
+     * @param array $data
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function handleStepTwoSubmit(
         Context $context,
         Installer $installer,
@@ -350,6 +382,18 @@ class HttpInstallController
         $installer->install($context, $config);
     }
 
+    /**
+     * Render the post-installation setting form
+     *
+     * @param Context $context
+     * @param Installer $installer
+     * @param NonceService $nonceService
+     * @param string $current_url
+     * @param string $version
+     * @param array $data
+     *
+     * @return string
+     */
     public function viewStepThree(
         Context $context,
         Installer $installer,
@@ -357,7 +401,7 @@ class HttpInstallController
         string $current_url,
         string $version,
         array $data
-    )
+    ): string
     {
         $nonce = $nonceService->create('install:postInstallSettings');
         $step = 2;
@@ -567,6 +611,23 @@ class HttpInstallController
         return $form->getOutput();
     }
 
+    /**
+     * Handle the post installation setups. Includes,
+     * * Create admin user.
+     * * Set initial settings.
+     * * Update database version.
+     *
+     * @param ContainerInterface $container
+     * @param Context $context
+     * @param Installer $installer
+     * @param NonceService $nonceService
+     * @param string $version
+     * @param array $data
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
     public function handleStepThreeSubmit(
         ContainerInterface $container,
         Context $context,
@@ -634,11 +695,21 @@ class HttpInstallController
         i18nCheckAndUpdateVersion($container, $version);
     }
 
+    /**
+     * Render installation results.
+     *
+     * @param Context $context
+     * @param Installer $installer
+     * @param string $current_url
+     * @param string $version
+     *
+     * @return string
+     */
     public function viewStepFour(
         Context $context,
         Installer $installer,
         string $version
-    ) {
+    ): string {
         $step = 3;
         $output = '';
 
@@ -743,6 +814,18 @@ class HttpInstallController
         }
 
         return $config;
+    }
+
+    /**
+     * Parse demo data installation config.
+     *
+     * @param array $data
+     *
+     * @return bool If the user wants to install demo data to this Gibbon.
+     */
+    public static function parseDemoDataInstallFlag(array $data): bool
+    {
+        return ($data['demoData'] ?? '') === 'Y';
     }
 
     /**
