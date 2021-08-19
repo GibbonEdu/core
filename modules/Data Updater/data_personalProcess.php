@@ -237,6 +237,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         foreach ($documentFields as $field) {
                             $value = !empty($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field]) ? $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] : null;
 
+                            if ($field == 'filePath' && !empty($_FILES['document'.$document['gibbonPersonalDocumentTypeID'].$field]['tmp_name'])) {
+                                $dataChanged = true;
+                            }
+
                             if ($field == 'dateExpiry' || $field == 'dateIssue') {
                                 $value = Format::dateConvert($value);
                             }
