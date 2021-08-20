@@ -37,7 +37,7 @@ class FileUploaderTest extends TestCase
                       ->willReturn($mockResults);
 
         // Create a stub for the Gibbon\session class
-        $this->mockSession = $this->createMock(session::class);
+        $this->mockSession = $this->createMock(Session::class);
         $this->mockSession->method('get')
                           ->willReturn(__DIR__);
 
