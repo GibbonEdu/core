@@ -20,6 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Layout\Column;
+use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\Layout\Row;
+use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Tables\DataTable;
 
 /**
@@ -43,12 +47,18 @@ class FormFactory implements FormFactoryInterface
 
     /* LAYOUT TYPES --------------------------- */
 
-    public function createRow($id = '')
+    /**
+     * {@inheritDoc}
+     */
+    public function createRow($id = ''): Row
     {
         return new Layout\Row($this, $id);
     }
 
-    public function createColumn($id = '')
+    /**
+     * {@inheritDoc}
+     */
+    public function createColumn($id = ''): Column
     {
         return new Layout\Column($this, $id);
     }
@@ -80,7 +90,10 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Details($this, $id);
     }
 
-    public function createTrigger($selector = '')
+    /**
+     * {@inheritDoc}
+     */
+    public function createTrigger($selector = ''): Trigger
     {
         return new Layout\Trigger($selector);
     }
@@ -100,7 +113,10 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Heading($content, $tag = 'h4');
     }
 
-    public function createContent($content = '')
+    /**
+     * {@inheritDoc}
+     */
+    public function createContent($content = ''): Element
     {
         return new Layout\Element($content);
     }
