@@ -22,8 +22,6 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-require_once dirname(__FILE__).'/gibbon.php';
-
 function getIPAddress() {
     $return = false;
 
