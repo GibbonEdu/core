@@ -21,6 +21,7 @@ v22.0.01
     Security
 
     Bug Fixes
+        System: fixed lesson plan content in demo data
         System: fixed checks for existing fields in database migrations
         System: fixed cookie consent message to not redirect to the dashboard
         Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
