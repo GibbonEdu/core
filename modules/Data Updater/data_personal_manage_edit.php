@@ -203,10 +203,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => 1];
             $changeCount += $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToDataUpdate($form, $oldValues['gibbonPersonID'], $gibbonPersonUpdateID, $params);
 
-            if ($changeCount > 0) { 
-                $row = $form->addRow();
-                    $row->addSubmit();
-            }
+            $row = $form->addRow();
+                $row->addSubmit();
 
             echo $form->getOutput();
         }
