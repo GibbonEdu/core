@@ -1003,4 +1003,6 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 //v22.0.01
 ++$count;
 $sql[$count][0] = '22.0.01';
-$sql[$count][1] = "";
+$sql[$count][1] = "
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+";
