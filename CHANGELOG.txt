@@ -28,6 +28,7 @@ v22.0.01
         Data Updater: fixed personal documents to only use nationality list for passport and ID documents
         Data Updater: fixed submit button on data updates with no changes
         Departments: fixed Left student role appearing in class list export
+        Individual Needs: fixed some IN columns not visible on small screens
         Messenger: fixed sanitization of text when creating new messages
         Reports: fixed Left students showing up in the Archive by Student list
         Reports: fixed missing data in CustomFields template data source
