@@ -32,6 +32,7 @@ v22.0.01
         Messenger: fixed sanitization of text when creating new messages
         Reports: fixed Left students showing up in the Archive by Student list
         Reports: fixed missing data in CustomFields template data source
+        Students: fixed ID card background image alignment
 
     Deprecations:
         System: replaced tinymceStyleStripTags function with Validation::sanitizeRichText
