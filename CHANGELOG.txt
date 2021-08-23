@@ -24,6 +24,8 @@ v22.0.01
         System: fixed checks for existing fields in database migrations
         System: fixed cookie consent message to not redirect to the dashboard
         Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
+        Data Updater: fixed personal documents date bug
+        Data Updater: fixed personal documents to only use nationality list for passport and ID documents
         Departments: fixed Left student role appearing in class list export
         Messenger: fixed sanitization of text when creating new messages
         Reports: fixed Left students showing up in the Archive by Student list
