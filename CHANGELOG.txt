@@ -21,6 +21,10 @@ v22.0.01
     Security
 
     Bug Fixes
+        Messenger: fixed sanitization of text when creating new messages
+
+    Deprecations:
+        System: replaced tinymceStyleStripTags function with Validation::sanitizeRichText
 
 v22.0.00
 --------

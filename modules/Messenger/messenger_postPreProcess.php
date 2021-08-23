@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
+use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -32,6 +33,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 } else {
     $messengerGateway = $container->get(MessengerGateway::class);
 
+    $validator = $container->get(Validator::class);
+    $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
+    
     $from = $_POST['from'] ?? '';
     $data = [
         'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'), 
@@ -49,7 +53,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'gibbonPersonID'    => $session->get('gibbonPersonID'),
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
-
+  
     // Validate that the required values are present
     if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $from == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
         $URL .= "&addReturn=fail3";
