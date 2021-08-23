@@ -21,6 +21,7 @@ v22.0.01
     Security
 
     Bug Fixes
+        Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
         Messenger: fixed sanitization of text when creating new messages
 
     Deprecations:
