@@ -999,3 +999,8 @@ INSERT IGNORE INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES 
 ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 
 ";
+
+//v22.0.01
+++$count;
+$sql[$count][0] = '22.0.01';
+$sql[$count][1] = "";
