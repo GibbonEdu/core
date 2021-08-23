@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
+
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
@@ -25,7 +27,7 @@ if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->sessio
 }
 
 // Sanitize the whole $_POST array
-$validator = new \Gibbon\Data\Validator();
+$validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
 $calendarFeedPersonal = $_POST['calendarFeedPersonal'] ?? '';

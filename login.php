@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 
@@ -35,7 +36,7 @@ $gibbon->session->forget('pageLoads');
 $URL = './index.php';
 
 // Sanitize the whole $_POST array
-$validator = new \Gibbon\Data\Validator();
+$validator = $container->get(Validator::class);
 $logGateway = $container->get(LogGateway::class);
 $_POST = $validator->sanitize($_POST);
 

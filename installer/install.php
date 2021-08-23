@@ -35,7 +35,7 @@ require_once '../modules/System Admin/moduleFunctions.php';
 $databasePasswordRaw = $_POST['databasePassword'] ?? '';
 
 // Sanitize the whole $_POST array
-$validator = new Validator();
+$validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
 // Get or set the current step

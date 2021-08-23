@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -66,9 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 if ($_POST['replyTo'] == '') {
                     $replyTo = null;
                 }
+                
                 //Attempt to prevent XSS attack
-                $comment = $_POST['comment'];
-                $comment = tinymceStyleStripTags($comment, $connection2);
+                $validator = $container->get(Validator::class);
+                $comment = $validator->sanitizeRichText($_POST['comment'] ?? '');
 
                 try {
                     $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);

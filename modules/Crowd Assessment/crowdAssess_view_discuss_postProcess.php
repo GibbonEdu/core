@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -81,9 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
 
                         //Attempt to prevent XSS attack
-                        $comment = $_POST['comment'] ?? '';
-                        $comment = trim(preg_replace('/^<p>|<\/p>$/i', '', $comment));
-                        $comment = tinymceStyleStripTags($comment, $connection2);
+                        $validator = $container->get(Validator::class);
+                        $comment = $validator->sanitizeRichText($_POST['comment'] ?? '');
 
                         try {
                             $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
