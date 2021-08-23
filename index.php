@@ -397,7 +397,8 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
         $service = $container->get('Google_Service_Calendar');
         try {
             $calendar = $service->calendars->get('primary');
-        } catch (\Google_Service_Exception $e) {}
+        } catch (\Google_Service_Exception $e) {
+        } catch (\InvalidArgumentException $e) {}
 
         if (!empty($calendar['id'])) {
             $session->set('calendarFeedPersonal', $calendar['id']);
