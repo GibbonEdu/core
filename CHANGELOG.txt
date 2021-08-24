@@ -48,6 +48,7 @@ v23.0.00
         Reports: fixed Left students showing up in the Archive by Student list
         Reports: fixed error with empty milestones when creating a Reporting Cycle
         Students: fixed ID card background image alignment
+        System Admin: fixed importing custom fields that have spaces around the values
         User Admin: fixed missing document enum data in migrated personal documents
 
     Deprecations:
