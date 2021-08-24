@@ -38,7 +38,7 @@ if ($forceReset != 'Y') {
 } else {
     $URLSuccess = Url::fromRoute()->withQueryParam('forceReset', 'Y');
 }
-$URL = $URLSuccess = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset);
+$URL = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset);
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
