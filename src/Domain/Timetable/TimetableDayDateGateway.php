@@ -33,4 +33,12 @@ class TimetableDayDateGateway extends QueryableGateway
 
     private static $tableName = 'gibbonTTDayDate';
     private static $primaryKey = 'gibbonTTDayDateID';
+
+    public function deleteTTDatesInRange($firstDayOld, $firstDayNew)
+   {
+       $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);
+       $sql = "DELETE FROM gibbonTTDayDate WHERE date >= :firstDayOld AND date < :firstDayNew";
+
+       return $this->db()->delete($sql, $data);
+   }
 }
