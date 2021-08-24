@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
                         if ($firstDay > $row['firstDay']) {
                           $timetableDayDateGateway = $container->get(TimetableDayDateGateway::class);
-                          $timetableDayDateGateway->deleteDates($row['firstDay'], $firstDay);
+                          $timetableDayDateGateway->deleteTTDatesInRange($row['firstDay'], $firstDay);
                         }
 
                         // Update session vars so the user is warned if they're logged into a different year
