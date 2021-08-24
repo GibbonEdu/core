@@ -12,7 +12,7 @@ if ($session->has('absoluteURL')) {
     if ($type == 'Stu') {
         $URL = Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $id);
     } elseif ($type == 'Act') {
-        $URL = Url::fromRoute()->withQueryParam('q', '/modules/'.$id);
+        $URL = Url::fromModuleRoute($id);
     } elseif ($type == 'Sta') {
         $URL = Url::fromModuleRoute('Staff', 'staff_view_details')->withQueryParam('gibbonPersonID', $id);
     } elseif ($type == 'Cla') {
