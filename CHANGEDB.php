@@ -1004,4 +1004,11 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 ++$count;
 $sql[$count][0] = '23.0.00';
 $sql[$count][1] = "
-UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end";
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+ALTER TABLE `gibbonEmailTemplate` CHANGE `templateName` `templateType` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonEmailTemplate` ADD `templateName` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `moduleName`;end
+UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateName`='';end
+UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+ALTER TABLE `gibbonEmailTemplate` DROP INDEX `moduleTemplate`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
+ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
+";
