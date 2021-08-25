@@ -38,18 +38,36 @@ class EmailTemplateGateway extends QueryableGateway
 
     private static $searchableColumns = [];
 
-
     public function queryEmailTemplates(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->cols([ 
-                'gibbonEmailTemplateID', 'templateName', 'moduleName', 'gibbonModule.type as moduleType',
+                'gibbonEmailTemplateID', 'gibbonEmailTemplate.type', 'templateType', 'templateName', 'moduleName', 'gibbonModule.type as moduleType',
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonModule', 'gibbonModule.name=gibbonEmailTemplate.moduleName')
             ->where("gibbonModule.active='Y'");
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectTemplatesByModule($moduleName, $templateType = null)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols([ 
+                'gibbonEmailTemplateID', 'templateType', 'templateName',
+            ])
+            ->from($this->getTableName())
+            ->where('gibbonEmailTemplate.moduleName=:moduleName')
+            ->bindValue('moduleName', $moduleName);
+
+        if (!empty($templateType)) {
+            $query->where('gibbonEmailTemplate.templateType LIKE :templateType')
+                  ->bindValue('templateType', $templateType);
+        }
+
+        return $this->runSelect($query);
     }
 }
