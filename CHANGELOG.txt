@@ -31,6 +31,7 @@ v23.0.00
         Messenger: updated New Message process to send SMS messages before emails
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
+        System Admin: enabled creating multiple different email templates per type
         Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
 
     Bug Fixes

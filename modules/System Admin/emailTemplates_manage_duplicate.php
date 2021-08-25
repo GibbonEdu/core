@@ -26,14 +26,18 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_duplicate.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs
         ->add(__('Email Templates'), 'emailTemplates_manage.php')
-        ->add(__('Edit Email Template'));
+        ->add(__('Duplicate Email Template'));
+
+    if (isset($_GET['editID'])) {
+        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_edit.php&gibbonEmailTemplateID='.$_GET['editID']);
+    }
 
     $gibbonEmailTemplateID = $_GET['gibbonEmailTemplateID'] ?? '';
 
@@ -49,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         return;
     }
 
-    $form = Form::create('emailTemplates', $session->get('absoluteURL').'/modules/System Admin/emailTemplates_manage_editProcess.php');
+    $form = Form::create('emailTemplates', $session->get('absoluteURL').'/modules/System Admin/emailTemplates_manage_duplicateProcess.php');
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonEmailTemplateID', $gibbonEmailTemplateID);
@@ -58,50 +62,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
 
     $row = $form->addRow();
         $row->addLabel('moduleName', __('Module'));
-        $row->addTextField('moduleName')->readonly();
+        $row->addTextField('moduleName')->readonly()->setValue($values['moduleName']);
 
     $row = $form->addRow();
         $row->addLabel('templateType', __('Type'));
-        $row->addTextField('templateType')->readonly();
+        $row->addTextField('templateType')->readonly()->setValue($values['templateType']);
 
     $row = $form->addRow();
         $row->addLabel('templateName', __('Name'));
-        $row->addTextField('templateName')->maxLength(120);
-
-    $form->addRow()->addHeading(__('Template'))
-        ->prepend(Format::link('https://twig.symfony.com/doc/2.x/', '<img class="float-right w-5 h-5" title="'.__('Twig Documentation').'"  src="./themes/Default/img/help.png" >'));
-
-    $variables = json_decode($values['variables'] ?? '', true);
-    $variables = array_map(function ($item) {
-        return '{{'.$item.'}}';
-    }, array_keys($variables));
-
-    $template = $container->get(EmailTemplate::class);
-    $defaults = array_map(function ($item) {
-        return '{{'.$item.'}}';
-    }, $template->getDefaultVariables());
-
-    $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('variables', __('Available Variables'));
-        $column->addContent(implode(', ', $variables))->append('<br/><span class="tag dull mt-2" title="'.implode(', ', $defaults).'">'.__('+ {count} defaults', ['count' => count($defaults)]).'</span>');
-
-    $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('templateSubject', __('Subject'));
-        $column->addTextField('templateSubject', $guid)->required();
-
-    $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('templateBody', __('Body'));
-        $column->addEditor('templateBody', $guid)->setRows(15)->required();
+        $row->addTextField('templateName')->maxLength(120)->setValue($values['templateName'].' '.__('Copy'));
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addCheckbox('sendTest')->description(__('Send a test email'))->setValue('Y')->addClass('flex items-center');
         $row->addSubmit();
-
-     $form->loadAllValuesFrom($values);
-
+        
     echo $form->getOutput();
 }
