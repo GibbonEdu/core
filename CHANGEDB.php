@@ -1009,6 +1009,6 @@ ALTER TABLE `gibbonEmailTemplate` CHANGE `templateName` `templateType` VARCHAR(1
 ALTER TABLE `gibbonEmailTemplate` ADD `templateName` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `moduleName`;end
 UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateName`='';end
 UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
-ALTER TABLE `gibbonEmailTemplate` DROP INDEX `moduleTemplate`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
+ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
 ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
 ";
