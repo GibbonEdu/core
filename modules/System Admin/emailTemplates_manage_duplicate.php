@@ -18,12 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Tables\Action;
-use Gibbon\Services\Format;
-use Gibbon\Comms\EmailTemplate;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_duplicate.php') == false) {
