@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
@@ -76,12 +78,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $form->addHiddenValue('contextData', $contextData);
     $form->addHiddenValue('search', $search);
 
-    $bulkActions = array(
-        'parents' => __('Send Reports to Parents'),
-        'students' => __('Send Reports to Students'),
-    );
+    $bulkActions = [
+        'Send Reports to Parents' => __('Send Reports to Parents'),
+        'Send Reports to Students' => __('Send Reports to Students'),
+    ];
+
+    $templates = $container->get(EmailTemplateGateway::class)->selectTemplatesByModule('Reports', 'Send Reports%')->fetchAll();
+    $templateOptions = [__('Email Templates') => array_combine(array_column($templates, 'templateName'), array_column($templates, 'templateName'))];
+    $templateChained = array_combine(array_column($templates, 'templateName'), array_column($templates, 'templateType'));
 
     $col = $form->createBulkActionColumn($bulkActions);
+        $col->addSelect('templateName')
+            ->fromArray($templateOptions)
+            ->chainedTo('action', $templateChained)
+            ->required()
+            ->placeholder();
         $col->addSubmit(__('Go'));
 
     // Data TABLE
