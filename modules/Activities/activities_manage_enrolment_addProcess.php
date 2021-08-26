@@ -43,10 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
         //Run through each of the selected participants.
         $update = true;
-        $choices = null;
-        if (isset($_POST['Members'])) {
-            $choices = $_POST['Members'];
-        }
+        $choices = $_POST['Members'] ?? null;
 
         if (count($choices) < 1) {
             $URL .= '&return=error1';
