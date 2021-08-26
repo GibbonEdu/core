@@ -51,7 +51,9 @@ else {
         $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
 		//Validate Inputs
-		$email=$_POST["email"] ?? 'N';
+
+    $email=$_POST["email"] ?? 'N';
+    $email = ($email != 'Y') ? 'N' : $email;
 		if ($email=="Y") {
 			$from=$_POST["from"] ?? '';
 		}
@@ -203,8 +205,9 @@ else {
 
 			//Role Categories
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
-				if ($_POST["roleCategory"]=="Y") {
-					$choices=$_POST["roleCategories"] ?? '';
+        $roleCategory = $_POST['roleCategory'] ?? 'N';
+        if ($roleCategory=="Y") {
+					$choices=$_POST["roleCategories"];
 					if ($choices!="") {
 						foreach ($choices as $t) {
 							try {
@@ -288,12 +291,13 @@ else {
 
 			//Year Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
-				if ($_POST["yearGroup"]=="Y") {
-					$staff=$_POST["yearGroupsStaff"] ?? '';
-					$students=$_POST["yearGroupsStudents"] ?? '';
+        $yearGroup = $_POST['yearGroup'] ?? 'N';
+        if ($yearGroup=="Y") {
+					$staff=$_POST["yearGroupsStaff"];
+					$students=$_POST["yearGroupsStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
-						$parents=$_POST["yearGroupsParents"] ?? '';
+						$parents=$_POST["yearGroupsParents"];
 					}
 					$choices=$_POST["yearGroups"] ;
 					if ($choices!="") {
@@ -465,12 +469,13 @@ else {
 
 			//Form Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_any")) {
-				if ($_POST["formGroup"]=="Y") {
-					$staff=$_POST["formGroupsStaff"] ?? '';
-					$students=$_POST["formGroupsStudents"] ?? '';
+        $formGroup = $_POST['formGroup'] ?? 'N';
+        if ($formGroup=="Y") {
+					$staff=$_POST["formGroupsStaff"];
+					$students=$_POST["formGroupsStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_formGroups_parents")) {
-						$parents=$_POST["formGroupsParents"] ?? '';
+						$parents=$_POST["formGroupsParents"];
 					}
 					$choices=$_POST["formGroups"] ?? '';
 					if ($choices!="") {
@@ -623,12 +628,13 @@ else {
 
 			//Course Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
-				if ($_POST["course"]=="Y") {
-					$staff=$_POST["coursesStaff"] ?? '';
-					$students=$_POST["coursesStudents"] ?? '';
+        $course = $_POST['course'] ?? 'N';
+        if ($course=="Y") {
+					$staff=$_POST["coursesStaff"];
+					$students=$_POST["coursesStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_parents")) {
-						$parents=$_POST["coursesParents"] ?? '';
+						$parents=$_POST["coursesParents"];
 					}
 					$choices=$_POST["courses"] ?? '';
 					if ($choices!="") {
@@ -807,12 +813,13 @@ else {
 
 			//Class Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
-				if ($_POST["class"]=="Y") {
-					$staff=$_POST["classesStaff"] ?? '';
-					$students=$_POST["classesStudents"] ?? '';
+        $class = $_POST['class'] ?? 'N';
+        if ($class=="Y") {
+					$staff=$_POST["classesStaff"];
+					$students=$_POST["classesStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_parents")) {
-						$parents=$_POST["classesParents"] ?? '';
+						$parents=$_POST["classesParents"];
 					}
 					$choices=$_POST["classes"] ?? '';
 					if ($choices!="") {
@@ -991,12 +998,13 @@ else {
 
 			//Activity Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
-				if ($_POST["activity"]=="Y") {
-					$staff=$_POST["activitiesStaff"] ?? '';
-					$students=$_POST["activitiesStudents"] ?? '';
+        $activity = $_POST['activity'] ?? 'N';
+        if ($activity=="Y") {
+					$staff=$_POST["activitiesStaff"];
+					$students=$_POST["activitiesStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
-						$parents=$_POST["activitiesParents"] ?? '';
+						$parents=$_POST["activitiesParents"];
 					}
 					$choices=$_POST["activities"] ?? '';
 					if ($choices!="") {
@@ -1149,10 +1157,11 @@ else {
 
 			//Applicants
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_applicants")) {
-				if ($_POST["applicants"] == "Y") {
+        $applicants = $_POST['applicants'] ?? 'N';
+        if ($applicants == "Y") {
                     $staff="N" ;
-					$students = $_POST["applicantsStudents"] ?? '';
-					$parents = $_POST["applicantsParents"] ?? '';
+					$students = $_POST["applicantsStudents"];
+					$parents = $_POST["applicantsParents"];
                     $applicantsWhere = "AND NOT status IN ('Waiting List', 'Rejected', 'Withdrawn', 'Pending')";
 
 					$choices=$_POST["applicantList"] ?? '';
@@ -1347,8 +1356,9 @@ else {
 
 			//Houses
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_all") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_houses_my")) {
-				if ($_POST["houses"]=="Y") {
-					$choices=$_POST["houseList"] ?? '';
+        $houses = $_POST['houses'] ?? 'N';
+        if ($houses=="Y") {
+					$choices=$_POST["houseList"];
 					if ($choices!="") {
 						foreach ($choices as $t) {
 							try {
@@ -1398,12 +1408,13 @@ else {
 
 			//Transport
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
-				if ($_POST["transport"]=="Y") {
-					$staff=$_POST["transportStaff"] ?? '';
-					$students=$_POST["transportStudents"] ?? '';
+        $transport = $_POST['transport'] ?? 'N';
+        if ($transport=="Y") {
+					$staff=$_POST["transportStaff"];
+					$students=$_POST["transportStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
-						$parents=$_POST["transportParents"] ?? '';
+						$parents=$_POST["transportParents"];
 					}
 					$choices=$_POST["transports"] ?? '';
 					if ($choices!="") {
@@ -1556,10 +1567,11 @@ else {
 
             //Target Absent students / Attendance Status
             if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
-                if ($_POST["attendance"]=="Y") {
-                    $choices=$_POST["attendanceStatus"] ?? '';
-                    $students=$_POST["attendanceStudents"] ?? '';
-                    $parents=$_POST["attendanceParents"] ?? '';
+                $attendance = $_POST['attendance'] ?? '';
+                if ($attendance=="Y") {
+                    $choices=$_POST["attendanceStatus"];
+                    $students=$_POST["attendanceStudents"];
+                    $parents=$_POST["attendanceParents"];
                     $selectedDate=Format::dateConvert($_POST["attendanceDate"]);
                     if ($choices!="") {
                         foreach ($choices as $t) {
@@ -1708,12 +1720,13 @@ else {
 
 			//Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
-				if ($_POST["group"]=="Y") {
-					$staff=$_POST["groupsStaff"] ?? '';
-					$students=$_POST["groupsStudents"] ?? '';
+        $group = $_POST['group'] ?? 'N';
+        if ($group=="Y") {
+					$staff=$_POST["groupsStaff"];
+					$students=$_POST["groupsStudents"];
 					$parents="N" ;
 					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
-						$parents=$_POST["groupsParents"] ?? '';
+						$parents=$_POST["groupsParents"];
 					}
 					$choices=$_POST["groups"] ?? '';
 					if ($choices!="") {
@@ -1862,8 +1875,9 @@ else {
 
 			//Individuals
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
-				if ($_POST["individuals"]=="Y") {
-					$choices=$_POST["individualList"] ?? '';
+        $individuals =  $_POST['individuals'] ?? 'N';
+        if ($individuals=="Y") {
+					$choices=$_POST["individualList"];
 					if ($choices!="") {
 						foreach ($choices as $t) {
 							try {
