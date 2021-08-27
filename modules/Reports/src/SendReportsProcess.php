@@ -70,8 +70,13 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                 continue;
             }
 
-            // Generate and save an access token so this report can be accessed securely
-            $accessToken = bin2hex(random_bytes(20));
+            // Generate and save an access token so this report can be accessed securely, or use existing unexpired token
+            if (!empty($archive['accessToken']) && (empty($archive['timestampAccessExpiry']) || date('Y-m-d H:i:s') < $archive['timestampAccessExpiry'])) {
+                $accessToken = $archive['accessToken'];
+            } else {
+                $accessToken = bin2hex(random_bytes(20));
+            }
+            
             $data = [
                 'timestampSent' => date('Y-m-d H:i:s'),
                 'accessToken' => $accessToken,
@@ -156,8 +161,13 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                 continue;
             }
 
-            // Generate and save an access token so this report can be accessed securely
-            $accessToken = bin2hex(random_bytes(20));
+            // Generate and save an access token so this report can be accessed securely, or use existing unexpired token
+            if (!empty($archive['accessToken']) && (empty($archive['timestampAccessExpiry']) || date('Y-m-d H:i:s') < $archive['timestampAccessExpiry'])) {
+                $accessToken = $archive['accessToken'];
+            } else {
+                $accessToken = bin2hex(random_bytes(20));
+            }
+            
             $data = [
                 'timestampSent' => date('Y-m-d H:i:s'),
                 'accessToken' => $accessToken,
