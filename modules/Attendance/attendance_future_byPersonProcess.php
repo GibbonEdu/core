@@ -77,14 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $absenceType = $_POST['absenceType'] ?? 'full';
 
-            $dateStart = '';
-            if ($_POST['dateStart'] != '') {
-                $dateStart = Format::dateConvert($_POST['dateStart']);
-            }
-            $dateEnd = $dateStart;
-            if ($_POST['dateEnd'] != '') {
-                $dateEnd = Format::dateConvert($_POST['dateEnd']);
-            }
+
+            $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
+            $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : $dateStart;
             $today = date('Y-m-d');
 
             //Check to see if date is in the future and is a school day.
