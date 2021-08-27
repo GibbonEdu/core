@@ -13,9 +13,10 @@ themes/*
 !themes/Legacy
 !themes/2021
 
-# Tests Folder
+# Test generated temporary files
 tests/log/*
 tests/config/support/_generated/*
+.phpunit.result.cache
 
 # Template Cache
 /resources/templates/cache/*
