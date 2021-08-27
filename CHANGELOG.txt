@@ -53,6 +53,7 @@ v23.0.00
         Students: fixed ID card background image alignment
         System Admin: fixed importing custom fields that have spaces around the values
         System Admin: fixed importing custom fields failing when existing fields value is null
+        Timetable: fixed timetable misalignment of times below transparent timetable blocks
         User Admin: fixed missing document enum data in migrated personal documents
 
     Deprecations:
