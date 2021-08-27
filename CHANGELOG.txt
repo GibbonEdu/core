@@ -36,6 +36,7 @@ v22.0.01
         Reports: fixed missing data in CustomFields template data source
         Reports: fixed error with empty milestones when creating a Reporting Cycle
         Students: fixed ID card background image alignment
+        System Admin: fixed importing custom fields failing when existing fields value is null
         User Admin: fixed missing document enum data in migrated personal documents
 
     Deprecations:
