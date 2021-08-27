@@ -35,6 +35,7 @@ v22.0.01
         Reports: fixed Left students showing up in the Archive by Student list
         Reports: fixed missing data in CustomFields template data source
         Reports: fixed error with empty milestones when creating a Reporting Cycle
+        Reports: fixed issue where re-sending a report will break existing report download links
         Students: fixed ID card background image alignment
         System Admin: fixed importing custom fields failing when existing fields value is null
         System Admin: fixed importing custom fields that have spaces around the values
