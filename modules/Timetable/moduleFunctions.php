@@ -1226,7 +1226,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     if ($rowPeriods['type'] != 'Lesson' and $height > 15 and $height < 30) {
                         $title = "title='".substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5)."'";
                     } elseif ($rowPeriods['type'] != 'Lesson' and $height <= 15) {
-                        $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).")'";
+                        $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).")'";
                     }
                     $class = 'ttGeneric';
                     if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
@@ -1246,7 +1246,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
                         $output .= $rowPeriods['name'].'<br/>';
-                        $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
+                        $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
                     $output .= '</div>';
                     ++$zCount;
@@ -1530,9 +1530,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
                     if ($height < 45) {
                         $label = $event[1];
-                        $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.$event[6]."'";
+                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.$event[6]."'";
                     } else {
-                        $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
+                        $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
                         $title = "title='".($event[7] ?? '')."'";
                     }
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
@@ -2131,7 +2131,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                 if ($rowPeriods['type'] != 'Lesson' and $height > 15 and $height < 30) {
                     $title = "title='".substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5)."'";
                 } elseif ($rowPeriods['type'] != 'Lesson' and $height <= 15) {
-                    $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).")'";
+                    $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).")'";
                 }
                 $class = 'ttGeneric';
                 if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
@@ -2151,7 +2151,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= $rowPeriods['name'].'<br/>';
                 } elseif ($height >= 30) {
                     $output .= $rowPeriods['name'].'<br/>';
-                    $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
+                    $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
 
                     if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && $canAddBookings && $date >= date('Y-m-d')) {
                         $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [],
@@ -2289,9 +2289,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
                     if ($height < 45) {
                         $label = $event[1];
-                        $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
                     } else {
-                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
                         $title = '';
                     }
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
