@@ -35,10 +35,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'System' => [
             'enablePayments' => 'required',
             'paymentGateway' => '',
-            'paymentAPIUsername' => 'skip-empty',
-            'paymentAPIPassword' => 'skip-empty',
-            'paymentAPISignature' => 'skip-empty',
-            'paymentAPIKey' => 'skip-empty',
+            'paymentAPIUsername' => 'skip-hidden',
+            'paymentAPIPassword' => 'skip-hidden',
+            'paymentAPISignature' => 'skip-hidden',
+            'paymentAPIKey' => 'skip-hidden',
             'googleOAuth' => 'required',
             'googleClientName' => '',
             'googleClientID' => '',
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         foreach ($settings as $name => $property) {
             $value = $_POST[$name] ?? '';
 
-            if ($property == 'skip-empty' && empty($value)) continue;
+            if ($property == 'skip-hidden' && !isset($_POST[$name])) continue;
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
