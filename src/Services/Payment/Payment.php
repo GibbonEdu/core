@@ -55,7 +55,7 @@ class Payment implements PaymentInterface
     protected $foreignTable;
     protected $foreignTableID;
 
-    protected $testMode = true;
+    protected $testMode = false;
 
     public function __construct(Session $session, SettingGateway $settingGateway, PaymentGateway $paymentGateway)
     {
