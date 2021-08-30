@@ -123,7 +123,7 @@ class PersonalDocumentHandler
         }
     }
 
-    public function addPersonalDocumentsToForm(&$form, $foreignTable = null, $foreignTableID = null, $params)
+    public function addPersonalDocumentsToForm(&$form, $foreignTable = null, $foreignTableID = null, $params = [])
     {
         $documents = $this->personalDocumentGateway->selectPersonalDocuments($foreignTable, $foreignTableID, $params)->fetchAll();
         if (empty($documents)) return;
