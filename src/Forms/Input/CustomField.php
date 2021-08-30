@@ -87,11 +87,13 @@ class CustomField extends Input
                 break;
 
             case 'image':
-                $this->customField = $this->factory->createFileUpload($name.'File')->accepts('.jpg,.jpeg,.gif,.png,.svg');
+                $fieldName = stripos($name, '[') !== false ?  $name : $name.'File';
+                $this->customField = $this->factory->createFileUpload($fieldName)->accepts('.jpg,.jpeg,.gif,.png,.svg');
                 break;
 
             case 'file':
-                $this->customField = $this->factory->createFileUpload($name.'File');
+                $fieldName = stripos($name, '[') !== false ?  $name : $name.'File';
+                $this->customField = $this->factory->createFileUpload($fieldName);
                 if (!empty($options)) {
                     $this->customField->accepts($options);
                 }
