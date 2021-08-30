@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
 //Gibbon system-wide includes
@@ -67,8 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
             $homework = $_POST['homework'];
             if ($homework == 'Y') {
                 //Attempt to prevent XSS attack
-                $homeworkDetails = $_POST['homeworkDetails'];
-                $homeworkDetails = tinymceStyleStripTags($homeworkDetails, $connection2);
+                $validator = $container->get(Validator::class);
+                $homeworkDetails = $validator->sanitizeRichText($_POST['homeworkDetails'] ?? '');
+
                 if ($_POST['homeworkDueDateTime'] != '') {
                     $homeworkDueDateTime = $_POST['homeworkDueDateTime'].':59';
                 } else {

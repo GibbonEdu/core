@@ -16,6 +16,35 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v22.0.01
+--------
+    Security
+        Messenger: fixed sanitization of text when creating new messages
+
+    Bug Fixes
+        System: fixed lesson plan content in demo data
+        System: fixed checks for existing fields in database migrations
+        System: fixed cookie consent message to not redirect to the dashboard
+        System: fixed parent dashboard hooks missing access to session object
+        Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
+        Data Updater: fixed personal documents date bug
+        Data Updater: fixed personal documents to only use nationality list for passport and ID documents
+        Data Updater: fixed submit button on data updates with no changes
+        Departments: fixed Left student role appearing in class list export
+        Individual Needs: fixed some IN columns not visible on small screens
+        Reports: fixed Left students showing up in the Archive by Student list
+        Reports: fixed missing data in CustomFields template data source
+        Reports: fixed error with empty milestones when creating a Reporting Cycle
+        Reports: fixed issue where re-sending a report will break existing report download links
+        Reports: fixed file uploads not working in Template Builder
+        Students: fixed ID card background image alignment
+        System Admin: fixed importing custom fields failing when existing fields value is null
+        System Admin: fixed importing custom fields that have spaces around the values
+        User Admin: fixed missing document enum data in migrated personal documents
+
+    Deprecations:
+        System: replaced tinymceStyleStripTags function with Validation::sanitizeRichText
+
 v22.0.00
 --------
     Headlines

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
@@ -42,7 +43,7 @@ if ($proceed == false) {
     header("Location: {$URL}");
 } else {
     // Sanitize the whole $_POST array
-    $validator = new \Gibbon\Data\Validator();
+    $validator = $container->get(Validator::class);
     $_POST = $validator->sanitize($_POST);
 
     //Proceed!
