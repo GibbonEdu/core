@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Data\Validator;
 
 $page->breadcrumbs->add(__('Password Reset'));
 
@@ -60,7 +61,7 @@ if ($step == 1) {
 }
 else {
     // Sanitize the whole $_GET array
-    $validator = new \Gibbon\Data\Validator();
+    $validator = $container->get(Validator::class);
     $_GET = $validator->sanitize($_GET);
 
     //Get URL parameters

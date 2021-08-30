@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Contracts\Comms\Mailer;
 
 include './gibbon.php';
@@ -25,7 +26,7 @@ include './gibbon.php';
 $password = randomPassword(8);
 
 // Sanitize the $_GET and $_POST arrays
-$validator = new \Gibbon\Data\Validator();
+$validator = $container->get(Validator::class);
 $_GET = $validator->sanitize($_GET);
 $_POST = $validator->sanitize($_POST);
 

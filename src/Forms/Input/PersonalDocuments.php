@@ -131,7 +131,7 @@ class PersonalDocuments extends Input
                         break;
                     case 'country':
                         $label = $row->addLabel($field, __('Issuing Country'));
-                        $input = !empty($this->nationalityList)
+                        $input = !empty($this->nationalityList) && $document['document'] != 'Document'
                             ? $row->addSelect($field)->fromString($this->nationalityList)->placeholder()
                             : $row->addSelectCountry($field)->required($document['required'] == 'Y');
                         break;

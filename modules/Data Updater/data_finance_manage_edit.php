@@ -109,10 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
                 }
             }
 
-            if ($changeCount > 0) {
-                $row = $form->addRow();
-                    $row->addSubmit();
-            }
+            $row = $form->addRow();
+                $row->addSubmit();
 
             echo $form->getOutput();
         }

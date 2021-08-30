@@ -1060,6 +1060,7 @@ class ImportType
                             break;
 
             case 'enum':    $elements = $this->getField($fieldName, 'elements');
+                            $elements = array_map('trim', $elements);
                             if (!in_array($value, $elements)) {
                                 return false;
                             }

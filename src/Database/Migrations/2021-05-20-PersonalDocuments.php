@@ -44,7 +44,7 @@ class PersonalDocuments extends Migration
 
         // Prevent running this migration if the field has already been removed/does not exist
         $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPerson` LIKE 'citizenship1'");
-        if (empty($fieldPresent)) return true;
+        if (empty($fieldPresent) || $fieldPresent->rowCount() <= 0) return true;
 
         $users = $this->userGateway->selectBy([]);
 
@@ -67,6 +67,7 @@ class PersonalDocuments extends Migration
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -85,6 +86,7 @@ class PersonalDocuments extends Migration
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -100,6 +102,7 @@ class PersonalDocuments extends Migration
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'ID Card',
                 ]);
             }
 
@@ -117,6 +120,7 @@ class PersonalDocuments extends Migration
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
 
@@ -132,6 +136,7 @@ class PersonalDocuments extends Migration
                     'foreignTable'                 => 'gibbonPerson',
                     'foreignTableID'               => $user['gibbonPersonID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Document',
                 ]);
             }
         }

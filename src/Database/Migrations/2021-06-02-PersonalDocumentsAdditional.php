@@ -51,7 +51,7 @@ class PersonalDocumentsAdditional extends Migration
 
         // Prevent running this migration if the field has already been removed/does not exist
         $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPerson` LIKE 'citizenship1'");
-        if (empty($fieldPresent)) return true;
+        if (empty($fieldPresent) || $fieldPresent->rowCount() <= 0) return true;
 
         // STUDENT APPLICATIONS
         $results = $this->studentApplicationFormGateway->selectBy([])->fetchAll();
@@ -74,6 +74,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationForm',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -88,6 +89,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationForm',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'ID Card',
                 ]);
             }
 
@@ -105,6 +107,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationForm',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
 
@@ -119,6 +122,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationForm',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Document',
                 ]);
             }
 
@@ -133,6 +137,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent1',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -147,6 +152,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent1',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'ID Card',
                 ]);
             }
 
@@ -164,6 +170,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent1',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
 
@@ -178,6 +185,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent2',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -192,6 +200,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent2',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'ID Card',
                 ]);
             }
 
@@ -209,6 +218,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonApplicationFormParent2',
                     'foreignTableID'               => $values['gibbonApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
         }
@@ -231,6 +241,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonStaffApplicationForm',
                     'foreignTableID'               => $values['gibbonStaffApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -245,6 +256,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonStaffApplicationForm',
                     'foreignTableID'               => $values['gibbonStaffApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'ID Card',
                 ]);
             }
 
@@ -262,6 +274,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonStaffApplicationForm',
                     'foreignTableID'               => $values['gibbonStaffApplicationFormID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
         }
@@ -287,6 +300,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonPersonUpdate',
                     'foreignTableID'               => $values['gibbonPersonUpdateID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -305,6 +319,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonPersonUpdate',
                     'foreignTableID'               => $values['gibbonPersonUpdateID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Passport',
                 ]);
             }
 
@@ -336,6 +351,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonPersonUpdate',
                     'foreignTableID'               => $values['gibbonPersonUpdateID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Visa',
                 ]);
             }
 
@@ -350,6 +366,7 @@ class PersonalDocumentsAdditional extends Migration
                     'foreignTable'                 => 'gibbonPersonUpdate',
                     'foreignTableID'               => $values['gibbonPersonUpdateID'],
                     'timestamp'                    => $timestamp,
+                    'document'                     => 'Document',
                 ]);
             }
         }

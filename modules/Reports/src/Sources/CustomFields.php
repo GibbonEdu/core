@@ -39,7 +39,7 @@ class CustomFields extends DataSource
                 WHERE gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID";
 
         $fieldData = $this->db()->selectOne($sql, $data);
-        $personFields = unserialize($fieldData ?? '');
+        $personFields = json_decode($fieldData ?? '', true);
 
         $sql = "SELECT name, gibbonCustomFieldID FROM gibbonCustomField WHERE active='Y' AND context='User' AND activePersonStudent=1";
         $fields = $this->db()->select($sql)->fetchKeyPair();

@@ -112,7 +112,7 @@ class StaffDashboard implements OutputableInterface
             ORDER BY date, timeStart, course, class";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $planner .= "<div class='error'>".$e->getMessage().'</div>';
         }
         $planner .= '<h2>';
@@ -277,7 +277,7 @@ class StaffDashboard implements OutputableInterface
                     $sqlBehaviour = 'SELECT gibbonBehaviour.*, student.surname AS surnameStudent, student.preferredName AS preferredNameStudent, creator.surname AS surnameCreator, creator.preferredName AS preferredNameCreator, creator.title FROM gibbonBehaviour JOIN gibbonPerson AS student ON (gibbonBehaviour.gibbonPersonID=student.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=student.gibbonPersonID) JOIN gibbonPerson AS creator ON (gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonBehaviour.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonFormGroupID=:gibbonFormGroupID ORDER BY timestamp DESC';
                     $resultBehaviour = $connection2->prepare($sqlBehaviour);
                     $resultBehaviour->execute($dataBehaviour);
-                } catch (PDOException $e) {
+                } catch (\PDOException $e) {
                     $formGroups[$count][3] .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 

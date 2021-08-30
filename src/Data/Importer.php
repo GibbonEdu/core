@@ -578,8 +578,9 @@ class Importer
                 // Handle merging existing custom field data with partial custom field imports
                 if ($importType->isUsingCustomFields() && $fieldName == 'fields') {
                     if (isset($keyRow['fields']) && !empty($keyRow['fields'])) {
-                        $sqlData['fields'] = array_merge(json_decode($keyRow['fields'], true), json_decode($fieldData, true));
-                        $sqlData['fields'] = json_encode($sqlData['fields']);
+                        $existingFields = json_decode($keyRow['fields'], true) ?? [];
+                        $newFields = json_decode($fieldData, true) ?? [];
+                        $sqlData['fields'] = json_encode(array_merge($existingFields, $newFields));
                     }
                 }
             }

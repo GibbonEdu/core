@@ -165,8 +165,8 @@ class PersonalDocumentHandler
                 $oldValueLabel = $oldValue;
                 $newValueLabel = $newValue;
                 if ($field == 'dateIssue' || $field == 'dateExpiry') {
-                    $oldValue = Format::date($oldValue);
-                    $newValue = Format::date($newValue);
+                    $oldValueLabel = Format::date($oldValue);
+                    $newValueLabel = Format::date($newValue);
                 } elseif ($field == 'filePath') {
                     $oldValueLabel = !empty($oldValue) ? Format::link('./'.$oldValue, __('Attachment'), ['target' => '_blank']) : '';
                     $newValueLabel = !empty($newValue) ? Format::link('./'.$newValue, __('Attachment'), ['target' => '_blank']) : '';
@@ -206,10 +206,6 @@ class PersonalDocumentHandler
                 if (!isset($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field])) continue;
 
                 $value = $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] ?? '';
-
-                if ($field == 'dateIssue' || $field == 'dateExpiry') {
-                    $value = Format::dateConvert($value);
-                }
 
                 $data[$field] = $value;
             }

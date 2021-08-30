@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                         echo ' '.$fileUploader->getLastError();
                     echo '</div>';
                 } else {
-                    $bg = 'background: url("'.$session->get('absoluteURL')."/$attachment\") repeat left top #fff;";
+                    $bg = 'background: url("'.$session->get('absoluteURL')."/$attachment\") no-repeat left top #fff; background-size: cover;";
                 }
             }
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                     case $nameLength > 40:  $size = 18; break;
                     case $nameLength > 30:  $size = 22; break;
                     case $nameLength > 20:  $size = 26; break;
-                    default: $size = 30;
+                    default: $size = 26;
                 }
 
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';

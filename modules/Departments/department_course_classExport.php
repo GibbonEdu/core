@@ -63,6 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                     AND (dateStart IS NULL OR dateStart<=:today)
                     AND (dateEnd IS NULL  OR dateEnd>=:today)
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonCourseClassPerson.role='Student'
                     ORDER BY role DESC, surname, preferredName";
 
             $result = $pdo->select($sql, $data);
