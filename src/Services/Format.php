@@ -747,6 +747,7 @@ class Format
                 $imageSize = $size;
         }
 
+        $path = (string) $path;
         if (preg_match('/^http[s]*/', $path)) {
             return sprintf('<img class="%1$s" src="%2$s">', $class, $path);
         } else {
