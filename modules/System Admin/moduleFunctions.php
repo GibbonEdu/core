@@ -290,9 +290,10 @@ function i18nCheckAndUpdateVersion($container, $version = null)
 
     foreach ($i18nList as $i18n) {
         $fileExists = i18nFileExists($absolutePath, $i18n['code']);
+        $i18nVersion = $i18n['version'] ?? '';
 
         if ($i18n['installed'] == 'N' && $fileExists) {
-            $versionUpdate = version_compare((string) $version, $i18n['version'], '>') ? $version : $i18n['version'];
+            $versionUpdate = version_compare((string) $version, $i18nVersion, '>') ? $version : $i18nVersion;
             $data = ['installed' => 'Y', 'version' => $versionUpdate];
             $i18nGateway->update($i18n['gibboni18nID'], $data);
         } else if ($i18n['installed'] == 'Y' && !$fileExists) {
