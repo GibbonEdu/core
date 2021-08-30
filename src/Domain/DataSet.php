@@ -25,13 +25,13 @@ namespace Gibbon\Domain;
 class DataSet implements \Countable, \IteratorAggregate
 {
     protected $data;
-    
-    protected $resultCount; 
-    protected $totalCount; 
 
-    protected $page; 
-    protected $pageSize; 
-    
+    protected $resultCount;
+    protected $totalCount;
+
+    protected $page;
+    protected $pageSize;
+
     /**
      * Creates a new data set from an array and calculates the result counts and pagination based on array size.
      *
@@ -81,7 +81,7 @@ class DataSet implements \Countable, \IteratorAggregate
      *
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
@@ -117,7 +117,7 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * The total un-paginated number of rows for this data set. 
+     * The total un-paginated number of rows for this data set.
      * Will be less than the totalCount if the results have criteria applied.
      *
      * @return int
