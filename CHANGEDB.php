@@ -1000,6 +1000,13 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 
 ";
 
+//v22.0.01
+++$count;
+$sql[$count][0] = '22.0.01';
+$sql[$count][1] = "
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+";
+
 //v23.0.00
 ++$count;
 $sql[$count][0] = '23.0.00';
@@ -1012,4 +1019,5 @@ UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_
 ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
 ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'importCustomFolderLocation', 'Custom Imports Folder', 'Path to custom import types folder, relative to uploads.', '/imports');end
+
 ";
