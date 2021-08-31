@@ -17,18 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\EmailTemplateGateway;
-use Gibbon\Comms\EmailTemplate;
 
 require_once '../../gibbon.php';
 
 $gibbonEmailTemplateID = $_POST['gibbonEmailTemplateID'] ?? '';
-$sendTest = $_POST['sendTest'] ?? 'N';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_edit.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_duplicate.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplates_manage_duplicate.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -37,13 +34,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
 
     $data = [
-        'templateName'    => $_POST['templateName'] ?? '',
-        'templateSubject' => $_POST['templateSubject'] ?? '',
-        'templateBody'    => $_POST['templateBody'] ?? '',
+        'templateName' => $_POST['templateName'] ?? '',
+        'type'         => 'Custom',
     ];
 
     // Validate the required values are present
-    if (empty($gibbonEmailTemplateID) || empty($data['templateName']) || empty($data['templateSubject']) || empty($data['templateBody'])) {
+    if (empty($gibbonEmailTemplateID) || empty($data['templateName'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -65,34 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     }
 
     // Update the record
-    $updated = $emailTemplateGateway->update($gibbonEmailTemplateID, $data);
+    $editID = $emailTemplateGateway->insert(array_merge($values, $data));
 
-    // Send a test email
-    if ($sendTest == 'Y') {
-        $variables = json_decode($values['variables'] ?? '', true);
-        
-        // Render the templates for this email
-        $template = $container->get(EmailTemplate::class)->setTemplate($values['templateName']);
-        $data = $template->generateFakeData($variables);
-        $subject = $template->renderSubject($data);
-        $body = $template->renderBody($data);
-
-        // Send the email to the current user
-        $mail = $container->get(Mailer::class);
-        $mail->AddAddress($gibbon->session->get('email'));
-        $mail->setDefaultSender($subject);
-        $mail->renderBody('mail/email.twig.html', [
-            'title'  => $subject,
-            'body'   => $body,
-        ]);
-
-        $sent = $mail->Send();
-    }
-
-
-    $URL .= !$updated
+    $URL .= !$editID
         ? "&return=error2"
         : "&return=success0";
 
-    header("Location: {$URL}");
+    header("Location: {$URL}&editID={$editID}");
 }

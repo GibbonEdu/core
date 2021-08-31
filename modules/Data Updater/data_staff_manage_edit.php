@@ -117,10 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     // CUSTOM FIELDS
     $changeCount += $container->get(CustomFieldHandler::class)->addCustomFieldsToDataUpdate($form, 'Staff', ['dataUpdater' => 1], $oldValues, $newValues);
 
-    if ($changeCount > 0) {
-        $row = $form->addRow();
-            $row->addSubmit();
-    }
+    $row = $form->addRow();
+        $row->addSubmit();
 
     echo $form->getOutput();
 }

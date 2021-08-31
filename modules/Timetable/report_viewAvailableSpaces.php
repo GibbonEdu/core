@@ -83,6 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         echo __('Report Data');
         echo '</h2>';
 
+        echo '<p>'.__('Click the timetable to copy information to your clipboard.').'</p>';
+
         
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
             $sql = 'SELECT * FROM gibbonTT WHERE gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -457,7 +459,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 											}
 											$vacanciesOutput = substr($vacanciesOutput, 0, -2);
 
-											$dayOut .= "<div title='".htmlPrep($vacanciesOutput)."' style='color: black; font-weight: normal; line-height: 0.9'>";
+											$dayOut .= "<div title='".htmlPrep($vacanciesOutput)."' style='color: black; font-weight: normal; line-height: 0.9' onclick='copyToClipboard(\"".__($day['nameShort'])." ".$rowPeriods['name'].": ".htmlPrep($vacanciesOutput)."\")'>";
 											if (strlen($vacanciesOutput) <= 50) {
 												$dayOut .= $vacanciesOutput;
 											} else {
@@ -506,3 +508,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         }
     }
 }
+
+?>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            window.alert("<?php echo __('Copied to clipboard.'); ?>\n\n"+text);
+        }, function(err) {
+            window.alert(text);
+        });
+    }
+</script>

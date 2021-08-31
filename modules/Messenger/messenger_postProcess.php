@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Comms\SMS;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\NotificationGateway;
@@ -45,6 +46,9 @@ else {
 		$emailCount=NULL ;
 		$smsCount=NULL ;
 		$smsBatchCount=NULL ;
+
+        $validator = $container->get(Validator::class);
+        $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
 		//Validate Inputs
 		$email=$_POST["email"] ;
@@ -92,8 +96,10 @@ else {
 			$sms="N" ;
 		}
 		$smsCreditBalance = ($sms == "Y" && !empty($_POST["smsCreditBalance"])) ? $_POST["smsCreditBalance"] : null;
-		$subject=$_POST["subject"] ;
-		$body=stripslashes($_POST["body"]) ;
+
+        $subject = $_POST['subject'] ?? '';
+        $body = stripslashes($_POST['body'] ?? '');
+
 		$emailReceipt = $_POST["emailReceipt"] ;
 		$emailReceiptText = null;
 		if (isset($_POST["emailReceiptText"])) {

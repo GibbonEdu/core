@@ -51,7 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     $table->addColumn('logo')
         ->format(function ($department) {
-            return Format::userPhoto($department['logo'], 125, 'w-20 h-20 sm:w-32 sm:h-32 p-1');
+            $departmentPhoto = Format::userPhoto($department['logo'], 125, 'w-20 h-20 sm:w-32 sm:h-32 p-1');
+            $url = "./index.php?q=/modules/Departments/department.php&gibbonDepartmentID=".$department['gibbonDepartmentID'];
+            return Format::link($url, $departmentPhoto);
         });
 
     $table->addColumn('name')
