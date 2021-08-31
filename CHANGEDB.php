@@ -1011,4 +1011,5 @@ UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateNa
 UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
 ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'importCustomFolderLocation', 'Custom Imports Folder', 'Path to custom import types folder, relative to uploads.', '/imports');end
 ";
