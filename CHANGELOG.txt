@@ -26,6 +26,7 @@ v22.0.01
         System: fixed checks for existing fields in database migrations
         System: fixed cookie consent message to not redirect to the dashboard
         System: fixed parent dashboard hooks missing access to session object
+        System: removed unused package file from session timeout library
         Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
         Data Updater: fixed personal documents date bug
         Data Updater: fixed personal documents to only use nationality list for passport and ID documents
