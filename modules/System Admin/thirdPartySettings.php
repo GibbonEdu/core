@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Services\Payment;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -41,6 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     // FORM
     $form = Form::create('thirdPartySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/thirdPartySettingsProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
 
     // GOOGLE
@@ -145,6 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     // SMS Gateway Options - these are not translated, as they represent company names
     $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
     $setting = getSettingByScope($connection2, 'Messenger', 'smsGateway', true);
+    $smsGatewaySetting = $setting['value'];
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -197,6 +200,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
+
+    // Test SMS
+    if (!empty($smsGatewaySetting)) {
+        $row = $form->addRow()->addClass('smsTest');
+            $row->addLabel('smsTest', __('Test SMS'))->description(__('You can use this tool to send an sms to test your SMS Gateway configuration.'));
+            $col = $row->addColumn();
+            $col->addPhoneNumber('smsTest')->setValue($session->get('sms'))->addClass('w-full');
+            $col->addButton(__('Go'), 'testSMS()')->addClass('-ml-px w-24');
+    }
 
     // SMTP MAIL
     $form->addRow()->addHeading(__('SMTP Mail'));
@@ -266,5 +278,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     function testEmail() {
         var email = $('#emailTest').val();
         location.href = "<?php echo $session->get('absoluteURL'); ?>/modules/System Admin/thirdPartySettings_emailProcess.php?email="+email;
+    }
+
+    function testSMS() {
+        var phoneNumber = $('#smsTestCountryCode').val() + $('#smsTest').val();
+        location.href = "<?php echo $session->get('absoluteURL'); ?>/modules/System Admin/thirdPartySettings_smsProcess.php?phoneNumber="+phoneNumber;
     }
 </script>
