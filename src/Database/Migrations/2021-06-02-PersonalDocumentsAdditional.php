@@ -51,7 +51,7 @@ class PersonalDocumentsAdditional extends Migration
 
         // Prevent running this migration if the field has already been removed/does not exist
         $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPerson` LIKE 'citizenship1'");
-        if ($fieldPresent->rowCount() <= 0) return true;
+        if (empty($fieldPresent) || $fieldPresent->rowCount() <= 0) return true;
 
         // STUDENT APPLICATIONS
         $results = $this->studentApplicationFormGateway->selectBy([])->fetchAll();
