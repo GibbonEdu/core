@@ -180,6 +180,8 @@ class Validator
         $dom->validateOnParse=false;
         libxml_use_internal_errors(true);
 
+        $value = '<?xml encoding="utf-8" ?>' . mb_convert_encoding($value, 'HTML-ENTITIES', 'UTF-8');
+
         if ($dom->loadHTML('<body>'.$value.'</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
             // Iterate over the DOM and remove attributes not in the whitelist
             foreach ($dom->getElementsByTagName('*') as $node) {

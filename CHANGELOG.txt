@@ -22,6 +22,7 @@ v22.0.01
         Messenger: fixed sanitization of text when creating new messages
 
     Bug Fixes
+        System: fixed the Validator class so sanitizeHTML is multibyte safe
         System: fixed lesson plan content in demo data
         System: fixed checks for existing fields in database migrations
         System: fixed cookie consent message to not redirect to the dashboard
