@@ -36,9 +36,9 @@ v23.0.00
         Timetable Admin: adjusted interface strings in timetable import
 
     Bug Fixes
+        System: fixed the Validator class so sanitizeHTML is multibyte safe
         Activities: fixed duplicate entries in Activity Choices by Student
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
-
 
 v22.0.01
 --------
