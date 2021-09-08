@@ -22,7 +22,8 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edit.php') == false) {
     $URL .= '&return=error0';

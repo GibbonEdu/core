@@ -25,10 +25,7 @@ include './moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Finance/invoices_payOnline.php';
 
-$paid = null;
-if (isset($_GET['paid'])) {
-    $paid = $_GET['paid'] ?? '';
-}
+$paid = $_GET['paid'] ?? null;
 
 if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     //Get variables
@@ -120,26 +117,11 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
     if ($_GET['return'] == 'success1') {
         $paymentMade = 'Y';
     }
-    $paymentToken = null;
-    if (isset($_GET['token'])) {
-        $paymentToken = $_GET['token'] ?? '';
-    }
-    $paymentPayerID = null;
-    if (isset($_GET['PayerID'])) {
-        $paymentPayerID = $_GET['PayerID'] ?? '';
-    }
-    $feeTotal = null;
-    if (isset($_GET['feeTotal'])) {
-        $feeTotal = $_GET['feeTotal'] ?? '';
-    }
-    $gibbonFinanceInvoiceID = '';
-    if (isset($_GET['gibbonFinanceInvoiceID'])) {
-        $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
-    }
-    $key = '';
-    if (isset($_GET['key'])) {
-        $key = $_GET['key'] ?? '';
-    }
+    $paymentToken = $_GET['token'] ?? null;
+    $paymentPayerID = $_GET['PayerID'] ?? null;
+    $feeTotal = $_GET['feeTotal'] ?? null;
+    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+    $key = $_GET['key'] ?? '';
 
     $gibbonFinanceInvoiceeID = '';
     $invoiceTo = '';
