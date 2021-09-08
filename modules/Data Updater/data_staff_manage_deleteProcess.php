@@ -21,10 +21,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = isset($_POST['gibbonSchoolYearID'])? $_POST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
-$gibbonStaffUpdateID = $_POST['gibbonStaffUpdateID'];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_staff_manage_delete.php&gibbonStaffUpdateID=$gibbonStaffUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_staff_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$gibbonStaffUpdateID = $_POST['gibbonStaffUpdateID'] ?? '';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff_manage_delete.php&gibbonStaffUpdateID=$gibbonStaffUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/data_staff_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_manage_delete.php') == false) {
     $URL .= '&return=error0';

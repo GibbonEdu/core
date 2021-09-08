@@ -26,14 +26,15 @@ use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 include '../../gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_medical.php&gibbonPersonID=$gibbonPersonID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

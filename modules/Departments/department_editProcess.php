@@ -22,8 +22,9 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$gibbonDepartmentID = $_GET['gibbonDepartmentID'];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
+$gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edit.php') == false) {
     $URL .= '&return=error0';

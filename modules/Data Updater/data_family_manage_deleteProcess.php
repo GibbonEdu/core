@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = isset($_POST['gibbonSchoolYearID'])? $_POST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
-$gibbonFamilyUpdateID = $_POST['gibbonFamilyUpdateID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$gibbonFamilyUpdateID = $_POST['gibbonFamilyUpdateID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_manage_delete.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_family_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
