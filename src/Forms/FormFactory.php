@@ -229,6 +229,9 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function createSelect($name)
     {
         return new Input\Select($name);

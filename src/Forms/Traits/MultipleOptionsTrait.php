@@ -144,7 +144,8 @@ trait MultipleOptionsTrait
     /**
      * Build an internal options array from the result set of a PDO query.
      * @param   object  $results
-     * @return  string
+     *
+     * @return  self
      */
     public function fromResults($results, $groupBy = false)
     {

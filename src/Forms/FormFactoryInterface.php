@@ -60,4 +60,13 @@ interface FormFactoryInterface
      * @return \Gibbon\Forms\Layout\Element
      */
     public function createContent($content = ''): Element;
+
+    /**
+     * Create select element from the given name.
+     *
+     * @param string $name
+     *
+     * @return \Gibbon\Forms\Input\Select
+     */
+    public function createSelect($name);
 }
