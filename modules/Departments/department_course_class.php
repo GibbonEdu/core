@@ -76,13 +76,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if ($gibbonDepartmentID != '') {
                 $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
                 $page->breadcrumbs
-                    ->add(__('View All'), 'departments.php')
                     ->add($row['department'], 'department.php', $urlParams)
                     ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
                     ->add(Format::courseClassName($row['course'], $row['class']));
             } else {
                 $page->breadcrumbs
-                    ->add(__('View All'), 'departments.php')
+                    ->add(__('Departments'), 'departments.php')
                     ->add(Format::courseClassName($row['course'], $row['class']));
             }
 
