@@ -22,14 +22,16 @@ use Gibbon\Domain\System\LogGateway;
 include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonActivityID = $_GET['gibbonActivityID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
+if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) { 
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_edit.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
-    if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment_edit.php') == false) {
+    if ($gibbonActivityID == '' or $gibbonPersonID == '') {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
