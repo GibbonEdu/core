@@ -50,7 +50,7 @@ class Header
         $tray = [];
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
-        
+
         // Message Wall
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             $tray['messageWall'] = [
@@ -83,7 +83,7 @@ class Header
 
         // Links for logged in users
         if ($this->session->has('username')) {
-            
+
             $links['logout'] = [
                 'name' => __('Logout'),
                 'url'  => $this->session->get('absoluteURL').'/logout.php',
@@ -168,7 +168,7 @@ class Header
             'image_240'     => $this->session->get('image_240'),
             'houseName'     => $this->session->get('gibbonHouseIDName'),
             'houseLogo'     => $this->session->get('gibbonHouseIDLogo'),
-            'messengerRead' => strtotime($this->session->get('messengerLastRead')) >= $messageWallLatestPost,
+            'messengerRead' => strtotime((string) $this->session->get('messengerLastRead')) >= $messageWallLatestPost,
         ];
     }
 }

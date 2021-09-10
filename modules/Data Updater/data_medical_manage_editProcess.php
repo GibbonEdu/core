@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             }
 
             // CUSTOM FIELDS
-            $data['fields'] = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Medical Form', [], $row2['fields']);
+            $data['fields'] = $container->get(CustomFieldHandler::class)->getFieldDataFromDataUpdate('Medical Form', [], $row2['fields'] ?? []);
             $sqlSet .= 'fields=:fields, ';
 
             $partialFail = false;

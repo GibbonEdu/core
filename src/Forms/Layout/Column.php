@@ -113,6 +113,6 @@ class Column extends Row implements OutputableInterface, ValidatableInterface
     {
         if (!method_exists($element, 'getClass')) return '';
 
-        return str_replace('standardWidth', '', $element->getClass());
+        return str_replace('standardWidth', '', (string) $element->getClass());
     }
 }

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
     //Proceed!
     $page->breadcrumbs->add(__('Days of the Week'));
 
-    
+
         $data = array();
         $sql = "SELECT * FROM gibbonDaysOfWeek WHERE name='Monday' OR name='Tuesday' OR name='Wednesday' OR name='Thursday' OR name='Friday' OR name='Saturday' OR name='Sunday' ORDER BY sequenceNumber";
         $result = $connection2->prepare($sql);
@@ -52,6 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         $minutes = implode(',', $minutesArray);
 
         while ($day = $result->fetch()) {
+            $schoolOpen = $day['schoolOpen'] ?? '';
+            $schoolStart = $day['schoolStart'] ?? '';
+            $schoolEnd = $day['schoolEnd'] ?? '';
+            $schoolClose = $day['schoolClose'] ?? '';
+
             $form->addHiddenValue($day['name'].'sequenceNumber', $day['sequenceNumber']);
 
             $form->addRow()->addHeading(__($day['name']).' ('.__($day['nameShort']).')');
@@ -70,12 +75,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
-                    ->selected(substr($day['schoolOpen'], 0, 2));
+                    ->selected(substr($schoolOpen, 0, 2));
                 $col->addSelect($day['name'].'schoolOpenM')
                     ->fromString($minutes)
                     ->setClass('shortWidth')
                     ->placeholder(__('Minutes'))
-                    ->selected(substr($day['schoolOpen'], 3, 2));
+                    ->selected(substr($schoolOpen, 3, 2));
 
             $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolStart', __('School Starts'));
@@ -85,12 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
-                    ->selected(substr($day['schoolStart'], 0, 2));
+                    ->selected(substr($schoolStart, 0, 2));
                 $col->addSelect($day['name'].'schoolStartM')
                     ->fromString($minutes)
                     ->setClass('shortWidth')
                     ->placeholder(__('Minutes'))
-                    ->selected(substr($day['schoolStart'], 3, 2));
+                    ->selected(substr($schoolStart, 3, 2));
 
             $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolEnd', __('School Ends'));
@@ -100,12 +105,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
-                    ->selected(substr($day['schoolEnd'], 0, 2));
+                    ->selected(substr($schoolEnd, 0, 2));
                 $col->addSelect($day['name'].'schoolEndM')
                     ->fromString($minutes)
                     ->setClass('shortWidth')
                     ->placeholder(__('Minutes'))
-                    ->selected(substr($day['schoolEnd'], 3, 2));
+                    ->selected(substr($schoolEnd, 3, 2));
 
             $row = $form->addRow()->addClass($day['name']);
                 $row->addLabel($day['name'].'schoolClose', __('School Closes'));
@@ -115,12 +120,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
                     ->required()
                     ->setClass('shortWidth')
                     ->placeholder(__('Hours'))
-                    ->selected(substr($day['schoolClose'], 0, 2));
+                    ->selected(substr($schoolClose, 0, 2));
                 $col->addSelect($day['name'].'schoolCloseM')
                     ->fromString($minutes)
                     ->setClass('shortWidth')
                     ->placeholder(__('Minutes'))
-                    ->selected(substr($day['schoolClose'], 3, 2));
+                    ->selected(substr($schoolClose, 3, 2));
         }
 
         $row = $form->addRow();

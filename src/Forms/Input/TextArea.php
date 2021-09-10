@@ -112,7 +112,7 @@ class TextArea extends Input
         $this->setAttribute('value', '');
 
         $output = '<textarea '.$this->getAttributeString().'>';
-        $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
+        $output .= htmlentities((string) $text, ENT_QUOTES, 'UTF-8');
         $output .= '</textarea>';
 
         if ($this->autosize) {

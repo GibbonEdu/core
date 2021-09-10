@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     //Proceed!
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     $customFieldGateway = $container->get(CustomFieldGateway::class);
-    
+
     $data = [
         'context'                  => $_POST['context'] ?? '',
         'name'                     => $_POST['name'] ?? '',
@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     // Add this field to the bottom of the current sequenceNumber for this context
     $sequenceCheck = $customFieldGateway->selectBy(['context' => $data['context']], ['sequenceNumber'])->fetch();
+    if ($sequenceCheck === false) $sequenceCheck = ['sequenceNumber' => 0]; // defaults to 0 if there is no existing sequence number
     $data['sequenceNumber'] = $sequenceCheck['sequenceNumber'] + 1;
 
     if ($data['type'] == 'varchar') $data['options'] = min(max(0, intval($data['options'])), 255);
@@ -64,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $data['activePersonStaff'] = in_array('activePersonStaff', $roleCategories);
     $data['activePersonParent'] = in_array('activePersonParent', $roleCategories);
     $data['activePersonOther'] = in_array('activePersonOther', $roleCategories);
-    
+
     // Validate the required values are present
     if (empty($data['context']) || empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['required'])) {
         $URL .= '&return=error1';

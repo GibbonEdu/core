@@ -61,7 +61,7 @@ class Format
         $settings['absolutePath'] = $session->get('absolutePath');
         $settings['absoluteURL'] = $session->get('absoluteURL');
         $settings['gibbonThemeName'] = $session->get('gibbonThemeName');
-        $settings['currency'] = $session->get('currency');
+        $settings['currency'] = $session->get('currency') ?? '';
         $settings['currencySymbol'] = !empty(substr($settings['currency'], 4)) ? substr($settings['currency'], 4) : '';
         $settings['currencyName'] = substr($settings['currency'], 0, 3);
         $settings['nameFormatStaffInformal'] = $session->get('nameFormatStaffInformal');
@@ -355,10 +355,10 @@ class Format
             'Other'       => __('Other'),
             'Unspecified' => __('Unspecified')
             ];
-        
+
         return $translate ? __($genderNames[$value]) : $genderNames[$value];
-    }    
-    
+    }
+
     /**
      * Formats a filesize in bytes to display in KB, MB, etc.
      *
@@ -747,6 +747,7 @@ class Format
                 $imageSize = $size;
         }
 
+        $path = (string) $path;
         if (preg_match('/^http[s]*/', $path)) {
             return sprintf('<img class="%1$s" src="%2$s">', $class, $path);
         } else {

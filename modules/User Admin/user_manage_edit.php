@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonPersonID' => $gibbonPersonID);
             $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
-            
+
             $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
             if (!empty($scrubbed)) {
                 echo Format::alert(__("This user's personal data was cleared on {date} as part of a data retention action. The following database tables were cleared: {tables}", ['date' => Format::date($scrubbed['timestamp']), 'tables' => Format::list(json_decode($scrubbed['tables']), 'ul', 'text-xs mb-0')] ), 'warning');
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 				$row->addSelectCountry('address1Country');
 
 			if ($values['address1'] != '') {
-				
+
 					$dataAddress = array('gibbonPersonID' => $values['gibbonPersonID'], 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%');
 					$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
 					$resultAddress = $connection2->prepare($sqlAddress);
@@ -528,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 				if ($privacySetting == 'Y' && !empty($privacyOptions)) {
                     $options = array_map('trim', explode(',', $privacyOptions));
-                    $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
+                    $values['privacyOptions'] = isset($values['privacy']) ? array_map('trim', explode(',', $values['privacy'])) : [];
 
 					$row = $form->addRow();
 						$row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));

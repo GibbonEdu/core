@@ -885,7 +885,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 
         $options = array_map('trim', explode(',', $privacyOptions));
-        $checked = array_map('trim', explode(',', $application['privacy']));
+        $checked = !empty($application['privacy']) ? array_map('trim', explode(',', $application['privacy'])) : [];
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'));
