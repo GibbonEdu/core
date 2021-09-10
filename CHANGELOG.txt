@@ -33,6 +33,7 @@ v23.0.00
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
         Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
+        Timetable: added timetable day heading colours to View Timetable by Facility
         Timetable Admin: adjusted interface strings in timetable import
 
     Bug Fixes
