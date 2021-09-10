@@ -56,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
 
             $page->breadcrumbs
-                ->add(__('View All'), $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php')
-                ->add($row['name'], 'departments.php', $urlParams);
+                    ->add(__('Departments'), $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php')
+                    ->add($row['name'], $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php', $urlParams);
 
             //Print overview
             if ($row['blurb'] != '' or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
