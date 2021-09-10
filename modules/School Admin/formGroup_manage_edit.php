@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
         ->add(__('Manage Form Groups'), 'formGroup_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Form Group'));
 
-    //Check if school year specified
+    //Check if gibbonFormGroupID and gibbonSchoolYearID specified
     if ($gibbonFormGroupID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

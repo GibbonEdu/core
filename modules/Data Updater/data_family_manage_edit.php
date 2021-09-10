@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         ->add(__('Family Data Updates'), 'data_family_manage.php', $urlParams)
         ->add(__('Edit Request'));
 
-    //Check if school year specified
+    //Check if gibbonFamilyUpdateID specified
     $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
     if ($gibbonFamilyUpdateID == 'Y') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -104,10 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 				}
 			}
 
-            if ($changeCount > 0) {
-                $row = $form->addRow();
-                    $row->addSubmit();
-            }
+            $row = $form->addRow();
+                $row->addSubmit();
 
 			echo $form->getOutput();
         }

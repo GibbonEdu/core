@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                 echo '</div>';
             }
 
-            //Check if school year specified
+            //Check if gibbonRubricID specified
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
                 echo "<div class='error'>";

@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
         ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
         ->add(__('Edit Term'));
 
-    //Check if school year specified
+    //Check if gibbonSchoolYearTermID specified
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
     if ($gibbonSchoolYearTermID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

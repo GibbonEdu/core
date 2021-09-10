@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         }
     }
 
-    //Check if school year specified
+    //Check if gibbonActivityID and gibbonPersonID specified
     $gibbonActivityID = $_GET['gibbonActivityID'];
     $gibbonPersonID = $_GET['gibbonPersonID'];
     if ($gibbonPersonID == '' or $gibbonActivityID == '') {

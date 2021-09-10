@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonPersonID specified
         if ($gibbonPersonID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -124,10 +124,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Medical Form', ['dataUpdater' => 1], $customRequireFail);
 
                 // Check for data changed
-                $existingFields = json_decode($values['fields'], true);
+                $existingFields = isset($values['fields']) ? json_decode($values['fields'], true) : [];
+                $existingFields = is_array($existingFields) ? $existingFields : []; // make sure this is an array
                 $newFields = json_decode($fields, true);
+                $newFields = is_array($newFields) ? $newFields : []; // make sure this is an array
                 foreach ($newFields as $key => $fieldValue) {
-                    if ($existingFields[$key] != $fieldValue) {
+                    if (!isset($existingFields[$key]) || $existingFields[$key] != $fieldValue) {
                         $dataChanged = true;
                     }
                 }

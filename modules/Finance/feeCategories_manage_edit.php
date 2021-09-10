@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
         ->add(__('Manage Fee Categories'),'feeCategories_manage.php')
         ->add(__('Edit Category'));
 
-    //Check if school year specified
+    //Check if gibbonFinanceFeeCategoryID specified
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
     if ($gibbonFinanceFeeCategoryID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

@@ -1000,9 +1000,27 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 
 ";
 
+//v22.0.01
+++$count;
+$sql[$count][0] = '22.0.01';
+$sql[$count][1] = "
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+";
+
 //v23.0.00
 ++$count;
 $sql[$count][0] = '23.0.00';
 $sql[$count][1] = "
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+ALTER TABLE `gibbonEmailTemplate` CHANGE `templateName` `templateType` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonEmailTemplate` ADD `templateName` VARCHAR(120) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `moduleName`;end
+UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateName`='';end
+UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
+ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'importCustomFolderLocation', 'Custom Imports Folder', 'Path to custom import types folder, relative to uploads.', '/imports');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Ad Hoc Attendance', 0, 'Take Attendance', 'Allows users to take school-wide attendance for ad hoc groups of students.', 'attendance_take_adHoc.php', 'attendance_take_adHoc.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Ad Hoc Attendance'));end
 ALTER TABLE `gibbonLibraryItem` ADD `cost` decimal(10,2) DEFAULT NULL AFTER `invoiceNumber`;end
+
 ";

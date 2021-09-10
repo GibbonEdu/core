@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
             exit;
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonResourceID specified
             if ($gibbonResourceID == '') {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

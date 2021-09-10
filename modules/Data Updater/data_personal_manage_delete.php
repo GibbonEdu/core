@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonPersonUpdateID specified
     $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
     if ($gibbonPersonUpdateID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));

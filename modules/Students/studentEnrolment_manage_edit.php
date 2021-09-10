@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         ->add(__('Student Enrolment'), 'studentEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Student Enrolment'));
 
-    //Check if school year specified
+    //Check if gibbonStudentEnrolmentID and gibbonSchoolYearID specified
     if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

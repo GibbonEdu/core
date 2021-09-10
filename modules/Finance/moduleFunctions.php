@@ -620,7 +620,7 @@ function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2)
 
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be add, edit
-function makeFeeBlock($guid, $connection2, $i, $mode = 'add', $feeType, $gibbonFinanceFeeID, $name = '', $description = '', $gibbonFinanceFeeCategoryID = '', $fee = '', $category = '', $outerBlock = true)
+function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFeeID, $name = '', $description = '', $gibbonFinanceFeeCategoryID = '', $fee = '', $category = '', $outerBlock = true)
 {
     if ($outerBlock) {
         echo "<div id='blockOuter$i' class='blockOuter'>";

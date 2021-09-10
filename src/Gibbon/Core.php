@@ -36,13 +36,13 @@ class Core
     protected $basePath;
 
     /**
-     * Core classes available to all Gibbon scripts 
+     * Core classes available to all Gibbon scripts
      * TODO: These need removed & replaced with DI
-     * @var  object
+     * @var  \Gibbon\Session Session object.
      */
     public $session;
     public $locale;
-    
+
     /**
      * Configuration variables
      * @var  array
@@ -165,12 +165,12 @@ class Core
      *
      * @param    string  $versionFilePath
      *
-     * @throws   Exception If the version file is not found
+     * @throws   \Exception If the version file is not found
      */
     protected function loadVersionFromFile($versionFilePath)
     {
         if (file_exists($versionFilePath) == false) {
-            throw new Exception('Gibbon version.php file missing: ' . $versionFilePath);
+            throw new \Exception('Gibbon version.php file missing: ' . $versionFilePath);
         }
 
         include $versionFilePath;

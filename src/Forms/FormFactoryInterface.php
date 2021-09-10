@@ -19,10 +19,54 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Forms\Layout\Column;
+use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\Layout\Row;
+use Gibbon\Forms\Layout\Trigger;
+
 interface FormFactoryInterface
 {
-    public function createRow($id);
-    public function createColumn($id);
-    public function createTrigger($selector);
-    public function createContent($content);
+    /**
+     * Create form row.
+     *
+     * @param string $id  HTML id of the row.
+     * @return \Gibbon\Forms\Layout\Row
+     */
+    public function createRow($id = ''): Row;
+
+    /**
+     * Create flex column.
+     *
+     * @param string $id  HTML id of the column.
+     * @return \Gibbon\Forms\Layout\Column
+     */
+    public function createColumn($id = ''): Column;
+
+    /**
+     * Create javascript trigger for certain event of DOM object
+     * specified by the selector.
+     *
+     * @param string $selector
+     *
+     * @return \Gibbon\Forms\Layout\Trigger
+     */
+    public function createTrigger($selector = ''): Trigger;
+
+    /**
+     * Create output element from given content.
+     *
+     * @param string $content
+     *
+     * @return \Gibbon\Forms\Layout\Element
+     */
+    public function createContent($content = ''): Element;
+
+    /**
+     * Create select element from the given name.
+     *
+     * @param string $name
+     *
+     * @return \Gibbon\Forms\Input\Select
+     */
+    public function createSelect($name);
 }

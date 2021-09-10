@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             header("Location: {$URL}");
         } else {
             //Proceed!
-            //Check if school year specified
+            //Check if gibbonRubricID and gibbonRubricRowID specified
             if ($gibbonRubricID == '' or $gibbonRubricRowID == '') {
                 $URL .= '&&return=error1';
                 header("Location: {$URL}");

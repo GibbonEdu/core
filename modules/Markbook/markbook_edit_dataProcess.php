@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
         header("Location: {$URL}");
     } else {
         //Proceed!
-        //Check if school year specified
+        //Check if gibbonMarkbookColumnID and gibbonCourseClassID specified
         if ($gibbonMarkbookColumnID == '' or $gibbonCourseClassID == '') {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -264,6 +264,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                             // Create a log of failed uploads
                             $errorMessage = $fileUploader->getLastError();
+                            if (empty($errorMessage) && !file_exists($attachment)) {
+                                $errorMessage = __('Uploaded file not found in the system.');
+                            }
                             if (!empty($errorMessage) || filesize($attachment) === 0) {
                                 $gibbonModuleID = getModuleIDFromName($connection2, 'Markbook');
                                 $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [

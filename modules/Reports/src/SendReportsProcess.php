@@ -47,7 +47,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         
     }
 
-    public function runSendReportsToParents($gibbonReportID, $identifiers)
+    public function runSendReportsToParents($gibbonReportID, $templateName, $identifiers)
     {
         $familyGateway = $this->container->get(FamilyGateway::class);
         $reportGateway = $this->container->get(ReportGateway::class);
@@ -55,7 +55,7 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
     
         $report = $reportGateway->getByID($gibbonReportID);
-        $template = $this->container->get(EmailTemplate::class)->setTemplate('Send Reports to Parents');
+        $template = $this->container->get(EmailTemplate::class)->setTemplate($templateName);
         $mail = $this->container->get(Mailer::class);
         $mail->SMTPKeepAlive = true;
 
@@ -70,8 +70,13 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                 continue;
             }
 
-            // Generate and save an access token so this report can be accessed securely
-            $accessToken = bin2hex(random_bytes(20));
+            // Generate and save an access token so this report can be accessed securely, or use existing unexpired token
+            if (!empty($archive['accessToken']) && (empty($archive['timestampAccessExpiry']) || date('Y-m-d H:i:s') < $archive['timestampAccessExpiry'])) {
+                $accessToken = $archive['accessToken'];
+            } else {
+                $accessToken = bin2hex(random_bytes(20));
+            }
+            
             $data = [
                 'timestampSent' => date('Y-m-d H:i:s'),
                 'accessToken' => $accessToken,
@@ -134,14 +139,14 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
         return $sendReport;
     }
 
-    public function runSendReportsToStudents($gibbonReportID, $identifiers)
+    public function runSendReportsToStudents($gibbonReportID, $templateName, $identifiers)
     {
         $reportGateway = $this->container->get(ReportGateway::class);
         $userGateway = $this->container->get(UserGateway::class);
         $reportArchiveEntryGateway = $this->container->get(ReportArchiveEntryGateway::class);
     
         $report = $reportGateway->getByID($gibbonReportID);
-        $template = $this->container->get(EmailTemplate::class)->setTemplate('Send Reports to Students');
+        $template = $this->container->get(EmailTemplate::class)->setTemplate($templateName);
         $mail = $this->container->get(Mailer::class);
         $mail->SMTPKeepAlive = true;
 
@@ -156,8 +161,13 @@ class SendReportsProcess extends BackgroundProcess implements ContainerAwareInte
                 continue;
             }
 
-            // Generate and save an access token so this report can be accessed securely
-            $accessToken = bin2hex(random_bytes(20));
+            // Generate and save an access token so this report can be accessed securely, or use existing unexpired token
+            if (!empty($archive['accessToken']) && (empty($archive['timestampAccessExpiry']) || date('Y-m-d H:i:s') < $archive['timestampAccessExpiry'])) {
+                $accessToken = $archive['accessToken'];
+            } else {
+                $accessToken = bin2hex(random_bytes(20));
+            }
+            
             $data = [
                 'timestampSent' => date('Y-m-d H:i:s'),
                 'accessToken' => $accessToken,

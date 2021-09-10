@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school year specified
+    //Check if gibbonPersonID specified
     if ($gibbonPersonID == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -236,6 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $documentFields = json_decode($document['fields']);
                         foreach ($documentFields as $field) {
                             $value = !empty($_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field]) ? $_POST['document'][$document['gibbonPersonalDocumentTypeID']][$field] : null;
+
+                            if ($field == 'filePath' && !empty($_FILES['document'.$document['gibbonPersonalDocumentTypeID'].$field]['tmp_name'])) {
+                                $dataChanged = true;
+                            }
 
                             if ($field == 'dateExpiry' || $field == 'dateIssue') {
                                 $value = Format::dateConvert($value);
