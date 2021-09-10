@@ -333,7 +333,7 @@ class ImportType
     {
         try {
             $sql="SHOW COLUMNS FROM " . $this->getDetail('table');
-            $result = $pdo->executeQuery([], $sql);
+            $result = $pdo->select($sql);
         } catch (\PDOException $e) {
             return false;
         }
@@ -389,7 +389,7 @@ class ImportType
                     AND gibbonAction.name=:action
                     ORDER BY gibbonAction.precedence ASC
                     LIMIT 1";
-            $result = $pdo->executeQuery($data, $sql);
+            $result = $pdo->select($sql, $data);
         } catch (\PDOException $e) {
         }
 
@@ -416,7 +416,7 @@ class ImportType
         if ($this->useYearGroups) {
             try {
                 $sql="SELECT gibbonYearGroupID, nameShort FROM gibbonYearGroup ORDER BY sequenceNumber";
-                $resultYearGroups = $pdo->executeQuery([], $sql);
+                $resultYearGroups = $pdo->select($sql);
             } catch (\PDOException $e) {
             }
 
@@ -431,7 +431,7 @@ class ImportType
         if ($this->useLanguages) {
             try {
                 $sql="SELECT name FROM gibbonLanguage";
-                $resultLanguages = $pdo->executeQuery([], $sql);
+                $resultLanguages = $pdo->select($sql);
             } catch (\PDOException $e) {
             }
 
@@ -446,7 +446,7 @@ class ImportType
         if ($this->useCountries || $this->usePhoneCodes) {
             try {
                 $sql="SELECT printable_name, iddCountryCode FROM gibbonCountry";
-                $resultCountries = $pdo->executeQuery([], $sql);
+                $resultCountries = $pdo->select($sql);
             } catch (\PDOException $e) {
             }
 
@@ -466,7 +466,7 @@ class ImportType
         if ($this->useCustomFields) {
             try {
                 $sql="SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = 'Y'";
-                $resultCustomFields = $pdo->executeQuery([], $sql);
+                $resultCustomFields = $pdo->select($sql);
             } catch (\PDOException $e) {
             }
 
@@ -747,7 +747,7 @@ class ImportType
     {
         $value = trim($value);
         $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
-        
+
         $filter = $this->getField($fieldName, 'filter');
         $strvalue = mb_strtoupper($value);
 
@@ -1230,7 +1230,7 @@ class ImportType
             default:
                 return __(ucfirst($kind));
         }
-        
+
         return '';
     }
 
