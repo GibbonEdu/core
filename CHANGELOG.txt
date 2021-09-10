@@ -38,7 +38,7 @@ v23.0.00
     Bug Fixes
         Activities: fixed duplicate entries in Activity Choices by Student
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
-        Timetable - updated module functions to show red/blue week colours in View Timetable by Facility
+        Timetable: updated module functions to show red/blue week colours in View Timetable by Facility
 
 v22.0.01
 --------
