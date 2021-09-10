@@ -133,7 +133,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
             $enableDebug = $session->get('installType') == 'Development';
             // Override caching on systems during upgrades, when the system version is higher than database version
-            if (version_compare($this->getContainer()->get('config')->getVersion(), $session->get('version'), '>')) {
+            if (version_compare((string) $this->getContainer()->get('config')->getVersion(), (string) $session->get('version'), '>')) {
                 $enableDebug = true;
             }
 

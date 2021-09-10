@@ -107,12 +107,12 @@ trait MultipleOptionsTrait
 
     /**
      * Build options array from a DataSet, as provided by <b>Domain</b> gateways
-     * 
+     *
      * @param Dataset $dataset
      * @param string $valCol
      * @param string $nameCol
      * @param string $groupBy
-     * 
+     *
      * @return self
      */
     public function fromDataSet(Dataset $dataset, $valCol, $nameCol, $groupBy = false)
@@ -158,7 +158,9 @@ trait MultipleOptionsTrait
             });
 
             foreach ($options as $option) {
-                $option = array_map('trim', $option);
+                $option = array_map(function ($item) {
+                    return trim((string) $item);
+                }, $option);
 
                 if ($groupBy !== false) {
                     $this->options[$option[$groupBy]][$option['value']] = __($option['name']);
