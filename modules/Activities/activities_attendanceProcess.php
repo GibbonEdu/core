@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonActivityID = $_GET['gibbonActivityID'];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
+$address = $_POST['address'] ?? '';
+$gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendanceProcess.php') == false) {
     $URL .= '&return=error0';

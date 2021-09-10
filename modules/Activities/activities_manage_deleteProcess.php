@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonActivityID = $_POST['gibbonActivityID']  ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_delete.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
+$address= $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/activities_manage_delete.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_delete.php') == false) {
     $URL .= '&return=error0';

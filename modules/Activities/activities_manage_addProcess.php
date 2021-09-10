@@ -21,7 +21,8 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_add.php') == false) {
     $URL .= '&return=error0';
