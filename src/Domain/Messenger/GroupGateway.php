@@ -85,6 +85,17 @@ class GroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectGroupsBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name 
+                FROM gibbonGroup 
+                WHERE gibbonSchoolYearID=:gibbonSchoolYearID 
+                ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectGroupByID($gibbonGroupID)
     {
         $data = array('gibbonGroupID' => $gibbonGroupID);

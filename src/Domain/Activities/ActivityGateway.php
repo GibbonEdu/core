@@ -137,4 +137,12 @@ class ActivityGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectActivitiesBySchoolYear($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+        $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+
+        return $this->db()->select($sql, $data);
+    }
 }
