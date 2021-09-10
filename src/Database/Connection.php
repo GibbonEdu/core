@@ -66,11 +66,22 @@ class Connection implements ConnectionInterface
 
     /**
      * Create the connection wrapper around a \PDO instance.
-     * @param \PDO $pdo
+     *
+     * @param \PDO  $pdo     Should be configured to fit Connection use internally.
      * @param array $config
+     *
+     * @throws \InvalidArgumentException Throws if the \PDO is misconfigured.
      */
     public function __construct(PDO $pdo, array $config = [])
     {
+        // Check the statement class. Expect $pdo to be correctly setup.
+        // See MySqlConnector::configureEncoding().
+        $class = $pdo->getAttribute(\PDO::ATTR_STATEMENT_CLASS);
+        if (!is_array($class) || sizeof($class) < 1 || $class[0] !== Result::class) {
+            throw new \InvalidArgumentException('$pdo must be setup to use ' . Result::class . ' as statement.');
+        }
+
+        // Use the PDO as internal connection
         $this->pdo = $pdo;
     }
 
