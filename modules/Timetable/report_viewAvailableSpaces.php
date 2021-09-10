@@ -389,13 +389,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 										if ($rowPeriods['type'] == 'Lesson') {
 											$vacancies = '';
 											try {
-												if ($spaceType == '') {
-													$dataSelect = array();
-													$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-												} else {
-													$dataSelect = array('type' => $spaceType);
-													$sqlSelect = 'SELECT * FROM gibbonSpace WHERE type=:type ORDER BY name';
-												}
+
+												$dataSelect = array();
+												$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+
 												$resultSelect = $connection2->prepare($sqlSelect);
 												$resultSelect->execute($dataSelect);
 											} catch (PDOException $e) {}
@@ -403,21 +400,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 											$adders = array();
 											while ($rowSelect = $resultSelect->fetch()) {
 												
-													$dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
-													$sqlUnique = 'SELECT gibbonTTDayRowClass.*, gibbonSpace.name AS roomName FROM gibbonTTDayRowClass JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID';
-													$resultUnique = $connection2->prepare($sqlUnique);
-													$resultUnique->execute($dataUnique);
-												if ($resultUnique->rowCount() == 0) {
-													$vacancies .= $rowSelect['name'].', ';
+												$dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
+												$sqlUnique = 'SELECT gibbonTTDayRowClass.*, gibbonSpace.name AS roomName FROM gibbonTTDayRowClass JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID';
+
+                                                $rowUnique = $pdo->selectOne($sqlUnique, $dataUnique);
+
+                                                $matchingType = empty($spaceType) || (!empty($spaceType) && $spaceType == $rowSelect['type']);
+                                                
+												if (empty($rowUnique)) {
+                                                    if ($matchingType) {
+													    $vacancies .= $rowSelect['name'].', ';
+                                                    }
 												} else {
 													//Check if space freed up here
-													$rowUnique = $resultUnique->fetch();
-													if (isset($spaceChanges[$rowUnique['gibbonTTDayRowClassID']])) {
+													if (!empty($spaceChanges[$rowUnique['gibbonTTDayRowClassID']])) {
 														//Save newly used space
 														$removers[$spaceChanges[$rowUnique['gibbonTTDayRowClassID']][0]] = $spaceChanges[$rowUnique['gibbonTTDayRowClassID']][0];
 
 														//Save newly freed space
-														$adders[$rowUnique['roomName']] = $rowUnique['roomName'];
+                                                        if ($matchingType) {
+														    $adders[$rowUnique['roomName']] = $rowUnique['roomName'];
+                                                        }
 													}
 												}
 
