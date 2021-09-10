@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Contracts\Database;
 
 /**
- * Database Connection Interface 
+ * Database Connection Interface
  * Borrowed in part from Illuminate\Database\ConnectionInterface
  *
  * @version	v16
@@ -49,7 +49,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return object
+     *
+     * @return \Gibbon\Database\Result Result of the database query.
      */
     public function select($query, $bindings = []);
 
@@ -121,8 +122,8 @@ interface Connection
 
     /**
      * @deprecated
-     * Backwards compatability for the old Gibbon\sqlConnection class. 
-     * Replaced with more expressive method names. Also because the 
+     * Backwards compatability for the old Gibbon\sqlConnection class.
+     * Replaced with more expressive method names. Also because the
      * parameters are backwards. Hoping to phase this one out in v17.
      *
      * @param  string  $query
