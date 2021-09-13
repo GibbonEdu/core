@@ -21,10 +21,11 @@ namespace Gibbon\Comms\Drivers;
 
 use Gibbon\Contracts\Comms\Mailer;
 use Matthewbdaly\SMS\Contracts\Driver;
+use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
 
 /**
  * An SMS driver which works via a gateway supporting Mail to SMS.
- * 
+ *
  * @version v17
  * @since   v17
  */
@@ -49,7 +50,7 @@ class MailDriver implements Driver
      *
      * @param Mailer $mailer The Mailer instance.
      * @param array  $config The configuration.
-     * @throws DriverNotConfiguredException Driver not configured correctly.
+     * @throws \Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException Driver not configured correctly.
      *
      * @return void
      */
