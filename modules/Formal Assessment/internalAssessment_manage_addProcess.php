@@ -22,7 +22,8 @@ use Gibbon\Services\Format;
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
+$address = $_GET['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -51,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
         }
         //Sort out effort
-        $effort = $_POST['effort'];
+        $effort = $_POST['effort'] ?? '';
         if ($effort == 'N') {
             $gibbonScaleIDEffort = null;
         } else {
