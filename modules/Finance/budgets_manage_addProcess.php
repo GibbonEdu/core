@@ -21,7 +21,8 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgets_manage_add.php';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/budgets_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add.php') == false) {
     $URL .= '&return=error0';

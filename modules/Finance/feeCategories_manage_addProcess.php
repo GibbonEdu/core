@@ -21,7 +21,8 @@ include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/feeCategories_manage_add.php';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/feeCategories_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_manage_add.php') == false) {
     $URL .= '&return=error0';

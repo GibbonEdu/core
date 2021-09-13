@@ -78,7 +78,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
             } else {
                 $row = $result->fetch();
                 $notes = $_POST['notes'] ?? '';
-                $status = $row['status'] ?? '';
+                $status = $row['status'];
                 if ($status != 'Pending') {
                     $status = $_POST['status'] ?? '';
                     if ($status == 'Paid - Complete') {

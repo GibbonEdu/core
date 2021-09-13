@@ -22,8 +22,9 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/budgets_manage_delete.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgets_manage.php';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/budgets_manage_delete.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/budgets_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_delete.php') == false) {
     $URL .= '&return=error0';

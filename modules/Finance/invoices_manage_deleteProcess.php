@@ -23,29 +23,11 @@ include './moduleFunctions.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'] ?? '';
-$status = null;
-if (isset($_GET['status'])) {
-    $status = $_GET['status'];
-}
-
-$gibbonFinanceInvoiceeID = null;
-if (isset($_GET['gibbonFinanceInvoiceeID'])) {
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-}
-$monthOfIssue = null;
-if (isset($_GET['monthOfIssue'])) {
-    $monthOfIssue = $_GET['monthOfIssue'];
-}
-
-$gibbonFinanceBillingScheduleID = null;
-if (isset($_GET['gibbonFinanceBillingScheduleID'])) {
-    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-}
-
-$gibbonFinanceFeeCategoryID = null;
-if (isset($_GET['gibbonFinanceFeeCategoryID'])) {
-    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
-}
+$status = $_GET['status'] ?? null;
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? null;
+$monthOfIssue = $_GET['monthOfIssue'] ?? null;
+$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? null;
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? null;
 
 if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
