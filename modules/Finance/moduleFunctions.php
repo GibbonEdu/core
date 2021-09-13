@@ -1202,7 +1202,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                     $return .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                if ($resultPayment->rowCount() <= 0) {
+                if ($resultPayment->rowCount() != 1) {
                     $paymentFail = true;
                 } else {
                     $rowPayment = $resultPayment->fetch();
