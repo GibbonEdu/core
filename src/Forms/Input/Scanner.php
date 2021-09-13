@@ -21,10 +21,10 @@ namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Element;
 
 /**
- * TextField
+ * Scanner
  *
- * @version v14
- * @since   v14
+ * @version v23
+ * @since   v23
  */
 class Scanner extends Input
 {
