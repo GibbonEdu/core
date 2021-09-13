@@ -20,20 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use Gibbon\Core;
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Locale;
 use Gibbon\Session;
-use Gibbon\View\View;
-use Gibbon\View\Page;
-use Gibbon\Comms\Mailer;
 use Gibbon\Comms\SMS;
+use Gibbon\View\Page;
+use Gibbon\View\View;
+use Gibbon\Comms\Mailer;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
-use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\Services\Payment\Payment;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
+use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\Contracts\Services\Payment as PaymentInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
-
 
 /**
  * DI Container Services for the Core
@@ -66,6 +67,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'page',
         'module',
         'theme',
+        PaymentInterface::class,
         MailerInterface::class,
         SMSInterface::class,
         'gibbon_logger',
@@ -257,6 +259,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 'smsPassword'  => getSettingByScope($connection2, 'Messenger', 'smsPassword'),
                 'smsMailer'    => $smsGateway == 'Mail to SMS' ? $container->get(MailerInterface::class) : '',
             ]);
+        });
+
+        $container->add(PaymentInterface::class, function () use ($container) {
+           return $container->get(Payment::class);
         });
     }
 }
