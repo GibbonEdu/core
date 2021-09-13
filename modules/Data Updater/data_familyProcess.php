@@ -21,8 +21,9 @@ use Gibbon\Comms\NotificationEvent;
 
 include '../../gibbon.php';
 
-$gibbonFamilyID = $_GET['gibbonFamilyID'];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
+$gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
     $URL .= '&return=error0';

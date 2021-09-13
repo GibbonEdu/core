@@ -19,10 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = isset($_POST['gibbonSchoolYearID'])? $_POST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $gibbonFinanceInvoiceeUpdateID = $_POST['gibbonFinanceInvoiceeUpdateID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_finance_manage_delete.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_finance_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_finance_manage_delete.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/data_finance_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_manage_delete.php') == false) {
     $URL .= '&return=error0';

@@ -21,7 +21,8 @@ include '../../gibbon.php';
 
 $gibbonFinanceInvoiceeUpdateID = $_GET['gibbonFinanceInvoiceeUpdateID'] ?? '';
 $gibbonFinanceInvoiceeID = $_POST['gibbonFinanceInvoiceeID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_finance_manage_edit.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_finance_manage_edit.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_manage_edit.php') == false) {
     $URL .= '&return=error0';

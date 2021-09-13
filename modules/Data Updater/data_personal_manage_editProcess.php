@@ -33,7 +33,8 @@ include '../User Admin/moduleFunctions.php';
 $logGateway = $container->get(LogGateway::class);
 $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
     $URL .= '&return=error0';
