@@ -60,6 +60,34 @@ class ResourceGateway extends QueryableGateway
                 ->where('gibbonResource.gibbonPersonID=:gibbonPersonID')
                 ->bindValue('gibbonPersonID', $gibbonPersonID);
         }
+        
+        $criteria->addFilterRules([
+            'tags' => function ($query, $tags) {
+                $tagCount = 0;
+                $tagArray = explode(',', $tags);
+                foreach ($tagArray as $atag) {
+                    return $query
+                        ->where('concat(",", tags, ",") LIKE :tag'.$tagCount)
+                        ->bindValue('tag'.$tagCount, "%,".$atag.",%");
+                    ++$tagCount;
+                }     
+            },
+            'category' => function ($query, $category) {
+                return $query
+                    ->where('category=:category')
+                     ->bindValue('category', $category);
+            },
+            'purpose' => function ($query, $purpose) {
+                return $query
+                    ->where('purpose=:purpose')
+                     ->bindValue('purpose', $purpose);
+            },
+            'gibbonYearGroupID' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('gibbonYearGroupIDList LIKE :gibbonYearGroupIDList')
+                     ->bindValue('gibbonYearGroupIDList', '%$gibbonYearGroupID%');
+            }
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
