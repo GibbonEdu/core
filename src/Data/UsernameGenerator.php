@@ -62,7 +62,7 @@ class UsernameGenerator
     public function addToken($name, $value)
     {
         if (empty($name)) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $this->tokens[$name] = array(
@@ -84,7 +84,7 @@ class UsernameGenerator
     public function addNumericToken($name, $value, $size, $increment, $callback = null)
     {
         if (empty($name)) {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         $this->tokens[$name] = array(
@@ -247,7 +247,7 @@ class UsernameGenerator
         $number = $this->getToken($name);
 
         if (empty($number) || $number['type'] != 'numeric') {
-            throw new InvalidArgumentException();
+            throw new \InvalidArgumentException();
         }
 
         // Increment value and format result
