@@ -613,7 +613,7 @@ class DatabaseFormFactory extends FormFactory
         $countryCodes = $this->getCachedQuery('phoneNumber');
 
         if (empty($countryCodes)) {
-            $sql = 'SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY printable_name';
+            $sql = "SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY (SELECT value FROM gibbonSetting WHERE scope='System' AND name='country' LIMIT 1)=printable_name DESC, printable_name";
             $results = $this->pdo->executeQuery(array(), $sql);
             if ($results && $results->rowCount() > 0) {
                 $countryCodes = $results->fetchAll();
