@@ -41,6 +41,10 @@ table:
         name: "Invoice Number"
         desc: ""
         args: { filter: string, custom: true }
+    cost: 
+        name: "Cost"
+        desc: ""
+        args: { filter: numeric, custom: true }
     gibbonSpaceID:
         name: "Location"
         desc: "Name"
