@@ -271,7 +271,12 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\Person($name);
     }
-
+    
+    public function createScanner($name)
+    {
+        return new Input\Scanner($name);
+    }
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createAlert($content, $level = 'warning')

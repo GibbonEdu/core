@@ -135,6 +135,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
                 : Format::small(__('Unknown'));
             return $output.'<br/>'.Format::small($item['vendor']);
         });
-
+    
     echo $table->render($catalog);
 }
