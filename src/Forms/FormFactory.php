@@ -229,6 +229,9 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function createSelect($name)
     {
         return new Input\Select($name);
@@ -268,7 +271,12 @@ class FormFactory implements FormFactoryInterface
     {
         return new Input\Person($name);
     }
-
+    
+    public function createScanner($name)
+    {
+        return new Input\Scanner($name);
+    }
+    
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createAlert($content, $level = 'warning')

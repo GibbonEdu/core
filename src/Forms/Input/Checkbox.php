@@ -92,10 +92,10 @@ class Checkbox extends Input
 
         if (is_array($values)) {
             foreach ($values as $key => $value) {
-                $this->checked[trim($key)] = (!is_array($value))? trim($value) : $value;
+                $this->checked[trim($key)] = (!is_array($value))? trim((string) $value) : $value;
             }
         } else {
-            $this->checked = array(trim($values));
+            $this->checked = array(trim((string) $values));
         }
 
         return $this;
@@ -208,7 +208,7 @@ class Checkbox extends Input
             if ($hasMultiple) {
                 $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
             }
-            
+
             if (!empty($this->checkall)) {
                 $checked = (count($this->options) == count($this->checked))? 'checked' : '';
                 $output .= '<div class="flex mt-1 '.($this->align == 'right' ? 'justify-end text-right' : '').'">';
@@ -226,7 +226,7 @@ class Checkbox extends Input
                     : $this->options;
 
             foreach ($optionGroups as $group => $options) {
-            
+
                 if (!empty($group)) {
                     $output .= '<label class="flex font-bold pb-1 border-b border-gray-400">'.$group.'</label>';
                 }
