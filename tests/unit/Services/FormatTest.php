@@ -177,7 +177,7 @@ class FormatTest extends TestCase
 
     public function testFormatsTenDigitPhoneNumbers()
     {
-        $this->assertEquals('123 - 45 67 890', Format::phone('1234567890'));
+        $this->assertEquals('(123) 4567 890', Format::phone('1234567890'));
     }
 
     public function testFormatsPhoneNumbersNumerically()
