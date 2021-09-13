@@ -38,7 +38,11 @@ class Scanner extends TextField
         
         $output = '<div class="input-box border-0 standardWidth">';
         $output .= '<input type="text" '.$this->getAttributeString().'>';
-        $output .= '<div class="inline-button border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)"><img src="./themes/Default/img/search.png"/></div>';
+        $output .= '<div class="inline-button -ml-px border border-l-0 rounded-r-sm text-base text-gray-600" style="border-left: 0px; height: 36px;" onclick="scanner(this)">
+        
+        <svg class="w-4 h-4 mt-1 text-gray-800 fill-current" enable-background="new 0 0 512 512" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg"><g><path d="m40 40h80v-40h-120v120h40z"/><path d="m392 0v40h80v80h40v-120z"/><path d="m40 392h-40v120h120v-40h-80z"/><path d="m472 472h-80v40h120v-120h-40z"/><path d="m76 236h160v-160h-160zm40-120h80v80h-80z"/><path d="m436 76h-160v160h160zm-40 120h-80v-80h80z"/><path d="m76 436h160v-160h-160zm40-120h80v80h-80z"/><path d="m316 316v-40h-40v80h40v40h40v-80z"/><path d="m356 396h80v40h-80z"/><path d="m396 356h40v-80h-80v40h40z"/><path d="m276 396h40v40h-40z"/></g></svg>
+        
+        </div>';
         $output .= '</div>';
         $output .= '<script type="text/javascript" src="./lib/instascan/instascan.min.js"></script>'; //TODO: IMPLEMENT INTO CORE
         $output .= '<script type="text/javascript">
