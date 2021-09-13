@@ -57,7 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
 
             $page->breadcrumbs
-                ->add(__('View All'), 'departments.php')
                 ->add($values['department'], 'department.php', $urlParams)
                 ->add($values['course'].$extra, 'department_course.php', $urlParams)
                 ->add(__('Edit Course'));

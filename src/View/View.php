@@ -126,6 +126,7 @@ class View implements \ArrayAccess
      * @param  string  $key
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($key) : bool
     {
         return array_key_exists($key, $this->data);
@@ -137,6 +138,7 @@ class View implements \ArrayAccess
      * @param  string  $key
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return $this->data[$key];
@@ -148,6 +150,7 @@ class View implements \ArrayAccess
      * @param  string  $key
      * @param  mixed   $value
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($key, $value)
     {
         $this->data[$key] = $value;
@@ -158,6 +161,7 @@ class View implements \ArrayAccess
      *
      * @param  string  $key
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($key)
     {
         unset($this->data[$key]);

@@ -31,7 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $page->breadcrumbs->add(__('View All'));
+    $page->breadcrumbs
+        ->add(__('Departments'), $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php')
+        ->add(__('View All'));
 
     $departmentGateway = $container->get(DepartmentGateway::class);
 

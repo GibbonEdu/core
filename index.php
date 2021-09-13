@@ -444,7 +444,7 @@ if ($isLoggedIn) {
             'cookieConsentEnabled' => 'Y',
             'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
             'hasPrivacyPolicy' => !empty($privacyPolicy),
-            'redirectTo' => $session->get('address'),
+            'redirectTo' => http_build_query($_GET),
         ]);
     }
 }

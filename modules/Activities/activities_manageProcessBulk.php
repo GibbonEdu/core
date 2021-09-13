@@ -19,9 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearIDCopyTo = null ;
-if (isset($_POST['gibbonSchoolYearIDCopyTo']))
-    $gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'];
+$gibbonSchoolYearIDCopyTo = $_POST['gibbonSchoolYearIDCopyTo'] ?? null;
 $action = $_POST['action'] ?? '';
 $search = $_POST['search'] ?? '';
 
