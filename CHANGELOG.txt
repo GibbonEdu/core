@@ -39,6 +39,7 @@ v23.0.00
 
     Bug Fixes
         System: fixed the Validator class so sanitizeHTML is multibyte safe
+        System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
