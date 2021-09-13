@@ -1853,6 +1853,20 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
+                    $color = '';
+                    $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
+                    $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                    $resultDay = $connection2->prepare($sqlDay);
+                    $resultDay->execute($dataDay);
+                    if ($rowDay = $resultDay->fetch()) {
+                        if (!empty($rowDay['color'])) {
+                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
+                        }
+                        if (!empty($rowDay['fontColor'])) {
+                            $color .= "; color: ".$rowDay['fontColor'];
+                        }
+                    }
+
                     $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
                     $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
 
@@ -1862,25 +1876,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-
-                      $color = '';
-                      $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                      $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                      $resultDay = $connection2->prepare($sqlDay);
-                      $resultDay->execute($dataDay);
-                      if ($resultDay->rowCount() == 1) {
-                          $rowDay = $resultDay->fetch();
-                          $output .= $rowDay['nameShort'].'<br/>';
-                          if ($rowDay['color'] != '') {
-                              $color .= "; background-color: ".$rowDay['color']."; background-image: none";
-                          }
-                          if ($rowDay['fontColor'] != '') {
-                              $color .= "; color: ".$rowDay['fontColor'];
-                          }
-                      }
-                      else {
-                          $output .= __($day['nameShort']).'<br/>';
-                      }
+                        $output .= $rowDay['nameShort'].'<br/>';
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
