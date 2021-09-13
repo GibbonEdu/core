@@ -181,9 +181,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
     $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
     $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $paymentAPIUsername = getSettingByScope($connection2, 'System', 'paymentAPIUsername');
+    $paymentAPIPassword = getSettingByScope($connection2, 'System', 'paymentAPIPassword');
+    $paymentAPISignature = getSettingByScope($connection2, 'System', 'paymentAPISignature');
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
