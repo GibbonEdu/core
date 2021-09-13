@@ -1029,5 +1029,6 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentGateway', 'Payment Gateway', 'Choose a payment gateway. You must create and configure an account with the selected service to get the required API details.', '');end
 ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 UPDATE `gibbonSetting` SET value=REPLACE(value, 'PayPal', 'online') WHERE scope='Application Form' AND name='applicationProcessFeeText';end
+UPDATE `gibbonSetting` SET value='PayPal' WHERE scope='System' AND name='paymentGateway' AND value='';end
 
 ";
