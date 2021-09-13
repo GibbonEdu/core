@@ -25,7 +25,13 @@ include './moduleFunctions.php';
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 $address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_manage_catalog_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
+$name = $_GET['name'] ?? '';
+$gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
+$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
+$status = $_GET['status'] ?? '';
+$gibbonPersonIDOwnership = $_GET['gibbonPersonIDOwnership'] ?? '';
+$typeSpecificFields = $_GET['typeSpecificFields'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_manage_catalog_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=$typeSpecificFields";
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_edit.php') == false) {
     $URL .= '&return=error0';
