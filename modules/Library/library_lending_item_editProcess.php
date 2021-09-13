@@ -22,11 +22,16 @@ use Gibbon\Services\Format;
 include '../../gibbon.php';
 
 $gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'] ?? '';
+$address = $_POST['address'] ?? '';
 $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'] ?? '';
+$name = $_GET['name'] ?? '';
+$gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
+$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
+$status = $_GET['status'] ?? '';
 
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'];
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
     if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_edit.php') == false) {
         $URL .= '&return=error0';
