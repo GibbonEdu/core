@@ -397,7 +397,8 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
         $service = $container->get('Google_Service_Calendar');
         try {
             $calendar = $service->calendars->get('primary');
-        } catch (\Google_Service_Exception $e) {}
+        } catch (\Google_Service_Exception $e) {
+        } catch (\InvalidArgumentException $e) {}
 
         if (!empty($calendar['id'])) {
             $session->set('calendarFeedPersonal', $calendar['id']);
@@ -443,6 +444,7 @@ if ($isLoggedIn) {
             'cookieConsentEnabled' => 'Y',
             'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
             'hasPrivacyPolicy' => !empty($privacyPolicy),
+            'redirectTo' => http_build_query($_GET),
         ]);
     }
 }

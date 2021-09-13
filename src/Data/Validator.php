@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
+use Gibbon\Contracts\Services\Session;
+
 /**
  * Validaton & Sanitization Class
  *
@@ -27,6 +29,20 @@ namespace Gibbon\Data;
  */
 class Validator
 {
+    protected $allowableHTML;
+    protected $allowableHTMLString;
+
+    public function __construct(Session $session)
+    {
+        $this->allowableHTMLString = $session->get('allowableHTML');
+        $this->allowableHTML = $this->parseTagsFromString($this->allowableHTMLString);
+    }
+
+    public function getAllowableHTML()
+    {
+        return $this->allowableHTML;
+    }
+
     /**
      * Sanitize the input data.
      *
@@ -35,9 +51,9 @@ class Validator
      * @param  bool   $utf8_encode
      * @return array
      */
-    public function sanitize($input, $allowableTags = array(), $utf8_encode = true)
+    public function sanitize($input, $allowableTags = [], $utf8_encode = true)
     {
-        $output = array();
+        $output = [];
 
         foreach (array_keys($input) as $field) {
             $value = $input[$field];
@@ -53,6 +69,10 @@ class Validator
 
                 // Sanitize HTML
                 if (!empty($allowableTags[$field])) {
+                    if (strtoupper($allowableTags[$field]) == 'HTML') {
+                        $allowableTags[$field] = $this->allowableHTML;
+                    }
+
                     $value = $this->sanitizeHTML($value, $allowableTags[$field]);
                 } else {
                     $value = strip_tags($value);
@@ -85,7 +105,7 @@ class Validator
      * @param    array   $allowableTags
      * @return   string
      */
-    public function sanitizeHTML(&$value, $allowableTags = array())
+    public function sanitizeHTML(&$value, $allowableTags = [])
     {
         if (is_string($allowableTags)) {
             $allowableTags = $this->parseTagsFromString($allowableTags);
@@ -105,13 +125,35 @@ class Validator
     }
 
     /**
+     * Sanitize plain text where there is no expected HTML.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizePlainText($value)
+    {
+        return strip_tags($value);
+    }
+
+    /**
+     * Sanitize rich text with expected HTML tags, using the TinyMCE list of allowable tags.
+     *
+     * @param string $value
+     * @return string
+     */
+    public function sanitizeRichText($value)
+    {
+        return $this->sanitizeHTML($value, $this->allowableHTML);
+    }
+
+    /**
      * Wrapper for strip_tags, accepts an array of tags rather than a string.
      *
      * @param    string  &$value
      * @param    array   &$allowableTags
      * @return   string
      */
-    protected function stripTags(&$value, &$allowableTags = array())
+    protected function stripTags(&$value, &$allowableTags = [])
     {
         // Reduce the tag array into a string of <tag><tag><tag>
         $allowableTagString = array_reduce(array_keys($allowableTags), function ($join, $item) {
@@ -128,7 +170,7 @@ class Validator
      * @param    array   &$allowableTags
      * @return   string
      */
-    protected function stripAttributes(&$value, &$allowableTags = array())
+    protected function stripAttributes(&$value, &$allowableTags = [])
     {
         if (!defined('LIBXML_VERSION')) return $value;
 
@@ -137,6 +179,8 @@ class Validator
         $dom->preserveWhiteSpace=true;
         $dom->validateOnParse=false;
         libxml_use_internal_errors(true);
+
+        $value = '<?xml encoding="utf-8" ?>' . mb_convert_encoding($value, 'HTML-ENTITIES', 'UTF-8');
 
         if ($dom->loadHTML('<body>'.$value.'</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
             // Iterate over the DOM and remove attributes not in the whitelist
@@ -167,7 +211,7 @@ class Validator
      */
     protected function parseTagsFromString($tagString = '')
     {
-        if (empty($tagString)) return array();
+        if (empty($tagString)) return [];
 
         // Handle strip_tags style string: convert <tag><tag><tag> to tag,tag,tag
         $tagString = str_replace(array('<','>'), array('',','), $tagString);
@@ -179,7 +223,7 @@ class Validator
                 $group[$parts[0]] = array_slice($parts, 1, -1);
             }
             return $group;
-        }, array());
+        }, []);
 
         return $tags;
     }

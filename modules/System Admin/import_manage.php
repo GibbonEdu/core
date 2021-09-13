@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\ImportType;
-use Gibbon\Tables\DataTable;
-use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
+use Gibbon\Data\ImportType;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 require __DIR__ . '/moduleFunctions.php';
 
@@ -33,6 +35,20 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
 
     $logGateway = $container->get(LogGateway::class);
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchGrouped();
+
+    $form = Form::create('settings', $session->get('absoluteURL').'/modules/System Admin/import_manageProcess.php');
+    $form->addHiddenValue('address', $session->get('address'));
+
+    $setting = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'importCustomFolderLocation', true);
+        $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addTextField($setting['name'])->required()->setValue($setting['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 
     // Get a list of available import options
     $importTypeList = ImportType::loadImportTypeList($pdo, false);

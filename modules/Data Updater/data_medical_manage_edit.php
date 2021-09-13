@@ -216,10 +216,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $form->addHiddenValue('count', $count);
             $form->addHiddenValue('count2', $count2);
 
-            if ($changeCount > 0) {
-                $row = $form->addRow();
-                    $row->addSubmit();
-            }
+            $row = $form->addRow();
+                $row->addSubmit();
 
             echo $form->getOutput();
         }

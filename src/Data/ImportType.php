@@ -209,7 +209,7 @@ class ImportType
 
     public static function getCustomImportTypeDir(Connection $pdo)
     {
-        $customFolder = getSettingByScope($pdo->getConnection(), 'Data Admin', 'importCustomFolderLocation');
+        $customFolder = getSettingByScope($pdo->getConnection(), 'System Admin', 'importCustomFolderLocation');
 
         return self::getBaseDir($pdo).'/uploads/'.trim($customFolder, '/ ');
     }
@@ -301,7 +301,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new importType($fileData, $pdo);
+        return new ImportType($fileData, $pdo);
     }
 
     /**
@@ -1060,6 +1060,7 @@ class ImportType
                             break;
 
             case 'enum':    $elements = $this->getField($fieldName, 'elements');
+                            $elements = array_map('trim', $elements);
                             if (!in_array($value, $elements)) {
                                 return false;
                             }

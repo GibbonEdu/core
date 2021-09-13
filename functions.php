@@ -22,8 +22,6 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 
-require_once dirname(__FILE__).'/gibbon.php';
-
 function getIPAddress() {
     $return = false;
 
@@ -200,8 +198,15 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-//Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
-//Not complete, as it does not strip out unwanted options, just whole tags.
+/**
+ * DEPRECATED. Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
+ *
+ * @param string $string
+ * @param Connection $connection2
+ * @return string
+ * 
+ * @deprecated in v23. Use Validator::sanitizeRichText
+ */
 function tinymceStyleStripTags($string, $connection2)
 {
     $return = '';

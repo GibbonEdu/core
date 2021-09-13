@@ -104,10 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 				}
 			}
 
-            if ($changeCount > 0) {
-                $row = $form->addRow();
-                    $row->addSubmit();
-            }
+            $row = $form->addRow();
+                $row->addSubmit();
 
 			echo $form->getOutput();
         }
