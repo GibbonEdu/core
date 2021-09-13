@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $purchaseDate = !empty($_POST['purchaseDate']) ? Format::dateConvert($_POST['purchaseDate']) : null;
 
             $invoiceNumber = $_POST['invoiceNumber'] ?? '';
-            $cost = $_POST['cost'] ?? '';
+            $cost = !empty($_POST['cost']) ? $_POST['cost'] : null;
             $imageType = $_POST['imageType'] ?? '';
             if ($imageType == 'Link') {
                 $imageLocation = $_POST['imageLink'] ?? '';
