@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 namespace Gibbon\Forms\Input;
-
 use Gibbon\Forms\Element;
 
 /**
@@ -118,14 +117,16 @@ class TextField extends Input
         return false;
     }
 
+    
     /**
      * Gets the HTML output for this form element.
      * @return  string
      */
     protected function getElement()
     {
+        
         $output = '<input type="text" '.$this->getAttributeString().'>';
-
+        
         if (!empty($this->autocomplete)) {
             $source = implode(',', array_map(function ($str) { return sprintf('"%s"', $str); }, $this->autocomplete));
             $output .= '<script type="text/javascript">';
