@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$address = $_POST['address'] ?? '';
+$address = $_GET['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_add.php') == false) {
