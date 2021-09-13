@@ -31,7 +31,7 @@ $status = $_GET['status'] ?? '';
 
 if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_renew.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$space&status=$status";
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_renew.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
     if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_renew.php') == false) {
         $URL .= '&return=error0';
