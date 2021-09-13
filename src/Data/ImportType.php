@@ -301,7 +301,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new importType($fileData, $pdo);
+        return new ImportType($fileData, $pdo);
     }
 
     /**
