@@ -453,7 +453,7 @@ class Importer
                 if (!empty($serialize)) {
                     if ($serialize == $fieldName) {
                         // Is this the field we're serializing? Grab the array
-                        $value = json_encode($this->serializeData[$serialize]);
+                        $value = json_encode($this->serializeData[$serialize] ?? []);
                         $fields[$fieldName] = $value;
                     } else {
                         // Otherwise collect values in an array

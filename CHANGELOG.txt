@@ -43,6 +43,7 @@ v23.0.00
         System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
         School Admin: fixed phone numbers not formatting in Manage Facilities
+        System Admin: fixed PHP notice in importer when skipping serialized fields
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
 
