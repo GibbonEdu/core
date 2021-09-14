@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         //Show form group grid
 
                             $dataFormGroup = array('gibbonFormGroupID' => $gibbonFormGroupID, 'date' => $currentDate);
-                            $sqlFormGroup = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
+                            $sqlFormGroup = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonFormGroupID=:gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) ORDER BY rollOrder, surname, preferredName";
                             $resultFormGroup = $connection2->prepare($sqlFormGroup);
                             $resultFormGroup->execute($dataFormGroup);
 
@@ -225,7 +225,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                     ->addClass($student['cellHighlight']);
 
                                 $studentLink = './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Attendance';
-                                $cell->addContent(Format::link($studentLink, Format::userPhoto($student['image_240'], 75)));
+                                $icon = Format::userBirthdayIcon($student['dob'], $student['preferredName']);
+
+                                $cell->addContent(Format::link($studentLink, Format::userPhoto($student['image_240'], 75)))
+                                    ->setClass('relative')
+                                    ->append($icon ?? '');
                                 $cell->addWebLink(Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                      ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                      ->addParam('gibbonPersonID', $student['gibbonPersonID'])
