@@ -42,6 +42,7 @@ v23.0.00
         System: fixed the Validator class so sanitizeHTML is multibyte safe
         System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
+        School Admin: fixed phone numbers not formatting in Manage Facilities
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
 

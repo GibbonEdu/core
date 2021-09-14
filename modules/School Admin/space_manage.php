@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     $table->addColumn('capacity', __('Capacity'));
     $table->addColumn('facilities', __('Facilities'))
         ->notSortable()
-        ->format(function($values) { 
+        ->format(function($values) {
             $return = null;
             $return .= ($values['computer'] == 'Y') ? __('Teaching computer').'<br/>':'';
             $return .= ($values['computerStudent'] > 0) ? $values['computerStudent'].' '.__('student computers').'<br/>':'';
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
             $return .= ($values['speakers'] == 'Y') ? __('Speakers').'<br/>':'';
             $return .= ($values['iwb'] == 'Y') ? __('Interactive White Board').'<br/>':'';
             $return .= ($values['phoneInternal'] != '') ? __('Extension Number').': '.$values['phoneInternal'].'<br/>':'';
-            $return .= ($values['phoneExternal'] != '') ? __('Phone Number').': '.$values['phoneExternal'].'<br/>':'';
+            $return .= ($values['phoneExternal'] != '') ? __('Phone Number').': '.Format::phone($values['phoneExternal']).'<br/>':'';
             return $return;
         });
 
