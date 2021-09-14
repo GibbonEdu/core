@@ -30,6 +30,7 @@ v23.0.00
         System: adjusted new student order in Staff Dashboard Enrolment tab
         System: in forms, update the current country phone code to always display first
         Attendance: added the ability to Take Ad Hoc Attendance
+        Attendance: added birthday icons to Take Attendance pages
         Messenger: updated New Message process to send SMS messages before emails
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status

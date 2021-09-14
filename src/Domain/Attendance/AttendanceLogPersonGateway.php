@@ -396,7 +396,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         switch ($target) {
             case 'Activity':
                 $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $targetID, 'date' => $currentDate];
-                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup
                         FROM gibbonStudentEnrolment 
                         JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
@@ -411,7 +411,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                     break;
             case 'Messenger':
                 $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonGroupID' => $targetID, 'date' => $currentDate];
-                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
                         FROM gibbonStudentEnrolment 
                         JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
@@ -425,7 +425,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                     break;
             case 'Select':
                 $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDList' => implode(',', $targetID), 'date' => $currentDate];
-                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
                         FROM gibbonStudentEnrolment 
                         JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
                         JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
