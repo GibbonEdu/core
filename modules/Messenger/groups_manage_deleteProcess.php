@@ -26,8 +26,9 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
     $URL .= '&return=error0';

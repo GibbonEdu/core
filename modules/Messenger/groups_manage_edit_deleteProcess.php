@@ -24,8 +24,9 @@ include '../../gibbon.php';
 $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit_delete.php&gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID";
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_edit_delete.php&gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     $URL .= '&return=error0';
