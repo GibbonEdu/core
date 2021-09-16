@@ -26,10 +26,29 @@ use Gibbon\Domain\System\CustomFieldGateway;
 
 class CustomFieldHandler
 {
+    /**
+     * @var \Gibbon\Domain\System\CustomFieldGateway
+     */
     protected $customFieldGateway;
 
+    /**
+     * @var \Gibbon\FileUploader
+     */
+    protected $fileUploader;
+
+    /**
+     * @var string[][]
+     */
     protected $contexts;
+
+    /**
+     * @var string[][]
+     */
     protected $types;
+
+    /**
+     * @var string[][]
+     */
     protected $headings;
 
     public function __construct(CustomFieldGateway $customFieldGateway, FileUploader $fileUploader)
@@ -212,13 +231,13 @@ class CustomFieldHandler
             if ((empty($heading) || $heading == 'Other Information') && !empty($params['heading'])) {
                 $heading = $params['heading'];
             }
-            
+
             // Handle creating a new heading if the form doesn't already have one
             if (!empty($heading) && !$form->hasHeading($heading)) {
                 $table = $context == 'Individual Needs' 
                     ? $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2')
                     : $form;
-                
+
                 $row = $table->addRow()->addClass($params['class'] ?? '');
                 $row->addHeading(__($heading), $params['headingLevel'] ?? 'h3');
             }
