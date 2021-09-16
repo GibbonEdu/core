@@ -32,14 +32,14 @@ use Psr\Container\ContainerInterface;
 class Session implements SessionInterface
 {
     /**
-     * string
+     * @var string
      */
-    private	$guid ;
+    private	$guid;
 
     /**
-     * Gibbon\Contracts\Database\Connection
+     * @var \Gibbon\Contracts\Database\Connection
      */
-    private	$pdo ;
+    private	$pdo;
 
     /**
      * Construct
@@ -342,7 +342,7 @@ class Session implements SessionInterface
                 AND gibbonPermission.gibbonRoleID=:gibbonRoleID
                 ORDER BY name";
 
-        $result = $this->pdo->executeQuery($data, $sql);
+        $result = $this->pdo->select($sql, $data);
 
         if ($result->rowCount() > 0) {
             $actions = array();

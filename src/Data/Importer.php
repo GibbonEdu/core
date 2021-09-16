@@ -56,7 +56,7 @@ class Importer
     public $mode;
     public $syncField;
     public $syncColumn;
-    
+
     public $outputData = [];
 
     /**
@@ -317,7 +317,7 @@ class Importer
                     $fieldCount++;
                     continue;
                 }
-                
+
                 if ($columnIndex == Importer::COLUMN_DATA_SKIP) {
                     // Skip marked columns
                     $fieldCount++;
@@ -417,7 +417,7 @@ class Importer
                             $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldNameKey}";
                         }
 
-                        $result = $this->pdo->executeQuery($relationalData, $relationalSQL);
+                        $result = $this->pdo->select($relationalSQL, $relationalData);
 
                         if ($result->rowCount() > 0) {
                             $relationalValue[] = $result->fetchColumn(0);
@@ -433,7 +433,7 @@ class Importer
                                     array('name' => $importType->getField($fieldName, 'name'), 'value' => $value, 'field' => $field, 'table' => $table)
                                 );
                                 $this->debugLog($rowNum, $relationalSQL, $relationalData, 'relational');
-                                
+
                                 $partialFail = true;
                             }
                         }
@@ -614,7 +614,7 @@ class Importer
                     }
 
                     $this->databaseResults['updates'] += 1;
-    
+
                     $sqlData[$primaryKey] = $primaryKeyValue;
                     $sql="UPDATE {$tableName} SET " . $sqlFieldString . " WHERE ".$this->escapeIdentifier($primaryKey)."=:{$primaryKey}" ;
 
@@ -653,7 +653,7 @@ class Importer
                 if (!$liveRun) {
                     continue;
                 }
-                
+
                 $this->pdo->insert($sql, $sqlData);
 
                 if (!$this->pdo->getQuerySuccess()) {

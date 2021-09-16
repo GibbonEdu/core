@@ -163,7 +163,7 @@ class Locale implements LocaleInterface
                 $data = array();
                 $sql="SELECT original, replacement, mode, caseSensitive FROM gibbonString ORDER BY priority DESC, original";
 
-                $result = $pdo->executeQuery($data, $sql);
+                $result = $pdo->select($sql, $data);
 
                 if ($result->rowCount()>0) {
                     $stringReplacements = $result->fetchAll();

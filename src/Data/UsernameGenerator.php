@@ -122,7 +122,7 @@ class UsernameGenerator
         // Get the username format data by gibbonRoleID
         $data = array('gibbonRoleID' => $gibbonRoleID);
         $sql = "SELECT gibbonUsernameFormat.*, gibbonRole.name as roleName FROM gibbonUsernameFormat JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonRoleIDList)) WHERE gibbonRoleID=:gibbonRoleID OR isDefault='Y' ORDER BY FIND_IN_SET(:gibbonRoleID, gibbonRoleIDList) DESC LIMIT 1";
-        $result = $this->pdo->executeQuery($data, $sql);
+        $result = $this->pdo->select($sql, $data);
 
         if ($result->rowCount() > 0) {
             $row = $result->fetch(0);
@@ -138,7 +138,7 @@ class UsernameGenerator
                 $callback = function($number) use (&$pdo, &$row) {
                     $data = array('gibbonUsernameFormatID' => $row['gibbonUsernameFormatID'], 'numericValue' => $number);
                     $sql = "UPDATE gibbonUsernameFormat SET numericValue=:numericValue WHERE gibbonUsernameFormatID=:gibbonUsernameFormatID";
-                    $result = $pdo->executeQuery($data, $sql);
+                    $result = $pdo->select($sql, $data);
                 };
 
                 $this->addNumericToken('number', $row['numericValue'], $row['numericSize'], $row['numericIncrement'], $callback);
@@ -230,7 +230,7 @@ class UsernameGenerator
     {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPersonID from gibbonPerson WHERE username=:username OR username=LOWER(:username)";
-        $result = $this->pdo->executeQuery($data, $sql);
+        $result = $this->pdo->select($sql, $data);
 
         return ($result->rowCount() == 0);
     }
