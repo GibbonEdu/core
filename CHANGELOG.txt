@@ -29,6 +29,7 @@ v23.0.00
         System: improved the appearance of the fatal error message page
         System: adjusted new student order in Staff Dashboard Enrolment tab
         System: in forms, update the current country phone code to always display first
+        System: fixed typo in Public Registration notification
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
         Messenger: updated New Message process to send SMS messages before emails
