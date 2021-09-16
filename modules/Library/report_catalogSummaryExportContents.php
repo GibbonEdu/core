@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
 
 	$excel = new Gibbon\Excel('catalogSummary.xlsx');
-	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+	if ($excel->estimateCellCount($result) > 8000)    //  If too big, then render csv instead.
 		return Gibbon\csv::generate($pdo, 'Catalog Summary');
 	$excel->setActiveSheetIndex(0);
 	$excel->getProperties()->setTitle('Catalog Summary');

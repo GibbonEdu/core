@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
         //Print table header
 		$excel = new Gibbon\Excel('markbookAll.xlsx');
-		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		if ($excel->estimateCellCount($result) > 8000)    //  If too big, then render csv instead.
 			return Gibbon\csv::generate($pdo, 'markbookColumn');
 		$excel->setActiveSheetIndex(0);
 		$excel->getProperties()->setTitle('All Markbook Data');
@@ -284,8 +284,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                     // Cumulative Average
                     $cumulativeAverage = $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
-                    $cumulativeAverage = is_numeric($cumulativeAverage) 
-                        ? number_format(round($cumulativeAverage, 2),2).$markSuffix 
+                    $cumulativeAverage = is_numeric($cumulativeAverage)
+                        ? number_format(round($cumulativeAverage, 2),2).$markSuffix
                         : $cumulativeAverage.$markSuffix;
                     $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $cumulativeAverage);
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);

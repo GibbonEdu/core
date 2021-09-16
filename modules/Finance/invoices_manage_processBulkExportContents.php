@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 		}
 
 		$excel = new Gibbon\Excel('invoices.xlsx');
-		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		if ($excel->estimateCellCount($result) > 8000)    //  If too big, then render csv instead.
 			return Gibbon\csv::generate($pdo, 'Invoices');
 		$excel->setActiveSheetIndex(0);
 		$excel->getProperties()->setTitle('Invoices');
