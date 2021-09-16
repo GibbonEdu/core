@@ -25,7 +25,8 @@ include '../../gibbon.php';
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/messenger_postQuickWall.php';
+$address = $_GET['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/messenger_postQuickWall.php';
 $time = time();
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php') == false) {

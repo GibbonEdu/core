@@ -29,7 +29,8 @@ $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableM
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
+$address = $_GET['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
 $personalisedWarnings = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings');
 
