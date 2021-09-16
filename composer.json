@@ -58,7 +58,7 @@
         "mpdf/mpdf": "^8.0",
         "league/omnipay": "^3",
         "omnipay/paypal": "^3.0",
-        "omnipay/stripe": "^3.1"
+        "omnipay/stripe": "dev-master as v3.1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.3",
