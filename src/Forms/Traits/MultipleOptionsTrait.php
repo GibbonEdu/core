@@ -93,14 +93,14 @@ trait MultipleOptionsTrait
 
     /**
      * Build an internal options array from an SQL query with required value and name fields
-     * @param   Connection  $conn
+     * @param   Connection  $db
      * @param   string      $sql
      * @param   array      $data
      * @return  self
      */
-    public function fromQuery(Connection $conn, $sql, $data = [], $groupBy = false)
+    public function fromQuery(Connection $db, $sql, $data = [], $groupBy = false)
     {
-        $results = $conn->select($sql, $data);
+        $results = $db->select($sql, $data);
 
         return $this->fromResults($results, $groupBy);
     }
