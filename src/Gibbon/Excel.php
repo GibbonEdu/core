@@ -31,11 +31,11 @@ class Excel extends Spreadsheet
         header("Cache-Control: private", false);
     }
     /**
-     * Export with Query
+     * Export with Query. Will print output directly.
      *
      * @version	27th May 2016
      * @since	8th April 2016
-     * @return	string	Export to Browser.
+     * @return	void
      */
     function exportWithQuery($result, $excel_file_name)
     {
