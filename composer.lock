@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "95b7688d78a53326c68c5add76169dee",
+    "content-hash": "31d18048e3638dd3142d9fc6e087656b",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -1588,16 +1588,16 @@
         },
         {
             "name": "omnipay/stripe",
-            "version": "v3.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-stripe.git",
-                "reference": "37df2a791e8feab45543125f4c5f22d5d305096d"
+                "reference": "16f822d40c208a07301aed88509b3cb7f2efe450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-stripe/zipball/37df2a791e8feab45543125f4c5f22d5d305096d",
-                "reference": "37df2a791e8feab45543125f4c5f22d5d305096d",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-stripe/zipball/16f822d40c208a07301aed88509b3cb7f2efe450",
+                "reference": "16f822d40c208a07301aed88509b3cb7f2efe450",
                 "shasum": ""
             },
             "require": {
@@ -1608,6 +1608,7 @@
                 "phpro/grumphp": "^0.14",
                 "squizlabs/php_codesniffer": "^3"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1643,7 +1644,11 @@
                 "payment",
                 "stripe"
             ],
-            "time": "2019-08-31T10:55:06+00:00"
+            "support": {
+                "issues": "https://github.com/thephpleague/omnipay-stripe/issues",
+                "source": "https://github.com/thephpleague/omnipay-stripe/tree/master"
+            },
+            "time": "2021-08-08T10:49:23+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -7041,10 +7046,18 @@
             "time": "2021-03-09T10:59:23+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "omnipay/stripe",
+            "version": "9999999-dev",
+            "alias": "v3.1.1",
+            "alias_normalized": "3.1.1.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "aura/sqlquery": 20
+        "aura/sqlquery": 20,
+        "omnipay/stripe": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
@@ -7059,5 +7072,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.1.0"
 }
