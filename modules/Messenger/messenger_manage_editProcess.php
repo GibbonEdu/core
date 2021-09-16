@@ -25,7 +25,8 @@ include '../../gibbon.php';
 $gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
 $search=$_GET["search"] ?? '';
 
-$URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
+$address = $_POST['address'] ?? '';
+$URL=$session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
@@ -50,7 +51,7 @@ else {
             $validator = $container->get(Validator::class);
             $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
-            $messageWall=$_POST["messageWall"] ;
+            $messageWall=$_POST["messageWall"] ?? '';
             $messageWallPin = ($messageWall == "Y" && isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php", "Manage Messages_all") & !empty($_POST['messageWallPin'])) ? $_POST['messageWallPin'] : 'N' ;
             $date1=NULL ;
             if (isset($_POST["date1"])) {

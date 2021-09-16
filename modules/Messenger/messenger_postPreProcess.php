@@ -24,7 +24,8 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 
 include '../../gibbon.php';
 
-$URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_post.php";
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == false) {
     $URL .= "&addReturn=fail0";
@@ -35,10 +36,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     $validator = $container->get(Validator::class);
     $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
-    
+
     $from = $_POST['from'] ?? '';
     $data = [
-        'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'), 
+        'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),
         'email'             => $_POST['email'] ?? 'N',
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'gibbonPersonID'    => $session->get('gibbonPersonID'),
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
-  
+
     // Validate that the required values are present
     if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $from == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
         $URL .= "&addReturn=fail3";
