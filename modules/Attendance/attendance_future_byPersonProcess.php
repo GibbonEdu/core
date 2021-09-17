@@ -26,9 +26,10 @@ include __DIR__ . '/../../gibbon.php';
 //Module includes
 include __DIR__ . '/moduleFunctions.php';
 
+$address = $_POST['address'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $scope = $_POST['scope'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';

@@ -31,13 +31,17 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 $address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/behaviour_manage_add.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$type = $_GET['type'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     $URL .= '&return=error0&step=1';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
     if ($highestAction == false) {
         $URL .= '&return=error0&step=1';
         header("Location: {$URL}");
