@@ -21,12 +21,12 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-$status = $_GET['status'];
-$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-$monthOfIssue = $_GET['monthOfIssue'];
-$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$status = $_GET['status'] ?? '';
+$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+$monthOfIssue = $_GET['monthOfIssue'] ?? '';
+$gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+$gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
 if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {

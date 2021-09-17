@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     } else {
 
 		$excel = new Gibbon\Excel('markbookColumn.xlsx');
-		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		if ($excel->estimateCellCount($resultStudents) > 8000)    //  If too big, then render csv instead.
 			return Gibbon\csv::generate($pdo, 'markbookColumn');
 		$excel->setActiveSheetIndex(0);
 		$excel->getProperties()->setTitle('Markbook Data');

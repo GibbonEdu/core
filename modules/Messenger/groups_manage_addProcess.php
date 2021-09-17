@@ -21,7 +21,8 @@ use Gibbon\Domain\Messenger\GroupGateway;
 
 include '../../gibbon.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_add.php";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_add.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_add.php') == false) {
     $URL .= '&return=error0';

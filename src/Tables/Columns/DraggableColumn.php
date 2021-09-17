@@ -33,7 +33,7 @@ class DraggableColumn extends Column
     /**
      * Creates a pre-defined column for drag-drop row sorting.
      */
-    public function __construct($id, $ajaxURL, $data = [], DataTable $table)
+    public function __construct($id, $ajaxURL, array $data, DataTable $table)
     {
         parent::__construct('draggable');
         $this->sortable(false)

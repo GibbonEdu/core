@@ -209,7 +209,7 @@ class ImportType
 
     public static function getCustomImportTypeDir(Connection $pdo)
     {
-        $customFolder = getSettingByScope($pdo->getConnection(), 'Data Admin', 'importCustomFolderLocation');
+        $customFolder = getSettingByScope($pdo->getConnection(), 'System Admin', 'importCustomFolderLocation');
 
         return self::getBaseDir($pdo).'/uploads/'.trim($customFolder, '/ ');
     }
@@ -301,7 +301,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new importType($fileData, $pdo);
+        return new ImportType($fileData, $pdo);
     }
 
     /**
@@ -331,13 +331,7 @@ class ImportType
      */
     protected function validateWithDatabase(Connection $pdo)
     {
-        try {
-            $sql="SHOW COLUMNS FROM " . $this->getDetail('table');
-            $result = $pdo->executeQuery([], $sql);
-        } catch (\PDOException $e) {
-            return false;
-        }
-
+        $result = $pdo->select('SHOW COLUMNS FROM ' . $this->getDetail('table'));
         $columns = $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
         $validatedFields = 0;
@@ -380,18 +374,17 @@ class ImportType
             return;
         }
 
-        try {
-            $data = array('module' => $this->access['module'], 'action' => $this->access['action'] );
-            $sql = "SELECT gibbonAction.category, gibbonAction.entryURL
-                    FROM gibbonAction
-                    JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                    WHERE gibbonModule.name=:module
-                    AND gibbonAction.name=:action
-                    ORDER BY gibbonAction.precedence ASC
-                    LIMIT 1";
-            $result = $pdo->executeQuery($data, $sql);
-        } catch (\PDOException $e) {
-        }
+        $sql = 'SELECT gibbonAction.category, gibbonAction.entryURL
+                FROM gibbonAction
+                JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                WHERE gibbonModule.name=:module
+                AND gibbonAction.name=:action
+                ORDER BY gibbonAction.precedence ASC
+                LIMIT 1';
+        $result = $pdo->select($sql, [
+            'module' => $this->access['module'],
+            'action' => $this->access['action'],
+        ]);
 
         if ($result->rowCount() > 0) {
             $action = $result->fetch();
@@ -414,12 +407,7 @@ class ImportType
     {
         // Grab the year groups so we can translate Year Group Lists without a million queries
         if ($this->useYearGroups) {
-            try {
-                $sql="SELECT gibbonYearGroupID, nameShort FROM gibbonYearGroup ORDER BY sequenceNumber";
-                $resultYearGroups = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultYearGroups = $pdo->select('SELECT gibbonYearGroupID, nameShort FROM gibbonYearGroup ORDER BY sequenceNumber');
             if ($resultYearGroups->rowCount() > 0) {
                 while ($yearGroup = $resultYearGroups->fetch()) {
                     $this->yearGroups[ $yearGroup['nameShort'] ] = $yearGroup['gibbonYearGroupID'];
@@ -429,12 +417,7 @@ class ImportType
 
         // Grab the Languages for system-wide relational data (filters)
         if ($this->useLanguages) {
-            try {
-                $sql="SELECT name FROM gibbonLanguage";
-                $resultLanguages = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultLanguages = $pdo->select('SELECT name FROM gibbonLanguage');
             if ($resultLanguages->rowCount() > 0) {
                 while ($languages = $resultLanguages->fetch()) {
                     $this->languages[ $languages['name'] ] = $languages['name'];
@@ -444,12 +427,7 @@ class ImportType
 
         // Grab the Countries for system-wide relational data (filters)
         if ($this->useCountries || $this->usePhoneCodes) {
-            try {
-                $sql="SELECT printable_name, iddCountryCode FROM gibbonCountry";
-                $resultCountries = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultCountries = $pdo->select('SELECT printable_name, iddCountryCode FROM gibbonCountry');
             if ($resultCountries->rowCount() > 0) {
                 while ($countries = $resultCountries->fetch()) {
                     if ($this->useCountries) {
@@ -464,12 +442,7 @@ class ImportType
 
         // Grab the user-defined Custom Fields
         if ($this->useCustomFields) {
-            try {
-                $sql="SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = 'Y'";
-                $resultCustomFields = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultCustomFields = $pdo->select('SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = "Y"');
             if ($resultCustomFields->rowCount() > 0) {
                 while ($fields = $resultCustomFields->fetch()) {
                     $this->customFields[ $fields['name'] ] = $fields;
@@ -747,7 +720,7 @@ class ImportType
     {
         $value = trim($value);
         $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
-        
+
         $filter = $this->getField($fieldName, 'filter');
         $strvalue = mb_strtoupper($value);
 
@@ -1230,7 +1203,7 @@ class ImportType
             default:
                 return __(ucfirst($kind));
         }
-        
+
         return '';
     }
 

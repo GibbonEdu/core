@@ -93,26 +93,26 @@ trait MultipleOptionsTrait
 
     /**
      * Build an internal options array from an SQL query with required value and name fields
-     * @param   Connection  $pdo
+     * @param   Connection  $db
      * @param   string      $sql
      * @param   array      $data
      * @return  self
      */
-    public function fromQuery(Connection $pdo, $sql, $data = array(), $groupBy = false)
+    public function fromQuery(Connection $db, $sql, $data = [], $groupBy = false)
     {
-        $results = $pdo->executeQuery($data, $sql);
+        $results = $db->select($sql, $data);
 
         return $this->fromResults($results, $groupBy);
     }
 
     /**
      * Build options array from a DataSet, as provided by <b>Domain</b> gateways
-     * 
+     *
      * @param Dataset $dataset
      * @param string $valCol
      * @param string $nameCol
      * @param string $groupBy
-     * 
+     *
      * @return self
      */
     public function fromDataSet(Dataset $dataset, $valCol, $nameCol, $groupBy = false)
@@ -144,7 +144,8 @@ trait MultipleOptionsTrait
     /**
      * Build an internal options array from the result set of a PDO query.
      * @param   object  $results
-     * @return  string
+     *
+     * @return  self
      */
     public function fromResults($results, $groupBy = false)
     {
@@ -158,7 +159,9 @@ trait MultipleOptionsTrait
             });
 
             foreach ($options as $option) {
-                $option = array_map('trim', $option);
+                $option = array_map(function ($item) {
+                    return trim((string) $item);
+                }, $option);
 
                 if ($groupBy !== false) {
                     $this->options[$option[$groupBy]][$option['value']] = __($option['name']);

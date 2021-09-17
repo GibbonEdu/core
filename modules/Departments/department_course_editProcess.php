@@ -24,7 +24,8 @@ include './moduleFunctions.php';
 
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_course_edit.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/department_course_edit.php&gibbonDepartmentID=$gibbonDepartmentID&gibbonCourseID=$gibbonCourseID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_edit.php') == false) {
     $URL .= '&return=error0';

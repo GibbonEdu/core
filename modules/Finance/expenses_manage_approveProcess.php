@@ -122,7 +122,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                             } else {
                                 $row = $result->fetch();
 
-                                $approval = $_POST['approval'];
+                                $approval = $_POST['approval'] ?? '';
                                 if ($approval == 'Approval - Partial') {
                                     if ($row['statusApprovalBudgetCleared'] == 'N') {
                                         $approval = 'Approval - Partial - Budget';

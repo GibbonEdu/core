@@ -834,10 +834,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     unset($rowDay);
                     $color = '';
 
-                        $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                        $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                        $resultDay = $connection2->prepare($sqlDay);
-                        $resultDay->execute($dataDay);
+                    $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
+                    $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                    $resultDay = $connection2->prepare($sqlDay);
+                    $resultDay->execute($dataDay);
                     if ($resultDay->rowCount() == 1) {
                         $rowDay = $resultDay->fetch();
                         if ($rowDay['color'] != '') {
@@ -1226,7 +1226,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     if ($rowPeriods['type'] != 'Lesson' and $height > 15 and $height < 30) {
                         $title = "title='".substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5)."'";
                     } elseif ($rowPeriods['type'] != 'Lesson' and $height <= 15) {
-                        $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).")'";
+                        $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).")'";
                     }
                     $class = 'ttGeneric';
                     if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
@@ -1246,7 +1246,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
                         $output .= $rowPeriods['name'].'<br/>';
-                        $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
+                        $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
                     $output .= '</div>';
                     ++$zCount;
@@ -1530,9 +1530,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
                     if ($height < 45) {
                         $label = $event[1];
-                        $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.$event[6]."'";
+                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.$event[6]."'";
                     } else {
-                        $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
+                        $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
                         $title = "title='".($event[7] ?? '')."'";
                     }
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
@@ -1619,7 +1619,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             }
 
         }
-        
+
     }
 
     //Get space booking array
@@ -1853,27 +1853,30 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
+                    $color = '';
+                    $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
+                    $sqlDay = 'SELECT nameShort, color, fontColor FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                    $resultDay = $connection2->prepare($sqlDay);
+                    $resultDay->execute($dataDay);
+                    if ($rowDay = $resultDay->fetch()) {
+                        if (!empty($rowDay['color'])) {
+                            $color .= "; background-color: ".$rowDay['color']."; background-image: none";
+                        }
+                        if (!empty($rowDay['fontColor'])) {
+                            $color .= "; color: ".$rowDay['fontColor'];
+                        }
+                    }
+
                     $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
                     $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
 
                     $output .= (550 / $daysInWeek);
-                    $output .= "px'>";
+                    $output .= "px".$color."'>";
                     if ($nameShortDisplay != 'Timetable Day Short Name') {
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-
-                            $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                            $sqlDay = 'SELECT nameShort FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                            $resultDay = $connection2->prepare($sqlDay);
-                            $resultDay->execute($dataDay);
-                        if ($resultDay->rowCount() == 1) {
-                            $rowDay = $resultDay->fetch();
-                            $output .= $rowDay['nameShort'].'<br/>';
-                        }
-                        else {
-                            $output .= __($day['nameShort']).'<br/>';
-                        }
+                        $output .= $rowDay['nameShort'].'<br/>';
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
@@ -2131,7 +2134,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                 if ($rowPeriods['type'] != 'Lesson' and $height > 15 and $height < 30) {
                     $title = "title='".substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5)."'";
                 } elseif ($rowPeriods['type'] != 'Lesson' and $height <= 15) {
-                    $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).")'";
+                    $title = "title='".$rowPeriods['name'].' ('.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).")'";
                 }
                 $class = 'ttGeneric';
                 if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
@@ -2151,7 +2154,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= $rowPeriods['name'].'<br/>';
                 } elseif ($height >= 30) {
                     $output .= $rowPeriods['name'].'<br/>';
-                    $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
+                    $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
 
                     if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && $canAddBookings && $date >= date('Y-m-d')) {
                         $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [],
@@ -2173,21 +2176,21 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
         try {
             $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonTTDayID1' => $rowDay['gibbonTTDayID'], 'gibbonSpaceID1' => $gibbonSpaceID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlPeriods = "(SELECT 'Normal' AS type, gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName,
-             gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.gibbonTTID 
-             FROM gibbonCourse 
-            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-            JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
-            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
-            JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+             gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.gibbonTTID
+             FROM gibbonCourse
+            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+            JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
             LEFT JOIN gibbonSpace ON (gibbonTTDayRowClass.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayRowClass.gibbonTTDayID=:gibbonTTDayID AND gibbonSpace.gibbonSpaceID=:gibbonSpaceID)
             UNION
             (SELECT 'Change' AS type, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonTTColumnRow.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, gibbonSpace.name AS roomName,
-            gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.gibbonTTID 
-            FROM gibbonCourse 
-            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
-            JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) 
-            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
-            JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+            gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTDay.gibbonTTDayID, gibbonTTDay.gibbonTTID
+            FROM gibbonCourse
+            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+            JOIN gibbonTTDayRowClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+            JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
+            JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
             JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=:date) LEFT JOIN gibbonSpace ON (gibbonTTSpaceChange.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonTTDayRowClass.gibbonTTDayID=:gibbonTTDayID1 AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID1)
             ORDER BY timeStart, timeEnd";
             $resultPeriods = $connection2->prepare($sqlPeriods);
@@ -2289,9 +2292,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $top = (ceil((strtotime($event[3].' '.$event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$dayTimeStart)) / 60 + ($startPad / 60))).'px';
                     if ($height < 45) {
                         $label = $event[1];
-                        $title = "title='".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
+                        $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.__('by').' '.$event[6]."'";
                     } else {
-                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).'-'.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
+                        $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
                         $title = '';
                     }
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";

@@ -1000,6 +1000,13 @@ ALTER TABLE `gibbonGroup` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 CO
 
 ";
 
+//v22.0.01
+++$count;
+$sql[$count][0] = '22.0.01';
+$sql[$count][1] = "
+UPDATE gibbonPersonalDocument SET document=(SELECT document FROM gibbonPersonalDocumentType WHERE gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID);end
+";
+
 //v23.0.00
 ++$count;
 $sql[$count][0] = '23.0.00';
@@ -1011,4 +1018,17 @@ UPDATE `gibbonEmailTemplate` SET `templateName`=`templateType` WHERE `templateNa
 UPDATE `gibbonAction` SET `URLList` = 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php' WHERE `name`='Email Templates' AND `gibbonModuleID`=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 ALTER TABLE `gibbonEmailTemplate` DROP INDEX `templateName`, ADD UNIQUE `moduleTemplate` (`templateName`, `moduleName`) USING BTREE;end
 ALTER TABLE `gibbonEmailTemplate` ADD `type` ENUM('Core','Additional','Custom') NOT NULL DEFAULT 'Core' AFTER `gibbonEmailTemplateID`;end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'importCustomFolderLocation', 'Custom Imports Folder', 'Path to custom import types folder, relative to uploads.', '/imports');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Ad Hoc Attendance', 0, 'Take Attendance', 'Allows users to take school-wide attendance for ad hoc groups of students.', 'attendance_take_adHoc.php', 'attendance_take_adHoc.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Attendance' AND gibbonAction.name='Ad Hoc Attendance'));end
+ALTER TABLE `gibbonLibraryItem` ADD `cost` decimal(10,2) DEFAULT NULL AFTER `invoiceNumber`;end
+UPDATE `gibbonSetting` SET name='paymentAPIUsername', nameDisplay='API Username', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPIUsername';end
+UPDATE `gibbonSetting` SET name='paymentAPIPassword', nameDisplay='API Password', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPIPassword';end
+UPDATE `gibbonSetting` SET name='paymentAPISignature', nameDisplay='API Signature', description='API details are provided by the payment gateway provider' WHERE scope='System' AND name='paypalAPISignature';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentAPIKey', 'API Key', 'API details are provided by the payment gateway provider', '');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System', 'paymentGateway', 'Payment Gateway', 'Choose a payment gateway. You must create and configure an account with the selected service to get the required API details.', '');end
+ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+UPDATE `gibbonSetting` SET value=REPLACE(value, 'PayPal', 'online') WHERE scope='Application Form' AND name='applicationProcessFeeText';end
+UPDATE `gibbonSetting` SET value='PayPal' WHERE scope='System' AND name='paymentGateway' AND value='';end
+
 ";

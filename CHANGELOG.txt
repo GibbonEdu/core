@@ -28,28 +28,51 @@ v23.0.00
         System: updated table actions to enable additional modules to use their own icon paths
         System: improved the appearance of the fatal error message page
         System: adjusted new student order in Staff Dashboard Enrolment tab
+        System: in forms, update the current country phone code to always display first
+        System: fixed typo in Public Registration notification
+        Attendance: added the ability to Take Ad Hoc Attendance
+        Attendance: added birthday icons to Take Attendance pages
         Messenger: updated New Message process to send SMS messages before emails
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
         Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
+        Timetable: added timetable day heading colours to View Timetable by Facility
+        Timetable Admin: adjusted interface strings in timetable import
+
+    Bug Fixes
+        System: fixed the Validator class so sanitizeHTML is multibyte safe
+        System: fixed phone number format for numbers 10 digits or greater
+        Activities: fixed duplicate entries in Activity Choices by Student
+        School Admin: fixed phone numbers not formatting in Manage Facilities
+        System Admin: fixed PHP notice in importer when skipping serialized fields
+        Timetable: fixed timetable misalignment of times below transparent timetable blocks
+        Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
+
+v22.0.01
+--------
+    Security
+        Messenger: fixed sanitization of text when creating new messages
 
     Bug Fixes
         System: fixed lesson plan content in demo data
-        System: fixed parent dashboard hooks missing access to session object
+        System: fixed checks for existing fields in database migrations
         System: fixed cookie consent message to not redirect to the dashboard
-        Activities: fixed duplicate entries in Activity Choices by Student
+        System: fixed parent dashboard hooks missing access to session object
+        System: removed unused package file from session timeout library
+        Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
         Data Updater: fixed personal documents date bug
         Data Updater: fixed personal documents to only use nationality list for passport and ID documents
         Data Updater: fixed submit button on data updates with no changes
-        Data Updater: fixed data updates with only file uploads in personal documents auto-accepting
         Departments: fixed Left student role appearing in class list export
         Individual Needs: fixed some IN columns not visible on small screens
-        Messenger: fixed sanitization of text when creating new messages
-        Reports: fixed missing data in CustomFields template data source
         Reports: fixed Left students showing up in the Archive by Student list
+        Reports: fixed missing data in CustomFields template data source
         Reports: fixed error with empty milestones when creating a Reporting Cycle
+        Reports: fixed issue where re-sending a report will break existing report download links
+        Reports: fixed file uploads not working in Template Builder
         Students: fixed ID card background image alignment
+        System Admin: fixed importing custom fields failing when existing fields value is null
         System Admin: fixed importing custom fields that have spaces around the values
         User Admin: fixed missing document enum data in migrated personal documents
 
