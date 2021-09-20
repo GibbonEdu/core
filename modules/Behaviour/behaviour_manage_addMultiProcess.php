@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'] ?? null;
+    $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'] ?? [];
     $date = $_POST['date'] ?? '';
     $type = $_POST['type'] ?? '';
     $descriptor = $_POST['descriptor'] ?? null;
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $customRequireFail = false;
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
-    if (is_null($gibbonPersonIDMulti) == true or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
+    if (empty($gibbonPersonIDMulti) or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
