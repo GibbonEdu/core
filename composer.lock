@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "31d18048e3638dd3142d9fc6e087656b",
+    "content-hash": "ef483f0be5a65887bed45e2f6f9be119",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -3488,16 +3488,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.0.038",
+            "version": "6.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/yookoala/TCPDF.git",
-                "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010"
+                "url": "https://github.com/tecnickcom/TCPDF.git",
+                "reference": "172540dcbfdf8dc983bc2fe78feff48ff7ec1c76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yookoala/TCPDF/zipball/fff2d972d34ce6334e1939d7fae9d56f2acc6010",
-                "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/172540dcbfdf8dc983bc2fe78feff48ff7ec1c76",
+                "reference": "172540dcbfdf8dc983bc2fe78feff48ff7ec1c76",
                 "shasum": ""
             },
             "require": {
@@ -3506,7 +3506,6 @@
             "type": "library",
             "autoload": {
                 "classmap": [
-                    "fonts",
                     "config",
                     "include",
                     "tcpdf.php",
@@ -3525,31 +3524,39 @@
                     "include/barcodes/qrcode.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPLv3"
+                "LGPL-3.0-only"
             ],
             "authors": [
                 {
                     "name": "Nicola Asuni",
                     "email": "info@tecnick.com",
-                    "homepage": "http://nicolaasuni.tecnick.com"
+                    "role": "lead"
                 }
             ],
-            "description": "TCPDF is a PHP class for generating PDF documents.",
+            "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
             "homepage": "http://www.tcpdf.org/",
             "keywords": [
-                "PDF",
                 "PDFD32000-2008",
+                "TCPDF",
                 "barcodes",
                 "datamatrix",
+                "pdf",
                 "pdf417",
-                "qrcode",
-                "tcpdf"
+                "qrcode"
             ],
             "support": {
-                "source": "https://github.com/yookoala/TCPDF/tree/6.0.038"
+                "issues": "https://github.com/tecnickcom/TCPDF/issues",
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.4.2"
             },
-            "time": "2013-10-06T16:51:54+00:00"
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-07-20T14:43:20+00:00"
         },
         {
             "name": "twig/twig",
