@@ -1,6 +1,6 @@
 <?php
 
-namespace Gibbon;
+namespace Gibbon\Http;
 
 use GuzzleHttp\Psr7\Uri;
 use Psr\Http\Message\UriInterface;
