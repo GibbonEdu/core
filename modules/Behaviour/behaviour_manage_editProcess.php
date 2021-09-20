@@ -30,7 +30,12 @@ $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescrip
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=".$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$address = $_POST['address'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$type = $_GET['type'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     $URL .= '&return=error0';
