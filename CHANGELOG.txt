@@ -34,6 +34,7 @@ v23.0.00
         Attendance: added birthday icons to Take Attendance pages
         Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
+        Messenger: improved mobile responsive size of inserted images
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
@@ -45,6 +46,7 @@ v23.0.00
         System: fixed the Validator class so sanitizeHTML is multibyte safe
         System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
+        Messenger: fixed duplicate student names when using Individual Naming
         School Admin: fixed phone numbers not formatting in Manage Facilities
         System Admin: fixed PHP notice in importer when skipping serialized fields
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
