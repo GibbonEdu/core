@@ -30,18 +30,19 @@ include '../../gibbon.php';
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/behaviour_manage_addMulti.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type'];
+$address = $_POST['address'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+$gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+$type = $_GET['type'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    if (isset($_POST['gibbonPersonIDMulti'])) {
-        $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'];
-    } else {
-        $gibbonPersonIDMulti = null;
-    }
+    $gibbonPersonIDMulti = $_POST['gibbonPersonIDMulti'] ?? [];
     $date = $_POST['date'] ?? '';
     $type = $_POST['type'] ?? '';
     $descriptor = $_POST['descriptor'] ?? null;
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $customRequireFail = false;
     $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Behaviour', [], $customRequireFail);
 
-    if (is_null($gibbonPersonIDMulti) == true or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
+    if (empty($gibbonPersonIDMulti) or $date == '' or $type == '' or ($descriptor == '' and $enableDescriptors == 'Y') || $customRequireFail) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
