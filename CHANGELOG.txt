@@ -32,6 +32,7 @@ v23.0.00
         System: fixed typo in Public Registration notification
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
+        Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
