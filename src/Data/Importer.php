@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\Data\ParseCSV;
-use Gibbon\Data\ImportType;
 use Gibbon\Contracts\Database\Connection;
+use ParseCsv\Csv as ParseCSV;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 
