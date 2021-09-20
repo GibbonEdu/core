@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Url;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 /**
  * Student Dashboard View Composer

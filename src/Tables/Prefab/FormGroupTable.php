@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Forms\Input\Checkbox;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
-use Gibbon\Forms\Input\Checkbox;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Url;
 
 /**
  * FormGroupTable

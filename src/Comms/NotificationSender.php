@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Url;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 /**
  * Notification Sender

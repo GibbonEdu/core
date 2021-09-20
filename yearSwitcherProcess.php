@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 // Gibbon system-wide include
 require_once './gibbon.php';

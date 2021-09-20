@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\Validator;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Url;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 include './gibbon.php';
 

@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Url;
-use League\Container\ContainerAwareTrait;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * Parent Dashboard View Composer

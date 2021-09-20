@@ -26,7 +26,7 @@ use Gibbon\Tables\View\DataTableView;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Columns\Column;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 /**
  * Paginated View

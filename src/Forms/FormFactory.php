@@ -20,13 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\Layout\Row;
-use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Element;
 use Gibbon\Forms\Layout\Trigger;
 use Gibbon\Forms\FormFactoryInterface;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Url;
+use Gibbon\Http\Url;
+use Gibbon\Tables\DataTable;
 
 /**
  * FormFactory

@@ -1,6 +1,6 @@
 <?php
 
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 

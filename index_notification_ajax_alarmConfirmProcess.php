@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\AlarmGateway;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 //Gibbon system-wide includes
 include './gibbon.php';

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 

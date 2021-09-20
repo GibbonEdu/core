@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 

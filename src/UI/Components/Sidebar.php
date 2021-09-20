@@ -19,16 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Url;
-use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
 
 /**
  * Sidebar View Composer

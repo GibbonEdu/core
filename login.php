@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
-use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Url;
+use Gibbon\Http\Url;
+use Gibbon\Session\SessionFactory;
 
 // Gibbon system-wide include
 require_once './gibbon.php';

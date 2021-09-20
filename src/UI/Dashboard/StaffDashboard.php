@@ -19,13 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Url;
 
 /**
  * Staff Dashboard View Composer

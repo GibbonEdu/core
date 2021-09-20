@@ -16,12 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
-use Gibbon\Services\Format;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 /**
  * Header View Composer

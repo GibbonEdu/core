@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables;
 
 use Gibbon\Forms\Layout\WebLink;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 /**
  * Action link representation for HTML listings.

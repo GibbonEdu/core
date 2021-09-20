@@ -9,11 +9,11 @@ file that was distributed with this source code.
 
 namespace Gibbon;
 
+use Gibbon\Http\Url;
 use PHPUnit\Framework\TestCase;
-use Gibbon\Url;
 
 /**
- * @covers \Gibbon\Url class
+ * @covers \Gibbon\Http\Url class
  */
 class UrlTest extends TestCase
 {
@@ -28,7 +28,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromRoute()
+     * @covers \Gibbon\Http\Url::fromRoute()
      */
     public function testFromRoute()
     {
@@ -40,8 +40,8 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromRoute()
-     * @covers \Gibbon\Url::withQueryParams()
+     * @covers \Gibbon\Http\Url::fromRoute()
+     * @covers \Gibbon\Http\Url::withQueryParams()
      */
     public function testFromRouteWithQueryParams()
     {
@@ -64,8 +64,8 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromRoute()
-     * @covers \Gibbon\Url::withQuery()
+     * @covers \Gibbon\Http\Url::fromRoute()
+     * @covers \Gibbon\Http\Url::withQuery()
      */
     public function testFromRouteWithQuery()
     {
@@ -83,7 +83,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromModuleRoute()
+     * @covers \Gibbon\Http\Url::fromModuleRoute()
      */
     public function testFromModuleRoute()
     {
@@ -94,8 +94,8 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromModuleRoute()
-     * @covers \Gibbon\Url::withQueryParams()
+     * @covers \Gibbon\Http\Url::fromModuleRoute()
+     * @covers \Gibbon\Http\Url::withQueryParams()
      */
     public function testFromModuleRouteWithQueryParams()
     {
@@ -118,8 +118,8 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromModuleRoute()
-     * @covers \Gibbon\Url::withQuery()
+     * @covers \Gibbon\Http\Url::fromModuleRoute()
+     * @covers \Gibbon\Http\Url::withQuery()
      */
     public function testFromModuleRouteWithQuery()
     {
@@ -137,7 +137,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromHandlerPath()
+     * @covers \Gibbon\Http\Url::fromHandlerPath()
      */
     public function testFromHandlerPath()
     {
@@ -149,7 +149,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::fromHandlerModulePath()
+     * @covers \Gibbon\Http\Url::fromHandlerModulePath()
      */
     public function testFromHandlerModulePath()
     {
@@ -162,7 +162,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::withQueryParam()
+     * @covers \Gibbon\Http\Url::withQueryParam()
      */
     public function testWithQueryParam()
     {
@@ -174,7 +174,7 @@ class UrlTest extends TestCase
     }
 
     /**
-     * @covers \Gibbon\Url::withReturn()
+     * @covers \Gibbon\Http\Url::withReturn()
      */
     public function testWithReturn()
     {

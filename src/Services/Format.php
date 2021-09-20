@@ -22,7 +22,7 @@ namespace Gibbon\Services;
 use DateTime;
 use DateTimeImmutable;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 /**
  * Format values based on locale and system settings.

@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Url;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 function getIPAddress() {
     $return = false;
