@@ -109,16 +109,19 @@ class LibraryReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
     
-    public function queryOverdueItems($criteria, $ignoreStatus = null)
+    public function queryOverdueItems($criteria, $gibbonSchoolYearID, $ignoreStatus = null)
     {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonLibraryItem.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email'])
+            ->cols(['gibbonLibraryItem.*', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email', 'gibbonFormGroup.nameShort AS formGroup'])
             ->from('gibbonLibraryItem')
             ->innerJoin('gibbonPerson', 'gibbonLibraryItem.gibbonPersonIDStatusResponsible=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where("gibbonLibraryItem.status='On Loan'")
             ->where("borrowable='Y'")
             ->where('returnExpected<:today')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->bindValue('today', date('Y-m-d'));
 
         if ($ignoreStatus != 'on') {

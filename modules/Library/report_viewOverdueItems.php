@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     $reportGateway = $container->get(LibraryReportGateway::class);
     $criteria = $reportGateway->newQueryCriteria(true)->fromPOST();
 
-    $items = $reportGateway->queryOverdueItems($criteria, $ignoreStatus);
+    $items = $reportGateway->queryOverdueItems($criteria, $session->get('gibbonSchoolYearID'), $ignoreStatus);
 
     // DATA TABLE
     $table = ReportTable::createPaginated('overdueItems', $criteria)->setViewMode($viewMode, $gibbon->session);
@@ -71,6 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
         });
+    $table->addColumn('formGroup', __('Form Group'));
     $table->addColumn('email', __('Email'));
     $table->addColumn('name', __('Item'))
         ->description(__('Author/Producer'))
