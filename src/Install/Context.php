@@ -53,7 +53,7 @@ class Context
     public static function fromEnvironment(): Context
     {
         return new Context(
-            function_exists('apache_get_version') ? apache_get_version() : null,
+            function_exists('apache_get_modules') ? apache_get_modules() : null,
             function_exists('get_loaded_extensions') ? get_loaded_extensions() : []
         );
     }
