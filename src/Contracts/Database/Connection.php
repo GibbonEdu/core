@@ -40,7 +40,14 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return mixed
+     *
+     * @return mixed|array|false
+     *     Depends on the SQL statement. It returns either:
+     *     (a) a single column from the next row of a result
+     *         set if the query only has 1 column; or
+     *     (b) a normal result row of the next row of a result
+     *         set; or
+     *     (c) boolean false if there are no more rows.
      */
     public function selectOne($query, $bindings = []);
 
@@ -68,7 +75,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return bool  If the update statment is execute successfully.
      */
     public function update($query, $bindings = []);
 
@@ -77,7 +85,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return int  Affected row count.
      */
     public function delete($query, $bindings = []);
 
@@ -86,7 +95,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return bool
+     *
+     * @return bool  If the update statment is execute successfully.
      */
     public function statement($query, $bindings = []);
 
@@ -95,7 +105,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return int  Affected row count.
      */
     public function affectingStatement($query, $bindings = []);
 
