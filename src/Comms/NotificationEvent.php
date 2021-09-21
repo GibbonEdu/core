@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Comms;
 
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\session;
+use Gibbon\Session;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
@@ -132,11 +132,11 @@ class NotificationEvent
      * Collects and sends all notifications for this event, returning a send report array.
      *
      * @param   Connection  $pdo
-     * @param   session     $session
+     * @param   Session     $session
      * @param   bool        $bccMode
      * @return  array Send report with success/fail counts.
      */
-    public function sendNotifications(Connection $pdo, session $session, $bccMode = false)
+    public function sendNotifications(Connection $pdo, Session $session, $bccMode = false)
     {
         $gateway = new NotificationGateway($pdo);
         $sender = new NotificationSender($gateway, $session);
