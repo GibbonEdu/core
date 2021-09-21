@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\System;
 
 use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
@@ -33,11 +32,45 @@ class SettingGateway extends QueryableGateway
 {
     use TableAware;
 
+    /**
+     * Name for database table to use.
+     * Referenced by the TableAware trait.
+     *
+     * @var string
+     */
     private static $tableName = 'gibbonSetting';
+
+    /**
+     * Primary key for the database table.
+     * Referenced by the TableAware trait.
+     *
+     * @var string
+     */
     private static $primaryKey = 'gibbonSettingID';
 
+    /**
+     * Searchable columns in the database table.
+     * Referenced by the TableAware trait.
+     *
+     * @var string[]
+     */
     private static $searchableColumns = ['scope', 'name'];
-    
+
+    /**
+     * Get settings by the scope and the setting name.
+     *
+     * @param string  $scope       The scope of setting.
+     * @param string  $name        The key of the specific setting.
+     * @param boolean $returnRow   Should this operation return entire
+     *                             Result or just a single value.
+     *                             Default: false.
+     *
+     * @return string|array|false
+     *     Result of the setting query. Either returns:
+     *     (a) A single string value of the given setting.
+     *     (b) A result row, if $returnRow is set to true.
+     *     (c) Boolean false ff the setting is not found.
+     */
     public function getSettingByScope($scope, $name, $returnRow = false)
     {
         $data = ['scope' => $scope, 'name' => $name];
@@ -48,6 +81,13 @@ class SettingGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    /**
+     * Getting all the settings of the specific scope.
+     *
+     * @param string $scope
+     *
+     * @return array
+     */
     public function getAllSettingsByScope($scope)
     {
         $data = ['scope' => $scope];
@@ -56,6 +96,15 @@ class SettingGateway extends QueryableGateway
         return $this->db()->select($sql, $data)->fetchAll();
     }
 
+    /**
+     * Update a setting by the scope and setting name.
+     *
+     * @param string $scope  The scope of the setting.
+     * @param string $name   The key of the specific setting.
+     * @param string $value  The setting value.
+     *
+     * @return bool  True, if the database operation is successful, or false.
+     */
     public function updateSettingByScope($scope, $name, $value)
     {
         $data = ['scope' => $scope, 'name' => $name, 'value' => $value];
