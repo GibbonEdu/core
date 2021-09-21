@@ -80,9 +80,7 @@ class Result extends PDOStatement implements ResultContract
     }
 
     /**
-     * Fetches all results and returns it as a DataSet object.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function toDataSet()
     {
