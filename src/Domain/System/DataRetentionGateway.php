@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Traits\TableAware;
@@ -103,12 +102,12 @@ class DataRetentionGateway extends QueryableGateway
                 ],
             ],
             'Behaviour Records' => [
-                'description' => __('Clear all behaviour data including positive and negative behaviour records and any behaviour letters sent to parents.'), 
+                'description' => __('Clear all behaviour data including positive and negative behaviour records and any behaviour letters sent to parents.'),
                 'context' => ['Student'],
                 'gateways' => [
                     BehaviourGateway::class,
                     BehaviourLetterGateway::class
-                ] 
+                ]
             ],
             'Individual Needs' => [
                 'description' => __('Clear individual needs records including archived records and individual needs investigations.'),
@@ -137,7 +136,7 @@ class DataRetentionGateway extends QueryableGateway
                 'gateways' => [
                     UserGateway::class,
                     PersonUpdateGateway::class,
-                    
+
                 ],
             ],
             'Staff Personal Data' =>  [
@@ -173,10 +172,5 @@ class DataRetentionGateway extends QueryableGateway
                 ],
             ],
         ];
-    }
-
-    public function getAllTables()
-    {
-        return $this->allTables;
     }
 }
