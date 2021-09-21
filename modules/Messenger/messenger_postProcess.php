@@ -2071,6 +2071,8 @@ else {
 						//Deal with student names
 						if ($individualNaming == "Y") {
 							$studentNames = '';
+                            $reportEntry[7] = !empty($reportEntry[7]) && is_array($reportEntry[7]) ? array_filter($reportEntry[7]) : [];
+
 							if (!empty($reportEntry[7]) && count($reportEntry[7]) > 0) {
                                 // Remove duplicates and build a string list of names
                                 $reportEntry[7] = array_unique($reportEntry[7]);
