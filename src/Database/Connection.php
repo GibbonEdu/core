@@ -96,11 +96,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Run a select statement and return a single result.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return mixed
+     *{@inheritDoc}
      */
     public function selectOne($query, $bindings = [])
     {
@@ -134,11 +130,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Run an update statement against the database.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return int
+     * {@inheritDoc}
      */
     public function update($query, $bindings = [])
     {
@@ -146,11 +138,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Run a delete statement against the database.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return int
+     * {@inheritDoc}
      */
     public function delete($query, $bindings = [])
     {
@@ -158,11 +146,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Execute an SQL statement and return the boolean result.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return bool
+     * {@inheritDoc}
      */
     public function statement($query, $bindings = [])
     {
@@ -171,11 +155,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Run an SQL statement and get the number of rows affected.
-     *
-     * @param  string  $query
-     * @param  array   $bindings
-     * @return int
+     * {@inheritDoc}
      */
     public function affectingStatement($query, $bindings = [])
     {
