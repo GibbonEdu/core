@@ -33,7 +33,6 @@ class Action extends WebLink
     protected $label;
     protected $url;
     protected $icon;
-    protected $params = array();
     protected $urlFragment;
 
     protected $modal = false;
