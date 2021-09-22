@@ -19,11 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Traits;
 
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Mysql\Insert as MysqlInsert;
+
 /**
  * Provides methods for Gateway classes that are tied to a specific database table.
  * For QueryableGateways, this trait implements the required countAll() method.
  *
- * The classes using this trait must implement a static $tableName and $primaryKey
+ * The classes using this trait must implement a static $tableName and $primaryKey.
+ * They can also implement an optional static $searchableColumns array.
  */
 trait TableAware
 {
@@ -361,4 +368,80 @@ trait TableAware
 
         return $this->runSelect($query)->rowCount() > 0;
     }
+
+    /**
+     * Get database connection.
+     *
+     * @return \Gibbon\Contracts\Database\Connection
+     * @see    \Gibbon\Domain\Gateway::db()
+     */
+    abstract protected function db();
+
+    /**
+     * Creates a new instance of the Insert class.
+     *
+     * @return InsertInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newInsert()
+     */
+    abstract protected function newInsert();
+
+    /**
+     * Run an insert query.
+     *
+     * @param InsertInterface $query
+     * @return int
+     * @see    \Gibbon\Domain\QueryableGateway::runInsert()
+     */
+    abstract protected function runInsert(InsertInterface $query);
+
+    /**
+     * Creates a new instance of the Select class.
+     *
+     * @return SelectInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newSelect()
+     */
+    abstract protected function newSelect();
+
+    /**
+     * Run a select query.
+     *
+     * @param SelectInterface $query
+     * @return \Gibbon\Contracts\Database\Result
+     * @see    \Gibbon\Domain\QueryableGateway::runSelect()
+     */
+    abstract protected function runSelect(SelectInterface $query);
+
+    /**
+     * Creates a new instance of the Update class.
+     *
+     * @return UpdateInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newUpdate()
+     */
+    abstract protected function newUpdate();
+
+    /**
+     * Run an update query.
+     *
+     * @param  UpdateInterface $query
+     * @return bool
+     * @see    \Gibbon\Domain\QueryableGateway::runUpdate()
+     */
+    abstract protected function runUpdate(UpdateInterface $query);
+
+    /**
+     * Creates a new instance of the Update class.
+     *
+     * @return DeleteInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newDelete()
+     */
+    abstract protected function newDelete();
+
+    /**
+     * Run an delete query.
+     *
+     * @param  DeleteInterface $query
+     * @return int
+     * @see    \Gibbon\Domain\QueryableGateway::runDelete()
+     */
+    abstract protected function runDelete(DeleteInterface $query);
 }
