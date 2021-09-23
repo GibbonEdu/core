@@ -22,25 +22,87 @@ namespace Gibbon\Tables;
 use Gibbon\Forms\Layout\WebLink;
 
 /**
- * Action
+ * Action link representation for HTML listings.
+ *
+ * Represents quick actions for user to take in listing UIs.
+ * Will be rendered into HTML links with or without icon image.
  *
  * @version v16
  * @since   v16
  */
 class Action extends WebLink
 {
+    /**
+     * Name of the action.
+     *
+     * @var string
+     */
     protected $name;
+
+    /**
+     * Label of the action. Displayed on hover.
+     *
+     * @var string
+     */
     protected $label;
+
+    /**
+     * The internal URL for this action.
+     *
+     * @var string
+     */
     protected $url;
-    protected $icon;
-    protected $params = array();
+
+    /**
+     * URL fragment of the internal URL for this action.
+     *
+     * @var string
+     */
     protected $urlFragment;
 
+    /**
+     * The icon name, without any path or filetype
+     *
+     * @var string
+     */
+    protected $icon;
+
+    /**
+     * Boolean flag indicate if the link opens a modal box.
+     *
+     * @var boolean
+     */
     protected $modal = false;
+
+    /**
+     * Boolean flag indicate if the link is a direct link.
+     *
+     * @var boolean
+     */
     protected $direct = false;
+
+    /**
+     * Boolean flag indicate if the link is an external link.
+     *
+     * @var boolean
+     */
     protected $external = false;
+
+    /**
+     * Boolean flag indicate if the action label should be displayed as text next to the icon.
+     *
+     * @var boolean
+     */
     protected $displayLabel = false;
 
+    /**
+     * Class constructor of Action.
+     *
+     * @param string $name   Name of the action. Usually 'add', 'addMultiple',
+     *                       'edit', 'delete', 'print', 'export', 'import', 'view',
+     *                       or 'accept'.
+     * @param string $label  The label for the action. Displayed on hover.
+     */
     public function __construct($name, $label = '')
     {
         $this->name = $name;
@@ -96,10 +158,9 @@ class Action extends WebLink
     {
         $this->url = $url;
         $this->external = true;
-        $this->target = '_blank';
         $this->urlFragment = $urlFragment;
 
-        $this->setAttribute('target', $this->target);
+        $this->setAttribute('target', '_blank');
         $this->setAttribute('download', $downloadable);
 
         return $this;
@@ -200,6 +261,7 @@ class Action extends WebLink
     /**
      * The action link will not prepend an index.php?q=
      *
+     * @param bool $value
      * @return self
      */
     public function directLink($value = true)
@@ -226,7 +288,7 @@ class Action extends WebLink
 
         if ($icon = $this->getIcon()) {
             // Allow modules to specify their own icons if needed
-            $icon = substr($icon, 0, 4) != 'http' 
+            $icon = substr($icon, 0, 4) != 'http'
                 ? $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/'.$icon.'.png'
                 : $icon;
 
