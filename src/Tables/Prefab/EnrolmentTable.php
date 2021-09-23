@@ -36,8 +36,25 @@ use Gibbon\Domain\Students\StudentReportGateway;
  */
 class EnrolmentTable implements OutputableInterface
 {
+    /**
+     * @var \Gibbon\Contract\Services\Session
+     */
     protected $session;
+
+    /**
+     * @var \Gibbon\View\View
+     */
+    protected $view;
+
+    /**
+     * @var \Gibbon\Domain\Students\StudentGateway
+     */
     protected $studentGateway;
+
+    /**
+     * @var \Gibbon\Domain\Students\StudentReportGateway
+     */
+    protected $studentReportGateway;
 
     public function __construct(Session $session, View $view, StudentGateway $studentGateway, StudentReportGateway $studentReportGateway)
     {
