@@ -19,7 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Services\Payment;
 
+use Omnipay\Common\AbstractGateway as OmnipayGateway;
+use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Omnipay\Omnipay;
+use Omnipay\PayPal\ProGateway as OmnipayPaypalProGateway;
+use Omnipay\Stripe\AbstractGateway as OmnipayStripeGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
@@ -169,6 +173,9 @@ class Payment implements PaymentInterface
             return self::RETURN_SUCCESS;
 
         } elseif ($response->isRedirect()) {
+            /**
+             * @var OmnipayRedirectResponse $response
+             */
             // Redirect to offsite payment gateway
             $response->redirect();
             return self::RETURN_REDIRECT;
@@ -243,6 +250,9 @@ class Payment implements PaymentInterface
         // Setup the Omnipay payment gateway based on Third Party Settings
         switch ($this->paymentGatewaySetting) {
             case 'PayPal':
+                /**
+                 * @var OmnipayPaypalProGateway
+                 */
                 $this->omnipay = Omnipay::create('PayPal_Express');
                 $this->omnipay->setUsername($this->settingGateway->getSettingByScope('System', 'paymentAPIUsername'));
                 $this->omnipay->setPassword($this->settingGateway->getSettingByScope('System', 'paymentAPIPassword'));
@@ -250,6 +260,9 @@ class Payment implements PaymentInterface
                 break;
 
             case 'Stripe':
+                /**
+                 * @var OmnipayStripeGateway
+                 */
                 $this->omnipay = Omnipay::create('Stripe\Checkout');
                 $this->omnipay->setApiKey($this->settingGateway->getSettingByScope('System', 'paymentAPIKey'));
                 break;
