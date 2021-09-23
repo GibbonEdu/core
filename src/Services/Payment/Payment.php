@@ -164,7 +164,13 @@ class Payment implements PaymentInterface
 
         // Send purchase request to the payment gateway
         $options = $this->getPaymentRequestOptions($amount, $reason);
-        $response = $this->omnipay->purchase($options)->setCurrency($this->currency)->send();
+
+        /**
+         * @var OmnipayGateway $gateway
+         */
+        $gateway = $this->omnipay->purchase($options);
+        $transaction = $gateway->setCurrency($this->currency)->purchase();
+        $response = $transaction->send();
 
         if ($response->isSuccessful()) {
             // Payment request was successful, continue redirect
