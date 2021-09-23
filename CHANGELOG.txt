@@ -35,6 +35,7 @@ v23.0.00
         Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
         Messenger: improved mobile responsive size of inserted images
+        Planner: added facility name to Year Overview and Edit Working Copy pages, if available
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
