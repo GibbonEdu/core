@@ -67,21 +67,41 @@ abstract class QueryableGateway extends Gateway
         return $this->getQueryFactory()->newSelect()->calcFoundRows();
     }
 
+    /**
+     * Creates a new instance of the Select class.
+     *
+     * @return SelectInterface
+     */
     protected function newSelect()
     {
         return $this->getQueryFactory()->newSelect();
     }
 
+    /**
+     * Creates a new instance of the Insert class.
+     *
+     * @return InsertInterface
+     */
     protected function newInsert()
     {
         return $this->getQueryFactory()->newInsert();
     }
 
+    /**
+     * Creates a new instance of the Update class.
+     *
+     * @return UpdateInterface
+     */
     protected function newUpdate()
     {
         return $this->getQueryFactory()->newUpdate();
     }
 
+    /**
+     * Creates a new instance of the Delete class.
+     *
+     * @return DeleteInterface
+     */
     protected function newDelete()
     {
         return $this->getQueryFactory()->newDelete();
@@ -171,7 +191,7 @@ abstract class QueryableGateway extends Gateway
                 }
             });
         }
-        
+
         // Sort By
         if ($criteria->hasSort() && $closeQuery) {
             foreach ($criteria->getSortBy() as $column => $direction) {

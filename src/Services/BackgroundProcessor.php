@@ -330,7 +330,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     /**
      * Determine the current OS. Used to call the correct system command to start a process.
      *
-     * @return void
+     * @return string
      */
     protected function getOS()
     {
