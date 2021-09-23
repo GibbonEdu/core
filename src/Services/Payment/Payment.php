@@ -34,6 +34,7 @@ class Payment implements PaymentInterface
     const RETURN_SUCCESS = 'success1';
     const RETURN_SUCCESS_WARNING = 'warning2';
     const RETURN_CANCEL = 'warning3';
+    const RETURN_REDIRECT = 'warning4';
     const RETURN_ERROR_NOT_ENABLED = 'error1';
     const RETURN_ERROR_CURRENCY = 'error3';
     const RETURN_ERROR_CONFIG = 'error4';
@@ -66,13 +67,39 @@ class Payment implements PaymentInterface
      */
     protected $settingGateway;
 
+    /**
+     * @var OmnipayGatewayInterface
+     */
     protected $omnipay;
+
+    /**
+     * @var string
+     */
     protected $currency;
+
+    /**
+     * @var array
+     */
     protected $result = [];
 
+    /**
+     * @var string
+     */
     protected $returnURL;
+
+    /**
+     * @var string
+     */
     protected $cancelURL;
+
+    /**
+     * @var string
+     */
     protected $foreignTable;
+
+    /**
+     * @var string
+     */
     protected $foreignTableID;
 
     protected $testMode = false;
@@ -144,7 +171,7 @@ class Payment implements PaymentInterface
         } elseif ($response->isRedirect()) {
             // Redirect to offsite payment gateway
             $response->redirect();
-            return ''; // TODO: should there be a return value for "redirecting"?
+            return self::RETURN_REDIRECT;
 
         } elseif (stripos($response->getMessage(), 'currency') !== false) {
             // Payment not possible
@@ -373,6 +400,7 @@ class Payment implements PaymentInterface
             self::RETURN_SUCCESS           => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'),
             self::RETURN_SUCCESS_WARNING   => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $this->session->get('systemName'), $this->foreignTableID),
             self::RETURN_CANCEL            => __('Your online payment was cancelled before it was completed. No charges have been processed.'),
+            self::RETURN_REDIRECT          => __('Your online payment redirect was interrupted before it could be completed. Please try again and if the error persists, contact the school.'),
             self::RETURN_ERROR_NOT_ENABLED => __('Online payment options are not available at this time.'),
             self::RETURN_ERROR_CURRENCY    => __("Your payment could not be made as the payment gateway does not support the system's currency."),
             self::RETURN_ERROR_CONFIG      => __('Your payment could not be processed due to a system configuration issue. Please contact the school before attempting another payment.'),
