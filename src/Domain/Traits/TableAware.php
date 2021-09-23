@@ -19,11 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Traits;
 
+use Aura\SqlQuery\Common\DeleteInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Mysql\Insert as MysqlInsert;
+
 /**
  * Provides methods for Gateway classes that are tied to a specific database table.
  * For QueryableGateways, this trait implements the required countAll() method.
  *
- * The classes using this trait must implement a static $tableName and $primaryKey
+ * The classes using this trait must implement a static $tableName and $primaryKey.
+ * They can also implement an optional static $searchableColumns array.
  */
 trait TableAware
 {
@@ -64,7 +71,7 @@ trait TableAware
     {
         return isset(self::$searchableColumns)? self::$searchableColumns : [];
     }
-    
+
     /**
      * Gets the total number of rows in this database table.
      *
@@ -78,8 +85,9 @@ trait TableAware
     /**
      * Gets the values of a table row by it's primary key.
      *
-     * @param string $primaryKeyValue
-     * @return array
+     * @param string $primaryKeyValue  The primary key value to select data with.
+     *
+     * @return \Gibbon\Database\Result|array  The select result, or empty array if empty.
      */
     public function getByID($primaryKeyValue, $cols = []) : array
     {
@@ -93,7 +101,7 @@ trait TableAware
             ->from($this->getTableName())
             ->where($this->getPrimaryKey().' = :primaryKey')
             ->bindValue('primaryKey', $primaryKeyValue);
-        
+
         $result = $this->runSelect($query);
         return $result->isNotEmpty()
             ? $result->fetch()
@@ -103,8 +111,9 @@ trait TableAware
     /**
      * Selects a number of rows matching a simple key => value select.
      *
-     * @param string $primaryKeyValue
-     * @return array
+     * @param string $keysAndValues  The key-value pairs to select data with.
+     *
+     * @return \Gibbon\Database\Result  The select query result.
      */
     public function selectBy(array $keysAndValues, $cols = [])
     {
@@ -122,12 +131,20 @@ trait TableAware
 
         return $this->runSelect($query);
     }
-    
+
     /**
      * Inserts a row into the table and returns the primary key.
      *
-     * @param array $data
-     * @return void
+     * @param array $data  A row of data to insert into database.
+     *
+     * @return mixed The primary key for the just inserted data.
+     *
+     *               Will call `$this->runInsert` internally
+     *               for actual operation. Expects `runInsert`
+     *               implementation to fulfill the contract and
+     *               return the primary key.
+     *
+     *               @see \Gibbon\Domain\QueryableGateway::runInsert
      */
     public function insert(array $data)
     {
@@ -142,10 +159,20 @@ trait TableAware
     }
 
     /**
-     * Inserts a row into the table and returns the primary key.
+     * Upsert implementation. Inserts a row into the table and
+     * returns the primary key, or update existing row.
      *
-     * @param array $data
-     * @return void
+     * @param array $data  A row of data to insert into database.
+     * @param array $updateCols
+     *
+     * @return mixed The primary key for the just inserted data.
+     *
+     *               Will call `$this->runInsert` internally
+     *               for actual operation. Expects `runInsert`
+     *               implementation to fulfill the contract and
+     *               return the primary key.
+     *
+     *               @see \Gibbon\Domain\QueryableGateway::runInsert
      */
     public function insertAndUpdate(array $data, array $updateCols)
     {
@@ -163,16 +190,25 @@ trait TableAware
     /**
      * Updates a row in the table based on primary key and returns true on success.
      *
-     * @param string $primaryKeyValue
-     * @param array $data
-     * @return bool
+     * @param string $primaryKeyValue  The primary key for the row to update with.
+     * @param array  $data             A row of data to insert into database.
+     *
+     * @return bool  Boolean indicator for the success database operation of the
+     *               update.
+     *
+     *               Will call `$this->runUpdate` internally
+     *               for actual operation. Expects `runInsert`
+     *               implementation to fulfill the contract and
+     *               return the boolean result.
+     *
+     *               @see \Gibbon\Domain\QueryableGateway::runUpdate
      */
     public function update($primaryKeyValue, array $data) : bool
     {
         if (empty($primaryKeyValue)) {
             throw new \InvalidArgumentException("Gateway update method for {$this->getTableName()} must provide a primary key value.");
         }
-        
+
         unset($data[$this->getPrimaryKey()]);
 
         $query = $this
@@ -190,14 +226,23 @@ trait TableAware
      *
      * @param array $keysAndValues
      * @param array $data
-     * @return bool
+     *
+     * @return bool  Boolean indicator for the success database operation of the
+     *               update.
+     *
+     *               Will call `$this->runUpdate` internally
+     *               for actual operation. Expects `runInsert`
+     *               implementation to fulfill the contract and
+     *               return the boolean result.
+     *
+     *               @see \Gibbon\Domain\QueryableGateway::runUpdate
      */
     public function updateWhere(array $keysAndValues, array $data) : bool
     {
         if (empty($keysAndValues)) {
             throw new \InvalidArgumentException("Gateway update method for {$this->getTableName()} must provide an array of keys and values.");
         }
-        
+
         unset($data[$this->getPrimaryKey()]);
 
         $query = $this
@@ -219,7 +264,16 @@ trait TableAware
      * Deletes a row in the table based on primary key and returns true on success.
      *
      * @param string $primaryKeyValue
-     * @return bool
+     *
+     * @return bool  Boolean indicator for the success database operation of the
+     *               delete.
+     *
+     *               Will call `$this->runDelete` internally
+     *               for actual operation. Expects `runInsert`
+     *               implementation to fulfill the contract and
+     *               return the boolean result.
+     *
+     *               @see \Gibbon\Domain\QueryableGateway::runDelete
      */
     public function delete($primaryKeyValue) : bool
     {
@@ -247,7 +301,7 @@ trait TableAware
         if (empty($keysAndValues)) {
             throw new \InvalidArgumentException("Gateway update method for {$this->getTableName()} must provide an array of keys and values.");
         }
-        
+
         $query = $this
             ->newDelete()
             ->from($this->getTableName());
@@ -266,10 +320,11 @@ trait TableAware
      * Returns true if no rows match the provided key => value pair of data.
      * Can optionally omit a row by primary key, when checking other rows only.
      *
-     * @param array $data
-     * @param array $uniqueKeys
-     * @param string $primaryKeyValue
-     * @return bool
+     * @param array $data              An assoc array of key-value pair(s).
+     * @param array $uniqueKeys        An assoc array of unique key key-value pair(s).
+     * @param string $primaryKeyValue  Optional primary key value to check with.
+     *
+     * @return bool  True if no rows match the provided key => value pair of data, or false.
      */
     public function unique(array $data, array $uniqueKeys, $primaryKeyValue = '') : bool
     {
@@ -291,15 +346,16 @@ trait TableAware
             $query->where($this->getPrimaryKey().' <> :primaryKey')
                   ->bindValue('primaryKey', $primaryKeyValue);
         }
-            
+
         return $this->runSelect($query)->rowCount() == 0;
     }
 
     /**
      * Returns true if the primary key value exists in the table.
      *
-     * @param string $primaryKeyValue
-     * @return bool
+     * @param string $primaryKeyValue  The primary key to check with.
+     *
+     * @return bool   If the primary key value exists in the table.
      */
     public function exists($primaryKeyValue) : bool
     {
@@ -312,4 +368,80 @@ trait TableAware
 
         return $this->runSelect($query)->rowCount() > 0;
     }
+
+    /**
+     * Get database connection.
+     *
+     * @return \Gibbon\Contracts\Database\Connection
+     * @see    \Gibbon\Domain\Gateway::db()
+     */
+    abstract protected function db();
+
+    /**
+     * Creates a new instance of the Insert class.
+     *
+     * @return InsertInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newInsert()
+     */
+    abstract protected function newInsert();
+
+    /**
+     * Run an insert query.
+     *
+     * @param InsertInterface $query
+     * @return int
+     * @see    \Gibbon\Domain\QueryableGateway::runInsert()
+     */
+    abstract protected function runInsert(InsertInterface $query);
+
+    /**
+     * Creates a new instance of the Select class.
+     *
+     * @return SelectInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newSelect()
+     */
+    abstract protected function newSelect();
+
+    /**
+     * Run a select query.
+     *
+     * @param SelectInterface $query
+     * @return \Gibbon\Contracts\Database\Result
+     * @see    \Gibbon\Domain\QueryableGateway::runSelect()
+     */
+    abstract protected function runSelect(SelectInterface $query);
+
+    /**
+     * Creates a new instance of the Update class.
+     *
+     * @return UpdateInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newUpdate()
+     */
+    abstract protected function newUpdate();
+
+    /**
+     * Run an update query.
+     *
+     * @param  UpdateInterface $query
+     * @return bool
+     * @see    \Gibbon\Domain\QueryableGateway::runUpdate()
+     */
+    abstract protected function runUpdate(UpdateInterface $query);
+
+    /**
+     * Creates a new instance of the Update class.
+     *
+     * @return DeleteInterface
+     * @see    \Gibbon\Domain\QueryableGateway::newDelete()
+     */
+    abstract protected function newDelete();
+
+    /**
+     * Run an delete query.
+     *
+     * @param  DeleteInterface $query
+     * @return int
+     * @see    \Gibbon\Domain\QueryableGateway::runDelete()
+     */
+    abstract protected function runDelete(DeleteInterface $query);
 }

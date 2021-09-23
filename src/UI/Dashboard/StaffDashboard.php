@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use PDOException;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
@@ -35,9 +34,25 @@ use Gibbon\Contracts\Database\Connection;
  */
 class StaffDashboard implements OutputableInterface
 {
+    /**
+     * @var \Gibbon\Contracts\Database\Connection
+     */
     protected $db;
+
+    /**
+     * @var \Gibbon\Contracts\Services\Session
+     */
     protected $session;
+
+    /**
+     * @var \Gibbon\Tables\Prefab\FormGroupTable
+     */
     protected $formGroupTable;
+
+    /**
+     * @var \Gibbon\Tables\Prefab\EnrolmentTable
+     */
+    protected $enrolmentTable;
 
     public function __construct(Connection $db, Session $session, FormGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
     {

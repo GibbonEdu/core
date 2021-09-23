@@ -210,7 +210,7 @@ class Row
     /**
      * Gets the string identifier for an element that can be used as an array key.
      * @param object $element
-     * @return void
+     * @return string
      */
     protected function getUniqueIdentifier($element)
     {

@@ -34,10 +34,25 @@ class Table implements OutputableInterface, ValidatableInterface
 {
     use BasicAttributesTrait;
 
+    /**
+     * @var \Gibbon\Forms\FormFactoryInterface
+     */
     protected $factory;
 
+    /**
+     * @var \Gibbon\Forms\Layout\Row[]
+     */
     protected $headers = array();
+
+    /**
+     * @var \Gibbon\Forms\Layout\Row[]
+     */
     protected $rows = array();
+
+    /**
+     * @var int
+     */
+    protected $totalColumns;
 
     /**
      * Create an element that holds an internal collection of rows and optional header.
