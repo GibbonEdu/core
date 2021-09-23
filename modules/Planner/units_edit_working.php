@@ -154,7 +154,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         // Display the heading
         $heading = $form->addRow()->addHeading($lessonLink . $deleteLink)
             ->append(Format::small(Format::dateReadable($lesson['date'], '%a %e %b, %Y')).'<br/>')
-            ->append($lessonTiming);
+            ->append($lessonTiming.'<br/>')
+            ->append(Format::small($times['spaceName'] ?? ''));
 
         $col = $form->addRow()->addClass('')->addColumn()->addClass('blockLesson');
 
