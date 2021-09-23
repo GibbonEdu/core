@@ -100,6 +100,7 @@ class Select extends Input
         if ($this->getAttribute('multiple') == true) {
             return __('Use Control, Command and/or Shift to select multiple.');
         }
+        return '';
     }
 
     /**
