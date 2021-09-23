@@ -139,18 +139,19 @@ class Payment implements PaymentInterface
             // Payment request was successful, continue redirect
             $responseData = $response->getData();
             header("Location: " . $responseData['url']);
+            return self::RETURN_SUCCESS;
 
         } elseif ($response->isRedirect()) {
             // Redirect to offsite payment gateway
             $response->redirect();
+            return ''; // TODO: should there be a return value for "redirecting"?
 
         } elseif (stripos($response->getMessage(), 'currency') !== false) {
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;
-        } else {
-            // Payment failed: debug with $response->getMessage()
-            return self::RETURN_ERROR_CONNECT;
         }
+        // Payment failed: debug with $response->getMessage()
+        return self::RETURN_ERROR_CONNECT;
     }
 
     public function confirmPayment() : string
