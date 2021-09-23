@@ -26,7 +26,7 @@
             "cd tests && ../vendor/bin/phpunit --verbose --colors=always --configuration phpunit.xml"
         ],
         "test:phpstan": [
-            "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction --autoload-file=functions.php src"
+            "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction -c phpstan.neon"
         ],
         "test:codesniffer": [
           "vendor/bin/phpcs --standard=PSR2 modules/Library/" 

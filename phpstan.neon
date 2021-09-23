@@ -1,0 +1,32 @@
+parameters:
+	level: 0
+	paths:
+		- src
+	ignoreErrors:
+		- '#Unsafe usage of new static\(\)#'
+	scanFiles:
+		- functions.php
+		- modules/Activities/moduleFunctions.php
+		- modules/Attendance/moduleFunctions.php
+		- modules/Behaviour/moduleFunctions.php
+		- modules/Crowd Assessment/moduleFunctions.php
+		- modules/Data Updater/moduleFunctions.php
+		- modules/Departments/moduleFunctions.php
+		- modules/Finance/moduleFunctions.php
+		- modules/Form Groups/moduleFunctions.php
+		- modules/Formal Assessment/moduleFunctions.php
+		- modules/Individual Needs/moduleFunctions.php
+		- modules/Library/moduleFunctions.php
+		- modules/Markbook/moduleFunctions.php
+		- modules/Messenger/moduleFunctions.php
+		- modules/Planner/moduleFunctions.php
+		- modules/Reports/moduleFunctions.php
+		- modules/Rubrics/moduleFunctions.php
+		- modules/School Admin/moduleFunctions.php
+		- modules/Staff/moduleFunctions.php
+		- modules/Students/moduleFunctions.php
+		- modules/System Admin/moduleFunctions.php
+		- modules/Timetable Admin/moduleFunctions.php
+		- modules/Timetable/moduleFunctions.php
+		- modules/Tracking/moduleFunctions.php
+		- modules/User Admin/moduleFunctions.php
