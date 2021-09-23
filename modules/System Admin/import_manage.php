@@ -39,6 +39,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
     $form = Form::create('settings', $session->get('absoluteURL').'/modules/System Admin/import_manageProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
 
+    $form->addHeaderAction('view', __('Import History'))
+        ->setURL('/modules/System Admin/import_history.php')
+        ->displayLabel();
+
     $setting = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'importCustomFolderLocation', true);
         $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
@@ -89,7 +93,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
             ->format(function ($importType) use ($session) {
                 if ($log = $importType['log']) {
                     $text = Format::dateReadable($log['timestamp']);
-                    $url = $session->get('absoluteURL').'/fullscreen.php?q=/modules/System Admin/import_history_view.php&gibbonLogID='.$log['gibbonLogID'].'&width=600&height=550';
+                    $url = $session->get('absoluteURL').'/fullscreen.php?q=/modules/System Admin/import_history_view.php&gibbonLogID='.$log['gibbonLogID'].'&width=800&height=550';
                     $title = Format::dateTime($log['timestamp']).' - '.Format::nameList([$log]);
                     return Format::link($url, $text, ['title' => $title, 'class' => 'thickbox']);
                 }
