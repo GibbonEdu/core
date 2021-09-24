@@ -33,35 +33,27 @@ if (isset($_GET['gibbonMessengerID'])) {
 
 //Check variables
 if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
-    echo "<div class='error'>";
-    echo __('You have not specified one or more required parameters.');
-    echo '</div>';
+    $page->addError(__('You have not specified one or more required parameters.'));
 } else {
     //Check for record
     $keyReadFail = false;
-    try {
-        $dataKeyRead = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID, 'key' => $key);
-        $sqlKeyRead = 'SELECT * FROM gibbonMessengerReceipt WHERE `key`=:key AND gibbonPersonID=:gibbonPersonID AND gibbonMessengerID=:gibbonMessengerID';
-        $resultKeyRead = $connection2->prepare($sqlKeyRead);
-        $resultKeyRead->execute($dataKeyRead);
-    } catch (PDOException $e) {
-        echo "<div class='error'>";
-        echo __('Your request failed due to a database error.');
-        echo '</div>';
-    }
 
-    if ($resultKeyRead->rowCount() != 1) { //If not exists, report error
-        echo "<div class='error'>";
-        echo __('The selected record does not exist, or you do not have access to it.');
-        echo '</div>';
-    } else {    //If exists check confirmed
+    $dataKeyRead = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID, 'key' => $key);
+    $sqlKeyRead = 'SELECT * FROM gibbonMessengerReceipt WHERE `key`=:key AND gibbonPersonID=:gibbonPersonID AND gibbonMessengerID=:gibbonMessengerID';
+    $resultKeyRead = $pdo->select($sqlKeyRead, $dataKeyRead);
+
+    if ($resultKeyRead->rowCount() != 1) { 
+        //If not exists, report error
+        $page->addError(__('The selected record does not exist, or you do not have access to it.'));
+    } else {    
+        //If exists check confirmed
         $rowKeyRead = $resultKeyRead->fetch();
 
-        if ($rowKeyRead['confirmed'] == 'Y') { //If already confirmed, report success
-            echo "<div class='success'>";
-            echo __('Thank you for confirming receipt and reading of this email.');
-            echo '</div>';
-        } else { //If not confirmed, confirm
+        if ($rowKeyRead['confirmed'] == 'Y') { 
+            //If already confirmed, report success
+            $page->addSuccess(__('Thank you for confirming receipt and reading of this email.'));
+        } else { 
+            //If not confirmed, confirm
             $keyWriteFail = false;
             try {
                 $dataKeyWrite = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID);
@@ -69,18 +61,13 @@ if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
                 $resultKeyWrite = $connection2->prepare($sqlKeyWrite);
                 $resultKeyWrite->execute($dataKeyWrite);
             } catch (PDOException $e) {
-                print $e->getMessage();
                 $keyWriteFail = true;
             }
 
-            if ($keyWriteFail == true) { //Report error
-                echo "<div class='error'>";
-                echo __('Your request failed due to a database error.');
-                echo '</div>';
-            } else { //Report success
-                echo "<div class='success'>";
-                echo __('Thank you for confirming receipt and reading of this email.');
-                echo '</div>';
+            if ($keyWriteFail == true) {
+                $page->addError(__('Your request failed due to a database error.'));
+            } else {
+                $page->addSuccess(__('Thank you for confirming receipt and reading of this email.'));
             }
         }
     }
