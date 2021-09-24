@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $table->addColumn('period', __('TT Period/Time'))
             ->notSortable()
             ->format(function($lesson) {
-                return $lesson['period'].'<br/>'.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']);
+                return $lesson['period'].'<br/>'.Format::timeRange($lesson['timeStart'], $lesson['timeEnd']).'<br>'.($lesson['spaceName'] ?? '');
             });
 
         $table->addColumn('lesson', __('Planned Lesson'))
