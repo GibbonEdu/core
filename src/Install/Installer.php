@@ -122,9 +122,14 @@ class Installer
      * @param \PDO $connection
      *
      * @return self
+     *
+     * @throws \Exception If internal connection is not set.
      */
     public function getPDO(): \PDO
     {
+        if (!isset($this->connection)) {
+            throw new \Exception('Connection is not provided to the installer, yet.');
+        }
         return $this->connection->getConnection();
     }
 
@@ -354,7 +359,7 @@ class Installer
             throw new \Exception(__('Your request failed because your inputs were incomplete.'));
         }
 
-        $connection = $this->connectByConfig($config);
+        $connection = static::connectByConfig($config);
         if (!$connection instanceof Connection) {
             throw new \Exception(__('Unexpected internal error. PDO is not an instance of Connection, and so the installer cannot proceed.'));
         }
@@ -485,20 +490,84 @@ class Installer
      *
      * @return \Gibbon\Contracts\Database\Connection
      */
-    protected function connectByConfig(Config $config): Connection
+    public static function connectByConfig(Config $config): Connection
     {
         // Establish db connection without database name
         try {
             $mysqlConnector = new MySqlConnector();
-            $connection = $mysqlConnector->connect($config->getDatabaseInfo(), true);
-            $mysqlConnector->useDatabase($connection, $config->getDatabaseName());
-            return $connection;
+            $dbConfig = $config->getDatabaseInfo();
+            if (isset($dbConfig['databaseName'])) unset($dbConfig['databaseName']);
+            $connection = $mysqlConnector->connect($dbConfig, true);
         } catch (\Exception $e) {
             throw new \Exception(
                 sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>') . '<br>' .
                 __('Error details: {error_message}', ['error_message' => $e->getMessage()])
             );
         }
+
+        // Check if the database exists, create if not
+        try {
+            $pdo = $connection->getConnection();
+            if (!static::databaseExists($pdo, $config->getDatabaseName())) {
+                static::createDatabase($pdo, $config->getDatabaseName());
+            }
+        } catch (\Exception $e) {
+            throw new \Exception(
+                __('Database "{name}" not found and unable to create one. Please manually create the database, or provide account that can create it.', [
+                    'name' => $config->getDatabaseName(),
+                ]) . '<br>' .
+                __('Error details: {error_message}', ['error_message' => $e->getMessage()])
+            );
+        }
+
+        $mysqlConnector->useDatabase($connection, $config->getDatabaseName());
+        return $connection;
+    }
+
+    /**
+     * Check if a database exists.
+     *
+     * @param string $name The database name to check.
+     *
+     * @return bool True if the database exists. False otherwise.
+     */
+    protected static function databaseExists(\PDO $pdo, string $name): bool
+    {
+        $stmt = $pdo->prepare('SHOW DATABASES LIKE :name');
+        $stmt->execute([':name' => $name]);
+        if (!$stmt->execute([':name' => $name])) {
+            throw new \Exception('Internal error. Unable to check if database exists.');
+        }
+        return $stmt->rowCount() === 1;
+    }
+
+    /**
+     * Create the database by the database name.
+     *
+     * @param string $name The database name to create.
+     *
+     * @return int|false The response for the exec for creating database.
+     *
+     * @throws \PDOException
+     */
+    protected static function createDatabase(\PDO $pdo, string $name)
+    {
+        $quoted_name = static::quoteDatabaseName($pdo, $name);
+        return $pdo->exec("CREATE DATABASE `{$quoted_name}`");
+    }
+
+    /**
+     * Quote the database name string with backtick
+     * and sanitize the string.
+     *
+     * @param string $name
+     * @return string
+     */
+    private static function quoteDatabaseName(\PDO $pdo, string $name): string
+    {
+        $quoted_name = $pdo->quote($name, \PDO::PARAM_STR);
+        // convert single quote to backtick to return.
+        return preg_replace('/^\'(.+?)\'$/', '$1', $quoted_name);
     }
 
     /**
