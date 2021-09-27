@@ -119,7 +119,7 @@ if (!$payment->incomingPayment()) {
     }
 } else { 
     // Handle incoming payment
-    
+
     $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
     $key = $_GET['key'] ?? '';
 

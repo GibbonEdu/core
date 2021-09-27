@@ -151,7 +151,7 @@ if ($proceed == false) {
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
         $event->addRecipient($gibbon->session->get('organisationAdmissions'));
-        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
+        $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
         $event->sendNotifications($pdo, $gibbon->session);
@@ -163,7 +163,7 @@ if ($proceed == false) {
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
         $event->addRecipient($gibbon->session->get('organisationAdmissions'));
-        $event->setNotificationText(sprintf(__('An new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
+        $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
         $event->sendNotifications($pdo, $gibbon->session);

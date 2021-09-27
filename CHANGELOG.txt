@@ -29,11 +29,18 @@ v23.0.00
         System: improved the appearance of the fatal error message page
         System: adjusted new student order in Staff Dashboard Enrolment tab
         System: in forms, update the current country phone code to always display first
+        System: fixed typo in Public Registration notification
+        System: updated the mobile responsive view to display alerts above the login form
         Attendance: added the ability to Take Ad Hoc Attendance
+        Attendance: added birthday icons to Take Attendance pages
+        Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
+        Messenger: improved mobile responsive size of inserted images
+        Planner: added facility name to Year Overview and Edit Working Copy pages, if available
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
+        System Admin: added link to Import History at the top of Import from File
         Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
         Timetable: added timetable day heading colours to View Timetable by Facility
         Timetable Admin: adjusted interface strings in timetable import
@@ -42,6 +49,10 @@ v23.0.00
         System: fixed the Validator class so sanitizeHTML is multibyte safe
         System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
+        Messenger: fixed duplicate student names when using Individual Naming
+        Rubrics: fixed rubric data before the go live date visible in Historical Data
+        School Admin: fixed phone numbers not formatting in Manage Facilities
+        System Admin: fixed PHP notice in importer when skipping serialized fields
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
 

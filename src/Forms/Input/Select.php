@@ -100,6 +100,7 @@ class Select extends Input
         if ($this->getAttribute('multiple') == true) {
             return __('Use Control, Command and/or Shift to select multiple.');
         }
+        return '';
     }
 
     /**
@@ -126,10 +127,10 @@ class Select extends Input
      */
     public function fromQueryChained(Connection $pdo, $sql, $data = array(), $chainedToID = false, $groupBy = false)
     {
-        $results = $pdo->executeQuery($data, $sql);
+        $results = $pdo->select($sql, $data);
         $this->fromResults($results, $groupBy);
 
-        $results = $pdo->executeQuery($data, $sql);
+        $results = $pdo->select($sql, $data);
 
         if ($results && $results->rowCount() > 0) {
             $chainedOptions = array_reduce($results->fetchAll(), function($group, $item) {

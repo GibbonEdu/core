@@ -11,28 +11,84 @@ namespace Gibbon;
 
 use PHPUnit\Framework\TestCase;
 
+// Require the system-wide functions.
+require_once __DIR__.'/../../../../functions.php';
+
+// Require trait for testing.
+require_once __DIR__ . '/MockGibbonTrait.php';
+require_once __DIR__ . '/MockGuidTrait.php';
+
 /**
  * @covers __ function
  */
 class TranslationTest extends TestCase
 {
+
+    use MockGibbonTrait;
+    use MockGuidTrait;
+
+    /**
+     * A callable to restore gettext locale.
+     *
+     * @var callable
+     */
+    protected $restoreLocale;
+
+    /**
+     * A callable to restore global gibbon object.
+     *
+     * @var callable
+     */
+    protected $restoreGibbon;
+
+    /**
+     * The guid string for test.
+     *
+     * @var string
+     */
     protected $guid;
+
+    /**
+     * A callable to restore guid string.
+     *
+     * @var callable
+     */
+    protected $restoreGuid;
 
     public function setUp(): void
     {
-        global $guid, $gibbon;
+        // Create a stub for the Gibbon\Session class
+        $mockSession = $this->createMock(Session::class);
+        $mockSession
+            ->method('get')
+            ->willReturn(null); // always return null
 
-        $gibbon->locale->setLocale('es_ES');
-        $gibbon->locale->setSystemTextDomain(realpath(__DIR__.'/../../..'));
+        // mock locale object
+        $locale = new Locale(realpath(__DIR__.'/../../../..'), $mockSession);
+        $locale->setLocale('es_ES');
+        $locale->setSystemTextDomain(realpath(__DIR__.'/../../../..'));
 
+        // remember how to restore locale
+        $this->restoreLocale = function () use ($locale) {
+            $locale->setLocale('en_GB');
+        };
+
+        // mock gibbon object
+        $this->restoreGibbon = $this->mockGlobalGibbon((object) [
+            'locale' => $locale,
+        ]);
+
+        // mock guid
+        list($guid, $restoreGuid) = $this->mockGlobalGuid();
         $this->guid = $guid;
+        $this->restoreGuid = $restoreGuid;
     }
 
     public function tearDown(): void
     {
-        global $gibbon;
-
-        $gibbon->locale->setLocale('en_GB');
+        ($this->restoreLocale)();
+        ($this->restoreGibbon)();
+        ($this->restoreGuid)();
     }
 
     /**

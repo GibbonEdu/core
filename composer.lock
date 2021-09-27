@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "95b7688d78a53326c68c5add76169dee",
+    "content-hash": "b755a6ac41a6f0c932cae9d53b7bffe9",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -1588,16 +1588,16 @@
         },
         {
             "name": "omnipay/stripe",
-            "version": "v3.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/omnipay-stripe.git",
-                "reference": "37df2a791e8feab45543125f4c5f22d5d305096d"
+                "reference": "16f822d40c208a07301aed88509b3cb7f2efe450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/omnipay-stripe/zipball/37df2a791e8feab45543125f4c5f22d5d305096d",
-                "reference": "37df2a791e8feab45543125f4c5f22d5d305096d",
+                "url": "https://api.github.com/repos/thephpleague/omnipay-stripe/zipball/16f822d40c208a07301aed88509b3cb7f2efe450",
+                "reference": "16f822d40c208a07301aed88509b3cb7f2efe450",
                 "shasum": ""
             },
             "require": {
@@ -1608,6 +1608,7 @@
                 "phpro/grumphp": "^0.14",
                 "squizlabs/php_codesniffer": "^3"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1643,7 +1644,11 @@
                 "payment",
                 "stripe"
             ],
-            "time": "2019-08-31T10:55:06+00:00"
+            "support": {
+                "issues": "https://github.com/thephpleague/omnipay-stripe/issues",
+                "source": "https://github.com/thephpleague/omnipay-stripe/tree/master"
+            },
+            "time": "2021-08-08T10:49:23+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -1694,6 +1699,70 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2018-07-02T15:55:56+00:00"
+        },
+        {
+            "name": "parsecsv/php-parsecsv",
+            "version": "1.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/parsecsv/parsecsv-for-php.git",
+                "reference": "009820d190342581c05ce84a71237153d09e754d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/parsecsv/parsecsv-for-php/zipball/009820d190342581c05ce84a71237153d09e754d",
+                "reference": "009820d190342581c05ce84a71237153d09e754d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "suggest": {
+                "illuminate/support": "Fluent array interface for map functions"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ParseCsv\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jim Myhrberg",
+                    "email": "contact@jimeh.me"
+                },
+                {
+                    "name": "William Knauss",
+                    "email": "will.knauss@gmail.com"
+                },
+                {
+                    "name": "Susann Sgorzaly",
+                    "homepage": "https://github.com/susgo"
+                },
+                {
+                    "name": "Christian Bläul",
+                    "homepage": "https://github.com/Fonata"
+                }
+            ],
+            "description": "CSV data parser for PHP",
+            "support": {
+                "issues": "https://github.com/parsecsv/parsecsv-for-php/issues",
+                "source": "https://github.com/parsecsv/parsecsv-for-php"
+            },
+            "time": "2021-06-20T21:25:35+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -3483,16 +3552,16 @@
         },
         {
             "name": "tecnickcom/tcpdf",
-            "version": "6.0.038",
+            "version": "6.4.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/yookoala/TCPDF.git",
-                "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010"
+                "url": "https://github.com/tecnickcom/TCPDF.git",
+                "reference": "172540dcbfdf8dc983bc2fe78feff48ff7ec1c76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yookoala/TCPDF/zipball/fff2d972d34ce6334e1939d7fae9d56f2acc6010",
-                "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010",
+                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/172540dcbfdf8dc983bc2fe78feff48ff7ec1c76",
+                "reference": "172540dcbfdf8dc983bc2fe78feff48ff7ec1c76",
                 "shasum": ""
             },
             "require": {
@@ -3501,7 +3570,6 @@
             "type": "library",
             "autoload": {
                 "classmap": [
-                    "fonts",
                     "config",
                     "include",
                     "tcpdf.php",
@@ -3520,31 +3588,39 @@
                     "include/barcodes/qrcode.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPLv3"
+                "LGPL-3.0-only"
             ],
             "authors": [
                 {
                     "name": "Nicola Asuni",
                     "email": "info@tecnick.com",
-                    "homepage": "http://nicolaasuni.tecnick.com"
+                    "role": "lead"
                 }
             ],
-            "description": "TCPDF is a PHP class for generating PDF documents.",
+            "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
             "homepage": "http://www.tcpdf.org/",
             "keywords": [
-                "PDF",
                 "PDFD32000-2008",
+                "TCPDF",
                 "barcodes",
                 "datamatrix",
+                "pdf",
                 "pdf417",
-                "qrcode",
-                "tcpdf"
+                "qrcode"
             ],
             "support": {
-                "source": "https://github.com/yookoala/TCPDF/tree/6.0.038"
+                "issues": "https://github.com/tecnickcom/TCPDF/issues",
+                "source": "https://github.com/tecnickcom/TCPDF/tree/6.4.2"
             },
-            "time": "2013-10-06T16:51:54+00:00"
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
+                    "type": "custom"
+                }
+            ],
+            "time": "2021-07-20T14:43:20+00:00"
         },
         {
             "name": "twig/twig",
@@ -7041,10 +7117,18 @@
             "time": "2021-03-09T10:59:23+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "omnipay/stripe",
+            "version": "9999999-dev",
+            "alias": "v3.1.1",
+            "alias_normalized": "3.1.1.0"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "aura/sqlquery": 20
+        "aura/sqlquery": 20,
+        "omnipay/stripe": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
@@ -7059,5 +7143,5 @@
     "platform-overrides": {
         "php": "7.3"
     },
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.1.0"
 }

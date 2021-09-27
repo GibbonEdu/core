@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\Data\ParseCSV;
-use Gibbon\Data\ImportType;
 use Gibbon\Contracts\Database\Connection;
+use ParseCsv\Csv as ParseCSV;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Exception as ReaderException;
 
@@ -56,7 +55,7 @@ class Importer
     public $mode;
     public $syncField;
     public $syncColumn;
-    
+
     public $outputData = [];
 
     /**
@@ -317,7 +316,7 @@ class Importer
                     $fieldCount++;
                     continue;
                 }
-                
+
                 if ($columnIndex == Importer::COLUMN_DATA_SKIP) {
                     // Skip marked columns
                     $fieldCount++;
@@ -417,7 +416,7 @@ class Importer
                             $relationalSQL = "SELECT {$table}.{$key} FROM {$table} {$tableJoin} WHERE {$relationalField}=:{$fieldNameKey}";
                         }
 
-                        $result = $this->pdo->executeQuery($relationalData, $relationalSQL);
+                        $result = $this->pdo->select($relationalSQL, $relationalData);
 
                         if ($result->rowCount() > 0) {
                             $relationalValue[] = $result->fetchColumn(0);
@@ -433,7 +432,7 @@ class Importer
                                     array('name' => $importType->getField($fieldName, 'name'), 'value' => $value, 'field' => $field, 'table' => $table)
                                 );
                                 $this->debugLog($rowNum, $relationalSQL, $relationalData, 'relational');
-                                
+
                                 $partialFail = true;
                             }
                         }
@@ -453,7 +452,7 @@ class Importer
                 if (!empty($serialize)) {
                     if ($serialize == $fieldName) {
                         // Is this the field we're serializing? Grab the array
-                        $value = json_encode($this->serializeData[$serialize]);
+                        $value = json_encode($this->serializeData[$serialize] ?? []);
                         $fields[$fieldName] = $value;
                     } else {
                         // Otherwise collect values in an array
@@ -614,7 +613,7 @@ class Importer
                     }
 
                     $this->databaseResults['updates'] += 1;
-    
+
                     $sqlData[$primaryKey] = $primaryKeyValue;
                     $sql="UPDATE {$tableName} SET " . $sqlFieldString . " WHERE ".$this->escapeIdentifier($primaryKey)."=:{$primaryKey}" ;
 
@@ -653,7 +652,7 @@ class Importer
                 if (!$liveRun) {
                     continue;
                 }
-                
+
                 $this->pdo->insert($sql, $sqlData);
 
                 if (!$this->pdo->getQuerySuccess()) {

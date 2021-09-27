@@ -41,9 +41,29 @@ class Payment implements PaymentInterface
     const RETURN_ERROR_GENERAL = 'error6';
     const RETURN_ERROR_CONNECT = 'error7';
 
+    /**
+     * @var \Gibbon\Contracts\Services\Session
+     */
+    protected $session;
+
+    /**
+     * @var string|false
+     */
     protected $paymentsEnabled;
+
+    /**
+     * @var string|false
+     */
     protected $paymentGatewaySetting;
+
+    /**
+     * @var \Gibbon\Domain\Finance\PaymentGateway
+     */
     protected $paymentGateway;
+
+    /**
+     * @var \Gibbon\Domain\System\SettingGateway
+     */
     protected $settingGateway;
 
     protected $omnipay;
@@ -200,7 +220,7 @@ class Payment implements PaymentInterface
                 $this->omnipay->setPassword($this->settingGateway->getSettingByScope('System', 'paymentAPIPassword'));
                 $this->omnipay->setSignature($this->settingGateway->getSettingByScope('System', 'paymentAPISignature'));
                 break;
-                
+
             case 'Stripe':
                 $this->omnipay = Omnipay::create('Stripe\Checkout');
                 $this->omnipay->setApiKey($this->settingGateway->getSettingByScope('System', 'paymentAPIKey'));
@@ -272,7 +292,7 @@ class Payment implements PaymentInterface
                     'payerid' => $_GET['PayerID'] ?? '',
                 ])->send();
                 break;
-        
+
             case 'Stripe':
                 // Get the Stripe transaction result using the returned token
                 $transaction = $this->omnipay->fetchTransaction();
@@ -312,7 +332,7 @@ class Payment implements PaymentInterface
                 ];
 
                 break;
-        
+
             case 'Stripe':
                 $status = $data['payment_status'] ?? '';
                 $result += [

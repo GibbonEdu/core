@@ -260,7 +260,13 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $resultContext = $pdo->executeQuery($dataContext,  $sqlContext);
 
                 if ($resultContext->rowCount() > 0) {
+                    $currentDate = date('Y-m-d');
                     while ($rowContext = $resultContext->fetch()) {
+                        // Skip data for any column that has not met its complete date yet
+                        if (!empty($rowContext['completeDate']) && $currentDate < $rowContext['completeDate']) {
+                            continue;
+                        }
+                        
                         $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.Format::date($rowContext[$contextDBTableDateField]).')';
                         $cells[$rowContext['gibbonRubricRowID']][$rowContext['gibbonRubricColumnID']]['context'][] = $context;
 

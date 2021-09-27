@@ -2071,14 +2071,17 @@ else {
 						//Deal with student names
 						if ($individualNaming == "Y") {
 							$studentNames = '';
-							if ($reportEntry[7] != '') {
-								$lastComma = strrpos($reportEntry[7], ',');
-								if ($lastComma != false) {
-									$reportEntry[7] = substr_replace($reportEntry[7], ' &', $lastComma, 1);
-									$studentNames = '<i>'.__('This email relates to the following students: ').$reportEntry[7].'</i><br/><br/>';
-								}
-								else {
-									$studentNames = '<i>'.__('This email relates to the following student: ').$reportEntry[7].'</i><br/><br/>';
+                            $reportEntry[7] = !empty($reportEntry[7]) && is_array($reportEntry[7]) ? array_filter($reportEntry[7]) : [];
+
+							if (!empty($reportEntry[7]) && count($reportEntry[7]) > 0) {
+                                // Remove duplicates and build a string list of names
+                                $reportEntry[7] = array_unique($reportEntry[7]);
+                                $studentNameList = join(' & ', array_filter(array_merge(array(join(', ', array_slice($reportEntry[7], 0, -1))), array_slice($reportEntry[7], -1)), 'strlen'));
+
+								if (count($reportEntry[7]) > 1) {
+									$studentNames = '<i>'.__('This email relates to the following students: ').$studentNameList.'</i><br/><br/>';
+								} else {
+									$studentNames = '<i>'.__('This email relates to the following student: ').$studentNameList.'</i><br/><br/>';
 								}
 							}
 							$bodyOut = $studentNames.$bodyOut;

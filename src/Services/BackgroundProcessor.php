@@ -118,7 +118,7 @@ class BackgroundProcessor implements ContainerAwareInterface
             switch ($this->getOS()) {
                 case self::OS_WINDOWS:
                     $command = PHP_BINARY.' '.$argsEscaped;
-                    exec(sprintf('%s &', $command, $phpOutput));
+                    exec(sprintf('%s > NUL &', $command));
                     break;
 
                 case self::OS_NIX:
@@ -156,7 +156,7 @@ class BackgroundProcessor implements ContainerAwareInterface
         if (empty($processData) || empty($processKey)) {
             throw new \InvalidArgumentException();
         }
-        
+
         // Validate against the unique key provided in the process data
         if ($processData['key'] != $processKey || $processData['status'] != 'Ready') {
             throw new \RuntimeException('You do not have access to this action.');
@@ -275,7 +275,7 @@ class BackgroundProcessor implements ContainerAwareInterface
                 return false;
             }
         }
-        
+
         return false;
     }
 
@@ -304,7 +304,7 @@ class BackgroundProcessor implements ContainerAwareInterface
                 return false;
             }
         }
-        
+
         return false;
     }
 
@@ -330,7 +330,7 @@ class BackgroundProcessor implements ContainerAwareInterface
     /**
      * Determine the current OS. Used to call the correct system command to start a process.
      *
-     * @return void
+     * @return string
      */
     protected function getOS()
     {

@@ -2,6 +2,7 @@
 namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Database\Result;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -31,11 +32,11 @@ class Excel extends Spreadsheet
         header("Cache-Control: private", false);
     }
     /**
-     * Export with Query
+     * Export with Query. Will print output directly.
      *
      * @version	27th May 2016
      * @since	8th April 2016
-     * @return	string	Export to Browser.
+     * @return	void
      */
     function exportWithQuery($result, $excel_file_name)
     {
@@ -168,16 +169,29 @@ class Excel extends Spreadsheet
     /**
      * Estimate Cell Count in Spreadsheet
      *
-     * @version	14th April 2016
      * @since	14th April 2016
-     * @param	Object	Connection
-     * return	integer	Estimated Cell Count
+     * @version	v23
+     * @param	\Gibbon\Contracts\Database\Connection|\Gibbon\Database\Result $reference Reference for connection or result.
+     *                                                                                   The use of Connection is deprecated.
+     *
+     * @return	int	Estimated Cell Count
      */
-    public function estimateCellCount(Connection $pdo)
+    public function estimateCellCount($reference)
     {
-        if ($pdo->getResult() !== NULL)
-            return $pdo->getResult()->columnCount (  ) * $pdo->getResult()->rowCount ( );
-        return 0 ;
+        if (!is_object($reference) && !($reference instanceof Connection) && !($reference instanceof Result)) {
+            throw new \InvalidArgumentException('Argument must be an object of ' . Connection::class . ' or ' . Result::class);
+        }
+        if ($reference instanceof Result) {
+            return $reference->columnCount() * $reference->rowCount();
+        }
+        /**
+         * @var \Gibbon\Database\Connection $reference
+         */
+        // TODO: remove the direct use of Connection::getResult for it is obsoleted.
+        if ($reference instanceof Connection && ($result = $reference->getResult()) !== NULL) {
+            return $result->columnCount() * $result->rowCount();
+        }
+        return 0;
     }
 
     /**

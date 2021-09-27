@@ -252,14 +252,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             if ($row['type'] == 'Link') {
                 $extension = strrchr($row['content'], '.');
                 if (strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'><img class='resource' style='max-width: 500px' src='".$row['content']."'></a>";
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'><img class='resource' style='max-width: 100%' src='".$row['content']."'></a>";
                 } else {
                     $html = "<a target='_blank' style='font-weight: bold' href='".$row['content']."'>".$row['name'].'</a>';
                 }
             } elseif ($row['type'] == 'File') {
                 $extension = strrchr($row['content'], '.');
                 if (strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) {
-                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'><img class='resource' style='max-width: 500px' src='".$session->get('absoluteURL').'/'.$row['content']."'></a>";
+                    $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'><img class='resource' style='max-width: 100%' src='".$session->get('absoluteURL').'/'.$row['content']."'></a>";
                 } else {
                     $html = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$row['content']."'>".$row['name'].'</a>';
                 }
