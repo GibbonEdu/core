@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         echo __('Report Data');
         echo '</h2>';
 
-        echo '<p>'.__('Click the timetable to copy information to your clipboard.').'</p>';
+        echo '<p>'.__('Click the timetable to view information about the available facilities.').'</p>';
 
         
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonTTID' => $gibbonTTID);
@@ -374,18 +374,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 										$width = (ceil(690 / $daysInWeek) - 20).'px';
 										$height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60).'px';
 										$top = ceil(((strtotime($effectiveStart) - strtotime($dayTimeStart)) + $startPad) / 60).'px';
-										$bg = "rgba(238,238,238,$ttAlpha)";
+										$bg = "bg-gray-200";
 										if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
-											$bg = "rgba(179,239,194,$ttAlpha)";
+											$bg = "bg-green-200";
 										}
 										$style = '';
 										if ($rowPeriods['type'] == 'Lesson') {
 											$style = '';
 										}
-										$dayOut .= "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>";
-										if ($height > 15) {
-											$dayOut .= $rowPeriods['name'].'<br/>';
-										}
+										$availability = [];
 										if ($rowPeriods['type'] == 'Lesson') {
 											$vacancies = '';
 											try {
@@ -454,24 +451,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 											}
 
 											//Explode vacancies into array and sort, get ready to output
-											$vacancies = explode(',', substr($vacancies, 0, -2));
-											natcasesort($vacancies);
-											$vacanciesOutput = '';
-											foreach ($vacancies as $vacancy) {
-												$vacanciesOutput .= $vacancy.', ';
-											}
-											$vacanciesOutput = substr($vacanciesOutput, 0, -2);
-
-											$dayOut .= "<div title='".htmlPrep($vacanciesOutput)."' style='color: black; font-weight: normal; line-height: 0.9' onclick='copyToClipboard(\"".__($day['nameShort'])." ".$rowPeriods['name'].": ".htmlPrep($vacanciesOutput)."\")'>";
-											if (strlen($vacanciesOutput) <= 50) {
-												$dayOut .= $vacanciesOutput;
-											} else {
-												$dayOut .= substr($vacanciesOutput, 0, 50).'...';
-											}
-
-											$dayOut .= '</div>';
+											$availability = array_map('trim', explode(',', substr($vacancies, 0, -2)));
+											natcasesort($availability);
 										}
-										$dayOut .= '</div>';
+
+                                        $dayOut .= "<a class='thickbox hover:bg-blue-200 $bg' href='".$session->get('absoluteURL')."/fullscreen.php?q=/modules/Timetable/report_viewAvailableSpace_view.php&width=800&height=550&".http_build_query(['ids' => $availability, 'date' => $rowPeriods['date'], 'period' => $rowPeriods['name']])."' style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; left: 0; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; color: rgba(136,136,136, $ttAlpha) $style'>";
+										if ($height > 15) {
+											$dayOut .= $rowPeriods['name'].'<br/>';
+										}
+
+                                        $vacanciesOutput = implode(', ', $availability);
+                                        $dayOut .= "<div title='".htmlPrep($vacanciesOutput)."' style='color: black; font-weight: normal; line-height: 0.9'>";
+                                        if (strlen($vacanciesOutput) <= 50) {
+                                            $dayOut .= $vacanciesOutput;
+                                        } else {
+                                            $dayOut .= substr($vacanciesOutput, 0, 50).'...';
+                                        }
+
+                                        $dayOut .= '</div>';
+
+										$dayOut .= '</a>';
 										++$zCount;
 									}
 								}
@@ -511,15 +510,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         }
     }
 }
-
-?>
-
-<script>
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            window.alert("<?php echo __('Copied to clipboard.'); ?>\n\n"+text);
-        }, function(err) {
-            window.alert(text);
-        });
-    }
-</script>

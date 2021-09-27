@@ -51,4 +51,16 @@ class FacilityGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectFacilityInfoByName($gibbonSpaceNameList)
+    {
+        $gibbonSpaceNameList = is_array($gibbonSpaceNameList) ? implode(',', $gibbonSpaceNameList) : $gibbonSpaceNameList;
+
+        $data = ['gibbonSpaceNameList' => $gibbonSpaceNameList];
+        $sql = "SELECT * FROM gibbonSpace 
+                WHERE FIND_IN_SET(name, :gibbonSpaceNameList) 
+                ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
 }
