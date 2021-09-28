@@ -68,7 +68,7 @@ class SessionFactory
         }
 
         // If session guid is not set, fallback to global $guid.
-        $_guid = $config['guid'] ?: $guid;
+        $_guid = $config['guid'] ?? $guid ?? '';
 
         // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
         // which is currently used in many Process pages.

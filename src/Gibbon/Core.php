@@ -193,7 +193,7 @@ class Core
 
         // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
-            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
+            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching', 'sessionHandler', 'sessionEncryptionKey');
         }
     }
 }
