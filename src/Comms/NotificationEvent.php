@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Session;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\NotificationGateway;
 
 /**

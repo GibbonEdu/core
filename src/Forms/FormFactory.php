@@ -19,12 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Layout\Row;
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Element;
-use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Trigger;
-use Gibbon\Tables\DataTable;
+use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * FormFactory
@@ -252,7 +253,7 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, \Gibbon\Session $session)
+    public function createCustomBlocks($name, Session $session)
     {
         return new Input\CustomBlocks($this, $name, $session);
     }

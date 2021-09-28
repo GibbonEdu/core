@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use DateTime;
-use Gibbon\Session;
 use DateTimeImmutable;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Format values based on locale and system settings.

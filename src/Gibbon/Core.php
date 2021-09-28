@@ -38,7 +38,7 @@ class Core
     /**
      * Core classes available to all Gibbon scripts
      * TODO: These need removed & replaced with DI
-     * @var  \Gibbon\Session Session object.
+     * @var  \Gibbon\Contracts\Services\Session Session object.
      */
     public $session;
     public $locale;
