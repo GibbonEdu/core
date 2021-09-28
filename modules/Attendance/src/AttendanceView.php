@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Attendance;
 
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Core;
 use Gibbon\Services\Format;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Attendance display & edit class
@@ -34,11 +35,6 @@ class AttendanceView
      * Gibbon\Contracts\Database\Connection
      */
     protected $pdo;
-
-    /**
-     * Gibbon\session
-     */
-    protected $session;
 
     /**
      * Attendance Types
@@ -57,24 +53,18 @@ class AttendanceView
     protected $currentDate;
     protected $last5SchoolDays = array();
 
-    protected $guid;
-
     /**
      * Constructor
      *
      * @version  3rd May 2016
      * @since    3rd May 2016
-     * @param    Gibbon\session
-     * @param    Gibbon\config
+     * @param    Gibbon\Core
      * @param    Gibbon\Contracts\Database\Connection
      * @return   void
      */
-    public function __construct(\Gibbon\Core $gibbon, Connection $pdo)
+    public function __construct(Core $gibbon, Connection $pdo)
     {
-        $this->session = $gibbon->session;
         $this->pdo = $pdo;
-
-        $this->guid = $gibbon->guid();
 
         // Get attendance codes
         try {
@@ -90,6 +80,9 @@ class AttendanceView
             }
         }
 
+        // Collect the current IDs of the user
+        $this->userRoleIDs = array_filter(array_column($gibbon->session->get('gibbonRoleIDAll'), 0));
+
         // Get the current date
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 
@@ -101,7 +94,7 @@ class AttendanceView
         $this->attendanceReasons = array_merge(array(''), $this->genericReasons);
 
         //Get last 5 school days from currentDate within the last 100
-        $this->last5SchoolDays = getLastNSchoolDays($this->guid, $this->pdo->getConnection(), $currentDate, 5);
+        $this->last5SchoolDays = getLastNSchoolDays($gibbon->guid(), $this->pdo->getConnection(), $currentDate, 5);
     }
 
     public function getAttendanceTypes()
@@ -214,8 +207,6 @@ class AttendanceView
             return $group;
         }, array());
 
-        $dateFormat = $_SESSION[$this->guid]['i18n']['dateFormatPHP'];
-
         $output = '';
         $output .= '<table cellspacing="0" class="historyCalendarMini smallIntBorder ' . $cssClass . '">';
         $output .= '<tr>';
@@ -227,7 +218,7 @@ class AttendanceView
             } else {
                 $date = $this->last5SchoolDays[$i];
                 $currentDay = new \DateTime($date);
-                $link = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=' . $gibbonPersonID . '&currentDate=' . $currentDay->format($dateFormat);
+                $link = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=' . $gibbonPersonID . '&currentDate=' . Format::date($currentDay->format('Y-m-d'));
 
                 if (isset($logs[$date])) {
                     $log = $logs[$date];
@@ -258,14 +249,6 @@ class AttendanceView
 
         $output = '';
 
-        // Collect the current IDs of the user
-        $userRoleIDs = array();
-        foreach ($_SESSION[$this->guid]['gibbonRoleIDAll'] as $role) {
-            if (isset($role[0])) {
-                $userRoleIDs[] = $role[0];
-            }
-        }
-
         $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
         if (!empty($this->attendanceTypes)) {
             foreach ($this->attendanceTypes as $name => $attendanceType) {
@@ -280,7 +263,7 @@ class AttendanceView
                     $rolesAllowed = explode(',', $attendanceType['gibbonRoleIDAll']);
 
                     foreach ($rolesAllowed as $role) {
-                        if (in_array($role, $userRoleIDs)) {
+                        if (in_array($role, $this->userRoleIDs)) {
                             $allowAttendanceType = true;
                         }
                     }
