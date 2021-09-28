@@ -20,45 +20,100 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Session;
 
 use SessionHandlerInterface;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * DatabaseSessionHandler Class
  *
- * @version	v23
- * @since	v23
+ * @version v23
+ * @since   v23
  */
 class DatabaseSessionHandler implements SessionHandlerInterface
 {
-    public function __construct()
+    /**
+     * @var Gibbon\Contracts\Database\Connection
+     */
+    protected $connection;
+
+    /**
+     * @var string
+     */
+    private $key;
+
+    /**
+     * @var bool
+     */
+    private $encrypted;
+
+    public function __construct(Connection $connection, string $key = null)
     {
-        
+        $this->connection = $connection;
+        $this->key = $key;
+        $this->encrypted = !empty($key) && function_exists('openssl_encrypt');
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param string $path
+     * @param string $name
+     * @return bool true for success or false for failure
+     */
     public function open($path, $name)
     {
         return true;
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @return bool true for success or false for failure
+     */
     public function close()
     {
         return true;
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param string $id
+     * @return bool true for success or false for failure
+     */
     public function destroy($id)
     {
 
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param string $id
+     * @return string the session data or an empty string
+     */
     public function read($id)
     {
 
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param string $id
+     * @param string $data
+     * @return bool true for success or false for failure
+     */
     public function write($id, $data)
     {
 
     }
 
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param int $max_lifetime
+     * @return bool true for success or false for failure
+     */
     public function gc($max_lifetime)
     {
 

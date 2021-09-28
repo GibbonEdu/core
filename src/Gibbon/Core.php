@@ -19,8 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
 use Psr\Container\ContainerInterface;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Gibbon Core
@@ -80,6 +82,9 @@ class Core
         if ($this->initialized == true) return;
 
         $db = $container->get('db');
+        
+        $this->session = $container->get('session');
+        Format::setupFromSession($this->session);
 
         if (empty($this->session->get('systemSettingsSet'))) {
             SessionFactory::populateSettings($this->session, $db);
@@ -93,7 +98,7 @@ class Core
         $this->locale->setLocale($this->session->get(array('i18n', 'code')));
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
-        $this->locale->setStringReplacementList($db);
+        $this->locale->setStringReplacementList($this->session, $db);
 
         $this->initialized = true;
     }

@@ -25,20 +25,34 @@ use SessionHandlerInterface;
 /**
  * EncryptedSessionHandler Class
  *
- * @version	v23
- * @since	v23
+ * @version v23
+ * @since   v23
  */
 class EncryptedSessionHandler extends SessionHandler implements SessionHandlerInterface
 {
+    /**
+     * @var string
+     */
     private $key;
+
+    /**
+     * @var bool
+     */
     private $encrypted;
 
-    public function __construct($key = null)
+    public function __construct(string $key = null)
     {
         $this->key = $key;
         $this->encrypted = !empty($key) && function_exists('openssl_encrypt');
     }
 
+    /**
+     * Overrides the SessionHandler read method, with the additional option to handle 
+     * session data encryption.
+     *
+     * @param string $id
+     * @return string the session data or an empty string
+     */
     public function read($id)
     {
         $data = parent::read($id);
@@ -50,6 +64,14 @@ class EncryptedSessionHandler extends SessionHandler implements SessionHandlerIn
         return $data;
     }
 
+    /**
+     * Overrides the SessionHandler write method, with the additional option to handle 
+     * session data encryption.
+     *
+     * @param string $id
+     * @param string $data
+     * @return bool true for success or false for failure
+     */
     public function write($id, $data)
     {
         if ($this->encrypted) {
@@ -60,8 +82,8 @@ class EncryptedSessionHandler extends SessionHandler implements SessionHandlerIn
     }
 
 
-     /**
-     * Decrypt AES 256
+    /**
+    * Decrypt AES 256
     *
     * @param string $edata
     * @param string $password
@@ -74,7 +96,7 @@ class EncryptedSessionHandler extends SessionHandler implements SessionHandlerIn
 
         $rounds = 3; // depends on key length
         $data00 = $password.$salt;
-        $hash = array();
+        $hash = [];
         $hash[0] = hash('sha256', $data00, true);
         $result = $hash[0];
         for ($i = 1; $i < $rounds; $i++) {
@@ -103,8 +125,8 @@ class EncryptedSessionHandler extends SessionHandler implements SessionHandlerIn
         $dx = '';
         // Salt the key(32) and iv(16) = 48
         while (strlen($salted) < 48) {
-        $dx = hash('sha256', $dx.$password.$salt, true);
-        $salted .= $dx;
+            $dx = hash('sha256', $dx.$password.$salt, true);
+            $salted .= $dx;
         }
 
         $key = substr($salted, 0, 32);

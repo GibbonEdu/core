@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Session;
 
 use Gibbon\Session\Session;
-use Gibbon\Session\EncryptedSessionHandler;
+use Psr\Container\ContainerInterface;
 use Gibbon\Session\DatabaseSessionHandler;
+use Gibbon\Session\EncryptedSessionHandler;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 
@@ -34,18 +35,20 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
 class SessionFactory
 {
     /**
-     * Method for creating Session from ContainerInterface and
+     * Method for creating Session from the ContainerInterface and
      * environment variables (i.e. $guid, $_GET, $_POST).
      *
      * @param array $config An array of data from the config file
      *
      * @return \Gibbon\Session\Session The newly created session object.
      */
-    public static function create(array $config = []): SessionInterface {
+    public static function create(ContainerInterface $container): SessionInterface {
         global $guid;
 
-        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
-            $handler = new DatabaseSessionHandler($config['sessionEncryptionKey'] ?? null);
+        $config = $container->get('config')->getConfig();
+
+        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database' && $container->has(Connection::class)) {
+            $handler = new DatabaseSessionHandler($container->get(Connection::class), $config['sessionEncryptionKey'] ?? null);
         } else {
             $handler = new EncryptedSessionHandler($config['sessionEncryptionKey'] ?? null);
         }
@@ -82,6 +85,13 @@ class SessionFactory
         return new Session($_guid, $address, $module, $action);
     }
 
+    /**
+     * Populates the session with the essential System settings, required for both
+     * logged in users and anonymous sessions.
+     *
+     * @param Session $session
+     * @param Connection $db
+     */
     public static function populateSettings(Session $session, Connection $db)
     {
         // System settings from gibbonSetting
@@ -103,6 +113,16 @@ class SessionFactory
         }
     }
 
+    /**
+     * Populates the session with data about a specific logged in user, called after 
+     * logging in successfully.
+     *
+     * @param Session $session
+     * @param Connection $db
+     * @param string $username
+     * @param string $userData
+     * @return void
+     */
     public static function populateUser(Session $session, Connection $db, $username, $userData)
     {
         $session->set('username', $username);

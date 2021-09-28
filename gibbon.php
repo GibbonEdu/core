@@ -17,9 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\View\Page;
-use Gibbon\View\View;
-
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
     $lastError = error_get_last();
@@ -60,17 +57,40 @@ $container->addServiceProvider(new Gibbon\Services\GoogleServiceProvider());
 // Globals for backwards compatibility
 $gibbon = $container->get('config');
 $gibbon->locale = $container->get('locale');
-$gibbon->session = $container->get('session');
-$session = $container->get('session');
 $guid = $gibbon->getConfig('guid');
 $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
-if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
-    header("Location: ./installer/install.php");
+if (!$gibbon->isInstalled()) {
+    if (!$gibbon->isInstalling()) {
+        header("Location: ./installer/install.php");
+    }
     exit;
 }
+
+// Initialize the database connection
+$mysqlConnector = new Gibbon\Database\MySqlConnector();
+$pdo = $mysqlConnector->connect($gibbon->getConfig());
+
+// Display a static error message for database connections after install. 
+if (!$pdo) {
+    $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
+    include __DIR__.'/error.php';
+    exit;
+}
+
+// Add the database to the container
+$connection2 = $pdo->getConnection();
+$container->add('db', $pdo);
+$container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+
+// Initialize core
+$gibbon->initializeCore($container);
+
+// Globals for backwards compatibility
+$session = $container->get('session');
+$container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
 // Autoload the current module namespace
 if (!empty($gibbon->session->get('module'))) {
@@ -80,30 +100,4 @@ if (!empty($gibbon->session->get('module'))) {
     // Temporary backwards-compatibility for external modules (Query Builder)
     $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module'));
     $autoloader->register(true);
-}
-
-// Initialize using the database connection
-if ($gibbon->isInstalled() == true) {
-    
-    $mysqlConnector = new Gibbon\Database\MySqlConnector();
-    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
-        $container->add('db', $pdo);
-        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
-        $connection2 = $pdo->getConnection();
-
-        $gibbon->initializeCore($container);
-    } else {
-        // We need to handle failed database connections after install. Display an error if no connection 
-        // can be established. Needs a specific error page once header/footer is split out of index.
-        if (!$gibbon->isInstalling()) {
-            $page = $container->get(Page::class)->setDefaults(__DIR__);
-            $page->writeFromTemplate('error.twig.html', [
-                'error' => sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', ''),
-                'message' => ' ',
-            ]);
-            
-            echo $page->render('index.twig.html');
-            exit;
-        }
-    }
 }
