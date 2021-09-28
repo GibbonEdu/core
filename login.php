@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 
@@ -211,10 +212,11 @@ else {
                         }
                     }
 
-                    //USER EXISTS, SET SESSION VARIABLES
-                    $gibbon->session->createUserSession($username, $row);
+                    // USER EXISTS, SET SESSION VARIABLES
+                    SessionFactory::populateUser($session, $pdo, $username, $row);
 
                     // Set these from local values
+                    // TODO: REMOVE THIS!
                     $gibbon->session->set('passwordStrong', $passwordStrong);
                     $gibbon->session->set('passwordStrongSalt', $salt);
                     $gibbon->session->set('googleAPIAccessToken', null);

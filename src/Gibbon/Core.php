@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Session\SessionFactory;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -80,11 +81,8 @@ class Core
 
         $db = $container->get('db');
 
-        $this->session->setDatabaseConnection($db);
-
         if (empty($this->session->get('systemSettingsSet'))) {
-            $this->session->loadSystemSettings($db);
-            $this->session->loadLanguageSettings($db);
+            SessionFactory::populateSettings($this->session, $db);
         }
 
         $installType = $this->session->get('installType');

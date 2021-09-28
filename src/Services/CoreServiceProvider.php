@@ -21,18 +21,20 @@ namespace Gibbon\Services;
 
 use Gibbon\Core;
 use Gibbon\Locale;
-use Gibbon\Session;
 use Gibbon\Comms\SMS;
 use Gibbon\View\Page;
 use Gibbon\View\View;
 use Gibbon\Comms\Mailer;
+use Gibbon\Session\Session;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Services\Payment\Payment;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
+use Gibbon\Contracts\Services\Session as SessionInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -90,10 +92,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
-        $container->share('session', Session::create($container));
+        $container->share('session', SessionFactory::create($container->get('config')->getConfig()));
         $container->share('locale', new Locale($this->absolutePath, $container->get('session')));
 
-        $container->share(\Gibbon\Contracts\Services\Session::class, $container->get('session'));
+        $container->share(SessionInterface::class, $container->get('session'));
 
         Format::setupFromSession($container->get('session'));
     }
