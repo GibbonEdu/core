@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
         $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
         //Update string list in session & clear cache to force reload
-        $gibbon->locale->setStringReplacementList($pdo, true);
+        $gibbon->locale->setStringReplacementList($session, $pdo, true);
         $session->set('pageLoads', null);
 
         //Success 0

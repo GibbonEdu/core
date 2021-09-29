@@ -10,6 +10,7 @@ file that was distributed with this source code.
 namespace Gibbon;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 
 /**
@@ -36,7 +37,7 @@ class FileUploaderTest extends TestCase
         $this->mockPDO->method('select')
                       ->willReturn($mockResults);
 
-        // Create a stub for the Gibbon\session class
+        // Create a stub for the Gibbon\Contracts\Services\Session interface
         $this->mockSession = $this->createMock(Session::class);
         $this->mockSession->method('get')
                           ->willReturn(__DIR__);
