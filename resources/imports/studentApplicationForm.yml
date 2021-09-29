@@ -103,6 +103,10 @@ table:
         name: "Parent 1 Preferred Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
+    parent1OfficialName:
+        name: "Parent 1 Official Name"
+        desc: "Full name as shown in ID documents."
+        args: {filter: string, required: true}
     parent1gender:
         name: "Parent 1 Gender"
         desc: ""
@@ -156,6 +160,10 @@ table:
         name: "Parent 2 Preferred Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
+    parent2OfficialName:
+        name: "Parent 2 Official Name"
+        desc: "Full name as shown in ID documents."
+        args: {filter: string, required: true}
     parent2gender:
         name: "Parent 2 Gender"
         desc: ""
