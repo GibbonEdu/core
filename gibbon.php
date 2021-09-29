@@ -62,33 +62,35 @@ $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
-if (!$gibbon->isInstalled()) {
-    if (!$gibbon->isInstalling()) {
-        header("Location: ./installer/install.php");
-    }
+if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
+    header("Location: ./installer/install.php");
     exit;
 }
 
 // Initialize the database connection
-$mysqlConnector = new Gibbon\Database\MySqlConnector();
-$pdo = $mysqlConnector->connect($gibbon->getConfig());
+if ($gibbon->isInstalled()) {
+    $mysqlConnector = new Gibbon\Database\MySqlConnector();
+    
+    // Display a static error message for database connections after install. 
+    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+        // Add the database to the container
+        $connection2 = $pdo->getConnection();
+        $container->add('db', $pdo);
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
 
-// Display a static error message for database connections after install. 
-if (!$pdo) {
-    $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
-    include __DIR__.'/error.php';
-    exit;
+        // Initialize core
+        $gibbon->initializeCore($container);
+    } else {
+        if (!$gibbon->isInstalling()) {
+            $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
+            include __DIR__.'/error.php';
+            exit;
+        }
+    }
 }
 
-// Add the database to the container
-$connection2 = $pdo->getConnection();
-$container->add('db', $pdo);
-$container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
-
-// Initialize core
-$gibbon->initializeCore($container);
-
 // Globals for backwards compatibility
+$gibbon->session = $container->get('session');
 $session = $container->get('session');
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
 

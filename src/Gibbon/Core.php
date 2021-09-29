@@ -82,8 +82,8 @@ class Core
         if ($this->initialized == true) return;
 
         $db = $container->get('db');
-        
         $this->session = $container->get('session');
+        
         Format::setupFromSession($this->session);
 
         if (empty($this->session->get('systemSettingsSet'))) {
@@ -139,15 +139,15 @@ class Core
     }
 
     /**
-     * Get a config value by name, othwerwise return the config array.
-     * @param string $name
+     * Get a config value by name, otherwise return the config array.
+     * @param string|null $name
      * 
      * @return mixed|array
      */
     public function getConfig($name = null)
     {
-        return !is_null($name) && isset($this->config[$name])
-            ? $this->config[$name]
+        return !is_null($name)
+            ? ($this->config[$name] ?? '')
             : $this->config;
     }
 
@@ -195,6 +195,8 @@ class Core
         $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';
+        if (!isset($sessionHandler)) $sessionHandler = 'default';
+        if (!isset($sessionEncryptionKey)) $sessionEncryptionKey = '';
 
         // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
