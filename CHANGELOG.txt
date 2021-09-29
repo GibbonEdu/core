@@ -53,6 +53,7 @@ v23.0.00
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities
         System Admin: fixed PHP notice in importer when skipping serialized fields
+        System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
 
