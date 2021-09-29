@@ -248,11 +248,16 @@ else {
                     }
 
                     //Make best effort to set IP address and other details, but no need to error check etc.
-                    
-                        $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
-                        $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
+                    $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+
+                    // Update current session to attach it to this user
+                    $data = ['gibbonSessionID' => session_id(), 'gibbonPersonID' => $row['gibbonPersonID']];
+                    $sql = "UPDATE gibbonSession SET gibbonPersonID=:gibbonPersonID WHERE gibbonSessionID=:gibbonSessionID";
+
+                    $pdo->update($sql, $data);
 
                     if (isset($_GET['q'])) {
                         if ($_GET['q'] == '/publicRegistration.php') {
