@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
                 }
 
                 //Update string list in session & clear cache to force reload
-                $gibbon->locale->setStringReplacementList($pdo, true);
+                $gibbon->locale->setStringReplacementList($session, $pdo, true);
                 $session->set('pageLoads', null);
 
                 $URL .= '&return=success0';

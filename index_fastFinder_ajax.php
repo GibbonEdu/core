@@ -18,11 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
+
+use Gibbon\Domain\System\ActionGateway;
+
 include './gibbon.php';
 
-$themeName = $gibbon->session->get('gibbonThemeName') ?? 'Default';
+$themeName = $session->get('gibbonThemeName') ?? 'Default';
 
-if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
+if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     die( __('Your request failed because you do not have access to this action.') );
 } else {
 
@@ -51,11 +54,11 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
 
     // ACTIONS
     // Grab the cached set of translated actions from the session
-    $actions = $gibbon->session->get('fastFinderActions');
-
-    if (empty($actions)) {
-        $actions = $gibbon->session->cacheFastFinderActions($gibbon->session->get('gibbonRoleIDCurrent'));
-        $actions[] = array('');
+    if (!$session->has('fastFinderActions')) {
+        $actions = $container->get(ActionGateway::class)->getFastFinderActions($session->get('gibbonRoleIDCurrent'));
+        $session->set('fastFinderActions', $actions);
+    } else {
+        $actions = $session->get('fastFinderActions');
     }
     
     if (!empty($actions) && is_array($actions)) {
@@ -79,7 +82,7 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
     if ($classIsAccessible) {
         try {
             if ($highestActionClass == 'Lesson Planner_viewEditAllClasses' or $highestActionClass == 'Lesson Planner_viewAllEditMyClasses') {
-                $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $gibbon->session->get('gibbonSchoolYearID') );
+                $data = array( 'search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID2' => $session->get('gibbonSchoolYearID') );
                 $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClass
                         JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
@@ -87,7 +90,7 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
                         AND (gibbonCourse.name LIKE :search OR CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) LIKE :search)
                         ORDER BY name";
             } else {
-                $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID3' => $gibbon->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID') );
+                $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID3' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID') );
                 $sql = "SELECT gibbonCourseClass.gibbonCourseClassID AS id, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name, NULL as type
                         FROM gibbonCourseClassPerson
                         JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
@@ -132,11 +135,11 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
     // STUDENTS
     if ($studentIsAccessible == true) {
 
-        $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d') );
+        $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d') );
 
         // Allow parents to search students in any family they belong to
         if ($highestActionStudent == 'View Student Profile_myChildren') {
-            $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
+            $data['gibbonPersonID'] = $session->get('gibbonPersonID');
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
                     (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.username, ')')
                         WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')
@@ -152,7 +155,7 @@ if (!isset($_SESSION[$guid]) or !$gibbon->session->exists('gibbonPersonID')) {
         }
         // Allow individuals to only search themselves
         else if ($highestActionStudent == 'View Student Profile_my') {
-            $data['gibbonPersonID'] = $gibbon->session->get('gibbonPersonID');
+            $data['gibbonPersonID'] = $session->get('gibbonPersonID');
             $sql = "SELECT gibbonPerson.gibbonPersonID AS id,
                     (CASE WHEN gibbonPerson.username LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.username, ')')
                         WHEN gibbonPerson.studentID LIKE :search THEN concat(surname, ', ', preferredName, ' (', gibbonFormGroup.name, ', ', gibbonPerson.studentID, ')')

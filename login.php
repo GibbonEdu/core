@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 
@@ -211,10 +212,11 @@ else {
                         }
                     }
 
-                    //USER EXISTS, SET SESSION VARIABLES
-                    $gibbon->session->createUserSession($username, $row);
+                    // USER EXISTS, SET SESSION VARIABLES
+                    SessionFactory::populateUser($session, $pdo, $username, $row);
 
                     // Set these from local values
+                    // TODO: REMOVE THIS!
                     $gibbon->session->set('passwordStrong', $passwordStrong);
                     $gibbon->session->set('passwordStrongSalt', $salt);
                     $gibbon->session->set('googleAPIAccessToken', null);
@@ -246,11 +248,16 @@ else {
                     }
 
                     //Make best effort to set IP address and other details, but no need to error check etc.
-                    
-                        $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
-                        $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
+                    $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+
+                    // Update current session to attach it to this user
+                    $data = ['gibbonSessionID' => session_id(), 'gibbonPersonID' => $row['gibbonPersonID']];
+                    $sql = "UPDATE gibbonSession SET gibbonPersonID=:gibbonPersonID WHERE gibbonSessionID=:gibbonSessionID";
+
+                    $pdo->update($sql, $data);
 
                     if (isset($_GET['q'])) {
                         if ($_GET['q'] == '/publicRegistration.php') {

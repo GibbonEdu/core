@@ -25,8 +25,14 @@ if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
     $URL = './index.php?timeout=true';
 }
 
-unset($_SESSION[$guid]['googleAPIAccessToken']);
-unset($_SESSION[$guid]['gplusuer']);
+// Update current session to attach it to this user
+$data = ['gibbonSessionID' => session_id()];
+$sql = "UPDATE gibbonSession SET gibbonPersonID=NULL WHERE gibbonSessionID=:gibbonSessionID";
+
+$pdo->update($sql, $data);
+
+$session->forget('googleAPIAccessToken');
+$session->forget('gplusuer');
 
 session_destroy();
 

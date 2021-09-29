@@ -54,8 +54,8 @@ if (empty(intval($role))) {
         //Make the switch
         $gibbon->session->set('gibbonRoleIDCurrent', $role);
 
-        // Reload cached FF actions
-        $gibbon->session->cacheFastFinderActions($role);
+        // Clear cached FF actions
+        $gibbon->session->forget('fastFinderActions');
 
         // Clear the main menu from session cache
         $gibbon->session->forget('menuMainItems');

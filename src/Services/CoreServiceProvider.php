@@ -21,18 +21,20 @@ namespace Gibbon\Services;
 
 use Gibbon\Core;
 use Gibbon\Locale;
-use Gibbon\Session;
 use Gibbon\Comms\SMS;
 use Gibbon\View\Page;
 use Gibbon\View\View;
 use Gibbon\Comms\Mailer;
+use Gibbon\Session\Session;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Services\Payment\Payment;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
+use Gibbon\Contracts\Services\Session as SessionInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -90,12 +92,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
-        $container->share('session', Session::create($container));
-        $container->share('locale', new Locale($this->absolutePath, $container->get('session')));
-
-        $container->share(\Gibbon\Contracts\Services\Session::class, $container->get('session'));
-
-        Format::setupFromSession($container->get('session'));
+        $container->share('locale', new Locale($this->absolutePath));
     }
 
     /**
@@ -108,7 +105,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     {
         $container = $this->getLeagueContainer();
         $absolutePath = $this->absolutePath;
-        $session = $container->get('session');
 
         // Logging removed until properly setup & tested
 
@@ -124,7 +120,12 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         // $pdo->setLogger($container->get('mysql_logger'));
 
-        $container->share('twig', function () use ($absolutePath, $session) {
+        $container->share('session', function () {
+            return SessionFactory::create($this->getContainer());
+        });
+
+        $container->share('twig', function () use ($absolutePath) {
+            $session = $this->getLeagueContainer()->get('session');
             $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
 
             // Add the theme templates folder so it can override core templates
@@ -178,7 +179,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $twig;
         });
 
-        $container->share('action', function () use ($session) {
+        $container->share('action', function () {
+            $session = $this->getLeagueContainer()->get('session');
             $data = [
                 'actionName'   => '%'.$session->get('action').'%',
                 'moduleName'   => $session->get('module'),
@@ -197,7 +199,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $actionData ? $actionData : null;
         });
 
-        $container->share('module', function () use ($session) {
+        $container->share('module', function () {
+            $session = $this->getLeagueContainer()->get('session');
             $data = ['moduleName' => $session->get('module')];
             $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName AND active='Y'";
             $moduleData = $this->getContainer()->get('db')->selectOne($sql, $data);
@@ -205,7 +208,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $moduleData ? new Module($moduleData) : null;
         });
 
-        $container->share('theme', function () use ($session) {
+        $container->share('theme', function () {
+            $session = $this->getLeagueContainer()->get('session');
             if ($session->has('gibbonThemeIDPersonal')) {
                 $data = ['gibbonThemeID' => $session->get('gibbonThemeIDPersonal')];
                 $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
@@ -222,7 +226,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $themeData ? new Theme($themeData) : null;
         });
 
-        $container->share('page', function () use ($session, $container) {
+        $container->share('page', function () use ($container) {
+            $session = $this->getLeagueContainer()->get('session');
+            
             $pageTitle = $session->get('organisationNameShort').' - '.$session->get('systemName');
             if ($session->has('module')) {
                 $pageTitle .= ' - '.__($session->get('module'));
@@ -246,7 +252,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return (new Mailer($container->get('session')))->setView($view);
         });
 
-        $container->add(SMSInterface::class, function () use ($session, $container) {
+        $container->add(SMSInterface::class, function () use ($container) {
             $connection2 = $container->get('db')->getConnection();
             $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 

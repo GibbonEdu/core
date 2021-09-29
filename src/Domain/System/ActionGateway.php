@@ -51,6 +51,29 @@ class ActionGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getFastFinderActions($gibbonRoleIDCurrent)
+    {
+        $data = ['gibbonRoleID' => $gibbonRoleIDCurrent];
+        $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, gibbonModule.type, gibbonModule.name AS module
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                WHERE active='Y'
+                AND menuShow='Y'
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID
+                ORDER BY name";
+
+        $actions = $this->db()->select($sql, $data)->fetchAll();
+
+        foreach ($actions as $index => $action) {
+            $actions[$index]['name'] = __($action['name']);
+        }
+
+        $actions[] = ['name' => ''];
+
+        return $actions;
+    }
     
     public function insertPermissionByAction($gibbonActionID, $gibbonRoleID)
     {
