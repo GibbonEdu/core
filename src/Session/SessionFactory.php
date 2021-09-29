@@ -50,7 +50,7 @@ class SessionFactory
         if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database' && $container->has(Connection::class)) {
             $handler = new DatabaseSessionHandler($container->get(Connection::class), $config['sessionEncryptionKey'] ?? null);
         } else {
-            $handler = new EncryptedSessionHandler($config['sessionEncryptionKey'] ?? null);
+            $handler = new NativeSessionHandler($config['sessionEncryptionKey'] ?? null);
         }
 
         // Set the handler for the session, enabling non-default
