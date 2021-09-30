@@ -28,7 +28,9 @@ require getcwd().'/../gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) {
+$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     setCurrentSchoolYear($guid, $connection2);
