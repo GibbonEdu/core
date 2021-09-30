@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include './gibbon.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
+$URL = $session->get('absoluteURL').'/index.php?q=notifications.php';
 
 try {
-    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = 'DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID';
     $result = $connection2->prepare($sql);
     $result->execute($data);

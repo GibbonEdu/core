@@ -51,7 +51,7 @@ else {
 
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $notificationSender = new NotificationSender($notificationGateway, $session);
 
     // Raise a new notification event
     $event = new NotificationEvent('Library', 'Overdue Loan Items');

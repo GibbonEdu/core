@@ -23,7 +23,7 @@ use Gibbon\Domain\System\AlarmGateway;
 include './gibbon.php';
 
 $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = $session->get('absoluteURL').'/index.php';
 
 //Proceed!
 if (empty($gibbonAlarmID)) {
@@ -36,11 +36,11 @@ if (empty($gibbonAlarmID)) {
 
     if (!empty($alarm)) {
         //Check confirmation of alarm
-        $alarmConfirm =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbon->session->get('gibbonPersonID'));
+        $alarmConfirm =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
 
         if (empty($alarmConfirm)) {
             //Insert confirmation
-            $dataConfirm =['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s')];
+            $dataConfirm =['gibbonAlarmID' => $alarm['gibbonAlarmID'], 'gibbonPersonID' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s')];
             $alarmGateway->insertAlarmConfirm($dataConfirm);
         }
     }
