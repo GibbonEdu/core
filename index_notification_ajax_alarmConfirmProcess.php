@@ -24,7 +24,7 @@ include './gibbon.php';
 
 $gibbonAlarmID = $_GET['gibbonAlarmID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = $session->get('absoluteURL').'/index.php';
 
 //Proceed!
 if (empty($gibbonAlarmID) or empty($gibbonPersonID)) {

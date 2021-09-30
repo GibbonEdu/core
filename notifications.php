@@ -21,7 +21,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
-if (!$gibbon->session->exists('username')) {
+if (!$session->exists('username')) {
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
@@ -29,7 +29,7 @@ if (!$gibbon->session->exists('username')) {
     $page->breadcrumbs->add(__('Notifications'));
 
     echo "<div class='linkTop'>";
-    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$gibbon->session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/garbage.png'></a>";
+    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/garbage.png'></a>";
     echo '</div>';
 
     // Notifications
@@ -38,7 +38,7 @@ if (!$gibbon->session->exists('username')) {
         ->sortBy('timestamp', 'DESC')
         ->fromPOST('newNotifications');
 
-    $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'));
+    $notifications = $notificationGateway->queryNotificationsByPerson($criteria, $session->get('gibbonPersonID'));
 
     $table = DataTable::createPaginated('newNotifications', $criteria);
 
@@ -69,7 +69,7 @@ if (!$gibbon->session->exists('username')) {
         ->sortBy('timestamp', 'DESC')
         ->fromPOST('archivedNotifications');
 
-    $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $gibbon->session->get('gibbonPersonID'), 'Archived');
+    $archivedNotifications = $notificationGateway->queryNotificationsByPerson($criteria, $session->get('gibbonPersonID'), 'Archived');
 
     $table = DataTable::createPaginated('archivedNotifications', $criteria);
 

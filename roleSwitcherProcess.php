@@ -24,7 +24,7 @@ $URL = './index.php';
 $role = $_GET['gibbonRoleID'] ?? '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
 
-$gibbon->session->set('pageLoads', null);
+$session->set('pageLoads', null);
 
 //Check for parameter
 if (empty(intval($role))) {
@@ -34,7 +34,7 @@ if (empty(intval($role))) {
 } else {
     //Check for access to role
     try {
-        $data = array('username' => $gibbon->session->get('username'), 'gibbonRoleID' => $role);
+        $data = array('username' => $session->get('username'), 'gibbonRoleID' => $role);
         $sql = 'SELECT gibbonPerson.gibbonPersonID
                 FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                 WHERE (gibbonPerson.username=:username) AND gibbonRole.gibbonRoleID=:gibbonRoleID';
@@ -52,13 +52,13 @@ if (empty(intval($role))) {
         exit;
     } else {
         //Make the switch
-        $gibbon->session->set('gibbonRoleIDCurrent', $role);
+        $session->set('gibbonRoleIDCurrent', $role);
 
         // Clear cached FF actions
-        $gibbon->session->forget('fastFinderActions');
+        $session->forget('fastFinderActions');
 
         // Clear the main menu from session cache
-        $gibbon->session->forget('menuMainItems');
+        $session->forget('menuMainItems');
 
         $URL .= '?return=success0';
         header("Location: {$URL}");

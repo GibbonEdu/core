@@ -49,7 +49,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
     // Initialize the notification sender & gateway objects
     $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $notificationSender = new NotificationSender($notificationGateway, $session);
 
     //Get settings
     $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
-if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->session->exists('gibbonSchoolYearName') == false) {
+if ($session->exists('gibbonAcademicYearID') == false or $session->exists('gibbonSchoolYearName') == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
 
@@ -28,15 +28,15 @@ if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->sessio
 $password = $_POST['password'] ?? '';
 $passwordNew = $_POST['passwordNew'] ?? '';
 $passwordConfirm = $_POST['passwordConfirm'] ?? '';
-$forceReset = $gibbon->session->get('passwordForceReset');
+$forceReset = $session->get('passwordForceReset');
 
 if ($forceReset != 'Y') {
     $forceReset = 'N';
-    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
+    $URLSuccess = $session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=N";
 } else {
-    $URLSuccess = $gibbon->session->get('absoluteURL')."/index.php?forceReset=Y";
+    $URLSuccess = $session->get('absoluteURL')."/index.php?forceReset=Y";
 }
-$URL = $gibbon->session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=".$forceReset;
+$URL = $session->get('absoluteURL')."/index.php?q=preferences.php&forceReset=".$forceReset;
 
 //Check passwords are not blank
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
@@ -61,7 +61,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                 header("Location: {$URL}");
             } else {
                 //Check current password
-                if (hash('sha256', $gibbon->session->get('passwordStrongSalt').$password) != $gibbon->session->get('passwordStrong')) {
+                if (hash('sha256', $session->get('passwordStrongSalt').$password) != $session->get('passwordStrong')) {
                     $URL .= '&return=error3';
                     header("Location: {$URL}");
                 } else {
@@ -69,7 +69,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                     $salt = getSalt();
                     $passwordStrong = hash('sha256', $salt.$passwordNew);
                     try {
-                        $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $gibbon->session->get('username'));
+                        $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $session->get('username'));
                         $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -83,7 +83,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                     if ($forceReset == 'Y') {
                         //Update passwordForceReset field
                         try {
-                            $data = array('username' => $gibbon->session->get('username'));
+                            $data = array('username' => $session->get('username'));
                             $sql = "UPDATE gibbonPerson SET passwordForceReset='N' WHERE username=:username";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -92,18 +92,18 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                             header("Location: {$URL}");
                             exit();
                         }
-                        $gibbon->session->set('passwordForceReset', 'N');
-                        $gibbon->session->set('passwordStrongSalt', $salt);
-                        $gibbon->session->set('passwordStrong', $passwordStrong);
-                        $gibbon->session->set('pageLoads', null);
+                        $session->set('passwordForceReset', 'N');
+                        $session->set('passwordStrongSalt', $salt);
+                        $session->set('passwordStrong', $passwordStrong);
+                        $session->set('pageLoads', null);
                         $URLSuccess .= '&return=successa';
                         header("Location: {$URLSuccess}");
                         exit() ;
                     }
 
-                    $gibbon->session->set('passwordStrongSalt', $salt);
-                    $gibbon->session->set('passwordStrong', $passwordStrong);
-                    $gibbon->session->set('pageLoads', null);
+                    $session->set('passwordStrongSalt', $salt);
+                    $session->set('passwordStrong', $passwordStrong);
+                    $session->set('pageLoads', null);
                     $URLSuccess .= '&return=success0';
                     header("Location: {$URLSuccess}");
                 }
