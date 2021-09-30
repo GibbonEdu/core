@@ -103,7 +103,7 @@ table:
         name: "Parent 1 Preferred Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
-    parent1OfficialName:
+    parent1officialName:
         name: "Parent 1 Official Name"
         desc: "Full name as shown in ID documents."
         args: {filter: string, required: true}
@@ -160,7 +160,7 @@ table:
         name: "Parent 2 Preferred Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
-    parent2OfficialName:
+    parent2officialName:
         name: "Parent 2 Official Name"
         desc: "Full name as shown in ID documents."
         args: {filter: string, required: true}
