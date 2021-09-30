@@ -33,7 +33,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-if (!isCommandLineInterface()) {
+$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+
+if (!isCommandLineInterface() OR (!empty($remoteCLIKey) AND $remoteCLIKey != $remoteCLIKeyInput)) {
     echo __('This script cannot be run from a browser, only via CLI.');
     return;
 }
