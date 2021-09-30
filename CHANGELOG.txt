@@ -50,6 +50,7 @@ v23.0.00
         System: fixed phone number format for numbers 10 digits or greater
         Activities: fixed duplicate entries in Activity Choices by Student
         Messenger: fixed duplicate student names when using Individual Naming
+        Reports: fixed Student Info template borders when no image is present
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities
         Students: fixed missing Official Name fields for parents in Student Application import
