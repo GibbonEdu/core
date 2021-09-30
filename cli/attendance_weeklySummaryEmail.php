@@ -38,7 +38,7 @@ if (!isCommandLineInterface()) {
     $attendance = new AttendanceView($gibbon, $pdo);
 
     $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-    $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
+    $firstDayOfTheWeek = $session->get('firstDayOfTheWeek');
     $dateFormat = $session->get('i18n')['dateFormat'];
 
     $dateEnd = new DateTime();
@@ -48,7 +48,7 @@ if (!isCommandLineInterface()) {
     $data = array(
         'dateStart' => $dateStart->format('Y-m-d'),
         'dateEnd' => $dateEnd->format('Y-m-d'),
-        'gibbonSchoolYearID' => $gibbon->session->get('gibbonSchoolYearID')
+        'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')
     );
     $sql = "SELECT gibbonFormGroup.nameShort as formGroupName, gibbonYearGroup.gibbonYearGroupID, gibbonAttendanceLogPerson.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonCourse.nameShort as courseName, gibbonCourseClass.nameShort as className, gibbonCourseClass.gibbonCourseClassID
             FROM gibbonAttendanceLogPerson
@@ -159,7 +159,7 @@ if (!isCommandLineInterface()) {
     if (!empty($reportByYearGroup)) {
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+        $notificationSender = new NotificationSender($notificationGateway, $session);
 
         $reportHeading = '<h3>'.__('Weekly Attendance Summary').': '.$dateStart->format('M j').' - '.$dateEnd->format('M j').'</h3>';
 

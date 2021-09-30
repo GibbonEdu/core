@@ -150,7 +150,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+        $notificationSender = new NotificationSender($notificationGateway, $session);
 
         // Raise a new notification event
         $event = new NotificationEvent('Attendance', 'Daily Attendance Summary');

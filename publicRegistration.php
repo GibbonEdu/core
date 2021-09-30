@@ -26,7 +26,7 @@ include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
 
-if ($gibbon->session->exists('username') == false) {
+if ($session->exists('username') == false) {
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
@@ -38,7 +38,7 @@ if ($proceed == false) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add($gibbon->session->get('organisationNameShort').' '.__('Public Registration'));
+    $page->breadcrumbs->add($session->get('organisationNameShort').' '.__('Public Registration'));
 
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
     $allowedDomains = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains');
@@ -63,9 +63,9 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('publicRegistration', $gibbon->session->get('absoluteURL').'/publicRegistrationProcess.php');
+    $form = Form::create('publicRegistration', $session->get('absoluteURL').'/publicRegistrationProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Account Details'));
 
@@ -105,7 +105,7 @@ if ($proceed == false) {
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($gibbon->session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dob')->required();
 
     $row = $form->addRow();

@@ -62,7 +62,7 @@ $mail->SMTPKeepAlive = true;
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
-$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
 // Setup reusable gateways and criteria
 $userGateway = $container->get(UserGateway::class);
@@ -197,7 +197,7 @@ $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.p
 $event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $gibbon->session);
+$event->sendNotifications($pdo, $session);
 
 
 // Output the result to terminal

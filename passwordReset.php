@@ -30,7 +30,7 @@ if (isset($_GET['step']) and $_GET['step'] == 2) {
 if ($step == 1) {
     ?>
     <p>
-        <?php echo sprintf(__('Enter your %1$s username, or the email address you have listed in the system, and press submit: a unique password reset link will be emailed to you.'), $gibbon->session->get('systemName')); ?>
+        <?php echo sprintf(__('Enter your %1$s username, or the email address you have listed in the system, and press submit: a unique password reset link will be emailed to you.'), $session->get('systemName')); ?>
     </p>
     <?php
     $returns = array();
@@ -45,9 +45,9 @@ if ($step == 1) {
     $returns['success0'] = __('Password reset request successfully initiated, please check your email.');
     $page->return->addReturns($returns);
 
-    $form = Form::create('action', $gibbon->session->get('absoluteURL').'/passwordResetProcess.php?step=1');
+    $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?step=1');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addLabel('email', __('Username/Email'));
@@ -85,10 +85,10 @@ else {
         echo __('Your reset request is valid: you may proceed.');
         echo '</div>';
 
-        $form = Form::create('action', $gibbon->session->get('absoluteURL')."/passwordResetProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key");
+        $form = Form::create('action', $session->get('absoluteURL')."/passwordResetProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key");
 
         $form->setClass('smallIntBorder fullWidth');
-        $form->addHiddenValue('address', $gibbon->session->get('address'));
+        $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading(__('Reset Password'));
 

@@ -108,7 +108,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
     $event->addRecipient($session->get('organisationAdministrator'));
 
     // Send all notifications
-    $sendReport = $event->sendNotifications($pdo, $gibbon->session);
+    $sendReport = $event->sendNotifications($pdo, $session);
 
     // Output the result to terminal
     echo sprintf('Sent %1$s notifications: %2$s inserts, %3$s updates, %4$s emails sent, %5$s emails failed.', $sendReport['count'], $sendReport['inserts'], $sendReport['updates'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

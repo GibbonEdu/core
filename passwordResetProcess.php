@@ -34,8 +34,8 @@ $_POST = $validator->sanitize($_POST);
 $input = $_GET['input'] ?? ($_POST['email'] ?? '');
 $step = $_GET['step'];
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=passwordReset.php';
-$URLSuccess1 = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = $session->get('absoluteURL').'/index.php?q=passwordReset.php';
+$URLSuccess1 = $session->get('absoluteURL').'/index.php';
 
 if ($input == '' or ($step != 1 and $step != 2)) {
     $URL = $URL.'&return=error0';
@@ -108,16 +108,16 @@ else {
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
             //Send email
-            $subject = $gibbon->session->get('organisationNameShort').' '.__('Gibbon Password Reset');
+            $subject = $session->get('organisationNameShort').' '.__('Gibbon Password Reset');
             $body = sprintf(__('A password reset request has been initiated for account %1$s, which is registered to this email address.%2$sIf you did not initiate this request, please ignore this email.%2$sIf you do wish to reset your password, please use the link below to access the reset form:%2$s%3$s%2$s%4$s'), $username, "\n\n", '', '');
 
             $mail = $container->get(Mailer::class);
             $mail->AddAddress($email);
 
-            if ($gibbon->session->exists('organisationEmail') && $gibbon->session->get('organisationEmail') != '') {
-                $mail->SetFrom($gibbon->session->get('organisationEmail'), $gibbon->session->get('organisationName'));
+            if ($session->exists('organisationEmail') && $session->get('organisationEmail') != '') {
+                $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
             } else {
-                $mail->SetFrom($gibbon->session->get('organisationAdministratorEmail'), $gibbon->session->get('organisationName'));
+                $mail->SetFrom($session->get('organisationAdministratorEmail'), $session->get('organisationName'));
             }
 
             $mail->Subject = $subject;

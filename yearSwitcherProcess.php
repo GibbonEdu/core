@@ -23,7 +23,7 @@ require_once './gibbon.php';
 $URL = './index.php';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 
-$gibbon->session->set('pageLoads', null);
+$session->set('pageLoads', null);
 
 //Check for parameter
 if (empty($gibbonSchoolYearID)) {
@@ -32,7 +32,7 @@ if (empty($gibbonSchoolYearID)) {
     exit;
 } else {
     
-        $data = array('gibbonRoleID' => $gibbon->session->get('gibbonRoleIDCurrent'));
+        $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
         $sql = "SELECT futureYearsLogin, pastYearsLogin FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -80,17 +80,17 @@ if (empty($gibbonSchoolYearID)) {
                     header("Location: {$URL}");
                     exit();
                 } else { //ALLOWED
-                    $gibbon->session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
-                    $gibbon->session->set('gibbonSchoolYearName', $rowYear['name']);
-                    $gibbon->session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
-                    $gibbon->session->set('gibbonSchoolYearFirstDay', $rowYear['firstDay']);
-                    $gibbon->session->set('gibbonSchoolYearLastDay', $rowYear['lastDay']);
+                    $session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
+                    $session->set('gibbonSchoolYearName', $rowYear['name']);
+                    $session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
+                    $session->set('gibbonSchoolYearFirstDay', $rowYear['firstDay']);
+                    $session->set('gibbonSchoolYearLastDay', $rowYear['lastDay']);
 
                     // Clear cached FF actions
-                    $gibbon->session->forget('fastFinderActions');
+                    $session->forget('fastFinderActions');
 
                     // Clear the main menu from session cache
-                    $gibbon->session->forget('menuMainItems');
+                    $session->forget('menuMainItems');
 
                     $URL .= '?return=success0';
                     header("Location: {$URL}");

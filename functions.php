@@ -146,10 +146,10 @@ function __n(string $singular, string $plural, int $n, array $params = [], array
  */
 function __m(string $text, array $params = [], array $options = [])
 {
-    global $gibbon;
+    global $gibbon, $session;
 
-    if ($gibbon->session->has('module')) {
-        $options['domain'] = $gibbon->session->get('module');
+    if ($session->has('module')) {
+        $options['domain'] = $session->get('module');
     }
 
     return $gibbon->locale->translate($text, $params, $options);
@@ -247,10 +247,10 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
  */
 function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink)
 {
-    global $pdo, $gibbon;
+    global $pdo, $session;
 
     $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
-    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $gibbon->session);
+    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
 
     $notificationSender->addNotification($gibbonPersonID, $text, $moduleName, $actionLink);
     $success = $notificationSender->sendNotifications();

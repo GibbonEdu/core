@@ -286,7 +286,7 @@ $javascriptConfig = [
         'datepicker' => [
             'locale' => $datepickerLocale,
             'dateFormat' => str_replace('yyyy', 'yy', $session->get('i18n')['dateFormat']),
-            'firstDay' => $gibbon->session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($gibbon->session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
+            'firstDay' => $session->get('firstDayOfTheWeek') == 'Monday'? 1 : ($session->get('firstDayOfTheWeek') == 'Saturday' ? 6 : 0),
         ],
         'thickbox' => [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
@@ -433,13 +433,13 @@ if ($isLoggedIn) {
 // Cookie Consent
 if ($isLoggedIn) {
     if (!empty($_GET['cookieConsent'])) {
-        $container->get(UserGateway::class)->update($gibbon->session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
-        $gibbon->session->set('cookieConsent', 'Y');
+        $container->get(UserGateway::class)->update($session->get('gibbonPersonID'), ['cookieConsent' => 'Y']);
+        $session->set('cookieConsent', 'Y');
     }
 
     $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
     $privacyPolicy = getSettingByScope($connection2, 'System Admin', 'privacyPolicy');
-    if ($cookieConsentEnabled == 'Y' && $gibbon->session->get('cookieConsent') != 'Y') {
+    if ($cookieConsentEnabled == 'Y' && $session->get('cookieConsent') != 'Y') {
         $page->addData([
             'cookieConsentEnabled' => 'Y',
             'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
@@ -513,12 +513,12 @@ if ($isLoggedIn && !$upgrade) {
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
-    $messageWallRefreshed = $gibbon->session->get('messageWallRefreshed', 0);
+    $messageWallRefreshed = $session->get('messageWallRefreshed', 0);
 
     $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
-    if (!$gibbon->session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
-        $gibbon->session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
-        $gibbon->session->set('messageWallRefreshed', time());
+    if (!$session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
+        $session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+        $session->set('messageWallRefreshed', time());
     }
 }
 
@@ -596,7 +596,7 @@ if (!$session->has('address')) {
         // Pinned Messages
         $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            $pinnedMessages = array_reduce($gibbon->session->get('messageWallArray', []), function ($group, $item) {
+            $pinnedMessages = array_reduce($session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;
                 }

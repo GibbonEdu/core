@@ -25,7 +25,7 @@ require_once './gibbon.php';
 $gibbonAlarmID = $_POST['gibbonAlarmID'] ?? '';
 
 // Proceed!
-if (empty($gibbon->session->get('gibbonPersonID')) || $gibbon->session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
+if (empty($session->get('gibbonPersonID')) || $session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     die();
 } elseif (empty($gibbonAlarmID)) {
     die();
