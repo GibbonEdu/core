@@ -56,7 +56,7 @@ $form->setClass('noIntBorder fullWidth');
 $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 
 $row = $form->addRow();
-$row->addLabel('currentDate', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+$row->addLabel('currentDate', __('Date'));
 $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGroupsNotRegistered_byDate.php')) {

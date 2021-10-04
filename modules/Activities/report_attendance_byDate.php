@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
-            $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+            $row->addLabel('date', __('Date'));
             $row->addDate('date')->setValue(Format::date($date))->required();
 
         $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'formGroup' => __('Form Group'));
