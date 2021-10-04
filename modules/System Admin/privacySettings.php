@@ -66,6 +66,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addNumber($setting['name'])->setValue($setting['value'])->minimum(1200)->maxLength(50)->required();
 
+    $setting = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->maxLength(60)->setValue($setting['value']);
+
     // PRIVACY
     $form->addRow()->addHeading(__('Privacy Settings'));
 
