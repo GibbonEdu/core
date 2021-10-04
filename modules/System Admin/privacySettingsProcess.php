@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
             'cookieConsentEnabled' => 'required',
             'cookieConsentText' => 'skip-empty',
             'privacyPolicy' => '',
+            'remoteCLIKey' => '',
         ],
     ];
 

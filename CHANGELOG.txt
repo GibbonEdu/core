@@ -21,6 +21,7 @@ v23.0.00
     Headlines
 
     Significant Changes
+        System: added ability to run CLI scripts remotely, with secure key
 
     Changes With Important Notices
 
