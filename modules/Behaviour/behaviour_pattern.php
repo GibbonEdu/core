@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
 
     $row = $form->addRow();
-        $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('date', __('Date'));
         $row->addDate('fromDate')->setValue($fromDate);
 
     $row = $form->addRow();

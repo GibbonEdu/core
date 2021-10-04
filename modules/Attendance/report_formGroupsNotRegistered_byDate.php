@@ -75,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_formGrou
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_formGroupsNotRegistered_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'));
         $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'));
         $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $row = $form->addRow();

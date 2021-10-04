@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Date
                     $row = $form->addRow();
-                    	$row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+                    	$row->addLabel('date', __('Date'));
                     	$row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required()->readonly();
 
             		//Reason

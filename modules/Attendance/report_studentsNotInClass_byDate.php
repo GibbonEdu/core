@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_studentsNotInClass_byDate.php");
 
         $row = $form->addRow();
-            $row->addLabel('currentDate', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+            $row->addLabel('currentDate', __('Date'));
             $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
         $typeOptions = $container->get(AttendanceCodeGateway::class)->selectAttendanceCodes()->fetchKeyPair();

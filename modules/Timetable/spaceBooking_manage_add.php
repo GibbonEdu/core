@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 $row->addSelect('foreignKeyID')->fromArray($facilities)->required()->placeholder()->selected($foreignKeyID);
 
             $row = $form->addRow();
-                $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('date', __('Date'));
                 $row->addDate('date')->required()->setValue($date);
 
             $row = $form->addRow();
