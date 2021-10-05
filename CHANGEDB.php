@@ -1030,6 +1030,7 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 ALTER TABLE `gibbonPayment` CHANGE `gateway` `gateway` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 UPDATE `gibbonSetting` SET value=REPLACE(value, 'PayPal', 'online') WHERE scope='Application Form' AND name='applicationProcessFeeText';end
 UPDATE `gibbonSetting` SET value='PayPal' WHERE scope='System' AND name='paymentGateway' AND value='';end
-CREATE TABLE `gibbonSession` ( `gibbonSessionID` VARCHAR(255) NOT NULL , `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL , `sessionData` TEXT NULL , `timestampCreated` TIMESTAMP NULL , `timestampModified` TIMESTAMP NULL , PRIMARY KEY (`gibbonSessionID`)) ENGINE = InnoDB;end
+CREATE TABLE `gibbonSession` ( `gibbonSessionID` VARCHAR(40) NOT NULL , `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL , `sessionData` TEXT NULL , `timestampCreated` TIMESTAMP NULL , `timestampModified` TIMESTAMP NULL , PRIMARY KEY (`gibbonSessionID`)) ENGINE = InnoDB;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'remoteCLIKey', 'Remote CLI Key', 'Allow command line scripts to be run remotely using a secure key. The key can be passed as a URL parameter called remoteCLIKey.', '');end
+ALTER TABLE `gibbonSession` CHANGE `gibbonSessionID` `gibbonSessionID` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
