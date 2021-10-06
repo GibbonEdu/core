@@ -106,8 +106,8 @@ class FacilityGateway extends QueryableGateway
                 WHERE gibbonTTDayDate.date=:date
                 AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID
                 AND (
-                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart <= :timeEnd)
-                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart <= gibbonTTColumnRow.timeEnd)
+                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart < :timeEnd)
+                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart < gibbonTTColumnRow.timeEnd)
                 )
                 AND (SELECT gibbonTTSpaceChangeID FROM gibbonTTSpaceChange AS roomReleased JOIN gibbonTTDayRowClass AS roomTT ON (roomTT.gibbonTTDayRowClassID=roomReleased.gibbonTTDayRowClassID) WHERE roomReleased.date=:date AND roomReleased.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND roomTT.gibbonSpaceID=:gibbonSpaceID LIMIT 1) IS NULL
             )";

@@ -17,11 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\FacilityGateway;
-use Gibbon\Domain\Timetable\FacilityBookingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -43,7 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     $table->setTitle(Format::dateReadable($date). ' - '. $period);
     $table->setDescription(__('View Available Facilities'));
 
-    $table->addColumn('name', __('Name'));
+    $table->addColumn('name', __('Name'))
+        ->format(function($values) use ($date) {
+            return Format::link('./index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$values['gibbonSpaceID'].'&ttDate='.$date, $values['name']);
+        });
     $table->addColumn('type', __('Type'));
     $table->addColumn('capacity', __('Capacity'));
     $table->addColumn('facilities', __('Facilities'))
