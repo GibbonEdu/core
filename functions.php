@@ -204,7 +204,7 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
  * @param string $string
  * @param Connection $connection2
  * @return string
- * 
+ *
  * @deprecated in v23. Use Validator::sanitizeRichText
  */
 function tinymceStyleStripTags($string, $connection2)
@@ -374,14 +374,15 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
+    global $session;
+    $form = Form::create('fastFinder', $session->get('absoluteURL').'/indexFindRedirect.php', 'get');
     $form->setClass('blank fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
-            ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
+            ->fromAjax($session->get('absoluteURL').'/index_fastFinder_ajax.php')
             ->setClass('w-full text-white flex items-center')
             ->setAria('label', __('Search'))
             ->setParameter('hintText', __('Start typing a name...'))
@@ -395,7 +396,7 @@ function getFastFinder($connection2, $guid)
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
     $templateData = [
-        'roleCategory'        => getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2),
+        'roleCategory'        => getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2),
         'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
         'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
         'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
@@ -468,9 +469,11 @@ function getUnit($connection2, $gibbonUnitID, $gibbonCourseClassID)
 
 function getWeekNumber($date, $connection2, $guid)
 {
+    global $session;
+
     $week = 0;
     try {
-        $dataWeek = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $dataWeek = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sqlWeek = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
         $resultWeek = $connection2->prepare($sqlWeek);
         $resultWeek->execute($dataWeek);
@@ -499,12 +502,17 @@ function getWeekNumber($date, $connection2, $guid)
     }
 }
 
+/**
+ * @deprecated in v23.
+ */
 function getModuleEntry($address, $connection2, $guid)
 {
+    global $session;
+
     $output = false;
 
     try {
-        $data = array('moduleName' => getModuleName($address), 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent']);
+        $data = array('moduleName' => getModuleName($address), 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
         $sql = "SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE gibbonModule.name=:moduleName AND (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY category, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -513,7 +521,7 @@ function getModuleEntry($address, $connection2, $guid)
             $entryURL = $row['entryURL'];
             if (isActionAccessible($guid, $connection2, '/modules/'.$row['name'].'/'.$entryURL) == false and $entryURL != 'index.php') {
                 try {
-                    $dataEntry = array('gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'moduleName' => $row['name']);
+                    $dataEntry = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $row['name']);
                     $sqlEntry = "SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:moduleName ORDER BY gibbonAction.name";
                     $resultEntry = $connection2->prepare($sqlEntry);
                     $resultEntry->execute($dataEntry);
@@ -550,14 +558,14 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
  */
 function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
 {
-    global $page;
+    global $page, $session;
 
     $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
 
     $templateData['name'] = $templateData['id'];
     $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
 
-    $templateData['absoluteURL'] = $_SESSION[$guid]['absoluteURL'];
+    $templateData['absoluteURL'] = $session->get('absoluteURL');
 
     return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
 }
@@ -772,7 +780,9 @@ function getAge($guid, $stamp, $short = false, $yearsOnly = false)
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
 function getHighestGroupedAction($guid, $address, $connection2)
 {
-    if (empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) return false;
+    global $session;
+
+    if (empty($session->get('gibbonRoleIDCurrent'))) return false;
 
     $output = false;
     $moduleID = checkModuleReady($address, $connection2);
@@ -780,7 +790,7 @@ function getHighestGroupedAction($guid, $address, $connection2)
     try {
         $data = [
             'actionName' => '%'.getActionName($address).'%',
-            'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'],
+            'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
             'moduleID' => $moduleID,
         ];
         $sql = 'SELECT
@@ -837,6 +847,8 @@ function dateConvertToTimestamp($date)
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
 function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 {
+    global $session;
+
     //Set test variables
     $isInTerm = false;
     $isSchoolDay = false;
@@ -851,8 +863,8 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
         $data = array();
         $sqlWhere = '';
         if ($allYears != true) {
-            $data[$_SESSION[$guid]['gibbonSchoolYearID']] = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $sqlWhere = ' AND gibbonSchoolYear.gibbonSchoolYearID=:'.$_SESSION[$guid]['gibbonSchoolYearID'];
+            $data[$session->get('gibbonSchoolYearID')] = $session->get('gibbonSchoolYearID');
+            $sqlWhere = ' AND gibbonSchoolYear.gibbonSchoolYearID=:'.$session->get('gibbonSchoolYearID');
         }
 
         $sql = "SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID $sqlWhere";
@@ -868,11 +880,10 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if date's day of week is a school day
     if ($isInTerm == true) {
-
-            $data = array('nameShort' => $dayOfWeek);
-            $sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('nameShort' => $dayOfWeek);
+        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         if ($result->rowCount() > 0) {
             $isSchoolDay = true;
         }
@@ -880,11 +891,10 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if there is a special day
     if ($isInTerm == true and $isSchoolDay == true) {
-
-            $data = array('date' => $date);
-            $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('date' => $date);
+        $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             $isSchoolOpen = true;
@@ -912,6 +922,8 @@ function getUserPhoto($guid, $path, $size)
 
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
+    global $session;
+
     $output = '';
     $alerts = [];
 
@@ -919,13 +931,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
-
         // Individual Needs
-
-            $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-            $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
-            $resultAlert = $connection2->prepare($sqlAlert);
-            $resultAlert->execute($dataAlert);
+        $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
+        $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
+        $resultAlert = $connection2->prepare($sqlAlert);
+        $resultAlert->execute($dataAlert);
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1
@@ -946,7 +956,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
 
-            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
             $sqlAlert = "SELECT *
             FROM gibbonMarkbookEntry
                 JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
@@ -984,7 +994,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('A'),
                     'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID'],
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$session->get('gibbonSchoolYearID'),
                 ];
             }
         }
@@ -1081,6 +1091,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 //Gets system settings from database and writes them to individual session variables.
 function getSystemSettings($guid, $connection2)
 {
+    global $session;
 
     //System settings from gibbonSetting
     try {
@@ -1089,58 +1100,54 @@ function getSystemSettings($guid, $connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $_SESSION[$guid]['systemSettingsSet'] = false;
+        $session->set('systemSettingsSet', false);
     }
 
     while ($row = $result->fetch()) {
         $name = $row['name'];
-        $_SESSION[$guid][$name] = $row['value'];
+        $session->set($name, $row['value']);
     }
 
     //Get names and emails for administrator, dba, admissions
     //System Administrator
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdministrator']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationAdministrator'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+        $session->set('organisationAdministratorName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationAdministratorEmail', $row['email']);
     }
     //DBA
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationDBA']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationDBA'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
+        $session->set('organisationDBAName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationDBAEmail', $row['email']);
     }
     //Admissions
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdmissions']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationAdmissions'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
+        $session->set('organisationAdmissionsName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationAdmissionsEmail', $row['email']);
     }
-    //HR Administraotr
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationHR']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    //HR Administrator
+    $data = array('gibbonPersonID' => $session->get('organisationHR'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationHREmail'] = $row['email'];
+        $session->set('organisationHRName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationHREmail', $row['email']);
     }
 
     //Language settings from gibboni18n
@@ -1150,31 +1157,37 @@ function getSystemSettings($guid, $connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $_SESSION[$guid]['systemSettingsSet'] = false;
+        $session->set('systemSettingsSet', false);
     }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         setLanguageSession($guid, $row);
     }
 
-    $_SESSION[$guid]['systemSettingsSet'] = true;
+    $session->set('systemSettingsSet', true);
 }
 
 //Set language session variables
 function setLanguageSession($guid, $row, $defaultLanguage = true)
 {
-    $_SESSION[$guid]['i18n']['gibboni18nID'] = $row['gibboni18nID'];
-    $_SESSION[$guid]['i18n']['code'] = $row['code'];
-    $_SESSION[$guid]['i18n']['name'] = $row['name'];
-    $_SESSION[$guid]['i18n']['dateFormat'] = $row['dateFormat'];
-    $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
-    $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
-    $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
+    global $session;
+    
+    $i18n = [
+        'gibboni18nID' => $row['gibboni18nID'],
+        'code' => $row['code'],
+        'name' => $row['name'],
+        'dateFormat' => $row['dateFormat'],
+        'dateFormatRegEx' => $row['dateFormatRegEx'],
+        'dateFormatPHP' => $row['dateFormatPHP'],
+        'rtl' => $row['rtl'],
+    ];
 
     if ($defaultLanguage) {
-        $_SESSION[$guid]['i18n']['default']['code'] = $row['code'];
-        $_SESSION[$guid]['i18n']['default']['name'] = $row['name'];
+        $i18n['default']['code'] = $row['code'];
+        $i18n['default']['name'] = $row['name'];
     }
+
+    $session->set('i18n', $i18n);
 }
 
 //Gets the desired setting, specified by name and scope.
@@ -1221,17 +1234,19 @@ function dateConvertBack($guid, $date)
 
 function isActionAccessible($guid, $connection2, $address, $sub = '')
 {
+    global $session;
+
     $output = false;
     //Check user is logged in
-    if (isset($_SESSION[$guid]['username'])) {
+    if (!empty($session->get('username'))) {
         //Check user has a current role set
-        if ($_SESSION[$guid]['gibbonRoleIDCurrent'] != '') {
+        if ($session->get('gibbonRoleIDCurrent') != '') {
             //Check module ready
             $moduleID = checkModuleReady($address, $connection2);
             if ($moduleID != false) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent']);
+                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
                     $sqlWhere = '';
                     if ($sub != '') {
                         $data['sub'] = $sub;
@@ -1252,22 +1267,27 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
     return $output;
 }
 
+/**
+ * @deprecated in v23
+ */
 function isModuleAccessible($guid, $connection2, $address = '')
 {
+    global $session;
+
     if ($address == '') {
-        $address = $_SESSION[$guid]['address'];
+        $address = $session->get('address');
     }
     $output = false;
     //Check user is logged in
-    if (!empty($_SESSION[$guid]['username'])) {
+    if (!empty($session->get('username'))) {
         //Check user has a current role set
-        if (!empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) {
+        if (!empty($session->get('gibbonRoleIDCurrent'))) {
             //Check module ready
             $moduleID = checkModuleReady($address, $connection2);
             if ($moduleID != false) {
                 //Check current role has access rights to an action in the current module.
                 try {
-                    $data = array('gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'moduleID' => $moduleID);
+                    $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleID' => $moduleID);
                     $sql = 'SELECT * FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID)';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -1288,6 +1308,8 @@ function isModuleAccessible($guid, $connection2, $address = '')
  */
 function printPagination($guid, $total, $page, $pagination, $position, $get = '')
 {
+    global $session;
+
     if ($position == 'bottom') {
         $class = 'paginationBottom';
     } else {
@@ -1297,11 +1319,11 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     echo "<div class='$class'>";
     $totalPages = ceil($total / $pagination);
     $i = 0;
-    echo __('Records').' '.(($page - 1) * $_SESSION[$guid]['pagination'] + 1).'-';
-    if (($page * $_SESSION[$guid]['pagination']) > $total) {
+    echo __('Records').' '.(($page - 1) * $session->get('pagination') + 1).'-';
+    if (($page * $session->get('pagination')) > $total) {
         echo $total;
     } else {
-        echo $page * $_SESSION[$guid]['pagination'];
+        echo $page * $session->get('pagination');
     }
     echo ' '.__('of').' '.$total.' : ';
 
@@ -1310,13 +1332,13 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
             if ($i == ($page - 1)) {
                 echo "$page ";
             } else {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
             }
         }
     } else {
         if ($page > 1) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__('First').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address')."&page=1&$get'>".__('First').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
         } else {
             echo __('First').' '.__('Previous').' ';
         }
@@ -1326,13 +1348,13 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
             if ($i == ($page - 1)) {
                 echo "$page ";
             } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
             }
         }
 
         if ($page != $totalPages) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__('Last').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.$totalPages."&$get'>".__('Last').'</a> ';
         } else {
             echo __('Next').' '.__('Last');
         }
@@ -1426,12 +1448,13 @@ function getModuleCategory($address, $connection2)
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
 function setCurrentSchoolYear($guid,  $connection2)
 {
-    //Run query
+    global $session;
 
-        $data = array();
-        $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    //Run query
+    $data = array();
+    $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     //Check number of rows returned.
     //If it is not 1, show error
@@ -1441,11 +1464,11 @@ function setCurrentSchoolYear($guid,  $connection2)
     //Else get schoolYearID
     else {
         $row = $result->fetch();
-        $_SESSION[$guid]['gibbonSchoolYearID'] = $row['gibbonSchoolYearID'];
-        $_SESSION[$guid]['gibbonSchoolYearName'] = $row['name'];
-        $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'] = $row['sequenceNumber'];
-        $_SESSION[$guid]['gibbonSchoolYearFirstDay'] = $row['firstDay'];
-        $_SESSION[$guid]['gibbonSchoolYearLastDay'] = $row['lastDay'];
+        $session->set('gibbonSchoolYearID', $row['gibbonSchoolYearID']);
+        $session->set('gibbonSchoolYearName', $row['name']);
+        $session->set('gibbonSchoolYearSequenceNumber', $row['sequenceNumber']);
+        $session->set('gibbonSchoolYearFirstDay',$row['firstDay']);
+        $session->set('gibbonSchoolYearLastDay', $row['lastDay']);
     }
 }
 
