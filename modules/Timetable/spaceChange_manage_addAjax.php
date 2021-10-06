@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\FacilityGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 
 include '../../gibbon.php';
@@ -41,9 +42,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     $facilityGateway = $container->get(FacilityGateway::class);
     $ttDayDateGateway = $container->get(TimetableDayDateGateway::class);
 
+    $facility = $facilityGateway->getByID($gibbonSpaceID);
     $period = $ttDayDateGateway->getTimetablePeriodByDayRowClass($gibbonTTDayRowClassID);
 
-    if (empty($period)) {
+    if (empty($period) || empty($facility)) {
         echo Format::alert(__('You have not specified one or more required parameters.'));
         return;
     }
@@ -51,9 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     $inUse = $facilityGateway->selectFacilityInUseByDateAndTime($gibbonSpaceID, $date, $period['timeStart'], $period['timeEnd'])->fetchAll(\PDO::FETCH_COLUMN, 0);
 
     if (!empty($inUse)) {
-        echo Format::alert(__('In Use by {name}', ['name' => implode(', ', $inUse)]), 'error');
+        $classParticipants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($period['gibbonCourseClassID'], $date, $period['timeStart'], $period['timeEnd'])->fetchAll();
+
+        echo Format::alert(__('In Use by {name} (In Room: {count}, Capacity: {capacity})', ['name' => implode(', ', $inUse), 'count' => count($classParticipants), 'capacity' => $facility['capacity']]), 'error');
     } else {
-        echo Format::alert(__('Available'), 'success');
+        echo Format::alert(__('Available (Capacity: {capacity})', ['capacity' => $facility['capacity']]), 'success');
     }
     
 }

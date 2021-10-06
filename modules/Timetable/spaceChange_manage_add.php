@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 $(document).ready(function() {
     $('#gibbonSpaceID').on('change', function() {
         $.ajax({
-            url: './modules/Timetable/spaceBooking_manage_addAjax.php',
+            url: './modules/Timetable/spaceChange_manage_addAjax.php',
             data: {
                 gibbonTTDayRowClassID: $('#gibbonTTDayRowClassID').val(),    
                 gibbonSpaceID: $('#gibbonSpaceID').val(),

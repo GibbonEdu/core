@@ -45,7 +45,7 @@ class TimetableDayDateGateway extends QueryableGateway
     public function getTimetablePeriodByDayRowClass($gibbonTTDayRowClassID)
     {
         $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID];
-        $sql = "SELECT gibbonTTColumnRow.name, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd 
+        $sql = "SELECT gibbonTTColumnRow.name, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
                 FROM gibbonTTDayRowClass
                 JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
                 WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
