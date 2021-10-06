@@ -238,6 +238,22 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function getClassStudentCount($gibbonCourseClassID)
+    {
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d')];
+        $sql = "SELECT COUNT(gibbonCourseClassPerson.gibbonCourseClassPersonID)
+            FROM gibbonCourseClassPerson
+            INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
+            
+            WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+            AND gibbonPerson.status='Full'
+            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+            AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)
+            AND gibbonCourseClassPerson.role='Student'";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function unenrolAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID, $date = null)
     {
         $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID, 'dateUnenrolled' => $date ?? date('Y-m-d'));

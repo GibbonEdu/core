@@ -104,14 +104,18 @@ class StaffGateway extends QueryableGateway
 
     public function selectStaffByID($gibbonPersonID, $type = null)
     {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
+
+        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonStaff.type, gibbonStaff.jobTitle, gibbonPerson.username
                 FROM gibbonPerson
                 LEFT JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                WHERE FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
                 AND gibbonPerson.status='Full'";
 
         if (!empty($type)) $sql .= " AND gibbonStaff.type='Teaching'";
+
+        $sql .= " ORDER BY surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
