@@ -158,7 +158,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Facility'));
-                    $row->addSelectSpace('gibbonSpaceID');
+                    $col = $row->addColumn()->addClass('flex-col');
+                    $col->addSelectSpace('gibbonSpaceID')->addClass('flex-1');
+                    $col->addContent('<br/><div id="facilityStatus"></div>');
 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -169,3 +171,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         }
     }
 }
+?>
+
+<script>
+
+$(document).ready(function() {
+    $('#gibbonSpaceID').on('change', function() {
+        $.ajax({
+            url: './modules/Timetable/spaceBooking_manage_addAjax.php',
+            data: {
+                gibbonTTDayRowClassID: $('#gibbonTTDayRowClassID').val(),    
+                gibbonSpaceID: $('#gibbonSpaceID').val(),
+            },
+            type: 'POST',
+            success: function(data) {
+                $('#facilityStatus').html(data);
+            }
+        });
+    });
+}) ;
+
+</script>

@@ -44,6 +44,7 @@ v23.0.00
         System Admin: added link to Import History at the top of Import from File
         Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
         Timetable: added timetable day heading colours to View Timetable by Facility
+        Timetable: added an ajax check for availability when making a facility change
         Timetable Admin: adjusted interface strings in timetable import
 
     Bug Fixes
