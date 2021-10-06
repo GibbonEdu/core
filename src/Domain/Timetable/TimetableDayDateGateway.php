@@ -35,10 +35,21 @@ class TimetableDayDateGateway extends QueryableGateway
     private static $primaryKey = 'gibbonTTDayDateID';
 
     public function deleteTTDatesInRange($firstDayOld, $firstDayNew)
-   {
-       $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);
-       $sql = "DELETE FROM gibbonTTDayDate WHERE date >= :firstDayOld AND date < :firstDayNew";
+    {
+        $data = array('firstDayOld' => $firstDayOld, 'firstDayNew' => $firstDayNew);
+        $sql = "DELETE FROM gibbonTTDayDate WHERE date >= :firstDayOld AND date < :firstDayNew";
 
-       return $this->db()->delete($sql, $data);
-   }
+        return $this->db()->delete($sql, $data);
+    }
+    
+    public function getTimetablePeriodByDayRowClass($gibbonTTDayRowClassID)
+    {
+        $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID];
+        $sql = "SELECT gibbonTTColumnRow.name, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayRowClass.gibbonCourseClassID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                WHERE gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }
