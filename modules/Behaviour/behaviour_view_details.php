@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
         $page->breadcrumbs
             ->add(__('View Behaviour Records'), 'behaviour_manage.php')

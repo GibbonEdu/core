@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide includes
 include './gibbon.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php';
 
 //Proceed!
