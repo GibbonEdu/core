@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                         $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
                     } else {
                         $submission = false;
-                        $gibbonPersonID = $_GET['gibbonPersonID'];
+                        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
                     }
 
                     if (($submission == true and $gibbonPlannerEntryHomeworkID == '') or ($submission == false and $gibbonPersonID == '')) {
