@@ -25,8 +25,8 @@ include '../../gibbon.php';
 require_once __DIR__ . '/moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonActivityID = $_GET['gibbonActivityID'];
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {

@@ -56,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->add(__('Edit Enrolment'));
 
     //Check if gibbonActivityID and gibbonPersonID specified
-    $gibbonActivityID = $_GET['gibbonActivityID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '' or $gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
