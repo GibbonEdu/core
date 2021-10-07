@@ -859,19 +859,17 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     $dayOfWeek = date('D', $timestamp);
 
     //See if date falls into a school term
-    try {
-        $data = array();
-        $sqlWhere = '';
-        if ($allYears != true) {
-            $data[$session->get('gibbonSchoolYearID')] = $session->get('gibbonSchoolYearID');
-            $sqlWhere = ' AND gibbonSchoolYear.gibbonSchoolYearID=:'.$session->get('gibbonSchoolYearID');
-        }
+    $data = [];
+    $sql = "SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID";
 
-        $sql = "SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID $sqlWhere";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
+    if ($allYears != true) {
+        $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+        $sql .= ' AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
     }
+
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+
     while ($row = $result->fetch()) {
         if ($date >= $row['firstDay'] and $date <= $row['lastDay']) {
             $isInTerm = true;
@@ -1238,7 +1236,7 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
 
     $output = false;
     //Check user is logged in
-    if (!empty($session->get('username'))) {
+    if ($session->has('username')) {
         //Check user has a current role set
         if ($session->get('gibbonRoleIDCurrent') != '') {
             //Check module ready
@@ -1278,24 +1276,22 @@ function isModuleAccessible($guid, $connection2, $address = '')
         $address = $session->get('address');
     }
     $output = false;
-    //Check user is logged in
-    if (!empty($session->get('username'))) {
-        //Check user has a current role set
-        if (!empty($session->get('gibbonRoleIDCurrent'))) {
-            //Check module ready
-            $moduleID = checkModuleReady($address, $connection2);
-            if ($moduleID != false) {
-                //Check current role has access rights to an action in the current module.
-                try {
-                    $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleID' => $moduleID);
-                    $sql = 'SELECT * FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID)';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                    if ($result->rowCount() > 0) {
-                        $output = true;
-                    }
-                } catch (PDOException $e) {
+    //Check user is logged in && Check user has a current role set
+    if ($session->has('username') && $session->has('gibbonRoleIDCurrent')) {
+
+        //Check module ready
+        $moduleID = checkModuleReady($address, $connection2);
+        if ($moduleID != false) {
+            //Check current role has access rights to an action in the current module.
+            try {
+                $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleID' => $moduleID);
+                $sql = 'SELECT * FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID)';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+                if ($result->rowCount() > 0) {
+                    $output = true;
                 }
+            } catch (PDOException $e) {
             }
         }
     }
