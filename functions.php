@@ -1171,7 +1171,7 @@ function getSystemSettings($guid, $connection2)
 function setLanguageSession($guid, $row, $defaultLanguage = true)
 {
     global $session;
-    
+
     $i18n = [
         'gibboni18nID' => $row['gibboni18nID'],
         'code' => $row['code'],
