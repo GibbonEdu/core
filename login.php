@@ -21,6 +21,7 @@ use Gibbon\Data\Validator;
 use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SessionGateway;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -254,10 +255,7 @@ else {
                     $result->execute($data);
 
                     // Update current session to attach it to this user
-                    $data = ['gibbonSessionID' => session_id(), 'gibbonPersonID' => $row['gibbonPersonID']];
-                    $sql = "UPDATE gibbonSession SET gibbonPersonID=:gibbonPersonID WHERE gibbonSessionID=:gibbonSessionID";
-
-                    $pdo->update($sql, $data);
+                    $container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => $row['gibbonPersonID']]);
 
                     if (isset($_GET['q'])) {
                         if ($_GET['q'] == '/publicRegistration.php') {

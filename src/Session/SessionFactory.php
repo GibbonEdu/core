@@ -19,11 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Session;
 
+use Gibbon\Services\Format;
 use Gibbon\Session\Session;
 use Psr\Container\ContainerInterface;
-use Gibbon\Session\DatabaseSessionHandler;
-use Gibbon\Session\EncryptedSessionHandler;
+use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Session\NativeSessionHandler;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Session\DatabaseSessionHandler;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 
 /**
@@ -47,8 +49,10 @@ class SessionFactory
 
         $config = $container->get('config')->getConfig();
 
+        $sessionGateway = $container->get(SessionGateway::class);
+
         if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database' && $container->has(Connection::class)) {
-            $handler = new DatabaseSessionHandler($container->get(Connection::class), $config['sessionEncryptionKey'] ?? null);
+            $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
         } else {
             $handler = new NativeSessionHandler($config['sessionEncryptionKey'] ?? null);
         }
@@ -79,6 +83,12 @@ class SessionFactory
         $address = $_GET['q'] ?? $_POST['address'] ?? '';
         $module = $address ? getModuleName($address) : '';
         $action = $address ? getActionName($address) : '';
+
+
+        // Update the information for this session
+        if (!empty($address) && $container->has(Connection::class)) {
+            $sessionGateway->updateSessionAction(session_id(), $action);
+        }
 
         // Create the instance from information of container
         // and environment.
