@@ -84,12 +84,6 @@ class SessionFactory
         $module = $address ? getModuleName($address) : '';
         $action = $address ? getActionName($address) : '';
 
-
-        // Update the information for this session
-        if (!empty($address) && $container->has(Connection::class)) {
-            $sessionGateway->updateSessionAction(session_id(), $action);
-        }
-
         // Create the instance from information of container
         // and environment.
         return new Session($_guid, $address, $module, $action);

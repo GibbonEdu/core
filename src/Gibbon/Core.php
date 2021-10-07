@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
 use Psr\Container\ContainerInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SessionGateway;
 
 /**
  * Gibbon Core
@@ -99,6 +100,11 @@ class Core
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
         $this->locale->setStringReplacementList($this->session, $db);
+
+        // Update the information for this session
+        if ($this->session->has('address')) {
+            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'));
+        }
 
         $this->initialized = true;
     }
