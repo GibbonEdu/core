@@ -50,7 +50,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 				$( ".sortable" ).bind( "sortstart", function(event, ui) {
 					$("#blockInner<?php echo $i ?>").css("display","none") ;
 					$("#block<?php echo $i ?>").css("height","82px") ;
-					$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
+					$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 					tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
 					$(".sortable").sortable( "refresh" ) ;
@@ -69,13 +69,13 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 					if ($("#blockInner<?php echo $i ?>").is(":visible")) {
 						$("#blockInner<?php echo $i ?>").css("display","none");
 						$("#block<?php echo $i ?>").css("height","82px")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
 					} else {
 						$("#blockInner<?php echo $i ?>").slideDown("fast", $("#blockInner<?php echo $i ?>").css("display","table-row"));
 						$("#block<?php echo $i ?>").css("height","auto")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/minus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceAddEditor', false, 'contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceRemoveEditor', false, 'teachersNotes<?php echo $i ?>') ;
@@ -107,7 +107,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 					<div style='margin-bottom: 5px'>
 						<?php
                         if ($mode != 'plannerEdit' and $mode != 'embed') {
-							echo "<img style='margin-top: 2px' id='delete$i' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
+							echo "<img style='margin-top: 2px' id='delete$i' title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/> ";
 						}
 						if ($mode == 'workingEdit') {
                             $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
@@ -115,10 +115,10 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                             $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
                             $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
                             $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
-                            echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonCourseID='.$gibbonCourseID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonUnitID='.$gibbonUnitID."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$gibbonUnitClassID."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
+                            echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonCourseID='.$gibbonCourseID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonUnitID='.$gibbonUnitID."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$gibbonUnitClassID."'><img id='copyback$i' title='Copy Back' src='./themes/".$session->get('gibbonThemeName')."/img/copyback.png'/></a>";
 						}
 						if ($mode != 'embed') {
-							echo "<div title='".__('Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
+							echo "<div title='".__('Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
 						}
 						?>
 					</div>
@@ -226,9 +226,9 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
             $output .= "</tr>";
             $output .= "<tr>";
             if ($links == true) {
-                $output .= "<td style='text-align: right' colspan=2><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=".$rowDiscuss['gibbonPlannerEntryDiscussID']."&search=$search'>Reply</a> ";
+                $output .= "<td style='text-align: right' colspan=2><a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&replyTo=".$rowDiscuss['gibbonPlannerEntryDiscussID']."&search=$search'>Reply</a> ";
                 if ($role == 'Teacher') {
-                    $output .= " | <a href='".$_SESSION[$guid]['absoluteURL']."/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=".$rowDiscuss['gibbonPlannerEntryDiscussID']."'>Delete</a>";
+                    $output .= " | <a href='".$session->get('absoluteURL')."/modules/Planner/planner_view_full_post_deleteProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550&search=$search&gibbonPlannerEntryDiscussID=".$rowDiscuss['gibbonPlannerEntryDiscussID']."'>Delete</a>";
                 }
                 $output .= "</td>";
             }
@@ -272,7 +272,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         global $pdo;
 
         // Date Chooser
-        $form = Form::create('dateChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('dateChooser', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose A Date'));
         $form->setClass('smallIntBorder w-full');
 
@@ -280,7 +280,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $form->addHiddenValue('search', $gibbonPersonID);
 
         $row = $form->addRow();
-            $row->addDate('dateHuman', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
+            $row->addDate('dateHuman', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
                 ->setValue(Format::date($dateStamp ? date('Y-m-d', $dateStamp) : ''))
                 ->setID('dateHuman')
                 ->setClass('float-none w-full');
@@ -289,7 +289,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         $output .= $form->getOutput();
 
         // Class Chooser
-        $form = Form::create('classChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('classChooser', $session->get('absoluteURL').'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Choose A Class'));
         $form->setClass('smallIntBorder w-full');
@@ -300,7 +300,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
         $classes = [];
 
-        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
+        $dataSelect = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
         $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.role NOT LIKE '% - Left' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
         $resultSelect = $connection2->prepare($sqlSelect);
         $resultSelect->execute($dataSelect);
@@ -310,7 +310,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         }
 
         if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewOnly') {
-            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+            $dataSelect = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlSelect = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
             $resultSelect = $connection2->prepare($sqlSelect);
             $resultSelect->execute($dataSelect);
@@ -321,7 +321,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
         }
 
         $row = $form->addRow();
-            $row->addSelect('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
+            $row->addSelect('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
                 ->setID('gibbonCourseClassIDSidebar')
                 ->fromArray($classes)
                 ->selected($gibbonCourseClassID)
@@ -361,7 +361,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
 
             $output .= "<p style='padding-top: 15px; text-align: right'>";
-            $output .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."</a>";
+            $output .= "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_deadlines.php&search=$gibbonPersonID'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."</a>";
             $output .= '</p>';
             $output .= '</div>';
         }
@@ -385,10 +385,10 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
         if ($highestAction == 'Unit Planner_all') {
             $courses = $courseGateway->selectCoursesBySchoolYear($gibbonSchoolYearID)->fetchKeyPair();
         } elseif ($highestAction == 'Unit Planner_learningAreas') {
-            $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $_SESSION[$guid]['gibbonPersonID'])->fetchKeyPair();
+            $courses = $courseGateway->selectCoursesByPerson($gibbonSchoolYearID, $session->get('gibbonPersonID'))->fetchKeyPair();
         }
 
-        $form = Form::create('courseChooser', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('courseChooser', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Choose A Course'));
         $form->setClass('smallIntBorder w-full');
 
@@ -427,7 +427,7 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 				$( "#<?php echo $type ?>" ).bind( "sortstart", function(event, ui) {
 					$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
 					$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
-					$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
+					$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\'"?>)");
 					tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					$("#<?php echo $type ?>").sortable( "refreshPositions" ) ;
 				});
@@ -449,12 +449,12 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 					if ($("#<?php echo $type ?>BlockInner<?php echo $i ?>").is(":visible")) {
 						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","none");
 						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","82px") ;
-						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
+						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					} else {
 						$("#<?php echo $type ?>BlockInner<?php echo $i ?>").slideDown("fast", $("#<?php echo $type ?>BlockInner<?php echo $i ?>").css("display","table-row"));
 						$("#<?php echo $type ?>Block<?php echo $i ?>").css("height","auto")
-						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");
+						$('#<?php echo $type ?>show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/minus.png\'"?>)");
 						tinyMCE.execCommand('mceRemoveEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 						tinyMCE.execCommand('mceAddEditor', false, '<?php echo $type ?>contents<?php echo $i ?>') ;
 					}
@@ -487,8 +487,8 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 					<td style='text-align: right; width: 50%'>
 						<div style='margin-bottom: 25px'>
 							<?php
-                            echo "<img id='".$type."delete$i' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
-   	 						echo "<div id='".$type."show$i' title='".__('Show/Hide Details')."' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div>"; ?>
+                            echo "<img id='".$type."delete$i' title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/> ";
+   	 						echo "<div id='".$type."show$i' title='".__('Show/Hide Details')."' style='margin-right: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\"); background-repeat: no-repeat'></div>"; ?>
 						</div>
 						<input type='hidden' name='id<?php echo $i ?>' value='<?php echo $id ?>'>
 					</td>
@@ -609,7 +609,7 @@ function getTagCloud($guid, $connection2, $gibbonSchoolYearID = null) {
             $tag = $tags[$i][1];
             $count = $tags[$i][2];
             $size = $min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
-            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/conceptExplorer.php&tag='.str_replace('&', '%26', $tag)."' title='$count units'>".htmlspecialchars(stripslashes($tag)).'</a>';
+            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/conceptExplorer.php&tag='.str_replace('&', '%26', $tag)."' title='$count units'>".htmlspecialchars(stripslashes($tag)).'</a>';
         }
         $output .= "<p style='margin-top: 10px; line-height: 130%'>";
         $output .= implode("\n", $cloud_tags)."\n";
@@ -670,7 +670,7 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
             $tag = $tags[$i][0];
             $count = $tags[$i][1];
             $size = $min_font_size + ($count - $min_count) * ($max_font_size - $min_font_size) / $spread;
-            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/resources_view.php&tag='.str_replace('&', '%26', $tag)."' title='$count resources'>".htmlspecialchars(stripslashes($tag)).'</a>';
+            $cloud_tags[] = "<a style='font-size: ".floor($size)."px' class='tag_cloud' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/resources_view.php&tag='.str_replace('&', '%26', $tag)."' title='$count resources'>".htmlspecialchars(stripslashes($tag)).'</a>';
         }
         $output .= "<p style='margin-top: 10px; line-height: 220%'>";
         $output .= implode("\n", $cloud_tags)."\n";
@@ -702,9 +702,9 @@ function getResourceLink($guid, $gibbonResourceID, $type, $name, $content)
     if ($type == 'Link') {
         $output = "<a target='_blank' style='font-weight: bold' href='".$content."'>".$name.'</a><br/>';
     } elseif ($type == 'File') {
-        $output = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$content."'>".$name.'</a><br/>';
+        $output = "<a target='_blank' style='font-weight: bold' href='".$session->get('absoluteURL').'/'.$content."'>".$name.'</a><br/>';
     } elseif ($type == 'HTML') {
-        $output = "<a style='font-weight: bold' class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/resources_view_full.php&gibbonResourceID='.$gibbonResourceID."&width=1000&height=550'>".$name.'</a><br/>';
+        $output = "<a style='font-weight: bold' class='thickbox' href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/Planner/resources_view_full.php&gibbonResourceID='.$gibbonResourceID."&width=1000&height=550'>".$name.'</a><br/>';
     }
 
     return $output;

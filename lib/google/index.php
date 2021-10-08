@@ -7,11 +7,11 @@ include "../../gibbon.php";
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
-$_SESSION[$guid]["gibbonSchoolYearIDCurrent"] = $_SESSION[$guid]["gibbonSchoolYearID"];
-$_SESSION[$guid]["gibbonSchoolYearNameCurrent"] = $_SESSION[$guid]["gibbonSchoolYearName"];
-$_SESSION[$guid]["gibbonSchoolYearSequenceNumberCurrent"] = $_SESSION[$guid]["gibbonSchoolYearSequenceNumber"];
+$session->get("gibbonSchoolYearIDCurrent") = $session->get("gibbonSchoolYearID");
+$session->get("gibbonSchoolYearNameCurrent") = $session->get("gibbonSchoolYearName");
+$session->get("gibbonSchoolYearSequenceNumberCurrent") = $session->get("gibbonSchoolYearSequenceNumber");
 
-$_SESSION[$guid]["pageLoads"] = NULL;
+$session->get("pageLoads") = NULL;
 
 $URL = "index.php";
 
@@ -48,7 +48,7 @@ if (isset($_GET['error'])) {
 
 if (isset($_GET['code'])) {
   $client->authenticate($_GET['code']);
-  $_SESSION[$guid]['googleAPIAccessToken']  = $client->getAccessToken();
+  $session->get('googleAPIAccessToken')  = $client->getAccessToken();
 
   if (isset($_GET['state'])) {
     $redirect_uri .= '?state='.$_GET['state'];
@@ -62,10 +62,10 @@ if (isset($_GET['code'])) {
   If we have an access token, we can make
   requests, else we generate an authentication URL.
  ************************************************/
-$refreshToken = isset($_SESSION[$guid]['googleAPIAccessToken']['refresh_token'])? $_SESSION[$guid]['googleAPIAccessToken']['refresh_token'] : '';
+$refreshToken = isset($session->get('googleAPIAccessToken')['refresh_token'])? $session->get('googleAPIAccessToken')['refresh_token'] : '';
 
-if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['googleAPIAccessToken'] ) {
-  $client->setAccessToken($_SESSION[$guid]['googleAPIAccessToken'] );
+if (isset($session->get('googleAPIAccessToken') ) && $session->get('googleAPIAccessToken') ) {
+  $client->setAccessToken($session->get('googleAPIAccessToken') );
 } else {
   $authUrl = $client->createAuthUrl();
 }
@@ -76,7 +76,7 @@ if (isset($_SESSION[$guid]['googleAPIAccessToken'] ) && $_SESSION[$guid]['google
 if (isset($authUrl)){
 	//show login url
     echo '<div>';
-        $themeName = isset($_SESSION[$guid]['gibbonThemeName'])? $_SESSION[$guid]['gibbonThemeName'] : 'Default';
+        $themeName = isset($session->get('gibbonThemeName'))? $session->get('gibbonThemeName') : 'Default';
         echo '<a target=\'_top\' class="login" href="' . $authUrl . '" onclick="addGoogleLoginParams(this)">';
             echo '<button class="w-full bg-white rounded shadow border border-gray-400 flex items-center px-2 py-1 mb-2 text-gray-600 hover:shadow-md hover:border-blue-600 hover:text-blue-600">';
                 echo '<img class="w-10 h-10" src="themes/'.$themeName.'/img/google-login.svg">';
@@ -88,21 +88,21 @@ if (isset($authUrl)){
         $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
         $form->setClass('blank fullWidth loginTableGoogle');
 
-        $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
+        $loginIcon = '<img src="'.$session->get('absoluteURL').'/themes/'.$themeName.'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
             $row->addSelectSchoolYear('gibbonSchoolYearIDGoogle')
                 ->setClass('fullWidth p-1')
                 ->placeholder(null)
-                ->selected($_SESSION[$guid]['gibbonSchoolYearID']);
+                ->selected($session->get('gibbonSchoolYearID'));
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'language', __('Language')));
             $row->addSelectI18n('gibboni18nIDGoogle')
                 ->setClass('fullWidth p-1')
                 ->placeholder(null)
-                ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
+                ->selected($session->get('i18n')['gibboni18nID']);
 
         $row = $form->addRow();
             $row->addContent('<a class="showGoogleOptions" onclick="false" href="#">'.__('Options').'</a>')
@@ -137,7 +137,7 @@ if (isset($authUrl)){
 } else {
 	$user = $service->userinfo->get(); //get user info
 	$email = $user->email;
-	$_SESSION[$guid]['gplusuer'] = $user;
+	$session->get('gplusuer') = $user;
 
 	try {
 		$data = array("email"=>$email);
@@ -147,8 +147,8 @@ if (isset($authUrl)){
 	}
 	catch(PDOException $e) {}
 
-    $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
-    $gibboni18nID = $_SESSION[$guid]['i18n']['gibboni18nID'];
+    $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+    $gibboni18nID = $session->get('i18n')['gibboni18nID'];
 
     // If available, load school year and language from state passed back from OAuth redirect
     if (isset($_GET['state']) && stripos($_GET['state'], ':') !== false) {
@@ -157,9 +157,9 @@ if (isset($authUrl)){
 
 	//Test to see if email exists in logintable
 	if ($result->rowCount() != 1) {
-        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $email, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
-        unset($_SESSION[$guid]['googleAPIAccessToken'] );
-		unset($_SESSION[$guid]['gplusuer']);
+        setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, null, 'Google Login - Failed', array('username' => $email, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
+        unset($session->get('googleAPIAccessToken') );
+		unset($session->get('gplusuer'));
  		session_destroy();
 		$_SESSION[$guid] = NULL;
 		$URL = "../../index.php?loginReturn=fail8";
@@ -177,8 +177,8 @@ if (isset($authUrl)){
 
 	//Test to see if gmail matches email in gibbon
 	if ($result->rowCount() != 1) {
-		unset($_SESSION[$guid]['googleAPIAccessToken'] );
-		unset($_SESSION[$guid]['gplusuer']);
+		unset($session->get('googleAPIAccessToken') );
+		unset($session->get('gplusuer'));
 		@session_destroy();
 		$_SESSION[$guid] = NULL;
         $URL = "../../index.php?loginReturn=fail8";
@@ -187,7 +187,7 @@ if (isset($authUrl)){
 	}
 	else {
         $row = $result->fetch();
-        
+
         // Get primary role info
         $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
         $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
@@ -195,8 +195,8 @@ if (isset($authUrl)){
 
         // Insufficient privileges to login
         if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
-            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-            unset($_SESSION[$guid]['gplusuer']);
+            unset($session->get('googleAPIAccessToken') );
+            unset($session->get('gplusuer'));
             @session_destroy();
             $URL = "../../index.php?loginReturn=fail2";
             header("Location: {$URL}");
@@ -217,16 +217,16 @@ if (isset($authUrl)){
                 // Raise a new notification event
                 $event = new NotificationEvent('User Admin', 'Login - Failed');
 
-                $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
+                $event->addRecipient($session->get('organisationAdministrator'));
                 $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
                 $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
 
                 $event->sendNotifications($pdo, $gibbon->session);
 			}
 
-            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
-            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-            unset($_SESSION[$guid]['gplusuer']);
+            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
+            unset($session->get('googleAPIAccessToken') );
+            unset($session->get('gplusuer'));
             @session_destroy();
             $URL = "../../index.php?loginReturn=fail6";
 			header("Location: {$URL}");
@@ -235,26 +235,26 @@ if (isset($authUrl)){
 
 		if ($row["passwordForceReset"] == "Y") {
             // Sends the user to the password reset page after login
-            $_SESSION[$guid]['passwordForceReset'] = 'Y';
+            $session->get('passwordForceReset') = 'Y';
 		}
 
 
 		if ($row["gibbonRoleIDPrimary"] == "" OR count(getRoleList($row["gibbonRoleIDAll"], $connection2)) == 0) {
 			//FAILED TO SET ROLES
-            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
-            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-            unset($_SESSION[$guid]['gplusuer']);
+            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
+            unset($session->get('googleAPIAccessToken') );
+            unset($session->get('gplusuer'));
             @session_destroy();
             $URL = "../../index.php?loginReturn=fail2";
 			header("Location: {$URL}");
 			exit;
 		} else {
             //Allow for non-current school years to be specified
-            if ($gibbonSchoolYearID != $_SESSION[$guid]['gibbonSchoolYearID']) {
+            if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
                 if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
-                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                    unset($_SESSION[$guid]['googleAPIAccessToken'] );
-                    unset($_SESSION[$guid]['gplusuer']);
+                    setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                    unset($session->get('googleAPIAccessToken') );
+                    unset($session->get('gplusuer'));
                     session_destroy();
                     $_SESSION[$guid] = NULL;
                     $URL = "../../index.php?loginReturn=fail9";
@@ -278,28 +278,28 @@ if (isset($authUrl)){
                     //Else get year details
                     else {
                         $rowYear = $resultYear->fetch();
-                        if ($row['futureYearsLogin'] != 'Y' and $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'] < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-                            unset($_SESSION[$guid]['gplusuer']);
+                        if ($row['futureYearsLogin'] != 'Y' and $session->get('gibbonSchoolYearSequenceNumber') < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+                            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                            unset($session->get('googleAPIAccessToken') );
+                            unset($session->get('gplusuer'));
                             session_destroy();
                             $_SESSION[$guid] = NULL;
                             $URL = "../../index.php?loginReturn=fail9";
                             header("Location: {$URL}");
                             exit;
-                        } elseif ($row['pastYearsLogin'] != 'Y' and $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'] > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-                            unset($_SESSION[$guid]['gplusuer']);
+                        } elseif ($row['pastYearsLogin'] != 'Y' and $session->get('gibbonSchoolYearSequenceNumber') > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+                            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                            unset($session->get('googleAPIAccessToken') );
+                            unset($session->get('gplusuer'));
                             session_destroy();
                             $_SESSION[$guid] = NULL;
                             $URL = "../../index.php?loginReturn=fail9";
                             header("Location: {$URL}");
                             exit;
                         } else { //ALLOWED
-                            $_SESSION[$guid]['gibbonSchoolYearID'] = $rowYear['gibbonSchoolYearID'];
-                            $_SESSION[$guid]['gibbonSchoolYearName'] = $rowYear['name'];
-                            $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'] = $rowYear['sequenceNumber'];
+                            $session->get('gibbonSchoolYearID') = $rowYear['gibbonSchoolYearID'];
+                            $session->get('gibbonSchoolYearName') = $rowYear['name'];
+                            $session->get('gibbonSchoolYearSequenceNumber') = $rowYear['sequenceNumber'];
                         }
                     }
                 }
@@ -310,8 +310,8 @@ if (isset($authUrl)){
 		$gibbon->session->createUserSession($username, $row);
 
         // If user has personal language set, load it
-        if (!empty($_SESSION[$guid]['gibboni18nIDPersonal']) && $gibboni18nID == $_SESSION[$guid]['i18n']['gibboni18nID']) {
-            $gibboni18nID = $_SESSION[$guid]['gibboni18nIDPersonal'];
+        if (!empty($session->get('gibboni18nIDPersonal')) && $gibboni18nID == $session->get('i18n')['gibboni18nID']) {
+            $gibboni18nID = $session->get('gibboni18nIDPersonal');
         }
 
         // Allow for non-system default language to be specified (from login form or personal)
@@ -339,9 +339,9 @@ if (isset($authUrl)){
 
 		//Set Goolge API refresh token where appropriate, and update user
 		if (!empty($refreshToken)) {
-			$_SESSION[$guid]["googleAPIRefreshToken"] = $refreshToken;
+			$session->get("googleAPIRefreshToken") = $refreshToken;
 			try {
-				$data = array( "googleAPIRefreshToken"=> $_SESSION[$guid]["googleAPIRefreshToken"], "username"=> $username );
+				$data = array( "googleAPIRefreshToken"=> $session->get("googleAPIRefreshToken"), "username"=> $username );
 				$sql = "UPDATE gibbonPerson SET googleAPIRefreshToken=:googleAPIRefreshToken WHERE username=:username";
 				$result = $connection2->prepare($sql);
 				$result->execute($data);
@@ -358,16 +358,16 @@ if (isset($authUrl)){
         }
 
         //The final reckoning...does email match?
-		if (isset($_SESSION[$guid]["username"])) { //YES!
-            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, $row['gibbonPersonID'], 'Google Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
+		if (isset($session->get("username"))) { //YES!
+            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Google Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
             $URL = "../../index.php";
     		header("Location: {$URL}");
     		exit;
 		}
 		else { //NO
-            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], null, null, 'Google Login - Failed', array('username' => $username, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
-            unset($_SESSION[$guid]['googleAPIAccessToken'] );
-			unset($_SESSION[$guid]['gplusuer']);
+            setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, null, 'Google Login - Failed', array('username' => $username, 'reason' => 'No matching email found', 'email' => $email), $_SERVER['REMOTE_ADDR']);
+            unset($session->get('googleAPIAccessToken') );
+			unset($session->get('gplusuer'));
 			session_destroy();
 			$_SESSION[$guid] = NULL;
             $URL = "../../index.php?loginReturn=fail8";
@@ -378,8 +378,8 @@ if (isset($authUrl)){
 
 
     if (isset($_GET['logout'])) {
-      unset($_SESSION[$guid]['googleAPIAccessToken'] );
-      unset($_SESSION[$guid]['gplusuer']);
+      unset($session->get('googleAPIAccessToken') );
+      unset($session->get('gplusuer'));
 
       session_destroy();
       header('Location: http://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']); // it will simply destroy the current seesion which you started before

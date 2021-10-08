@@ -221,7 +221,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
                     $enableHomeScreenWidget = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
                     if ($enableHomeScreenWidget == 'Y') {
-                        $unpinnedMessages = array_reduce($_SESSION[$guid]['messageWallArray'], function ($group, $item) {
+                        $unpinnedMessages = array_reduce($session->get('messageWallArray'), function ($group, $item) {
                             if ($item['messageWallPin'] == 'N') {
                                 $group[$item['gibbonMessengerID']] = $item;
                             }
@@ -372,7 +372,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 echo '</h2>';
 
                 $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
-                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($_SESSION[$guid]['gibbonSchoolYearID'], $this->session->get('gibbonPersonID'))->fetchAll();
+                $deadlines = $plannerGateway->selectUpcomingHomeworkByStudent($session->get('gibbonSchoolYearID'), $this->session->get('gibbonPersonID'))->fetchAll();
 
                 echo $this->getContainer()->get('page')->fetchFromTemplate('ui/upcomingDeadlines.twig.html', [
                     'gibbonPersonID' => $this->session->get('gibbonPersonID'),

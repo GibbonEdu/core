@@ -293,7 +293,7 @@ use Gibbon\Services\Format;
                                     echo __('Unmarked').'<br/>';
                                 }
                                 echo $rowEntry['type'];
-                                if ($rowEntry['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowEntry['attachment'])) {
+                                if ($rowEntry['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowEntry['attachment'])) {
                                     echo " | <a 'title='Download more information' href='".$session->get('absoluteURL').'/'.$rowEntry['attachment']."'>More info</a>";
                                 }
                                 echo '</span><br/>';

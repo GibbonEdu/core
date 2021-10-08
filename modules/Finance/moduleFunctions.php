@@ -71,8 +71,8 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $return .= '</th>';
         $return .= '<th>';
         $return .= __('Amount').'<br/>';
-        if ($_SESSION[$guid]['currency'] != '') {
-            $return .= "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
+        if ($session->get('currency') != '') {
+            $return .= "<span style='font-style: italic; font-size: 85%'>".$session->get('currency').'</span>';
         }
         $return .= '</th>';
         $return .= '<th>';
@@ -111,8 +111,8 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
                 $return .= '</td>';
                 $return .= '<td>';
                 $paymentTotal += $row['amount'];
-                if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                    $return .= substr($_SESSION[$guid]['currency'], 4).' ';
+                if (substr($session->get('currency'), 4) != '') {
+                    $return .= substr($session->get('currency'), 4).' ';
                 }
                 $return .= number_format($row['amount'], 2, '.', ',');
                 $return .= '</td>';
@@ -137,8 +137,8 @@ function getPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $gib
         $return .= '<b>'.__('Total Payment On This Invoice:').'</b>';
         $return .= '</td>';
         $return .= '<td>';
-        if (substr($_SESSION[$guid]['currency'], 4) != '') {
-            $return .= substr($_SESSION[$guid]['currency'], 4).' ';
+        if (substr($session->get('currency'), 4) != '') {
+            $return .= substr($session->get('currency'), 4).' ';
         }
         $return .= '<b>'.number_format($paymentTotal, 2, '.', ',').'</b>';
         $return .= '</td>';
@@ -157,7 +157,7 @@ function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $typ
     if ($timestamp == null) {
         $timestamp = date('Y-m-d H:i:s');
     }
-    $gibbonPersonID = !empty($_SESSION[$guid]['gibbonPersonID']) ? $_SESSION[$guid]['gibbonPersonID'] : null;
+    $gibbonPersonID = !empty($session->get('gibbonPersonID')) ? $session->get('gibbonPersonID') : null;
 
     try {
         $data = array('foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID, 'gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'status' => $status, 'amount' => $amount, 'gateway' => $gateway, 'onlineTransactionStatus' => $onlineTransactionStatus, 'paymentToken' => $paymentToken, 'paymentPayerID' => $paymentPayerID, 'paymentTransactionID' => $paymentTransactionID, 'paymentReceiptID' => $paymentReceiptID, 'timestamp' => $timestamp);
@@ -255,7 +255,7 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
     }
 
 
-    
+
 }
 
 //Checks a certain expense request, and returns FALSE on error, TRUE if specified person can approve it.
@@ -485,7 +485,7 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
         }
     }
 
-    
+
 }
 
 //Returns all budgets a person is linked to, as well as their access rights to that budget
@@ -553,7 +553,7 @@ function getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    
+
         $dataCycle = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sqlCycle = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $resultCycle = $connection2->prepare($sqlCycle);
@@ -571,14 +571,14 @@ function getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    
+
         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        
+
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber<:sequenceNumber ORDER BY sequenceNumber DESC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
@@ -597,14 +597,14 @@ function getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2)
 {
     $output = false;
 
-    
+
         $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
         $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowcount() == 1) {
         $row = $result->fetch();
-        
+
             $dataPrevious = array('sequenceNumber' => $row['sequenceNumber']);
             $sqlPrevious = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
             $resultPrevious = $connection2->prepare($sqlPrevious);
@@ -636,11 +636,11 @@ function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFe
 					if ($("#blockInner<?php echo $i ?>").is(":visible")) {
 						$("#blockInner<?php echo $i ?>").css("display","none");
 						$("#block<?php echo $i ?>").css("height","72px")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\'"?>)");
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\'"?>)");
 					} else {
 						$("#blockInner<?php echo $i ?>").slideDown("fast", $("#blockInner<?php echo $i ?>").css("display","table-row"));
 						$("#block<?php echo $i ?>").css("height","auto")
-						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/minus.png\'"?>)");
+						$('#show<?php echo $i ?>').css("background-image", "<?php echo "url(\'".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/minus.png\'"?>)");
 					}
 				});
 
@@ -663,7 +663,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFe
                             ?>
                             <select name="gibbonFinanceFeeCategoryID<?php echo $i ?>" id="gibbonFinanceFeeCategoryID<?php echo $i ?>" style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; margin-top: 2px; font-size: 110%; font-style: italic; width: 250px'>
                                 <?php
-                                
+
                                     $dataSelect = array();
                                     $sqlSelect = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
                                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -689,7 +689,7 @@ function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFe
                             <?php
                         }
                         ?>
-						<input <?php if ($feeType == 'Standard') { echo 'readonly'; } ?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px;  margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if (!($mode == 'add' and $feeType == 'Ad Hoc')) { echo htmlPrep($fee); } ?>' placeholder='<?php echo __('Value'); if ($_SESSION[$guid]['currency'] != '') { echo ' ('.$_SESSION[$guid]['currency'].')'; } ?>'>
+						<input <?php if ($feeType == 'Standard') { echo 'readonly'; } ?> maxlength=13 id='fee<?php echo $i ?>' name='fee<?php echo $i ?>' type='text' style='float: none; border: 1px dotted #aaa; background: none; margin-left: 3px;  margin-top: 2px; font-size: 110%; font-style: italic; width: 95px' value='<?php if (!($mode == 'add' and $feeType == 'Ad Hoc')) { echo htmlPrep($fee); } ?>' placeholder='<?php echo __('Value'); if ($session->get('currency') != '') { echo ' ('.$session->get('currency').')'; } ?>'>
 						<script type="text/javascript">
 							var fee<?php echo $i ?>=new LiveValidation('fee<?php echo $i ?>');
 							fee<?php echo $i ?>.add(Validate.Presence);
@@ -699,8 +699,8 @@ function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFe
 					<td style='text-align: right; width: 30%'>
 						<div style='margin-bottom: 5px'>
 							<?php
-                            echo "<img id='delete$i' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
-							echo "<div id='show$i'  title='".__('Show/Hide')."' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
+                            echo "<img id='delete$i' title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/> ";
+							echo "<div id='show$i'  title='".__('Show/Hide')."' style='margin-top: -1px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png\"); background-repeat: no-repeat'></div></br>";
 							?>
 						</div>
 						<?php
@@ -1026,8 +1026,8 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
                 $return .= '</h3>';
                 $return .= '<p>';
                 if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
-                    $return .= sprintf(__('Payment can be made by credit card, using our secure %2$s payment gateway. When you press Pay Now below, you will be directed to a %1$s page from where you can use %2$s in order to make payment. You can continue with payment through %1$s whether you are logged in or not. During this process we do not see or store your credit card details.'), $_SESSION[$guid]['systemName'], $paymentGateway).' ';
-                    $return .= "<a style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_payOnline.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=".$row['key']."'>".__('Pay Now').'.</a>';
+                    $return .= sprintf(__('Payment can be made by credit card, using our secure %2$s payment gateway. When you press Pay Now below, you will be directed to a %1$s page from where you can use %2$s in order to make payment. You can continue with payment through %1$s whether you are logged in or not. During this process we do not see or store your credit card details.'), $session->get('systemName'), $paymentGateway).' ';
+                    $return .= "<a style='font-weight: bold' href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_payOnline.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&key=".$row['key']."'>".__('Pay Now').'.</a>';
                 } else {
                     $return .= "<div class='warning'>".__('Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.').'</div>';
                 }
