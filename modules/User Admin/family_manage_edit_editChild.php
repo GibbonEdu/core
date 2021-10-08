@@ -33,9 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
         ->add(__('Edit Child'));  
 
     //Check if gibbonPersonID and gibbonFamilyID specified
-    $gibbonFamilyID = $_GET['gibbonFamilyID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $search = $_GET['search'];
+    $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $search = $_GET['search'] ?? '';
     if ($gibbonPersonID == '' or $gibbonFamilyID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

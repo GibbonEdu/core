@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
 } else {
     //Proceed!
     //Check if gibbonPersonID specified
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
