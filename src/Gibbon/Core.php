@@ -101,9 +101,9 @@ class Core
         $this->locale->setTextDomain($db);
         $this->locale->setStringReplacementList($this->session, $db);
 
-        // Update the information for this session
-        if ($this->session->has('address')) {
-            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'));
+        // Update the information for this session (except in ajax scripts)
+        if (stripos($this->session->get('action'), 'ajax') === false) {
+            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('gibbonPersonID'));
         }
 
         $this->initialized = true;

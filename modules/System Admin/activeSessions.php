@@ -72,20 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     $table->addColumn('timestampCreated', __('Duration'))
         ->format(Format::using('relativeTime', ['timestampCreated', true, false]));
 
+    $table->addColumn('timestampActive', __('Last Active'))
+        ->format(Format::using('relativeTime', ['timestampModified', true, false]));
+
     $table->addColumn('timestampModified', __('Last Updated'))
         ->format(Format::using('dateTime', 'timestampModified'));
-    
-
-
-    // $table->addActionColumn()
-    //     ->addParam('gibbonSessionID')
-    //     ->format(function ($values, $actions) {
-    //         $actions->addAction('edit', __('Edit'))
-    //             ->setURL('/modules/System Admin/customFields_edit.php');
-    //         $actions->addAction('delete', __('Delete'))
-    //             ->setURL('/modules/System Admin/customFields_delete.php');
-            
-    //     });
         
     echo $table->render($sessions);
 }

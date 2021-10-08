@@ -58,10 +58,10 @@ class SessionGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function updateSessionAction($gibbonSessionID, $actionName)
+    public function updateSessionAction($gibbonSessionID, $actionName, $gibbonPersonID)
     {
-        $data = ['gibbonSessionID' => $gibbonSessionID, 'actionName' => $actionName, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];
-        $sql = "INSERT INTO gibbonSession (gibbonSessionID, gibbonActionID, timestampCreated, timestampModified) VALUES (:gibbonSessionID, (SELECT gibbonActionID FROM gibbonAction WHERE FIND_IN_SET(:actionName, URLList) AND :actionName <> '' LIMIT 1), :timestampCreated, :timestampModified) ON DUPLICATE KEY UPDATE gibbonActionID=VALUES(gibbonActionID), timestampModified=:timestampModified";
+        $data = ['gibbonSessionID' => $gibbonSessionID, 'gibbonPersonID' => $gibbonPersonID, 'actionName' => $actionName, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];
+        $sql = "INSERT INTO gibbonSession (gibbonSessionID, gibbonPersonID, gibbonActionID, timestampCreated, timestampModified) VALUES (:gibbonSessionID, :gibbonPersonID, (SELECT gibbonActionID FROM gibbonAction WHERE FIND_IN_SET(:actionName, URLList) AND :actionName <> '' LIMIT 1), :timestampCreated, :timestampModified) ON DUPLICATE KEY UPDATE gibbonActionID=VALUES(gibbonActionID), timestampModified=:timestampModified";
 
         return $this->db()->update($sql, $data);
     }

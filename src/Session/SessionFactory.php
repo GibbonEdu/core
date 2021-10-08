@@ -82,7 +82,7 @@ class SessionFactory
         // TODO: replace this logic when switching to routing.
         $address = $_GET['q'] ?? $_POST['address'] ?? '';
         $module = $address ? getModuleName($address) : '';
-        $action = $address ? getActionName($address) : '';
+        $action = $address ? getActionName($address) : basename($_SERVER['PHP_SELF']);
 
         // Create the instance from information of container
         // and environment.
