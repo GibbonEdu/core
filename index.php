@@ -223,8 +223,7 @@ if (!empty($_GET['sidebar'])) {
 /**
  * SESSION TIMEOUT
  *
- * Set session duration, which will be passed via JS config to setup the
- * session timeout. Ensures a minimum session duration of 1200.
+ * Set session duration, and ensures a minimum session duration of 1200.
  */
 $sessionDuration = -1;
 if ($isLoggedIn) {
@@ -293,13 +292,6 @@ $javascriptConfig = [
         ],
         'tinymce' => [
             'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
-        ],
-        'sessionTimeout' => [
-            'message' => __('Your session is about to expire: you will be logged out shortly.'),
-            'logOutBtnText' => __('Log Out Now'),
-            'sessionDuration' => $sessionDuration,
-            'stayConnectedBtnText' => __('Stay Connected'),
-            'titleText' => __('Session Timetout'),
         ]
     ],
 ];
@@ -327,7 +319,6 @@ $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
-    'session-timeout' => 'lib/session-timeout/dist/session-timeout.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
 
@@ -559,8 +550,11 @@ if (!$session->has('address')) {
     // Welcome message
     if (!$isLoggedIn) {
         // Create auto timeout message
-        if (isset($_GET['timeout']) && $_GET['timeout'] == 'true') {
-            $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
+        if (isset($_GET['timeout'])) {
+            $page->addWarning(
+                $_GET['timeout'] == 'force' 
+                    ? __('You have been manually logged out of {system} by a system administrator.', ['system' => $session->get('systemName')])
+                    : __('Your session expired, so you were automatically logged out of the system.'));
         }
 
         $templateData = [

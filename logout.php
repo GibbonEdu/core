@@ -23,8 +23,8 @@ use Gibbon\Domain\System\SessionGateway;
 require_once './gibbon.php';
 
 $URL = './index.php';
-if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
-    $URL = './index.php?timeout=true';
+if (isset($_GET['timeout'])) {
+    $URL = './index.php?timeout='.$_GET['timeout'];
 }
 
 // Update current session to detach it from this user
