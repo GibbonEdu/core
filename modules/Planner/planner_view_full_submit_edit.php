@@ -119,9 +119,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
+                    $gibbonPersonID = '';
+                    $gibbonPlannerEntryHomeworkID = '';
+
                     if ($_GET['submission'] == 'true') {
                         $submission = true;
-                        $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+                        $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'] ?? '';
                     } else {
                         $submission = false;
                         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
