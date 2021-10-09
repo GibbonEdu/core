@@ -233,6 +233,16 @@ class Installer
         return $return_row ? $row : $row['value'];
     }
 
+    /**
+     * Get the Gibbon person record by gibbonPersonID.
+     *
+     * @version v23
+     * @since   v23
+     *
+     * @param int|string $id  The gibbonPersonID for the person.
+     *
+     * @return array|null  The row of gibbon person data, or null if there is no data.
+     */
     public function getGibbonPerson($id)
     {
         $statement = $this->getPDO()->prepare('SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID');
