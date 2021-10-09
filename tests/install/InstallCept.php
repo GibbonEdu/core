@@ -1,5 +1,10 @@
 <?php
 
+use Gibbon\Install\Config;
+use Gibbon\Install\Installer;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
 try {
     $I = new InstallTester($scenario);
     $I->wantTo('install Gibbon');
@@ -17,7 +22,7 @@ try {
 
     // STEP 2 --------------------------------------
     $I->see('Installation - Step 2', 'h2');
-    
+
 
     $I->fillField('databaseServer', getenv('DB_HOST'));
     $I->fillField('databaseName', getenv('DB_NAME'));
@@ -60,4 +65,18 @@ try {
 } catch (Exception $e) {
     codecept_debug($I->grabTextFrom('body'));
     throw $e;
+}
+
+// Connect to database by connection.
+$template = new Environment(new FilesystemLoader(__DIR__ . '/../../resources/templates'));
+$config = Config::fromFile(__DIR__ . '/../../config.php');
+$installer = new Installer($template);
+$installer->useConfigConnection($config);
+
+if (empty($installer->getSetting('absoluteURL'))) {
+    throw new \Exception('Expected absoluteURL to be not empty.');
+}
+
+if (empty($installer->getSetting('absolutePath'))) {
+    throw new \Exception('Expected absolutePath to be not empty.');
 }
