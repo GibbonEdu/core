@@ -48,9 +48,11 @@ $step = min(max($step, 0), 3);
 if (empty($step)) {
     $step = 0;
     $guid = Config::randomGuid();
+    error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
 } else {
     $guid = $_POST['guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
+    error_log(sprintf('Installer: Step %s: Using guid from $_POST: %s', var_export($step, true), isset($_POST['guid']) ? var_export($_POST['guid'], true): 'undefined'));
 }
 
  /**
@@ -130,6 +132,7 @@ try {
         if (!empty($sessionNonce[$step]) && $sessionNonce[$step] == $checkNonce) {
             unset($sessionNonce[$step]);
         } else {
+            error_log(sprintf('Debug: expected nonce %s, got %s', var_export($sessionNonce[$step], true), var_export($checkNonce, true)));
             throw new \Exception(__('Your request failed because you do not have access to this action.'));
         }
     }
