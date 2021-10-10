@@ -262,9 +262,10 @@ class HttpInstallController
 
     public function viewStepTwo(
         string $locale_code,
-        string $nonce
+        NonceService $nonceService
     ): string
     {
+        $nonce = $nonceService->create('install:setDbConfig');
         $step = 1;
         $languageInstalled = !i18nFileExists($this->gibbon->session->get('absolutePath'), $locale_code)
             ? i18nFileInstall($this->gibbon->session->get('absolutePath'), $locale_code)
@@ -339,7 +340,7 @@ class HttpInstallController
         $context->validateConfigPath();
 
         // Get and set database variables (not set until step 1)
-        $config = static::parseConfigSubmission($guid, $_POST);
+        $config = static::parseConfigSubmission($guid, $data);
 
         // Initialize database for the installer with the config data.
         $installer->useConfigConnection($config);

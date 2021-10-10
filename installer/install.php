@@ -119,27 +119,17 @@ try {
         }
 
         // Show the form to input database options.
-        echo $controller->viewStepTwo($locale_code, $nonceService->create('step:1'));
+        echo $controller->viewStepTwo($locale_code, $nonceService);
     } elseif ($step == 2) {
-        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:1')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controller->handleStepTwoSubmit(
+                $context,
+                $installer,
+                $nonceService,
+                $guid,
+                $_POST
+            );
         }
-
-        // Check for the presence of a config file (if it hasn't been created yet)
-        $context->validateConfigPath();
-
-        // Get and set database variables (not set until step 1)
-        $config = HttpInstallController::parseConfigSubmission($guid, $_POST);
-
-        // Initialize database for the installer with the config data.
-        $installer->useConfigConnection($config);
-
-        // Create and check existance of the config file.
-        $installer->createConfigFile($context, $config);
-
-        // Run database installation of the config if (1) and (2) are
-        // successful.
-        $installer->install($context, $config);
 
         // Render step 3 form.
         echo $controller->viewStepThree(
