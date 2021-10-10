@@ -112,10 +112,10 @@ try {
     if ($step == 0) {
         // Validate the installation context and show warning.
         // If suitable for installation, show form to choose language.
-        echo $controller->viewStepOne($nonceService->create('step:0'), $gibbon->getConfig('version'));
+        echo $controller->viewStepOne($nonceService, $gibbon->getConfig('version'));
     } else if ($step == 1) {
-        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:0')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controller->handleStepOneSubmit($nonceService, $_POST);
         }
 
         // Show the form to input database options.

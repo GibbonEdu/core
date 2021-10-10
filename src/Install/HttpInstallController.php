@@ -146,10 +146,11 @@ class HttpInstallController
      * @return string
      */
     public function viewStepOne(
-        string $nonce,
+        NonceService $nonceService,
         string $version
     ): string
     {
+        $nonce = $nonceService->create('install:setLocale');
         $step = isset($_GET['step']) ? intval($_GET['step']) : 0;
         $step = min(max($step, 0), 3);
 
