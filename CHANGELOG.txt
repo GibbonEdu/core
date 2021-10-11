@@ -32,7 +32,7 @@ v23.0.00
         System: in forms, update the current country phone code to always display first
         System: fixed typo in Public Registration notification
         System: updated the mobile responsive view to display alerts above the login form
-        System: refactored $_SESSION calls in functions.php and moduleFunctions.php (up to Markbook)
+        System: refactored all remaining $_SESSION calls across the system
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
         Library: added student Form Group to View Overdue Items report

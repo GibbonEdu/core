@@ -36,5 +36,4 @@ $session->forget('gplusuer');
 
 session_destroy();
 
-$_SESSION[$guid] = null;
 header("Location: {$URL}");

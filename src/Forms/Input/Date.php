@@ -71,10 +71,10 @@ class Date extends TextField
      */
     public function getLabelContext($label)
     {
-        global $guid;
+        global $guid, $session;
 
         if (stristr($label->getDescription(), 'Format') === false) {
-            return __('Format').': '.$_SESSION[$guid]['i18n']['dateFormat'];
+            return __('Format').': '.$session->get('i18n')['dateFormat'];
         }
 
         return false;
@@ -138,12 +138,12 @@ class Date extends TextField
      */
     protected function getElement()
     {
-        global $guid;
+        global $guid, $session;
 
         $validationFormat = '';
-        $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
-        $dateFormatRegex = $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-        
+        $dateFormat = $session->get('i18n')['dateFormat'];
+        $dateFormatRegex = $session->get('i18n')['dateFormatRegEx'];
+
         $this->setAttribute('autocomplete', 'off');
 
         if ($dateFormatRegex == '') {
