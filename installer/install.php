@@ -135,70 +135,28 @@ try {
         echo $controller->viewStepThree(
             $context,
             $installer,
-            $nonceService->create('step:2'),
+            $nonceService,
             $version
         );
     } elseif ($step == 3) {
-        if (!$nonceService->verify($_POST['nonce'] ?? '', 'step:2')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $result = $controller->handleStepThreeSubmit(
+                $container,
+                $context,
+                $installer,
+                $nonceService,
+                $version,
+                $_POST
+            );
         }
-
-        // Connect database according to config file information.
-        $config = Config::fromFile($context->getConfigPath());
-        $installer->useConfigConnection($config);
-        $config->setLocale($installer->getDefaultLocale()); // In case needed.
-
-        // parse the submission from POST.
-        try {
-            HttpInstallController::validateUserSubmission($_POST);
-            HttpInstallController::validatePostInstallSettingsSubmission($_POST);
-        } catch (\InvalidArgumentException $e) {
-            throw new \Exception(__('Installation cannot proceed. {reason}', ['reason' => $e->getMessage()]));
-        }
-
-        // Write the submitted user to database.
-        try {
-            $user = HttpInstallController::parseUserSubmission($_POST);
-            $installer->createUser($user);
-        } catch (\PDOException $e) {
-            throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and %1$stry again%2$s.', ["<a href='./install.php'>", '</a>']));
-        }
-
-        // Set the new user as teaching staff.
-        try {
-            $installer->setPersonAsStaff(1, 'Teaching');
-        } catch (\PDOException $e) {
-        }
-
-        // Parse all submitted settings and store to Gibbon database.
-        $settingsFail = false;
-        $settings = HttpInstallController::parsePostInstallSettings($_POST);
-        foreach ($settings as $scope => $scopeSettings) {
-            foreach ($scopeSettings as $key => $value) {
-                $settingsFail = $settingsFail || !$installer->setSetting($key, $value, $scope);
-            }
-        }
-
-        // If is cutting edge mode, run updater.
-        if ($installer->getSetting('cuttingEdgeCode') === 'Y') {
-            $updater = $container->get(Updater::class);
-            $errors = $updater->update();
-
-            if (!empty($errors)) {
-                echo Format::alert(__('Some aspects of your update failed.'));
-            }
-            $settingsFail = $settingsFail && !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
-        }
-
-        // Update DB version for existing languages (installed manually?)
-        i18nCheckAndUpdateVersion($container, $version);
 
         // Display step four (step three results with Gibbon
         // registration result).
         echo $controller->viewStepFour(
             $installer,
             $version,
-            $user
+            $_POST,
+            isset($result['user']) ? $result['user'] : null
         );
 
         if ($settingsFail == true) {

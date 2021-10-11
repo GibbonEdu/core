@@ -356,10 +356,11 @@ class HttpInstallController
     public function viewStepThree(
         Context $context,
         Installer $installer,
-        string $nonce,
+        NonceService $nonceService,
         string $version
     )
     {
+        $nonce = $nonceService->create('install:postInstallSettings');
         $step = 2;
 
         // Connect database according to config file information.
@@ -574,7 +575,7 @@ class HttpInstallController
         NonceService $nonceService,
         string $version,
         array $data
-    )
+    ): array
     {
         if (!$nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings')) {
             throw new \Exception(__('Your request failed because you do not have access to this action.'));
@@ -629,12 +630,15 @@ class HttpInstallController
 
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
+
+        return ['user' => $user];
     }
 
     public function viewStepFour(
         Installer $installer,
         string $version,
-        array $user
+        array $data,
+        ?array $user
     ) {
         $step = 3;
         $output = '';
@@ -674,7 +678,7 @@ class HttpInstallController
         }
 
         //Deal with request to receive welcome email by calling gibbonedu.org iframe
-        $support = isset($_POST['support']) and $_POST['support'] == 'true';
+        $support = isset($data['support']) and $data['support'] == 'true';
         if ($support == true) {
             // TODO: ideally, this should be an HTTP call in backend instead of
             // an iframe in the frontend.
