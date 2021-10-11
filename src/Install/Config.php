@@ -235,40 +235,6 @@ class Config
     }
 
     /**
-     * Set if the demo data should be installed along
-     *
-     * @param boolean $flag
-     *   True if wanted to install demo data. False if not.
-     *
-     * @return self
-     */
-    public function setFlagDemoData(bool $flag)
-    {
-        $this->flagDemoData = $flag;
-        return $this;
-    }
-
-    /**
-     * Check if the demo data flag is manually set.
-     *
-     * @return boolean
-     */
-    public function hasFlagDemoData()
-    {
-        return $this->flagDemoData !== null;
-    }
-
-    /**
-     * Get the current demo data installation flag. Default false.
-     *
-     * @return boolean|null
-     */
-    public function getFlagDemoData()
-    {
-        return $this->flagDemoData;
-    }
-
-    /**
      * Set the locale code for the installation.
      *
      * @param boolean $flag

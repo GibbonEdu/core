@@ -371,6 +371,9 @@ class HttpInstallController
         // Get and set database variables (not set until step 1)
         $config = static::parseConfigSubmission($guid, $data);
 
+        // Check if demo data should be installed.
+        $shouldInstallDemoData = static::parseDemoDataInstallFlag($data);
+
         // Initialize database for the installer with the config data.
         $installer->useConfigConnection($config);
 
@@ -379,7 +382,7 @@ class HttpInstallController
 
         // Run database installation of the config if (1) and (2) are
         // successful.
-        $installer->install($context, $config);
+        $installer->install($context, $config, $shouldInstallDemoData);
     }
 
     /**
@@ -801,7 +804,6 @@ class HttpInstallController
                 $data['databaseUsername'] ?? '',
                 $data['databasePassword'] ?? ''
             )
-            ->setFlagDemoData(($data['demoData'] ?? '') === 'Y')
             ->setLocale($data['code'] ?? 'en_GB');
 
         if (!$config->hasDatabaseInfo()) {

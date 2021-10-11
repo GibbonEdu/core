@@ -363,7 +363,7 @@ class Installer
      *
      * @throws \Exception
      */
-    public function install(Context $context, Config $config): Installer
+    public function install(Context $context, Config $config, bool $shouldInstallDemoData): Installer
     {
         // Get internal connection.
         $pdo = $this->getPDO();
@@ -379,7 +379,7 @@ class Installer
         }
 
         // Try to install the demo data, report error but don't stop if any issues
-        if ($config->getFlagDemoData()) {
+        if ($shouldInstallDemoData) {
             try {
                 $sql = $this->getDemoSql($context);
                 $sql = static::removeSqlRemarks($sql);
