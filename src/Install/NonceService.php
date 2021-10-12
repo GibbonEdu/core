@@ -2,6 +2,8 @@
 
 namespace Gibbon\Install;
 
+use Gibbon\Install\Exception\ForbiddenException;
+
 /**
  * A simple service to create and verify nonce. To ensure
  * that a form submission is specific to certain time, action,
@@ -81,12 +83,15 @@ class NonceService
     /**
      * Verify that the nonce is generated from the token and action.
      *
-     * @param string      $nonce  Nonce to verify.
-     * @param string|null $action Optiona action string.
+     * @param string      $nonce        Nonce to verify.
+     * @param string|null $action       Optiona action string.
+     * @param bool        $throwOnError Throws ForbiddenException when failed to verify. Default: true.
      *
      * @return boolean If the nonce is generated from a token within tick.
+     *
+     * @throws \Gibbon\Install\Exception\ForbiddenException  Verification failed and $throwOnError is true.
      */
-    public function verify(string $nonce, ?string $action = null): bool
+    public function verify(string $nonce, ?string $action = null, bool $throwOnError = true): bool
     {
         $tick = static::getTick();
 
@@ -94,6 +99,11 @@ class NonceService
         if ($this->create($action, $tick) === $nonce) return true;
 
         // Nonce generated 12-24 hours ago.
-        return $this->create($action, $tick - 1) === $nonce;
+        if ($this->create($action, $tick - 1) === $nonce) return true;
+
+        if ($throwOnError) {
+            throw new ForbiddenException('nonce check failed');
+        }
+        return false;
     }
 }

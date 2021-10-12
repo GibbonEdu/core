@@ -23,11 +23,11 @@ class NonceServiceTest extends TestCase {
     {
         $nonceService = new NonceService($this->token);
         $nonce = $nonceService->create();
-        $this->assertTrue($nonceService->verify($nonce), 'Can verify its own nonce.');
+        $this->assertTrue($nonceService->verify($nonce, null, false), 'Can verify its own nonce.');
 
         // another nonceService with a slightly different token
         $nonceService = new NonceService($this->token . 'abcd');
-        $this->assertFalse($nonceService->verify($nonce), 'Cannot verify nonce from another nonce service.');
+        $this->assertFalse($nonceService->verify($nonce, null, false), 'Cannot verify nonce from another nonce service.');
     }
 }
 

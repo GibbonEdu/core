@@ -270,9 +270,7 @@ class HttpInstallController
         array $data
     )
     {
-        if (!$nonceService->verify($data['nonce'] ?? '', 'install:locale')) {
-            throw new ForbiddenException('nonce check failed.');
-        }
+        $nonceService->verify($data['nonce'] ?? '', 'install:locale');
 
         // Install locale
         $installLocale = $data['code'] ?? 'en_GB';
@@ -359,6 +357,7 @@ class HttpInstallController
      *
      * @return void
      *
+     * @throws ForbiddenException
      * @throws \Exception
      */
     public function handleStepTwoSubmit(
@@ -370,9 +369,7 @@ class HttpInstallController
         array $data
     )
     {
-        if (!$nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
-        }
+        $nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
@@ -642,6 +639,7 @@ class HttpInstallController
      *
      * @return void
      *
+     * @throws ForbiddenException
      * @throws \Exception
      */
     public function handleStepThreeSubmit(
@@ -653,9 +651,7 @@ class HttpInstallController
         array $data
     )
     {
-        if (!$nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
-        }
+        $nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
