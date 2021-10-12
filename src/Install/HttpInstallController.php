@@ -653,7 +653,6 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
-        string $absoluteURL,
         string $version,
         array $data
     )
@@ -663,6 +662,7 @@ class HttpInstallController
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
         $installer->useConfigConnection($config);
+        $absoluteURL = $installer->getSetting('absoluteURL');
 
         // parse the submission from POST.
         try {
