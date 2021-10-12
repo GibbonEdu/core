@@ -157,7 +157,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $classes = false;
 
         if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-            $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&search='.$gibbonPersonID."'>".__('View Planner').'</a></span>';
+            $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParam('search', $gibbonPersonID)."'>".__('View Planner').'</a></span>';
 
             $date = date('Y-m-d');
             if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $this->session->get('username') != '') {
@@ -240,7 +240,14 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         }
                         $plannerOutput .= '</td>';
                         $plannerOutput .= '<td>';
-                        $plannerOutput .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&viewBy=date&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&date=$date&width=1000&height=550'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
+                        $plannerOutput .= "<a href='" . Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
+                            'search' => $gibbonPersonID,
+                            'viewBy' => 'date',
+                            'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
+                            'date' => $date,
+                            'width' => 1000,
+                            'height' => 550,
+                        ]) . "'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a> ";
                         $plannerOutput .= '</td>';
                         $plannerOutput .= '</tr>';
                     }
@@ -258,7 +265,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $grades = false;
 
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php')) {
+<<<<<<< HEAD
             $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__('View Markbook').'</a></span></div>';
+=======
+            $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='" . Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('search', $gibbonPersonID) . "'>".__('View Markbook').'</a></span></div>';
+>>>>>>> e47451504 (wip: add missing index.php routes)
 
             //Get settings
             $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -546,7 +557,12 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
 
             $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+<<<<<<< HEAD
             $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
+=======
+
+            $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('search', $gibbonPersonID)."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
+>>>>>>> e47451504 (wip: add missing index.php routes)
 
 
             $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
