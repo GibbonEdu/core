@@ -463,7 +463,7 @@ class HttpInstallController
 
         $row = $form->addRow();
             $row->addLabel('support', __('Receive Support?'))->description(__('Join our mailing list and recieve a welcome email from the team.'));
-            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked(($data['support'] ?? 'off') === 'on')->setID('support');
+            $row->addCheckbox('support')->description(__('Yes'))->setValue('on')->checked(empty($data) || isset($data['support']))->setID('support');
 
         $row = $form->addRow();
             $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
