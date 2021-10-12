@@ -142,19 +142,19 @@ class HttpInstallController
     /**
      * Render the view for step one.
      *
-     * @param string $nonce    The generated nonce for next step.
-     * @param string $version  The version to install.
+     * @param string $nonce      The generated nonce for next step.
+     * @param string $submitUrl  The url for form submission.
+     * @param string $version    The version to install.
      *
      * @return string
      */
     public function viewStepOne(
         NonceService $nonceService,
+        string $submitUrl,
         string $version
     ): string
     {
         $nonce = $nonceService->create('install:locale');
-        $step = isset($_GET['step']) ? intval($_GET['step']) : 0;
-        $step = min(max($step, 0), 3);
 
         //PROCEED
         $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -169,8 +169,8 @@ class HttpInstallController
 
         $readyToInstall = true;
 
-        $form = Form::create('installer', "./install.php?step=1");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form = Form::create('installer', $submitUrl);
+        $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
         $form->setClass('smallIntBorder w-full');
         $form->setMultiPartForm(static::getSteps(), 1);
 
@@ -289,20 +289,27 @@ class HttpInstallController
         }
     }
 
+    /**
+     * Interface to collect database configurations.
+     *
+     * @param NonceService $nonceService  The nonce checking service.
+     * @param string       $submitUrl     The url for form submission.
+     * @param array        $data          The previously submitted data.
+     * @return string
+     */
     public function viewStepTwo(
         NonceService $nonceService,
-        string $current_url,
+        string $submitUrl,
         array $data
     ): string
     {
         $nonce = $nonceService->create('install:setDbConfig');
-        $step = 1;
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
 
-        $form = Form::create('installer', "./install.php?step=2");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form = Form::create('installer', $submitUrl);
+        $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
         $form->setMultiPartForm(static::getSteps(), 2);
 
         $form->addHiddenValue('guid', $this->guid);
@@ -401,7 +408,7 @@ class HttpInstallController
      * @param Installer $installer
      * @param NonceService $nonceService
      * @param Session $session
-     * @param string $current_url
+     * @param string $submitUrl
      * @param string $version
      * @param array $data
      *
@@ -412,13 +419,12 @@ class HttpInstallController
         Installer $installer,
         NonceService $nonceService,
         Session $session,
-        string $current_url,
+        string $submitUrl,
         string $version,
         array $data
     ): string
     {
         $nonce = $nonceService->create('install:postInstallSettings');
-        $step = 2;
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
@@ -427,8 +433,8 @@ class HttpInstallController
         $installer->useConfigConnection($config);
 
         //Let's gather some more information
-        $form = Form::create('installer', "./install.php?step=3");
-        $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
+        $form = Form::create('installer', $submitUrl);
+        $form->setTitle(__('Installation - Step {count}', ['count' => 3]));
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
         $form->setMultiPartForm(static::getSteps(), 3);
 

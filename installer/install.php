@@ -38,12 +38,11 @@ $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
 // Get or set the current step
-$step = isset($_GET['step'])? intval($_GET['step']) : 0;
-$step = min(max($step, 0), 3);
+$step = isset($_GET['step'])? intval($_GET['step']) : 1;
+$step = min(max($step, 1), 4);
 
 // Deal with $guid setup, otherwise get and filter the existing $guid
-if (empty($step)) {
-    $step = 0;
+if ($step <= 1 && $_SERVER['REQUEST_METHOD'] !== 'POST') {
     $guid = Config::randomGuid();
     error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
 } else {
@@ -113,26 +112,37 @@ try {
     ini_set('memory_limit', '5120M');
     set_time_limit(0);
 
-    if ($step == 0) {
-        // Validate the installation context and show warning.
-        // If suitable for installation, show form to choose language.
-        echo $controller->viewStepOne($nonceService, $gibbon->getConfig('version'));
-    } else if ($step == 1) {
+    if ($step === 1) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $controller->handleStepOneSubmit($nonceService, $session, $_POST);
+
+                // Redirect to next step
+                header('Location: ./install.php?step=2');
+                exit;
             } catch (RecoverableException $e) {
-                $page->addError($e->getMessage(), $e->getLevel());
+                $session->set('flashMessage', $e);
             }
         }
 
-        // Show the form to input database options.
-        echo $controller->viewStepTwo(
+        // Validate the installation context and show warning.
+        // If suitable for installation, show form to choose language.
+        echo $controller->viewStepOne(
             $nonceService,
-            "./install.php?step={$step}",
-            $_POST
+            './install.php?step=1',
+            $gibbon->getConfig('version')
         );
-    } elseif ($step == 2) {
+    } else if ($step === 2) {
+        if ($session->has('flashMessage')) {
+            $m = $session->get('flashMessage');
+            if ($m instanceof RecoverableException) {
+                $page->addAlert($e->getMessage(), $e->getLevel());
+            } else {
+                $page->addError($e->getMessage());
+            }
+            $session->remove('flashMessage'); // reset
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $controller->handleStepTwoSubmit(
@@ -143,22 +153,22 @@ try {
                     $guid,
                     $_POST
                 );
+
+                // Redirect to next step
+                header('Location: ./install.php?step=3');
+                exit;
             } catch (\Exception $e) {
                 $page->addError($e->getMessage());
             }
         }
 
-        // Render step 3 form.
-        echo $controller->viewStepThree(
-            $context,
-            $installer,
+        // Show the form to input database options.
+        echo $controller->viewStepTwo(
             $nonceService,
-            $session,
-            "./install.php?step={$step}",
-            $version,
+            './install.php?step=2',
             $_POST
         );
-    } elseif ($step == 3) {
+    } elseif ($step === 3) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $controller->handleStepThreeSubmit(
@@ -170,17 +180,28 @@ try {
                     $_POST
                 );
 
+                // Forget installation details in session.
+                unset($_SESSION['installLocale']);
+
                 // Redirect to next step
-                header('Location: ./install.php?step=' . ($step+1));
+                header('Location: ./install.php?step=4');
                 exit;
             } catch (\Exception $e) {
                 $page->addError($e->getMessage());
             }
         }
 
-        // Forget installation details in session.
-        unset($_SESSION['installLocale']);
-
+        // Render step 3 form.
+        echo $controller->viewStepThree(
+            $context,
+            $installer,
+            $nonceService,
+            $session,
+            './install.php?step=3',
+            $version,
+            $_POST
+        );
+    } elseif ($step === 4) {
         // Display step four (step three results with Gibbon
         // registration result).
         echo $controller->viewStepFour(
@@ -189,6 +210,7 @@ try {
             $version
         );
 
+        // TODO: rewrite this with flash message and recoverable error.
         if ($settingsFail == true) {
             $page->addError(sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>'));
             $page->addError(sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>'));
