@@ -22,7 +22,7 @@ class NonceServiceTest extends TestCase {
     public function testCreateVerify()
     {
         $nonceService = new NonceService($this->token);
-        $nonce = $nonceService->create();
+        $nonce = $nonceService->generate();
         $this->assertTrue($nonceService->verify($nonce, null, false), 'Can verify its own nonce.');
 
         // another nonceService with a slightly different token

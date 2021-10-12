@@ -73,7 +73,7 @@ class NonceService
      *
      * @return string Nonce string for form submit verification.
      */
-    public function create(?string $action = null, ?int $tick = null): string
+    public function generate(?string $action = null, ?int $tick = null): string
     {
         $tick = $tick ?? static::getTick();
         $action = $action ?: -1;
@@ -96,10 +96,10 @@ class NonceService
         $tick = static::getTick();
 
         // Nonce generated 0-12 hours ago.
-        if ($this->create($action, $tick) === $nonce) return true;
+        if ($this->generate($action, $tick) === $nonce) return true;
 
         // Nonce generated 12-24 hours ago.
-        if ($this->create($action, $tick - 1) === $nonce) return true;
+        if ($this->generate($action, $tick - 1) === $nonce) return true;
 
         if ($throwOnError) {
             throw new ForbiddenException('nonce check failed');

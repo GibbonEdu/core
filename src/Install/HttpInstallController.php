@@ -154,7 +154,7 @@ class HttpInstallController
         string $version
     ): string
     {
-        $nonce = $nonceService->create('install:locale');
+        $nonce = $nonceService->generate('install:locale');
 
         //PROCEED
         $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -302,7 +302,7 @@ class HttpInstallController
         array $data
     ): string
     {
-        $nonce = $nonceService->create('install:setDbConfig');
+        $nonce = $nonceService->generate('install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
@@ -420,7 +420,7 @@ class HttpInstallController
         array $data
     ): string
     {
-        $nonce = $nonceService->create('install:postInstallSettings');
+        $nonce = $nonceService->generate('install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
