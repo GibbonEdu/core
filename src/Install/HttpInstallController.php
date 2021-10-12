@@ -174,7 +174,6 @@ class HttpInstallController
         $form->setClass('smallIntBorder w-full');
         $form->setMultiPartForm(static::getSteps(), 1);
 
-        $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
         $form->addRow()->addHeading(__('System Requirements'));
 
@@ -312,7 +311,6 @@ class HttpInstallController
         $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
         $form->setMultiPartForm(static::getSteps(), 2);
 
-        $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
 
         $form->addRow()->addHeading(__('Database Settings'));
@@ -407,7 +405,6 @@ class HttpInstallController
      * @param Context $context
      * @param Installer $installer
      * @param NonceService $nonceService
-     * @param Session $session
      * @param string $submitUrl
      * @param string $version
      * @param array $data
@@ -418,7 +415,6 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
-        Session $session,
         string $submitUrl,
         string $version,
         array $data
@@ -438,9 +434,7 @@ class HttpInstallController
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
         $form->setMultiPartForm(static::getSteps(), 3);
 
-        $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $session->get('installLocale'));
         $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
         $form->addRow()->addHeading(__('User Account'));

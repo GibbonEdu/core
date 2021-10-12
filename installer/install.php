@@ -195,7 +195,6 @@ try {
             $context,
             $installer,
             $nonceService,
-            $session,
             './install.php?step=3',
             $version,
             $_POST
