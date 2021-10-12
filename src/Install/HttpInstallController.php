@@ -854,7 +854,6 @@ class HttpInstallController
     public static function validateUserSubmission(array $data)
     {
         static::validateRequredFields($data, [
-            'title',
             'surname',
             'firstName',
             'username',
