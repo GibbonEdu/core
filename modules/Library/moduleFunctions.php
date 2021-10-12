@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 function getImage($guid, $type, $location, $border = true)
 {
+    global $session;
+
     $output = false;
 
     $borderStyle = '';
@@ -27,7 +29,7 @@ function getImage($guid, $type, $location, $border = true)
     }
 
     if ($location == '') {
-        $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/><br/>";
+        $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/><br/>";
     } else {
         if ($type == 'Link') {
             $output .= "<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center $borderStyle'>";
@@ -35,12 +37,12 @@ function getImage($guid, $type, $location, $border = true)
             $output .= '</div>';
         }
         if ($type == 'File') {
-            if (is_file($_SESSION[$guid]['absolutePath'].'/'.$location)) {
+            if (is_file($session->get('absolutePath').'/'.$location)) {
                 $output .= "<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center; $borderStyle'>";
-                $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='' src='".$_SESSION[$guid]['absoluteURL'].'/'.$location."'/><br/>";
+                $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='' src='".$session->get('absoluteURL').'/'.$location."'/><br/>";
                 $output .= '</div>';
             } else {
-                $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/anonymous_240_square.jpg'/><br/>";
+                $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/anonymous_240_square.jpg'/><br/>";
             }
         }
     }
