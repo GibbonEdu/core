@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSessions.php') == false) {
     // Access denied
@@ -29,7 +31,30 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     $page->breadcrumbs->add(__('Active Sessions'));
 
     $sessionGateway = $container->get(SessionGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
    
+    // FORM
+    $form = Form::create('sessionSettings', $session->get('absoluteURL').'/modules/System Admin/activeSessions_settingsProcess.php');
+
+    $form->addRow()->addHeading(__('Settings'));
+
+    $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceMode', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
+
+    $form->toggleVisibilityByClass('maintenance')->onSelect('maintenanceMode')->when('Y');
+
+    $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceModeMessage', true);
+    $row = $form->addRow()->addClass('maintenance');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
+
+    $row = $form->addRow()->addSubmit();
+
+    echo $form->getOutput();
+
+
     // QUERY
     $criteria = $sessionGateway->newQueryCriteria()
         ->sortBy('timestampModified', 'DESC')
@@ -42,15 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     $table = DataTable::createPaginated('sessions', $criteria);
     $table->setTitle(__('View'));
 
-    $table->modifyRows(function ($customField, $row) {
-        // if ($customField['active'] == 'N') $row->addClass('error');
+    $table->modifyRows(function ($values, $row) {
+        // if (empty($values['gibbonPersonID'])) $row->addClass('dull');
         return $row;
     });
-
-    // $table->addHeaderAction('add', __('Add'))
-    //     ->setURL('/modules/System Admin/customFields_add.php')
-    //     ->addParam('context', $context != 'User' ? $context : '')
-    //     ->displayLabel();
 
     $table->addColumn('name', __('Name'))
         ->context('primary')
