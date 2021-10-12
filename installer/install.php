@@ -21,7 +21,6 @@ use Gibbon\View\Page;
 use Gibbon\Data\Validator;
 use Gibbon\Install\Config;
 use Gibbon\Install\Context;
-use Gibbon\Install\Exception\ForbiddenException;
 use Gibbon\Install\Exception\RecoverableException;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
