@@ -97,7 +97,23 @@ $session = $container->get('session');
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
 // Setup global absoluteURL for all urls.
-Url::setBaseUrl($session->get('absoluteURL'));
+if ($gibbon->isInstalled() && !empty($absoluteURL = $session->get('absoluteURL'))) {
+    Url::setBaseUrl($absoluteURL);
+} else {
+    // TODO: put this absoluteURL detection somewhere?
+    $absoluteURL = (function () {
+        // Find out the base installation URL path.
+        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+        $baseDir = realpath(__DIR__) . '/';
+        $urlBasePath = substr($baseDir, $prefixLength);
+
+        // Construct the full URL to the base URL path.
+        $host = $_SERVER['HTTP_HOST'];
+        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+        return "{$protocol}://{$host}{$urlBasePath}";
+    })();
+    Url::setBaseUrl($absoluteURL);
+}
 
 // Autoload the current module namespace
 if (!empty($gibbon->session->get('module'))) {
