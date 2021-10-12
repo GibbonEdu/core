@@ -31,7 +31,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 $logGateway = $container->get(LogGateway::class);
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {

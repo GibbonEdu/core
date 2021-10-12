@@ -25,9 +25,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Check if gibbonCourseClassID, gibbonCourseID, and gibbonPersonID specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonPersonID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
