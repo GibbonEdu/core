@@ -233,28 +233,4 @@ class Config
         }
         return true;
     }
-
-    /**
-     * Set the locale code for the installation.
-     *
-     * @param boolean $flag
-     *   True if wanted to install demo data. False if not.
-     *
-     * @return self
-     */
-    public function setLocale(string $locale)
-    {
-        $this->locale = $locale;
-        return $this;
-    }
-
-    /**
-     * Get the locale code for the installation.
-     *
-     * @return string
-     */
-    public function getLocale(): string
-    {
-        return $this->locale;
-    }
 }

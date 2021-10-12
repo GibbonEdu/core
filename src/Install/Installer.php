@@ -356,14 +356,15 @@ class Installer
     /**
      * Run installation according to the given context and config.
      *
-     * @param \Gibbon\Install\Context $context
-     * @param \Gibbon\Install\Config $config
+     * @param \Gibbon\Install\Context $context  The installation context
+     * @param string $defaultLocale             The locale code of system default.
+     * @param bool $shouldInstallDemoData       Should the demo data be import.
      *
      * @return self
      *
      * @throws \Exception
      */
-    public function install(Context $context, Config $config, bool $shouldInstallDemoData): Installer
+    public function install(Context $context, string $defaultLocale, bool $shouldInstallDemoData): Installer
     {
         // Get internal connection.
         $pdo = $this->getPDO();
@@ -396,14 +397,14 @@ class Installer
 
         //Set default language
         try {
-            $data = array('code' => $config->getLocale());
+            $data = array('code' => $defaultLocale);
             $sql = "UPDATE gibboni18n SET systemDefault='Y' WHERE code=:code";
             $result = $pdo->prepare($sql);
             $result->execute($data);
         } catch (\PDOException $e) {
         }
         try {
-            $data = array('code' => $config->getLocale());
+            $data = array('code' => $defaultLocale);
             $sql = "UPDATE gibboni18n SET systemDefault='N' WHERE NOT code=:code";
             $result = $pdo->prepare($sql);
             $result->execute($data);

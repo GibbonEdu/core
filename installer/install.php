@@ -21,6 +21,8 @@ use Gibbon\View\Page;
 use Gibbon\Data\Validator;
 use Gibbon\Install\Config;
 use Gibbon\Install\Context;
+use Gibbon\Install\Exception\ForbiddenException;
+use Gibbon\Install\Exception\RecoverableException;
 use Gibbon\Install\HttpInstallController;
 use Gibbon\Install\Installer;
 use Gibbon\Install\NonceService;
@@ -113,14 +115,17 @@ try {
         echo $controller->viewStepOne($nonceService, $gibbon->getConfig('version'));
     } else if ($step == 1) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $controller->handleStepOneSubmit($nonceService, $_POST);
+            try {
+                $controller->handleStepOneSubmit($nonceService, $session, $_POST);
+            } catch (RecoverableException $e) {
+                $page->addError($e->getMessage(), $e->getLevel());
+            }
         }
 
         // Show the form to input database options.
         echo $controller->viewStepTwo(
             $nonceService,
             "./install.php?step={$step}",
-            $locale_code,
             $_POST
         );
     } elseif ($step == 2) {
@@ -130,6 +135,7 @@ try {
                     $context,
                     $installer,
                     $nonceService,
+                    $session,
                     $guid,
                     $_POST
                 );
@@ -143,6 +149,7 @@ try {
             $context,
             $installer,
             $nonceService,
+            $session,
             "./install.php?step={$step}",
             $version,
             $_POST

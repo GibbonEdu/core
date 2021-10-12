@@ -7,6 +7,8 @@ use Gibbon\Core;
 use Gibbon\Database\Updater;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
+use Gibbon\Install\Exception\ForbiddenException;
+use Gibbon\Install\Exception\RecoverableException;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
@@ -150,7 +152,7 @@ class HttpInstallController
         string $version
     ): string
     {
-        $nonce = $nonceService->create('install:setLocale');
+        $nonce = $nonceService->create('install:locale');
         $step = isset($_GET['step']) ? intval($_GET['step']) : 0;
         $step = min(max($step, 0), 3);
 
@@ -259,41 +261,47 @@ class HttpInstallController
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws ForbiddenException
+     * @throws RecoverableException
      */
     public function handleStepOneSubmit(
         NonceService $nonceService,
+        Session $session,
         array $data
     )
     {
-        if (!$nonceService->verify($data['nonce'] ?? '', 'install:setLocale')) {
-            throw new \Exception(__('Your request failed because you do not have access to this action.'));
+        if (!$nonceService->verify($data['nonce'] ?? '', 'install:locale')) {
+            throw new ForbiddenException('nonce check failed.');
         }
-        $_SESSION['installLocale'] = $data['code'] ?? 'en_GB';
+
+        // Install locale
+        $installLocale = $data['code'] ?? 'en_GB';
+        $session->set('installLocale', $installLocale);
+        $languageInstalled = !i18nFileExists($this->gibbon->session->get('absolutePath'), $installLocale)
+            ? i18nFileInstall($this->gibbon->session->get('absolutePath'), $installLocale)
+            : true;
+        if (!$languageInstalled) {
+            throw new RecoverableException(
+                __('Failed to download and install the required files.') . ' ' .
+                sprintf(
+                    __('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'),
+                    '<b><u>'.$session->get('absolutePath').'/i18n/</u></b>'
+                )
+            );
+        }
     }
 
     public function viewStepTwo(
         NonceService $nonceService,
         string $current_url,
-        string $locale_code,
         array $data
     ): string
     {
         $nonce = $nonceService->create('install:setDbConfig');
         $step = 1;
-        $languageInstalled = !i18nFileExists($this->gibbon->session->get('absolutePath'), $locale_code)
-            ? i18nFileInstall($this->gibbon->session->get('absolutePath'), $locale_code)
-            : true;
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
-
-        if (!$languageInstalled) {
-            echo "<div class='error'>";
-            echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.
-                $this->gibbon->session->get('absolutePath').'/i18n/</u></b>');
-            echo '</div>';
-        }
 
         $form = Form::create('installer', "./install.php?step=2");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
@@ -301,7 +309,6 @@ class HttpInstallController
 
         $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $locale_code); // Use language assigned in previous step, or default
 
         $form->addRow()->addHeading(__('Database Settings'));
 
@@ -346,6 +353,7 @@ class HttpInstallController
      * @param Context $context
      * @param Installer $installer
      * @param NonceService $nonceService
+     * @param Session $session
      * @param string $guid
      * @param array $data
      *
@@ -357,6 +365,7 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
+        Session $session,
         string $guid,
         array $data
     )
@@ -380,9 +389,12 @@ class HttpInstallController
         // Create and check existance of the config file.
         $installer->createConfigFile($context, $config);
 
+        // Get the locale code to install.
+        $defaultLocale = $session->get('installLocale') ?: 'en_GB';
+
         // Run database installation of the config if (1) and (2) are
         // successful.
-        $installer->install($context, $config, $shouldInstallDemoData);
+        $installer->install($context, $defaultLocale, $shouldInstallDemoData);
     }
 
     /**
@@ -391,6 +403,7 @@ class HttpInstallController
      * @param Context $context
      * @param Installer $installer
      * @param NonceService $nonceService
+     * @param Session $session
      * @param string $current_url
      * @param string $version
      * @param array $data
@@ -401,6 +414,7 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
+        Session $session,
         string $current_url,
         string $version,
         array $data
@@ -411,7 +425,6 @@ class HttpInstallController
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
-        $config->setLocale($installer->getDefaultLocale()); // In case needed.
 
         // Initialize database for the installer with the config data.
         $installer->useConfigConnection($config);
@@ -424,7 +437,7 @@ class HttpInstallController
 
         $form->addHiddenValue('guid', $this->guid);
         $form->addHiddenValue('nonce', $nonce);
-        $form->addHiddenValue('code', $config->getLocale());
+        $form->addHiddenValue('code', $session->get('installLocale'));
         $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
         $form->addRow()->addHeading(__('User Account'));
@@ -647,7 +660,6 @@ class HttpInstallController
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
         $installer->useConfigConnection($config);
-        $config->setLocale($installer->getDefaultLocale()); // In case needed.
 
         // parse the submission from POST.
         try {
@@ -719,7 +731,6 @@ class HttpInstallController
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
         $installer->useConfigConnection($config);
-        $config->setLocale($installer->getDefaultLocale()); // In case needed.
 
         // Get settings for rendering below.
         $absoluteURL = $installer->getSetting('absoluteURL');
@@ -803,8 +814,7 @@ class HttpInstallController
                 $data['databaseName'] ?? '',
                 $data['databaseUsername'] ?? '',
                 $data['databasePassword'] ?? ''
-            )
-            ->setLocale($data['code'] ?? 'en_GB');
+            );
 
         if (!$config->hasDatabaseInfo()) {
             throw new \Exception(__('You have not provide appropriate database info.'));
