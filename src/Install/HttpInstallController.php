@@ -653,6 +653,7 @@ class HttpInstallController
         Context $context,
         Installer $installer,
         NonceService $nonceService,
+        string $absoluteURL,
         string $version,
         array $data
     )
@@ -690,7 +691,7 @@ class HttpInstallController
         $settings = static::parsePostInstallSettings($data);
         foreach ($settings as $scope => $scopeSettings) {
             foreach ($scopeSettings as $key => $value) {
-                $settingsFail = $settingsFail || !$installer->setSetting($key, $value, $scope);
+                $settingsFail = !$installer->setSetting($key, $value, $scope) || $settingsFail;
             }
         }
 
@@ -705,11 +706,18 @@ class HttpInstallController
             if (!empty($errors)) {
                 echo Format::alert(__('Some aspects of your update failed.'));
             }
-            $settingsFail = $settingsFail || !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine);
+            $settingsFail = !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine) || $settingsFail;
         }
 
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
+
+        if ($settingsFail) {
+            throw new RecoverableException(
+                sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>') . "<br/>\n" .
+                sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>')
+            );
+        }
     }
 
     /**
@@ -794,6 +802,43 @@ class HttpInstallController
         $output .= $form->getOutput();
 
         return $output;
+    }
+
+    /**
+     * Store recoverable exception to show in next page.
+     *
+     * @param Session $session
+     * @param RecoverableException $message
+     *
+     * @return self
+     */
+    public function flashMessage(Session $session, RecoverableException $message)
+    {
+        $session->set('flashMessage', $message);
+        return $this;
+    }
+
+    /**
+     * Read flash message from session and show on the page.
+     *
+     * @param Session $session  The session to read from.
+     * @param Page    $page     The page object to show the message on.
+     *
+     * @return RecoverableException|null  The message, if any, or null.
+     */
+    public function recoverFlashMessage(Session $session, Page $page): ?RecoverableException
+    {
+        if ($session->has('flashMessage')) {
+            $m = $session->get('flashMessage');
+            if ($m instanceof RecoverableException) {
+                $page->addAlert($m->getLevel(), $m->getMessage());
+            } else {
+                $page->addError($m->getMessage());
+            }
+            $session->remove('flashMessage'); // reset
+            return $m;
+        }
+        return null;
     }
 
     /**

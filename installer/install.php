@@ -116,12 +116,14 @@ try {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $controller->handleStepOneSubmit($nonceService, $session, $_POST);
-
-                // Redirect to next step
                 header('Location: ./install.php?step=2');
                 exit;
             } catch (RecoverableException $e) {
-                $session->set('flashMessage', $e);
+                $controller->flashMessage($session, $e);
+                header('Location: ./install.php?step=2');
+                exit;
+            } catch (\Exception $e) {
+                $page->addError($e->getMessage());
             }
         }
 
@@ -133,15 +135,8 @@ try {
             $gibbon->getConfig('version')
         );
     } else if ($step === 2) {
-        if ($session->has('flashMessage')) {
-            $m = $session->get('flashMessage');
-            if ($m instanceof RecoverableException) {
-                $page->addAlert($e->getMessage(), $e->getLevel());
-            } else {
-                $page->addError($e->getMessage());
-            }
-            $session->remove('flashMessage'); // reset
-        }
+        // Get recoverable exception from previos step and set alert on page.
+        $controller->recoverFlashMessage($session, $page);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
@@ -153,8 +148,6 @@ try {
                     $guid,
                     $_POST
                 );
-
-                // Redirect to next step
                 header('Location: ./install.php?step=3');
                 exit;
             } catch (\Exception $e) {
@@ -176,6 +169,7 @@ try {
                     $context,
                     $installer,
                     $nonceService,
+                    $installer->getSetting('absoluteURL'),
                     $version,
                     $_POST
                 );
@@ -184,6 +178,10 @@ try {
                 unset($_SESSION['installLocale']);
 
                 // Redirect to next step
+                header('Location: ./install.php?step=4');
+                exit;
+            } catch (RecoverableException $e) {
+                $session->set('flashMessage', $e);
                 header('Location: ./install.php?step=4');
                 exit;
             } catch (\Exception $e) {
@@ -202,6 +200,9 @@ try {
             $_POST
         );
     } elseif ($step === 4) {
+        // Get recoverable exception from previos step and set alert on page.
+        $message = $controller->recoverFlashMessage($session, $page);
+
         // Display step four (step three results with Gibbon
         // registration result).
         echo $controller->viewStepFour(
@@ -210,11 +211,8 @@ try {
             $version
         );
 
-        // TODO: rewrite this with flash message and recoverable error.
-        if ($settingsFail == true) {
-            $page->addError(sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>'));
-            $page->addError(sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>'));
-        } else {
+        // Show success message if the installation is a complete success.
+        if ($message === null) {
             $page->addSuccess(sprintf(__('Congratulations, your installation is complete. Feel free to %1$sgo to your Gibbon homepage%2$s and login with the username and password you created.'), "<a href='$absoluteURL'>", '</a>'));
             echo $page->fetchFromTemplate('ui/gettingStarted.twig.html', ['postInstall' => true]);
         }
