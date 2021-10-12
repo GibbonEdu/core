@@ -22,6 +22,7 @@ use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -57,11 +58,10 @@ else {
         require_once './login_custom.php';
     }
     //VALIDATE LOGIN INFORMATION
-    
-        $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('username' => $username);
+    $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, gibbonRole.name as roleName FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     //Test to see if username exists and is unique
     if ($result->rowCount() != 1) {
@@ -75,6 +75,13 @@ else {
         // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
             $URL .= '?loginReturn=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        // Check for maintenance mode
+        if ($row['roleName'] != 'Administrator' && $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'maintenanceMode') == 'Y') {
+            $URL .= '?loginReturn=fail10';
             header("Location: {$URL}");
             exit;
         }
@@ -256,6 +263,7 @@ else {
 
                     // Update current session to attach it to this user
                     $container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => $row['gibbonPersonID']]);
+                    $container->get(SessionGateway::class)->update(session_id(), ['sessionStatus' => 'Logged In']);
 
                     if (isset($_GET['q'])) {
                         if ($_GET['q'] == '/publicRegistration.php') {

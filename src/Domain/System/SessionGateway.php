@@ -71,7 +71,7 @@ class SessionGateway extends QueryableGateway
         $data = ['gibbonSessionID' => $gibbonSessionID, 'sessionData' => $sessionData, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];
         $sql = "INSERT INTO gibbonSession (gibbonSessionID, sessionData, timestampCreated, timestampModified) VALUES (:gibbonSessionID, :sessionData, :timestampCreated, :timestampModified) ON DUPLICATE KEY UPDATE sessionData=:sessionData";
 
-        return $this->db->update($sql, $data);
+        return $this->db()->update($sql, $data);
     }
 
     public function deleteExpiredSessions($maxLifetime)
@@ -79,6 +79,17 @@ class SessionGateway extends QueryableGateway
         $data = ['maxLifetime' => $maxLifetime];
         $sql = "DELETE FROM gibbonSession WHERE TIMESTAMPDIFF(SECOND, timestampModified, CURRENT_TIMESTAMP) > :maxLifetime";
 
-        return $this->db->delete($sql, $data);
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function logoutAllNonAdministratorUsers()
+    {
+        $sql = "UPDATE gibbonSession 
+                JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonSession.gibbonPersonID)
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                SET gibbonSession.gibbonPersonID=NULL, gibbonSession.gibbonActionID=NULL, gibbonSession.sessionStatus=NULL
+                WHERE gibbonRole.name <> 'Administrator'";
+
+        return $this->db()->update($sql);
     }
 }

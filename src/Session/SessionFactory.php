@@ -51,10 +51,10 @@ class SessionFactory
 
         $sessionGateway = $container->get(SessionGateway::class);
 
-        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database' && $container->has(Connection::class)) {
+        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
             $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
         } else {
-            $handler = new NativeSessionHandler($config['sessionEncryptionKey'] ?? null);
+            $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
         }
 
         // Set the handler for the session, enabling non-default

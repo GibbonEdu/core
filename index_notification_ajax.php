@@ -48,8 +48,8 @@ if ($session->has('gibbonPersonID')) {
         $sessionLastActive = strtotime($sessionInfo['timestampModified']);
         $sessionDuration = $session->get('sessionDuration');
         $timeDifference = time() - $sessionLastActive;
-
-        if (empty($sessionInfo['gibbonPersonID'])) {
+        
+        if (empty($sessionInfo['gibbonPersonID']) || (isset($sessionInfo['sessionStatus']) && empty($sessionInfo['sessionStatus']))) {
             $result['timeout'] = 'force';
         } elseif ($timeDifference > $sessionDuration) {
             $result['timeout'] = $timeDifference > $sessionDuration + 300 ? 'expire' : 'warn';

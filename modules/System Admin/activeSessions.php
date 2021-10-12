@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSessions.php') == false) {
     // Access denied
@@ -32,27 +33,30 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
 
     $sessionGateway = $container->get(SessionGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
+    $primaryRole = $container->get(RoleGateway::class)->selectBy(['gibbonRoleID' => $session->get('gibbonRoleIDPrimary')], ['name'])->fetch();
    
-    // FORM
-    $form = Form::create('sessionSettings', $session->get('absoluteURL').'/modules/System Admin/activeSessions_settingsProcess.php');
+    // FORM - Administrator only (to prevent themselves from removing their own access)
+    if (!empty($primaryRole['name']) && $primaryRole['name'] == 'Administrator') {
+        $form = Form::create('sessionSettings', $session->get('absoluteURL').'/modules/System Admin/activeSessions_settingsProcess.php');
 
-    $form->addRow()->addHeading(__('Settings'));
+        $form->addRow()->addHeading(__('Settings'));
 
-    $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceMode', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
+        $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceMode', true);
+        $row = $form->addRow();
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $form->toggleVisibilityByClass('maintenance')->onSelect('maintenanceMode')->when('Y');
+        $form->toggleVisibilityByClass('maintenance')->onSelect('maintenanceMode')->when('Y');
 
-    $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceModeMessage', true);
-    $row = $form->addRow()->addClass('maintenance');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
+        $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceModeMessage', true);
+        $row = $form->addRow()->addClass('maintenance');
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
 
-    $row = $form->addRow()->addSubmit();
+        $row = $form->addRow()->addSubmit();
 
-    echo $form->getOutput();
+        echo $form->getOutput();
+    }
 
 
     // QUERY

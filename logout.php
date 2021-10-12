@@ -28,9 +28,7 @@ if (isset($_GET['timeout'])) {
 }
 
 // Update current session to detach it from this user
-$container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => null, 'gibbonActionID' => null]);
-
-$pdo->update($sql, $data);
+$container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => null, 'gibbonActionID' => null, 'sessionStatus' => null]);
 
 $session->forget('googleAPIAccessToken');
 $session->forget('gplusuer');

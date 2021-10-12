@@ -82,6 +82,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
             } elseif ($loginReturn == 'fail9') {
                 $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
+            } elseif ($loginReturn == 'fail10') {
+                $loginReturnMessage = __('Cannot login during maintenance mode.');
             }
 
             echo "<div class='error'>";

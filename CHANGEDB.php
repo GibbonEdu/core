@@ -1037,6 +1037,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Active Sessions'));end
 ALTER TABLE `gibbonSession` ADD `gibbonActionID` INT(7) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `gibbonPersonID`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'maintenanceMode', 'Maintenance Mode', 'Only users with the Administrator role can login during maintenance mode. Enabling this will logout all other users.', 'N');end
-INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'maintenanceModeMessage', 'Maintenance Mode Message', 'A message to display on all pages when maintenance mode is actice.', 'The system is currently in maintenance mode. Only system administrators will be able to login at this time.');end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'maintenanceModeMessage', 'Maintenance Mode Message', 'A message to display on all pages when maintenance mode is active.', 'The system is currently in maintenance mode. Only system administrators will be able to login at this time.');end
 ALTER TABLE `gibbonSession` ADD `sessionStatus` VARCHAR(20) DEFAULT NULL AFTER `sessionData`;end
 ";
