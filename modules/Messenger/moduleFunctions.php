@@ -68,13 +68,14 @@ function reportAdd($report, $emailReceipt, $gibbonPersonID, $targetType, $target
 //Build an email signautre for the specified user
 function getSignature($guid, $connection2, $gibbonPersonID)
 {
+    global $session;
+
     $return = false;
 
-    
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $gibbonPersonID);
+    $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
@@ -85,7 +86,7 @@ function getSignature($guid, $connection2, $gibbonPersonID)
         if ($row['jobTitle'] != '') {
             $return .= $row['jobTitle'].'<br/>';
         }
-        $return .= $_SESSION[$guid]['organisationName'].'<br/>';
+        $return .= $session->get('organisationName').'<br/>';
         $return .= '</span>';
         $return .= '----<br/>';
     }
@@ -96,6 +97,8 @@ function getSignature($guid, $connection2, $gibbonPersonID)
 //Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result)
 function getMessages($guid, $connection2, $mode = '', $date = '')
 {
+    global $session;
+
     $return = '';
     $dataPosts = array();
 
@@ -107,7 +110,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     }
 
     //Work out all role categories this user has, ignoring "Other"
-    $roles = $_SESSION[$guid]['gibbonRoleIDAll'];
+    $roles = $session->get('gibbonRoleIDAll');
     $roleCategory = '';
     $staff = false;
     $student = false;
@@ -126,14 +129,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     //If parent get a list of student IDs
     if ($parent) {
         $children = '(';
-        
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+
+        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+        $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         while ($row = $result->fetch()) {
-            
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
@@ -149,7 +152,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     }
 
     //My roles
-    $roles = $_SESSION[$guid]['gibbonRoleIDAll'];
+    $roles = $session->get('gibbonRoleIDAll');
     $sqlWhere = '(';
     if (count($roles) > 0) {
         for ($i = 0; $i < count($roles); ++$i) {
@@ -167,7 +170,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My role categories
     try {
-        $dataRoleCategory = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $dataRoleCategory = array('gibbonPersonID' => $session->get('gibbonPersonID'));
         $sqlRoleCategory = "SELECT DISTINCT category FROM gibbonRole JOIN gibbonPerson ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE gibbonPersonID=:gibbonPersonID";
         $resultRoleCategory = $connection2->prepare($sqlRoleCategory);
         $resultRoleCategory->execute($dataRoleCategory);
@@ -196,8 +199,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['date4'] = $date;
         $dataPosts['date5'] = $date;
         $dataPosts['date6'] = $date;
-        $dataPosts['gibbonSchoolYearID0'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $dataPosts['gibbonPersonID0'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonSchoolYearID0'] = $session->get('gibbonSchoolYearID');
+        $dataPosts['gibbonPersonID0'] = $session->get('gibbonPersonID');
         // Include staff by courses taught in the same year group.
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source
                 FROM gibbonMessenger
@@ -233,24 +236,24 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['date7'] = $date;
         $dataPosts['date8'] = $date;
         $dataPosts['date9'] = $date;
-        $dataPosts['gibbonSchoolYearID1'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $dataPosts['gibbonPersonID1'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonSchoolYearID1'] = $session->get('gibbonSchoolYearID');
+        $dataPosts['gibbonPersonID1'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID1 AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date7 OR messageWall_date2=:date8 OR messageWall_date3=:date9) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID1 AND students='Y')";
     }
     if ($parent and $children != false) {
         $dataPosts['date10'] = $date;
         $dataPosts['date11'] = $date;
         $dataPosts['date12'] = $date;
-        $dataPosts['gibbonSchoolYearID2'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $dataPosts['gibbonSchoolYearID2'] = $session->get('gibbonSchoolYearID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date10 OR messageWall_date2=:date11 OR messageWall_date3=:date12) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
     }
 
     //My form groups
     if ($staff) {
         $sqlWhere = '(';
-        
+
         try {
-            $dataFormGroup = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
+            $dataFormGroup = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
             $sqlFormGroup = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
             $resultFormGroup = $connection2->prepare($sqlFormGroup);
             $resultFormGroup->execute($dataFormGroup);
@@ -276,22 +279,22 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['date16'] = $date;
         $dataPosts['date17'] = $date;
         $dataPosts['date18'] = $date;
-        $dataPosts['gibbonSchoolYearID3'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-        $dataPosts['gibbonPersonID2'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonSchoolYearID3'] = $session->get('gibbonSchoolYearID');
+        $dataPosts['gibbonPersonID2'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date16 OR messageWall_date2=:date17 OR messageWall_date3=:date18) AND students='Y')";
     }
     if ($parent and $children != false) {
         $dataPosts['date19'] = $date;
         $dataPosts['date20'] = $date;
         $dataPosts['date21'] = $date;
-        $dataPosts['gibbonSchoolYearID4'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $dataPosts['gibbonSchoolYearID4'] = $session->get('gibbonSchoolYearID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
     }
 
     //My courses
     //First check for any course, then do specific parent check
-    
-        $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+        $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
@@ -318,8 +321,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        
-            $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlClasses = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
@@ -341,8 +344,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My classes
     //First check for any role, then do specific parent check
-    
-        $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+        $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT role LIKE '%- Left'";
         $resultClasses = $connection2->prepare($sqlClasses);
         $resultClasses->execute($dataClasses);
@@ -369,8 +372,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        
-            $dataClasses = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
@@ -392,8 +395,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //My activities
     if ($staff) {
-        
-            $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID';
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
@@ -413,8 +416,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($student) {
-        
-            $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
@@ -434,8 +437,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
     if ($parent and $children != false) {
-        
-            $dataActivities = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonActivityStudent.gibbonPersonID', $children)." AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
@@ -459,21 +462,21 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     $dataPosts['date49'] = $date;
     $dataPosts['date50'] = $date;
     $dataPosts['date51'] = $date;
-    $dataPosts['gibbonPersonID3'] = $_SESSION[$guid]['gibbonPersonID'];
+    $dataPosts['gibbonPersonID3'] = $session->get('gibbonPersonID');
     $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Houses: ', gibbonHouse.name) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS inHouse ON (gibbonMessengerTarget.id=inHouse.gibbonHouseID) JOIN gibbonHouse ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID)WHERE gibbonMessengerTarget.type='Houses' AND (messageWall_date1=:date49 OR messageWall_date2=:date50 OR messageWall_date3=:date51) AND inHouse.gibbonPersonID=:gibbonPersonID3)";
 
     //Individuals
     $dataPosts['date52'] = $date;
     $dataPosts['date53'] = $date;
     $dataPosts['date54'] = $date;
-    $dataPosts['gibbonPersonID4'] = $_SESSION[$guid]['gibbonPersonID'];
+    $dataPosts['gibbonPersonID4'] = $session->get('gibbonPersonID');
     $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, 'Individual: You' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonPerson AS individual ON (gibbonMessengerTarget.id=individual.gibbonPersonID) WHERE gibbonMessengerTarget.type='Individuals' AND (messageWall_date1=:date52 OR messageWall_date2=:date53 OR messageWall_date3=:date54) AND individual.gibbonPersonID=:gibbonPersonID4)";
 
 
     //Attendance
     if ($student) {
         try {
-          $dataAttendance=array( "gibbonPersonID" => $_SESSION[$guid]['gibbonPersonID'], "selectedDate"=>$date, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d") );
+          $dataAttendance=array( "gibbonPersonID" => $session->get('gibbonPersonID'), "selectedDate"=>$date, "gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"), "nowDate"=>date("Y-m-d") );
           $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND galp.gibbonPersonID=:gibbonPersonID ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
           $resultAttendance=$connection2->prepare($sqlAttendance);
           $resultAttendance->execute($dataAttendance);
@@ -492,7 +495,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     }
     if ($parent and $children != false) {
         try {
-          $dataAttendance=array( "gibbonPersonID" => $_SESSION[$guid]['gibbonPersonID'], "selectedDate"=>$date, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "nowDate"=>date("Y-m-d") );
+          $dataAttendance=array( "gibbonPersonID" => $session->get('gibbonPersonID'), "selectedDate"=>$date, "gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"), "nowDate"=>date("Y-m-d") );
           $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, gp.firstName FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND ".preg_replace('/gibbonPersonID/', 'galp.gibbonPersonID', $children)." ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
           $resultAttendance=$connection2->prepare($sqlAttendance);
           $resultAttendance->execute($dataAttendance);
@@ -513,7 +516,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     // Groups
     if ($staff) {
         $dataPosts['date60'] = $date;
-        $dataPosts['gibbonPersonID5'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID5'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
         FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -527,7 +530,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     }
     if ($student) {
         $dataPosts['date61'] = $date;
-        $dataPosts['gibbonPersonID6'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID6'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
         FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -542,7 +545,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($parent and $children != false) {
         $childrenQuery = str_replace('gibbonPersonID', 'gibbonGroupPerson.gibbonPersonID', $children);
         $dataPosts['date62'] = $date;
-        $dataPosts['gibbonPersonID7'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID7'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
         FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -558,7 +561,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     // Transport
     if ($staff) {
         $dataPosts['date63'] = $date;
-        $dataPosts['gibbonPersonID8'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID8'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -570,7 +573,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     }
     if ($student) {
         $dataPosts['date64'] = $date;
-        $dataPosts['gibbonPersonID9'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID9'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -583,7 +586,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($parent and $children != false) {
         $childrenQuery = str_replace('gibbonPersonID', 'transportee.gibbonPersonID', $children);
         $dataPosts['date65'] = $date;
-        $dataPosts['gibbonPersonID10'] = $_SESSION[$guid]['gibbonPersonID'];
+        $dataPosts['gibbonPersonID10'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
