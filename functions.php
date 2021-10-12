@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Forms\Form;
 use Gibbon\Http\Url;
-use Gibbon\Services\Format;
 
 function getIPAddress() {
     $return = false;
@@ -376,14 +376,14 @@ function getPasswordPolicy($guid, $connection2)
 function getFastFinder($connection2, $guid)
 {
     global $session;
-    $form = Form::create('fastFinder', $session->get('absoluteURL').'/indexFindRedirect.php', 'get');
+    $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
-            ->fromAjax($session->get('absoluteURL').'/index_fastFinder_ajax.php')
+            ->fromAjax(Url::fromHandlerRoute('index_fastFinder_ajax.php'))
             ->setClass('w-full text-white flex items-center')
             ->setAria('label', __('Search'))
             ->setParameter('hintText', __('Start typing a name...'))
