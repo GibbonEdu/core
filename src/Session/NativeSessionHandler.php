@@ -31,7 +31,7 @@ use SessionHandlerInterface;
 class NativeSessionHandler extends SessionHandler implements SessionHandlerInterface
 {
     use SessionEncryption;
-    
+
     /**
      * @var string
      */
@@ -43,7 +43,7 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
     private $encrypted;
 
     /**
-     * Create a session handler that extends the built-in PHP session handler and 
+     * Create a session handler that extends the built-in PHP session handler and
      * adds optional encryption if an encryption key is provided.
      *
      * @param string|null $key
@@ -55,12 +55,13 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
     }
 
     /**
-     * Overrides the SessionHandler read method, with the additional option to handle 
+     * Overrides the SessionHandler read method, with the additional option to handle
      * session data encryption.
      *
      * @param string $id
      * @return string the session data or an empty string
      */
+    #[\ReturnTypeWillChange]
     public function read($id)
     {
         $data = parent::read($id);
@@ -68,18 +69,19 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
         if ($this->encrypted) {
             return $this->decrypt($data, $this->key);
         }
-        
+
         return $data;
     }
 
     /**
-     * Overrides the SessionHandler write method, with the additional option to handle 
+     * Overrides the SessionHandler write method, with the additional option to handle
      * session data encryption.
      *
      * @param string $id
      * @param string $data
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function write($id, $data)
     {
         if ($this->encrypted) {
