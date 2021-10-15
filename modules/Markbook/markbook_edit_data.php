@@ -40,8 +40,7 @@ $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effor
 $hasEffortName = ($effortAlternativeName != '' && $effortAlternativeNameAbrev != '');
 
 // Get the sort order, if it exists
-$studentOrderBy = ($session->has('markbookOrderBy')) ? $session->get('markbookOrderBy') : 'surname';
-$studentOrderBy = ($session->has('markbookOrderBy')) ? $_GET['markbookOrderBy'] : $studentOrderBy;
+$studentOrderBy = $session->get('markbookOrderBy', null) ?? $_GET['markbookOrderBy'] ?? 'surname';
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart');
