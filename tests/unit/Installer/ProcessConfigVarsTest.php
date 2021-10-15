@@ -3,12 +3,11 @@
 namespace Gibbon\Tests\UnitTest\Installer;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Install\Installer;
 use Gibbon\Services\CoreServiceProvider;
 
-require_once __DIR__ . '/../../../installer/installerFunctions.php';
-
 /**
- * @covers process_config_vars function and config file template
+ * @covers Installer::processConfigVars function and config file template
  */
 class ProcessConfigVarsTest extends TestCase {
 
@@ -83,7 +82,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax with mock config rendering function
         // to see if all variables are valid to print raw
-        $filename = $this->mockPhpRender(process_config_vars($inputConfig));
+        $filename = $this->mockPhpRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
@@ -94,7 +93,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax of the render result of the would-be config file
         // with the template file and given config data ($inputConfig)
-        $filename = $this->mockTemplateRender(process_config_vars($inputConfig));
+        $filename = $this->mockTemplateRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
@@ -116,7 +115,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax with mock config rendering function
         // to see if all variables are valid to print raw
-        $filename = $this->mockPhpRender(process_config_vars($inputConfig));
+        $filename = $this->mockPhpRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
@@ -127,7 +126,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax of the render result of the would-be config file
         // with the template file and given config data ($inputConfig)
-        $filename = $this->mockTemplateRender(process_config_vars($inputConfig));
+        $filename = $this->mockTemplateRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
@@ -167,7 +166,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax with mock config rendering function
         // to see if all variables are valid to print raw
-        $filename = $this->mockPhpRender(process_config_vars($inputConfig));
+        $filename = $this->mockPhpRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
@@ -178,7 +177,7 @@ class ProcessConfigVarsTest extends TestCase {
 
         // check the syntax of the render result of the would-be config file
         // with the template file and given config data ($inputConfig)
-        $filename = $this->mockTemplateRender(process_config_vars($inputConfig));
+        $filename = $this->mockTemplateRender(Installer::processConfigVars($inputConfig));
         $this->assertFileExists($filename, 'The temporary generated test target not found.');
         $result = exec('php -l ' . $filename);
         $this->assertTrue(
