@@ -104,6 +104,7 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
      * @param int $max_lifetime
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime)
     {
         $this->sessionGateway->deleteExpiredSessions($max_lifetime);
