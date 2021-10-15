@@ -1,4 +1,4 @@
-name: test
+name: CI Tests
 
 on:
   pull_request:
@@ -88,6 +88,29 @@ jobs:
           DB_NAME: gibbon_test
           DB_USERNAME: root
           DB_PASSWORD: ""
+
+      - name: Check PHP warning and deprecated messages in server_log
+        run: |
+          # Check number of warning messages.
+          export NUM_WARNING=$(grep 'PHP Warning: ' ./tests/log/server_log | wc -l)
+          if [ "$NUM_WARNING" -eq 0 ]; then
+            echo -e '\e[32mNo warning message.\e[0m'
+          else
+            echo -e "\e[1m\e[33mGot $NUM_WARNING warning messages:\e[0m"
+            grep --line-number --color=always 'PHP Warning: ' ./tests/log/server_log || echo -e '\e[32mNo warning or deprecated message found in log.\e[0m'
+            echo
+          fi
+
+          # Check number of deprecated messages. Cause error if found.
+          export NUM_DEPRECATED=$(grep 'Deprecated: ' ./tests/log/server_log | wc -l)
+          if [ "$NUM_DEPRECATED" -eq 0 ]; then
+            echo -e '\e[32mNo deprecated message.\e[0m'
+          else
+            echo -e "\e[1m\e[31mGot $NUM_DEPRECATED deprecated messages:\e[0m"
+            grep --line-number --color=always 'Deprecated: ' ./tests/log/server_log || echo -e '\e[32mNo warning or deprecated message found in log.\e[0m'
+            (exit 1)
+          fi
+        continue-on-error: ${{ matrix.experimental }}
 
       - name: Save Test Artifacts
         uses: actions/upload-artifact@v2
