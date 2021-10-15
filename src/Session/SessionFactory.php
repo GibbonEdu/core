@@ -19,11 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Session;
 
+use SessionHandler;
+use Gibbon\Services\Format;
 use Gibbon\Session\Session;
 use Psr\Container\ContainerInterface;
-use Gibbon\Session\DatabaseSessionHandler;
-use Gibbon\Session\EncryptedSessionHandler;
+use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Session\NativeSessionHandler;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Session\DatabaseSessionHandler;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 
 /**
@@ -47,10 +50,17 @@ class SessionFactory
 
         $config = $container->get('config')->getConfig();
 
-        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database' && $container->has(Connection::class)) {
-            $handler = new DatabaseSessionHandler($container->get(Connection::class), $config['sessionEncryptionKey'] ?? null);
+        // Check if the database exists, if not, use the built-in PHP session handler class
+        if ($container->has(Connection::class)) {
+            $sessionGateway = $container->get(SessionGateway::class);
+
+            if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
+                $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            } else {
+                $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            }
         } else {
-            $handler = new NativeSessionHandler($config['sessionEncryptionKey'] ?? null);
+            $handler = new SessionHandler();
         }
 
         // Set the handler for the session, enabling non-default
@@ -78,7 +88,7 @@ class SessionFactory
         // TODO: replace this logic when switching to routing.
         $address = $_GET['q'] ?? $_POST['address'] ?? '';
         $module = $address ? getModuleName($address) : '';
-        $action = $address ? getActionName($address) : '';
+        $action = $address ? getActionName($address) : basename($_SERVER['PHP_SELF']);
 
         // Create the instance from information of container
         // and environment.

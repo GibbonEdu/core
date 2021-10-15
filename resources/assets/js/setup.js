@@ -103,20 +103,4 @@ $(document).ready(function(){
             "#ffffff", "White", 
         ],
     });
-
-    // Initialize sessionTimeout
-    var sessionDuration = Gibbon.config.sessionTimeout.sessionDuration;
-    if (sessionDuration > 0) {
-        sessionTimeout({
-            message: Gibbon.config.sessionTimeout.message,
-            keepAliveUrl: 'keepAlive.php' ,
-            timeOutUrl: 'logout.php?timeout=true',
-            logOutUrl: 'logout.php',
-            logOutBtnText: Gibbon.config.sessionTimeout.logOutBtnText,
-            stayConnectedBtnText: Gibbon.config.sessionTimeout.stayConnectedBtnText,
-            warnAfter: sessionDuration,
-            timeOutAfter: (sessionDuration) + 600000,
-            titleText: Gibbon.config.sessionTimeout.titleText
-        });
-    }
 });
