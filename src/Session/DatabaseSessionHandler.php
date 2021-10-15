@@ -68,6 +68,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param string $name
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function open($path, $name)
     {
         return true;
@@ -78,6 +79,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      *
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function close()
     {
         return true;
@@ -89,6 +91,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param string $id
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function destroy($id)
     {
         $data = ['gibbonSessionID' => $id];
@@ -103,13 +106,14 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param string $id
      * @return string the session data or an empty string
      */
+    #[\ReturnTypeWillChange]
     public function read($id)
     {
         $data = ['gibbonSessionID' => $id];
         $sql = "SELECT sessionData FROM gibbonSession WHERE gibbonSessionID=:gibbonSessionID";
 
         $sessionData = (string)$this->db->selectOne($sql, $data);
-        
+
         if ($this->encrypted) {
             $sessionData = $this->decrypt($sessionData, $this->key);
         }
@@ -124,6 +128,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param string $data
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function write($id, $sessionData)
     {
         if ($this->encrypted) {
@@ -144,6 +149,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param int $max_lifetime
      * @return bool true for success or false for failure
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime)
     {
         $data = ['maxLifetime' => $max_lifetime];
