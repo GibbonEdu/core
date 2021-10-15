@@ -62,9 +62,10 @@ if (isset($_GET['code'])) {
   If we have an access token, we can make
   requests, else we generate an authentication URL.
  ************************************************/
-$refreshToken = !empty($session->get('googleAPIAccessToken')['refresh_token'])? $session->get('googleAPIAccessToken')['refresh_token'] : '';
+$accessToken = $session->get('googleAPIAccessToken');
+$refreshToken = $accessToken['refresh_token'] ?? '';
 
-if ($session->has('googleAPIAccessToken') && $session->get('googleAPIAccessToken') ) {
+if ($session->has('googleAPIAccessToken')) {
   $client->setAccessToken($session->get('googleAPIAccessToken'));
 } else {
   $authUrl = $client->createAuthUrl();
@@ -224,7 +225,7 @@ if (isset($authUrl)){
 
             setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Google Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
             $session->remove('googleAPIAccessToken');
-            $session->get('gplusuer');
+            $session->remove('gplusuer');
             @session_destroy();
             $URL = "../../index.php?loginReturn=fail6";
 			header("Location: {$URL}");
@@ -278,7 +279,7 @@ if (isset($authUrl)){
                         if ($row['futureYearsLogin'] != 'Y' and $session->get('gibbonSchoolYearSequenceNumber') < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
                             setLog($connection2, $session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                             $session->remove('googleAPIAccessToken');
-                            $session->get('gplusuer');
+                            $session->remove('gplusuer');
                             session_destroy();
                             $URL = "../../index.php?loginReturn=fail9";
                             header("Location: {$URL}");
