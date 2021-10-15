@@ -58,8 +58,6 @@ class Date extends TextField
      */
     public function setDateFromValue($value)
     {
-        global $guid;
-
         $this->setAttribute('value', Format::date($value));
 
         return $this;
@@ -71,7 +69,7 @@ class Date extends TextField
      */
     public function getLabelContext($label)
     {
-        global $guid, $session;
+        global $session;
 
         if (stristr($label->getDescription(), 'Format') === false) {
             return __('Format').': '.$session->get('i18n')['dateFormat'];
@@ -138,7 +136,7 @@ class Date extends TextField
      */
     protected function getElement()
     {
-        global $guid, $session;
+        global $session;
 
         $validationFormat = '';
         $dateFormat = $session->get('i18n')['dateFormat'];
