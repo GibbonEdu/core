@@ -19,9 +19,13 @@ CHANGELOG
 v23.0.00
 --------
     Headlines
+        Added support for database-driven sessions encrypted session data
+        Improved session timeout when using multiple tabs or windows
 
     Significant Changes
         System: added ability to run CLI scripts remotely, with secure key
+        System Admin: added a Maintenance Mode which restricts login access to admin only
+        System Admin: added an Active Sessions page to see who is currently logged in
 
     Changes With Important Notices
 
