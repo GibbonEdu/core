@@ -108,7 +108,7 @@ trait BasicAttributesTrait
      */
     public function getClass()
     {
-        return $this->getAttribute('class');
+        return $this->getAttribute('class') ?? '';
     }
 
     /**
