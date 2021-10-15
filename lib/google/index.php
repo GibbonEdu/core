@@ -1,5 +1,6 @@
 <?php
 
+use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 
 include "../../gibbon.php";
@@ -303,7 +304,7 @@ if (isset($authUrl)){
         }
 
 		//USER EXISTS, SET SESSION VARIABLES
-		$gibbon->session->createUserSession($username, $row);
+        SessionFactory::populateUser($session, $pdo, $username, $row);
 
         // If user has personal language set, load it
         if ($session->has('gibboni18nIDPersonal') && $gibboni18nID == $session->get('i18n')['gibboni18nID']) {
@@ -325,13 +326,16 @@ if (isset($authUrl)){
             }
         }
 
-		try {
-			$data = array( "lastIPAddress"=> $_SERVER["REMOTE_ADDR"], "lastTimestamp"=> date("Y-m-d H:i:s"), "failCount"=>0, "username"=> $username );
-			$sql = "UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username";
-			$result = $connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { }
+        //Make best effort to set IP address and other details, but no need to error check etc.
+        $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
+        $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        // Update current session to attach it to this user
+        $data = ['gibbonSessionID' => session_id(), 'gibbonPersonID' => $row['gibbonPersonID']];
+        $sql = "UPDATE gibbonSession SET gibbonPersonID=:gibbonPersonID WHERE gibbonSessionID=:gibbonSessionID";
+        $pdo->update($sql, $data);
 
 		//Set Goolge API refresh token where appropriate, and update user
 		if (!empty($refreshToken)) {
