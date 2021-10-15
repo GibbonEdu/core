@@ -210,7 +210,7 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function relativeTime($dateString, $tooltip = true)
+    public static function relativeTime($dateString, $tooltip = true, $relativeString = true)
     {
         if (empty($dateString)) {
             return '';
@@ -248,9 +248,9 @@ class Format
                 $time = static::dateReadable($dateString);
         }
 
-        if ($timeDifference > 0) {
+        if ($relativeString && $timeDifference > 0) {
             $time = __('{time} ago', ['time' => $time]);
-        } elseif ($timeDifference < 0) {
+        } elseif ($relativeString && $timeDifference < 0) {
             $time = __('in {time}', ['time' => $time]);
         }
 

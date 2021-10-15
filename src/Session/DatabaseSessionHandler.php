@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Session;
 
 use SessionHandlerInterface;
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\System\SessionGateway;
 
 /**
  * DatabaseSessionHandler Class
@@ -33,9 +33,9 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     use SessionEncryption;
 
     /**
-     * @var Gibbon\Contracts\Database\Connection
+     * @var Gibbon\Domain\System\SessionGateway
      */
-    protected $db;
+    protected $sessionGateway;
 
     /**
      * @var string
@@ -54,9 +54,9 @@ class DatabaseSessionHandler implements SessionHandlerInterface
      * @param Connection $connection
      * @param string|null $key
      */
-    public function __construct(Connection $connection, string $key = null)
+    public function __construct(SessionGateway $sessionGateway, string $key = null)
     {
-        $this->db = $connection;
+        $this->sessionGateway = $sessionGateway;
         $this->key = $key;
         $this->encrypted = !empty($key) && function_exists('openssl_encrypt');
     }
@@ -94,10 +94,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function destroy($id)
     {
-        $data = ['gibbonSessionID' => $id];
-        $sql = "DELETE FROM gibbonSession WHERE gibbonSessionID=:gibbonSessionID";
-
-        return $this->db->delete($sql, $data) ? true : false;
+        return $this->sessionGateway->deleteWhere(['gibbonSessionID' => $id]) !== false;
     }
 
     /**
@@ -109,11 +106,9 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function read($id)
     {
-        $data = ['gibbonSessionID' => $id];
-        $sql = "SELECT sessionData FROM gibbonSession WHERE gibbonSessionID=:gibbonSessionID";
-
-        $sessionData = (string)$this->db->selectOne($sql, $data);
-
+        $session = $this->sessionGateway->getByID($id);
+        $sessionData = (string)($session['sessionData'] ?? '');
+        
         if ($this->encrypted) {
             $sessionData = $this->decrypt($sessionData, $this->key);
         }
@@ -135,12 +130,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
             $sessionData = $this->encrypt($sessionData, $this->key);
         }
 
-        $data = ['gibbonSessionID' => $id, 'sessionData' => $sessionData, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];
-        $sql = "INSERT INTO gibbonSession (gibbonSessionID, sessionData, timestampCreated, timestampModified) VALUES (:gibbonSessionID, :sessionData, :timestampCreated, :timestampModified) ON DUPLICATE KEY UPDATE sessionData=:sessionData, timestampModified=:timestampModified";
-
-        $this->db->insert($sql, $data);
-
-        return $this->db->getQuerySuccess();
+        return $this->sessionGateway->updateSessionData($id, $sessionData) !== false;
     }
 
     /**
@@ -152,11 +142,6 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime)
     {
-        $data = ['maxLifetime' => $max_lifetime];
-        $sql = "DELETE FROM gibbonSession WHERE TIMESTAMPDIFF(SECOND, timestampModified, CURRENT_TIMESTAMP) > :maxLifetime";
-
-        $this->db->delete($sql, $data);
-
-        return $this->db->getQuerySuccess();
+        return $this->sessionGateway->deleteExpiredSessions($max_lifetime) !== false;
     }
 }

@@ -21,6 +21,7 @@ namespace Gibbon\Session;
 
 use SessionHandler;
 use SessionHandlerInterface;
+use Gibbon\Domain\System\SessionGateway;
 
 /**
  * NativeSessionHandler Class
@@ -31,6 +32,11 @@ use SessionHandlerInterface;
 class NativeSessionHandler extends SessionHandler implements SessionHandlerInterface
 {
     use SessionEncryption;
+
+    /**
+     * @var Gibbon\Domain\System\SessionGateway
+     */
+    protected $sessionGateway;
 
     /**
      * @var string
@@ -48,8 +54,9 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
      *
      * @param string|null $key
      */
-    public function __construct(string $key = null)
+    public function __construct(SessionGateway $sessionGateway, string $key = null)
     {
+        $this->sessionGateway = $sessionGateway;
         $this->key = $key;
         $this->encrypted = !empty($key) && function_exists('openssl_encrypt');
     }
@@ -89,5 +96,19 @@ class NativeSessionHandler extends SessionHandler implements SessionHandlerInter
         }
 
         return parent::write($id, $data);
+    }
+
+    /**
+     * Implements the SessionHandlerInterface
+     *
+     * @param int $max_lifetime
+     * @return bool true for success or false for failure
+     */
+    #[\ReturnTypeWillChange]
+    public function gc($max_lifetime)
+    {
+        $this->sessionGateway->deleteExpiredSessions($max_lifetime);
+
+        return parent::gc($max_lifetime);
     }
 }
