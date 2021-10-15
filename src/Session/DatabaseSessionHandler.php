@@ -94,9 +94,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function destroy($id)
     {
-        $this->sessionGateway->deleteWhere(['gibbonSessionID' => $id]);
-
-        return $this->db->getQuerySuccess();
+        return $this->sessionGateway->deleteWhere(['gibbonSessionID' => $id]) !== false;
     }
 
     /**
@@ -108,7 +106,8 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function read($id)
     {
-        $sessionData = (string)$this->sessionGateway->getByID($id);
+        $session = $this->sessionGateway->getByID($id);
+        $sessionData = (string)($session['sessionData'] ?? '');
         
         if ($this->encrypted) {
             $sessionData = $this->decrypt($sessionData, $this->key);
@@ -131,9 +130,7 @@ class DatabaseSessionHandler implements SessionHandlerInterface
             $sessionData = $this->encrypt($sessionData, $this->key);
         }
 
-        $this->sessionGateway->updateSessionData($id, $sessionData);
-
-        return $this->db->getQuerySuccess();
+        return $this->sessionGateway->updateSessionData($id, $sessionData) !== false;
     }
 
     /**
@@ -145,8 +142,6 @@ class DatabaseSessionHandler implements SessionHandlerInterface
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime)
     {
-        $this->sessionGateway->deleteExpiredSessions($max_lifetime);
-
-        return $this->db->getQuerySuccess();
+        return $this->sessionGateway->deleteExpiredSessions($max_lifetime) !== false;
     }
 }
