@@ -280,7 +280,7 @@ class Action extends WebLink
      */
     public function getOutput(&$data = array(), $params = array())
     {
-        global $guid, $session; // :((
+        global $session; // :((
 
         if (empty($this->url)) {
             return $this->getLabel();
