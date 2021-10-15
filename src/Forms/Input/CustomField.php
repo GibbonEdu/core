@@ -169,7 +169,7 @@ class CustomField extends Input
      */
     public function setValue($value = '')
     {
-        global $guid, $session;
+        global $session;
 
         switch($this->type) {
 
