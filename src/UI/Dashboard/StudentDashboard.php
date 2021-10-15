@@ -79,7 +79,7 @@ class StudentDashboard implements OutputableInterface
         if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
             $date = date('Y-m-d');
             try {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date2' => $date, 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+                $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
                 $sql = "(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry
                 JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
@@ -110,7 +110,7 @@ class StudentDashboard implements OutputableInterface
                 $planner .= '</div>';
             } else {
                 $planner .= "<div class='linkTop'>";
-                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
+                $planner .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
                 $planner .= '</div>';
 
                 $planner .= "<table cellspacing='0' style='width: 100%'>";
@@ -189,7 +189,7 @@ class StudentDashboard implements OutputableInterface
                         $planner .= Format::truncate($row['summary'], 360);
                         $planner .= '</td>';
                         $planner .= '<td>';
-                        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                        $planner .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
                         $planner .= '</td>';
                         $planner .= '</tr>';
                     }
@@ -200,18 +200,18 @@ class StudentDashboard implements OutputableInterface
 
         //GET TIMETABLE
         $timetable = false;
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') {
+        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Student') {
 
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+                    $("#tt").load("'.$this->session->get('absoluteURL').'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
                 });
             </script>';
 
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
             $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
-            $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
+            $timetable .= "<img style='margin: 10px 0 5px 0' src='".$this->session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
             $timetable .= '</div>';
         }
 
@@ -226,7 +226,7 @@ class StudentDashboard implements OutputableInterface
             while ($rowHooks = $resultHooks->fetch()) {
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
-                $dataHook = array('gibbonRoleIDCurrent' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'sourceModuleName' => $options['sourceModuleName']);
+                $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName']);
                 $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName) AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND gibbonHook.type='Student Dashboard' AND gibbonAction.name='".$options['sourceModuleAction']."' AND gibbonModule.name='".$options['sourceModuleName']."' ORDER BY name";
                 $resultHook = $connection2->prepare($sqlHook);
                 $resultHook->execute($dataHook);
@@ -275,7 +275,7 @@ class StudentDashboard implements OutputableInterface
             }
             foreach ($hooks as $hook) {
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
-                $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
+                $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
                 if (!file_exists($include)) {
                     $return .= "<div class='error'>";
                     $return .= __('The selected page cannot be displayed due to a hook error.');

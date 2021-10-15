@@ -60,7 +60,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID'))
         $session->set('image_240', '');
 
         //Clear cusotm sidebar
-        unset($_SESSION[$guid]['index_customSidebar.php']);
+        $session->remove('index_customSidebar.php');
 
         $URL .= '?return=success0';
         //Success 0

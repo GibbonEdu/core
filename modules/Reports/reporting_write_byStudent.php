@@ -321,13 +321,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     }
 
     // SIDEBAR
-    $_SESSION[$guid]['sidebarExtra'] .= $page->fetchFromTemplate('ui/writingSidebar.twig.html', [
+    $session->set('sidebarExtra', $page->fetchFromTemplate('ui/writingSidebar.twig.html', [
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
         'totalCount' => count($progress),
         'progressCount' => $progressComplete,
         'students' => $progress,
         'params' => $urlParams,
-    ]);
+    ]));
 }
 ?>
 

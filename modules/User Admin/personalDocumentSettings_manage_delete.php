@@ -33,6 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
         return;
     }
 
-    $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/personalDocumentSettings_manage_deleteProcess.php?gibbonPersonalDocumentTypeID='.$gibbonPersonalDocumentTypeID);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_deleteProcess.php?gibbonPersonalDocumentTypeID='.$gibbonPersonalDocumentTypeID);
     echo $form->getOutput();
 }
