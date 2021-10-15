@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Session;
 
+use SessionHandler;
 use Gibbon\Services\Format;
 use Gibbon\Session\Session;
 use Psr\Container\ContainerInterface;
@@ -49,12 +50,17 @@ class SessionFactory
 
         $config = $container->get('config')->getConfig();
 
-        $sessionGateway = $container->get(SessionGateway::class);
+        // Check if the database exists, if not, use the built-in PHP session handler class
+        if ($container->has(Connection::class)) {
+            $sessionGateway = $container->get(SessionGateway::class);
 
-        if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
-            $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
+                $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            } else {
+                $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            }
         } else {
-            $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+            $handler = new SessionHandler();
         }
 
         // Set the handler for the session, enabling non-default
