@@ -62,7 +62,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
                 exit();
             }
         }
-        
+
         $path = $session->get('absolutePath');
 
         //Check for reasonable image
@@ -98,7 +98,7 @@ if ($gibbonPersonID == '' or $gibbonPersonID != $session->get('gibbonPersonID') 
             $session->set('image_240', $attachment1);
 
             //Clear cusotm sidebar
-            unset($_SESSION[$guid]['index_customSidebar.php']);
+            $session->remove('index_customSidebar.php');
 
             $URL .= '?return=success0';
             header("Location: {$URL}");

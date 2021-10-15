@@ -280,7 +280,7 @@ class Action extends WebLink
      */
     public function getOutput(&$data = array(), $params = array())
     {
-        global $guid; // :(
+        global $session; // :((
 
         if (empty($this->url)) {
             return $this->getLabel();
@@ -289,7 +289,7 @@ class Action extends WebLink
         if ($icon = $this->getIcon()) {
             // Allow modules to specify their own icons if needed
             $icon = substr($icon, 0, 4) != 'http'
-                ? $_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/'.$icon.'.png'
+                ? $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/'.$icon.'.png'
                 : $icon;
 
             $this->setContent(sprintf('%1$s<img alt="%2$s" title="%2$s" src="'.$icon.'" width="25" height="25" class="ml-1">',
@@ -316,11 +316,11 @@ class Action extends WebLink
         if ($this->external) {
             $this->setAttribute('href', $this->url.$this->urlFragment);
         } else if ($this->direct) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', $session->get('absoluteURL').$this->url.'?'.http_build_query($queryParams).$this->urlFragment);
         } else if ($this->modal) {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', $session->get('absoluteURL').'/fullscreen.php?'.http_build_query($queryParams).$this->urlFragment);
         } else {
-            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams).$this->urlFragment);
+            $this->setAttribute('href', $session->get('absoluteURL').'/index.php?'.http_build_query($queryParams).$this->urlFragment);
         }
 
         return parent::getOutput();

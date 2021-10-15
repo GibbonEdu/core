@@ -23,8 +23,8 @@ use Gibbon\Services\Format;
 include './gibbon.php';
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
+if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
+    if ($session->get('i18n')['code'] != null) {
         putenv('LC_ALL='.$session->get('i18n')['code']);
         setlocale(LC_ALL, $session->get('i18n')['code']);
         bindtextdomain('gibbon', './i18n');
