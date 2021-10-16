@@ -59,7 +59,7 @@ class Action extends WebLink
      *
      * @var string
      */
-    protected $urlFragment;
+    protected $urlFragment = null;
 
     /**
      * The icon name, without any path or filetype
@@ -319,15 +319,15 @@ class Action extends WebLink
         } else if ($this->direct) {
             $this->setAttribute('href', Url::fromHandlerRoute(ltrim($this->url, '/'))
                 ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment, '#')));
+                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         } else if ($this->modal) {
             $this->setAttribute('href', Url::fromHandlerRoute('fullscreen.php')
                 ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment, '#')));
+                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         } else {
             $this->setAttribute('href', Url::fromRoute()
                 ->withQueryParams($queryParams)
-                ->withFragment(ltrim($this->urlFragment, '#')));
+                ->withFragment(ltrim($this->urlFragment ?? '', '#')));
         }
 
         return parent::getOutput();
