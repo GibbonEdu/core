@@ -265,11 +265,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $grades = false;
 
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php')) {
-<<<<<<< HEAD
-            $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__('View Markbook').'</a></span></div>';
-=======
             $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='" . Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('search', $gibbonPersonID) . "'>".__('View Markbook').'</a></span></div>';
->>>>>>> e47451504 (wip: add missing index.php routes)
 
             //Get settings
             $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -557,12 +553,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
 
             $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
-<<<<<<< HEAD
-            $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
-=======
-
             $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('search', $gibbonPersonID)."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
->>>>>>> e47451504 (wip: add missing index.php routes)
 
 
             $plannerGateway = $this->getContainer()->get(PlannerEntryGateway::class);
