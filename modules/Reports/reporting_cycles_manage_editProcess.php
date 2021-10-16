@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Services\Format;
-use Gibbon\Url;
+use Gibbon\Http\Url;
 
 require_once '../../gibbon.php';
 
@@ -30,8 +30,7 @@ $URL = Url::fromModuleRoute('Reports', 'reporting_cycles_manage_edit')
     ->withQueryParam('gibbonReportingCycleID', $gibbonReportingCycleID);
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_edit.php') == false) {
-    $URL = $URL->withReturn('error0');
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
     // Proceed!

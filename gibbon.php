@@ -97,8 +97,8 @@ $session = $container->get('session');
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
 // Setup global absoluteURL for all urls.
-if ($gibbon->isInstalled() && !empty($absoluteURL = $session->get('absoluteURL'))) {
-    Url::setBaseUrl($absoluteURL);
+if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
+    Url::setBaseUrl($session->get('absoluteURL'));
 } else {
     // TODO: put this absoluteURL detection somewhere?
     $absoluteURL = (function () {

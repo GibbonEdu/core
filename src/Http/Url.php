@@ -229,10 +229,11 @@ class Url extends Uri implements UriInterface
     }
 
     /**
-     * Create Uri instance for the root-relative url with the specific return
-     * message (success, warning or error). Simply a short-hand for:
+     * Create Uri with "return" query paremeter.
      *
-     *   Url::withQueryParam('return', $return_type)
+     * Create Uri instance for the root-relative url with the specific return
+     * message (success, warning or error). Simply a short-hand for
+     * `Url::withQueryParam('return', $return_type)`.
      *
      * @param string $return_type The internal reference string for the return.
      *
