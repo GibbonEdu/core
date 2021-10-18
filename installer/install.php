@@ -22,7 +22,6 @@ use Gibbon\Data\Validator;
 use Gibbon\Install\Context;
 use Gibbon\Install\Http\Exception\RecoverableException;
 use Gibbon\Install\Http\InstallController;
-use Gibbon\Install\Http\NonceService;
 use Gibbon\Install\Installer;
 
 include '../version.php';
@@ -35,6 +34,17 @@ require_once '../modules/System Admin/moduleFunctions.php';
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
+// Fix missing locale causing failed page load
+if (empty($gibbon->locale->getLocale())) {
+    $gibbon->locale->setLocale('en_GB');
+}
+
+// Page object for rendering
+$page = new Page($container->get('twig'), [
+    'title'   => __('Gibbon Installer'),
+    'address' => '/installer/install.php',
+]);
+
 // Get or variables from environment.
 $step = InstallController::stepFromEnvironment($_GET);
 $guid = InstallController::guidFromEnvironment($_COOKIE, $step);
@@ -44,37 +54,17 @@ $guid = InstallController::guidFromEnvironment($_COOKIE, $step);
  * @var \Gibbon\Session\Session $session
  */
 
-// Use the POSTed GUID in place of "undefined".
-// Later steps have the guid in the config file but without
-// a way to store variables relibly prior to that, installation can fail
+// Setup session variables for gibbon to work properly.
 $session->setGuid($guid);
 $session->set('guid', $guid);
 $session->set('absolutePath', realpath('../'));
-if (!$session->has('nonceToken')) {
-    $session->set('nonceToken', \getSalt());
-}
-
-// Generate and save a nonce for forms on this page to use
-$nonceService = new NonceService($session->get('nonceToken'));
-
-// Deal with non-existent stringReplacement session
-$session->set('stringReplacement', []);
-
-// Fix missing locale causing failed page load
-if (empty($gibbon->locale->getLocale())) {
-    $gibbon->locale->setLocale('en_GB');
-}
+$session->set('stringReplacement', []); // Deal with non-existent stringReplacement session
 
 // Create a controller instance.
 $controller = InstallController::create(
     $container,
     $session
 );
-
-$page = new Page($container->get('twig'), [
-    'title'   => __('Gibbon Installer'),
-    'address' => '/installer/install.php',
-]);
 
 // Generate installer object.
 $installer = new Installer($container->get('twig'));
@@ -103,7 +93,7 @@ try {
     if ($step === 1) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                $controller->handleStepOneSubmit($nonceService, $session, $_POST);
+                $controller->handleStepOneSubmit($session, $_POST);
                 header('Location: ./install.php?step=2');
                 exit;
             } catch (RecoverableException $e) {
@@ -118,7 +108,6 @@ try {
         // Validate the installation context and show warning.
         // If suitable for installation, show form to choose language.
         echo $controller->viewStepOne(
-            $nonceService,
             './install.php?step=1',
             $gibbon->getConfig('version')
         );
@@ -131,7 +120,6 @@ try {
                 $controller->handleStepTwoSubmit(
                     $context,
                     $installer,
-                    $nonceService,
                     $session,
                     $_POST
                 );
@@ -144,7 +132,6 @@ try {
 
         // Show the form to input database options.
         echo $controller->viewStepTwo(
-            $nonceService,
             './install.php?step=2',
             $_POST
         );
@@ -155,7 +142,6 @@ try {
                     $container,
                     $context,
                     $installer,
-                    $nonceService,
                     $version,
                     $_POST
                 );
@@ -180,7 +166,6 @@ try {
         echo $controller->viewStepThree(
             $context,
             $installer,
-            $nonceService,
             './install.php?step=3',
             $version,
             $_POST

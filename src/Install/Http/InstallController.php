@@ -34,6 +34,13 @@ class InstallController
     protected $installer;
 
     /**
+     * NonceService for form security.
+     *
+     * @var \Gibbon\Install\Http\NonceService
+     */
+    protected $nonceService;
+
+    /**
      * Gibbon core for retrieving system requirements.
      *
      * @var \Gibbon\Core
@@ -50,12 +57,14 @@ class InstallController
     public function __construct(
         Context $context,
         Installer $installer,
+        NonceService $nonceService,
         Core $gibbon,
         Page $page
     )
     {
         $this->context = $context;
         $this->installer = $installer;
+        $this->nonceService = $nonceService;
         $this->gibbon = $gibbon;
         $this->page = $page;
     }
@@ -101,6 +110,12 @@ class InstallController
         // Generate installer instance.
         $installer = new Installer($templateEngine);
 
+        // Generate and save a nonce for forms on this page to use
+        if (!$session->has('nonceToken')) {
+            $session->set('nonceToken', \getSalt());
+        }
+        $nonceService = new NonceService($session->get('nonceToken'));
+
         // Generate page object for display.
         $page = new Page($templateEngine, [
             'title'   => __('Gibbon Installer'),
@@ -110,6 +125,7 @@ class InstallController
         return new static(
             $context,
             $installer,
+            $nonceService,
             $gibbon,
             $page
         );
@@ -183,19 +199,17 @@ class InstallController
     /**
      * Render the view for step one.
      *
-     * @param string $nonce      The generated nonce for next step.
      * @param string $submitUrl  The url for form submission.
      * @param string $version    The version to install.
      *
      * @return string
      */
     public function viewStepOne(
-        NonceService $nonceService,
         string $submitUrl,
         string $version
     ): string
     {
-        $nonce = $nonceService->generate('install:locale');
+        $nonce = $this->nonceService->generate('install:locale');
 
         //PROCEED
         $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -295,8 +309,7 @@ class InstallController
      * Remember the installation locale submitted from step 1.
      * And try to install the associated locale file, if not in the system.
      *
-     * @param Context $context
-     * @param NonceService $nonceService
+     * @param Session $session
      * @param array $data
      *
      * @return void
@@ -305,12 +318,11 @@ class InstallController
      * @throws RecoverableException
      */
     public function handleStepOneSubmit(
-        NonceService $nonceService,
         Session $session,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:locale');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:locale');
 
         // Install locale
         $installLocale = $data['code'] ?? 'en_GB';
@@ -332,18 +344,16 @@ class InstallController
     /**
      * Interface to collect database configurations.
      *
-     * @param NonceService $nonceService  The nonce checking service.
      * @param string       $submitUrl     The url for form submission.
      * @param array        $data          The previously submitted data.
      * @return string
      */
     public function viewStepTwo(
-        NonceService $nonceService,
         string $submitUrl,
         array $data
     ): string
     {
-        $nonce = $nonceService->generate('install:setDbConfig');
+        $nonce = $this->nonceService->generate('install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
@@ -396,7 +406,6 @@ class InstallController
      *
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
      * @param Session $session
      * @param string $guid
      * @param array $data
@@ -409,12 +418,11 @@ class InstallController
     public function handleStepTwoSubmit(
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
         Session $session,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
@@ -450,7 +458,6 @@ class InstallController
      *
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
      * @param string $submitUrl
      * @param string $version
      * @param array $data
@@ -460,13 +467,12 @@ class InstallController
     public function viewStepThree(
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
         string $submitUrl,
         string $version,
         array $data
     ): string
     {
-        $nonce = $nonceService->generate('install:postInstallSettings');
+        $nonce = $this->nonceService->generate('install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
@@ -679,7 +685,6 @@ class InstallController
      * @param ContainerInterface $container
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
      * @param string $version
      * @param array $data
      *
@@ -692,12 +697,11 @@ class InstallController
         ContainerInterface $container,
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
         string $version,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
