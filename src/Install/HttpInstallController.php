@@ -125,6 +125,41 @@ class HttpInstallController
     }
 
     /**
+     * Handle guid in browser environment for installation.
+     *
+     * Parse gibbon_install_guid cookie, or generate random guid.
+     * The newly generated guid will set to cookie gibbon_install_guid.
+     * Will only generate guid in step 1.
+     *
+     * @param integer $step  The installation step number. Step 1 with empty
+     *                       gibbon_install_guid cookie will force generating
+     *                       new guid.
+     *
+     * @return string The generated or recoved guid string.
+     *
+     * @throws \Exception  If guid recovered from cookie is empty, or the cookie
+     *                     is not set. Except in step 4, where cookie is supposed
+     *                     to be unsets.
+     */
+    public static function guidFromEnvironment(int $step): string
+    {
+        // Deal with $guid setup, otherwise get and filter the existing $guid
+        if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
+            $guid = Installer::randomGuid();
+            setcookie('gibbon_install_guid', $guid, 0, '', '', false, true);
+            error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
+        } else {
+            $guid = $_COOKIE['gibbon_install_guid'] ?? '';
+            $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
+            error_log(sprintf('Installer: Step %s: Using guid from $_COOKIE: %s', var_export($step, true), var_export($guid, true)));
+        }
+        if ($step !== 4 && empty($guid)) {
+            throw new \Exception('guid not found in environment. Please restart the installation.');
+        }
+        return $guid;
+    }
+
+    /**
      * Get the key and localized name of each steps of installation.
      *
      * @return string[] Steps with step number as key and name as value. Starts from 1.

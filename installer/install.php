@@ -41,15 +41,7 @@ $step = isset($_GET['step'])? intval($_GET['step']) : 1;
 $step = min(max($step, 1), 4);
 
 // Deal with $guid setup, otherwise get and filter the existing $guid
-if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
-    $guid = Installer::randomGuid();
-    setcookie('gibbon_install_guid', $guid, 0, '', '', false, true);
-    error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
-} else {
-    $guid = $_COOKIE['gibbon_install_guid'] ?? '';
-    $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
-    error_log(sprintf('Installer: Step %s: Using guid from $_COOKIE: %s', var_export($step, true), var_export($guid, true)));
-}
+$guid = HttpInstallController::guidFromEnvironment($step);
 
 /**
  * @var \Gibbon\Core $gibbon
