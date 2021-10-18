@@ -19,12 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\View\Page;
 use Gibbon\Data\Validator;
-use Gibbon\Install\Config;
 use Gibbon\Install\Context;
-use Gibbon\Install\Exception\RecoverableException;
-use Gibbon\Install\HttpInstallController;
+use Gibbon\Install\Http\Exception\RecoverableException;
+use Gibbon\Install\Http\InstallController;
+use Gibbon\Install\Http\NonceService;
 use Gibbon\Install\Installer;
-use Gibbon\Install\NonceService;
 
 include '../version.php';
 include '../gibbon.php';
@@ -41,7 +40,7 @@ $step = isset($_GET['step'])? intval($_GET['step']) : 1;
 $step = min(max($step, 1), 4);
 
 // Deal with $guid setup, otherwise get and filter the existing $guid
-$guid = HttpInstallController::guidFromEnvironment($step);
+$guid = InstallController::guidFromEnvironment($step);
 
 /**
  * @var \Gibbon\Core $gibbon
@@ -70,7 +69,7 @@ if (empty($gibbon->locale->getLocale())) {
 }
 
 // Create a controller instance.
-$controller = HttpInstallController::create(
+$controller = InstallController::create(
     $container,
     $session
 );

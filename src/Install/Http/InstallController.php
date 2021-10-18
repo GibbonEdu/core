@@ -1,19 +1,23 @@
 <?php
 
-namespace Gibbon\Install;
+namespace Gibbon\Install\Http;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Core;
 use Gibbon\Database\Updater;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
-use Gibbon\Install\Exception\ForbiddenException;
-use Gibbon\Install\Exception\RecoverableException;
+use Gibbon\Install\Config;
+use Gibbon\Install\Context;
+use Gibbon\Install\Http\Exception\ForbiddenException;
+use Gibbon\Install\Http\Exception\RecoverableException;
+use Gibbon\Install\Http\NonceService;
+use Gibbon\Install\Installer;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
 
-class HttpInstallController
+class InstallController
 {
     /**
      * Installation context.
@@ -66,17 +70,17 @@ class HttpInstallController
     }
 
     /**
-     * Create an HttpInstallController instance from
+     * Create an InstallController instance from
      * container.
      *
      * @param ContainerInterface $container
      * @param string $absolutePath
-     * @return HttpInstallController
+     * @return InstallController
      */
     public static function create(
         ContainerInterface $container,
         Session $session
-    ): HttpInstallController
+    ): InstallController
     {
         /**
          * Template engine for rendering page or config file.
@@ -313,7 +317,7 @@ class HttpInstallController
             ? i18nFileInstall($this->gibbon->session->get('absolutePath'), $installLocale)
             : true;
         if (!$languageInstalled) {
-            throw new RecoverableException(
+            throw new RecoverableException (
                 __('Failed to download and install the required files.') . ' ' .
                 sprintf(
                     __('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'),
@@ -504,7 +508,7 @@ class HttpInstallController
             $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
         try {
-            $message = HttpInstallController::renderPasswordPolicies(
+            $message = static::renderPasswordPolicies(
                 $installer->getPasswordPolicies()
             );
             if (!empty($message)) {
