@@ -48,7 +48,7 @@ if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
 } else {
     $guid = $_COOKIE['gibbon_install_guid'] ?? '';
     $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
-    error_log(sprintf('Installer: Step %s: Using guid from $_POST: %s', var_export($step, true), isset($_POST['guid']) ? var_export($_POST['guid'], true): 'undefined'));
+    error_log(sprintf('Installer: Step %s: Using guid from $_COOKIE: %s', var_export($step, true), var_export($guid, true)));
 }
 
 /**
@@ -145,7 +145,6 @@ try {
                     $installer,
                     $nonceService,
                     $session,
-                    $guid,
                     $_POST
                 );
                 header('Location: ./install.php?step=3');

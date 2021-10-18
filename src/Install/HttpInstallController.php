@@ -370,7 +370,6 @@ class HttpInstallController
         Installer $installer,
         NonceService $nonceService,
         Session $session,
-        string $guid,
         array $data
     )
     {
@@ -378,6 +377,12 @@ class HttpInstallController
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
+
+        // Get guid from session
+        $guid = $session->get('guid') ?? '';
+        if (empty($guid)) {
+            throw new \Exception('guid in session is either not set or empty.');
+        }
 
         // Get and set database variables (not set until step 1)
         $config = static::parseConfigSubmission($guid, $data);
