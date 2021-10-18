@@ -142,13 +142,10 @@ try {
                     $container,
                     $context,
                     $installer,
+                    $session,
                     $version,
                     $_POST
                 );
-
-                // Forget installation details in session and cookie.
-                $session->remove('installLocale');
-                setcookie('gibbon_install_guid', '', -1);
 
                 // Redirect to next step
                 header('Location: ./install.php?step=4');

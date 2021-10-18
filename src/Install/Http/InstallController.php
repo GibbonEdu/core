@@ -685,6 +685,7 @@ class InstallController
      * @param ContainerInterface $container
      * @param Context $context
      * @param Installer $installer
+     * @param Session $session
      * @param string $version
      * @param array $data
      *
@@ -697,6 +698,7 @@ class InstallController
         ContainerInterface $container,
         Context $context,
         Installer $installer,
+        Session $session,
         string $version,
         array $data
     )
@@ -755,6 +757,9 @@ class InstallController
 
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
+
+        // Clean up installation variables.
+        static::cleanUp($session);
 
         if ($settingsFail) {
             throw new RecoverableException(
@@ -1081,5 +1086,20 @@ class InstallController
             return "<li>{$policy}</li>";
         }, $policies));
         return !empty($html) ? "<ul>$html</ul>" : '';
+    }
+
+    /**
+     * Clearn up environment after installation.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    private static function cleanUp(Session $session)
+    {
+        // Forget installation details in session and cookie.
+        $session->remove('installLocale');
+        $session->remove('nonceToken');
+        setcookie('gibbon_install_guid', '', -1);
     }
 }
