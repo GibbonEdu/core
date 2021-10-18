@@ -47,26 +47,17 @@ class InstallController
      */
     protected $page;
 
-    /**
-     * Unique installation string
-     *
-     * @var string
-     */
-    protected $guid;
-
     public function __construct(
         Context $context,
         Installer $installer,
         Core $gibbon,
-        Page $page,
-        string $guid
+        Page $page
     )
     {
         $this->context = $context;
         $this->installer = $installer;
         $this->gibbon = $gibbon;
         $this->page = $page;
-        $this->guid = $guid;
     }
 
     /**
@@ -75,7 +66,9 @@ class InstallController
      *
      * @param ContainerInterface $container
      * @param string $absolutePath
+     *
      * @return InstallController
+     * @throws \Exception
      */
     public static function create(
         ContainerInterface $container,
@@ -95,11 +88,6 @@ class InstallController
          * @var \Gibbon\Core
          */
         $gibbon = $container->get('config');
-
-        // Unique installation ID.
-        if (!is_string($guid = $session->get('guid'))) {
-            throw new \Exception(sprintf('Expected session\'s guid to be string but found %s.', var_export($guid, true)));
-        }
 
         // Absolute path.
         if (empty($absolutePath = $session->get('absolutePath'))) {
@@ -123,8 +111,7 @@ class InstallController
             $context,
             $installer,
             $gibbon,
-            $page,
-            $guid
+            $page
         );
     }
 
