@@ -49,6 +49,25 @@ class Installer
     }
 
     /**
+     * Generate a randomized uuid-like string for the installation.
+     *
+     * @return string Random guid string.
+     */
+    public static function randomGuid(): string
+    {
+        $charList = 'abcdefghijkmnopqrstuvwxyz023456789';
+        $guid = '';
+        for ($i = 0;$i < 36;++$i) {
+            if ($i == 9 or $i == 14 or $i == 19 or $i == 24) {
+                $guid .= '-';
+            } else {
+                $guid .= substr($charList, rand(1, strlen($charList)), 1);
+            }
+        }
+        return $guid;
+    }
+
+    /**
      * Generate configuration file from twig template.
      *
      * @version v23

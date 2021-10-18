@@ -42,7 +42,7 @@ $step = min(max($step, 1), 4);
 
 // Deal with $guid setup, otherwise get and filter the existing $guid
 if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
-    $guid = Config::randomGuid();
+    $guid = Installer::randomGuid();
     setcookie('gibbon_install_guid', $guid, 0, '', '', false, true);
     error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
 } else {
