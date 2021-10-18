@@ -180,7 +180,7 @@ try {
                 header('Location: ./install.php?step=4');
                 exit;
             } catch (RecoverableException $e) {
-                $session->set('flashMessage', $e);
+                $controller->flashMessage($session, $e);
                 header('Location: ./install.php?step=4');
                 exit;
             } catch (\Exception $e) {
