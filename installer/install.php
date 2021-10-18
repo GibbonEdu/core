@@ -35,12 +35,9 @@ require_once '../modules/System Admin/moduleFunctions.php';
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
-// Get or set the current step
-$step = isset($_GET['step'])? intval($_GET['step']) : 1;
-$step = min(max($step, 1), 4);
-
-// Deal with $guid setup, otherwise get and filter the existing $guid
-$guid = InstallController::guidFromEnvironment($step);
+// Get or variables from environment.
+$step = InstallController::stepFromEnvironment($_GET);
+$guid = InstallController::guidFromEnvironment($_COOKIE, $step);
 
 /**
  * @var \Gibbon\Core $gibbon
