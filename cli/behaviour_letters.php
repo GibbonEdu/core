@@ -17,11 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Comms\EmailTemplate;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Services\Format;
+use Gibbon\Domain\System\EmailTemplateGateway;
+use Gibbon\Domain\User\UserGateway;
 
 require getcwd().'/../gibbon.php';
 
@@ -60,39 +64,37 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     $enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
     if ($enableBehaviourLetters == 'Y') {
         $behaviourLettersLetter1Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter1Count');
-        $behaviourLettersLetter1Text = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter1Text');
         $behaviourLettersLetter2Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter2Count');
-        $behaviourLettersLetter2Text = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter2Text');
         $behaviourLettersLetter3Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter3Count');
-        $behaviourLettersLetter3Text = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter3Text');
 
-        if ($behaviourLettersLetter1Count != '' and $behaviourLettersLetter1Text != '' and $behaviourLettersLetter2Count != '' and $behaviourLettersLetter2Text != '' and $behaviourLettersLetter3Count != '' and $behaviourLettersLetter3Text != '' and is_numeric($behaviourLettersLetter1Count) and is_numeric($behaviourLettersLetter2Count) and is_numeric($behaviourLettersLetter3Count)) {
+        $behaviourLetterGateway = $container->get(BehaviourLetterGateway::class);
+        $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
+        $userGateway = $container->get(UserGateway::class);
+        $template = $container->get(EmailTemplate::class);
+
+        if ($behaviourLettersLetter1Count != '' and $behaviourLettersLetter2Count != '' and $behaviourLettersLetter3Count != '' and is_numeric($behaviourLettersLetter1Count) and is_numeric($behaviourLettersLetter2Count) and is_numeric($behaviourLettersLetter3Count)) {
             //SCAN THROUGH ALL STUDENTS
 
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS formGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.gibbonFormGroupID, gibbonFormGroup.name AS formGroup, 'Student' AS role, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3 FROM gibbonPerson, gibbonStudentEnrolment, gibbonFormGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
+            $result = $pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {
-                while ($row = $result->fetch()) { //For every student
-                    $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
-                    $formGroup = $row['formGroup'];
+                while ($student = $result->fetch()) { //For every student
+                    $studentName = Format::name('', $student['preferredName'], $student['surname'], 'Student', false);
+                    $formGroup = $student['formGroup'];
 
-                    //Check count of negative behaviour records in the current year
-
-                        $dataBehaviour = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                        $sqlBehaviour = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative'";
-                        $resultBehaviour = $connection2->prepare($sqlBehaviour);
-                        $resultBehaviour->execute($dataBehaviour);
+                    //Check count of negative behaviour records in the current year=
+                    $dataBehaviour = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                    $sqlBehaviour = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative'";
+                    $resultBehaviour = $pdo->select($sqlBehaviour, $dataBehaviour);
+                        
                     $behaviourCount = $resultBehaviour->rowCount();
                     if ($behaviourCount > 0) { //Only worry about students with more than zero negative records in the current year
                         //Get most recent letter entry
-
-                            $dataLetters = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                            $sqlLetters = 'SELECT * FROM gibbonBehaviourLetter WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC LIMIT 0, 1';
-                            $resultLetters = $connection2->prepare($sqlLetters);
-                            $resultLetters->execute($dataLetters);
+                        $dataLetters = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                        $sqlLetters = 'SELECT * FROM gibbonBehaviourLetter WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY timestamp DESC LIMIT 0, 1';
+                        $resultLetters = $pdo->select($sqlLetters, $dataLetters);
 
                         $newLetterRequired = false;
                         $newLetterRequiredLevel = null;
@@ -170,21 +172,15 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                         $letterUpdateFail = false;
                         $gibbonBehaviourLetterID = null;
 
-                        //PREPARE LETTER BODY
-                        $body = '';
+                        //PREPARE BEHAVIOUR RECORD
                         if ($issueExistingLetter or ($newLetterRequired and $newLetterRequiredStatus == 'Issued')) {
-                            if ($issueExistingLetter) {
-                                $body = ${'behaviourLettersLetter'.$issueExistingLetterLevel.'Text'};
-                            } else {
-                                $body = ${'behaviourLettersLetter'.$newLetterRequiredLevel.'Text'};
-                            }
                             //Prepare behaviour record for replacement
                             $behaviourRecord = '<ul>';
 
-                                $dataBehaviourRecord = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                                $sqlBehaviourRecord = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' ORDER BY timestamp DESC";
-                                $resultBehaviourRecord = $connection2->prepare($sqlBehaviourRecord);
-                                $resultBehaviourRecord->execute($dataBehaviourRecord);
+                            $dataBehaviourRecord = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
+                            $sqlBehaviourRecord = "SELECT * FROM gibbonBehaviour WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND type='Negative' ORDER BY timestamp DESC";
+                            $resultBehaviourRecord = $pdo->select($sqlBehaviourRecord, $dataBehaviourRecord);
+                            
                             while ($rowBehaviourRecord = $resultBehaviourRecord->fetch()) {
                                 $behaviourRecord .= '<li>';
                                 $behaviourRecord .= Format::date(substr($rowBehaviourRecord['timestamp'], 0, 10));
@@ -197,108 +193,90 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                                 $behaviourRecord .= '</li>';
                             }
                             $behaviourRecord .= '</ul>';
-
-                            //Peform required text replacements
-                            $body = str_replace('[studentName]', $studentName, $body);
-                            $body = str_replace('[formGroup]', $formGroup, $body);
-                            $body = str_replace('[behaviourCount]', $behaviourCount, $body);
-                            $body = str_replace('[behaviourRecord]', $behaviourRecord, $body);
-                            $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $session->get('systemName'), $session->get('organisationName')).'</i>', $body);
                         }
 
                         if ($issueExistingLetter) { //Issue existing letter
                             //Update record
                             $gibbonBehaviourLetterID = $issueExistingLetterID;
-                            try {
-                                $dataLetter = array('body' => $body, 'gibbonBehaviourLetterID' => $gibbonBehaviourLetterID);
-                                $sqlLetter = "UPDATE gibbonBehaviourLetter SET status='Issued', body=:body WHERE gibbonBehaviourLetterID=:gibbonBehaviourLetterID";
-                                $resultLetter = $connection2->prepare($sqlLetter);
-                                $resultLetter->execute($dataLetter);
-                            } catch (PDOException $e) {
-                                $letterUpdateFail = true;
-                            }
 
-                            if ($letterUpdateFail == false) {
+                            $updated = $behaviourLetterGateway->update($gibbonBehaviourLetterID, ['status' => 'Issued']);
+
+                            if ($updated) {
                                 //Flag parents to receive email
                                 $email = true;
 
                                 //Notify tutor(s)
                                 $notificationText = sprintf(__('A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
-                                if ($row['gibbonPersonIDTutor'] != '') {
-                                    $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                if ($student['gibbonPersonIDTutor'] != '') {
+                                    $notificationSender->addNotification($student['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                 }
-                                if ($row['gibbonPersonIDTutor2'] != '') {
-                                    $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                if ($student['gibbonPersonIDTutor2'] != '') {
+                                    $notificationSender->addNotification($student['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                 }
-                                if ($row['gibbonPersonIDTutor3'] != '') {
-                                    $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                if ($student['gibbonPersonIDTutor3'] != '') {
+                                    $notificationSender->addNotification($student['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                 }
                             }
                         } elseif ($newLetterRequired) { //Issue new letter
                             if ($newLetterRequiredStatus == 'Warning') { //It's a warning
                                 //Create new record
-                                try {
-                                    $dataLetter = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
-                                    $sqlLetter = "INSERT INTO gibbonBehaviourLetter SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, letterLevel=:letterLevel, status='Warning', recordCountAtCreation=:recordCountAtCreation, body=:body";
-                                    $resultLetter = $connection2->prepare($sqlLetter);
-                                    $resultLetter->execute($dataLetter);
-                                } catch (PDOException $e) {
-                                    $letterUpdateFail = true;
-                                }
+                                $gibbonBehaviourLetterID = $behaviourLetterGateway->insert([
+                                    'status'                => 'Warning',
+                                    'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
+                                    'gibbonPersonID'        => $student['gibbonPersonID'],
+                                    'letterLevel'           => $newLetterRequiredLevel,
+                                    'recordCountAtCreation' => $behaviourCount,
+                                ]);
 
-                                if ($letterUpdateFail == false) {
-                                    $gibbonBehaviourLetterID = $connection2->lastInsertID();
-
+                                if (!empty($gibbonBehaviourLetterID)) {
                                     //Notify tutor(s)
-                                    $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
-                                    if ($row['gibbonPersonIDTutor'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in your form group,
+                                     pending a behaviour letter.'), $studentName);
+                                    if ($student['gibbonPersonIDTutor'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
-                                    if ($row['gibbonPersonIDTutor2'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    if ($student['gibbonPersonIDTutor2'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
-                                    if ($row['gibbonPersonIDTutor3'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    if ($student['gibbonPersonIDTutor3'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
 
                                     //Notify teachers
                                     $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
 
-                                        $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
-                                        $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
-                                        $resultTeachers = $connection2->prepare($sqlTeachers);
-                                        $resultTeachers->execute($dataTeachers);
+                                    $dataTeachers = array('gibbonPersonID' => $student['gibbonPersonID']);
+                                    $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
+                                    $resultTeachers = $pdo->select($sqlTeachers, $dataTeachers);
+                                        
                                     while ($rowTeachers = $resultTeachers->fetch()) {
-                                        $notificationSender->addNotification($rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                        $notificationSender->addNotification($rowTeachers['gibbonPersonID'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
                                 }
                             } else { //It's being issued
                                 //Create new record
-                                try {
-                                    $dataLetter = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $row['gibbonPersonID'], 'letterLevel' => $newLetterRequiredLevel, 'recordCountAtCreation' => $behaviourCount, 'body' => $body);
-                                    $sqlLetter = "INSERT INTO gibbonBehaviourLetter SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonID=:gibbonPersonID, letterLevel=:letterLevel, status='Issued', recordCountAtCreation=:recordCountAtCreation, body=:body";
-                                    $resultLetter = $connection2->prepare($sqlLetter);
-                                    $resultLetter->execute($dataLetter);
-                                } catch (PDOException $e) {
-                                    $letterUpdateFail = true;
-                                }
+                                $gibbonBehaviourLetterID = $behaviourLetterGateway->insert([
+                                    'status'                => 'Issued',
+                                    'gibbonSchoolYearID'    => $session->get('gibbonSchoolYearID'),
+                                    'gibbonPersonID'        => $student['gibbonPersonID'],
+                                    'letterLevel'           => $newLetterRequiredLevel,
+                                    'recordCountAtCreation' => $behaviourCount,
+                                ]);
 
-                                if ($letterUpdateFail == false) {
+                                if (!empty($gibbonBehaviourLetterID)) {
                                     //Flag parents to receive email
                                     $email = true;
 
-                                    $gibbonBehaviourLetterID = $connection2->lastInsertID();
-
                                     //Notify tutor(s)
                                     $notificationText = sprintf(__('A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
-                                    if ($row['gibbonPersonIDTutor'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    if ($student['gibbonPersonIDTutor'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
-                                    if ($row['gibbonPersonIDTutor2'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    if ($student['gibbonPersonIDTutor2'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor2'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
-                                    if ($row['gibbonPersonIDTutor3'] != '') {
-                                        $notificationSender->addNotification($row['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
+                                    if ($student['gibbonPersonIDTutor3'] != '') {
+                                        $notificationSender->addNotification($student['gibbonPersonIDTutor3'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$student['gibbonPersonID']);
                                     }
                                 }
                             }
@@ -307,34 +285,66 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                         //DEAL WIITH EMAILS
                         if ($email) {
                             $recipientList = '';
-                            //Send emails
 
-                                $dataMember = array('gibbonPersonID' => $row['gibbonPersonID']);
-                                $sqlMember = "SELECT DISTINCT email, preferredName, surname FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND contactEmail='Y' ORDER BY contactPriority, surname, preferredName";
-                                $resultMember = $connection2->prepare($sqlMember);
-                                $resultMember->execute($dataMember);
-                            while ($rowMember = $resultMember->fetch()) {
+                            // Setup template to send
+                            $templateCount = $issueExistingLetter ? $issueExistingLetterLevel : $newLetterRequiredLevel;
+                            $templateType  = "Negative Behaviour Letter $templateCount";
+                            $templateDetails = $emailTemplateGateway->selectBy(['templateType' => $templateType], ['templateName'])->fetch();
+                            $template->setTemplate($templateDetails['templateName'] ?? 'Negative Behaviour Letter 1');
+
+                            // Get form tutor details
+                            $formTutor = $userGateway->getByID($student['gibbonPersonIDTutor'], ['title', 'surname', 'preferredName', 'email']);
+
+                            //Send emails
+                            $dataMember = array('gibbonPersonID' => $student['gibbonPersonID']);
+                            $sqlMember = "SELECT DISTINCT email, preferredName, surname, title FROM gibbonFamilyChild JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' AND contactEmail='Y' ORDER BY contactPriority, surname, preferredName";
+                            $resultMember = $pdo->select($sqlMember, $dataMember);
+                            
+                            while ($parent = $resultMember->fetch()) {
                                 ++$emailSendCount;
-                                if ($rowMember['email'] == '') {
+                                if ($parent['email'] == '') {
                                     ++$emailFailCount;
                                 } else {
-                                    $recipientList .= $rowMember['email'].', ';
+                                    $recipientList .= $parent['email'].', ';
+
+                                    // Setup template data
+                                    $templateData = [
+                                        'behaviourCount'         => $behaviourCount,
+                                        'behaviourRecord'        => $behaviourRecord,
+                                        'studentPreferredName'   => $student['preferredName'],
+                                        'studentSurname'         => $student['surname'],
+                                        'studentFormGroup'       => $student['formGroup'],
+                                        'parentPreferredName'    => $parent['preferredName'],
+                                        'parentSurname'          => $parent['surname'],
+                                        'parentTitle'            => $parent['title'],
+                                        'formTutorPreferredName' => $formTutor['preferredName'],
+                                        'formTutorSurname'       => $formTutor['surname'],
+                                        'formTutorTitle'         => $formTutor['title'],
+                                        'formTutorEmail'         => $formTutor['email'],
+                                        'date'                   => Format::date(date('Y-m-d')),
+                                    ];
+
+                                    // Render the templates for this email
+                                    $subject = $template->renderSubject($templateData);
+                                    $body = $template->renderBody($templateData);   
 
                                     // Send message
-                                    $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
-                                    if ($session->get('organisationEmail') != '') {
+                                    $mail->AddAddress($parent['email'], $parent['surname'].', '.$parent['preferredName']);
+                                    if ($session->has('organisationEmail')) {
                                         $mail->SetFrom($session->get('organisationEmail'), $session->get('organisationName'));
                                     } else {
                                         $mail->SetFrom($session->get('organisationAdministratorEmail'), $session->get('organisationAdministratorName'));
                                     }
-                                    $subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['formGroup'].')', $session->get('systemName'), $session->get('organisationName'));
+
                                     $mail->Subject = $subject;
                                     $mail->renderBody('mail/message.twig.html', [
                                         'title'  => $subject,
                                         'body'   => $body,
                                     ]);
 
-                                    if (!$mail->Send()) {
+                                    if ($mail->Send()) {
+                                        $behaviourLetterGateway->update($gibbonBehaviourLetterID, ['body' => $body]);
+                                    } else {
                                         ++$emailFailCount;
                                     }
 
@@ -347,11 +357,9 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                                 $recipientList = substr($recipientList, 0, -2);
 
                                 //Record email recipients in letter record
-
-                                    $dataUpdate = array('recipientList' => $recipientList, 'gibbonBehaviourLetterID' => $gibbonBehaviourLetterID);
-                                    $sqlUpdate = 'UPDATE gibbonBehaviourLetter set recipientList=:recipientList WHERE gibbonBehaviourLetterID=:gibbonBehaviourLetterID';
-                                    $resultUpdate = $connection2->prepare($sqlUpdate);
-                                    $resultUpdate->execute($dataUpdate);
+                                $dataUpdate = array('recipientList' => $recipientList, 'gibbonBehaviourLetterID' => $gibbonBehaviourLetterID);
+                                $sqlUpdate = 'UPDATE gibbonBehaviourLetter set recipientList=:recipientList WHERE gibbonBehaviourLetterID=:gibbonBehaviourLetterID';
+                                $resultUpdate = $pdo->select($sqlUpdate, $dataUpdate);
                             }
                         }
                     }
@@ -363,12 +371,11 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     // Close SMTP connection
     $mail->smtpClose();
 
-
     // Raise a new notification event
     $event = new NotificationEvent('Behaviour', 'Behaviour Letters');
 
     //Notify admin
-    if ($email == false) {
+    if (empty($email)) {
         $event->setNotificationText(__('The Behaviour Letter CLI script has run: no emails were sent.'));
     } else {
         $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
