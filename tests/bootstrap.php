@@ -29,6 +29,6 @@ require_once __DIR__ . '/../gibbon.php';
 if ($gibbon->isInstalled()) {
     $installType = getSettingByScope($connection2, 'System', 'installType');
     if ($installType == 'Production') {
-        die('ERROR: Test suite cannot run on a production system.'."\n");
+        throw new \Exception('ERROR: Test suite cannot run on a production system.');
     }
 }

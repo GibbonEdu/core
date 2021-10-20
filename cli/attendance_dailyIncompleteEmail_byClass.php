@@ -37,7 +37,10 @@ if (!empty($session->get('i18n')['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
+$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
+    echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 
@@ -150,7 +153,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
 
         // Initialize the notification sender & gateway objects
         $notificationGateway = new NotificationGateway($pdo);
-        $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+        $notificationSender = new NotificationSender($notificationGateway, $session);
 
         // Raise a new notification event
         $event = new NotificationEvent('Attendance', 'Daily Attendance Summary');

@@ -26,7 +26,7 @@
             "cd tests && ../vendor/bin/phpunit --verbose --colors=always --configuration phpunit.xml"
         ],
         "test:phpstan": [
-            "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction --autoload-file=functions.php src"
+            "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction -c phpstan.neon"
         ],
         "test:codesniffer": [
           "vendor/bin/phpcs --standard=PSR2 modules/Library/" 
@@ -47,7 +47,7 @@
         "league/container": "^3.3.3",
         "aura/sqlquery": "3.*-dev",
         "tecnickcom/tcpdf": "^6.4",
-        "twig/twig": "^2.0",
+        "twig/twig": "^3.0",
         "slim/slim": "^4.0",
         "phpmailer/phpmailer": "^6.5.0",
         "matthewbdaly/sms-client": "^1.0",

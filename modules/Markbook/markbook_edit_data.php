@@ -40,8 +40,7 @@ $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effor
 $hasEffortName = ($effortAlternativeName != '' && $effortAlternativeNameAbrev != '');
 
 // Get the sort order, if it exists
-$studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
-$studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
+$studentOrderBy = $session->get('markbookOrderBy', null) ?? $_GET['markbookOrderBy'] ?? 'surname';
 
 // Register scripts available to the core, but not included by default
 $page->scripts->add('chart');
@@ -302,7 +301,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $result = $pdo->executeQuery($data, $sql);
                     $individualNeeds = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
-                    $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$_SESSION[$guid]['address']);
+                    $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
 
@@ -349,7 +348,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $detailsText .= !empty($values['completeDate'])? __('Marked on').' '.Format::date($values['completeDate']) : __('Unmarked');
                         $detailsText .= '<br/>'.$values['type'];
 
-                        if ($values['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$values['attachment'])) {
+                        if ($values['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$values['attachment'])) {
                             $detailsText .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$values['attachment']."'>".__('More info').'</a>';
                         }
 

@@ -36,7 +36,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-if (!isCommandLineInterface()) {
+//Check for CLI, so this cannot be run through browser
+$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     print __('This script cannot be run from a browser, only via CLI.');
     return;
 }
@@ -62,7 +65,7 @@ $mail->SMTPKeepAlive = true;
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
-$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
 // Setup reusable gateways and criteria
 $userGateway = $container->get(UserGateway::class);
@@ -197,7 +200,7 @@ $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.p
 $event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $gibbon->session);
+$event->sendNotifications($pdo, $session);
 
 
 // Output the result to terminal

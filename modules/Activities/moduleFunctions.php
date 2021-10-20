@@ -28,13 +28,11 @@ function num2alpha($n)
 
 function getActivityWeekDays($connection2, $gibbonActivityID)
 {
-
     // Get the time slots for this activity to determine weekdays
-    
-        $data = array('gibbonActivityID' => $gibbonActivityID);
-        $sql = 'SELECT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonActivityID' => $gibbonActivityID);
+    $sql = 'SELECT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY gibbonDaysOfWeek.gibbonDaysOfWeekID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     return $result->fetchAll(PDO::FETCH_COLUMN);
 }
@@ -77,20 +75,20 @@ function getActivityTimespan($connection2, $gibbonActivityID, $gibbonSchoolYearT
             return array();
         }
 
-        
-            $data = array();
-            $sql = 'SELECT MIN(UNIX_TIMESTAMP(firstDay)) as start, MAX(UNIX_TIMESTAMP(lastDay)) as end FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID IN ('.$gibbonSchoolYearTermIDList.')';
-            $result = $connection2->prepare($sql);
-            $result->execute();
+        $data = array();
+        $sql = 'SELECT MIN(UNIX_TIMESTAMP(firstDay)) as start, MAX(UNIX_TIMESTAMP(lastDay)) as end FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID IN ('.$gibbonSchoolYearTermIDList.')';
+        $result = $connection2->prepare($sql);
+        $result->execute();
+
         $timespan = $result->fetch();
     } else {
-        
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT UNIX_TIMESTAMP(programStart) as start, UNIX_TIMESTAMP(programEnd) as end FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonActivityID' => $gibbonActivityID);
+        $sql = 'SELECT UNIX_TIMESTAMP(programStart) as start, UNIX_TIMESTAMP(programEnd) as end FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
         $timespan = $result->fetch();
     }
 
     return $timespan;
-} 
+}

@@ -17,18 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SessionGateway;
+
 // Gibbon system-wide include
 require_once './gibbon.php';
 
 $URL = './index.php';
-if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
-    $URL = './index.php?timeout=true';
+if (isset($_GET['timeout'])) {
+    $URL = './index.php?timeout='.$_GET['timeout'];
 }
 
-unset($_SESSION[$guid]['googleAPIAccessToken']);
-unset($_SESSION[$guid]['gplusuer']);
+// Update current session to detach it from this user
+$container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => null, 'gibbonActionID' => null, 'sessionStatus' => null]);
+
+$session->forget('googleAPIAccessToken');
+$session->forget('gplusuer');
 
 session_destroy();
 
-$_SESSION[$guid] = null;
 header("Location: {$URL}");

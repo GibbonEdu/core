@@ -10,6 +10,7 @@ file that was distributed with this source code.
 namespace Gibbon;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Contracts\Services\Session;
 
 // Require the system-wide functions.
 require_once __DIR__.'/../../../../functions.php';
@@ -57,7 +58,7 @@ class TranslationTest extends TestCase
 
     public function setUp(): void
     {
-        // Create a stub for the Gibbon\Session class
+        // Create a stub for the Gibbon\Contracts\Services\Session interface
         $mockSession = $this->createMock(Session::class);
         $mockSession
             ->method('get')

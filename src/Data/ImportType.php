@@ -1002,7 +1002,7 @@ class ImportType
 
             case 'integer': $value = intval($value);
                             $length = $this->getField($fieldName, 'length');
-                            if (mb_strlen($value) > $length) {
+                            if (!empty($length) && mb_strlen($value) > $length) {
                                 return false;
                             }
                             break;
@@ -1012,11 +1012,11 @@ class ImportType
 
                             if (mb_strpos($value, '.') !== false) {
                                 $number = mb_strstr($value, '.', true);
-                                if (mb_strlen($number) > $length) {
+                                if (!empty($length) && mb_strlen($number) > $length) {
                                     return false;
                                 }
                             } else {
-                                if (mb_strlen($value) > $length) {
+                                if (!empty($length) && mb_strlen($value) > $length) {
                                     return false;
                                 }
                             }

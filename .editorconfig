@@ -13,3 +13,7 @@ indent_size = 4
 
 [*.yml]
 indent_size = 2
+
+[*.neon]
+indent_style = tab
+indent_size = 4

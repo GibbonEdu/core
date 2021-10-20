@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -27,11 +30,11 @@ require_once './gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
-$gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbon->session->get('gibbonSchoolYearID'));
-$gibbon->session->set('gibbonSchoolYearNameCurrent', $gibbon->session->get('gibbonSchoolYearName'));
-$gibbon->session->set('gibbonSchoolYearSequenceNumberCurrent', $gibbon->session->get('gibbonSchoolYearSequenceNumber'));
+$session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
+$session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
+$session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));
 
-$gibbon->session->forget('pageLoads');
+$session->forget('pageLoads');
 
 $URL = './index.php';
 
@@ -55,15 +58,14 @@ else {
         require_once './login_custom.php';
     }
     //VALIDATE LOGIN INFORMATION
-    
-        $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('username' => $username);
+    $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, gibbonRole.name as roleName FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     //Test to see if username exists and is unique
     if ($result->rowCount() != 1) {
-        $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
+        $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
         $URL .= '?loginReturn=fail1';
         header("Location: {$URL}");
         exit;
@@ -73,6 +75,13 @@ else {
         // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
             $URL .= '?loginReturn=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        // Check for maintenance mode
+        if ($row['roleName'] != 'Administrator' && $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'maintenanceMode') == 'Y') {
+            $URL .= '?loginReturn=fail10';
             header("Location: {$URL}");
             exit;
         }
@@ -104,14 +113,14 @@ else {
                 // Raise a new notification event
                 $event = new NotificationEvent('User Admin', 'Login - Failed');
 
-                $event->addRecipient($gibbon->session->get('organisationAdministrator'));
+                $event->addRecipient($session->get('organisationAdministrator'));
                 $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
                 $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
 
-                $event->sendNotifications($pdo, $gibbon->session);
+                $event->sendNotifications($pdo, $session);
             }
 
-            $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
+            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
             $URL .= '?loginReturn=fail6';
             header("Location: {$URL}");
             exit;
@@ -157,22 +166,22 @@ else {
                     $passwordTest = false;
                 }
 
-                $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
+                $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
                 $URL .= '?loginReturn=fail1';
                 header("Location: {$URL}");
                 exit;
             } else {
                 if ($row['gibbonRoleIDPrimary'] == '' or count(getRoleList($row['gibbonRoleIDAll'], $connection2)) == 0) {
                     //FAILED TO SET ROLES
-                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
                     $URL .= '?loginReturn=fail2';
                     header("Location: {$URL}");
                     exit;
                 } else {
                     //Allow for non-current school years to be specified
-                    if ($_POST['gibbonSchoolYearID'] != $gibbon->session->get('gibbonSchoolYearID')) {
+                    if ($_POST['gibbonSchoolYearID'] != $session->get('gibbonSchoolYearID')) {
                         if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
-                            $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                            $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                             $URL .= '?loginReturn=fail9';
                             header("Location: {$URL}");
                             exit();
@@ -192,35 +201,36 @@ else {
                             //Else get year details
                             else {
                                 $rowYear = $resultYear->fetch();
-                                if ($row['futureYearsLogin'] != 'Y' and $gibbon->session->get('gibbonSchoolYearSequenceNumber') < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                                if ($row['futureYearsLogin'] != 'Y' and $session->get('gibbonSchoolYearSequenceNumber') < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+                                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                                     $URL .= '?loginReturn=fail9';
                                     header("Location: {$URL}");
                                     exit();
-                                } elseif ($row['pastYearsLogin'] != 'Y' and $gibbon->session->get('gibbonSchoolYearSequenceNumber') > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
+                                } elseif ($row['pastYearsLogin'] != 'Y' and $session->get('gibbonSchoolYearSequenceNumber') > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
+                                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                                     $URL .= '?loginReturn=fail9';
                                     header("Location: {$URL}");
                                     exit();
                                 } else { //ALLOWED
-                                    $gibbon->session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
-                                    $gibbon->session->set('gibbonSchoolYearName', $rowYear['name']);
-                                    $gibbon->session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
+                                    $session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
+                                    $session->set('gibbonSchoolYearName', $rowYear['name']);
+                                    $session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
                                 }
                             }
                         }
                     }
 
-                    //USER EXISTS, SET SESSION VARIABLES
-                    $gibbon->session->createUserSession($username, $row);
+                    // USER EXISTS, SET SESSION VARIABLES
+                    SessionFactory::populateUser($session, $pdo, $username, $row);
 
                     // Set these from local values
-                    $gibbon->session->set('passwordStrong', $passwordStrong);
-                    $gibbon->session->set('passwordStrongSalt', $salt);
-                    $gibbon->session->set('googleAPIAccessToken', null);
+                    // TODO: REMOVE THIS!
+                    $session->set('passwordStrong', $passwordStrong);
+                    $session->set('passwordStrongSalt', $salt);
+                    $session->set('googleAPIAccessToken', null);
 
                     //Allow for non-system default language to be specified from login form
-                    if (@$_POST['gibboni18nID'] != $gibbon->session->get('i18n')['gibboni18nID']) {
+                    if (@$_POST['gibboni18nID'] != $session->get('i18n')['gibboni18nID']) {
                         
                             $dataLanguage = array('gibboni18nID' => $_POST['gibboni18nID']);
                             $sqlLanguage = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
@@ -232,9 +242,9 @@ else {
                         }
                     } else {
                         //If no language specified, get user preference if it exists
-                        if (!is_null($gibbon->session->get('gibboni18nIDPersonal'))) {
+                        if (!is_null($session->get('gibboni18nIDPersonal'))) {
                             
-                                $dataLanguage = array('gibboni18nID' => $gibbon->session->get('gibboni18nIDPersonal'));
+                                $dataLanguage = array('gibboni18nID' => $session->get('gibboni18nIDPersonal'));
                                 $sqlLanguage = "SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID";
                                 $resultLanguage = $connection2->prepare($sqlLanguage);
                                 $resultLanguage->execute($dataLanguage);
@@ -246,11 +256,14 @@ else {
                     }
 
                     //Make best effort to set IP address and other details, but no need to error check etc.
-                    
-                        $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
-                        $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
+                    $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+
+                    // Update current session to attach it to this user
+                    $container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => $row['gibbonPersonID']]);
+                    $container->get(SessionGateway::class)->update(session_id(), ['sessionStatus' => 'Logged In']);
 
                     if (isset($_GET['q'])) {
                         if ($_GET['q'] == '/publicRegistration.php') {
@@ -263,7 +276,7 @@ else {
                     } else {
                         $URL = './index.php';
                     }
-                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
+                    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
                     header("Location: {$URL}");
                     exit;
                 }

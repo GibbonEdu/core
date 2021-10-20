@@ -86,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    if ($row2['groupingID'] != '' && ($row2['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID'] && $highestAction != 'Edit Markbook_everything' && $highestAction != 'Edit Markbook_multipleClassesAcrossSchool' && $highestAction != 'Edit Markbook_multipleClassesInDepartment')) {
+                    if ($row2['groupingID'] != '' && ($row2['gibbonPersonIDCreator'] != $session->get('gibbonPersonID') && $highestAction != 'Edit Markbook_everything' && $highestAction != 'Edit Markbook_multipleClassesAcrossSchool' && $highestAction != 'Edit Markbook_multipleClassesInDepartment')) {
                         echo "<div class='error'>";
                         echo __('This column is part of a set of columns, and so cannot be individually deleted.');
                         echo '</div>';
                     } else {
-                        $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_deleteProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID");
+                        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/markbook_edit_deleteProcess.php?gibbonMarkbookColumnID=$gibbonMarkbookColumnID");
                         echo $form->getOutput();
                     }
                 }

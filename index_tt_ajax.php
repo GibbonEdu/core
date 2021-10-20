@@ -23,10 +23,10 @@ use Gibbon\Services\Format;
 include './gibbon.php';
 
 //Set up for i18n via gettext
-if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
-    if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$gibbon->session->get('i18n')['code']);
-        setlocale(LC_ALL, $gibbon->session->get('i18n')['code']);
+if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
+    if ($session->get('i18n')['code'] != null) {
+        putenv('LC_ALL='.$session->get('i18n')['code']);
+        setlocale(LC_ALL, $session->get('i18n')['code']);
         bindtextdomain('gibbon', './i18n');
         textdomain('gibbon');
         bind_textdomain_codeset('gibbon', 'UTF-8');
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $ttDate = Format::timestamp(Format::dateConvert($_POST['ttDate']));
     }
 
-    $tt = renderTT($guid, $connection2, $gibbon->session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
+    $tt = renderTT($guid, $connection2, $session->get('gibbonPersonID'), $id, false, $ttDate, '', '', 'trim');
     if ($tt != false) {
         $output .= $tt;
     } else {

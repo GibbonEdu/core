@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_mig
     }
 
     $reportingArchiveCount = $pdo->selectOne("SELECT COUNT(*) FROM arrArchive");
-    $page->addAlert($reportingArchiveCount > 0 ? 'message' : 'error', __('This tool enables you to migrate archived reports from the Reporting module by Andy Statham.').' '.__('There are {count} records in the {tableName} table.', ['count' => '<b>'.$reportingArchiveCount.'</b>', 'tableName' => 'arrArchive']));
+    $page->addAlert(__('This tool enables you to migrate archived reports from the Reporting module by Andy Statham.').' '.__('There are {count} records in the {tableName} table.', ['count' => '<b>'.$reportingArchiveCount.'</b>', 'tableName' => 'arrArchive']), $reportingArchiveCount > 0 ? 'message' : 'error');
 
     if (empty($reportingArchiveCount)) {
         return;

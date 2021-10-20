@@ -33,7 +33,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-if (!isCommandLineInterface()) {
+//Check for CLI, so this cannot be run through browser
+$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
     return;
 }
@@ -63,7 +66,7 @@ $mail->SMTPKeepAlive = true;
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
-$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
 $familyGateway = $container->get(FamilyGateway::class);
 $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
@@ -158,10 +161,10 @@ $event->setNotificationText(__('A School Admin CLI script has run.').'<br/><br/>
 $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.php');
 
 // Notify admin
-$event->addRecipient($gibbon->session->get('organisationAdministrator'));
+$event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $gibbon->session);
+$event->sendNotifications($pdo, $session);
 
 // Output the result to terminal
 echo sprintf('Sent %1$s emails: %2$s emails sent, %3$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

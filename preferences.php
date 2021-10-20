@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (!$gibbon->session->exists("username")) {
+if (!$session->exists("username")) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -38,7 +38,7 @@ if (!$gibbon->session->exists("username")) {
     }
 
     $returns = array();
-    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$gibbon->session->get('organisationAdministratorEmail')."'>".$gibbon->session->get('organisationAdministratorName').'</a>');
+    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
     $returns['error4'] = __('Your request failed due to non-matching passwords.');
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
@@ -46,7 +46,7 @@ if (!$gibbon->session->exists("username")) {
     $page->return->addReturns($returns);
 
     
-        $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -54,7 +54,7 @@ if (!$gibbon->session->exists("username")) {
         $values = $result->fetch();
     }
 
-    $form = Form::create('resetPassword', $gibbon->session->get('absoluteURL').'/preferencesPasswordProcess.php');
+    $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading(__('Reset Password'));
 
@@ -93,12 +93,12 @@ if (!$gibbon->session->exists("username")) {
 
     if ($forceReset != 'Y') {
         $staff = false;
-        foreach ($gibbon->session->get('gibbonRoleIDAll') as $role) {
+        foreach ($session->get('gibbonRoleIDAll') as $role) {
             $roleCategory = getRoleCategory($role[0], $connection2);
             $staff = $staff || ($roleCategory == 'Staff');
         }
 
-        $form = Form::create('preferences', $gibbon->session->get('absoluteURL').'/preferencesProcess.php');
+        $form = Form::create('preferences', $session->get('absoluteURL').'/preferencesProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addRow()->addHeading(__('Settings'));

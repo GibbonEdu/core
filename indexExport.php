@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './gibbon.php';
 
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'];
-$URL = $gibbon->session->get('absoluteURL').'/index.php';
+$URL = $session->get('absoluteURL').'/index.php';
 
 try {
-    $data = array('gibbonPersonIDTutor' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $gibbon->session->get('gibbonPersonID'));
+    $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
     $sql = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
     $result = $connection2->prepare($sql);
     $result->execute($data);

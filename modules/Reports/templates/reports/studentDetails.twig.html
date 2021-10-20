@@ -15,7 +15,7 @@ sources:
         {% if student.image_240 %}
         <td class="border-left border-top border-bottom" style="width: 14%;line-height: 0;height: 33mm"><img src="{{ basePath }}/{{ student.image_240 }}" style="height: 30mm" /></td>
         {% endif %}
-        <td class="border-right border-top border-bottom" style="width: 86%; line-height: 1.8;">
+        <td class="border-right border-top border-bottom {{ student.image_240 is empty ? 'border-left' : '' }}" style="{{ student.image_240 is empty ? 'width: 100%;' : 'width: 86%;' }} line-height: 1.8;">
             {%- with -%}
                 <span style="font-size: 12pt; font-weight: bold;">{{- student.officialName -}}</span><br/><span style="font-size: 9pt;">{{- student.yearGroupName -}}</span><br/><br/><table class="w-full table" cellspacing="0" cellpadding="0" style="width: 100%; font-size: 8pt">
                     <tr>

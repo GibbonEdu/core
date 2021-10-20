@@ -27,11 +27,11 @@ include './gibbon.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/publicRegistration.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/publicRegistration.php';
 
 $proceed = false;
 
-if ($gibbon->session->exists('username') == false) {
+if ($session->exists('username') == false) {
     $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
@@ -150,11 +150,11 @@ if ($proceed == false) {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
-        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+        $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
-        $event->sendNotifications($pdo, $gibbon->session);
+        $event->sendNotifications($pdo, $session);
 
         $URL .= '&return=success1';
         header("Location: {$URL}");
@@ -162,11 +162,11 @@ if ($proceed == false) {
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'New Public Registration');
 
-        $event->addRecipient($gibbon->session->get('organisationAdmissions'));
+        $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
         $event->setActionLink("/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID&search=");
 
-        $event->sendNotifications($pdo, $gibbon->session);
+        $event->sendNotifications($pdo, $session);
 
         $URL .= '&return=success0';
         header("Location: {$URL}");

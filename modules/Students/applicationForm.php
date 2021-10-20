@@ -234,7 +234,7 @@ if ($proceed == false) {
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'));
         $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND

@@ -42,11 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     }
 
     $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
-    
-    $form = Form::create('personalDocumentType', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/personalDocumentSettings_manage_editProcess.php');
+
+    $form = Form::create('personalDocumentType', $session->get('absoluteURL').'/modules/User Admin/personalDocumentSettings_manage_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonPersonalDocumentTypeID', $gibbonPersonalDocumentTypeID);
 
     $form->addRow()->addHeading(__('Basic Details'));
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
     $row = $form->addRow();
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->required();
-        
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

@@ -19,7 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Services\Payment;
 
+use Omnipay\Common\AbstractGateway as OmnipayGateway;
+use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Omnipay\Omnipay;
+use Omnipay\PayPal\ProGateway as OmnipayPaypalProGateway;
+use Omnipay\Stripe\AbstractGateway as OmnipayStripeGateway;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
@@ -34,6 +38,7 @@ class Payment implements PaymentInterface
     const RETURN_SUCCESS = 'success1';
     const RETURN_SUCCESS_WARNING = 'warning2';
     const RETURN_CANCEL = 'warning3';
+    const RETURN_REDIRECT = 'warning4';
     const RETURN_ERROR_NOT_ENABLED = 'error1';
     const RETURN_ERROR_CURRENCY = 'error3';
     const RETURN_ERROR_CONFIG = 'error4';
@@ -66,13 +71,39 @@ class Payment implements PaymentInterface
      */
     protected $settingGateway;
 
+    /**
+     * @var OmnipayGatewayInterface
+     */
     protected $omnipay;
+
+    /**
+     * @var string
+     */
     protected $currency;
+
+    /**
+     * @var array
+     */
     protected $result = [];
 
+    /**
+     * @var string
+     */
     protected $returnURL;
+
+    /**
+     * @var string
+     */
     protected $cancelURL;
+
+    /**
+     * @var string
+     */
     protected $foreignTable;
+
+    /**
+     * @var string
+     */
     protected $foreignTableID;
 
     protected $testMode = false;
@@ -133,24 +164,34 @@ class Payment implements PaymentInterface
 
         // Send purchase request to the payment gateway
         $options = $this->getPaymentRequestOptions($amount, $reason);
-        $response = $this->omnipay->purchase($options)->setCurrency($this->currency)->send();
+
+        /**
+         * @var OmnipayGateway $gateway
+         */
+        $gateway = $this->omnipay->purchase($options);
+        $transaction = $gateway->setCurrency($this->currency)->purchase();
+        $response = $transaction->send();
 
         if ($response->isSuccessful()) {
             // Payment request was successful, continue redirect
             $responseData = $response->getData();
             header("Location: " . $responseData['url']);
+            return self::RETURN_SUCCESS;
 
         } elseif ($response->isRedirect()) {
+            /**
+             * @var OmnipayRedirectResponse $response
+             */
             // Redirect to offsite payment gateway
             $response->redirect();
+            return self::RETURN_REDIRECT;
 
         } elseif (stripos($response->getMessage(), 'currency') !== false) {
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;
-        } else {
-            // Payment failed: debug with $response->getMessage()
-            return self::RETURN_ERROR_CONNECT;
         }
+        // Payment failed: debug with $response->getMessage()
+        return self::RETURN_ERROR_CONNECT;
     }
 
     public function confirmPayment() : string
@@ -215,6 +256,9 @@ class Payment implements PaymentInterface
         // Setup the Omnipay payment gateway based on Third Party Settings
         switch ($this->paymentGatewaySetting) {
             case 'PayPal':
+                /**
+                 * @var OmnipayPaypalProGateway
+                 */
                 $this->omnipay = Omnipay::create('PayPal_Express');
                 $this->omnipay->setUsername($this->settingGateway->getSettingByScope('System', 'paymentAPIUsername'));
                 $this->omnipay->setPassword($this->settingGateway->getSettingByScope('System', 'paymentAPIPassword'));
@@ -222,6 +266,9 @@ class Payment implements PaymentInterface
                 break;
 
             case 'Stripe':
+                /**
+                 * @var OmnipayStripeGateway
+                 */
                 $this->omnipay = Omnipay::create('Stripe\Checkout');
                 $this->omnipay->setApiKey($this->settingGateway->getSettingByScope('System', 'paymentAPIKey'));
                 break;
@@ -372,6 +419,7 @@ class Payment implements PaymentInterface
             self::RETURN_SUCCESS           => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'),
             self::RETURN_SUCCESS_WARNING   => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $this->session->get('systemName'), $this->foreignTableID),
             self::RETURN_CANCEL            => __('Your online payment was cancelled before it was completed. No charges have been processed.'),
+            self::RETURN_REDIRECT          => __('Your online payment redirect was interrupted before it could be completed. Please try again and if the error persists, contact the school.'),
             self::RETURN_ERROR_NOT_ENABLED => __('Online payment options are not available at this time.'),
             self::RETURN_ERROR_CURRENCY    => __("Your payment could not be made as the payment gateway does not support the system's currency."),
             self::RETURN_ERROR_CONFIG      => __('Your payment could not be processed due to a system configuration issue. Please contact the school before attempting another payment.'),
