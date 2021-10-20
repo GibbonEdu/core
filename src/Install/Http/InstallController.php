@@ -175,7 +175,7 @@ class InstallController
             $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
             error_log(sprintf('Installer: Step %s: Using guid from $_COOKIE: %s', var_export($step, true), var_export($guid, true)));
         }
-        if ($step !== 4 && empty($guid)) {
+        if (empty($guid)) {
             throw new \Exception('guid not found in environment. Please restart the installation.');
         }
         return $guid;
@@ -762,6 +762,7 @@ class InstallController
         static::cleanUp($session);
 
         if ($settingsFail) {
+            error_log('Installer: settings failed. Will trigger RecoverableException.');
             throw new RecoverableException(
                 sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>') . "<br/>\n" .
                 sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>')

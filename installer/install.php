@@ -47,7 +47,9 @@ $page = new Page($container->get('twig'), [
 
 // Get or variables from environment.
 $step = InstallController::stepFromEnvironment($_GET);
-$guid = InstallController::guidFromEnvironment($_COOKIE, $step);
+if ($step < 4) {
+    $guid = InstallController::guidFromEnvironment($_COOKIE, $step);
+}
 
 /**
  * @var \Gibbon\Core $gibbon
@@ -55,7 +57,9 @@ $guid = InstallController::guidFromEnvironment($_COOKIE, $step);
  */
 
 // Setup session variables for gibbon to work properly.
-$session->setGuid($guid);
+if ($step < 4) {
+    $session->setGuid($guid);
+}
 $session->set('guid', $guid);
 $session->set('absolutePath', realpath('../'));
 $session->set('stringReplacement', []); // Deal with non-existent stringReplacement session
