@@ -881,7 +881,7 @@ class InstallController
         if ($session->has('flashMessage')) {
             $m = $session->get('flashMessage');
             if ($m instanceof RecoverableException) {
-                $page->addAlert($m->getLevel(), $m->getMessage());
+                $page->addAlert($m->getMessage(), $m->getLevel());
             } else {
                 $page->addError($m->getMessage());
             }
