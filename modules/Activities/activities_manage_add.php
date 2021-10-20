@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $search = $_GET['search'] ?? null;
     
     $activityGateway = $container->get(ActivityGateway::class);
+    $settingGateway = $container->get(SettingGateway::class);
 
     $form = Form::create('activity', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -73,17 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 'External'  => __('External')
             ]);
     
-    $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
-    if (empty($activityTypes)) {
-        $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
-        $activityTypes = array_map('trim', explode(',', $activityTypes));
-    }
-
+    $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
     if (!empty($activityTypes)) {
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
             $row->addSelect('type')
-                ->fromArray($activityTypes)
+                ->fromString($activityTypes)
                 ->placeholder();
     }
 
@@ -95,7 +91,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addLabel('registration', __('Registration'))->description(__('Assuming system-wide registration is open, should this activity be open for registration?'));
         $row->addYesNo('registration')->required();
 
-    $settingGateway = $container->get(SettingGateway::class);
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
     $form->addHiddenValue('dateType', $dateType);
     if ($dateType != 'Date') {
@@ -177,20 +172,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 ->maxLength(9)
                 ->setValue('0.00');
 
-        $costTypes = [
-            'Entire Programme' => __('Entire Programme'),
-            'Per Session'      => __('Per Session'),
-            'Per Week'         => __('Per Week'),
-            'Per Term'         => __('Per Term'),
-        ];
-
         $row = $form->addRow();
             $row->addLabel('paymentType', __('Cost Type'));
             $row->addSelect('paymentType')
                 ->required()
-                ->fromArray($costTypes);
-
-        $costStatuses = ;
+                ->fromArray([
+                    'Entire Programme' => __('Entire Programme'),
+                    'Per Session'      => __('Per Session'),
+                    'Per Week'         => __('Per Week'),
+                    'Per Term'         => __('Per Term'),
+                ]);
 
         $row = $form->addRow();
             $row->addLabel('paymentFirmness', __('Cost Status'));
