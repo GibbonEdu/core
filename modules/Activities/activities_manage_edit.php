@@ -248,7 +248,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $timeSlots = $activitySlotGateway->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
             foreach ($timeSlots as $slot) {
-                //Must cast to int for select to work.
                 $slot['location'] = empty($slot['gibbonSpaceID']) ? 'External' : 'Internal';
                 $slotBlocks->addBlock($slot['gibbonActivitySlotID'], $slot);
             }
