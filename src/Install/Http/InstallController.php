@@ -708,7 +708,7 @@ class InstallController
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
         $installer->useConfigConnection($config);
-        $absoluteURL = $installer->getSetting('absoluteURL');
+        $absoluteURL = static::guessAbsoluteUrl();
 
         // parse the submission from POST.
         try {
@@ -1087,6 +1087,28 @@ class InstallController
             return "<li>{$policy}</li>";
         }, $policies));
         return !empty($html) ? "<ul>$html</ul>" : '';
+    }
+
+    /**
+     * Guess the absoluteUrl for the installation environment.
+     *
+     * @return string
+     */
+    public static function guessAbsoluteUrl(): string
+    {
+        // Find out the base installation URL path.
+        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+
+        // Suppose the entry script is "/installer/install.php"
+        // then the base dir would be "./../" from the entry point
+        // perspective.
+        $baseDir = realpath('./../') . '/';
+
+        // Construct the full URL to the base URL path.
+        $urlBasePath = substr($baseDir, $prefixLength);
+        $host = $_SERVER['HTTP_HOST'];
+        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+        return "{$protocol}://{$host}{$urlBasePath}";
     }
 
     /**

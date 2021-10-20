@@ -203,8 +203,8 @@ $page->write(ob_get_clean());
 
 $page->addData([
     'gibbonThemeName' => 'Default',
-    'absolutePath'    => realpath('../'),
-    'absoluteURL'     => str_replace('/installer/install.php', '', $_SERVER['PHP_SELF']),
+    'absolutePath'    => realpath(dirname(__DIR__)),
+    'absoluteURL'     => InstallController::guessAbsoluteUrl(),
     'sidebar'         => true,
     'contentClass'    => 'max-w-4xl mx-auto px-12 pt-6 pb-12',
     'step'            => $step,
