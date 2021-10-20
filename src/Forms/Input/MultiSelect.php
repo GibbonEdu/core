@@ -75,11 +75,21 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->wrap('<div class="w-full">', '</div>');
     }
 
+    /**
+     * Gets the id of the multi-select.
+     * @return  string
+     */
     public function getID()
     {
         return $this->name;
     }
 
+    /**
+     * Adds sortable attributes to the multi-select.
+     * @param   string  $attribute
+     * @param   array   $values
+     * @return  self
+     */
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
@@ -87,9 +97,23 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         return $this;
     }
 
+    /**
+     * Sets the select displayed element size.
+     * @param   int     $size
+     * @return  self
+     */
     public function setSize($size=8) {
         $this->sourceSelect->setSize($size);
         $this->destinationSelect->setSize($size);
+        return $this;
+    }
+
+    /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isRequired($required = true)
+    {
+        $this->destinationSelect->setRequired($required);
         return $this;
     }
 
@@ -98,7 +122,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
      * @param   bool    $value
      * @return  self
      */
-    public function isRequired($required = true)
+    public function required($required = true)
     {
         $this->destinationSelect->setRequired($required);
         return $this;
@@ -113,14 +137,38 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         return $this->destinationSelect->getRequired();
     }
 
-    public function source() {
+    /**
+     * Gets the source select.
+     * @return  Source Select
+     */
+    public function source()
+    {
         return $this->sourceSelect;
     }
 
-    public function destination() {
+    /**
+     * Gets the destination select.
+     * @return  Destination Select
+     */
+    public function destination()
+    {
         return $this->destinationSelect;
     }
 
+    /**
+     * Merges the source select groups into the destination groupings.
+     * @return  self
+     */
+    public function mergeGroupings()
+    {
+        $this->destination()->fromArray(array_fill_keys(array_keys($this->source()->getOptions()), []));
+        return $this;
+    }
+
+    /**
+     * Gets the renderable output of the element.
+     * @return  string
+     */
     public function getOutput() {
         $output = '';
 
