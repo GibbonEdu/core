@@ -242,10 +242,10 @@ class Page extends View
     /**
      * Add user feedback as an alert displayed on this page.
      *
-     * @param string $context   Contexts: error, warning, message, code
      * @param string $text      General notice message text.
+     * @param string $context   Contexts: error, warning, message, code
      */
-    public function addAlert(string $context, string $text)
+    public function addAlert(string $text, string $context = 'message')
     {
         $this->alerts[$context][] = $text;
     }

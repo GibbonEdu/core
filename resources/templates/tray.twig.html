@@ -46,12 +46,17 @@ Main Menu: Displays the top-level categories and active modules.
     </script>
 {% endif %}
 
+<div id="dialog-timeout" title="{{ __('Session Timeout') }}" style="display: none">
+    <p>{{ __('Your session is about to expire: you will be logged out shortly.') }}</p>
+</div>
+
 <script>
     function refreshNotifications() {
         $.ajax({
             url: "index_notification_ajax.php",
             dataType: "json",
             success: function(data) {
+                // Update notification count
                 if (data.count > 0) {
                     $("#notifications .notificationCounter").removeClass('hidden').html(data.count);
                     $("#notifications .notificationIcon").removeClass('opacity-25').addClass('opacity-75');
@@ -60,6 +65,7 @@ Main Menu: Displays the top-level categories and active modules.
                     $("#notifications .notificationIcon").removeClass('opacity-75').addClass('opacity-25');
                 }
 
+                // Handle alarm display / cancel
                 if (data.alarm != false) {
                     if ($('#TB_window').is(':visible') == true && $('#TB_window').hasClass('alarm') == false) {
                         $("#TB_window").remove();
@@ -74,6 +80,36 @@ Main Menu: Displays the top-level categories and active modules.
                     if ($('#TB_window').is(':visible')==true && $('#TB_window').hasClass('alarm') ) {
                         tb_remove();
                     }
+                }
+
+                // Handle session timeout dialog
+                $("#dialog-timeout").dialog({
+                    resizable: false,
+                    height: "auto",
+                    width: 400,
+                    modal: true,
+                    autoOpen: false,
+                    buttons: {
+                        "{{ __('Stay Connected') }}": function() {
+                            const req = new XMLHttpRequest();
+                            req.open("POST", "{{ absoluteURL }}/keepAlive.php");
+                            req.send();
+                            $("#dialog-timeout").dialog("close");
+                        },
+                        "{{ __('Log Out Now') }} ": function() {
+                            window.location = "{{ absoluteURL }}/logout.php?timeout=true";
+                        },
+                    }
+                });
+
+                if (data.timeout == 'force') {
+                    window.location = "{{ absoluteURL }}/logout.php?timeout=force";
+                } else if (data.timeout == 'expire') {
+                    window.location = "{{ absoluteURL }}/logout.php?timeout=true";
+                } else if (data.timeout == 'warn') {
+                    $("#dialog-timeout").dialog("open");
+                } else if (!data.timeout && $("#dialog-timeout").dialog("isOpen")) {
+                    $("#dialog-timeout").dialog("close");
                 }
             }
         });

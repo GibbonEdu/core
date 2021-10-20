@@ -17,19 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Http\Url;
+
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
-if (isset($_GET['timeout']) and $_GET['timeout'] == 'true') {
-    $URL = './index.php?timeout=true';
+$URL = Url::fromRoute();
+if (isset($_GET['timeout'])) {
+    $URL = $URL->withQueryParam('timeout', 'true');
 }
 
-// Update current session to attach it to this user
-$data = ['gibbonSessionID' => session_id()];
-$sql = "UPDATE gibbonSession SET gibbonPersonID=NULL WHERE gibbonSessionID=:gibbonSessionID";
-
-$pdo->update($sql, $data);
+// Update current session to detach it from this user
+$container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => null, 'gibbonActionID' => null, 'sessionStatus' => null]);
 
 $session->forget('googleAPIAccessToken');
 $session->forget('gplusuer');

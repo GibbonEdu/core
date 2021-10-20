@@ -19,12 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
-use Gibbon\Contracts\Database\Connection;
 
 /**
  * Staff Dashboard View Composer
@@ -139,7 +140,7 @@ class StaffDashboard implements OutputableInterface
             $planner .= '</div>';
         } else {
             $planner .= "<div class='linkTop'>";
-            $planner .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
+            $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner')."'>".__('View Planner').'</a>';
             $planner .= '</div>';
 
             $planner .= "<table cellspacing='0' style='width: 100%'>";
@@ -218,7 +219,11 @@ class StaffDashboard implements OutputableInterface
                     $planner .= Format::truncate($row['summary'], 360);
                     $planner .= '</td>';
                     $planner .= '<td>';
-                    $planner .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
+                    $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
+                        'viewBy' => 'class',
+                        'gibbonCourseClassID' => $row['gibbonCourseClassID'],
+                        'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
+                    ])."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
                     $planner .= '</td>';
                     $planner .= '</tr>';
                 }
@@ -229,13 +234,21 @@ class StaffDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
-
+            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php');
+            $jsonQuery = [
+                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
+                'ttDate' => $_POST['ttDate'] ?? '',
+                'fromTT' => $_POST['fromTT'] ?? '',
+                'personalCalendar' => $_POST['personalCalendar'] ?? '',
+                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
+                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
+            ];
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load("'.$this->session->get('absoluteURL').'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
                 });
-            </script>   ';
+            </script>';
 
             $timetable .= '<h2>'.__('My Timetable').'</h2>';
             $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
@@ -298,7 +311,12 @@ class StaffDashboard implements OutputableInterface
 
                 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
                     $formGroups[$count][3] .= "<div class='linkTop'>";
-                    $formGroups[$count][3] .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonFormGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
+                    $formGroups[$count][3] .= "<a href='".Url::fromModuleRoute('Behaviour', 'behaviour_manage_add')->withQueryParams([
+                        'gibbonPersonID' => '',
+                        'gibbonFormGroupID' => '',
+                        'gibbonYearGroupID' => '',
+                        'type' => '',
+                    ]) . "'>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                     $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                     if ($policyLink != '') {
                         $formGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';

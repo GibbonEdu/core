@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 
@@ -36,7 +37,7 @@ $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal']) ? $_POST['gibbo
 $gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal']) ? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
 
-$URL = $session->get('absoluteURL').'/index.php?q=preferences.php';
+$URL = Url::fromRoute('preferences');
 
 $validated = true;
 
@@ -51,8 +52,7 @@ if (!empty($calendarFeedPersonal) && filter_var($calendarFeedPersonal, FILTER_VA
 }
 
 if (!$validated) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
     exit();
 }
 
@@ -62,8 +62,7 @@ try {
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    $URL .= '&return=error2';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error2')}");
     exit();
 }
 
@@ -96,5 +95,4 @@ if (!empty($gibboni18nIDPersonal)) {
 }
 
 $session->set('pageLoads', null);
-$URL .= '&return=success0';
-header("Location: {$URL}");
+header("Location: {$URL->withReturn('success0')}");

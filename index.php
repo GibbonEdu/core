@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ModuleGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -44,11 +46,13 @@ $session = $container->get('session');
 
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
+$settingGateway = $container->get(SettingGateway::class);
+
 /**
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->setBaseURL(Url::fromModuleRoute($module->name));
     $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
@@ -94,24 +98,21 @@ if (!$session->has('systemSettingsSet')) {
 // Check for force password reset flag
 if ($session->has('passwordForceReset')) {
     if ($session->get('passwordForceReset') == 'Y' and $session->get('address') != 'preferences.php') {
-        $URL = $session->get('absoluteURL').'/index.php?q=preferences.php';
-        $URL = $URL.'&forceReset=Y';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromRoute('preferences')->withQueryParam('forceReset', 'Y'));
         exit();
     }
 }
 
 //Upgrade redirect
 $upgrade = false;
-$versionDB = getSettingByScope($connection2, 'System', 'version');
+$versionDB = $settingGateway->getSettingByScope('System', 'version');
 $versionCode = $version;
 if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, '/modules/System Admin/update.php')) {
     if ($session->get('address') == '/modules/System Admin/update.php') {
         $upgrade = true;
     }
     else {
-        $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromModuleRoute('System Admin', 'update'));
         exit();
     }
 }
@@ -157,10 +158,8 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                             if ($result->rowCount() == 0) {
                                 // No registration yet
                                 // Redirect!
-                                $URL = $session->get('absoluteURL').
-                                    '/index.php?q=/modules/Attendance'.
-                                    '/attendance_studentSelfRegister.php'.
-                                    '&redirect=true';
+                                $URL = Url::fromModuleRoute('Attendance', 'attendance_studentSelfRegister')
+                                    ->withQueryParam('redirect', 'true');
                                 $session->forget('pageLoads');
                                 header("Location: {$URL}");
                                 exit;
@@ -172,7 +171,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         }
 
         // Deal with Data Updater redirect (if required updates are enabled)
-        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+        $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') {
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { // Can we update data?
                 $redirectByRoleCategory = getSettingByScope(
@@ -189,7 +188,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
 
                     if ($updatesRequiredCount > 0) {
-                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = Url::fromModuleRoute('Data Updater', 'data_updates')->withQueryParam('redirect', 'true');
                         $session->forget('pageLoads');
                         header("Location: {$URL}");
                         exit;
@@ -223,8 +222,7 @@ if (!empty($_GET['sidebar'])) {
 /**
  * SESSION TIMEOUT
  *
- * Set session duration, which will be passed via JS config to setup the
- * session timeout. Ensures a minimum session duration of 1200.
+ * Set session duration, and ensures a minimum session duration of 1200.
  */
 $sessionDuration = -1;
 if ($isLoggedIn) {
@@ -292,14 +290,7 @@ $javascriptConfig = [
             'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
         ],
         'tinymce' => [
-            'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
-        ],
-        'sessionTimeout' => [
-            'message' => __('Your session is about to expire: you will be logged out shortly.'),
-            'logOutBtnText' => __('Log Out Now'),
-            'sessionDuration' => $sessionDuration,
-            'stayConnectedBtnText' => __('Stay Connected'),
-            'titleText' => __('Session Timetout'),
+            'valid_elements' => $settingGateway->getSettingByScope('System', 'allowableHTML'),
         ]
     ],
 ];
@@ -327,7 +318,6 @@ $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
-    'session-timeout' => 'lib/session-timeout/dist/session-timeout.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
 ], ['context' => 'foot']);
 
@@ -369,7 +359,7 @@ if ($session->get('i18n')['rtl'] == 'Y') {
 }
 
 // Set personal, organisational or theme background
-if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
+if ($settingGateway->getSettingByScope('User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
     $backgroundScroll = 'repeat scroll center top';
 } else if ($session->has('organisationBackground')) {
@@ -430,6 +420,18 @@ if ($isLoggedIn) {
     }
 }
 
+// Maintenance Mode
+$maintenanceMode = $settingGateway->getSettingByScope('System Admin', 'maintenanceMode');
+if ($maintenanceMode == 'Y') {
+    $page->addAlert('<b>'.__('MAINTENANCE MODE').'</b>: '.$settingGateway->getSettingByScope('System Admin', 'maintenanceModeMessage'), 'error');
+
+    if ($isLoggedIn && $session->get('gibbonRoleIDPrimary') != '001') {
+        $URL = $session->get('absoluteURL').'/logout.php?timeout=force';
+        header("Location: {$URL}");
+        exit();
+    }
+}
+
 // Cookie Consent
 if ($isLoggedIn) {
     if (!empty($_GET['cookieConsent'])) {
@@ -437,12 +439,12 @@ if ($isLoggedIn) {
         $session->set('cookieConsent', 'Y');
     }
 
-    $cookieConsentEnabled = getSettingByScope($connection2, 'System Admin', 'cookieConsentEnabled');
-    $privacyPolicy = getSettingByScope($connection2, 'System Admin', 'privacyPolicy');
+    $cookieConsentEnabled = $settingGateway->getSettingByScope('System Admin', 'cookieConsentEnabled');
+    $privacyPolicy = $settingGateway->getSettingByScope('System Admin', 'privacyPolicy');
     if ($cookieConsentEnabled == 'Y' && $session->get('cookieConsent') != 'Y') {
         $page->addData([
             'cookieConsentEnabled' => 'Y',
-            'cookieConsentText' => getSettingByScope($connection2, 'System Admin', 'cookieConsentText'),
+            'cookieConsentText' => $settingGateway->getSettingByScope('System Admin', 'cookieConsentText'),
             'hasPrivacyPolicy' => !empty($privacyPolicy),
             'redirectTo' => http_build_query($_GET),
         ]);
@@ -463,6 +465,9 @@ if ($isLoggedIn && !$upgrade) {
         $session->set('fastFinder', $fastFinder);
     }
 
+    /**
+     * @var ModuleGateway
+     */
     $moduleGateway = $container->get(ModuleGateway::class);
 
     if ($page->getModule()) {
@@ -480,8 +485,10 @@ if ($isLoggedIn && !$upgrade) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
+                $item['url'] = (string) Url::fromModuleRoute(
+                    $item['moduleName'],
+                    preg_replace('/\.php$/i', '', $item['entryURL'])
+                );
             }
         }
 
@@ -496,20 +503,21 @@ if ($isLoggedIn && !$upgrade) {
 
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, '/modules/'.$item['name'].'/'.$item['entryURL']))
                     ? $item['entryURL']
                     : $item['alternateEntryURL'];
 
+                // Note: only for backward compatibility. Should remove .php
+                // from the gibbonAction table.
+                $entryURL = preg_replace('/\.php$/i', '', $entryURL);
+
                 $item['active'] = $session->get('menuModuleName') == $item['name'];
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+                $item['url'] =  (string) Url::fromModuleRoute($item['name'], $entryURL);
             }
         }
 
         $session->set('menuMainItems', $menuMainItems);
     }
-
-
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
@@ -559,19 +567,22 @@ if (!$session->has('address')) {
     // Welcome message
     if (!$isLoggedIn) {
         // Create auto timeout message
-        if (isset($_GET['timeout']) && $_GET['timeout'] == 'true') {
-            $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
+        if (isset($_GET['timeout'])) {
+            $page->addWarning(
+                $_GET['timeout'] == 'force'
+                    ? __('You have been manually logged out of {system} by a system administrator.', ['system' => $session->get('systemName')])
+                    : __('Your session expired, so you were automatically logged out of the system.'));
         }
 
         $templateData = [
             'indexText'                 => $session->get('indexText'),
             'organisationName'          => $session->get('organisationName'),
-            'publicRegistration'        => getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration') == 'Y',
-            'publicStudentApplications' => getSettingByScope($connection2, 'Application Form', 'publicApplications') == 'Y',
-            'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
-            'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
-            'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
-            'privacyPolicy'           => getSettingByScope($connection2, 'System Admin', 'privacyPolicy'),
+            'publicRegistration'        => $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration') == 'Y',
+            'publicStudentApplications' => $settingGateway->getSettingByScope('Application Form', 'publicApplications') == 'Y',
+            'publicStaffApplications'   => $settingGateway->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
+            'makeDepartmentsPublic'     => $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic') == 'Y',
+            'makeUnitsPublic'           => $settingGateway->getSettingByScope('Planner', 'makeUnitsPublic') == 'Y',
+            'privacyPolicy'           => $settingGateway->getSettingByScope('System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on
@@ -580,7 +591,7 @@ if (!$session->has('address')) {
 
         foreach ($hooks as $hook) {
             $options = unserialize(str_replace("'", "\'", $hook['options']));
-            $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
+            $check = $settingGateway->getSettingByScope($options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
                 $matches = [];
                 preg_match("/href=\\\'.([^\\\]*)\\\'/", $options['text'], $matches);
@@ -594,7 +605,7 @@ if (!$session->has('address')) {
 
     } else {
         // Pinned Messages
-        $pinnedMessagesOnHome = getSettingByScope($connection2, 'Messenger', 'pinnedMessagesOnHome');
+        $pinnedMessagesOnHome = $settingGateway->getSettingByScope('Messenger', 'pinnedMessagesOnHome');
         if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             $pinnedMessages = array_reduce($session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
@@ -630,17 +641,17 @@ if (!$session->has('address')) {
 
         switch ($category) {
             case 'Parent':
-                if (getSettingByScope($connection2, 'School Admin', 'parentDashboardEnable') != "N") {
+                if ($settingGateway->getSettingByScope('School Admin', 'parentDashboardEnable') != "N") {
                     $page->write($container->get(Gibbon\UI\Dashboard\ParentDashboard::class)->getOutput());
                 }
                 break;
             case 'Student':
-                if (getSettingByScope($connection2, 'School Admin', 'studentDashboardEnable') != "N") {
+                if ($settingGateway->getSettingByScope('School Admin', 'studentDashboardEnable') != "N") {
                     $page->write($container->get(Gibbon\UI\Dashboard\StudentDashboard::class)->getOutput());
                 }
                 break;
             case 'Staff':
-                if (getSettingByScope($connection2, 'School Admin', 'staffDashboardEnable') != "N") {
+                if ($settingGateway->getSettingByScope('School Admin', 'staffDashboardEnable') != "N") {
                     $page->write($container->get(Gibbon\UI\Dashboard\StaffDashboard::class)->getOutput());
                 }
                 break;
@@ -701,7 +712,7 @@ if ($isLoggedIn) {
 if (!empty($_GET['return'])) {
     if (!($session->get('address') == 'notifications.php' AND $session->get('username') == '')) {
         if ($alert = $page->return->process($_GET['return'])){
-            $page->addAlert($alert['context'], $alert['text']);
+            $page->addAlert($alert['text'], $alert['context']);
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Gibbon\Services;
 use DateTime;
 use DateTimeImmutable;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Http\Url;
 
 /**
  * Format values based on locale and system settings.
@@ -210,7 +211,7 @@ class Format
      * @param DateTime|string $dateString
      * @return string
      */
-    public static function relativeTime($dateString, $tooltip = true)
+    public static function relativeTime($dateString, $tooltip = true, $relativeString = true)
     {
         if (empty($dateString)) {
             return '';
@@ -248,9 +249,9 @@ class Format
                 $time = static::dateReadable($dateString);
         }
 
-        if ($timeDifference > 0) {
+        if ($relativeString && $timeDifference > 0) {
             $time = __('{time} ago', ['time' => $time]);
-        } elseif ($timeDifference < 0) {
+        } elseif ($relativeString && $timeDifference < 0) {
             $time = __('in {time}', ['time' => $time]);
         }
 
@@ -659,16 +660,12 @@ class Format
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
-            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$gibbonPersonID;
-            if (!empty($params)) {
-                $url .= '&'.http_build_query($params);
-            }
+            $url = Url::fromModuleRoute('Staff', 'staff_view_details')
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
-            $url = static::$settings['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID;
-            if (!empty($params)) {
-                $url .= '&'.http_build_query($params);
-            }
+            $url = Url::fromModuleRoute('Students', 'staff_view_details')
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } else {
             $output = $name;
