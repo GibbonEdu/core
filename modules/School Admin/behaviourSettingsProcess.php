@@ -51,18 +51,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     }
 
     $behaviourLettersLetter1Count = $_POST['behaviourLettersLetter1Count'] ?? '';
-    $behaviourLettersLetter1Text = $_POST['behaviourLettersLetter1Text'] ?? '';
     $behaviourLettersLetter2Count = $_POST['behaviourLettersLetter2Count'] ?? '';
-    $behaviourLettersLetter2Text = $_POST['behaviourLettersLetter2Text'] ?? '';
     $behaviourLettersLetter3Count = $_POST['behaviourLettersLetter3Count'] ?? '';
-    $behaviourLettersLetter3Text = $_POST['behaviourLettersLetter3Text'] ?? '';
 
     $notifyTutors = $_POST['notifyTutors'] ?? 'Y';
     $notifyEducationalAssistants = $_POST['notifyEducationalAssistants'] ?? 'N';
     $policyLink = $_POST['policyLink'] ?? '';
 
     //Validate Inputs
-    if ($enableDescriptors == '' or $enableLevels == '' or ($positiveDescriptors == '' and $enableDescriptors == 'Y') or ($negativeDescriptors == '' and $enableDescriptors == 'Y') or ($levels == '' and $enableLevels == 'Y') or (($behaviourLettersLetter1Count == '' or $behaviourLettersLetter1Text == '' or $behaviourLettersLetter2Count == '' or $behaviourLettersLetter2Text == '' or $behaviourLettersLetter3Count == '' or $behaviourLettersLetter3Text == '') and $enableBehaviourLetters == 'Y')) {
+    if ($enableDescriptors == '' or $enableLevels == '' or ($positiveDescriptors == '' and $enableDescriptors == 'Y') or ($negativeDescriptors == '' and $enableDescriptors == 'Y') or ($levels == '' and $enableLevels == 'Y') or (($behaviourLettersLetter1Count == '' or $behaviourLettersLetter2Count == '' or $behaviourLettersLetter3Count == '') and $enableBehaviourLetters == 'Y')) {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -133,14 +130,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
             $fail = true;
         }
         try {
-            $data = array('value' => $behaviourLettersLetter1Text);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersLetter1Text'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
             $data = array('value' => $behaviourLettersLetter2Count);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersLetter2Count'";
             $result = $connection2->prepare($sql);
@@ -149,24 +138,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
             $fail = true;
         }
         try {
-            $data = array('value' => $behaviourLettersLetter2Text);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersLetter2Text'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
             $data = array('value' => $behaviourLettersLetter3Count);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersLetter3Count'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('value' => $behaviourLettersLetter3Text);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersLetter3Text'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

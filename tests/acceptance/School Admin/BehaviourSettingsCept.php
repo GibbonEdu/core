@@ -19,11 +19,8 @@ $newFormValues = array(
     'levels'                        => 'Level1,Level2,Level3',
     'enableBehaviourLetters'        => 'Y',
     'behaviourLettersLetter1Count'  => '4',
-    'behaviourLettersLetter1Text'   => 'Letter Test 1',
     'behaviourLettersLetter2Count'  => '8',
-    'behaviourLettersLetter2Text'   => 'Letter Test 2',
     'behaviourLettersLetter3Count'  => '12',
-    'behaviourLettersLetter3Text'   => 'Letter Test 3',
     'policyLink'                    => 'http://test.test',
 );
 
