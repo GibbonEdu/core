@@ -61,18 +61,18 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     //Get settings
     $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
     $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
-    $enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
-    if ($enableBehaviourLetters == 'Y') {
-        $behaviourLettersLetter1Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter1Count');
-        $behaviourLettersLetter2Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter2Count');
-        $behaviourLettersLetter3Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter3Count');
+    $enableNegativeBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableNegativeBehaviourLetters');
+    if ($enableNegativeBehaviourLetters == 'Y') {
+        $behaviourLettersNegativeLetter1Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter1Count');
+        $behaviourLettersNegativeLetter2Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter2Count');
+        $behaviourLettersNegativeLetter3Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter3Count');
 
         $behaviourLetterGateway = $container->get(BehaviourLetterGateway::class);
         $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
         $userGateway = $container->get(UserGateway::class);
         $template = $container->get(EmailTemplate::class);
 
-        if ($behaviourLettersLetter1Count != '' and $behaviourLettersLetter2Count != '' and $behaviourLettersLetter3Count != '' and is_numeric($behaviourLettersLetter1Count) and is_numeric($behaviourLettersLetter2Count) and is_numeric($behaviourLettersLetter3Count)) {
+        if ($behaviourLettersNegativeLetter1Count != '' and $behaviourLettersNegativeLetter2Count != '' and $behaviourLettersNegativeLetter3Count != '' and is_numeric($behaviourLettersNegativeLetter1Count) and is_numeric($behaviourLettersNegativeLetter2Count) and is_numeric($behaviourLettersNegativeLetter3Count)) {
             //SCAN THROUGH ALL STUDENTS
 
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -108,19 +108,19 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
                             $lastLetterLevel = null;
                             $lastLetterStatus = null;
 
-                            if ($behaviourCount >= $behaviourLettersLetter3Count) { //Student is over or equal to level 3
+                            if ($behaviourCount >= $behaviourLettersNegativeLetter3Count) { //Student is over or equal to level 3
                                 $newLetterRequired = true;
                                 $newLetterRequiredLevel = 3;
                                 $newLetterRequiredStatus = 'Issued';
-                            } elseif ($behaviourCount >= $behaviourLettersLetter2Count and $behaviourCount < $behaviourLettersLetter3Count) { //Student is equal to or greater than level 2 but less than level 3
+                            } elseif ($behaviourCount >= $behaviourLettersNegativeLetter2Count and $behaviourCount < $behaviourLettersNegativeLetter3Count) { //Student is equal to or greater than level 2 but less than level 3
                                 $newLetterRequired = true;
                                 $newLetterRequiredLevel = 2;
                                 $newLetterRequiredStatus = 'Issued';
-                            } elseif ($behaviourCount >= $behaviourLettersLetter1Count and $behaviourCount < $behaviourLettersLetter2Count) { //Student is equal to or greater than level 1 but less than level 2
+                            } elseif ($behaviourCount >= $behaviourLettersNegativeLetter1Count and $behaviourCount < $behaviourLettersNegativeLetter2Count) { //Student is equal to or greater than level 1 but less than level 2
                                 $newLetterRequired = true;
                                 $newLetterRequiredLevel = 1;
                                 $newLetterRequiredStatus = 'Issued';
-                            } elseif ($behaviourCount == ($behaviourLettersLetter1Count - 1)) { //Student is one less than level 1
+                            } elseif ($behaviourCount == ($behaviourLettersNegativeLetter1Count - 1)) { //Student is one less than level 1
                                 $newLetterRequired = true;
                                 $newLetterRequiredLevel = 1;
                                 $newLetterRequiredStatus = 'Warning';
@@ -132,33 +132,33 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
 
                             if ($behaviourCount > $rowLetters['recordCountAtCreation']) { //Only consider action if count has increased since creation (stops second day issue of warning when count has not changed)
                                 if ($lastLetterStatus == 'Warning') { //Last letter is warning
-                                    if ($behaviourCount >= ${'behaviourLettersLetter'.$lastLetterLevel.'Count'} and $behaviourCount < ${'behaviourLettersLetter'.($lastLetterLevel + 1).'Count'}) { //Count escalted to above warning, and less than next full level
+                                    if ($behaviourCount >= ${'behaviourLettersNegativeLetter'.$lastLetterLevel.'Count'} and $behaviourCount < ${'behaviourLettersNegativeLetter'.($lastLetterLevel + 1).'Count'}) { //Count escalted to above warning, and less than next full level
                                         $issueExistingLetter = true;
                                         $issueExistingLetterID = $rowLetters['gibbonBehaviourLetterID'];
                                         $issueExistingLetterLevel = $rowLetters['letterLevel'];
-                                    } elseif ($behaviourCount >= ${'behaviourLettersLetter'.($lastLetterLevel + 1).'Count'}) { //Count escalated to equal to or above next level
+                                    } elseif ($behaviourCount >= ${'behaviourLettersNegativeLetter'.($lastLetterLevel + 1).'Count'}) { //Count escalated to equal to or above next level
                                         $newLetterRequired = true;
-                                        if ($behaviourCount >= $behaviourLettersLetter3Count) {
+                                        if ($behaviourCount >= $behaviourLettersNegativeLetter3Count) {
                                             $newLetterRequiredLevel = 3;
-                                        } elseif ($behaviourCount >= $behaviourLettersLetter2Count and $behaviourCount < $behaviourLettersLetter3Count) {
+                                        } elseif ($behaviourCount >= $behaviourLettersNegativeLetter2Count and $behaviourCount < $behaviourLettersNegativeLetter3Count) {
                                             $newLetterRequiredLevel = 2;
                                         }
                                         $newLetterRequiredStatus = 'Issued';
                                     }
                                 } else { //Last letter is issued
-                                    if ($behaviourCount == (${'behaviourLettersLetter'.($lastLetterLevel + 1).'Count'} - 1)) { //Count escalated to next warning
+                                    if ($behaviourCount == (${'behaviourLettersNegativeLetter'.($lastLetterLevel + 1).'Count'} - 1)) { //Count escalated to next warning
                                         $newLetterRequired = true;
-                                        if ($behaviourCount == ($behaviourLettersLetter3Count - 1)) {
+                                        if ($behaviourCount == ($behaviourLettersNegativeLetter3Count - 1)) {
                                             $newLetterRequiredLevel = 3;
-                                        } elseif ($behaviourCount == ($behaviourLettersLetter2Count - 1)) {
+                                        } elseif ($behaviourCount == ($behaviourLettersNegativeLetter2Count - 1)) {
                                             $newLetterRequiredLevel = 2;
                                         }
                                         $newLetterRequiredStatus = 'Warning';
-                                    } elseif ($behaviourCount > (${'behaviourLettersLetter'.($lastLetterLevel + 1).'Count'} - 1)) { //Count escalated above next warning
+                                    } elseif ($behaviourCount > (${'behaviourLettersNegativeLetter'.($lastLetterLevel + 1).'Count'} - 1)) { //Count escalated above next warning
                                         $newLetterRequired = true;
-                                        if ($behaviourCount >= $behaviourLettersLetter3Count) {
+                                        if ($behaviourCount >= $behaviourLettersNegativeLetter3Count) {
                                             $newLetterRequiredLevel = 3;
-                                        } elseif ($behaviourCount >= $behaviourLettersLetter2Count) {
+                                        } elseif ($behaviourCount >= $behaviourLettersNegativeLetter2Count) {
                                             $newLetterRequiredLevel = 2;
                                         }
                                         $newLetterRequiredStatus = 'Issued';

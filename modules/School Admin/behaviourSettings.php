@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
-$enableBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters');
+$enableNegativeBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableNegativeBehaviourLetters');
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSettings.php') == false) {
     //Access denied
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
-    $setting = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
+    $setting = getSettingByScope($connection2, 'Behaviour', 'enableNegativeBehaviourLetters', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $form->toggleVisibilityByClass('behaviourLetters')->onSelect($setting['name'])->when('Y');
 
     for ($i = 1;$i < 4;++$i) {
-        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
+        $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter'.$i.'Count', true);
         $row = $form->addRow()->addClass('behaviourLetters');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
