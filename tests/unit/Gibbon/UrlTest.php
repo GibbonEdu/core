@@ -91,6 +91,11 @@ class UrlTest extends TestCase
         $this->assertEquals('/some/path/index.php?' . http_build_query([
             'q' => '/modules/My Module/some_action.php',
         ]), (string) $url);
+
+        $url = Url::fromModuleRoute('My Module');
+        $this->assertEquals('/some/path/index.php?' . http_build_query([
+            'q' => '/modules/My Module/',
+        ]), (string) $url);
     }
 
     /**

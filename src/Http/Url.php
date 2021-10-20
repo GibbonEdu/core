@@ -66,11 +66,12 @@ class Url extends Uri implements UriInterface
     protected $module;
 
     /**
-     * The route path.
+     * Gibbon's internal route path. Would be non-null if created from methods
+     * like fromRoute, fromModuleRoute. Affects how __toString works.
      *
-     * @var string
+     * @var string|null
      */
-    protected $routePath;
+    protected $routePath = null;
 
     /**
      * Create Uri instance for the root-relative url of the given Gibbon routes.
@@ -162,21 +163,22 @@ class Url extends Uri implements UriInterface
      */
     public function __toString()
     {
-        // Only override rendering if a route pat is set.
+        // Only override rendering if a route path is set.
         // Supposed to only happen if created by the
         // fromRoute() or fromModuleRoute() methods.
         if (isset($this->routePath)) {
             $query = $this->getQueryParams();
             $handler_path = $this->getPath() . '/' . $this->routeHandler;
             $route_target = !empty($this->routePath) ? $this->routePath . '.php' : '';
+            $route_target = !empty($this->module)
+                ? '/modules/' . $this->module . '/' . $route_target
+                : $route_target;
+
             if (!empty($route_target)) {
                 // overwrite "q" in query with module / core route path
-                $query = [
-                    'q' => !empty($this->module)
-                        ? '/modules/' . $this->module . '/' . $route_target
-                        : $route_target,
-                ] + $query;
+                $query = ['q' => $route_target] + $query;
             }
+
             $new = $this
                 ->withPath($handler_path)
                 ->withQueryParams($query);
