@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -51,7 +52,7 @@ $settingGateway = $container->get(SettingGateway::class);
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->setBaseURL(Url::fromModuleRoute($module->name));
     $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
@@ -97,9 +98,7 @@ if (!$session->has('systemSettingsSet')) {
 // Check for force password reset flag
 if ($session->has('passwordForceReset')) {
     if ($session->get('passwordForceReset') == 'Y' and $session->get('address') != 'preferences.php') {
-        $URL = $session->get('absoluteURL').'/index.php?q=preferences.php';
-        $URL = $URL.'&forceReset=Y';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromRoute('preferences')->withQueryParam('forceReset', 'Y'));
         exit();
     }
 }
@@ -113,8 +112,7 @@ if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, 
         $upgrade = true;
     }
     else {
-        $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromModuleRoute('System Admin', 'update'));
         exit();
     }
 }
@@ -160,10 +158,8 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                             if ($result->rowCount() == 0) {
                                 // No registration yet
                                 // Redirect!
-                                $URL = $session->get('absoluteURL').
-                                    '/index.php?q=/modules/Attendance'.
-                                    '/attendance_studentSelfRegister.php'.
-                                    '&redirect=true';
+                                $URL = Url::fromModuleRoute('Attendance', 'attendance_studentSelfRegister')
+                                    ->withQueryParam('redirect', 'true');
                                 $session->forget('pageLoads');
                                 header("Location: {$URL}");
                                 exit;
@@ -192,7 +188,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
 
                     if ($updatesRequiredCount > 0) {
-                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = Url::fromModuleRoute('Data Updater', 'data_updates')->withQueryParam('redirect', 'true');
                         $session->forget('pageLoads');
                         header("Location: {$URL}");
                         exit;
@@ -486,8 +482,7 @@ if ($isLoggedIn && !$upgrade) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
+                $item['url'] = (string) Url::fromModuleRoute($item['moduleName'], $item['entryURL']);
             }
         }
 
@@ -508,7 +503,7 @@ if ($isLoggedIn && !$upgrade) {
                     : $item['alternateEntryURL'];
 
                 $item['active'] = $session->get('menuModuleName') == $item['name'];
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+                $item['url'] =  (string) Url::fromModuleRoute($modulePath, $entryURL);
             }
         }
 
@@ -567,7 +562,7 @@ if (!$session->has('address')) {
         // Create auto timeout message
         if (isset($_GET['timeout'])) {
             $page->addWarning(
-                $_GET['timeout'] == 'force' 
+                $_GET['timeout'] == 'force'
                     ? __('You have been manually logged out of {system} by a system administrator.', ['system' => $session->get('systemName')])
                     : __('Your session expired, so you were automatically logged out of the system.'));
         }
