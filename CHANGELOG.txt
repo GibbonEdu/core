@@ -37,6 +37,7 @@ v23.0.00
         System: fixed typo in Public Registration notification
         System: updated the mobile responsive view to display alerts above the login form
         System: refactored all $_SESSION calls across the system
+        System: changed force password reset information in Preferences from error to message
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
         Library: added student Form Group to View Overdue Items report

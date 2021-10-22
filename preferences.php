@@ -31,10 +31,7 @@ if (!$session->exists("username")) {
     //Deal with force reset notification
     $forceReset = $_GET['forceReset'] ?? null;
     if ($forceReset == 'Y' AND $return != 'successa') {
-        $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
-        echo "<div class='error'>";
-        echo $forceResetReturnMessage;
-        echo '</div>';
+        $page->addMessage(__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.'));
     }
 
     $returns = array();
@@ -45,11 +42,10 @@ if (!$session->exists("username")) {
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     $page->return->addReturns($returns);
 
-    
-        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-        $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }
@@ -70,7 +66,6 @@ if (!$session->exists("username")) {
             ->maxLength(30);
 
     $row = $form->addRow();
-
         $row->addLabel('passwordNew', __('New Password'));
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
