@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
         }
 
-        if ($partialFail == true) {
+        if (isset($partialFail) && $partialFail == true) {
             $URL .= '&return=warning1';
             header("Location: {$URL}");
         } else {
