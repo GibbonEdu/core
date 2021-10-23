@@ -17,9 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Aura\Auth\AuthFactory;
+use Aura\Auth\Exception;
+use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
-use Gibbon\Comms\NotificationEvent;
+use Gibbon\Auth\Adapter\DatabaseAdapter;
+use Gibbon\Auth\Exception\InvalidLoginException;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SessionGateway;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -27,247 +32,90 @@ require_once './gibbon.php';
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
-$gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbon->session->get('gibbonSchoolYearID'));
-$gibbon->session->set('gibbonSchoolYearNameCurrent', $gibbon->session->get('gibbonSchoolYearName'));
-$gibbon->session->set('gibbonSchoolYearSequenceNumberCurrent', $gibbon->session->get('gibbonSchoolYearSequenceNumber'));
+$session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
+$session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
+$session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));
 
-$gibbon->session->forget('pageLoads');
-
-$URL = './index.php';
+$session->forget('pageLoads');
 
 // Sanitize the whole $_POST array
-$validator = $container->get(Validator::class);
+$_POST = $container->get(Validator::class)->sanitize($_POST);
+
+// Setup system logs and redirect URL
 $logGateway = $container->get(LogGateway::class);
-$_POST = $validator->sanitize($_POST);
+$sessionGateway = $container->get(SessionGateway::class);
+$URL = Url::fromRoute();
 
-//Get and store POST variables from calling page
-$username = $_POST['username'] ?? '';
-$password = $_POST['password'] ?? '';
+// Setup authentication classes
+$authFactory = $container->get(AuthFactory::class);
+$auth = $authFactory->newInstance();
 
-if (empty($username) or empty($password)) {
-    $URL .= '?loginReturn=fail0b';
+// Determine the adapter to use
+$authAdapter = $container->get(DatabaseAdapter::class);
+
+// Handle login
+try {
+    $loginService = $authFactory->newLoginService($authAdapter);
+
+    $loginService->login($auth, [
+        'username' => $_POST['username'] ?? '',
+        'password' => $_POST['password'] ?? '',
+    ]);
+
+    $userData = $auth->getUserData();
+
+    // Update the session data
+    $session->set($userData);
+
+    // Update current session record to attach it to this user
+    $sessionGateway->update(session_id(), [
+        'gibbonPersonID' => $userData['gibbonPersonID'],
+        'sessionStatus' => 'Logged In',
+        'timestampModified' => date('Y-m-d H:i:s'),
+    ]);
+
+    // echo '<pre>';
+    // print_r($_SESSION);
+    // echo '</pre>';
+    // die();
+
     header("Location: {$URL}");
     exit;
-}
-else {
-    // Custom login loader
-    if (file_exists('./login_custom.php')) {
-        require_once './login_custom.php';
-    }
-    //VALIDATE LOGIN INFORMATION
-    
-        $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
 
-    //Test to see if username exists and is unique
-    if ($result->rowCount() != 1) {
-        $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
-        $URL .= '?loginReturn=fail1';
-        header("Location: {$URL}");
-        exit;
-    } else {
-        $row = $result->fetch();
+} catch (Exception\UsernameMissing $e) {
 
-        // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y') {
-            $URL .= '?loginReturn=fail2';
-            header("Location: {$URL}");
-            exit;
-        }
+    echo "The 'username' field is missing or empty.";
+    // header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+    exit;
 
-        // Get primary role info
-        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
-        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
-        $role = $pdo->selectOne($sql, $data);
+} catch (Exception\PasswordMissing $e) {
 
-        // Login not allowed for this role
-        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
-            $URL .= '?loginReturn=fail9';
-            header("Location: {$URL}");
-            exit;
-        }
+    echo "The 'password' field is missing or empty.";
+    // header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+    exit;
 
-        // Set the username explicity, to handle logging in with email
-        $username = $row['username'];
+} catch (Exception\UsernameNotFound $e) {
 
-        //Check fail count, reject & alert if 3rd time
-        if ($row['failCount'] >= 3) {
-            
-                $dataSecure = array('lastFailIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastFailTimestamp' => date('Y-m-d H:i:s'), 'failCount' => ($row['failCount'] + 1), 'username' => $username);
-                $sqlSecure = 'UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)';
-                $resultSecure = $connection2->prepare($sqlSecure);
-                $resultSecure->execute($dataSecure);
+    echo "The username you entered was not found.";
+    // header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+    exit;
 
-            if ($row['failCount'] == 3) {
-                // Raise a new notification event
-                $event = new NotificationEvent('User Admin', 'Login - Failed');
+} catch (Exception\MultipleMatches $e) {
 
-                $event->addRecipient($gibbon->session->get('organisationAdministrator'));
-                $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
-                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
+    echo "There is more than one account with that username.";
+    // header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+    exit;
 
-                $event->sendNotifications($pdo, $gibbon->session);
-            }
+} catch (Exception\PasswordIncorrect $e) {
 
-            $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
-            $URL .= '?loginReturn=fail6';
-            header("Location: {$URL}");
-            exit;
-        } else {
-            $passwordTest = false;
-            //If strong password exists
-            $salt = $row['passwordStrongSalt'];
-            $passwordStrong = $row['passwordStrong'];
-            if ($passwordStrong != '' and $salt != '') {
-                if (hash('sha256', $row['passwordStrongSalt'].$password) == $row['passwordStrong']) {
-                    $passwordTest = true;
-                }
-            }
-            //If only weak password exists
-            elseif ($row['password'] != '') {
-                if ($row['password'] == md5($password)) {
-                    $passwordTest = true;
+    echo "The password you entered was incorrect.";
+    // header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+    exit;
 
-                    //Migrate to strong password
-                    $salt = getSalt();
-                    $passwordStrong = hash('sha256', $salt.$password);
+} catch (InvalidLoginException $e) {
 
-                    try {
-                        $dataSecure = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'username' => $username);
-                        $sqlSecure = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
-                        $resultSecure = $connection2->prepare($sqlSecure);
-                        $resultSecure->execute($dataSecure);
-                    } catch (PDOException $e) {
-                        $passwordTest = false;
-                    }
-                }
-            }
+    echo $e->getMessage();
 
-            //Test to see if password matches username
-            if ($passwordTest != true) {
-                //FAIL PASSWORD
-                try {
-                    $dataSecure = array('lastFailIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastFailTimestamp' => date('Y-m-d H:i:s'), 'failCount' => ($row['failCount'] + 1), 'username' => $username);
-                    $sqlSecure = 'UPDATE gibbonPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)';
-                    $resultSecure = $connection2->prepare($sqlSecure);
-                    $resultSecure->execute($dataSecure);
-                } catch (PDOException $e) {
-                    $passwordTest = false;
-                }
+    echo "Invalid login details. Please try again.";
 
-                $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
-                $URL .= '?loginReturn=fail1';
-                header("Location: {$URL}");
-                exit;
-            } else {
-                if ($row['gibbonRoleIDPrimary'] == '' or count(getRoleList($row['gibbonRoleIDAll'], $connection2)) == 0) {
-                    //FAILED TO SET ROLES
-                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Failed to set role(s)'), $_SERVER['REMOTE_ADDR']);
-                    $URL .= '?loginReturn=fail2';
-                    header("Location: {$URL}");
-                    exit;
-                } else {
-                    //Allow for non-current school years to be specified
-                    if ($_POST['gibbonSchoolYearID'] != $gibbon->session->get('gibbonSchoolYearID')) {
-                        if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
-                            $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                            $URL .= '?loginReturn=fail9';
-                            header("Location: {$URL}");
-                            exit();
-                        } else {
-                            //Get details on requested school year
-                            
-                                $dataYear = array('gibbonSchoolYearID' => $_POST['gibbonSchoolYearID']);
-                                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                                $resultYear = $connection2->prepare($sqlYear);
-                                $resultYear->execute($dataYear);
-
-                            //Check number of rows returned.
-                            //If it is not 1, show error
-                            if (!($resultYear->rowCount() == 1)) {
-                                die(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
-                            }
-                            //Else get year details
-                            else {
-                                $rowYear = $resultYear->fetch();
-                                if ($row['futureYearsLogin'] != 'Y' and $gibbon->session->get('gibbonSchoolYearSequenceNumber') < $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                                    $URL .= '?loginReturn=fail9';
-                                    header("Location: {$URL}");
-                                    exit();
-                                } elseif ($row['pastYearsLogin'] != 'Y' and $gibbon->session->get('gibbonSchoolYearSequenceNumber') > $rowYear['sequenceNumber']) { //POSSIBLY NOT ALLOWED DUE TO CONTROLS ON ROLE, CHECK YEAR
-                                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
-                                    $URL .= '?loginReturn=fail9';
-                                    header("Location: {$URL}");
-                                    exit();
-                                } else { //ALLOWED
-                                    $gibbon->session->set('gibbonSchoolYearID', $rowYear['gibbonSchoolYearID']);
-                                    $gibbon->session->set('gibbonSchoolYearName', $rowYear['name']);
-                                    $gibbon->session->set('gibbonSchoolYearSequenceNumber', $rowYear['sequenceNumber']);
-                                }
-                            }
-                        }
-                    }
-
-                    //USER EXISTS, SET SESSION VARIABLES
-                    $gibbon->session->createUserSession($username, $row);
-
-                    // Set these from local values
-                    $gibbon->session->set('passwordStrong', $passwordStrong);
-                    $gibbon->session->set('passwordStrongSalt', $salt);
-                    $gibbon->session->set('googleAPIAccessToken', null);
-
-                    //Allow for non-system default language to be specified from login form
-                    if (@$_POST['gibboni18nID'] != $gibbon->session->get('i18n')['gibboni18nID']) {
-                        
-                            $dataLanguage = array('gibboni18nID' => $_POST['gibboni18nID']);
-                            $sqlLanguage = 'SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID';
-                            $resultLanguage = $connection2->prepare($sqlLanguage);
-                            $resultLanguage->execute($dataLanguage);
-                        if ($resultLanguage->rowCount() == 1) {
-                            $rowLanguage = $resultLanguage->fetch();
-                            setLanguageSession($guid, $rowLanguage, false);
-                        }
-                    } else {
-                        //If no language specified, get user preference if it exists
-                        if (!is_null($gibbon->session->get('gibboni18nIDPersonal'))) {
-                            
-                                $dataLanguage = array('gibboni18nID' => $gibbon->session->get('gibboni18nIDPersonal'));
-                                $sqlLanguage = "SELECT * FROM gibboni18n WHERE active='Y' AND gibboni18nID=:gibboni18nID";
-                                $resultLanguage = $connection2->prepare($sqlLanguage);
-                                $resultLanguage->execute($dataLanguage);
-                            if ($resultLanguage->rowCount() == 1) {
-                                $rowLanguage = $resultLanguage->fetch();
-                                setLanguageSession($guid, $rowLanguage, false);
-                            }
-                        }
-                    }
-
-                    //Make best effort to set IP address and other details, but no need to error check etc.
-                    
-                        $data = array('lastIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastTimestamp' => date('Y-m-d H:i:s'), 'failCount' => 0, 'username' => $username);
-                        $sql = 'UPDATE gibbonPerson SET lastIPAddress=:lastIPAddress, lastTimestamp=:lastTimestamp, failCount=:failCount WHERE username=:username';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-
-                    if (isset($_GET['q'])) {
-                        if ($_GET['q'] == '/publicRegistration.php') {
-                            $URL = './index.php';
-                        } else {
-                            unset($_GET['return']); // Ensure error messages are not passed via login
-
-                            $URL = './index.php?'.http_build_query($_GET);
-                        }
-                    } else {
-                        $URL = './index.php';
-                    }
-                    $logGateway->addLog($gibbon->session->get('gibbonSchoolYearIDCurrent'), null, $row['gibbonPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
-                    header("Location: {$URL}");
-                    exit;
-                }
-            }
-        }
-    }
 }

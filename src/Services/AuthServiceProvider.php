@@ -21,6 +21,11 @@ namespace Gibbon\Services;
 
 use Google_Client;
 use Google_Service_Calendar;
+use Aura\Auth\AuthFactory;
+use Aura\Auth\Verifier\PasswordVerifier;
+use Aura\Auth\Verifier\VerifierInterface;
+use Gibbon\Auth\AuthSession;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -42,6 +47,8 @@ class AuthServiceProvider extends AbstractServiceProvider
      * @var array
      */
     protected $provides = [
+        AuthFactory::class,
+        VerifierInterface::class,
         'Google_Client',
         'Google_Service_Calendar',
         'Microsoft_Auth',
@@ -56,7 +63,16 @@ class AuthServiceProvider extends AbstractServiceProvider
      */
     public function register()
     {
-        $container = $this->getContainer();
+        $container = $this->getLeagueContainer();
+
+        $container->share(AuthFactory::class, function () {
+            $authSession = new AuthSession($this->container->get(Session::class), $this->container->get(Session::class));
+            return new AuthFactory($_COOKIE, $authSession, $authSession);
+        });
+
+        $container->add(VerifierInterface::class, function () {
+            return new PasswordVerifier('sha256');
+        });
 
         $container->share(Google_Client::class, function () {
             $session = $this->getContainer()->get('session');

@@ -70,6 +70,31 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectLoginDetailsByUsername($username)
+    {
+        $data = ['username' => $username];
+        $sql = "SELECT 
+                    gibbonPerson.gibbonPersonID,
+                    gibbonPerson.username,
+                    gibbonPerson.passwordStrong,
+                    gibbonPerson.passwordStrongSalt,
+                    gibbonPerson.canLogin,
+                    gibbonPerson.gibbonRoleIDPrimary,
+                    gibbonPerson.gibbonRoleIDAll,
+                    gibbonRole.futureYearsLogin,
+                    gibbonRole.pastYearsLogin,
+                    gibbonRole.name as roleName,
+                    gibbonRole.category as roleCategory
+                FROM gibbonPerson 
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                WHERE (
+                    (username=:username OR (LOCATE('@', :username)>0 AND email=:username)) 
+                    AND status='Full' 
+                )";
+
+        return $this->db()->select($sql, $data);
+    }
+
     /**
      * Selects the family info for a subset of users. Primarily used to join family data to the queryAllUsers results.
      *

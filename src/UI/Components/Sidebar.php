@@ -194,7 +194,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
 
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
+                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/loginNew.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
@@ -594,7 +594,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         //Show role switcher if user has more than one role
         if ($this->session->exists('username')) {
-            if (count($this->session->get('gibbonRoleIDAll')) > 1 and $this->session->get('address') == '') {
+            if (count($this->session->get('gibbonRoleIDAll', [])) > 1 and $this->session->get('address') == '') {
                 echo '<div class="column-no-break">';
                 echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
                 echo __('Role Switcher');
@@ -605,7 +605,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 echo '</p>';
 
                 echo '<ul>';
-                for ($i = 0; $i < count($this->session->get('gibbonRoleIDAll')); ++$i) {
+                for ($i = 0; $i < count($this->session->get('gibbonRoleIDAll', [])); ++$i) {
                     if ($this->session->get('gibbonRoleIDAll')[$i][0] == $this->session->get('gibbonRoleIDCurrent')) {
                         echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$this->session->get('gibbonRoleIDAll')[$i][0]."'>".__($this->session->get('gibbonRoleIDAll')[$i][1]).'</a> <i>'.__('(Active)').'</i></li>';
                     } else {
