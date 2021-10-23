@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -102,7 +103,7 @@ if (!$session->exists("username")) {
             $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__('Only enables timetable integration when logging in via Google.'));
             $password = $row->addTextField('calendarFeedPersonal');
 
-        $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
+        $personalBackground = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'personalBackground');
         if ($personalBackground == 'Y') {
             $row = $form->addRow();
                 $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__('Please provide URL to image.'));

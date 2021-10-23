@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -24,8 +25,9 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     // Access denied
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Add Multiple'));
 
     echo "<div class='linkTop'>";
-    $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+    $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
     if ($policyLink != '') {
         echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
     }
@@ -72,9 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     //Descriptor
     if ($enableDescriptors == 'Y') {
-        $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
+        $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
         $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : array();
-        $positiveDescriptors = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors');
+        $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
         $positiveDescriptors = (!empty($positiveDescriptors))? explode(',', $positiveDescriptors) : array();
 
         $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
@@ -93,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     //Level
     if ($enableLevels == 'Y') {
-        $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+        $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
         if ($optionsLevels != '') {
             $optionsLevels = explode(',', $optionsLevels);
         }

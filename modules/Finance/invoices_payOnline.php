@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Services\Payment;
 
@@ -74,9 +75,10 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                 }
 
                 if ($payment->isEnabled() and $feeTotal > 0) {
-                    $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
-                    $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
-                    $paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
+                    $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
+                    $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
                     if ($financeOnlinePaymentEnabled == 'Y') {
                         echo "<h3 style='margin-top: 40px'>";
                         echo __('Online Payment');

@@ -37,7 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         ->add(__('Edit Substitute'));
 
     $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
-    $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+    $settingGateway = $container->get(SettingGateway::class);
+    $smsGateway = $settingGateway->getSettingByScope('Messenger', 'smsGateway');
 
     if (empty($gibbonSubstituteID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -93,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $types = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'substituteTypes');
+    $types = $settingGateway->getSettingByScope('Staff', 'substituteTypes');
     $types = array_filter(array_map('trim', explode(',', $types)));
 
     $row = $form->addRow();

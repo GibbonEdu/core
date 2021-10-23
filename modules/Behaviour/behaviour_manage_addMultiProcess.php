@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
@@ -27,8 +28,9 @@ use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 $address = $_POST['address'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
@@ -100,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     $event->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 
                     // Add notifications for Educational Assistants
-                    if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                    if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
                         $educationalAssistants = $container->get(INAssistantGateway::class)->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
                         foreach ($educationalAssistants as $ea) {
                             $event->addRecipient($ea['gibbonPersonID']);
@@ -112,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                     // Add direct notifications to form group tutors
                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
+                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
                             $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
                             if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {

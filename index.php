@@ -129,8 +129,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
             // Can we self register?
             if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) {
                 // Check to see if student is on site
-                $studentSelfRegistrationIPAddresses = getSettingByScope(
-                    $connection2,
+                $studentSelfRegistrationIPAddresses = $settingGateway->getSettingByScope(
                     'Attendance',
                     'studentSelfRegistrationIPAddresses'
                 );
@@ -174,8 +173,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') {
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { // Can we update data?
-                $redirectByRoleCategory = getSettingByScope(
-                    $connection2,
+                $redirectByRoleCategory = $settingGateway->getSettingByScope(
                     'Data Updater',
                     'redirectByRoleCategory'
                 );

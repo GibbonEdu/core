@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             if ($date == '') {
                 $date = date('Y-m-d');
             }
-            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = $_GET['class'] ?? [];
@@ -231,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							//Tab content
 							//UNIT OVERVIEW
 							echo "<div id='tabs1'>";
-                            $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
+                            $shareUnitOutline = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'shareUnitOutline');
                             echo '<h2>';
                             echo __('Description');
                             echo '</h2>';

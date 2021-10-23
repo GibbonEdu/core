@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\UserGateway;
@@ -33,8 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
-    $noteCreationNotification = getSettingByScope($connection2, 'Students', 'noteCreationNotification');
+    $settingGateway = $container->get(SettingGateway::class);
+    $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
+    $noteCreationNotification = $settingGateway->getSettingByScope('Students', 'noteCreationNotification');
 
     if ($enableStudentNotes != 'Y') {
         $URL .= '&return=error0';

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,8 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
     $form = Form::create('displaySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/displaySettingsProcess.php');
     
     $form->addHiddenValue('address', $session->get('address'));
-    
-    $setting = getSettingByScope($connection2, 'System', 'organisationLogo', true);
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $setting = $settingGateway->getSettingByScope('System', 'organisationLogo', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'].'File', __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
@@ -41,20 +43,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettin
 
     $theme = getThemeManifest($gibbon->session->get('gibbonThemeName'), $guid);
     if (!empty($theme['themeColours'])) {
-        $setting = getSettingByScope($connection2, 'System', 'themeColour', true);
+        $setting = $settingGateway->getSettingByScope('System', 'themeColour', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelect($setting['name'])->fromArray($theme['themeColours'])->required()->selected($setting['value']);
     }
 
-    $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
+    $setting = $settingGateway->getSettingByScope('System', 'organisationBackground', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addFileUpload($setting['name'].'File')
             ->accepts('.jpg,.jpeg,.gif,.png')
             ->setAttachment('organisationBackground', $gibbon->session->get('absoluteURL'), $setting['value']);
 
-    $setting = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mainMenuCategoryOrder', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();

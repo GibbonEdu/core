@@ -27,6 +27,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\System\SettingGateway;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -44,12 +45,14 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
     protected $db;
     protected $session;
     protected $category;
+    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->session = $session;
         $this->category = getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $this->db->getConnection());
+        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -100,9 +103,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         // Add Google Login Button
         if (!$this->session->exists('username') && !$this->session->exists('email')) {
-            $googleSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoGoogle'), true);
-            $microsoftSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoMicrosoft'), true);
-            $genericSSOSettings = json_decode(getSettingByScope($connection2, 'System Admin', 'ssoOther'), true);
+            $googleSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
+            $microsoftSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
+            $genericSSOSettings = json_decode($this->settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
 
             if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
                 echo '<div class="column-no-break">';
@@ -174,7 +177,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 if (!$this->session->has('gibbonSchoolYearID')) setCurrentSchoolYear($guid, $connection2);
                 unset($_GET['return']);
 
-                $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+                $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
 
                 $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
@@ -271,7 +274,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         if ($this->session->get('address') == '') {
             if ($this->session->exists('messageWallArray')) {
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-                    $enableHomeScreenWidget = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
+                    $enableHomeScreenWidget = $this->settingGateway->getSettingByScope('Messenger', 'enableHomeScreenWidget');
                     if ($enableHomeScreenWidget == 'Y') {
                         $unpinnedMessages = array_reduce($this->session->get('messageWallArray'), function ($group, $item) {
                             if ($item['messageWallPin'] == 'N') {
@@ -416,7 +419,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
             if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
 
-                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
                 echo '<div class="column-no-break">';
                 echo '<h2>';
@@ -548,7 +551,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     }
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
-                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                        $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
                         echo "<td style='text-align: center'>";
                         echo "<a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('gibbonCourseClassIDFilter', $row['gibbonCourseClassID'])."'  title='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."'><img style='margin-top: 3px' alt='".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)])."' src='./themes/".$this->session->get('gibbonThemeName')."/img/homework.png'/></a> ";

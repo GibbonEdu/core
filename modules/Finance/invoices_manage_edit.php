@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Finance\Forms\FinanceFormFactory;
 use Gibbon\Services\Format;
@@ -261,6 +262,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
             $form->addRow()->addContent(getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID));
 
+            $settingGateway = $container->get(SettingGateway::class);
+
             // EMAIL RECEIPTS
             if ($values['status'] == 'Issued' || $values['status'] == 'Paid - Partial') {
                 $form->toggleVisibilityByClass('emailReceipts')->onSelect('status')->when(array('Paid', 'Paid - Partial', 'Paid - Complete'));
@@ -271,7 +274,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 $form->toggleVisibilityByClass('emailReceiptsTable')->onRadio('emailReceipt')->when(array('Y'));
 
-                $email = getSettingByScope($connection2, 'Finance', 'email');
+                $email = $settingGateway->getSettingByScope('Finance', 'email');
                 $form->addHiddenValue('email', $email);
                 if (empty($email)) {
                     $row = $form->addRow()->addClass('emailReceipts emailReceiptsTable');
@@ -293,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 $form->toggleVisibilityByClass('emailRemindersTable')->onRadio('emailReminder')->when(array('Y'));
 
-                $email = getSettingByScope($connection2, 'Finance', 'email');
+                $email = $settingGateway->getSettingByScope('Finance', 'email');
                 $form->addHiddenValue('email', $email);
                 if (empty($email)) {
                     $row = $form->addRow()->addClass('emailReminders emailRemindersTable');

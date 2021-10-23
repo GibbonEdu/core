@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -34,11 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Set returnTo point for upcoming pages
     $page->breadcrumbs->add(__('Manage Activities'));
 
+    $settingGateway = $container->get(SettingGateway::class);
+
     $search = $_GET['search'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
-    $enrolmentType = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+    $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
+    $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
     $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
     $yearGroups = getYearGroups($connection2);
 
@@ -58,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo __('Search & Filter');
     echo '</h2>';
 
-    $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
+    $paymentOn = $settingGateway->getSettingByScope('Activities', 'payment') != 'None' and $settingGateway->getSettingByScope('Activities', 'payment') != 'Single';
 
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));

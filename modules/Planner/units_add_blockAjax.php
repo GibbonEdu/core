@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -60,7 +62,7 @@ if ($gibbonUnitBlockID != '') {
     $title = '';
     $type = '';
     $length = '';
-    $contents = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate');
+    $contents = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
     $teachersNotes = '';
 }
 

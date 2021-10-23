@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     //Turn $date into UNIX timestamp and extract day of week
     $dayOfWeek = date('l', Format::timestamp($date));
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
 
     $activityGateway = $container->get(ActivityReportGateway::class);
 

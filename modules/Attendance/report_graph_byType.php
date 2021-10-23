@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\UI\Chart\Chart;
 use Gibbon\Services\Format;
@@ -34,9 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $page->breadcrumbs->add(__('Attendance Trends'));
     $page->scripts->add('chart');
 
+    $settingGateway = $container->get(SettingGateway::class);
+
     $dateEnd = (isset($_POST['dateEnd']))? Format::dateConvert($_POST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_POST['dateStart']))? Format::dateConvert($_POST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
-    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
 
     // Correct inverse date ranges rather than generating an error
     if ($dateStart > $dateEnd) {
@@ -61,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     if (in_array('all', $formGroups)) $formGroups = array('all');
 
     require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
         $types = $_POST['types'];

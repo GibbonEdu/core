@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -45,8 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         $gibbonDepartmentIDs = (isset($_POST['gibbonDepartmentIDs']))? $_POST['gibbonDepartmentIDs'] : null;
         $dataType = (isset($_POST['dataType']))? $_POST['dataType'] : null;
 
-        $attainmentAlt = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-        $effortAlt = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+        $settingGateway = $container->get(SettingGateway::class);
+        $attainmentAlt = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+        $effortAlt = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
         $dataTypes = array(
             'attainment' => (!empty($attainmentAlt))? $attainmentAlt : __('Attainment'),
             'effort' => (!empty($effortAlt))? $effortAlt : __('Effort'),

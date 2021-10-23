@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -210,10 +211,10 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
  */
 function tinymceStyleStripTags($string, $connection2)
 {
-    $return = '';
+    global $container;
 
     $comment = html_entity_decode($string);
-    $allowableTags = getSettingByScope($connection2, 'System', 'allowableHTML');
+    $allowableTags = $container->get(SettingGateway::class)->getSettingByScope('System', 'allowableHTML');
     $allowableTags = preg_replace("/\[([^\[\]]|(?0))*]/", '', $allowableTags);
     $allowableTagTokens = explode(',', $allowableTags);
     $allowableTags = '';
@@ -304,12 +305,16 @@ function is_leap_year($year)
 
 function doesPasswordMatchPolicy($connection2, $passwordNew)
 {
+    global $container;
+
     $output = true;
 
-    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
+    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
+    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
+    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
 
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
         $output = false;
@@ -343,12 +348,16 @@ function doesPasswordMatchPolicy($connection2, $passwordNew)
 
 function getPasswordPolicy($guid, $connection2)
 {
+    global $container;
+
     $output = false;
 
-    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
+    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
+    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
+    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
 
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
         $output .= __('An error occurred.');
@@ -921,7 +930,7 @@ function getUserPhoto($guid, $path, $size)
 
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
-    global $session;
+    global $session, $container;
 
     $output = '';
     $alerts = [];
@@ -956,25 +965,26 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
 
-            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
-            $sqlAlert = "SELECT *
-            FROM gibbonMarkbookEntry
-                JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-                JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-            WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
-                AND (attainmentConcern='Y' OR effortConcern='Y')
-                AND complete='Y'
-                AND gibbonSchoolYearID=:gibbonSchoolYearID
-                AND completeDate<=:today
-                AND completeDate>:date
-                ";
-            $resultAlert = $connection2->prepare($sqlAlert);
-            $resultAlert->execute($dataAlert);
+        $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+        $sqlAlert = "SELECT *
+        FROM gibbonMarkbookEntry
+            JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+            JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+        WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
+            AND (attainmentConcern='Y' OR effortConcern='Y')
+            AND complete='Y'
+            AND gibbonSchoolYearID=:gibbonSchoolYearID
+            AND completeDate<=:today
+            AND completeDate>:date
+            ";
+        $resultAlert = $connection2->prepare($sqlAlert);
+        $resultAlert->execute($dataAlert);
 
-        $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
-        $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
-        $academicAlertHighThreshold = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold');
+        $settingGateway = $container->get(SettingGateway::class);
+        $academicAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertLowThreshold');
+        $academicAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertMediumThreshold');
+        $academicAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertHighThreshold');
 
         if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
@@ -1013,9 +1023,9 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
 
-        $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
-        $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
-        $behaviourAlertHighThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold');
+        $behaviourAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertLowThreshold');
+        $behaviourAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertMediumThreshold');
+        $behaviourAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertHighThreshold');
 
         if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
@@ -1056,7 +1066,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         // Privacy
-        $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
             if ($alert = getAlert($guid, $connection2, 001)) {
                 $alerts[] = [
@@ -1199,6 +1209,9 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
 }
 
 //Gets the desired setting, specified by name and scope.
+/**
+ * @deprecated use Gibbon\Domain\System\SettingGateway::getSettingByScope instead
+ */
 function getSettingByScope($connection2, $scope, $name, $returnRow = false )
 {
 

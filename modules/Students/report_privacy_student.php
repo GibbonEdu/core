@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Students\StudentReportGateway;
@@ -36,9 +37,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
         $page->breadcrumbs->add(__('Privacy Choices by Student'));
     }
 
-    
-    $privacy = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyOptions = array_map('trim', explode(',', getSettingByScope($connection2, 'User Admin', 'privacyOptions')));
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $privacy = $settingGateway->getSettingByScope('User Admin', 'privacy');
+    $privacyOptions = array_map('trim', explode(',', $settingGateway->getSettingByScope('User Admin', 'privacyOptions')));
 
     if (count($privacyOptions) < 1 or $privacy == 'N') {
         $page->addMessage(__('There are no privacy options in place.'));

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Contracts\Comms\Mailer;
@@ -43,8 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         header("Location: {$URL}");
     }
 
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    $settingGateway = $container->get(SettingGateway::class);
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
     $applicationProcessFeeText = $_POST['applicationProcessFeeText'] ?? '';
     if (empty($applicationProcessFee) || empty($applicationProcessFeeText)) {
         $URL .= '&return=error1';

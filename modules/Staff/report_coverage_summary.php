@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_coverage_summ
     $substituteType = $_GET['substituteType'] ?? '';
     $month = $_GET['month'] ?? '';
 
-    $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
+    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
 
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);

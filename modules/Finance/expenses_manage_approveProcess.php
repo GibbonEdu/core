@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -67,9 +69,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                     header("Location: {$URL}");
                 } else {
                     //Get and check settings
-                    $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-                    $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-                    $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+                    $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+                    $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                     if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                         $URL .= '&return=error0';
                         header("Location: {$URL}");
@@ -307,7 +310,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                                                 $notificationExtra = '';
                                                 //Notify purchasing officer, if a school purchase, and officer set
-                                                $purchasingOfficer = getSettingByScope($connection2, 'Finance', 'purchasingOfficer');
+                                                $purchasingOfficer = $settingGateway->getSettingByScope('Finance', 'purchasingOfficer');
                                                 if ($purchasingOfficer != false and $purchasingOfficer != '' and $row['purchaseBy'] == 'School') {
                                                     $notificationText = sprintf(__('A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row['title'], $row['budget']);
                                                     setNotification($connection2, $guid, $purchasingOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);

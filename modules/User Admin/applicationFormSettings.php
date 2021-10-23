@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -34,44 +35,46 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $row = $form->addRow()->addHeading(__('General Options'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'introduction', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('Application Form', 'introduction', true);
     $col = $form->addRow()->addColumn();
         $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'postscript', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'postscript', true);
     $col = $form->addRow()->addColumn();
         $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'agreement', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'agreement', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'publicApplications', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'publicApplications', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'milestones', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'milestones', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'howDidYouHear', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'enableLimitedYearsOfEntry', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'enableLimitedYearsOfEntry', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('yearsOfEntry')->onSelect('enableLimitedYearsOfEntry')->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'availableYearsOfEntry', true);
     $row = $form->addRow()->addClass('yearsOfEntry');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $years = $row->addSelectSchoolYear($setting['name'], 'Active')
@@ -86,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $row = $form->addRow()->addHeading(__('Application Fee'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'applicationFee', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'applicationFee', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']));
@@ -94,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
             ->setValue($setting['value'])
             ->required();
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']));
@@ -102,135 +105,135 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
             ->setValue($setting['value'])
             ->required();
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'applicationProcessFeeText', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFeeText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('References'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeRequired', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('referee')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink', true);
     $row = $form->addRow()->addClass('referee');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Required Documents Options'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'requiredDocuments', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'internalDocuments', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'internalDocuments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Language Learning Options'))->append(__('Set values for applicants to specify which language they wish to learn.'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('languageOptions')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'languageOptionsBlurb', true);
     $row = $form->addRow()->addClass('languageOptions');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'languageOptionsLanguageList', true);
     $row = $form->addRow()->addClass('languageOptions');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Sections'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'senOptionsActive', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('senOptions')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Students', 'applicationFormSENText', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'applicationFormSENText', true);
     $row = $form->addRow()->addClass('senOptions');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('scholarshipOptions')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'scholarships', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'scholarships', true);
     $row = $form->addRow()->addClass('scholarshipOptions');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Acceptance Options'));
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'usernameFormat', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'usernameFormat', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
 		$row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'notificationStudentMessage', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'notificationStudentMessage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'notificationStudentDefault', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'notificationParentsMessage', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'notificationParentsMessage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'notificationParentsDefault', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'notificationParentsDefault', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'studentDefaultEmail', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'studentDefaultEmail', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addEmail($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'studentDefaultWebsite', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'studentDefaultWebsite', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Application Form', 'autoHouseAssign', true);
+    $setting = $settingGateway->getSettingByScope('Application Form', 'autoHouseAssign', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();

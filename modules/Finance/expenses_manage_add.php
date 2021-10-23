@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -27,7 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $allowExpenseAdd = $settingGateway->getSettingByScope('Finance', 'allowExpenseAdd');
     if ($allowExpenseAdd != 'Y') {
         echo "<div class='error'>";
         echo __('You do not have access to this action.');
@@ -100,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
 				$row->addLabel('status', __('Status'));
 				$row->addSelect('status')->fromArray($statuses)->required()->placeholder();
 
-			$expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
+			$expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
 			$row = $form->addRow();
 				$col = $row->addColumn();
 				$col->addLabel('body', __('Description'));

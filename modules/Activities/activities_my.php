@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Domain\System\SettingGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php') == false) {
@@ -43,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
         echo '<th>';
         echo __('Activity');
         echo '</th>';
-        $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
+        $options = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'activityTypes');
         if ($options != '') {
             echo '<th>';
             echo __('Type');

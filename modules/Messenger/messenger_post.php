@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
@@ -140,8 +141,9 @@ else {
 
         //Delivery by SMS
 		if ($deliverBySMS) {
-            $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
-			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
+            $settingGateway = $container->get(SettingGateway::class);
+            $smsGateway = $settingGateway->getSettingByScope('Messenger', 'smsGateway');
+			$smsUsername = $settingGateway->getSettingByScope('Messenger', 'smsUsername');
 
 			if (empty($smsGateway) || empty($smsUsername)) {
 				$row = $form->addRow()->addClass('sms');

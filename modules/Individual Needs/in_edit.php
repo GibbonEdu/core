@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -232,9 +233,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Individual Needs', ['table' => $table, 'readonly' => true], $archivedIEP['fields']);
             } else {
                 if (empty($IEP)) { // New record, get templates if they exist
-                    $IEP['targets'] = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate');
-                    $IEP['strategies'] = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate');
-                    $IEP['notes'] = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate');
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $IEP['targets'] = $settingGateway->getSettingByScope('Individual Needs', 'targetsTemplate');
+                    $IEP['strategies'] = $settingGateway->getSettingByScope('Individual Needs', 'teachingStrategiesTemplate');
+                    $IEP['notes'] = $settingGateway->getSettingByScope('Individual Needs', 'notesReviewTemplate');
                 }
 
                 // CURRENT IEP

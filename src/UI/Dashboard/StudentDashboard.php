@@ -21,6 +21,7 @@ namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
@@ -35,11 +36,13 @@ class StudentDashboard implements OutputableInterface
 {
     protected $db;
     protected $session;
+    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->session = $session;
+        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -70,7 +73,7 @@ class StudentDashboard implements OutputableInterface
         $gibbonPersonID = $this->session->get('gibbonPersonID');
         $session = $this->session;
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNameSingular = $this->settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
 
         $return = false;
 
@@ -258,7 +261,7 @@ class StudentDashboard implements OutputableInterface
             $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
-            $studentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab');
+            $studentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'studentDashboardDefaultTab');
             $studentDashboardDefaultTabCount = null;
 
             $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";

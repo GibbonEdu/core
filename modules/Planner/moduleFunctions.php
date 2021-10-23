@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -28,7 +29,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 //Outcomes is the result set of a mysql query of all outcomes from the unit the class belongs to
 function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $type = '', $length = '', $contents = '', $complete = 'N', $gibbonUnitBlockID = '', $gibbonUnitClassBlockID = '', $teachersNotes = '', $outerBlock = true)
 {
-    global $session;
+    global $session, $container;
 
     if ($outerBlock) {
         echo "<div id='blockOuter$i' class='blockOuter'>";
@@ -149,7 +150,7 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 				<td colspan=2 style='vertical-align: top'>
 					<?php
                     if ($mode == 'masterAdd') {
-                        $contents = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate');
+                        $contents = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
                     }
     				echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Block Contents').'</div>';
                     //Block Contents
@@ -264,7 +265,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryID, $parent, $level, 
 
 function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp = '', $gibbonCourseClassID = '')
 {
-    global $pdo, $session;
+    global $pdo, $session, $container;
 
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -338,7 +339,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 
 
         if ($_GET['q'] != '/modules/Planner/planner_deadlines.php') {
-            $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+            $homeworkNamePlural = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'homeworkNamePlural');
 
             //Show upcoming deadlines
             $output .= '<div class="column-no-break">';

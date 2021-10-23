@@ -17,22 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 //$role can be teacher, student or parent. If no role is specified, the default is teacher.
 function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role = 'teacher')
 {
-    global $session;
+    global $session, $container;
 
     $output = '';
 
+    $settingGateway = $container->get(SettingGateway::class);
     //Get alternative header names
-    $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-    $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-    $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-    $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
-    $alert = getAlert($guid, $connection2, 002);
+    $attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+    $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
     //Get school years in reverse order
     try {

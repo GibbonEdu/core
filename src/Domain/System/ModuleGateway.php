@@ -84,7 +84,9 @@ class ModuleGateway extends QueryableGateway
 
     public function selectModulesByRole($gibbonRoleID)
     {
-        $mainMenuCategoryOrder = getSettingByScope($this->db()->getConnection(), 'System', 'mainMenuCategoryOrder');
+        global $container;
+
+        $mainMenuCategoryOrder = $container->get(SettingGateway::class)->getSettingByScope('System', 'mainMenuCategoryOrder');
 
         $data = array('gibbonRoleID' => $gibbonRoleID, 'menuOrder' => $mainMenuCategoryOrder);
         $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain

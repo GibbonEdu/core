@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -111,13 +112,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                     $row->addLabel('name', __('Name'));
                     $row->addTextField('name')->required()->maxLength(60);
 
-                $categories = getSettingByScope($connection2, 'Resources', 'categories');
+                $settingGateway = $container->get(SettingGateway::class);
+
+                $categories = $settingGateway->getSettingByScope('Resources', 'categories');
                 $row = $form->addRow();
                     $row->addLabel('category', __('Category'));
                     $row->addSelect('category')->fromString($categories)->required()->placeholder();
 
-                $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
-                $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+                $purposesGeneral = $settingGateway->getSettingByScope('Resources', 'purposesGeneral');
+                $purposesRestricted = $settingGateway->getSettingByScope('Resources', 'purposesRestricted');
                 $row = $form->addRow();
                     $row->addLabel('purpose', __('Purpose'));
                     $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder();
