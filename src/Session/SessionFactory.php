@@ -122,29 +122,4 @@ class SessionFactory
             $session->set('i18n', $row);
         }
     }
-
-    /**
-     * Populates the session with data about a specific logged in user, called after 
-     * logging in successfully.
-     *
-     * @param Session $session
-     * @param Connection $db
-     * @param string $username
-     * @param string $userData
-     * @return void
-     */
-    public static function populateUser(Session $session, Connection $db, $username, $userData)
-    {
-        //Deal with themes
-        $session->set('gibbonThemeIDPersonal', null);
-        if (!empty($userData['gibbonThemeIDPersonal'])) {
-            $data = array( 'gibbonThemeID' => $userData['gibbonThemeIDPersonal']);
-            $sql = "SELECT gibbonThemeID FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
-            $result = $db->select($sql, $data);
-
-            if ($result->rowCount() > 0) {
-                $session->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
-            }
-        }
-    }
 }
