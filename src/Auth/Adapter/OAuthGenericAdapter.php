@@ -60,6 +60,9 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
      */
     public function login(array $input)
     {
+        $session = $this->container->get(Session::class);
+        $session->forget('oAuthMethod');
+
         if (isset($_GET['error'])) {
             throw new Exception\OAuthLoginError($_GET['error_description']);
         }
@@ -77,7 +80,6 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
             throw new Exception\OAuthLoginError('Missing access token');
         }
 
-        $session = $this->container->get(Session::class);
         $session->set('genericAPIAccessToken', $accessToken);
 
         // Check OAuth2 state with saved state, to mitigate CSRF attack
@@ -86,7 +88,6 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
         }
 
         $session->forget('oAuthStateGeneric');
-        $session->forget('oAuthMethod');
 
         // Use the token to retrieve user info from the client
         $resourceOwner = $oauthProvider->getResourceOwner($accessToken);
@@ -100,6 +101,7 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
         }
 
         // Get basic user data needed to verify login access
+        $this->userGateway = $this->getContainer()->get(UserGateway::class);
         $userData = $this->getUserData(['username' => $email]);
 
         if (empty($userData)) {
@@ -118,7 +120,7 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
         // Update the refresh token for this user, if we received one
         if (!empty($refreshToken)) {
             $session->set('genericAPIRefreshToken', $refreshToken);
-            $this->getContainer()->get(UserGateway::class)->update($userData['gibbonPersonID'], [
+            $this->userGateway->update($userData['gibbonPersonID'], [
                 'genericAPIRefreshToken' => $refreshToken,
             ]);
         }

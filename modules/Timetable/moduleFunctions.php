@@ -176,12 +176,12 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    if (isset($_SESSION[$guid]['microsoftAPIAccessToken'])) {
+    if ($session->has('microsoftAPIAccessToken')) {
         $eventsSchool = array();
 
         // Create a Graph client
         $graph = new Graph();
-        $graph->setAccessToken($_SESSION[$guid]['microsoftAPIAccessToken']);
+        $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
         $startOfWeek = new \DateTimeImmutable('sunday -1 week');
         $endOfWeek = new \DateTimeImmutable('sunday');

@@ -121,7 +121,7 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
      */
     protected function getUserData(array $input)
     {
-        $userResult = $this->getContainer()->get(UserGateway::class)->selectLoginDetailsByUsername($input['username'] ?? '');
+        $userResult = $this->userGateway->selectLoginDetailsByUsername($input['username'] ?? '');
 
         if ($userResult->rowCount() < 1) {
             throw new AuraException\UsernameNotFound;

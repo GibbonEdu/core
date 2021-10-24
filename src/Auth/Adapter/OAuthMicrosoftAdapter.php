@@ -60,6 +60,9 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
      */
     public function login(array $input)
     {
+        $session = $this->container->get(Session::class);
+        $session->forget('oAuthMethod');
+
         if (isset($_GET['error'])) {
             throw new Exception\OAuthLoginError($_GET['error_description']);
         }
@@ -76,8 +79,7 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
         if (empty($accessToken)) {
             throw new Exception\OAuthLoginError('Missing access token');
         }
-
-        $session = $this->container->get(Session::class);
+        
         $session->set('microsoftAPIAccessToken', $accessToken);
 
         // Check OAuth2 state with saved state, to mitigate CSRF attack
@@ -86,7 +88,6 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
         }
 
         $session->forget('oAuthStateMicrosoft');
-        $session->forget('oAuthMethod');
 
         // Use the token to retrieve user info from the client
         $graph = new Graph();
@@ -102,6 +103,7 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
         }
 
         // Get basic user data needed to verify login access
+        $this->userGateway = $this->getContainer()->get(UserGateway::class);
         $userData = $this->getUserData(['username' => $user->getUserPrincipalName()]);
 
         if (empty($userData)) {
@@ -120,14 +122,9 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
         // Update the refresh token for this user, if we received one
         if (!empty($refreshToken)) {
             $session->set('microsoftAPIRefreshToken', $refreshToken);
-            $this->getContainer()->get(UserGateway::class)->update($userData['gibbonPersonID'], [
+            $this->userGateway->update($userData['gibbonPersonID'], [
                 'microsoftAPIRefreshToken' => $refreshToken,
             ]);
-        } elseif (empty($userData['microsoftAPIRefreshToken'])) {
-            // No refresh token and none saved in gibbonPerson: force a re-authorization of this account
-            // $authUrl = $oauthProvider->getAuthorizationUrl();
-            // header('Location: ' . $authUrl);
-            // exit;
         }
 
         return parent::verifyLogin($userData);

@@ -65,6 +65,9 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
      */
     public function login(array $input)
     {
+        $session = $this->container->get(Session::class);
+        $session->forget('oAuthMethod');
+
         if (isset($_GET['error'])) {
             throw new Exception\OAuthLoginError($_GET['error']);
         }
@@ -80,9 +83,6 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             throw new Exception\OAuthLoginError('Missing access token');
         }
 
-        $session = $this->container->get(Session::class);
-
-        $session->forget('oAuthMethod');
         $session->set('googleAPIAccessToken', $accessToken);
         $this->client->setAccessToken($accessToken);
 
@@ -96,6 +96,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
         }
 
         // Get basic user data needed to verify login access
+        $this->userGateway = $this->getContainer()->get(UserGateway::class);
         $userData = $this->getUserData(['username' => $user->email]);
 
         if (empty($userData)) {
@@ -114,15 +115,19 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
         // Update the refresh token for this user, if we received one
         if (!empty($accessToken['refresh_token'])) {
             $session->set('googleAPIRefreshToken', $accessToken['refresh_token']);
-            $this->getContainer()->get(UserGateway::class)->update($userData['gibbonPersonID'], [
+            $this->userGateway->update($userData['gibbonPersonID'], [
                 'googleAPIRefreshToken' => $accessToken['refresh_token'],
             ]);
-        } elseif (empty($userData['googleAPIRefreshToken'])) {
+        } else {
+            $userToken = $this->userGateway->getByID($userData['gibbonPersonID'], ['googleAPIRefreshToken']);
+            
             // No refresh token and none saved in gibbonPerson: force a re-authorization of this account
-            $this->client->setApprovalPrompt('force');
-            $authUrl = $this->client->createAuthUrl();
-            header('Location: ' . $authUrl);
-            exit;
+            if (empty($userToken['googleAPIRefreshToken'])) {
+                $this->client->setApprovalPrompt('force');
+                $authUrl = $this->client->createAuthUrl();
+                header('Location: ' . $authUrl);
+                exit;
+            }
         }
 
         return parent::verifyLogin($userData);
