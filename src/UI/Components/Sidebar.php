@@ -19,16 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Components;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Forms\Form;
-use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
+use Gibbon\View\View;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use League\Container\ContainerAwareInterface;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Database\Connection;
 use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 
 /**
  * Sidebar View Composer
@@ -59,36 +60,36 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
         ob_start();
 
-        if (isset($_GET['loginReturn'])) {
-            $loginReturn = $_GET['loginReturn'];
-        } else {
-            $loginReturn = '';
-        }
-        $loginReturnMessage = '';
-        if (!($loginReturn == '')) {
-            if ($loginReturn == 'fail0b') {
-                $loginReturnMessage = __('Username or password not set.');
-            } elseif ($loginReturn == 'fail1') {
-                $loginReturnMessage = __('Incorrect username and password.');
-            } elseif ($loginReturn == 'fail2') {
-                $loginReturnMessage = __('You do not have sufficient privileges to login.');
-            } elseif ($loginReturn == 'fail5') {
-                $loginReturnMessage = __('Your request failed due to a database error.');
-            } elseif ($loginReturn == 'fail6') {
-                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
-            } elseif ($loginReturn == 'fail7') {
-                $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
-            } elseif ($loginReturn == 'fail8') {
-                $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
-            } elseif ($loginReturn == 'fail9') {
-                $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
-            } elseif ($loginReturn == 'fail10') {
-                $loginReturnMessage = __('Cannot login during maintenance mode.');
-            }
+        $loginReturn = $_GET['loginReturn'] ?? '';
+        
 
-            echo "<div class='error'>";
-            echo $loginReturnMessage;
-            echo '</div>';
+        if (!empty($loginReturn)) {
+            $loginReturnMessage = '';
+
+            switch ($loginReturn) {
+                case 'fail0': $loginReturnMessage = __('Username or password not set.');
+                    break;
+                case 'fail1': $loginReturnMessage = __('Incorrect username and password.');
+                    break;
+                case 'fail2': $loginReturnMessage = __('You do not have sufficient privileges to login.');
+                    break;
+                case 'fail3': $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
+                    break;
+                case 'fail4': $loginReturnMessage = __('Your primary role does not support the ability to login.');
+                    break;
+                case 'fail5': $loginReturnMessage = __('Your request failed due to a database error.');
+                    break;
+                case 'fail6': $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
+                    break;
+                case 'fail7': $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+                    break;
+                case 'fail8': $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+                    break;
+                case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
+                    break;
+               
+            }
+            echo Format::alert($loginReturnMessage, 'error');
         }
 
         if ($this->session->get('sidebarExtra') != '' and $this->session->get('sidebarExtraPosition') != 'bottom') {
@@ -105,49 +106,51 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
             if ($googleSettings['enabled'] == 'Y' || $microsoftSettings['enabled'] == 'Y' || $genericSSOSettings['enabled'] == 'Y') {
                 echo '<div class="column-no-break">';
-                echo '<h2>';
-                echo __('Single Sign-on');
-                echo '</h2>';
-
-                ?>
-                <script>
-                    $(function(){
-                        <?php if ($googleSettings['enabled'] == 'Y') echo "$('#googleloader').load('lib/google/index.php');"; ?>
-                        <?php if ($microsoftSettings['enabled'] == 'Y') echo "$('#microsoftloader').load('lib/google/microsoft.php');"; ?>
-                        <?php if ($genericSSOSettings['enabled'] == 'Y') echo "$('#genericloader').load('lib/google/other.php');"; ?>
-                    });
-                </script>
-                <?php
-                
-                if ($googleSettings['enabled'] == 'Y') {
-                    echo ' <div id="googleloader" style="min-height:66px"></div>';
-                }
-                if ($microsoftSettings['enabled'] == 'Y') {
-                    echo '<div id="microsoftloader" style="min-height:66px"></div>';
-                }
-                if ($genericSSOSettings['enabled'] == 'Y') {
-                    echo '<div id="genericloader" style="min-height:66px"></div>';
-                }
 
                 $form = Form::create('loginFormOAuth2', '#');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->setTitle(__('Single Sign-on'));
                 $form->setClass('blank fullWidth loginTableOAuth2');
 
-                $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
+                $view = $this->getContainer()->get(View::class);
+
+                if ($googleSettings['enabled'] == 'Y') {
+                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'google'),
+                        'service'    => 'google',
+                        'clientName' => __('Google'),
+                    ]));
+                }
+                if ($microsoftSettings['enabled'] == 'Y') {
+                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'microsoft'),
+                        'service'    => 'microsoft',
+                        'clientName' => __('Microsoft'),
+                    ]));
+                }
+                if ($genericSSOSettings['enabled'] == 'Y') {
+                    $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'oauth'),
+                        'service'    => 'other',
+                        'clientName' => $genericSSOSettings['clientName'],
+                    ]));
+                }
+
+                $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:2px 15px 0 12px;" title="%2$s">';
 
                 $row = $form->addRow()->setClass('loginOptionsOAuth2');
                     $row->addContent(sprintf($loginIcon, 'planner', __('School Year')))->setClass('flex-none');
                     $row->addSelectSchoolYear('gibbonSchoolYearIDOAuth2')
                         ->setClass('w-full p-1')
                         ->placeholder(null)
-                        ->selected($_SESSION[$guid]['gibbonSchoolYearID'] ?? '');
+                        ->selected($this->session->get('gibbonSchoolYearID'));
 
                 $row = $form->addRow()->setClass('loginOptionsOAuth2');
                     $row->addContent(sprintf($loginIcon, 'language', __('Language')))->setClass('flex-none');
                     $row->addSelectI18n('gibboni18nIDOAuth2')
                         ->setClass('w-full p-1')
                         ->placeholder(null)
-                        ->selected($_SESSION[$guid]['i18n']['gibboni18nID'] ?? '');
+                        ->selected($this->session->get('i18n')['gibboni18nID'] ?? '');
 
                 $row = $form->addRow();
                     $row->addContent('<a class="showOAuth2Options" onclick="false" href="#">'.__('Options').'</a>')
@@ -156,29 +159,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 echo $form->getOutput();
 
-                ?>
-
-                <script>
-                $(".loginOptionsOAuth2").hide();
-                $(".showOAuth2Options").click(function(){
-                    if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('blank').addClass('noIntBorder');
-                    $(".loginOptionsOAuth2").fadeToggle(1000, function() {
-                        if ($('.loginOptionsOAuth2').is(':hidden')) $(".loginTableOAuth2").removeClass('noIntBorder').addClass('blank');
-                    });
-                });
-
-                function addOAuth2LoginParams(element)
-                {
-                    $(element).attr('href', function() {
-                        if ($('#gibbonSchoolYearIDOAuth2').is(':visible')) {
-                            var googleSchoolYear = $('#gibbonSchoolYearIDOAuth2').val();
-                            var googleLanguage = $('#gibboni18nIDOAuth2').val();
-                            return this.href.replace('&state=', '&state='+googleSchoolYear+':'+googleLanguage+':');
-                        }
-                    });
-                }
-                </script>
-                <?php
+                echo $view->fetchFromTemplate('ui/ssoButton.twig.html');
 
                 echo '</div>';
 
@@ -194,7 +175,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
 
-                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/loginNew.php?'.http_build_query($_GET) );
+                $form = Form::create('loginForm', $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET) );
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
