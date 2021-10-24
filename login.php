@@ -59,7 +59,7 @@ $authFactory = $container->get(AuthFactory::class);
 $auth = $authFactory->newInstance();
 
 // Determine the authentication adapter to use
-$method = $_GET['method'] ?? $session->get('oAuthMethod') ?? '';
+$method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
 switch (strtolower($method)) {
     case 'google':
         $authAdapter = $container->get(OAuthGoogleAdapter::class);

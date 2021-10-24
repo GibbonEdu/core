@@ -182,6 +182,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                 $form->setAutocomplete(false);
                 $form->setClass('noIntBorder fullWidth');
                 $form->addHiddenValue('address', $this->session->get('address'));
+                $form->addHiddenValue('method', 'default');
 
                 $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
