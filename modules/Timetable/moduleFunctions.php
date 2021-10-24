@@ -176,7 +176,10 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    if ($session->has('microsoftAPIAccessToken')) {
+    $ssoMicrosoft = getSettingByScope($connection2, 'System Admin', 'ssoMicrosoft');
+    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
+
+    if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
         $eventsSchool = array();
 
         // Create a Graph client
@@ -226,9 +229,10 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         return $eventsSchool;
     }
 
-    $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
+    $ssoGoogle = getSettingByScope($connection2, 'System Admin', 'ssoGoogle');
+    $ssoGoogle = json_decode($ssoGoogle, true);
 
-    if ($googleOAuth == 'Y' and $session->has('googleAPIAccessToken')) {
+    if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken')) {
         $eventsSchool = array();
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
