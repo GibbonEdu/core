@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\User\UserGateway;
 
 include './gibbon.php';
 
@@ -58,8 +59,9 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
             if ($passwordNew != $passwordConfirm) {
                 header("Location: {$URL->withReturn('error4')}");
             } else {
+                $user = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'), ['passwordStrong', 'passwordStrongSalt']);
                 //Check current password
-                if (hash('sha256', $session->get('passwordStrongSalt').$password) != $session->get('passwordStrong')) {
+                if (hash('sha256', $user['passwordStrongSalt'].$password) != $user['passwordStrong']) {
                     header("Location: {$URL->withReturn('error3')}");
                 } else {
                     //If answer insert fails...
