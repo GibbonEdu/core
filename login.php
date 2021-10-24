@@ -77,6 +77,7 @@ switch (strtolower($method)) {
 // Handle OAuth2 redirect when obtaining authorization code
 if ($authAdapter instanceof OAuthAdapterInterface && !$authAdapter->hasOAuthCode()) {
     $session->set('oAuthMethod', $method);
+    $session->set('oAuthOptions', $_GET['options'] ?? '');
     header("Location: {$authAdapter->getAuthorizationUrl()}");
     exit;
 }

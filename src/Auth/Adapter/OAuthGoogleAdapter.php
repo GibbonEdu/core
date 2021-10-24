@@ -104,10 +104,11 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
         }
 
         // If available, load school year and language from state passed back from OAuth redirect
-        if (isset($_GET['state']) && stripos($_GET['state'], ':') !== false) {
-            list($gibbonSchoolYearID, $gibboni18nID, $state) = explode(':', $_GET['state']);
+        if ($session->has('oAuthOptions')) {
+            list($gibbonSchoolYearID, $gibboni18nID) = array_pad(explode(':', $session->get('oAuthOptions')), 2, '');
             $_POST['gibbonSchoolYearID'] = $gibbonSchoolYearID;
             $_POST['gibboni18nID'] = $gibboni18nID;
+            $session->forget('oAuthOptions');
         }
 
         // Update the refresh token for this user, if we received one

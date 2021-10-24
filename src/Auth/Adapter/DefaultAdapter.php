@@ -23,6 +23,7 @@ use Aura\Auth\Exception as AuraException;
 use Aura\Auth\Verifier\VerifierInterface;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
+use Gibbon\Domain\User\UserGateway;
 
 /**
  * Default database adapter for Aura/Auth 
@@ -58,6 +59,8 @@ class DefaultAdapter extends AuthenticationAdapter
      */
     public function login(array $input)
     {
+        $this->userGateway = $this->getContainer()->get(UserGateway::class);
+        
         // Validate that the username and password are both present
         $this->checkInput($input);
 

@@ -31,7 +31,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             if ($('#gibbonSchoolYearIDOAuth2').is(':visible')) {
                 var googleSchoolYear = $('#gibbonSchoolYearIDOAuth2').val();
                 var googleLanguage = $('#gibboni18nIDOAuth2').val();
-                return this.href.replace('&state=', '&state='+googleSchoolYear+':'+googleLanguage+':');
+                return this.href.replace('&options=', '&options='+googleSchoolYear+':'+googleLanguage+':');
             }
         });
     }

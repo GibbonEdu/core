@@ -116,21 +116,21 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 if ($googleSettings['enabled'] == 'Y') {
                     $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'google'),
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'google', 'options' => '']),
                         'service'    => 'google',
                         'clientName' => __('Google'),
                     ]));
                 }
                 if ($microsoftSettings['enabled'] == 'Y') {
                     $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'microsoft'),
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'microsoft', 'options' => '']),
                         'service'    => 'microsoft',
                         'clientName' => __('Microsoft'),
                     ]));
                 }
                 if ($genericSSOSettings['enabled'] == 'Y') {
                     $form->addRow()->addContent($view->fetchFromTemplate('ui/ssoButton.twig.html', [
-                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParam('method', 'oauth'),
+                        'authURL'    => Url::fromHandlerRoute('login.php')->withQueryParams(['method' => 'oauth', 'options' => '']),
                         'service'    => 'other',
                         'clientName' => $genericSSOSettings['clientName'],
                     ]));
@@ -163,7 +163,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 echo '</div>';
 
-            } //End Check for Google Auth
+            } 
+
             if (!$this->session->exists('username')) { // If Google Auth set to No make sure login screen not visible when logged in
                 echo '<div class="column-no-break">';
                 echo '<h2>';
