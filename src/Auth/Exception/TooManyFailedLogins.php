@@ -17,24 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Aura\Auth\AuthFactory;
-use Gibbon\Http\Url;
-use Gibbon\Auth\Adapter\DefaultAdapter;
+namespace Gibbon\Auth\Exception;
 
-// Gibbon system-wide include
-require_once './gibbon.php';
+use Exception;
 
-$URL = Url::fromRoute();
-if (isset($_GET['timeout'])) {
-    $URL = $URL->withQueryParam('timeout', 'true');
-}
-// Setup authentication classes
-$authFactory = $container->get(AuthFactory::class);
-$authAdapter = $container->get(DefaultAdapter::class);
-$auth = $authFactory->newInstance();
-
-// Logout
-$logoutService = $authFactory->newLogoutService($authAdapter);
-$logoutService->logout($auth);
-
-header("Location: {$URL}");
+class TooManyFailedLogins extends Exception {}

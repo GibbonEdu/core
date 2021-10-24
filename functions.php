@@ -1368,34 +1368,6 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     echo '</div>';
 }
 
-//Get list of user roles from database, and convert to array
-function getRoleList($gibbonRoleIDAll, $connection2)
-{
-    $output = array();
-
-    //Tokenise list of roles
-    $roles = explode(',', $gibbonRoleIDAll);
-
-    //Check that roles exist
-    $count = 0;
-    for ($i = 0; $i < count($roles); ++$i) {
-
-            $data = array('gibbonRoleID' => $roles[$i]);
-            $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $output[$count][0] = $row['gibbonRoleID'];
-            $output[$count][1] = $row['name'];
-            ++$count;
-        }
-    }
-
-    //Return list of roles
-    return $output;
-}
-
 //Get the module name from the address
 function getModuleName($address)
 {
