@@ -48,6 +48,8 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     private static $scrubbableKey = false;
     private static $scrubbableColumns = ['password' => 'randomString', 'passwordStrong' => 'randomString', 'passwordStrongSalt' => 'randomString', 'address1' => '', 'address1District' => '', 'address1Country' => '', 'address2' => '', 'address2District' => '', 'address2Country' => '', 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone3Type' => '', 'phone3CountryCode' => '', 'phone3' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'phone4Type' => '', 'phone4CountryCode' => '', 'phone4' => '', 'website' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'countryOfBirth' => '',  'ethnicity' => '', 'religion' => '', 'profession' => '', 'employer' => '', 'jobTitle' => '', 'emergency1Name' => '', 'emergency1Number1' => '', 'emergency1Number2' => '', 'emergency1Relationship' => '', 'emergency2Name' => '', 'emergency2Number1' => '', 'emergency2Number2' => '', 'emergency2Relationship' => '', 'transport' => '', 'transportNotes' => '', 'calendarFeedPersonal' => '', 'lockerNumber' => '', 'vehicleRegistration' => '', 'personalBackground' => '', 'studentAgreements' =>null, 'fields' => ''];
 
+    private static $safeUserFields = ['gibbonPersonID', 'username', 'surname', 'firstName', 'preferredName', 'officialName', 'email', 'emailAlternate', 'website', 'gender', 'status', 'image_240', 'lastTimestamp', 'messengerLastRead', 'calendarFeedPersonal', 'viewCalendarSchool', 'viewCalendarPersonal', 'viewCalendarSpaceBooking', 'dateStart', 'personalBackground', 'gibboni18nIDPersonal', 'googleAPIRefreshToken', 'microsoftAPIRefreshToken', 'genericAPIRefreshToken', 'receiveNotificationEmails', 'cookieConsent', 'gibbonHouseID'];
+
     /**
      * Queries the list of users for the Manage Users page.
      *
@@ -70,6 +72,12 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * Gets basic user and role fields required for login.
+     *
+     * @param string $username
+     * @return Result
+     */
     public function selectLoginDetailsByUsername($username)
     {
         $data = ['username' => $username];
@@ -78,9 +86,13 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     gibbonPerson.username,
                     gibbonPerson.passwordStrong,
                     gibbonPerson.passwordStrongSalt,
-                    gibbonPerson.canLogin,
                     gibbonPerson.gibbonRoleIDPrimary,
                     gibbonPerson.gibbonRoleIDAll,
+                    gibbonPerson.canLogin,
+                    gibbonPerson.failCount,
+                    gibbonPerson.googleAPIRefreshToken,
+                    gibbonPerson.microsoftAPIRefreshToken,
+                    gibbonPerson.genericAPIRefreshToken,
                     gibbonRole.futureYearsLogin,
                     gibbonRole.pastYearsLogin,
                     gibbonRole.name as roleName,
@@ -93,6 +105,18 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                 )";
 
         return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Gets a set of fields to populate the session data, excluding unsafe fields such as passwords.
+     *
+     * @param string $gibbonPersonID
+     * @return Result
+     */
+    public function getSafeUserData($gibbonPersonID)
+    {
+        $user = $this->getByID($gibbonPersonID);
+        return array_intersect_key($user, array_flip(self::$safeUserFields));
     }
 
     /**
