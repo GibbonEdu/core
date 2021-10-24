@@ -1,0 +1,159 @@
+<?php
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+namespace Gibbon\Auth\Adapter;
+
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model\User;
+use Aura\Auth\Exception as AuraException;
+use Gibbon\Http\Url;
+use Gibbon\Auth\Exception;
+use Gibbon\Auth\Adapter\AuthenticationAdapter;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\User\UserGateway;
+
+/**
+ * Microsoft OAuth2 adapter for Aura/Auth 
+ *
+ * @version  v23
+ * @since    v23
+ */
+class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapterInterface
+{
+    /**
+     * Constructor
+     *
+     * 
+     */
+    public function __construct()
+    {
+       
+    }
+    
+    /**
+     * Verifies a set of credentials against the database. Exceptions are thrown
+     * if any credentials are not valid.
+     *
+     * @param array $input Credential input.
+     *
+     * @return array An array of login data on success.
+     * 
+     * @throws \Gibbon\Auth\Exception\OAuthLoginError
+     * @throws \Aura\Auth\Exception\UsernameMissing
+     *
+     */
+    public function login(array $input)
+    {
+        if (isset($_GET['error'])) {
+            throw new Exception\OAuthLoginError($_GET['error_description']);
+        }
+
+        if (!$this->hasOAuthCode()) {
+            throw new Exception\OAuthLoginError('Missing code');
+        }
+
+        // Try to get an access token (using the authorization code grant)
+        $oauthProvider = $this->getProvider();
+        $accessToken = $oauthProvider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+        $refreshToken = $accessToken->getRefreshToken();
+
+        if (empty($accessToken)) {
+            throw new Exception\OAuthLoginError('Missing access token');
+        }
+
+        $session = $this->container->get(Session::class);
+        $session->set('microsoftAPIAccessToken', $accessToken);
+
+        // Check OAuth2 state with saved state, to mitigate CSRF attack
+        if (empty($_GET['state']) || ($_GET['state'] !== $session->get('oAuthStateMicrosoft'))) {
+            throw new Exception\OAuthLoginError('Invalid OAuth2 redirect state');
+        }
+
+        $session->forget('oAuthStateMicrosoft');
+        $session->forget('oAuthMethod');
+
+        // Use the token to retrieve user info from the client
+        $graph = new Graph();
+        $graph->setAccessToken($accessToken->getToken());
+
+        $user = $graph->createRequest('GET', '/me')
+            ->setReturnType(User::class)
+            ->execute();
+
+        if (empty($user->getUserPrincipalName())) {
+            $session->forget('microsoftAPIAccessToken');
+            throw new AuraException\UsernameMissing;
+        }
+
+        // Get basic user data needed to verify login access
+        $userData = $this->getUserData(['username' => $user->getUserPrincipalName()]);
+
+        if (empty($userData)) {
+            $session->forget('microsoftAPIAccessToken');
+            throw new Exception\OAuthUserNotFound;
+        }
+
+        // If available, load school year and language from state passed back from OAuth redirect
+        if (isset($_GET['state']) && stripos($_GET['state'], ':') !== false) {
+            list($gibbonSchoolYearID, $gibboni18nID, $state) = explode(':', $_GET['state']);
+            $_POST['gibbonSchoolYearID'] = $gibbonSchoolYearID;
+            $_POST['gibboni18nID'] = $gibboni18nID;
+        }
+
+        // Update the refresh token for this user, if we received one
+        if (!empty($refreshToken)) {
+            $session->set('microsoftAPIRefreshToken', $refreshToken);
+            $this->getContainer()->get(UserGateway::class)->update($userData['gibbonPersonID'], [
+                'microsoftAPIRefreshToken' => $refreshToken,
+            ]);
+        } elseif (empty($userData['microsoftAPIRefreshToken'])) {
+            // No refresh token and none saved in gibbonPerson: force a re-authorization of this account
+            // $authUrl = $oauthProvider->getAuthorizationUrl();
+            // header('Location: ' . $authUrl);
+            // exit;
+        }
+
+        return parent::verifyLogin($userData);
+    }
+
+    public function hasOAuthCode() : bool
+    {
+        return isset($_GET['code']);
+    }
+
+    public function getAuthorizationUrl() : string
+    {
+        $oauthProvider = $this->getProvider();
+
+        $authUrl = $oauthProvider->getAuthorizationUrl();
+        $this->container->get(Session::class)->set('oAuthStateMicrosoft', $oauthProvider->getState());
+
+        return $authUrl;
+    }
+
+    public function getRedirectUrl() : string
+    {
+        return Url::fromRoute('login')->withQueryParam('method', 'microsoft');
+    }
+
+    private function getProvider()
+    {
+        return $this->getContainer()->get('Microsoft_Auth');
+    }
+}

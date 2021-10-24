@@ -25,9 +25,11 @@ namespace Gibbon\Auth\Adapter;
  * @version  v23
  * @since    v23
  */
-interface OAuth2AdapterInterface
+interface OAuthAdapterInterface
 {
-    public function hasCode();
+    public function hasOAuthCode() : bool;
 
-    public function getRedirectUrl();
+    public function getAuthorizationUrl() : string;
+
+    public function getRedirectUrl() : string;
 }

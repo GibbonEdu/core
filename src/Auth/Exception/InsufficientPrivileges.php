@@ -21,4 +21,4 @@ namespace Gibbon\Auth\Exception;
 
 use Exception;
 
-class InvalidLoginException extends Exception {}
+class InsufficientPrivileges extends Exception {}
