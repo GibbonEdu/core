@@ -88,7 +88,7 @@ class AuthServiceProvider extends AbstractServiceProvider
                 $client->setScopes(array('email', 'profile', 'https://www.googleapis.com/auth/calendar'));
                 $client->setClientId($ssoSettings['clientID']);
                 $client->setClientSecret($ssoSettings['clientSecret']);
-                $client->setRedirectUri($session->get('absoluteURL').'/lib/google/index.php');
+                $client->setRedirectUri($session->get('absoluteURL').'/login.php');
                 $client->setDeveloperKey($ssoSettings['developerKey']);
                 $client->setAccessType('offline');
                 $client->setState(time());
@@ -134,7 +134,7 @@ class AuthServiceProvider extends AbstractServiceProvider
             return new GenericProvider([
                 'clientId'                  => $ssoSettings['clientID'],
                 'clientSecret'              => $ssoSettings['clientSecret'],
-                'redirectUri'               => $session->get('absoluteURL').'/lib/google/microsoft.php',
+                'redirectUri'               => $session->get('absoluteURL').'/login.php',
                 'urlAuthorize'              => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
                 'urlAccessToken'            => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
                 'urlResourceOwnerDetails'   => 'https://outlook.office.com/api/v1.0/me',
@@ -152,7 +152,7 @@ class AuthServiceProvider extends AbstractServiceProvider
             return new GenericProvider([
                 'clientId'                  => $ssoSettings['clientID'],
                 'clientSecret'              => $ssoSettings['clientSecret'],
-                'redirectUri'               => $session->get('absoluteURL').'/lib/google/other.php',
+                'redirectUri'               => $session->get('absoluteURL').'/login.php',
                 'urlAuthorize'              => $ssoSettings['authorizeEndpoint'],
                 'urlAccessToken'            => $ssoSettings['tokenEndpoint'],
                 'urlResourceOwnerDetails'   => $ssoSettings['userEndpoint'],
