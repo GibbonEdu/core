@@ -21,7 +21,6 @@ namespace Gibbon\Auth\Adapter;
 
 use Google_Client;
 use Google_Service_Oauth2;
-use Aura\Auth\Exception as AuraException;
 use Gibbon\Http\Url;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
@@ -92,7 +91,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
 
         if (empty($user->email)) {
             $session->forget('googleAPIAccessToken');
-            throw new AuraException\UsernameMissing;
+            throw new Exception\OAuthLoginError;
         }
 
         // Get basic user data needed to verify login access

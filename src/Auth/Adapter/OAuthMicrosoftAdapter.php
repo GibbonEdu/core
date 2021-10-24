@@ -21,7 +21,6 @@ namespace Gibbon\Auth\Adapter;
 
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\User;
-use Aura\Auth\Exception as AuraException;
 use Gibbon\Http\Url;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
@@ -99,7 +98,7 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
 
         if (empty($user->getUserPrincipalName())) {
             $session->forget('microsoftAPIAccessToken');
-            throw new AuraException\UsernameMissing;
+            throw new Exception\OAuthUserNotFound;
         }
 
         // Get basic user data needed to verify login access

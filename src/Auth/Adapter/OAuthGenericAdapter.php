@@ -19,9 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Auth\Adapter;
 
-use Microsoft\Graph\Graph;
-use Microsoft\Graph\Model\User;
-use Aura\Auth\Exception as AuraException;
 use Gibbon\Http\Url;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
@@ -97,7 +94,7 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
 
         if (empty($email)) {
             $session->forget('genericAPIAccessToken');
-            throw new AuraException\UsernameMissing;
+            throw new Exception\OAuthLoginError;
         }
 
         // Get basic user data needed to verify login access

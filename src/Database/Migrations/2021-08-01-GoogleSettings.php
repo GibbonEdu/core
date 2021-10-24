@@ -48,7 +48,6 @@ class GoogleSettings extends Migration
             'clientName'   => $this->settingGateway->getSettingByScope('System', 'googleClientName'),
             'clientID'     => $this->settingGateway->getSettingByScope('System', 'googleClientID'),
             'clientSecret' => $this->settingGateway->getSettingByScope('System', 'googleClientSecret'),
-            'redirectUri'  => $this->settingGateway->getSettingByScope('System', 'googleRedirectUri'),
             'developerKey' => $this->settingGateway->getSettingByScope('System', 'googleDeveloperKey'),
         ];
 
