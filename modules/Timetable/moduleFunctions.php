@@ -186,11 +186,8 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
-        $startOfWeek = new \DateTimeImmutable('sunday -1 week');
-        $endOfWeek = new \DateTimeImmutable('sunday');
-
-        // $startOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $startDayStamp));
-        // $endOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $endDayStamp+ 86399));
+        $startOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $startDayStamp));
+        $endOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $endDayStamp+ 86399));
 
         $queryParams = array(
             'startDateTime' => $startOfWeek->format(\DateTimeInterface::ISO8601),
@@ -216,9 +213,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         foreach ($events as $event) {
             $properties = $event->getProperties();
 
+            $allDay = substr($properties['start']['dateTime'], 11, 8) == '00:00:00' && substr($properties['end']['dateTime'], 11, 8) == '00:00:00';
+
             $eventsSchool[] = [
                 $event->getSubject(),
-                'Specified Time',
+                $allDay ? 'All Day' : 'Specified Time',
                 strtotime($properties['start']['dateTime']),
                 strtotime($properties['end']['dateTime']),
                 $properties['location']['displayName'],
@@ -248,12 +247,6 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         } catch (Exception $e) {
             $getFail = true;
         }
-
-        echo '<pre>';
-        print_r($session->get('googleAPIAccessToken'));
-        print_r($session->get('googleAPIRefreshToken'));
-        print_r($calendarListEntry);
-        echo '</pre>';
 
         if ($getFail) {
             $eventsSchool = false;
@@ -592,7 +585,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Get school calendar array
             $allDay = false;
             $eventsSchool = false;
-            if ($self == true and $session->get('viewCalendarSchool') == 'Y') {
+            if ($self == true and $session->get('viewCalendarSchool') == 'Y' && $session->has('googleAPIAccessToken')) {
                 if ($session->get('calendarFeed') != '') {
                     $eventsSchool = getCalendarEvents($connection2, $guid,  $session->get('calendarFeed'), $startDayStamp, $endDayStamp);
                 }
@@ -609,9 +602,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Get personal calendar array
             $eventsPersonal = false;
             if ($self == true and $session->get('viewCalendarPersonal') == 'Y') {
-                if ($session->get('calendarFeedPersonal') != '') {
-                    $eventsPersonal = getCalendarEvents($connection2, $guid,  $session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
-                }
+                $eventsPersonal = getCalendarEvents($connection2, $guid,  $session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
+
                 //Any all days?
                 if ($eventsPersonal != false) {
                     foreach ($eventsPersonal as $event) {
@@ -845,7 +837,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
 
                     $displayCalendars = $session->has('googleAPIAccessToken') || $session->has('microsoftAPIAccessToken');
-                    if ($session->has('calendarFeed') and $displayCalendars) {
+                    if ($session->has('calendarFeed') && $session->has('googleAPIAccessToken')) {
                         $checked = '';
                         if ($session->get('viewCalendarSchool') == 'Y') {
                             $checked = 'checked';
@@ -854,7 +846,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
                         $output .= '</span>';
                     }
-                    if ($session->has('calendarFeedPersonal') and $displayCalendars) {
+                    if ($displayCalendars) {
                         $checked = '';
                         if ($session->get('viewCalendarPersonal') == 'Y') {
                             $checked = 'checked';
