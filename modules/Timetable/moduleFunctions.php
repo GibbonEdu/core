@@ -233,6 +233,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     $ssoGoogle = json_decode($ssoGoogle, true);
 
     if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken')) {
+
         $eventsSchool = array();
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
@@ -247,6 +248,12 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         } catch (Exception $e) {
             $getFail = true;
         }
+
+        echo '<pre>';
+        print_r($session->get('googleAPIAccessToken'));
+        print_r($session->get('googleAPIRefreshToken'));
+        print_r($calendarListEntry);
+        echo '</pre>';
 
         if ($getFail) {
             $eventsSchool = false;
@@ -832,7 +839,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= ";'>";
                 //Spit out controls for displaying calendars
-                if ($self == true and ($session->get('calendarFeed') != '' or $session->get('calendarFeedPersonal') != '' or $session->get('viewCalendarSpaceBooking') != '')) {
+                if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                     $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
@@ -847,7 +854,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
                         $output .= '</span>';
                     }
-                    if ($session->has('calendarFeed') and $displayCalendars) {
+                    if ($session->has('calendarFeedPersonal') and $displayCalendars) {
                         $checked = '';
                         if ($session->get('viewCalendarPersonal') == 'Y') {
                             $checked = 'checked';
