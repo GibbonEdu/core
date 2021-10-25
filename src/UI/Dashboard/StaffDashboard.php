@@ -234,7 +234,7 @@ class StaffDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
-            $apiEndpoint = Url::fromHandlerRoute('index_tt_ajax.php');
+            $apiEndpoint = $this->session->get('absoluteURL').'/index_tt_ajax.php';
             $jsonQuery = [
                 'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
                 'ttDate' => $_POST['ttDate'] ?? '',
