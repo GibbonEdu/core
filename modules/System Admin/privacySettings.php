@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
 
     $settingGateway = $container->get(SettingGateway::class);
 
-    $setting = $settingGateway->getgetSettingByScope('System', 'passwordPolicyMinLength', true);
+    $setting = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray(range(4, 12))->selected($setting['value'])->required();
