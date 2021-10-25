@@ -8070,4 +8070,4 @@ ALTER TABLE `gibbonYearGroup`
 -- Add setting 'registerGibbonSupport' to `gibbonSetting`
 --
 INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`)
-VALUES (00328, 'System', 'registerGibbonSupport', 'Register to Gibbon Support', 'Wether to opt-in official Gibbon support.', '');
+VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?, 'Join our mailing list and recieve a welcome email from the team.', '');
