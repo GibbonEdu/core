@@ -33,7 +33,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
           extensions: gettext, gd, zip, pdo-mysql
           tools: composer:v2
-          ini-values: date.timezone="Etc/UTC", xdebug.max_nesting_level = -1
+          ini-values: date.timezone="Etc/UTC", xdebug.max_nesting_level=-1, opcache.jit="off"
 
       - name: Checkout source code
         uses: actions/checkout@v2
