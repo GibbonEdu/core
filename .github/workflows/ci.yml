@@ -96,6 +96,7 @@ jobs:
             echo -e "\e[1m\e[33mGot $NUM_WARNING warning messages:\e[0m"
             grep --line-number --color=always --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log || echo -e '\e[32mNo Warning message found in log.\e[0m'
             echo
+            (exit 1)
           fi
 
           # Check number of PHP warning messages.
@@ -104,9 +105,10 @@ jobs:
             echo -e '\e[32mNo warning message.\e[0m'
             echo
           else
-            echo -e "\e[1m\e[33mGot $NUM_PHP_WARNING PHP warning messages:\e[0m"
+            echo -e "\e[1m\e[31mGot $NUM_PHP_WARNING PHP warning messages:\e[0m"
             grep --line-number --color=always 'PHP Warning: ' ./tests/log/server_log || echo -e '\e[32mNo PHP Warning message found in log.\e[0m'
             echo
+            (exit 1)
           fi
 
           # Check number of deprecated messages. Cause error if found.
@@ -116,6 +118,7 @@ jobs:
           else
             echo -e "\e[1m\e[31mGot $NUM_DEPRECATED deprecated messages:\e[0m"
             grep --line-number --color=always 'Deprecated: ' ./tests/log/server_log || echo -e '\e[32mNo Deprecated message found in log.\e[0m'
+            echo
             (exit 1)
           fi
         continue-on-error: ${{ matrix.experimental }}
