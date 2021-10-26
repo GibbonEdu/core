@@ -18,14 +18,14 @@ TODO: add template variable details.
     <body class="h-full flex flex-col font-sans {{ bodyBackground  ? '' : 'body-gradient-' ~ themeColour|lower }}" style="{{ bodyBackground  ? bodyBackground : '' }} {{ themeColour is empty ? 'background: radial-gradient(80% 1000px at 20% 500px, #ef99c7 0%, #794d95 100%) no-repeat fixed ;' : '' }}">
 
         {% set sidebarPos = isLoggedIn ? 'left' : 'right' %}
-        
+
         <div class="px-4 sm:px-6 lg:px-12 pb-24">
-        
+
             {% block header %}
                 <div id="header" class="relative flex justify-between items-center">
 
                     <a id="header-logo" class="block my-4 max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
-                        <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-4' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" style="max-height:100px;" />
+                        <img class="block max-w-full {{ isLoggedIn ? 'h-12' : 'h-20 mt-4 mb-4' }}" alt="{{ organisationName }} Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("themes/Default/img/logo.png") }}" style="max-height:100px;" />
                     </a>
 
                     <div class="flex-grow flex items-center justify-end text-right text-sm text-{{ themeColour }}-200">
@@ -54,7 +54,7 @@ TODO: add template variable details.
                                 </li>
                                 {% endfor %}
                             </ul>
-                            
+
                         </div>
                         {% else %}
                             {% for link in minorLinks %}
