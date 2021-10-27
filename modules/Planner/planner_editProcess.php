@@ -241,10 +241,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                         //Deal with smart unit
                         $partialFail = false;
-                        $order = $_POST['order'] ?? '';
-
-                        $seq = $_POST['minSeq'] ?? '';
-
+                        $order = $_POST['order'] ?? [];
+                        $seq = $_POST['minSeq'] ?? 0;
+                        $idList = [];
 
                         if (is_array($order)) {
                             foreach ($order as $i) {
@@ -255,24 +254,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 $length = $_POST["length$i"] ?? '';
                                 $contents = $_POST["contents$i"] ?? '';
                                 $teachersNotesBlock = $_POST["teachersNotes$i"] ?? '';
-                                $complete = 'N';
-                                if (isset($_POST["complete$i"])) {
-                                    if ($_POST["complete$i"] == 'on') {
-                                        $complete = 'Y';
-                                    }
-                                }
+                                $complete = isset($_POST["complete$i"]) && $_POST["complete$i"] == 'on' ? 'Y' : 'N';
 
                                 //Write to database
-                                try {
-                                    $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
-                                    $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
-                                } catch (PDOException $e) {
-                                    $partialFail = true;
-                                }
+                                $data = array('title' => $title, 'type' => $type, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotesBlock, 'complete' => $complete, 'sequenceNumber' => $seq, 'gibbonUnitClassBlockID' => $id);
+                                $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, complete=:complete, sequenceNumber=:sequenceNumber WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID';
+                                
+                                $updated = $pdo->update($sql, $data);
+                                $partialFail &= !$updated;
 
+                                $idList[] = $id;
                                 ++$seq;
+                            }
+
+                            //Remove orphaned blocks
+                            if (!empty($idList)) {
+                                $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => implode(',', $idList)];
+                                $sqlRemove = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
+                                $pdo->delete($sqlRemove, $dataRemove);
                             }
                         }
 

@@ -8079,3 +8079,10 @@ CREATE TABLE IF NOT EXISTS `gibbonSession` (
     `timestampModified` TIMESTAMP NULL,
     PRIMARY KEY (`gibbonSessionID`)
 ) ENGINE = InnoDB;
+
+--
+-- Add setting 'registerGibbonSupport' to `gibbonSetting`
+--
+INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`)
+VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');
+

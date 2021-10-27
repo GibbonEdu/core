@@ -37,6 +37,7 @@ v23.0.00
         System: fixed typo in Public Registration notification
         System: updated the mobile responsive view to display alerts above the login form
         System: refactored all $_SESSION calls across the system
+        System: changed force password reset information in Preferences from error to message
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
         Library: added student Form Group to View Overdue Items report
@@ -50,6 +51,7 @@ v23.0.00
         Timetable: added an option to click for more information in View Available Facilities/Teachers reports
         Timetable: added timetable day heading colours to View Timetable by Facility
         Timetable: added an ajax check for availability when making a facility change
+        Timetable: redirect back to View Timetable by Facility when making a space change
         Timetable Admin: adjusted interface strings in timetable import
 
     Bug Fixes
@@ -58,6 +60,8 @@ v23.0.00
         System: added Markbook and Planner permissions to Parent and Student Dashboard
         Activities: fixed duplicate entries in Activity Choices by Student
         Messenger: fixed duplicate student names when using Individual Naming
+        Planner: fixed school closure checks when bumping lessons forward and backward
+        Planner: fixed smart block deletion not working in Edit Lesson Plan
         Reports: fixed Student Info template borders when no image is present
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities

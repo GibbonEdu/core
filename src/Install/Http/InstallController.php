@@ -1,19 +1,23 @@
 <?php
 
-namespace Gibbon\Install;
+namespace Gibbon\Install\Http;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Core;
 use Gibbon\Database\Updater;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
-use Gibbon\Install\Exception\ForbiddenException;
-use Gibbon\Install\Exception\RecoverableException;
+use Gibbon\Install\Config;
+use Gibbon\Install\Context;
+use Gibbon\Install\Http\Exception\ForbiddenException;
+use Gibbon\Install\Http\Exception\RecoverableException;
+use Gibbon\Install\Http\NonceService;
+use Gibbon\Install\Installer;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
 
-class HttpInstallController
+class InstallController
 {
     /**
      * Installation context.
@@ -30,6 +34,13 @@ class HttpInstallController
     protected $installer;
 
     /**
+     * NonceService for form security.
+     *
+     * @var \Gibbon\Install\Http\NonceService
+     */
+    protected $nonceService;
+
+    /**
      * Gibbon core for retrieving system requirements.
      *
      * @var \Gibbon\Core
@@ -43,40 +54,35 @@ class HttpInstallController
      */
     protected $page;
 
-    /**
-     * Unique installation string
-     *
-     * @var string
-     */
-    protected $guid;
-
     public function __construct(
         Context $context,
         Installer $installer,
+        NonceService $nonceService,
         Core $gibbon,
-        Page $page,
-        string $guid
+        Page $page
     )
     {
         $this->context = $context;
         $this->installer = $installer;
+        $this->nonceService = $nonceService;
         $this->gibbon = $gibbon;
         $this->page = $page;
-        $this->guid = $guid;
     }
 
     /**
-     * Create an HttpInstallController instance from
+     * Create an InstallController instance from
      * container.
      *
      * @param ContainerInterface $container
      * @param string $absolutePath
-     * @return HttpInstallController
+     *
+     * @return InstallController
+     * @throws \Exception
      */
     public static function create(
         ContainerInterface $container,
         Session $session
-    ): HttpInstallController
+    ): InstallController
     {
         /**
          * Template engine for rendering page or config file.
@@ -92,11 +98,6 @@ class HttpInstallController
          */
         $gibbon = $container->get('config');
 
-        // Unique installation ID.
-        if (!is_string($guid = $session->get('guid'))) {
-            throw new \Exception(sprintf('Expected session\'s guid to be string but found %s.', var_export($guid, true)));
-        }
-
         // Absolute path.
         if (empty($absolutePath = $session->get('absolutePath'))) {
             throw new \Exception('Session\'s absolutePath is not set.');
@@ -109,6 +110,12 @@ class HttpInstallController
         // Generate installer instance.
         $installer = new Installer($templateEngine);
 
+        // Generate and save a nonce for forms on this page to use
+        if (!$session->has('nonceToken')) {
+            $session->set('nonceToken', \getSalt());
+        }
+        $nonceService = new NonceService($session->get('nonceToken'));
+
         // Generate page object for display.
         $page = new Page($templateEngine, [
             'title'   => __('Gibbon Installer'),
@@ -118,10 +125,60 @@ class HttpInstallController
         return new static(
             $context,
             $installer,
+            $nonceService,
             $gibbon,
-            $page,
-            $guid
+            $page
         );
+    }
+
+    /**
+     * Parse the step from GET parameters.
+     *
+     * @param array $param  The $_GET or get parameter equivlant.
+     *
+     * @return integer  The step number of the current state.
+     */
+    public static function stepFromEnvironment(array $param): int
+    {
+        $step = isset($param['step'])? intval($param['step']) : 1;
+        $step = min(max($step, 1), 4);
+        return $step;
+    }
+
+    /**
+     * Handle guid in browser environment for installation.
+     *
+     * Parse gibbon_install_guid cookie, or generate random guid.
+     * The newly generated guid will set to cookie gibbon_install_guid.
+     * Will only generate guid in step 1.
+     *
+     * @param array   $cookie  The cookie array or equivlant.
+     * @param integer $step    The installation step number. Step 1 with empty
+     *                         gibbon_install_guid cookie will force generating
+     *                         new guid.
+     *
+     * @return string The generated or recoved guid string.
+     *
+     * @throws \Exception  If guid recovered from cookie is empty, or the cookie
+     *                     is not set. Except in step 4, where cookie is supposed
+     *                     to be unsets.
+     */
+    public static function guidFromEnvironment(array $cookie, int $step): string
+    {
+        // Deal with $guid setup, otherwise get and filter the existing $guid
+        if ($step <= 1 && empty($cookie['gibbon_install_guid'])) {
+            $guid = Installer::randomGuid();
+            setcookie('gibbon_install_guid', $guid, 0, '', '', false, true);
+            error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
+        } else {
+            $guid = $cookie['gibbon_install_guid'] ?? '';
+            $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
+            error_log(sprintf('Installer: Step %s: Using guid from $_COOKIE: %s', var_export($step, true), var_export($guid, true)));
+        }
+        if (empty($guid)) {
+            throw new \Exception('guid not found in environment. Please restart the installation.');
+        }
+        return $guid;
     }
 
     /**
@@ -142,19 +199,17 @@ class HttpInstallController
     /**
      * Render the view for step one.
      *
-     * @param string $nonce      The generated nonce for next step.
      * @param string $submitUrl  The url for form submission.
      * @param string $version    The version to install.
      *
      * @return string
      */
     public function viewStepOne(
-        NonceService $nonceService,
         string $submitUrl,
         string $version
     ): string
     {
-        $nonce = $nonceService->generate('install:locale');
+        $nonce = $this->nonceService->generate('install:locale');
 
         //PROCEED
         $trueIcon = "<img title='" . __('Yes'). "' src='../themes/Default/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -254,8 +309,7 @@ class HttpInstallController
      * Remember the installation locale submitted from step 1.
      * And try to install the associated locale file, if not in the system.
      *
-     * @param Context $context
-     * @param NonceService $nonceService
+     * @param Session $session
      * @param array $data
      *
      * @return void
@@ -264,12 +318,11 @@ class HttpInstallController
      * @throws RecoverableException
      */
     public function handleStepOneSubmit(
-        NonceService $nonceService,
         Session $session,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:locale');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:locale');
 
         // Install locale
         $installLocale = $data['code'] ?? 'en_GB';
@@ -278,7 +331,7 @@ class HttpInstallController
             ? i18nFileInstall($this->gibbon->session->get('absolutePath'), $installLocale)
             : true;
         if (!$languageInstalled) {
-            throw new RecoverableException(
+            throw new RecoverableException (
                 __('Failed to download and install the required files.') . ' ' .
                 sprintf(
                     __('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'),
@@ -291,18 +344,16 @@ class HttpInstallController
     /**
      * Interface to collect database configurations.
      *
-     * @param NonceService $nonceService  The nonce checking service.
      * @param string       $submitUrl     The url for form submission.
      * @param array        $data          The previously submitted data.
      * @return string
      */
     public function viewStepTwo(
-        NonceService $nonceService,
         string $submitUrl,
         array $data
     ): string
     {
-        $nonce = $nonceService->generate('install:setDbConfig');
+        $nonce = $this->nonceService->generate('install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
@@ -355,7 +406,6 @@ class HttpInstallController
      *
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
      * @param Session $session
      * @param string $guid
      * @param array $data
@@ -368,16 +418,20 @@ class HttpInstallController
     public function handleStepTwoSubmit(
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
         Session $session,
-        string $guid,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:setDbConfig');
 
         // Check for the presence of a config file (if it hasn't been created yet)
         $context->validateConfigPath();
+
+        // Get guid from session
+        $guid = $session->get('guid') ?? '';
+        if (empty($guid)) {
+            throw new \Exception('guid in session is either not set or empty.');
+        }
 
         // Get and set database variables (not set until step 1)
         $config = static::parseConfigSubmission($guid, $data);
@@ -404,7 +458,6 @@ class HttpInstallController
      *
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
      * @param string $submitUrl
      * @param string $version
      * @param array $data
@@ -414,13 +467,12 @@ class HttpInstallController
     public function viewStepThree(
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
         string $submitUrl,
         string $version,
         array $data
     ): string
     {
-        $nonce = $nonceService->generate('install:postInstallSettings');
+        $nonce = $this->nonceService->generate('install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
@@ -464,7 +516,7 @@ class HttpInstallController
             $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
         try {
-            $message = HttpInstallController::renderPasswordPolicies(
+            $message = static::renderPasswordPolicies(
                 $installer->getPasswordPolicies()
             );
             if (!empty($message)) {
@@ -633,7 +685,7 @@ class HttpInstallController
      * @param ContainerInterface $container
      * @param Context $context
      * @param Installer $installer
-     * @param NonceService $nonceService
+     * @param Session $session
      * @param string $version
      * @param array $data
      *
@@ -646,17 +698,17 @@ class HttpInstallController
         ContainerInterface $container,
         Context $context,
         Installer $installer,
-        NonceService $nonceService,
+        Session $session,
         string $version,
         array $data
     )
     {
-        $nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings');
+        $this->nonceService->verify($data['nonce'] ?? '', 'install:postInstallSettings');
 
         // Connect database according to config file information.
         $config = Config::fromFile($context->getConfigPath());
         $installer->useConfigConnection($config);
-        $absoluteURL = $installer->getSetting('absoluteURL');
+        $absoluteURL = static::guessAbsoluteUrl();
 
         // parse the submission from POST.
         try {
@@ -706,7 +758,11 @@ class HttpInstallController
         // Update DB version for existing languages (installed manually?)
         i18nCheckAndUpdateVersion($container, $version);
 
+        // Clean up installation variables.
+        static::cleanUp($session);
+
         if ($settingsFail) {
+            error_log('Installer: settings failed. Will trigger RecoverableException.');
             throw new RecoverableException(
                 sprintf(__('Some settings did not save. The system may work, but you may need to remove everything and start again. Try and %1$sgo to your Gibbon homepage%2$s and login as user <u>admin</u> with password <u>gibbon</u>.'), "<a href='$absoluteURL'>", '</a>') . "<br/>\n" .
                 sprintf(__('It is also advisable to follow the %1$sPost-Install and Server Config instructions%2$s.'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/installing-gibbon/'>", '</a>')
@@ -825,7 +881,7 @@ class HttpInstallController
         if ($session->has('flashMessage')) {
             $m = $session->get('flashMessage');
             if ($m instanceof RecoverableException) {
-                $page->addAlert($m->getLevel(), $m->getMessage());
+                $page->addAlert($m->getMessage(), $m->getLevel());
             } else {
                 $page->addError($m->getMessage());
             }
@@ -1031,5 +1087,42 @@ class HttpInstallController
             return "<li>{$policy}</li>";
         }, $policies));
         return !empty($html) ? "<ul>$html</ul>" : '';
+    }
+
+    /**
+     * Guess the absoluteUrl for the installation environment.
+     *
+     * @return string
+     */
+    public static function guessAbsoluteUrl(): string
+    {
+        // Find out the base installation URL path.
+        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+
+        // Suppose the entry script is "/installer/install.php"
+        // then the base dir would be "./../" from the entry point
+        // perspective.
+        $baseDir = realpath('./../') . '/';
+
+        // Construct the full URL to the base URL path.
+        $urlBasePath = substr($baseDir, $prefixLength);
+        $host = $_SERVER['HTTP_HOST'];
+        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+        return "{$protocol}://{$host}{$urlBasePath}";
+    }
+
+    /**
+     * Clearn up environment after installation.
+     *
+     * @param Session $session
+     *
+     * @return void
+     */
+    private static function cleanUp(Session $session)
+    {
+        // Forget installation details in session and cookie.
+        $session->remove('installLocale');
+        $session->remove('nonceToken');
+        setcookie('gibbon_install_guid', '', -1);
     }
 }

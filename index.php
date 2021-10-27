@@ -52,8 +52,8 @@ $settingGateway = $container->get(SettingGateway::class);
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL(Url::fromModuleRoute($module->name));
-    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
+    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), trim($module->entryURL, '/'));
 }
 
 /**
@@ -465,6 +465,9 @@ if ($isLoggedIn && !$upgrade) {
         $session->set('fastFinder', $fastFinder);
     }
 
+    /**
+     * @var ModuleGateway
+     */
     $moduleGateway = $container->get(ModuleGateway::class);
 
     if ($page->getModule()) {
@@ -482,7 +485,10 @@ if ($isLoggedIn && !$upgrade) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
-                $item['url'] = (string) Url::fromModuleRoute($item['moduleName'], $item['entryURL']);
+                $item['url'] = (string) Url::fromModuleRoute(
+                    $item['moduleName'],
+                    preg_replace('/\.php$/i', '', $item['entryURL'])
+                );
             }
         }
 
@@ -497,20 +503,21 @@ if ($isLoggedIn && !$upgrade) {
 
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, '/modules/'.$item['name'].'/'.$item['entryURL']))
                     ? $item['entryURL']
                     : $item['alternateEntryURL'];
 
+                // Note: only for backward compatibility. Should remove .php
+                // from the gibbonAction table.
+                $entryURL = preg_replace('/\.php$/i', '', $entryURL);
+
                 $item['active'] = $session->get('menuModuleName') == $item['name'];
-                $item['url'] =  (string) Url::fromModuleRoute($modulePath, $entryURL);
+                $item['url'] =  (string) Url::fromModuleRoute($item['name'], $entryURL);
             }
         }
 
         $session->set('menuMainItems', $menuMainItems);
     }
-
-
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();

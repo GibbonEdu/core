@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
 
     $parseAndUpdateComponents = function ($directoryPath, $templateType) use (&$prototypeGateway, &$yaml, &$partialFail, &$count) {
         // Get all twig files in this folder and sub-folders
-        $directoryPath = '/'.trim($directoryPath, '/');
+        $directoryPath = DIRECTORY_SEPARATOR.trim($directoryPath, DIRECTORY_SEPARATOR);
         $directoryFiles = glob($directoryPath.'{,/*,/*/*,/.../*}/*.twig.html', GLOB_BRACE);
 
         foreach ($directoryFiles as $filePath) {
