@@ -53,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             $form->setTitle(__('Step 1 - Choose Class'));
 
             $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
             $classes = array();
 
@@ -139,6 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
                 $row = $form->addRow();
                     $row->addLabel('class', __('Class'));
