@@ -1,8 +1,8 @@
 <?php
 
-namespace Gibbon\Install;
+namespace Gibbon\Install\Http;
 
-use Gibbon\Install\Exception\ForbiddenException;
+use Gibbon\Install\Http\Exception\ForbiddenException;
 
 /**
  * A simple service to create and verify nonce. To ensure
@@ -89,7 +89,7 @@ class NonceService
      *
      * @return boolean If the nonce is generated from a token within tick.
      *
-     * @throws \Gibbon\Install\Exception\ForbiddenException  Verification failed and $throwOnError is true.
+     * @throws ForbiddenException  Verification failed and $throwOnError is true.
      */
     public function verify(string $nonce, ?string $action = null, bool $throwOnError = true): bool
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Gibbon\Install\Exception;
+namespace Gibbon\Install\Http\Exception;
 
 /**
  * Recoverable issue in installation process.
