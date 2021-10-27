@@ -1051,5 +1051,5 @@ ALTER TABLE `gibbonPerson` ADD `genericAPIRefreshToken` VARCHAR(255) CHARACTER S
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoGoogle', 'Google Integration', '', '{\"enabled\":\"N\"}');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoMicrosoft', 'Microsoft Integration', '', '{\"enabled\":\"N\"}');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoOther', 'Generic OAuth2 Provider', '', '{\"enabled\":\"N\"}');end
-INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');end
+INSERT IGNORE INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');end
 ";
