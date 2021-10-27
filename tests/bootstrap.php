@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 global $gibbon, $guid, $connection2;
 
 // Prevent installer redirect
-use Gibbon\Domain\System\SettingGateway;
-
 if (!file_exists(__DIR__ . '/../config.php')) {
     $_SERVER['PHP_SELF'] = 'installer/install.php';
 }
