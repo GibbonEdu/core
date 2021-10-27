@@ -1615,6 +1615,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 //TIMETABLE FOR ROOM
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
+    global $session;
+    
     $output = '';
 
     $blank = true;
@@ -2084,6 +2086,8 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDayStart = '', $specialDayEnd = '')
 {
+    global $session;
+
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
 
