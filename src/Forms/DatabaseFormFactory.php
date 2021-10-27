@@ -362,9 +362,9 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelectPerson($name)->fromArray($people);
     }
 
-    public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = array())
+    public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = [])
     {
-        $params = array_replace(['includeStudents' => false, 'includeStaff' => false], $params);
+        $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false], $params);
 
         $users = array();
 
@@ -418,7 +418,14 @@ class DatabaseFormFactory extends FormFactory
             }, array());
         }
 
-        return $this->createSelectPerson($name)->fromArray($users);
+        if ($params['useMultiSelect']) {
+            $multiSelect = $this->createMultiSelect($name);
+            $multiSelect->source()->fromArray($users);
+
+            return $multiSelect;
+        } else {
+            return $this->createSelectPerson($name)->fromArray($users);
+        }
     }
 
     /*

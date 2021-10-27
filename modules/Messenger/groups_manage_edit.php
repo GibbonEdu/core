@@ -63,9 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $row->addTextField('name')->required()->maxLength(60);
 
             $row = $form->addRow();
-                $row->addLabel('members', __('Add Members'));
-                $row->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true])
-                    ->selectMultiple();
+                $col = $row->addColumn();
+                    $col->addLabel('members', __('Members'));
+                    $col->addSelectUsers('members', $session->get('gibbonSchoolYearID'), ['includeStudents' => true, 'useMultiSelect' => true])
+                        ->required()
+                        ->mergeGroupings();
             	
 			$row = $form->addRow();
                 $row->addFooter();
