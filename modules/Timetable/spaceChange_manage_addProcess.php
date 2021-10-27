@@ -1,4 +1,6 @@
 <?php
+
+use Gibbon\Services\Format;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -99,6 +101,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                         $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
+                    }
+
+                    // Redirect back to View Timetable by Facility if we started there
+                    if (isset($_POST['source']) && $_POST['source'] == 'tt') {
+                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$gibbonSpaceID.'&ttDate='.Format::date($date);
                     }
 
                     $URL .= '&return=success0';
