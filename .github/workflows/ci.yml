@@ -108,6 +108,11 @@ jobs:
           fi
         continue-on-error: ${{ matrix.experimental }}
 
+      - name: Export Database if Test Failed
+        if: ${{ failure() }}
+        run: |
+          mysqldump -u root --protocol=tcp --column-statistics=0 gibbon_test > ./tests/log/mysqldump.sql
+
       - name: Save Test Artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() || matrix.experimental }}
