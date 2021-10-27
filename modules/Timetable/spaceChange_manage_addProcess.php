@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonPersonID' => $session->get('gibbonPersonID')];
 
     if (!$spaceChangeGateway->unique($data, ['gibbonTTDayRowClassID', 'date'])) {
-        $updated = $spaceChangeGateway->updateWhere($data, ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date]);
+        $updated = $spaceChangeGateway->updateWhere(['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date], $data);
     } else {
         $updated = $spaceChangeGateway->insert($data);
     }
