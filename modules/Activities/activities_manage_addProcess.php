@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $partialFail |= !$activityStaffGateway->insertActivityStaff($gibbonActivityID, $staffPersonID, $role);
         }
 
-        if ($partialFail) {
+        if (isset($partialFail) && $partialFail == true) {
             $URL .= '&return=warning1';
         } else {
             $URL .= '&return=success0';

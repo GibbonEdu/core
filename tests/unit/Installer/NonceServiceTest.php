@@ -3,7 +3,7 @@
 namespace Gibbon\Tests\UnitTest\Installer;
 
 use PHPUnit\Framework\TestCase;
-use Gibbon\Install\NonceService;
+use Gibbon\Install\Http\NonceService;
 
 class NonceServiceTest extends TestCase {
 
