@@ -88,7 +88,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      * this one, otherwise they will be ignored.
      */
     public function boot()
-    { $container = $this->getLeagueContainer();
+    { 
+        $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
         $container->share('locale', new Locale($this->absolutePath));
