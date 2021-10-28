@@ -29,6 +29,8 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use League\OAuth2\Client\Token\AccessToken;
+use Gibbon\Domain\User\UserGateway;
 
 /**
  * Authentication API Services
@@ -103,7 +105,16 @@ class AuthServiceProvider extends AbstractServiceProvider
                     // Re-establish the Client and get a new token
                     if ($session->exists('googleAPIRefreshToken')) {
                         $client->refreshToken($session->get('googleAPIRefreshToken'));
-                        $session->set('googleAPIAccessToken', $client->getAccessToken());
+
+                        $accessToken = $client->getAccessToken();
+                        $session->set('googleAPIAccessToken', $accessToken);
+
+                        if (!empty($accessToken['refresh_token'])) {
+                            $session->set('googleAPIRefreshToken', $accessToken['refresh_token']);
+                            $this->getContainer()->get(UserGateway::class)->update($session->get('gibbonPersonID'), [
+                                'googleAPIRefreshToken' => $accessToken['refresh_token'],
+                            ]);
+                        }
                     } else {
                         return null;
                     }
@@ -131,15 +142,46 @@ class AuthServiceProvider extends AbstractServiceProvider
             $ssoSettings = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
             $ssoSettings = json_decode($ssoSettings, true);
 
-            return new GenericProvider([
-                'clientId'                  => $ssoSettings['clientID'],
-                'clientSecret'              => $ssoSettings['clientSecret'],
-                'redirectUri'               => $session->get('absoluteURL').'/login.php',
-                'urlAuthorize'              => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-                'urlAccessToken'            => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-                'urlResourceOwnerDetails'   => 'https://outlook.office.com/api/v1.0/me',
-                'scopes'                    => 'openid profile offline_access email user.read.all calendars.read calendars.read.shared',
-            ]);
+            try {
+                $oauthProvider =  new GenericProvider([
+                    'clientId'                  => $ssoSettings['clientID'],
+                    'clientSecret'              => $ssoSettings['clientSecret'],
+                    'redirectUri'               => $session->get('absoluteURL').'/login.php',
+                    'urlAuthorize'              => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+                    'urlAccessToken'            => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
+                    'urlResourceOwnerDetails'   => 'https://outlook.office.com/api/v1.0/me',
+                    'scopes'                    => 'openid profile offline_access email user.read.all calendars.read calendars.read.shared',
+                ]);
+
+                if (!$session->has('microsoftAPIAccessToken')) {
+                    return $oauthProvider;
+                }
+
+                $accessToken = $session->get('microsoftAPIAccessToken');
+                $refreshToken = $session->get('microsoftAPIRefreshToken') ?? $accessToken->getRefreshToken();
+
+                if ($accessToken->hasExpired() && !empty($refreshToken)) {
+                    $newAccessToken = $oauthProvider->getAccessToken('refresh_token', [
+                        'refresh_token' => $refreshToken,
+                    ]);
+
+                    // Purge old access token and store new access token to the database.
+                    $session->set('microsoftAPIAccessToken', $newAccessToken->getToken());
+
+                    if (!empty($newAccessToken->getRefreshToken())) {
+                        $session->set('microsoftAPIRefreshToken', $newAccessToken->getRefreshToken());
+                        $this->getContainer()->get(UserGateway::class)->update($session->get('gibbonPersonID'), [
+                            'microsoftAPIRefreshToken' => $newAccessToken->getRefreshToken(),
+                        ]);
+                    }
+                }
+            } catch (\InvalidArgumentException $e) {
+                return null;
+            } catch (\RuntimeException $e) {
+                return null;
+            }
+
+            return $oauthProvider;
         });
 
         $container->share('Generic_Auth', function () {
