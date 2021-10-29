@@ -128,6 +128,7 @@ else {
                         'gibbonPersonResetID' => $gibbonPersonResetID,
                         'key' => $key,
                     ]),
+                    'external' => true,
                     'text' => __('Click Here'),
                 ],
             ]);
