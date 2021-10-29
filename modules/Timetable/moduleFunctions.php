@@ -184,6 +184,8 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
+        if (empty($oauthProvider)) return;
+        
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 

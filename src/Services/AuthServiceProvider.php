@@ -175,6 +175,8 @@ class AuthServiceProvider extends AbstractServiceProvider
                         ]);
                     }
                 }
+            } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+                return null;
             } catch (\InvalidArgumentException $e) {
                 return null;
             } catch (\RuntimeException $e) {
