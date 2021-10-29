@@ -33,10 +33,10 @@ class UrlTest extends TestCase
     public function testFromRoute()
     {
         $url = Url::fromRoute('some_action');
-        $this->assertEquals('/some/path/index.php?q=some_action.php', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?q=some_action.php', (string) $url);
 
         $url = Url::fromRoute()->withQuery('hello=world');
-        $this->assertEquals('/some/path/index.php?hello=world', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?hello=world', (string) $url);
     }
 
     /**
@@ -88,12 +88,12 @@ class UrlTest extends TestCase
     public function testFromModuleRoute()
     {
         $url = Url::fromModuleRoute('My Module', 'some_action');
-        $this->assertEquals('/some/path/index.php?' . http_build_query([
+        $this->assertEquals('http://foobar.com/some/path/index.php?' . http_build_query([
             'q' => '/modules/My Module/some_action.php',
         ]), (string) $url);
 
         $url = Url::fromModuleRoute('My Module');
-        $this->assertEquals('/some/path/index.php?' . http_build_query([
+        $this->assertEquals('http://foobar.com/some/path/index.php?' . http_build_query([
             'q' => '/modules/My Module/',
         ]), (string) $url);
     }
@@ -147,10 +147,10 @@ class UrlTest extends TestCase
     public function testFromHandlerPath()
     {
         $url = Url::fromHandlerRoute('fullscreen.php');
-        $this->assertEquals('/some/path/fullscreen.php', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/fullscreen.php', (string) $url);
 
         $url = Url::fromHandlerRoute('fullscreen.php', 'some_action');
-        $this->assertEquals('/some/path/fullscreen.php?q=some_action.php', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/fullscreen.php?q=some_action.php', (string) $url);
     }
 
     /**
@@ -172,10 +172,10 @@ class UrlTest extends TestCase
     public function testWithQueryParam()
     {
         $url = Url::fromRoute('some_action')->withQueryParam('foo', 'bar');
-        $this->assertEquals('/some/path/index.php?q=some_action.php&foo=bar', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?q=some_action.php&foo=bar', (string) $url);
 
         $url = Url::fromRoute()->withQueryParam('foo', 'world');
-        $this->assertEquals('/some/path/index.php?foo=world', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?foo=world', (string) $url);
     }
 
     /**
@@ -184,10 +184,10 @@ class UrlTest extends TestCase
     public function testWithReturn()
     {
         $url = Url::fromRoute('some_action')->withReturn('successx');
-        $this->assertEquals('/some/path/index.php?q=some_action.php&return=successx', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?q=some_action.php&return=successx', (string) $url);
 
         $url = Url::fromRoute()->withReturn('successx');
-        $this->assertEquals('/some/path/index.php?return=successx', (string) $url);
+        $this->assertEquals('http://foobar.com/some/path/index.php?return=successx', (string) $url);
     }
 
     /**
