@@ -84,8 +84,6 @@ class ModuleGateway extends QueryableGateway
 
     public function selectModulesByRole($gibbonRoleID)
     {
-        global $container;
-
         $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='mainMenuCategoryOrder'");
 
         $data = array('gibbonRoleID' => $gibbonRoleID, 'menuOrder' => $mainMenuCategoryOrder);
