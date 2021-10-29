@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         'error8' => __('Your request failed because the selected date is not in the future.'),
     ]);
 
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
     $gibbonThemeName = $gibbon->session->get('gibbonThemeName');

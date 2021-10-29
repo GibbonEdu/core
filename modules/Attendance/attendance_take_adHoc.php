@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -121,13 +122,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if (empty($gibbonActivityID) && empty($gibbonGroupID) && empty($gibbonPersonIDList)) {
         return;
     }
-    
 
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
-    
-    $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
-    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+
+    $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType');
+    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
     
     // Get list of students for selected target
     $targetID = $target == 'Activity' ? $gibbonActivityID : ($target == 'Messenger' ? $gibbonGroupID : $gibbonPersonIDList);

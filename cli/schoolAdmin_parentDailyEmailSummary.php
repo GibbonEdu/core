@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -34,7 +35,8 @@ setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$settingGateway = $container->get(SettingGateway::class);
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
@@ -51,8 +53,8 @@ if ($session->get('organisationEmail') == '') {
     return;
 }
 
-$parentDailyEmailSummaryIntroduction = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryIntroduction');
-$parentDailyEmailSummaryPostScript = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryPostScript');
+$parentDailyEmailSummaryIntroduction = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryIntroduction');
+$parentDailyEmailSummaryPostScript = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryPostScript');
 
 // Override the ini to keep this process alive
 ini_set('memory_limit', '2048M');

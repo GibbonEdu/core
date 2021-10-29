@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
+    $categories = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'budgetCategories');
     if (empty($categories)) {
         $categories = 'Other';
     }

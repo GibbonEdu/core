@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     //Proceed!
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $status = $_GET['status'] ?? '' ;
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
 
     $viewMode = $_REQUEST['format'] ?? '';
 

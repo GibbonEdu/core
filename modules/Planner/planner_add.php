@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
@@ -37,8 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         //Set variables
         $today = date('Y-m-d');
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
-        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+        $settingGateway = $container->get(SettingGateway::class);
+        $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -65,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($date == '') {
                 $date = date('Y-m-d');
             }
-            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
             $params += [
                 'viewBy' => 'date',
@@ -85,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             ];
         }
 
-        list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
+        [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
 
         $proceed = true;
@@ -267,13 +269,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
             $form->addRow()->addHeading(__('Lesson Content'));
 
-            $description = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate') ;
+            $description = $settingGateway->getSettingByScope('Planner', 'lessonDetailsTemplate') ;
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('description', __('Lesson Details'));
                 $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
 
-            $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
+            $teachersNotes = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate');
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
@@ -365,7 +367,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $form->addRow()->addHeading(__('Outcomes'))->addClass('advanced');
                 $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'))->addClass('advanced');
 
-                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
+                $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
 
                 $row = $form->addRow()->addClass('advanced');
                     $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
@@ -374,12 +376,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             //Access
             $form->addRow()->addHeading(__('Access'))->addClass('advanced');
 
-            $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
+            $sharingDefaultStudents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents');
             $row = $form->addRow()->addClass('advanced');
                 $row->addLabel('viewableStudents', __('Viewable to Students'));
                 $row->addYesNo('viewableStudents')->required()->selected($sharingDefaultStudents);
 
-            $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
+            $sharingDefaultParents = $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents');
             $row = $form->addRow()->addClass('advanced');
                 $row->addLabel('viewableParents', __('Viewable to Parents'));
                 $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);

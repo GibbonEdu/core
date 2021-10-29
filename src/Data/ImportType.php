@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Data;
 
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\System\SettingGateway;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -196,22 +197,22 @@ class ImportType
         }
     }
 
-    public static function getBaseDir(Connection $pdo)
+    public static function getBaseDir(SettingGateway $settingGateway)
     {
-        $absolutePath = getSettingByScope($pdo->getConnection(), 'System', 'absolutePath');
+        $absolutePath = $settingGateway->getSettingByScope('System', 'absolutePath');
         return rtrim($absolutePath, '/ ');
     }
 
-    public static function getImportTypeDir(Connection $pdo)
+    public static function getImportTypeDir(SettingGateway $settingGateway)
     {
-        return self::getBaseDir($pdo) . "/resources/imports";
+        return self::getBaseDir($settingGateway) . "/resources/imports";
     }
 
-    public static function getCustomImportTypeDir(Connection $pdo)
+    public static function getCustomImportTypeDir(SettingGateway $settingGateway)
     {
-        $customFolder = getSettingByScope($pdo->getConnection(), 'System Admin', 'importCustomFolderLocation');
+        $customFolder = $settingGateway->getSettingByScope('System Admin', 'importCustomFolderLocation');
 
-        return self::getBaseDir($pdo).'/uploads/'.trim($customFolder, '/ ');
+        return self::getBaseDir($settingGateway).'/uploads/'.trim($customFolder, '/ ');
     }
 
     /**
@@ -220,13 +221,13 @@ class ImportType
      * @param   Object  PDO Connection
      * @return  array   2D array of importType objects
      */
-    public static function loadImportTypeList(Connection $pdo = null, $validateStructure = false)
+    public static function loadImportTypeList(SettingGateway $settingGateway, Connection $pdo = null, $validateStructure = false)
     {
         $yaml = new Yaml();
         $importTypes = [];
 
         // Get the built-in import definitions
-        $defaultFiles = glob(self::getImportTypeDir($pdo) . "/*.yml");
+        $defaultFiles = glob(self::getImportTypeDir($settingGateway) . "/*.yml");
 
         // Create importType objects for each file
         foreach ($defaultFiles as $file) {
@@ -239,10 +240,10 @@ class ImportType
         }
 
         // Get the user-defined custom definitions
-        $customFiles = glob(self::getCustomImportTypeDir($pdo) . "/*.yml");
+        $customFiles = glob(self::getCustomImportTypeDir($settingGateway) . "/*.yml");
 
-        if (is_dir(self::getCustomImportTypeDir($pdo))==false) {
-            mkdir(self::getCustomImportTypeDir($pdo), 0755, true) ;
+        if (is_dir(self::getCustomImportTypeDir($settingGateway))==false) {
+            mkdir(self::getCustomImportTypeDir($settingGateway), 0755, true) ;
         }
 
         foreach ($customFiles as $file) {
@@ -284,13 +285,13 @@ class ImportType
      * @param   Object  PDO Conenction
      * @return  [importType]
      */
-    public static function loadImportType($importTypeName, Connection $pdo = null)
+    public static function loadImportType($importTypeName, SettingGateway $settingGateway, Connection $pdo = null)
     {
         // Check custom first, this allows for local overrides
-        $path = self::getCustomImportTypeDir($pdo).'/'.$importTypeName.'.yml';
+        $path = self::getCustomImportTypeDir($settingGateway).'/'.$importTypeName.'.yml';
         if (!file_exists($path)) {
             // Next check the built-in import types folder
-            $path = self::getImportTypeDir($pdo).'/'.$importTypeName.'.yml';
+            $path = self::getImportTypeDir($settingGateway).'/'.$importTypeName.'.yml';
 
             // Finally fail if nothing is found
             if (!file_exists($path)) {

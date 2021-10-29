@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo __('Choose Students');
     echo '</h2>';
 
-    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+    $cutoffDate = $container->get(SettingGateway::class)->getSettingByScope('Data Updater', 'cutoffDate');
     $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26));
 
     $choices = isset($_POST['members'])? $_POST['members'] : array();

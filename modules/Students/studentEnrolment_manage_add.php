@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\StudentGateway;
@@ -83,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
         $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
         if ($classMapCount > 0) {
-            $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
+            $autoEnrolDefault = $container->get(SettingGateway::class)->getSettingByScope('Timetable Admin', 'autoEnrolCourses');
             $row = $form->addRow();
                 $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
                     ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));

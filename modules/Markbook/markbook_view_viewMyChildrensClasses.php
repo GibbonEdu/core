@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -27,10 +28,11 @@ $page->breadcrumbs->add(__('View Markbook'));
 if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID') ) . date('zWy') ) return;
 
 //Get settings
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-$attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$attainmentAltName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+$effortAltName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
 $entryCount = 0;
 echo '<p>';
@@ -92,8 +94,8 @@ if ($result->rowCount() < 1) {
         echo $form->getOutput();
     }
 
-    $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
-    $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
+    $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
+    $showParentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
 
     if (!empty($gibbonPersonID) and count($options) > 0) {
         //Confirm access to this student
@@ -161,7 +163,7 @@ if ($result->rowCount() < 1) {
                     ->fromQuery($pdo, $sqlSelect, $dataSelect)
                     ->selected($filter);
 
-            $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+            $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
             if (!empty($types)) {
                 $rowFilter = $form->addRow();
                 $rowFilter->addLabel('filter3', __('Type'));
@@ -484,8 +486,8 @@ if ($result->rowCount() < 1) {
                             }
                         }
 
-                        $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-                        $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
+                        $enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+                        $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                         if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
                             renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $rowList['gibbonCourseClassID']);

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
@@ -36,13 +37,14 @@ include '../User Admin/moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/applicationForm.php';
 
+$settingGateway = $container->get(SettingGateway::class);
 
 $proceed = false;
 $public = false;
 if (!$session->has('username')) {
     $public = true;
     //Get public access
-    $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+    $access = $settingGateway->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications');
     if ($access == 'Y') {
         $proceed = true;
     }
@@ -123,7 +125,7 @@ if ($proceed == false) {
 
             //Deal with required documents
             $uploadedDocuments = array();
-            $requiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
+            $requiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
             if (!empty($requiredDocuments)) {
                 $fileCount = 0;
                 if (isset($_POST['fileCount'])) {
@@ -211,7 +213,7 @@ if ($proceed == false) {
                         $event->sendNotifications($pdo, $gibbon->session);
 
                         //Email reference form link to referee
-                        $applicationFormRefereeLink = unserialize(getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink'));
+                        $applicationFormRefereeLink = unserialize($settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink'));
                         if ($applicationFormRefereeLink[$type] != '' and ($referenceEmail1 != '' or $refereeEmail2 != '') and $session->get('organisationHRName') != '' and $session->get('organisationHREmail') != '') {
                             //Prep message
                             $subject = __('Request For Reference');

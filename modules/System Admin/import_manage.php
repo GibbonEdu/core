@@ -43,7 +43,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
         ->setURL('/modules/System Admin/import_history.php')
         ->displayLabel();
 
-    $setting = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'importCustomFolderLocation', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('System Admin', 'importCustomFolderLocation', true);
         $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addTextField($setting['name'])->required()->setValue($setting['value']);
@@ -55,7 +57,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
     echo $form->getOutput();
 
     // Get a list of available import options
-    $importTypeList = ImportType::loadImportTypeList($pdo, false);
+    $importTypeList = ImportType::loadImportTypeList($settingGateway, $pdo, false);
 
     // Build an array of combined import type info and log data
     $importTypeGroups = array_reduce($importTypeList, function ($group, $importType) use ($guid, $connection2, $logsByType) {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     }
 
     //Check to see if IP addresses are set
-    $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+    $studentSelfRegistrationIPAddresses = $container->get(SettingGateway::class)->getSettingByScope('Attendance', 'studentSelfRegistrationIPAddresses');
     $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
         echo "<div class='error'>";

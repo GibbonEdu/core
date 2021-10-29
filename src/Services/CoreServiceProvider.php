@@ -88,7 +88,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      * this one, otherwise they will be ignored.
      */
     public function boot()
-    {
+    { 
         $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
@@ -253,16 +253,16 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         });
 
         $container->add(SMSInterface::class, function () use ($container) {
-            $connection2 = $container->get('db')->getConnection();
-            $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+            $settingGateway = $container->get(SettingGateway::class);
+            $smsGateway = $settingGateway->getSettingByScope('Messenger', 'smsGateway');
 
             return new SMS([
                 'smsGateway'   => $smsGateway,
-                'smsSenderID'  => getSettingByScope($connection2, 'Messenger', 'smsSenderID'),
-                'smsURL'       => getSettingByScope($connection2, 'Messenger', 'smsURL'),
-                'smsURLCredit' => getSettingByScope($connection2, 'Messenger', 'smsURLCredit'),
-                'smsUsername'  => getSettingByScope($connection2, 'Messenger', 'smsUsername'),
-                'smsPassword'  => getSettingByScope($connection2, 'Messenger', 'smsPassword'),
+                'smsSenderID'  => $settingGateway->getSettingByScope('Messenger', 'smsSenderID'),
+                'smsURL'       => $settingGateway->getSettingByScope('Messenger', 'smsURL'),
+                'smsURLCredit' => $settingGateway->getSettingByScope('Messenger', 'smsURLCredit'),
+                'smsUsername'  => $settingGateway->getSettingByScope('Messenger', 'smsUsername'),
+                'smsPassword'  => $settingGateway->getSettingByScope('Messenger', 'smsPassword'),
                 'smsMailer'    => $smsGateway == 'Mail to SMS' ? $container->get(MailerInterface::class) : '',
             ]);
         });
