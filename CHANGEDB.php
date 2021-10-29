@@ -1055,4 +1055,5 @@ INSERT IGNORE INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDis
 ALTER TABLE `gibbonPerson` CHANGE `googleAPIRefreshToken` `googleAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPerson` CHANGE `microsoftAPIRefreshToken` `microsoftAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonPerson` CHANGE `genericAPIRefreshToken` `genericAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonSession` CHANGE `sessionData` `sessionData` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ";
