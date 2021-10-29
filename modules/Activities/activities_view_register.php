@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -46,8 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             //Get current role category
             $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
+            $settingGateway = $container->get(SettingGateway::class);
+
             //Check access controls
-            $access = getSettingByScope($connection2, 'Activities', 'access');
+            $access = $settingGateway->getSettingByScope('Activities', 'access');
 
             $gibbonPersonID = $_GET['gibbonPersonID'];
             $search = isset($_GET['search'])? $_GET['search'] : '';
@@ -134,9 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $today = date('Y-m-d');
 
                             //Should we show date as term or date?
-                            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
                             if ($dateType == 'Term') {
-                                $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
+                                $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
                             }
 
                             try {
@@ -197,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     } else {
 
                                         echo '<p>';
-                                        if (getSettingByScope($connection2, 'Activities', 'enrolmentType') == 'Selection') {
+                                        if ($settingGateway->getSettingByScope('Activities', 'enrolmentType') == 'Selection') {
                                             echo __('After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
                                         } else {
                                             echo __('If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
@@ -236,13 +239,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                                 $row->addDate('programEnd')->readonly();
                                         }
 
-                                        if (getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single') {
+                                        if ($settingGateway->getSettingByScope('Activities', 'payment') != 'None' && $settingGateway->getSettingByScope('Activities', 'payment') != 'Single') {
                                                 $row = $form->addRow();
                                                     $row->addLabel('payment', __('Cost'))->description(__('For entire programme'));
                                                     $row->addCurrency('payment')->readonly();
                                             }
 
-                                        if (getSettingByScope($connection2, 'Activities', 'backupChoice') == 'Y') {
+                                        if ($settingGateway->getSettingByScope('Activities', 'backupChoice') == 'Y') {
                                             if ($dateType != 'Date') {
                                                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID, 'gibbonActivityID' => $gibbonActivityID);
                                                 $sql = "SELECT DISTINCT gibbonActivity.gibbonActivityID as value, gibbonActivity.name FROM gibbonActivity JOIN gibbonStudentEnrolment ON (gibbonActivity.gibbonYearGroupIDList LIKE concat( '%', gibbonStudentEnrolment.gibbonYearGroupID, '%' )) WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND NOT gibbonActivityID=:gibbonActivityID AND NOT gibbonSchoolYearTermIDList='' AND active='Y' $and ORDER BY name";
@@ -280,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $today = date('Y-m-d');
 
                             //Should we show date as term or date?
-                            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
                             try {
                                 if ($dateType != 'Date') {

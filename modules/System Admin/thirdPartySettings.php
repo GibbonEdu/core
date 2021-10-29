@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     // SMS Gateway Options - these are not translated, as they represent company names
     $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsGateway', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsGateway', true);
     $smsGatewaySetting = $setting['value'];
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

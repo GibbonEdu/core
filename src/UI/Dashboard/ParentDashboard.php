@@ -22,6 +22,7 @@ namespace Gibbon\UI\Dashboard;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
@@ -40,11 +41,13 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
     protected $db;
     protected $session;
+    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->session = $session;
+        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -146,7 +149,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $connection2 = $this->db->getConnection();
         $session = $this->session;
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNameSingular = $this->settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
 
         $return = false;
 
@@ -268,13 +271,13 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='" . Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('search', $gibbonPersonID) . "'>".__('View Markbook').'</a></span></div>';
 
             //Get settings
-            $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-            $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-            $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-            $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-            $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-            $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
-            $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
+            $enableEffort = $this->settingGateway->getSettingByScope('Markbook', 'enableEffort');
+            $enableRubrics = $this->settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+            $attainmentAlternativeName = $this->settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+            $attainmentAlternativeNameAbrev = $this->settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+            $effortAlternativeName = $this->settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+            $effortAlternativeNameAbrev = $this->settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
+            $enableModifiedAssessment = $this->settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
             try {
                 $dataEntry = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
@@ -285,8 +288,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 $gradesOutput .= "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultEntry->rowCount() > 0) {
-                $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
-                $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
+                $showParentAttainmentWarning = $this->settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
+                $showParentEffortWarning = $this->settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
                 $grades = true;
                 $gradesOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
                 $gradesOutput .= "<tr class='head'>";
@@ -552,7 +555,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         $deadlines = false;
         if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
 
-            $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+            $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
             $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('search', $gibbonPersonID)."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
 
 
@@ -599,9 +602,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                 "'>".__('View Available Activities').'</a>';
             $activitiesOutput .= '</div>';
 
-            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+            $dateType = $this->settingGateway->getSettingByScope('Activities', 'dateType');
             if ($dateType == 'Term') {
-                $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
+                $maxPerTerm = $this->settingGateway->getSettingByScope('Activities', 'maxPerTerm');
             }
             try {
                 $dataYears = array('gibbonPersonID' => $gibbonPersonID);
@@ -639,7 +642,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $activitiesOutput .= '<th>';
                         $activitiesOutput .= __('Activity');
                         $activitiesOutput .= '</th>';
-                        $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
+                        $options = $this->settingGateway->getSettingByScope('Activities', 'activityTypes');
                         if ($options != '') {
                             $activitiesOutput .= '<th>';
                             $activitiesOutput .= __('Type');
@@ -776,7 +779,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
-            $parentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab');
+            $parentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab');
             $parentDashboardDefaultTabCount = null;
 
             $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";

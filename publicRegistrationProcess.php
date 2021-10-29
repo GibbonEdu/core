@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
@@ -32,8 +33,10 @@ $URL = Url::fromRoute('publicRegistration');
 
 $proceed = false;
 
+$settingGateway = $container->get(SettingGateway::class);
+
 if ($session->exists('username') == false) {
-    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+    $enablePublicRegistration = $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
     }
@@ -64,8 +67,8 @@ if ($proceed == false) {
     $password = $_POST['passwordNew'];
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);
-    $status = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus');
-    $gibbonRoleIDPrimary = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole');
+    $status = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultStatus');
+    $gibbonRoleIDPrimary = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationDefaultRole');
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;
 
     if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $dob == '' or $email == '' or $username == '' or $password == '' or $gibbonRoleIDPrimary == '' or $gibbonRoleIDPrimary == '' or ($status != 'Pending Approval' and $status != 'Full')) {
@@ -74,7 +77,7 @@ if ($proceed == false) {
     }
 
     // Check email address domain
-    $allowedDomains = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains');
+    $allowedDomains = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAllowedDomains');
     $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomains)));
 
     if (!empty($allowedDomains)) {
@@ -104,7 +107,7 @@ if ($proceed == false) {
     }
 
     // Check uniqueness of username (and/or email, if required)
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $data = array('username' => $username, 'email' => $email);
         $sql = 'SELECT * FROM gibbonPerson WHERE username=:username OR email=:email';
@@ -121,7 +124,7 @@ if ($proceed == false) {
     }
 
     // Check publicRegistrationMinimumAge
-    $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
+    $publicRegistrationMinimumAge = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge');
 
     if (!empty($publicRegistrationMinimumAge) > 0 and $publicRegistrationMinimumAge > (new DateTime('@'.Format::timestamp($dob)))->diff(new DateTime())->y) {
         header("Location: {$URL->withReturn('error5')}");

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     
     // Setup attendance class
     require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
 

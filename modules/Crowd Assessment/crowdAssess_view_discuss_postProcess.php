@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
@@ -120,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                             $name = $rowLesson['name'];
                         }
 
-                        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+                        $homeworkNameSingular = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'homeworkNameSingular');
 
                         //Create notification for homework owner, as long as it is not me.
                         if ($gibbonPersonID != $session->get('gibbonPersonID') and $gibbonPersonID != $replyToID) {

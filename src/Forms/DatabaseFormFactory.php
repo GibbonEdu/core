@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Services\Format;
@@ -316,13 +317,15 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectStatus($name)
     {
+        global $container;
+
         $statuses = array(
             'Full'     => __('Full'),
             'Expected' => __('Expected'),
             'Left'     => __('Left'),
         );
 
-        if (getSettingByScope($this->pdo->getConnection(), 'User Admin', 'enablePublicRegistration') == 'Y') {
+        if ($container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration') == 'Y') {
             $statuses['Pending Approval'] = __('Pending Approval');
         }
 

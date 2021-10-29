@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -72,7 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             //Let's go!
             $values = $result->fetch();
-            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+
+            $settingGateway = $container->get(SettingGateway::class);
+            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
@@ -115,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row->addTextField('student')->readOnly()->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
 
             $statuses = array('Accepted' => __('Accepted'));
-            $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+            $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             if ($enrolment == 'Competitive') {
                 $statuses['Waiting List'] = __('Waiting List');
             } else {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
@@ -39,8 +40,9 @@ if (empty($key) || empty($gibbonApplicationFormID)) {
 } else {
     // Proceed!
     $applicationFormGateway = $container->get(ApplicationFormGateway::class);
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $feeTotal = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    $settingGateway = $container->get(SettingGateway::class);
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $feeTotal = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
 
     $payment = $container->get(Payment::class);
     $payment->setReturnURL($URLPayment);

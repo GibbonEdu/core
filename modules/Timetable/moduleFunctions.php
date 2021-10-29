@@ -23,6 +23,7 @@ use Microsoft\Graph\Model\Location;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -176,7 +177,8 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    $ssoMicrosoft = getSettingByScope($connection2, 'System Admin', 'ssoMicrosoft');
+    $settingGateway = $container->get(SettingGateway::class);
+    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
     $ssoMicrosoft = json_decode($ssoMicrosoft, true);
 
     if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
@@ -227,11 +229,11 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
                 $event->getWebLink(),
             ];
         }
-        
+
         return $eventsSchool;
     }
 
-    $ssoGoogle = getSettingByScope($connection2, 'System Admin', 'ssoGoogle');
+    $ssoGoogle = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
     $ssoGoogle = json_decode($ssoGoogle, true);
 
     if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken')) {

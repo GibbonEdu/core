@@ -17,22 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 
 include '../../gibbon.php';
 
 $logGateway = $container->get(LogGateway::class);
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-$enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $address = $_GET['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_data.php&gibbonMarkbookColumnID=$gibbonMarkbookColumnID&gibbonCourseClassID=$gibbonCourseClassID";
 
-$personalisedWarnings = getSettingByScope($connection2, 'Markbook', 'personalisedWarnings');
+$personalisedWarnings = $settingGateway->getSettingByScope('Markbook', 'personalisedWarnings');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
     $URL .= '&return=error0';

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
@@ -34,6 +35,8 @@ $payment = $container->get(Payment::class);
 $payment->setReturnURL($URLPayment);
 $payment->setCancelURL($URLPayment);
 $payment->setForeignTable('gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
+
+$settingGateway = $container->get(SettingGateway::class);
 
 if (!$payment->incomingPayment()) {
     // No incoming payment, let's send a request
@@ -86,8 +89,8 @@ if (!$payment->incomingPayment()) {
             }
 
             if ($payment->isEnabled() and $feeTotal > 0) {
-                $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
-                $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
+                $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
+                $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
                 if ($financeOnlinePaymentEnabled == 'Y') {
                     if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
                         // Let's make a payment
@@ -245,7 +248,7 @@ if (!$payment->incomingPayment()) {
                 $body = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true, $receiptCount)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
 
                 $mail = $container->get(Mailer::class);
-                $mail->SetFrom(getSettingByScope($connection2, 'Finance', 'email'), sprintf(__('%1$s Finance'), $session->get('organisationName')));
+                $mail->SetFrom($settingGateway->getSettingByScope('Finance', 'email'), sprintf(__('%1$s Finance'), $session->get('organisationName')));
                 foreach ($emails as $address) {
                     $mail->AddBCC($address);
                 }

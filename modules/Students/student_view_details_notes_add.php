@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -28,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $search = $_GET['search'] ?? '';
     $sort = $_GET['sort'] ?? '';
 
-    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
         echo "<div class='error'>";
         echo __('You do not have access to this action.');

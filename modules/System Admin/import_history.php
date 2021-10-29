@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\ImportType;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\System\LogGateway;
@@ -32,7 +33,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->add(__('Import History'));
 
     // Get a list of available import options
-    $importTypeList = ImportType::loadImportTypeList($pdo, false);
+    $importTypeList = ImportType::loadImportTypeList($container->get(SettingGateway::class), $pdo, false);
 
     $logGateway = $container->get(LogGateway::class);
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchAll();

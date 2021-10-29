@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -37,11 +38,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     $dataUpdaterGateway = $container->get(DataUpdaterGateway::class);
 
     // Get the data updater settings for required updates
-    $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+    $settingGateway = $container->get(SettingGateway::class);
+    $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
     if ($requiredUpdates == 'Y') {
-        $requiredUpdatesByType = getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType');
+        $requiredUpdatesByType = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdatesByType');
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
-        $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+        $cutoffDate = $settingGateway->getSettingByScope('Data Updater', 'cutoffDate');
     } else {
         $requiredUpdatesByType = [];
         $cutoffDate = null;

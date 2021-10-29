@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\DataUpdater;
 
 use Gibbon\Domain\Gateway;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * Data Updater Gateway
@@ -126,8 +127,10 @@ class DataUpdaterGateway extends Gateway
 
         if ($updatablePeople->rowCount() == 0) return 0;
 
-        $cutoffDate = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'cutoffDate');
-        $requiredUpdatesByType = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'requiredUpdatesByType');
+        global $container;
+
+        $cutoffDate = $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='cutoffDate'");
+        $requiredUpdatesByType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='requiredUpdatesByType'");
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
 
         if (empty($requiredUpdatesByType) || empty($cutoffDate)) return 0;

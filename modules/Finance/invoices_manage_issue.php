@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Finance\Forms\FinanceFormFactory;
 use Gibbon\Services\Format;
@@ -137,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
 			$form->addRow()->addHeading(__('Email Invoice'));
 
-			$email = getSettingByScope($connection2, 'Finance', 'email');
+			$email = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'email');
 			$form->addHiddenValue('email', $email);
 			if (empty($email)) {
 				$form->addRow()->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Importer;
 use Gibbon\Data\ImportType;
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     $type = $_GET['type'] ?? '';
     $step = isset($_GET['step'])? min(max(1, $_GET['step']), 4) : 1;
 
-    $importType = ImportType::loadImportType($type, $pdo);
+    $importType = ImportType::loadImportType($type, $container->get(SettingGateway::class), $pdo);
 
     $nameParts = array_map('trim', explode('-', $importType->getDetail('name')));
     $name = implode(' - ', array_map('__', $nameParts));

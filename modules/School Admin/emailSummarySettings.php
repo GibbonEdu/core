@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummarySettings.php') == false) {
@@ -32,24 +33,26 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummaryS
 
     $form->addRow()->addHeading(__('Weekly Summary'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
     $form->addRow()->addHeading(__('Daily Summary'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryIntroduction', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryIntroduction', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentDailyEmailSummaryPostScript', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryPostScript', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);

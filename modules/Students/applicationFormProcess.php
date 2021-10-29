@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
@@ -44,10 +45,12 @@ $URLPayment = $session->get('absoluteURL').'/modules/Students/applicationFormPro
 $proceed = false;
 $public = false;
 
+$settingGateway = $container->get(SettingGateway::class);
+
 if (!$session->has('username')) {
     $public = true;
     //Get public access
-    $access = getSettingByScope($connection2, 'Application Form', 'publicApplications');
+    $access = $settingGateway->getSettingByScope('Application Form', 'publicApplications');
     if ($access == 'Y') {
         $proceed = true;
     }
@@ -327,7 +330,7 @@ if ($proceed == false) {
                 }
 
                 //Deal with required documents
-                $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+                $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
                 if ($requiredDocuments != '' and $requiredDocuments != false) {
                     $fileCount = 0;
                     if (isset($_POST['fileCount'])) {
@@ -367,7 +370,7 @@ if ($proceed == false) {
 
 
                 //Email reference form link to referee
-                $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
+                $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
                 if ($applicationFormRefereeLink != '' and $referenceEmail != '' and $session->get('organisationAdmissionsName') != '' and $session->get('organisationAdmissionsEmail') != '') {
                     //Prep message
                     $subject = __('Request For Reference');
@@ -437,7 +440,7 @@ if ($proceed == false) {
                 }
 
                 //Attempt payment if everything is set up for it
-                $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+                $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
 
                 $payment = $container->get(Payment::class);
                 $payment->setReturnURL($URLPayment.'&id='.$secureAI);
@@ -462,8 +465,8 @@ if ($proceed == false) {
     }
     //IF ID IS SET WE ARE JUST RETURNING TO FINALISE PAYMENT AND RECORD OF PAYMENT, SO LET'S DO IT.
     else {
-        $paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
-        $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+        $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
+        $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
         
         $paymentToken = $_GET['token'] ?? '';
         $paymentPayerID = $_GET['PayerID'] ?? '';

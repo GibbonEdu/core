@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
@@ -41,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     // Handle attendance student registration message
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
-        $emailLink = getSettingByScope($connection2, 'System', 'emailLink');
+        $emailLink = $container->get(SettingGateway::class)->getSettingByScope('System', 'emailLink');
         if (empty($emailLink)) {
             $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), '', '');
         }

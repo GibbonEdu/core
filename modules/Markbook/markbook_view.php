@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 //Module includes
+use Gibbon\Domain\System\SettingGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
@@ -38,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
+        $enableModifiedAssessment = $container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableModifiedAssessment');
         $alert = getAlert($guid, $connection2, 002);
 
         // Define a randomized lock for this script

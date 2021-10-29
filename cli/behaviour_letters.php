@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\EmailTemplate;
@@ -41,8 +42,10 @@ if (!empty($session->get('i18n')['code'])) {
     textdomain('gibbon');
 }
 
+$settingGateway = $container->get(SettingGateway::class);
+
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
@@ -59,13 +62,13 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     $notificationSender = new NotificationSender($notificationGateway, $session);
 
     //Get settings
-    $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-    $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
-    $enableNegativeBehaviourLetters = getSettingByScope($connection2, 'Behaviour', 'enableNegativeBehaviourLetters');
+    $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+    $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
+    $enableNegativeBehaviourLetters = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters');
     if ($enableNegativeBehaviourLetters == 'Y') {
-        $behaviourLettersNegativeLetter1Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter1Count');
-        $behaviourLettersNegativeLetter2Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter2Count');
-        $behaviourLettersNegativeLetter3Count = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersNegativeLetter3Count');
+        $behaviourLettersNegativeLetter1Count = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersNegativeLetter1Count');
+        $behaviourLettersNegativeLetter2Count = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersNegativeLetter2Count');
+        $behaviourLettersNegativeLetter3Count = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersNegativeLetter3Count');
 
         $behaviourLetterGateway = $container->get(BehaviourLetterGateway::class);
         $emailTemplateGateway = $container->get(EmailTemplateGateway::class);

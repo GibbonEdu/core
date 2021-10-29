@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Psr\Container\ContainerInterface;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -32,8 +33,10 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
     $guid = $container->get('config')->getConfig('guid');
     $connection2 = $container->get('db')->getConnection();
 
-    $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-    $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+    $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
     $behaviourGateway = $container->get(BehaviourGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -69,7 +72,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                         ->displayLabel();
                 }
 
-                $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+                $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
                 if (!empty($policyLink)) {
                     $table->addHeaderAction('policy', __('View Behaviour Policy'))
                         ->setExternalURL($policyLink)

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -182,7 +183,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email');
 
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField($session->get('absoluteURL').'/modules/User Admin/user_manage_emailAjax.php');
     }
@@ -242,9 +245,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // SCHOOL INFORMATION
     $form->addRow()->addHeading(__('School Information'));
 
-    $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+    $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
-        $dayTypeText = getSettingByScope($connection2, 'User Admin', 'dayTypeText');
+        $dayTypeText = $settingGateway->getSettingByScope('User Admin', 'dayTypeText');
         $row = $form->addRow();
             $row->addLabel('dayType', __('Day Type'))->description($dayTypeText);
             $row->addSelect('dayType')->fromString($dayTypeOptions)->placeholder();
@@ -285,7 +288,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('countryOfBirth', __('Country of Birth'));
         $row->addSelectCountry('countryOfBirth');
 
-    $ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
+    $ethnicities = $settingGateway->getSettingByScope('User Admin', 'ethnicity');
     $row = $form->addRow();
         $row->addLabel('ethnicity', __('Ethnicity'));
         if (!empty($ethnicities)) {
@@ -294,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addTextField('ethnicity')->maxLength(255);
         }
 
-    $religions = getSettingByScope($connection2, 'User Admin', 'religions');
+    $religions = $settingGateway->getSettingByScope('User Admin', 'religions');
     $row = $form->addRow();
         $row->addLabel('religion', __('Religion'));
         if (!empty($religions)) {
@@ -303,8 +306,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addTextField('religion')->maxLength(30);
         }
 
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
+    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
 
     // EMPLOYMENT
     $form->addRow()->addHeading(__('Employment'));
@@ -395,8 +398,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('vehicleRegistration', __('Vehicle Registration'));
         $row->addTextField('vehicleRegistration')->maxLength(20);
 
-    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+    $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
+    $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
@@ -406,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
     }
 
-    $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
+    $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
     if (!empty($studentAgreementOptions)) {
         $options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
 
@@ -461,7 +464,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
     $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
     if ($classMapCount > 0) {
-        $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
+        $autoEnrolDefault = $settingGateway->getSettingByScope('Timetable Admin', 'autoEnrolCourses');
         $row = $form->addRow()->addClass('studentRecord');;
             $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
                 ->description(__('Should this student be automatically enrolled in courses for their Form Group?'));

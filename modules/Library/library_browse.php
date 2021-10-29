@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -33,13 +34,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 } else {
     //Proceed!
     //Get display settings
+    $settingGateway = $container->get(SettingGateway::class);
+
     $browseBGColorStyle = null;
-    $browseBGColor = getSettingByScope($connection2, 'Library', 'browseBGColor');
+    $browseBGColor = $settingGateway->getSettingByScope('Library', 'browseBGColor');
     if ($browseBGColor != '') {
         $browseBGColorStyle = "; background-color: $browseBGColor";
     }
     $browseBGImageStyle = null;
-    $browseBGImage = getSettingByScope($connection2, 'Library', 'browseBGImage');
+    $browseBGImage = $settingGateway->getSettingByScope('Library', 'browseBGImage');
     if ($browseBGImage != '') {
         $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
     }

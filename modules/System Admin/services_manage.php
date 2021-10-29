@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -38,13 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     // VALUE ADDED
     $form->addRow()->addHeading(__('gibbonedu.com Services'));
 
-    $settingName = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $settingName = $settingGateway->getSettingByScope('System', 'gibboneduComOrganisationName', true);
     $row = $form->addRow();
         $row->addLabel($settingName['name'], __($settingName['nameDisplay']))
             ->description(__($settingName['description']));
         $row->addTextField($settingName['name'])->setValue($settingName['value']);
 
-    $settingKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey', true);
+    $settingKey = $settingGateway->getSettingByScope('System', 'gibboneduComOrganisationKey', true);
     $row = $form->addRow();
         $row->addLabel($settingKey['name'], __($settingKey['nameDisplay']))
             ->description(__($settingKey['description']));

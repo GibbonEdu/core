@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -53,10 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo $form->getOutput();
 
     if (!empty($gibbonPersonID)) {
-        $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
-        $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+        $settingGateway = $container->get(SettingGateway::class);
+        $options = $settingGateway->getSettingByScope('Activities', 'activityTypes');
+        $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
         if ($dateType == 'Term') {
-            $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
+            $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
         }
 
         $gateway = $container->get(ActivityReportGateway::class);

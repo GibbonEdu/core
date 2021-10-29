@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 function num2alpha($n)
 {
     for ($r = ''; $n >= 0; $n = intval($n / 26) - 1) {
@@ -66,10 +68,10 @@ function getActivitySessions($guid, $connection2, $weekDays, $timespan, $session
 
 function getActivityTimespan($connection2, $gibbonActivityID, $gibbonSchoolYearTermIDList)
 {
-    $timespan = array();
+    global $container;
 
     // Figure out what kind of dateType we're using
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
     if ($dateType != 'Date') {
         if (empty($gibbonSchoolYearTermIDList)) {
             return array();

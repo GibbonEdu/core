@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -84,6 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $step = 1;
             }
 
+            $settingGateway = $container->get(SettingGateway::class);
+
             //Step 1
             if ($step == 1) {
                 echo '<h3>';
@@ -113,14 +116,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
-                $informStudent = (getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault') == 'Y');
+                $informStudent = ($settingGateway->getSettingByScope('Application Form', 'notificationStudentDefault') == 'Y');
                 $col->addCheckbox('informStudent')
                     ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
                     ->inline(true)
                     ->checked($informStudent)
                     ->setClass('');
 
-                $informParents = (getSettingByScope($connection2, 'Application Form', 'notificationParentsDefault') == 'Y');
+                $informParents = ($settingGateway->getSettingByScope('Application Form', 'notificationParentsDefault') == 'Y');
                 $col->addCheckbox('informParents')
                     ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
                     ->inline(true)
@@ -159,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     // Student has a form group and mapped classes exist
                     if ($classMapCount > 0) {
-                        $autoEnrolStudent = (getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses') == 'Y');
+                        $autoEnrolStudent = ($settingGateway->getSettingByScope('Timetable Admin', 'autoEnrolCourses') == 'Y');
 
                         $col->addContent(__('The system can optionally perform the following actions:'))->wrap('<i><u>', '</u></i>');
                         $col->addCheckbox('autoEnrolStudent')
@@ -251,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 //Set default email address for student
                 $email = $values['email'];
                 $emailAlternate = '';
-                $studentDefaultEmail = getSettingByScope($connection2, 'Application Form', 'studentDefaultEmail');
+                $studentDefaultEmail = $settingGateway->getSettingByScope('Application Form', 'studentDefaultEmail');
                 if ($studentDefaultEmail != '') {
                     $emailAlternate = $email;
                     $email = str_replace('[username]', $username, $studentDefaultEmail);
@@ -259,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 //Set default website address for student
                 $website = '';
-                $studentDefaultWebsite = getSettingByScope($connection2, 'Application Form', 'studentDefaultWebsite');
+                $studentDefaultWebsite = $settingGateway->getSettingByScope('Application Form', 'studentDefaultWebsite');
                 if ($studentDefaultWebsite != '') {
                     $website = str_replace('[username]', $username, $studentDefaultWebsite);
                 }
@@ -337,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 //ATTEMPT AUTOMATIC HOUSE ASSIGNMENT
                 $gibbonHouseID = null;
                 $house = '';
-                if (getSettingByScope($connection2, 'Application Form', 'autoHouseAssign') == 'Y') {
+                if ($settingGateway->getSettingByScope('Application Form', 'autoHouseAssign') == 'Y') {
                     $houseFail = false;
                     if ($values['gibbonYearGroupIDEntry'] == '' or $values['gibbonSchoolYearIDEntry'] == '' and $values['gender'] == '') { //No year group or school year set, so return error
                         $houseFail = true;
@@ -1065,7 +1068,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo __('Student Welcome Email');
                         echo '</h4>';
                         $emailCount = 0 ;
-                        $notificationStudentMessage = getSettingByScope($connection2, 'Application Form', 'notificationStudentMessage');
+                        $notificationStudentMessage = $settingGateway->getSettingByScope('Application Form', 'notificationStudentMessage');
                         foreach ($informStudentArray as $informStudentEntry) {
                             if ($informStudentEntry['email'] != '' and $informStudentEntry['surname'] != '' and $informStudentEntry['preferredName'] != '' and $informStudentEntry['username'] != '' and $informStudentEntry['password']) {
                                 $to = $informStudentEntry['email'];
@@ -1110,7 +1113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo 'Parent Welcome Email';
                         echo '</h4>';
                         $emailCount = 0 ;
-                        $notificationParentsMessage = getSettingByScope($connection2, 'Application Form', 'notificationParentsMessage');
+                        $notificationParentsMessage = $settingGateway->getSettingByScope('Application Form', 'notificationParentsMessage');
                         foreach ($informParentsArray as $informParentsEntry) {
                             if ($informParentsEntry['email'] != '' and $informParentsEntry['surname'] != '' and $informParentsEntry['preferredName'] != '' and $informParentsEntry['username'] != '' and $informParentsEntry['password']) {
                                 $to = $informParentsEntry['email'];

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
@@ -47,8 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         //Get current role category
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
+        $settingGateway = $container->get(SettingGateway::class);
+
         //Check access controls
-        $access = getSettingByScope($connection2, 'Activities', 'access');
+        $access = $settingGateway->getSettingByScope('Activities', 'access');
 
         if ($access != 'Register') {
             //Fail0
@@ -63,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             } else {
                 $today = date('Y-m-d');
                 //Should we show date as term or date?
-                $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
                 try {
                     if ($dateType != 'Date') {
@@ -120,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             header("Location: {$URL}");
                         } else {
                             //Validate Inputs
-                            $backup = getSettingByScope($connection2, 'Activities', 'backupChoice');
+                            $backup = $settingGateway->getSettingByScope('Activities', 'backupChoice');
                             $gibbonActivityIDBackup = null;
                             if ($backup == 'N') {
                                 $gibbonActivityIDBackup = null;
@@ -133,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 header("Location: {$URL}");
                             } else {
                                 $status = 'Not accepted';
-                                $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+                                $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
 
                                 //Lock the activityStudent database table
                                 try {
@@ -266,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
 
                             //Bump up any waiting in competitive selection, to fill spaces available
-                            $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+                            $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
                             if ($enrolment == 'Competitive') {
                                 //Check to see who is registering in system
                                 $studentRegistration = false;

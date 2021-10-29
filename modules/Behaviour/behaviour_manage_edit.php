@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -25,8 +26,9 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     // Access denied
@@ -71,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 echo '</div>';
             } else {
                 echo "<div class='linkTop'>";
-                $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+                $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
                 if ($policyLink != '') {
                     echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
                 }
@@ -110,10 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Descriptor
                 if ($enableDescriptors == 'Y') {
                     if ($values['type'] == 'Negative') {
-                        $descriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
+                        $descriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
                     }
                     else {
-                        $descriptors = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors');
+                        $descriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
                     }
                     $descriptors = (!empty($descriptors))? explode(',', $descriptors) : array();
 
@@ -128,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //Level
                 if ($enableLevels == 'Y') {
-                    $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+                    $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
                     if ($optionsLevels != '') {
                         $optionsLevels = explode(',', $optionsLevels);
                     }

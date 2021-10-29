@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -32,15 +33,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $settingGateway = $container->get(SettingGateway::class);
     $viewMode = $_REQUEST['format'] ?? '';
     $allStudents = $_GET['allStudents'] ?? 'N';
     $sort = !empty($_GET['sort']) ? $_GET['sort'] : 'surname';
     $gibbonYearGroupIDList = $_GET['gibbonYearGroupIDList'] ?? [];
     $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
-    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
 
     require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Students Not Onsite'));

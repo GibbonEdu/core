@@ -18,10 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Domain\System\SettingGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 // common variables
-$makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$makeUnitsPublic = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'makeUnitsPublic');
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 

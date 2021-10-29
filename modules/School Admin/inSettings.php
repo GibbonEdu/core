@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -82,22 +83,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'Individual Needs', 'targetsTemplate', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('Individual Needs', 'targetsTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Individual Needs', 'teachingStrategiesTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Individual Needs', 'teachingStrategiesTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Individual Needs', 'notesReviewTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Individual Needs', 'notesReviewTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Individual Needs', 'investigationNotificationRole', true);
+    $setting = $settingGateway->getSettingByScope('Individual Needs', 'investigationNotificationRole', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectRole($setting['name'])->selected($setting['value']);

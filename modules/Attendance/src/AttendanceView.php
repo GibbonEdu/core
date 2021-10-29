@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Attendance;
 
 use Gibbon\Core;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Database\Connection;
 
@@ -35,6 +36,11 @@ class AttendanceView
      * Gibbon\Contracts\Database\Connection
      */
     protected $pdo;
+
+    /**
+     * @var SettingGateway
+     */
+    protected $settingGateway;
 
     /**
      * Attendance Types
@@ -60,11 +66,13 @@ class AttendanceView
      * @since    3rd May 2016
      * @param    Gibbon\Core
      * @param    Gibbon\Contracts\Database\Connection
+     * @param    SettingGateway $settingGateway
      * @return   void
      */
-    public function __construct(Core $gibbon, Connection $pdo)
+    public function __construct(Core $gibbon, Connection $pdo, SettingGateway $settingGateway)
     {
         $this->pdo = $pdo;
+        $this->settingGateway = $settingGateway;
 
         // Get attendance codes
         try {
@@ -87,8 +95,8 @@ class AttendanceView
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 
         // Get attendance reasons
-        $this->genericReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceReasons'));
-        $this->medicalReasons = explode(',', getSettingByScope($this->pdo->getConnection(), 'Attendance', 'attendanceMedicalReasons'));
+        $this->genericReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceReasons'));
+        $this->medicalReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceMedicalReasons'));
 
         //$this->attendanceReasons = array_merge( array(''), $this->genericReasons, $this->medicalReasons );
         $this->attendanceReasons = array_merge(array(''), $this->genericReasons);
@@ -173,7 +181,7 @@ class AttendanceView
     public function renderMiniHistory($gibbonPersonID, $context, $gibbonCourseClassID = null, $cssClass = '')
     {
 
-        $countClassAsSchool = getSettingByScope($this->pdo->getConnection(), 'Attendance', 'countClassAsSchool');
+        $countClassAsSchool = $this->settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
 
         $schoolDays = (is_array($this->last5SchoolDays)) ? implode(',', $this->last5SchoolDays) : '';
 

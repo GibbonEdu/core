@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $row->addLabel('gibbonTTID', __('Timetable'));
         $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->required()->placeholder(__('Please select...'))->selected($gibbonTTID);
 
-    $facilityTypes = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
+    $facilityTypes = $container->get(SettingGateway::class)->getSettingByScope('School Admin', 'facilityTypes');
     $facilityTypes = (!empty($facilityTypes))? explode(',', $facilityTypes) : [];
 
     $row = $form->addRow();

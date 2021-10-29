@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
@@ -41,8 +42,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         
         //Set variables
         $today = date('Y-m-d');
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
-        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+        $settingGateway = $container->get(SettingGateway::class);
+        $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
         //Proceed!
         //Get viewBy, date and class variables
@@ -70,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if ($date == '') {
                 $date = date('Y-m-d');
             }
-            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = null;
@@ -82,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
             }
         }
-        list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
+        [$todayYear, $todayMonth, $todayDay] = explode('-', $today);
         $todayStamp = mktime(12, 0, 0, $todayMonth, $todayDay, $todayYear);
         $gibbonPersonIDArray = [];
 

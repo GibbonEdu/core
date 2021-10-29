@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -27,8 +28,9 @@ use Gibbon\Domain\Students\StudentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') == false) {
     // Access denied
@@ -51,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $form->addHiddenValue('q', "/modules/Behaviour/behaviour_pattern.php");
 
     if ($enableDescriptors == 'Y') {
-        $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
+        $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
         $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
 
         $row = $form->addRow();
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
 
     if ($enableLevels == 'Y') {
-        $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+        $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
         if ($optionsLevels != '') {
             $optionsLevels = explode(',', $optionsLevels);
         }

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Contracts\Comms\Mailer;
@@ -112,11 +113,13 @@ else {
             return ['return' => 'fail3'];
 		}
 		else {
+            $settingGateway = $container->get(SettingGateway::class);
+
 			//SMS Credit notification
 			if ($smsCreditBalance != null && $smsCreditBalance < 1000) {
 				$notificationGateway = new NotificationGateway($pdo);
-			  $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
-				$organisationAdministrator = getSettingByScope($connection2, 'System', 'organisationAdministrator');
+                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+				$organisationAdministrator = $settingGateway->getSettingByScope('System', 'organisationAdministrator');
 				$notificationString = __('Low SMS credit warning.');
 				$notificationSender->addNotification($organisationAdministrator, $notificationString, "Messenger", "/index.php?q=/modules/Messenger/messenger_post.php");
 				$notificationSender->sendNotifications();
@@ -126,7 +129,7 @@ else {
 			$report = array();
 			//Get country code
 			$countryCode="" ;
-			$country=getSettingByScope($connection2, "System", "country") ;
+			$country=$settingGateway->getSettingByScope("System", "country") ;
 			$countryCodeTemp = '';
 			try {
 				$dataCountry=array("printable_name"=>$country);
@@ -2101,7 +2104,7 @@ else {
 
                 // Optionally send bcc copies of this message, excluding recipients already sent to.
                 $recipientList = array_column($report, 4);
-                $messageBccList = explode(',', getSettingByScope($connection2, 'Messenger', 'messageBcc'));
+                $messageBccList = explode(',', $settingGateway->getSettingByScope('Messenger', 'messageBcc'));
                 $messageBccList = array_filter($messageBccList, function($recipient) use ($recipientList, $from) {
                     return $recipient != $from && !in_array($recipient, $recipientList);
                 });

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -38,7 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     //Proceed!
     $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     $today = date('Y-m-d');
     $currentDate = isset($_GET['currentDate'])? Format::dateConvert($_GET['currentDate']) : $today;
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
                 echo '</div>';
             } else {
-                $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+                $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
 
                 //Get last 5 school days from currentDate within the last 100
                 $timestamp = Format::timestamp($currentDate);

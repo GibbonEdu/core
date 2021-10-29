@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -68,7 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             //Let's go!
             $values = $result->fetch();
-            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+            $settingGateway = $container->get(SettingGateway::class);
+            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__('Back to Search Results').'</a>';
@@ -104,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo $form->getOutput();
 
 
-            $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+            $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             
                 $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
                 $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonFormGroup.nameShort as formGroupNameShort

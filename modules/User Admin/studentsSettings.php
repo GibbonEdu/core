@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -84,12 +85,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
     $form->addRow()->addHeading(__('Student Notes'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'enableStudentNotes', true);
+    $settingGateway = $container->get(SettingGateway::class);
+    $setting = $settingGateway->getSettingByScope('Students', 'enableStudentNotes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'noteCreationNotification', true);
     $noteCreationNotificationRoles = array(
         'Tutors' => __('Tutors'),
         'Tutors & Teachers' => __('Tutors & Teachers')
@@ -100,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
     $form->addRow()->addHeading(__('Alerts'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'academicAlertLowThreshold', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']));
@@ -111,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             ->maximum(50)
             ->required();
 
-    $setting = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'academicAlertMediumThreshold', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']));
@@ -122,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             ->maximum(50)
             ->required();
 
-    $setting = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'academicAlertHighThreshold', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']));
@@ -133,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
             ->maximum(50)
             ->required();
 
-        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold', true);
+        $setting = $settingGateway->getSettingByScope('Students', 'behaviourAlertLowThreshold', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))
                 ->description(__($setting['description']));
@@ -144,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
                 ->maximum(50)
                 ->required();
 
-        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold', true);
+        $setting = $settingGateway->getSettingByScope('Students', 'behaviourAlertMediumThreshold', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))
                 ->description(__($setting['description']));
@@ -155,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
                 ->maximum(50)
                 ->required();
 
-        $setting = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold', true);
+        $setting = $settingGateway->getSettingByScope('Students', 'behaviourAlertHighThreshold', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))
                 ->description(__($setting['description']));
@@ -168,24 +170,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
     $row = $form->addRow()->addHeading(__('Day-Type Options'));
 
-    $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions', true);
+    $setting = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeText', true);
+    $setting = $settingGateway->getSettingByScope('User Admin', 'dayTypeText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
         
     $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Students', 'firstAidDescriptionTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Students', 'firstAidDescriptionTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);

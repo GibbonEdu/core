@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -28,7 +29,9 @@ use Gibbon\Tables\Prefab\ClassGroupTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
+$settingGateway = $container->get(SettingGateway::class);
+
+$makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -114,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
             // Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
-                $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
                 $menuItems[] = [
                     'name' => __($homeworkNamePlural),
                     'url'  => './index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$gibbonCourseClassID,

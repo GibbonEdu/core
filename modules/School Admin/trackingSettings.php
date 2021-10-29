@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSettings.php') == false) {
@@ -50,11 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
         $sql = "SELECT DISTINCT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort, gibbonExternalAssessmentField.category FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE active='Y' ORDER BY nameShort, category";
         $result = $pdo->executeQuery(array(), $sql);
 
+        $settingGateway = $container->get(SettingGateway::class);
+
         if ($result->rowCount() < 1) {
             $form->addRow()->addAlert(__('There are no records to display.'), 'error');
         } else {
             // Get the external data points from Settings, if any exist
-            $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));
+            $externalAssessmentDataPoints = unserialize($settingGateway->getSettingByScope('Tracking', 'externalAssessmentDataPoints'));
             $externalAssessmentDataPoints = is_array($externalAssessmentDataPoints) ? $externalAssessmentDataPoints : array() ;
 
             // Create a lookup table for data points as gibbonExternalAssessmentID-category pair
@@ -95,13 +98,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
                 ->append(' ')
                 ->append(__('If duplicates of any assessment exist, only the most recent entry will be shown.'));
 
-        $internalAssessmentTypes = explode(',', getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes'));
+        $internalAssessmentTypes = explode(',', $settingGateway->getSettingByScope('Formal Assessment', 'internalAssessmentTypes'));
 
         if (empty($internalAssessmentTypes)) {
             $form->addRow()->addAlert(__('There are no records to display.'), 'error');
         } else {
             // Get the internal data points from Settings, if any exist
-            $internalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'internalAssessmentDataPoints'));
+            $internalAssessmentDataPoints = unserialize($settingGateway->getSettingByScope('Tracking', 'internalAssessmentDataPoints'));
             $internalAssessmentDataPoints = is_array($internalAssessmentDataPoints) ? $internalAssessmentDataPoints : array() ;
 
             // Create a lookup table for data points (CSV index order can change)

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
@@ -36,8 +37,10 @@ if (!empty($session->get('i18n')['code'])) {
     textdomain('gibbon');
 }
 
+$settingGateway = $container->get(SettingGateway::class);
+
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
@@ -53,8 +56,8 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
         $userReport = array();
         $adminReport = array( 'formGroup' => array(), 'classes' => array() );
 
-        $enabledByFormGroup = getSettingByScope($connection2, 'Attendance', 'attendanceCLINotifyByFormGroup');
-        $additionalUsersList = getSettingByScope($connection2, 'Attendance', 'attendanceCLIAdditionalUsers');
+        $enabledByFormGroup = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByFormGroup');
+        $additionalUsersList = $settingGateway->getSettingByScope('Attendance', 'attendanceCLIAdditionalUsers');
 
         if ($enabledByFormGroup != 'Y') {
             die('Attendance CLI cancelled: Notifications not enabled in Attendance Settings.');

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Payment;
@@ -56,9 +57,10 @@ if (!$payment->isEnabled()) {
     return;
 }
 
-$paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
-$currency = getSettingByScope($connection2, 'System', 'currency');
-$applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+$settingGateway = $container->get(SettingGateway::class);
+$paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
+$currency = $settingGateway->getSettingByScope('System', 'currency');
+$applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
 
 $form = Form::create('action', $session->get('absoluteURL').'/modules/Students/applicationForm_payFeeProcess.php');
             

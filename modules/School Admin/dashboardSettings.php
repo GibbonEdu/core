@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
@@ -35,7 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     // Staff dashboard
     $form->addRow()->addHeading(__('Staff Dashboard'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardEnable', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('School Admin', 'staffDashboardEnable', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -46,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         '' => '',
         'Planner' => __('Planner')
     );
-    $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'staffDashboardDefaultTab', true);
     $row = $form->addRow()->addClass('staffDashboardEnable');
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -58,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     // Student dashboard
     $form->addRow()->addHeading(__('Student Dashboard'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardEnable', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'studentDashboardEnable', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -69,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         '' => '',
         'Planner' => __('Planner')
     );
-    $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'studentDashboardDefaultTab', true);
     $row = $form->addRow()->addClass('studentDashboardEnable');;
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -79,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
     // Parent dashboard
     $form->addRow()->addHeading(__('Parent Dashboard'));
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardEnable', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentDashboardEnable', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -92,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
         'Timetable' => __('Timetable'),
         'Activities' => __('Activities')
     );
-    $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
+    $setting = $settingGateway->getSettingByScope('School Admin', 'parentDashboardDefaultTab', true);
     $row = $form->addRow()->addClass('parentDashboardEnable');;
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])

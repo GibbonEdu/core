@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $staffCoverageDateGateway = $container->get(StaffCoverageDateGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'coverageFullDayThreshold'));
+    $fullDayThreshold =  floatval($container->get(SettingGateway::class)->getSettingByScope('Staff', 'coverageFullDayThreshold'));
 
     $requestDates = $_POST['requestDates'] ?? [];
     $substituteTypes = $_POST['substituteTypes'] ?? [];

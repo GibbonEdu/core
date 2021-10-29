@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/personalDocumen
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'User Admin', 'residencyStatus', true);
+    $setting = $settingGateway->getSettingByScope('User Admin', 'residencyStatus', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);

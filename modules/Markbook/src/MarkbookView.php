@@ -22,6 +22,7 @@ namespace Gibbon\Module\Markbook;
 use Gibbon\Core;
 use Gibbon\Domain\DataSet;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * Markbook display & edit class
@@ -101,6 +102,11 @@ class MarkbookView
     public $gibbonCourseClassID;
 
     /**
+     * @var SettingGateway
+     */
+    private $settingGateway;
+
+    /**
      * Constructor
      *
      * @version  3rd May 2016
@@ -108,28 +114,30 @@ class MarkbookView
      * @param    Gibbon\Core
      * @param    Gibbon\Contracts\Database\Connection
      * @param    int  gibbonCourseClassID
+     * @param    SettingGateway $settingGateway
      * @return   void
      */
-    public function __construct(Core $gibbon, Connection $pdo, $gibbonCourseClassID)
+    public function __construct(Core $gibbon, Connection $pdo, $gibbonCourseClassID, SettingGateway $settingGateway)
     {
         $this->pdo = $pdo;
 
         $this->gibbonCourseClassID = $gibbonCourseClassID;
         $this->gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+        $this->settingGateway = $settingGateway;
 
         // Preload Gibbon settings - we check them a lot
-        $this->settings['enableColumnWeighting'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-        $this->settings['enableRawAttainment'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRawAttainment');
-        $this->settings['enableGroupByTerm'] = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
+        $this->settings['enableColumnWeighting'] = $this->settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+        $this->settings['enableRawAttainment'] = $this->settingGateway->getSettingByScope('Markbook', 'enableRawAttainment');
+        $this->settings['enableGroupByTerm'] = $this->settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
         $this->settings['enableTypeWeighting'] = 'N';
 
         // Get settings
-        $enableEffort = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableEffort');
-        $enableRubrics = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'enableRubrics');
-        $attainmentAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeName');
-        $attainmentAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'attainmentAlternativeNameAbrev');
-        $effortAltName = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeName');
-        $effortAltNameAbrev = getSettingByScope($this->pdo->getConnection(), 'Markbook', 'effortAlternativeNameAbrev');
+        $enableEffort = $this->settingGateway->getSettingByScope('Markbook', 'enableEffort');
+        $enableRubrics = $this->settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+        $attainmentAltName = $this->settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+        $attainmentAltNameAbrev = $this->settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+        $effortAltName = $this->settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+        $effortAltNameAbrev = $this->settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
         $this->settings['enableEffort'] = (!empty($enableEffort)) ? $enableEffort : 'N';
         $this->settings['enableRubrics'] = (!empty($enableRubrics)) ? $enableRubrics : 'N';
@@ -356,7 +364,7 @@ class MarkbookView
             return $this->defaultAssessmentScale;
         }
 
-        $DAS = getSettingByScope($this->pdo->getConnection(), 'System', 'defaultAssessmentScale');
+        $DAS = $this->settingGateway->getSettingByScope('System', 'defaultAssessmentScale');
         try {
             $data = array('gibbonScaleID' => $DAS);
             $sql = 'SELECT `name`, `nameShort`, `numeric` FROM gibbonScale WHERE gibbonScaleID=:gibbonScaleID';
@@ -922,7 +930,7 @@ class MarkbookView
 
         $gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
         if (count($gibbonYearGroupIDListArray) == 1) {
-            $primaryExternalAssessmentByYearGroup = unserialize(getSettingByScope($this->pdo->getConnection(), 'School Admin', 'primaryExternalAssessmentByYearGroup'));
+            $primaryExternalAssessmentByYearGroup = unserialize($this->settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
 
             if (!isset($primaryExternalAssessmentByYearGroup[$gibbonYearGroupIDListArray[0]])) {
                 return;

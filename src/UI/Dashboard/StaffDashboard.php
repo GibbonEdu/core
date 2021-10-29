@@ -21,6 +21,7 @@ namespace Gibbon\UI\Dashboard;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
@@ -55,12 +56,23 @@ class StaffDashboard implements OutputableInterface
      */
     protected $enrolmentTable;
 
-    public function __construct(Connection $db, Session $session, FormGroupTable $formGroupTable, EnrolmentTable $enrolmentTable)
-    {
+    /**
+     * @var SettingGateway
+     */
+    private $settingGateway;
+
+    public function __construct(
+        Connection $db,
+        Session $session,
+        FormGroupTable $formGroupTable,
+        EnrolmentTable $enrolmentTable,
+        SettingGateway $settingGateway
+    ) {
         $this->db = $db;
         $this->session = $session;
         $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
+        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -93,7 +105,7 @@ class StaffDashboard implements OutputableInterface
 
         $return = false;
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNameSingular = $this->settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
 
         //GET PLANNER
         $planner = false;
@@ -317,7 +329,7 @@ class StaffDashboard implements OutputableInterface
                         'gibbonYearGroupID' => '',
                         'type' => '',
                     ]) . "'>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-                    $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+                    $policyLink = $this->settingGateway->getSettingByScope('Behaviour', 'policyLink');
                     if ($policyLink != '') {
                         $formGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
                     }
@@ -458,7 +470,7 @@ class StaffDashboard implements OutputableInterface
             $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
-            $staffDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab');
+            $staffDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'staffDashboardDefaultTab');
             $staffDashboardDefaultTabCount = null;
 
             $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";

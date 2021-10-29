@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $subpage = $_GET['subpage'] ?? '';
 
-    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
         $page->addError(__('You do not have access to this action.'));
         return;

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Markbook\MarkbookView;
@@ -56,11 +57,12 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
-    global $session;
+    global $session, $container;
 
-    $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-    $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
-    $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
+    $settingGateway = $container->get(SettingGateway::class);
+    $enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+    $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+    $enableRawAttainment = $settingGateway->getSettingByScope('Markbook', 'enableRawAttainment');
 
     $output = '';
 
@@ -236,10 +238,12 @@ function getAlertStyle( $alert, $concern ) {
 
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
 
+    global $container;
+
     require_once __DIR__ . '/src/MarkbookView.php';
 
     // Build the markbook object for this class & student
-    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
     $assessmentScale = $markbook->getDefaultAssessmentScale();
 
     // Cancel our now if this isnt a percent-based mark

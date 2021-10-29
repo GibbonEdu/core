@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
     $typesRequiringApproval = $staffAbsenceTypeGateway->selectTypesRequiringApproval()->fetchAll(\PDO::FETCH_COLUMN, 0);
 
-    $approverOptions = explode(',', getSettingByScope($connection2, 'Staff', 'absenceApprovers'));
+    $approverOptions = explode(',', $container->get(SettingGateway::class)->getSettingByScope('Staff', 'absenceApprovers'));
     $typesWithReasons = $reasonsOptions = $reasonsChained = [];
 
     $types = array_reduce($types, function ($group, $item) use (&$reasonsOptions, &$reasonsChained, &$typesWithReasons) {

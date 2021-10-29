@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -41,11 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
-            $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
-            $sql = "SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND gibbonStaffApplicationForm.status='Pending'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $settingGateway = $container->get(SettingGateway::class);
+
+        $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
+        $sql = "SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND gibbonStaffApplicationForm.status='Pending'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
-                $informApplicant = (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y');
+                $informApplicant = ($settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationDefault') == 'Y');
                 $col->addCheckbox('informApplicant')
                     ->description(__('Automatically inform <u>applicant</u> of their Gibbon login details by email?'))
                     ->inline(true)
@@ -154,10 +156,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
+
                     //Set default email address for applicant
                     $email = $values['email'];
                     $emailAlternate = '';
-                    $applicantDefaultEmail = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail');
+                    $applicantDefaultEmail = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultEmail');
                     if ($applicantDefaultEmail != '') {
                         $emailAlternate = $email;
                         $email = str_replace('[username]', $username, $applicantDefaultEmail);
@@ -165,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     //Set default website address for applicant
                     $website = '';
-                    $applicantDefaultWebsite = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultWebsite');
+                    $applicantDefaultWebsite = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultWebsite');
                     if ($applicantDefaultWebsite != '') {
                         $website = str_replace('[username]', $username, $applicantDefaultWebsite);
                     }
@@ -289,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             echo '<h4>';
                             echo __('New Staff Member Welcome Email');
                             echo '</h4>';
-                            $notificationApplicantMessage = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationMessage');
+                            $notificationApplicantMessage = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationMessage');
                             foreach ($informApplicantArray as $informApplicantEntry) {
                                 if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
                                     $to = $informApplicantEntry['email'];

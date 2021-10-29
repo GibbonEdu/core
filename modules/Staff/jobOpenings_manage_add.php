@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\User\RoleGateway;
 
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $jobOpeningDescriptionTemplate = getSettingByScope($connection2, 'Staff', 'jobOpeningDescriptionTemplate');
+    $jobOpeningDescriptionTemplate = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'jobOpeningDescriptionTemplate');
     $row = $form->addRow();
         $column = $row->addColumn();
         $column->addLabel('description', __('Description'));

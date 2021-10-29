@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -34,19 +35,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $row = $form->addRow()->addHeading(__('General Settings'));
 
-    $setting = getSettingByScope($connection2, 'Finance', 'email', true);
+    $settingGateway = $container->get(SettingGateway::class);
+    $setting = $settingGateway->getSettingByScope('Finance', 'email', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addEmail($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('onlinePayment')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold', true);
     $row = $form->addRow()->addClass('onlinePayment');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))
             ->description(__($setting['description']))
@@ -57,12 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
 
     $row = $form->addRow()->addHeading(__('Invoices'));
 
-    $setting = getSettingByScope($connection2, 'Finance', 'invoiceText', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'invoiceText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'invoiceNotes', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'invoiceNotes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
@@ -71,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         'Surname, Preferred Name' => __('Surname') . ', ' . __('Preferred Name'),
         'Official Name' => __('Official Name')
     );
-    $setting = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'invoiceeNameStyle', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($invoiceeNameStyle)->selected($setting['value'])->required();
@@ -81,85 +83,85 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         'Person ID + Invoice ID' => __('Person ID')  . ' + ' . __('Invoice ID'),
         'Student ID + Invoice ID' => __('Student ID') . ' + ' . __('Invoice ID')
     );
-    $setting = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'invoiceNumber', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($invoiceNumber)->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'paymentTypeOptions', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'paymentTypeOptions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Receipts'));
 
-    $setting = getSettingByScope($connection2, 'Finance', 'receiptText', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'receiptText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'receiptNotes', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'receiptNotes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'hideItemisation', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'hideItemisation', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Reminders'));
 
-    $setting = getSettingByScope($connection2, 'Finance', 'reminder1Text', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'reminder1Text', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'reminder2Text', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'reminder2Text', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'reminder3Text', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'reminder3Text', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Expenses'));
 
-    $setting = getSettingByScope($connection2, 'Finance', 'budgetCategories', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'budgetCategories', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'expenseApprovalType', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('One Of, Two Of, Chain Of All')->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'allowExpenseAdd', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Finance', 'purchasingOfficer', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'purchasingOfficer', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])
             ->selected($setting['value'])
             ->placeholder('');
 
-    $setting = getSettingByScope($connection2, 'Finance', 'reimbursementOfficer', true);
+    $setting = $settingGateway->getSettingByScope('Finance', 'reimbursementOfficer', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectStaff($setting['name'])

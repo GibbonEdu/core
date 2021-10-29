@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
@@ -26,8 +27,10 @@ use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
 include '../../gibbon.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? '';
 $address = $_POST['address'] ?? '';
@@ -128,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         // Add direct notifications to form group tutors
-                        if (getSettingByScope($connection2, 'Behaviour', 'notifyTutors') == 'Y') {
+                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyTutors') == 'Y') {
                             $tutors = $formGroupGateway->selectTutorsByFormGroup($student['gibbonFormGroupID'])->fetchAll();
                             foreach ($tutors as $tutor) {
                                 $event->addRecipient($tutor['gibbonPersonID']);
@@ -136,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         }
 
                         // Add notifications for Educational Assistants
-                        if (getSettingByScope($connection2, 'Behaviour', 'notifyEducationalAssistants') == 'Y') {
+                        if ($settingGateway->getSettingByScope('Behaviour', 'notifyEducationalAssistants') == 'Y') {
                             $educationalAssistants = $inAssistantGateway->selectINAssistantsByStudent($gibbonPersonID)->fetchAll();
                             foreach ($educationalAssistants as $ea) {
                                 $event->addRecipient($ea['gibbonPersonID']);

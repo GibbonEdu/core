@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -35,8 +36,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
+$settingGateway = $container->get(SettingGateway::class);
+
 //Check for CLI, so this cannot be run through browser
-$remoteCLIKey = getSettingByScope($connection2, 'System Admin', 'remoteCLIKey');
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
@@ -62,8 +65,8 @@ if ($session->get('organisationEmail') == '') {
 }
 
 $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-$parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
-$parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
+$parentWeeklyEmailSummaryIncludeBehaviour = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
+$parentWeeklyEmailSummaryIncludeMarkbook = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 // Prep for email sending later
@@ -143,8 +146,8 @@ foreach ($families as $gibbonFamilyID => $students) {
 
         // Format the student summary for emailing
         $content = $view->fetchFromTemplate('cli/parentWeeklyEmailSummary.twig.html', [
-            'homeworkNameSingular' => getSettingByScope($connection2, 'Planner', 'homeworkNameSingular'),
-            'homeworkNamePlural' => getSettingByScope($connection2, 'Planner', 'homeworkNamePlural'),
+            'homeworkNameSingular' => $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular'),
+            'homeworkNamePlural' => $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural'),
             'includeBehaviour' => $parentWeeklyEmailSummaryIncludeBehaviour,
             'includeMarkbook' => $parentWeeklyEmailSummaryIncludeMarkbook,
             'includeHomework' => 'Y',

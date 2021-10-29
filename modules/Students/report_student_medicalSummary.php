@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -81,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
         return;
     }
 
-    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+    $cutoffDate = $container->get(SettingGateway::class)->getSettingByScope('Data Updater', 'cutoffDate');
     if (empty($cutoffDate)) $cutoffDate = Format::dateFromTimestamp(time() - (604800 * 26));
 
     $reportGateway = $container->get(StudentReportGateway::class);

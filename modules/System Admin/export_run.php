@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\ImportType;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -46,9 +47,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
     $dataExport = (isset($_GET['data']) && $_GET['data'] == true);
     $dataExportAll = (isset($_GET['all']) && $_GET['all'] == true);
 
+    $settingGateway = $container->get(SettingGateway::class);
+
     // Get the importType information
     $type = (isset($_GET['type']))? $_GET['type'] : '';
-    $importType = ImportType::loadImportType($type, $pdo);
+    $importType = ImportType::loadImportType($type, $settingGateway, $pdo);
 
     if ($importType->isImportAccessible($guid, $connection2) == false) {
         $URL .= '&return=error0';
@@ -236,7 +239,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
 
     $filename = ($dataExport) ? 'DataExport'.'-'.$type : 'DataStructure'.'-'.$type;
 
-    $exportFileType = getSettingByScope($connection2, 'System Admin', 'exportDefaultFileType');
+    $exportFileType = $settingGateway->getSettingByScope('System Admin', 'exportDefaultFileType');
     if (empty($exportFileType)) {
         $exportFileType = 'Excel2007';
     }

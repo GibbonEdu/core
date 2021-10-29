@@ -18,12 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\SMS;
+use Gibbon\Domain\System\SettingGateway;
 
 require_once '../../gibbon.php';
 
 $from = $_POST['from'] ?? '';
 $phoneNumber = $_POST['phoneNumber'] ?? '';
-$smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+$smsGateway = $container->get(SettingGateway::class)->getSettingByScope('Messenger', 'smsGateway');
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_edit.php') == false) {
     die(__('Your request failed because you do not have access to this action.'));

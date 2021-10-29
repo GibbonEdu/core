@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -37,8 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     // Proceed!
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    $fullDayThreshold =  floatval(getSettingByScope($connection2, 'Staff', 'absenceFullDayThreshold'));
-    $halfDayThreshold = floatval(getSettingByScope($connection2, 'Staff', 'absenceHalfDayThreshold'));
+    $settingGateway = $container->get(SettingGateway::class);
+    $fullDayThreshold =  floatval($settingGateway->getSettingByScope('Staff', 'absenceFullDayThreshold'));
+    $halfDayThreshold = floatval($settingGateway->getSettingByScope('Staff', 'absenceHalfDayThreshold'));
 
     $dateStart = $_POST['dateStart'] ?? '';
     $dateEnd = $_POST['dateEnd'] ?? '';

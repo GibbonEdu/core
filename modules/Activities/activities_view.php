@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -43,8 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
         //Check access controls
-        $access = getSettingByScope($connection2, 'Activities', 'access');
-        $hideExternalProviderCost = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost');
+        $settingGateway = $container->get(SettingGateway::class);
+        $access = $settingGateway->getSettingByScope('Activities', 'access');
+        $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($access == 'View' or $access == 'Register')) {
             echo "<div class='error'>";
@@ -57,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             }
 
-            $disableExternalProviderSignup = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup');
+            $disableExternalProviderSignup = $settingGateway->getSettingByScope('Activities', 'disableExternalProviderSignup');
             if ($disableExternalProviderSignup == 'Y') {
                 echo "<div class='warning'>";
                 echo __('Please check activity details for instructions on how to register for activities offered by outside providers.');
@@ -206,9 +208,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 echo '</div>';
             } else {
                 //Should we show date as term or date?
-                $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
                 if ($dateType == 'Term') {
-                    $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
+                    $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
                 }
 
                 try {

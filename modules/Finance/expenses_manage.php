@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
@@ -78,8 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
             echo '</div>';
         } else {
             //Get and check settings
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-            $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+            $settingGateway = $container->get(SettingGateway::class);
+            $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+            $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 echo "<div class='error'>";
                 echo __('An error has occurred with your expense and budget settings.');
@@ -255,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo __('View');
                         echo '</h3>';
 
-                        $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
+                        $allowExpenseAdd = $settingGateway->getSettingByScope('Finance', 'allowExpenseAdd');
                         if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
                             echo "<div class='linkTop' style='text-align: right'>";
                             echo "<a style='margin-right: 3px' href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a><br/>";

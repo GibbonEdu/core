@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalCondit
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'Students', 'medicalConditionIntro', true);
+    $setting = $container->get(SettingGateway::class)->getSettingByScope('Students', 'medicalConditionIntro', true);
     $col = $form->addRow()->addColumn();
         $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $col->addEditor($setting['name'], $guid)->setRows(6)->setValue($setting['value']);

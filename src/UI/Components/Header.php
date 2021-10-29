@@ -20,6 +20,7 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 
 /**
@@ -34,13 +35,20 @@ class Header
     protected $session;
     protected $notificationGateway;
     protected $messengerGateway;
+    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, NotificationGateway $notificationGateway, MessengerGateway $messengerGateway)
-    {
+    public function __construct(
+        Connection $db,
+        Session $session,
+        NotificationGateway $notificationGateway,
+        MessengerGateway $messengerGateway,
+        SettingGateway $settingGateway
+    ) {
         $this->db = $db;
         $this->session = $session;
         $this->notificationGateway = $notificationGateway;
         $this->messengerGateway = $messengerGateway;
+        $this->settingGateway = $settingGateway;
     }
 
     public function getStatusTray()
@@ -71,7 +79,7 @@ class Header
 
         // Alarm
         $tray['alarm'] = $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'
-            ? getSettingByScope($connection2, 'System', 'alarm')
+            ? $this->settingGateway->getSettingByScope('System', 'alarm')
             : false;
 
         return $tray;

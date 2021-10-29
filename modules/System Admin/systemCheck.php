@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     //Proceed!
     $page->breadcrumbs->add(__('System Check'));
 
-    $versionDB = getSettingByScope($connection2, 'System', 'version');
+    $versionDB = $container->get(SettingGateway::class)->getSettingByScope('System', 'version');
 
     $trueIcon = "<img title='" . __('Yes'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconTick.png' style='width:20px;height:20px;margin-right:10px' />";
     $falseIcon = "<img title='" . __('No'). "' src='".$session->get("absoluteURL")."/themes/".$session->get("gibbonThemeName")."/img/iconCross.png' style='width:20px;height:20px;margin-right:10px' />";
@@ -128,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
         foreach ($settings as $settingDetails) {
             if (!is_array($settingDetails) || count($settingDetails) != 3) continue;
-            list($setting, $operator, $compare) = $settingDetails;
+            [$setting, $operator, $compare] = $settingDetails;
             $value = @ini_get($setting);
 
             if ($setting == 'session.gc_maxlifetime') $compare = $gibbon->session->get('sessionDuration');
