@@ -128,9 +128,9 @@ class DataUpdaterGateway extends Gateway
         if ($updatablePeople->rowCount() == 0) return 0;
 
         global $container;
-        $settingGateway = $container->get(SettingGateway::class);
-        $cutoffDate = $settingGateway->getSettingByScope('Data Updater', 'cutoffDate');
-        $requiredUpdatesByType = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdatesByType');
+
+        $cutoffDate = $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='cutoffDate'");
+        $requiredUpdatesByType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='requiredUpdatesByType'");
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
 
         if (empty($requiredUpdatesByType) || empty($cutoffDate)) return 0;
