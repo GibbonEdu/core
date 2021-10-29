@@ -1052,4 +1052,7 @@ INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `val
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoMicrosoft', 'Microsoft Integration', '', '{\"enabled\":\"N\"}');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('System Admin', 'ssoOther', 'Generic OAuth2 Provider', '', '{\"enabled\":\"N\"}');end
 INSERT IGNORE INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');end
+ALTER TABLE `gibbonPerson` CHANGE `googleAPIRefreshToken` `googleAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonPerson` CHANGE `microsoftAPIRefreshToken` `microsoftAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonPerson` CHANGE `genericAPIRefreshToken` `genericAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ";
