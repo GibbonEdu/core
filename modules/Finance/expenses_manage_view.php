@@ -231,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Count Against Budget') ?> *</b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($row['countAgainstBudget']); ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>

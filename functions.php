@@ -200,33 +200,6 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-/**
- * DEPRECATED. Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
- *
- * @param string $string
- * @param Connection $connection2
- * @return string
- *
- * @deprecated in v23. Use Validator::sanitizeRichText
- */
-function tinymceStyleStripTags($string, $connection2)
-{
-    global $container;
-
-    $comment = html_entity_decode($string);
-    $allowableTags = $container->get(SettingGateway::class)->getSettingByScope('System', 'allowableHTML');
-    $allowableTags = preg_replace("/\[([^\[\]]|(?0))*]/", '', $allowableTags);
-    $allowableTagTokens = explode(',', $allowableTags);
-    $allowableTags = '';
-    foreach ($allowableTagTokens as $allowableTagToken) {
-        $allowableTags .= '&lt;'.$allowableTagToken.'&gt;';
-    }
-    $allowableTags = html_entity_decode($allowableTags);
-    $comment = strip_tags($comment, $allowableTags);
-
-    return $comment;
-}
-
 //Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
 function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 {
@@ -256,14 +229,6 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
 
     $notificationSender->addNotification($gibbonPersonID, $text, $moduleName, $actionLink);
     $success = $notificationSender->sendNotifications();
-}
-
-/**
- * @deprecated in v16. Use Format::yesNo
- */
-function ynExpander($guid, $yn, $translation = true)
-{
-    return Format::yesNo($yn, $translation);
 }
 
 //Accepts birthday in mysql date (YYYY-MM-DD) ;
@@ -513,47 +478,6 @@ function getWeekNumber($date, $connection2, $guid)
 }
 
 /**
- * @deprecated in v23.
- */
-function getModuleEntry($address, $connection2, $guid)
-{
-    global $session;
-
-    $output = false;
-
-    try {
-        $data = array('moduleName' => getModuleName($address), 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
-        $sql = "SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE gibbonModule.name=:moduleName AND (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY category, name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $entryURL = $row['entryURL'];
-            if (isActionAccessible($guid, $connection2, '/modules/'.$row['name'].'/'.$entryURL) == false and $entryURL != 'index.php') {
-                try {
-                    $dataEntry = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $row['name']);
-                    $sqlEntry = "SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:moduleName ORDER BY gibbonAction.name";
-                    $resultEntry = $connection2->prepare($sqlEntry);
-                    $resultEntry->execute($dataEntry);
-                    if ($resultEntry->rowCount() > 0) {
-                        $rowEntry = $resultEntry->fetch();
-                        $entryURL = $rowEntry['entryURL'];
-                    }
-                } catch (PDOException $e) {
-                }
-            }
-        }
-    } catch (PDOException $e) {
-    }
-
-    if ($entryURL != '') {
-        $output = $entryURL;
-    }
-
-    return $output;
-}
-
-/**
  * @deprecated in v16. Use Format::name
  */
 function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
@@ -715,14 +639,6 @@ function msort($array, $id = 'id', $sort_ascending = true)
     }
 }
 
-/**
- * @deprecated in v16. Use Format::address
- */
-function addressFormat($address, $addressDistrict, $addressCountry)
-{
-    return Format::address($address, $addressDistrict, $addressCountry);
-}
-
 //Print out, preformatted indicator of max file upload size
 function getMaxUpload($guid, $multiple = '')
 {
@@ -777,14 +693,6 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
     }
 
     return $output;
-}
-
-/**
- * @deprecated in v16. Use Format::age
- */
-function getAge($guid, $stamp, $short = false, $yearsOnly = false)
-{
-    return Format::age(date('Y-m-d', $stamp), $short);
 }
 
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
@@ -846,14 +754,6 @@ function getRoleCategory($gibbonRoleID, $connection2)
     return $output;
 }
 
-/**
- * @deprecated in v16. Use Format::timestamp
- */
-function dateConvertToTimestamp($date)
-{
-    return Format::timestamp($date);
-}
-
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
 function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 {
@@ -865,7 +765,8 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     $isSchoolOpen = false;
 
     //Turn $date into UNIX timestamp and extract day of week
-    $timestamp = dateConvertToTimestamp($date);
+    $timestamp = Format::timestamp($date);
+
     $dayOfWeek = date('D', $timestamp);
 
     //See if date falls into a school term
@@ -910,14 +811,6 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     }
 
     return $isSchoolOpen;
-}
-
-/**
- * @deprecated in v16. Use Format::userPhoto
- */
-function printUserPhoto($guid, $path, $size)
-{
-    echo Format::userPhoto($path, $size);
 }
 
 /**
@@ -1600,36 +1493,6 @@ function randomPassword($length)
     return $password;
 }
 
-/**
- * @deprecated in v16. Use Format::phone()
- */
-function formatPhone($num)
-{
-    return Format::phone($num);
-}
-
-/**
- * @deprecated in v22.
- *
- * Use $container->get(\Gibbon\Domain\System\LogGateway::class)->addLog() instead.
- * See \Gibbon\Domain\System\LogGateway::addLog() for details.
- */
-function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array = null, $ip = null)
-{
-    static $logGateway;
-    if (!isset($logGateway)) {
-        global $container;
-        if (!isset($container)) {
-            throw new \Exception('Unable to find $container object in global namespace.');
-        }
-        $logGateway = $container->get(LogGateway::class);
-        if (!$logGateway instanceof LogGateway) {
-            throw new \Exception('LogGateway not found in container.');
-        }
-    }
-    return $logGateway->addLog($gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array, $ip);
-}
-
 function getModuleID($connection2, $address)
 {
     $name = getModuleName($address);
@@ -1647,28 +1510,6 @@ function getModuleIDFromName($connection2, $name)
         $row = $resultModuleID->fetch();
 
     return $row['gibbonModuleID'];
-}
-
-/**
- * This method has been replaced by the Mailer class, and remains here only to handle legacy calls.
- * The Deprecation error will be logged, and if asked for in php.ini stop execution.
- *
- * @deprecated 30th Nov 2018
- * @version 1st September 2016
- * @since   1st September 2016
- */
-function getGibbonMailer($guid) {
-
-    global $container;
-    $displayErrors = ini_get('display_errors');
-
-    ini_set('display_errors', 'Off');
-    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\Mailer class', E_USER_DEPRECATED);
-    ini_set('display_errors', $displayErrors);
-
-    $mail = $container->get(Mailer::class);
-
-    return $mail;
 }
 
 /**

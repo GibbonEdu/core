@@ -900,7 +900,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                                     echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                                 }
-                                                echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                                echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
                                     }
@@ -918,7 +918,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                                     echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                                 }
-                                                echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                                echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
                                     }
@@ -1679,7 +1679,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($enableModifiedAssessment == 'Y') {
                                                     if (!is_null($rowEntry['modifiedAssessment'])) {
                                                         echo "<td>";
-                                                        echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                                        echo Format::yesNo($rowEntry['modifiedAssessment']);
                                                         echo '</td>';
                                                     } else {
                                                         echo "<td class='dull' style='color: #bbb; text-align: center'>";
