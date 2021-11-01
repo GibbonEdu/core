@@ -157,6 +157,12 @@ class Visualise
                 ];
             }
             $chart->setOptions($options);
+            
+            // Handle custom colours only if there is one unique colour per row
+            $rowColours = array_unique(array_column($this->rows, 'backgroundColor'));
+            if (count($rowColours) == count($this->rows)) {
+                $chart->setColors($rowColours);
+            }
 
             $chart->addDataset('rubric')->setData($data);
 
