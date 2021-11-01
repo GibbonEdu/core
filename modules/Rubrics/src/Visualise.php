@@ -132,7 +132,14 @@ class Visualise
                 ->setColorOpacity(0.6);
 
             $options = [
-                'height' => '120%',
+                'responsive' => 'true',
+                'maintainAspectRatio' => 'false',
+                'resizeDelay' => 100,
+                // 'onResize' => $chart->addFunction('function(chart, size) {
+                //     console.log(size);
+                //     chart.options.legend.display = size.width > 600;
+                // }'),
+                'height' => '10vw',
                 'scale'  => [
                     'ticks' => [
                         'min' => 0.0,
@@ -155,6 +162,13 @@ class Visualise
                         this.options.animation.onComplete = null;
                     }'),
                 ];
+            } else {
+                // $options['animation'] = [
+                //     'duration' => 0,
+                //     'onComplete' => $chart->addFunction('function(e) {
+                //         console.log("Hello");
+                //     }'),
+                // ];
             }
             $chart->setOptions($options);
             
