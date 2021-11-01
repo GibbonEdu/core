@@ -813,14 +813,6 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     return $isSchoolOpen;
 }
 
-/**
- * @deprecated in v16. Use Format::userPhoto
- */
-function getUserPhoto($guid, $path, $size)
-{
-    return Format::userPhoto($path, $size);
-}
-
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
     global $session, $container;
@@ -1099,31 +1091,6 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
     }
 
     $session->set('i18n', $i18n);
-}
-
-//Gets the desired setting, specified by name and scope.
-/**
- * @deprecated use Gibbon\Domain\System\SettingGateway::getSettingByScope instead
- */
-function getSettingByScope($connection2, $scope, $name, $returnRow = false )
-{
-
-        $data = array('scope' => $scope, 'name' => $name);
-        $sql = 'SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-    if ($result && $result->rowCount() == 1) {
-
-        if ($returnRow) {
-            return $result->fetch();
-        } else {
-            $row = $result->fetch();
-            return $row['value'];
-        }
-    }
-
-    return false;
 }
 
 /**

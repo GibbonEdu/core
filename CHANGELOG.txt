@@ -31,6 +31,8 @@ v23.0.00
             - getAge
             - getGibbonMailer
             - getModuleEntry
+            - getSettingByScope
+            - getUserPhoto
             - printUserPhoto
             - setLog
             - tinymceStyleStripTags
