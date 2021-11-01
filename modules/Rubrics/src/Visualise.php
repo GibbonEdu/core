@@ -133,13 +133,9 @@ class Visualise
 
             $options = [
                 'responsive' => 'true',
-                'maintainAspectRatio' => 'false',
-                'resizeDelay' => 100,
-                // 'onResize' => $chart->addFunction('function(chart, size) {
-                //     console.log(size);
-                //     chart.options.legend.display = size.width > 600;
-                // }'),
-                'height' => '10vw',
+                'maintainAspectRatio' => 'true',
+                'aspectRatio' => 2,
+                'height' => '32vw',
                 'scale'  => [
                     'ticks' => [
                         'min' => 0.0,
