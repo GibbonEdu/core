@@ -88,8 +88,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set class = class ~ " px-3 py-2" %}
                     {% endif %}
 
-
-                    <div class="{{ class }} {{ element.instanceOf('Gibbon\\Forms\\Layout\\Element') ? element.getClass|replace({'standardWidth': ''}) : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                    {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
+                    <div class="{{ class }} {{ hasClass ? element.getClass|replace({'standardWidth': ''}) : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                         {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}
