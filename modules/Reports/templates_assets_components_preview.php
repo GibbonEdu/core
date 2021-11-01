@@ -41,6 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
     $twig = $container->get('twig');
 
+    // Set reports to cache in a separate location
+    $cachePath = $session->has('cachePath') ? $session->get('cachePath').'/reports' : '/uploads/cache';
+    $container->get('twig')->setCache($session->get('absolutePath').$cachePath);
+
     $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
     $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
     $prototypeSection = $prototypeGateway->getByID($gibbonReportPrototypeSectionID);
