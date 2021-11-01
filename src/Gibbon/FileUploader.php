@@ -180,6 +180,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange)) {
+            $filenameChange =  preg_replace('/[^a-zA-Z0-9]/', '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
