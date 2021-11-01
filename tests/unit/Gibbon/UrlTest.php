@@ -40,6 +40,18 @@ class UrlTest extends TestCase
     }
 
     /**
+     * @covers \Gibbon\Http\Url::fromAbsoluteRoute()
+     */
+    public function testFromAbsoluteRoute()
+    {
+        $url = Url::fromAbsoluteRoute('some_action');
+        $this->assertEquals('http://foobar.com/some/path/index.php?q=some_action.php', (string) $url);
+
+        $url = Url::fromAbsoluteRoute()->withQuery('hello=world');
+        $this->assertEquals('http://foobar.com/some/path/index.php?hello=world', (string) $url);
+    }
+
+    /**
      * @covers \Gibbon\Http\Url::fromRoute()
      * @covers \Gibbon\Http\Url::withQueryParams()
      */
