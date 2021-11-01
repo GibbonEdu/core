@@ -58,6 +58,7 @@ v23.0.00
         System: fixed the Validator class so sanitizeHTML is multibyte safe
         System: fixed phone number format for numbers 10 digits or greater
         System: added Markbook and Planner permissions to Parent and Student Dashboard
+        System: fixed space before file extension causing failed file uploads
         Activities: fixed duplicate entries in Activity Choices by Student
         Messenger: fixed duplicate student names when using Individual Naming
         Planner: fixed school closure checks when bumping lessons forward and backward
