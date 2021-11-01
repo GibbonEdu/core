@@ -49,7 +49,7 @@ class Breadcrumbs
      */
     public function setBaseURL(string $baseURL)
     {
-        $this->baseURL = trim(urldecode($baseURL), '/ ').'/';
+        $this->baseURL = rtrim(urldecode($baseURL), '/ ').'/';
         return $this;
     }
 

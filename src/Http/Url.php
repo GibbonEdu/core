@@ -45,6 +45,13 @@ class Url extends Uri implements UriInterface
     protected static $baseUrl;
 
     /**
+     * The path portion of the baseUrl.
+     *
+     * @var string
+     */
+    protected static $basePath;
+
+    /**
      * The handler of the route.
      *
      * @var string
@@ -78,7 +85,25 @@ class Url extends Uri implements UriInterface
      */
     public static function fromRoute(string $route_path = ''): self
     {
-        return (new static(self::$baseUrl))
+        return (new static())
+            ->withPath(static::$basePath)
+            ->withRoutePath($route_path);
+    }
+
+    /**
+     * Create Uri instance for the absolute url of the given Gibbon routes.
+     * This can be used for external links, such as those sent in emails.
+     *
+     * @param string $route_path
+     *   The core route path (e.g. "preferences", "privacyPolicy"). If left empty,
+     *   will use the base path (Home).
+     *
+     * @return static
+     *   The URL object.
+     */
+    public static function fromAbsoluteRoute(string $route_path = ''): self
+    {
+        return (new static(static::$baseUrl))
             ->withRoutePath($route_path);
     }
 
@@ -97,7 +122,8 @@ class Url extends Uri implements UriInterface
      */
     public static function fromModuleRoute(string $module, string $route_path = ''): self
     {
-        return (new static(self::$baseUrl))
+        return (new static())
+            ->withPath(static::$basePath)
             ->withModule($module)
             ->withRoutePath($route_path);
     }
@@ -115,7 +141,8 @@ class Url extends Uri implements UriInterface
      */
     public static function fromHandlerRoute(string $handler, string $route_path = ''): self
     {
-        $new = (new static(self::$baseUrl))
+        $new = (new static())
+            ->withPath(static::$basePath)
             ->withRoutePath($route_path);
         $new->routeHandler = $handler;
         return $new;
@@ -140,7 +167,8 @@ class Url extends Uri implements UriInterface
         string $route_path
     ): self
     {
-        $new = (new static(self::$baseUrl))
+        $new = (new static())
+            ->withPath(static::$basePath)
             ->withModule($module)
             ->withRoutePath($route_path);
         $new->routeHandler = $handler;
@@ -174,7 +202,6 @@ class Url extends Uri implements UriInterface
             $new->routePath = null; // reset routePath to prevent infinite recursion
             return $new->__toString();
         }
-
         return parent::__toString();
     }
 
@@ -237,12 +264,12 @@ class Url extends Uri implements UriInterface
     }
 
     /**
-     * Setup the class to use the baseUrl for all rendered URLs.
-     * Should be the "absoluteURL" in session variables.
+     * Setup the class to use the baseUrl and basePath for all
+     * rendered URL. Should be the "absoluteURL" in session variables.
      *
      * Will be used by the fromRoute and fromModuleRoute methods.
      *
-     * Note: The setting is bound to the class in the
+     * Note: The setting is binded to the class in the
      * environment, so you should only do this once per request.
      *
      * @param string $baseUrl
@@ -251,8 +278,10 @@ class Url extends Uri implements UriInterface
      */
     public static function setBaseUrl(string $baseUrl)
     {
-        // Make sure the base url does not have trailing slash
+        // make sure the base url do not have trailing slash
         self::$baseUrl = rtrim($baseUrl, '/');
+        $parsed = parse_url(self::$baseUrl);
+        self::$basePath = $parsed['path'] ?? '';
     }
 
     /**
