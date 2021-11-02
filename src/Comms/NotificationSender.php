@@ -219,7 +219,7 @@ class NotificationSender
     {
         return sprintf(__('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'),
             $this->session->get('systemName'),
-            "<a href='".Url::fromRoute('notifications')."'>",
+            "<a href='".Url::fromRoute('notifications')->withAbsoluteURL()."'>",
             '</a>');
     }
 
@@ -234,7 +234,7 @@ class NotificationSender
         $output .= "<p style='font-style: italic; font-size: 85%'>";
         $output .= sprintf(__('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'),
             $this->session->get('systemName'),
-            "<a href='".Url::fromRoute('preferences')."'>",
+            "<a href='".Url::fromRoute('preferences')->withAbsoluteURL()."'>",
             '</a>');
         $output .= '<br/><br/>';
         $output .= sprintf(__('Email sent via %1$s at %2$s.'), $this->session->get('systemName'), $this->session->get('organisationName'));
