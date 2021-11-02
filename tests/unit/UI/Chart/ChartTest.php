@@ -17,11 +17,12 @@ class ChartTest extends TestCase {
     public function testSetOptions() {
         $options = array(
             'responsive'=>true,
+            'maintainAspectRatio'=>false,
             'title' => array(
                 'display' => true,
                 'text' => 'ChartFactory'
             ),
-            'tooltips'=> array(
+            'tooltip'=> array(
                     'mode'=> 'index',
                     'intersect'=> false,
             ),
@@ -30,20 +31,20 @@ class ChartTest extends TestCase {
                 'intersect'=> true
             ),
             'scales'=> array(
-                'xAxes'=> array(array(
+                'x'=> array(
                     'display'=> true,
-                    'scaleLabel'=> array(
+                    'title'=> array(
                         'display'=> true,
                         'labelString'=> 'Month'
                     )
-                )),
-                'yAxes'=> array(array(
+                ),
+                'y'=> array(
                     'display'=> true,
-                    'scaleLabel'=> array(
+                    'title'=> array(
                         'display'=> true,
                         'labelString'=> 'Value'
                     )
-                ))
+                )
             )
         );
 
@@ -108,11 +109,12 @@ class ChartTest extends TestCase {
         $labels = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
         $options = array(
             'responsive'=>true,
+            'maintainAspectRatio'=>false,
             'title' => array(
                 'display' => true,
                 'text' => 'ChartFactory'
             ),
-            'tooltips'=> array(
+            'tooltip'=> array(
                     'mode'=> 'index',
                     'intersect'=> false,
             ),
@@ -121,20 +123,20 @@ class ChartTest extends TestCase {
                 'intersect'=> true
             ),
             'scales'=> array(
-                'xAxes'=> array(array(
+                'x'=> array(
                     'display'=> true,
-                    'scaleLabel'=> array(
+                    'title'=> array(
                         'display'=> true,
                         'labelString'=> 'Month'
                     )
-                )),
-                'yAxes'=> array(array(
+                ),
+                'y'=> array(
                     'display'=> true,
-                    'scaleLabel'=> array(
+                    'title'=> array(
                         'display'=> true,
                         'labelString'=> 'Value'
                     )
-                ))
+                )
             )
         );
         $indonesianChartData = array(rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand(), rand());

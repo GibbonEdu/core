@@ -91,18 +91,20 @@ class EnrolmentTable implements OutputableInterface
             $chart->setLegend(false);
             $chart->setColors(['rgba(54, 162, 235, 1.0)']);
             $chart->setOptions([
-                'height' => '50',
-                'tooltips' => [
+                'height' => '20vh',
+                'tooltip' => [
                     'mode' => 'x-axis',
                 ],
+                'animation' => false,
                 'scales' => [
-                    'yAxes' => [[
+                    'y' => [
                         'display' => false,
-                    ]],
-                    'xAxes' => [[
+                        'beginAtZero' => true,
+                    ],
+                    'x' => [
                         'display'   => true,
                         'gridLines' => ['display' => false],
-                    ]],
+                    ],
                 ],
             ]);
 

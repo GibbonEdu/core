@@ -185,20 +185,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                 ->setOptions([
                     'fill' => false,
                     'showTooltips' => true,
-                    'tooltips' => [
+                    'tooltip' => [
                         'mode' => 'single',
                     ],
                     'hover' => [
                         'mode' => 'dataset',
                     ],
                     'scales' => [
-                        'xAxes' => [[
+                        'x' => [
+                            'min' => 0,
                             'ticks' => [
                                 'autoSkip'    => true,
                                 'maxRotation' => 0,
                                 'padding'     => 30,
                             ]
-                        ]],
+                        ],
+                        'y' => [
+                            'min' => 0,
+                        ],
                     ],
                 ])
                 ->setLabels(array_map(function ($date) {
