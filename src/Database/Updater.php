@@ -34,7 +34,7 @@ class Updater implements ContainerAwareInterface
 
     public $versionDB;
     public $versionCode;
-    
+
     public $cuttingEdgeCode;
     public $cuttingEdgeCodeLine;
     public $cuttingEdgeVersion;
@@ -117,12 +117,15 @@ class Updater implements ContainerAwareInterface
 
         if (!$this->isCuttingEdge()) {
             // Regular release: run all lines for all versions
+            error_log('Updater: Regular release - run all lines for all versions');
             $this->fullVersionUpdate();
         } elseif (version_compare($this->cuttingEdgeVersion, $this->versionDB, '>')) {
             // Cutting edge: at least one full version needs to be done first
+            error_log('Updater: Cutting edge - at least one full version needs to be done first');
             $this->partialVersionUpdate();
         } else {
             // Cutting edge: less than one whole version, get up to speed in max version
+            error_log('Updater: Cutting edge - less than one whole version, get up to speed in max version');
             $this->fullVersionUpdate();
         }
 
@@ -141,23 +144,30 @@ class Updater implements ContainerAwareInterface
         $cuttingEdge = $this->isCuttingEdge();
 
         foreach ($this->sql as $version) {
+            error_log(sprintf('Updater: fullVersionUpdate - updating version %s', $version[0]));
             $tokenCount = 0;
 
-            if (!empty($this->errors)) break;
+            if (!empty($this->errors)) {
+                error_log('Updater: fullVersionUpdate - found previous error - break loop');
+                break;
+            }
 
             if (version_compare($version[0], $this->versionDB, $cuttingEdge ? '>=' : '>') && version_compare($version[0], $this->versionCode, '<=')) {
+                error_log(sprintf('Updater: fullVersionUpdate - version %s is needed for the update.', $version[0]));
                 $sqlTokens = explode(';end', $version[1]);
                 foreach ($sqlTokens as $sqlToken) {
                     // Only run lines that haven't already been run for cutting edge
                     if (!$cuttingEdge || ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>='))) {
+                        error_log(sprintf('Updater: fullVersionUpdate - Line %d has not been run (< line %d). Run: %s', $tokenCount, $this->cuttingEdgeCodeLine, $sqlToken));
                         $this->executeSQL($sqlToken);
                     }
 
                     if ($cuttingEdge && !empty($this->errors)) {
+                        error_log(sprintf('Updater: fullVersionUpdate - Line %d run into error. Break now. Run: %s', $tokenCount, $sqlToken));
                         $this->cuttingEdgeMaxLine = $tokenCount;
                         break;
                     }
-                    
+
                     $tokenCount++;
                 }
 
@@ -176,7 +186,7 @@ class Updater implements ContainerAwareInterface
 
             if (version_compare($version[0], $this->versionDB, '>=') && version_compare($version[0], $this->versionCode, '<=')) {
                 $sqlTokens = explode(';end', $version[1]);
-                if ($version[0] == $this->versionDB) { 
+                if ($version[0] == $this->versionDB) {
 
                     // Finish current version
                     foreach ($sqlTokens as $sqlToken) {
@@ -188,10 +198,10 @@ class Updater implements ContainerAwareInterface
                             $this->cuttingEdgeMaxLine = $tokenCount;
                             break;
                         }
-                        
+
                         ++$tokenCount;
                     }
-                } else { 
+                } else {
                     // Update intermediate versions and max version
                     foreach ($sqlTokens as $sqlToken) {
                         $this->executeSQL($sqlToken);
