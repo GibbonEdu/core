@@ -158,7 +158,6 @@ class Updater implements ContainerAwareInterface
                 foreach ($sqlTokens as $sqlToken) {
                     // Only run lines that haven't already been run for cutting edge
                     if (!$cuttingEdge || ($cuttingEdge && version_compare($tokenCount, $this->cuttingEdgeCodeLine, '>='))) {
-                        error_log(sprintf('Updater: fullVersionUpdate - Line %d has not been run (< line %d). Run: %s', $tokenCount, $this->cuttingEdgeCodeLine, $sqlToken));
                         $this->executeSQL($sqlToken);
                     }
 
