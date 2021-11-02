@@ -303,7 +303,7 @@ if ($result->rowCount() < 1) {
                             if ($enableModifiedAssessment == 'Y') {
                                 if (!is_null($rowEntry['modifiedAssessment'])) {
                                     echo "<td>";
-                                    echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                    echo Format::yesNo($rowEntry['modifiedAssessment']);
                                     echo '</td>';
                                 }
                                 else {

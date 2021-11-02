@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             }
 
             // DISPLAY AND EDIT IEP
-           
+
 
             $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
 
@@ -276,5 +276,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         }
     }
     //Set sidebar
-    $session->set('sidebarExtra', getUserPhoto($guid, $student['image_240'] ?? '', 240));
+    $session->set('sidebarExtra', Format::userPhoto($student['image_240'] ?? '', 240));
 }

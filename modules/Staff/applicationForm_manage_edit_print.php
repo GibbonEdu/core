@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 if ($row['phone1CountryCode'] != '') {
                     echo htmlPrep($row['phone1CountryCode']).' ';
                 }
-                echo htmlPrep(formatPhone($row['phone1'])).' ';
+                echo htmlPrep(Format::phone($row['phone1'])).' ';
                 echo '</i>';
                 echo '</td>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";

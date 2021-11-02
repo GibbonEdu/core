@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
 
 //Module includes
@@ -205,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 
 							$row = $form->addRow();
 								$row->addLabel('countAgainstBudgetLabel', __('Count Against Budget'));
-                                $row->addTextField('countAgainstBudgetLabel')->setValue(ynExpander($guid, $values['countAgainstBudget']))->required()->readonly();
+                                $row->addTextField('countAgainstBudgetLabel')->setValue(Format::yesNo($values['countAgainstBudget']))->required()->readonly();
 
                             if ($values['countAgainstBudget'] == 'Y') {
                                 $budgetAllocationLabel = (is_numeric($budgetAllocation))? number_format($budgetAllocation, 2, '.', ',') : $budgetAllocation;

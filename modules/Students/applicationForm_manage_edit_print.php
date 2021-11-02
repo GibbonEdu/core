@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($row['phone1CountryCode'] != '') {
                 echo htmlPrep($row['phone1CountryCode']).' ';
             }
-            echo htmlPrep(formatPhone($row['phone1'])).' ';
+            echo htmlPrep(Format::phone($row['phone1'])).' ';
             echo '</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -330,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                         echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                     }
-                                    echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                    echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                 }
                             }
                         }
@@ -409,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($row['parent'.$i.'phone'.$n.'CountryCode'] != '') {
                                     echo '+'.$row['parent'.$i.'phone'.$n.'CountryCode'].' ';
                                 }
-                                echo formatPhone($row['parent'.$i.'phone'.$n]).'<br/>';
+                                echo Format::phone($row['parent'.$i.'phone'.$n]).'<br/>';
                             }
                         }
                     }
@@ -539,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                             echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                         }
-                                        echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                        echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                     }
                                 }
                             }
