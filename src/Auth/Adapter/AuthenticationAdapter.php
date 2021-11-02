@@ -350,7 +350,7 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
 
         $event->addRecipient($this->session->get('organisationAdministrator'));
         $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $userData['username']));
-        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage')->withQueryParam('search', $userData['username']));
+        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage')->withAbsoluteURL()->withQueryParam('search', $userData['username']));
 
         $event->sendNotifications($this->getContainer()->get('db'), $this->session);
     }
