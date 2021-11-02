@@ -26,7 +26,10 @@ v23.0.00
         System: added ability to run CLI scripts remotely, with secure key
         System: removed deprecated functions no longer used in core and additional modules
             - addressFormat
+            - dateConvert
+            - dateConvertBack
             - dateConvertToTimestamp
+            - formatName
             - formatPhone
             - getAge
             - getGibbonMailer
@@ -34,6 +37,7 @@ v23.0.00
             - getSettingByScope
             - getUserPhoto
             - printUserPhoto
+            - returnProcess
             - setLog
             - tinymceStyleStripTags
             - ynExpander

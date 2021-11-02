@@ -478,14 +478,6 @@ function getWeekNumber($date, $connection2, $guid)
 }
 
 /**
- * @deprecated in v16. Use Format::name
- */
-function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
-{
-    return Format::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
-}
-
-/**
  * Updated v18 to use a twig template.
  *
  * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
@@ -1091,26 +1083,6 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
     }
 
     $session->set('i18n', $i18n);
-}
-
-/**
- * Converts date from language-specific format to YYYY-MM-DD. DEPRECATED.
- *
- * @deprecated in v16. Use Format::dateConvert
- */
-function dateConvert($guid, $date)
-{
-    return Format::dateConvert($date);
-}
-
-/**
- * Converts date from YYYY-MM-DD to language-specific format. DEPRECATED.
- *
- * @deprecated in v16. Use Format::date
- */
-function dateConvertBack($guid, $date)
-{
-    return Format::date($date);
 }
 
 function isActionAccessible($guid, $connection2, $address, $sub = '')
