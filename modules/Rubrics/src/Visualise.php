@@ -158,13 +158,6 @@ class Visualise
                         this.options.animation.onComplete = null;
                     }'),
                 ];
-            } else {
-                // $options['animation'] = [
-                //     'duration' => 0,
-                //     'onComplete' => $chart->addFunction('function(e) {
-                //         console.log("Hello");
-                //     }'),
-                // ];
             }
             $chart->setOptions($options);
             
