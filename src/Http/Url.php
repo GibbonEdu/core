@@ -66,6 +66,13 @@ class Url extends Uri implements UriInterface
     protected $module;
 
     /**
+     * Whether to apply an absolute URL to this route.
+     *
+     * @var bool
+     */
+    protected $isAbsolute = false;
+
+    /**
      * Gibbon's internal route path. Would be non-null if created from methods
      * like fromRoute, fromModuleRoute. Affects how __toString works.
      *
@@ -163,6 +170,18 @@ class Url extends Uri implements UriInterface
      */
     public function __toString()
     {
+        // Apply an absolute URL to this route before rendering.
+        if ($this->isAbsolute) {
+            $parsed = parse_url(self::$baseUrl);
+
+            $new = $this
+                ->withScheme($parsed['scheme'] ?? '')
+                ->withHost($parsed['host'] ?? '')
+                ->withPort($parsed['port'] ?? null);
+            $new->isAbsolute = false;
+            return $new->__toString();
+        }
+
         // Only override rendering if a route path is set.
         // Supposed to only happen if created by the
         // fromRoute() or fromModuleRoute() methods.
@@ -247,6 +266,22 @@ class Url extends Uri implements UriInterface
     }
 
     /**
+     * Ensure the rendered url contains the scheme, host and (optional) port.
+     *
+     * @param bool $isAbsolute
+     * @return self
+     */
+    public function withAbsoluteUrl(bool $isAbsolute = true): self
+    {
+        if ($this->isAbsolute === $isAbsolute) {
+            return $this;
+        }
+        $new = clone $this;
+        $new->isAbsolute = $isAbsolute;
+        return $new;
+    }
+
+    /**
      * Setup the class to use the baseUrl and basePath for all
      * rendered URL. Should be the "absoluteURL" in session variables.
      *
@@ -307,6 +342,8 @@ class Url extends Uri implements UriInterface
      */
     private function withRoutePath(string $route_path): self
     {
+        $route_path = preg_replace('/\.php$/i', '', $route_path);
+
         if ($this->routePath === $route_path) {
             return $this;
         }

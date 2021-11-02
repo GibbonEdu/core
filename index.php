@@ -52,8 +52,8 @@ $settingGateway = $container->get(SettingGateway::class);
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
-    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), trim($module->entryURL, '/'));
+    $page->breadcrumbs->setBaseURL(Url::fromModuleRoute($module->name));
+    $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
 /**
