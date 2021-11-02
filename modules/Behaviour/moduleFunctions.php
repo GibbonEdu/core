@@ -109,7 +109,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             $table->addColumn('type', __('Type'))
                 ->width('5%')
-                ->format(function($beahviour) use ($guid, $session) {
+                ->format(function($beahviour) use ($session) {
                     if ($beahviour['type'] == 'Negative') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
                     } elseif ($beahviour['type'] == 'Positive') {
@@ -141,7 +141,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     ->addParam('gibbonYearGroupID', '')
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')
-                    ->format(function ($person, $actions) use ($guid, $highestAction) {
+                    ->format(function ($person, $actions) use ($session, $highestAction) {
                         if ($highestAction == 'Manage Behaviour Records_all'
                         || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
                             $actions->addAction('edit', __('Edit'))
