@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Http\Url;
+use Gibbon\Domain\System\SettingGateway;
 
 function getIPAddress() {
     $return = false;
@@ -215,20 +215,6 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
     }
 
     return $return;
-}
-
-/**
- * @deprecated in v16. Use NotificationSender class.
- */
-function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink)
-{
-    global $pdo, $session;
-
-    $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
-    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
-
-    $notificationSender->addNotification($gibbonPersonID, $text, $moduleName, $actionLink);
-    $success = $notificationSender->sendNotifications();
 }
 
 //Accepts birthday in mysql date (YYYY-MM-DD) ;

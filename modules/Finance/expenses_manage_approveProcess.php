@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
@@ -131,11 +132,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $approval = 'Approval - Partial - Budget';
                                     } else {
                                         //Check if school approver, if not, abort
-
-                                            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                                            $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID";
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
+                                        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+                                        $sql = "SELECT * FROM gibbonFinanceExpenseApprover JOIN gibbonPerson ON (gibbonFinanceExpenseApprover.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonFinanceExpenseApprover.gibbonPersonID=:gibbonPersonID";
+                                        $result = $connection2->prepare($sql);
+                                        $result->execute($data);
 
                                         if ($result->rowCount() == 1) {
                                             $approval = 'Approval - Partial - School';
@@ -167,6 +167,8 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                     //Attempt to archive notification
                                     archiveNotification($connection2, $guid, $session->get('gibbonPersonID'), "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID");
 
+                                    $notificationSender = $container->get(NotificationSender::class);
+                                        
                                     if ($approval == 'Rejection') { //REJECT!
                                         //Write back to gibbonFinanceExpense
                                         try {
@@ -194,8 +196,9 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                                         //Notify original creator that it is rejected
                                         $notificationText = sprintf(__('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row['title'], $row['budget']);
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-
+                                        $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                        $notificationSender->sendNotifications();
+              
                                         $URLApprove .= '&return=success0';
                                         header("Location: {$URLApprove}");
                                     } elseif ($approval == 'Comment') { //COMMENT!
@@ -213,8 +216,9 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
 
                                         //Notify original creator that it is commented upon
                                         $notificationText = sprintf(__('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                                        setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-
+                                        $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                        $notificationSender->sendNotifications();
+            
                                         $URLApprove .= '&return=success0';
                                         header("Location: {$URLApprove}");
                                     } else { //APPROVE!
@@ -313,13 +317,16 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                                 $purchasingOfficer = $settingGateway->getSettingByScope('Finance', 'purchasingOfficer');
                                                 if ($purchasingOfficer != false and $purchasingOfficer != '' and $row['purchaseBy'] == 'School') {
                                                     $notificationText = sprintf(__('A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row['title'], $row['budget']);
-                                                    setNotification($connection2, $guid, $purchasingOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                                    $notificationSender->addNotification($purchasingOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                                    $notificationSender->sendNotifications();
+                                                    
                                                     $notificationExtra = '. '.__('The Purchasing Officer has been alerted, and will purchase the item on your behalf.');
                                                 }
 
                                                 //Notify original creator that it is approved
                                                 $notificationText = sprintf(__('Your expense request for "%1$s" in budget "%2$s" has been fully approved.').$notificationExtra, $row['title'], $row['budget']);
-                                                setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                                $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                                $notificationSender->sendNotifications();
 
                                                 $URLApprove .= '&return=success0';
                                                 header("Location: {$URLApprove}");
