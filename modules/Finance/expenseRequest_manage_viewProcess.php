@@ -90,6 +90,8 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                             header("Location: {$URL}");
                         } else {
                             $approvers = $result->fetchAll();
+                            
+                            $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
 
                             //Ready to go! Just check record exists and we have access, and load it ready to use...
                             try {
@@ -142,22 +144,25 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 
                                 //Notify budget holders
                                 if ($budgetLevelExpenseApproval == 'Y') {
-
-                                        $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
-                                        $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
-                                        $resultHolder = $connection2->prepare($sqlHolder);
-                                        $resultHolder->execute($dataHolder);
+                                    $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+                                    $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
+                                    $resultHolder = $connection2->prepare($sqlHolder);
+                                    $resultHolder->execute($dataHolder);
                                     while ($rowHolder = $resultHolder->fetch()) {
+                                        $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                         $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                                        setNotification($connection2, $guid, $rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                        $notificationSender->addNotification($rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                        $notificationSender->sendNotifications();
                                     }
                                 }
 
                                 //Notify approvers that it is commented upon
+                                $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
+                                $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                 foreach ($approvers as $approver) {
-                                    $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                                    setNotification($connection2, $guid, $approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
+                                $notificationSender->sendNotifications();
 
                                 $URL .= '&return=success0';
                                 header("Location: {$URL}");

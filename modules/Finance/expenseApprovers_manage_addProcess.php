@@ -36,7 +36,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
           ? abs($_POST['sequenceNumber']?? null)
           : null;
 
-
     if ($gibbonPersonID == '' or ($expenseApprovalType == 'Y' and $sequenceNumber == '')) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

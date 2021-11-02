@@ -133,7 +133,10 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $reimbursementOfficer = $settingGateway->getSettingByScope('Finance', 'reimbursementOfficer');
                         if ($reimbursementOfficer != false and $reimbursementOfficer != '') {
                             $notificationText = sprintf(__('Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                            setNotification($connection2, $guid, $reimbursementOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
+                            $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
+                            $notificationSender->addNotification($reimbursementOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            $notificationSender->sendNotifications();
                         }
 
                         //Write paid change to log

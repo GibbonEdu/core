@@ -17,8 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
@@ -110,6 +110,8 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                 $paymentMethod = $row['paymentMethod'];
                                 $paymentID = $row['paymentID'];
                             }
+                            
+                            $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
 
                             //Do Reimbursement work
                             $paymentReimbursementStatus = null;
@@ -122,8 +124,12 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                 if ($row['status'] == 'Paid' and $row['purchaseBy'] == 'Self' and $row['paymentReimbursementStatus'] == 'Requested' and $paymentReimbursementStatus == 'Complete') {
                                     $paymentID = $_POST['paymentID'] ?? '';
                                     $reimbursementComment = $_POST['reimbursementComment'] ?? '';
+                                    
+                                    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                     $notificationText = sprintf(__('Your reimbursement expense request for "%1$s" in budget "%2$s" has been completed.'), $row['title'], $row['budget']);
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenseRequest_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->sendNotifications();
+
                                     //Write change to log
                                     try {
                                         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'action' => 'Reimbursement Completion', 'comment' => $reimbursementComment);
@@ -157,13 +163,18 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                 } elseif ($status == 'Approved') {
                                     $action = 'Approval - Exempt';
                                     //Notify original creator that it is approved
+                                    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                     $notificationText = sprintf(__('Your expense request for "%1$s" in budget "%2$s" has been fully approved.'), $row['title'], $row['budget']);
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->sendNotifications();
+                                    
                                 } elseif ($status == 'Rejected') {
                                     $action = 'Rejection';
                                     //Notify original creator that it is rejected
+                                    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                     $notificationText = sprintf(__('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row['title'], $row['budget']);
-                                    setNotification($connection2, $guid, $row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->sendNotifications();
                                 } elseif ($status == 'Ordered') {
                                     $action = 'Order';
                                 } elseif ($status == 'Paid') {

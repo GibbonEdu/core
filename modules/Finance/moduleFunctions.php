@@ -391,7 +391,9 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 //Tries to avoid issue duplicate notifications
 function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)
 {
-    global $container;
+    global $container, $pdo, $session;
+    
+    $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
 
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
@@ -434,7 +436,9 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         return false;
                     } else {
                         while ($rowBudget = $resultBudget->fetch()) {
-                            setNotification($connection2, $guid, $rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
+                            $notificationSender->addNotification($rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            $notificationSender->sendNotifications();
 
                             return true;
                         }
@@ -454,7 +458,9 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         } else {
                             while ($rowApprovers = $resultApprovers->fetch()) {
                                 if ($rowApprovers['gibbonFinanceExpenseLogID'] == '') {
-                                    setNotification($connection2, $guid, $rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
+                                    $notificationSender->addNotification($rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->sendNotifications();
                                 }
                             }
 
@@ -486,7 +492,9 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                             if (is_null($gibbonPersonIDNext)) {
                                 return false;
                             } else {
-                                setNotification($connection2, $guid, $gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
+                                $notificationSender->addNotification($gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                $notificationSender->sendNotifications();
 
                                 return true;
                             }
