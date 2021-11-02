@@ -1,7 +1,4 @@
 <?php
-
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Module\Finance\Tables\ExpenseLog;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,6 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Finance\Tables\ExpenseLog;
+
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -257,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 											<b><?php echo __('Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($row['countAgainstBudget']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<?php

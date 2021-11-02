@@ -230,7 +230,7 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                     if ($enableModifiedAssessment == 'Y') {
                         if (!is_null($rowEntry['modifiedAssessment'])) {
                             echo "<td>";
-                            echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                            echo Format::yesNo($rowEntry['modifiedAssessment']);
                             echo '</td>';
                         }
                         else {

@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -76,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $setting = $settingGateway->getSettingByScope('System', 'cuttingEdgeCode', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue(ynExpander($guid, $setting['value']))->readonly();
+        $row->addTextField($setting['name'])->setValue(Format::yesNo($setting['value']))->readonly();
 
     $setting = $settingGateway->getSettingByScope('System', 'statsCollection', true);
     $row = $form->addRow();

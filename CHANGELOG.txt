@@ -24,6 +24,23 @@ v23.0.00
 
     Significant Changes
         System: added ability to run CLI scripts remotely, with secure key
+        System: removed deprecated functions no longer used in core and additional modules
+            - addressFormat
+            - dateConvert
+            - dateConvertBack
+            - dateConvertToTimestamp
+            - formatName
+            - formatPhone
+            - getAge
+            - getGibbonMailer
+            - getModuleEntry
+            - getSettingByScope
+            - getUserPhoto
+            - printUserPhoto
+            - returnProcess
+            - setLog
+            - tinymceStyleStripTags
+            - ynExpander
         System Admin: added a Maintenance Mode which restricts login access to admin only
         System Admin: added an Active Sessions page to see who is currently logged in
 

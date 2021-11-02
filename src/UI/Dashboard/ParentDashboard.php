@@ -346,7 +346,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     if ($enableModifiedAssessment == 'Y') {
                         if (!is_null($rowEntry['modifiedAssessment'])) {
                             $gradesOutput .= "<td>";
-                            $gradesOutput .= ynExpander($guid, $rowEntry['modifiedAssessment']);
+                            $gradesOutput .= Format::yesNo($rowEntry['modifiedAssessment']);
                             $gradesOutput .= '</td>';
                         }
                         else {
