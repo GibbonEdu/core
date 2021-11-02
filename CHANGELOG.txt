@@ -39,6 +39,7 @@ v23.0.00
             - printUserPhoto
             - returnProcess
             - setLog
+            - setNotification
             - tinymceStyleStripTags
             - ynExpander
         System Admin: added a Maintenance Mode which restricts login access to admin only
