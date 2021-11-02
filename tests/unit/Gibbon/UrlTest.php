@@ -40,6 +40,18 @@ class UrlTest extends TestCase
     }
 
     /**
+     * @covers \Gibbon\Http\Url::fromAbsoluteRoute()
+     */
+    public function testFromAbsoluteRoute()
+    {
+        $url = Url::fromRoute('some_action')->withAbsoluteUrl();
+        $this->assertEquals('http://foobar.com/some/path/index.php?q=some_action.php', (string) $url);
+
+        $url = Url::fromRoute()->withAbsoluteUrl()->withQuery('hello=world');
+        $this->assertEquals('http://foobar.com/some/path/index.php?hello=world', (string) $url);
+    }
+
+    /**
      * @covers \Gibbon\Http\Url::fromRoute()
      * @covers \Gibbon\Http\Url::withQueryParams()
      */
@@ -100,6 +112,22 @@ class UrlTest extends TestCase
 
     /**
      * @covers \Gibbon\Http\Url::fromModuleRoute()
+     */
+    public function testFromAbsoluteModuleRoute()
+    {
+        $url = Url::fromModuleRoute('My Module', 'some_action')->withAbsoluteUrl();
+        $this->assertEquals('http://foobar.com/some/path/index.php?' . http_build_query([
+            'q' => '/modules/My Module/some_action.php',
+        ]), (string) $url);
+
+        $url = Url::fromModuleRoute('My Module')->withAbsoluteUrl();
+        $this->assertEquals('http://foobar.com/some/path/index.php?' . http_build_query([
+            'q' => '/modules/My Module/',
+        ]), (string) $url);
+    }
+
+    /**
+     * @covers \Gibbon\Http\Url::fromModuleRoute()
      * @covers \Gibbon\Http\Url::withQueryParams()
      */
     public function testFromModuleRouteWithQueryParams()
@@ -151,6 +179,18 @@ class UrlTest extends TestCase
 
         $url = Url::fromHandlerRoute('fullscreen.php', 'some_action');
         $this->assertEquals('/some/path/fullscreen.php?q=some_action.php', (string) $url);
+    }
+
+    /**
+     * @covers \Gibbon\Http\Url::fromHandlerPath()
+     */
+    public function testFromAbsoluteHandlerPath()
+    {
+        $url = Url::fromHandlerRoute('fullscreen.php')->withAbsoluteUrl();
+        $this->assertEquals('http://foobar.com/some/path/fullscreen.php', (string) $url);
+
+        $url = Url::fromHandlerRoute('fullscreen.php', 'some_action')->withAbsoluteUrl();
+        $this->assertEquals('http://foobar.com/some/path/fullscreen.php?q=some_action.php', (string) $url);
     }
 
     /**
