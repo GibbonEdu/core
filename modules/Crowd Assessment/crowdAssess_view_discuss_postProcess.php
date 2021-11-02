@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
@@ -125,8 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                         $homeworkNameSingular = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'homeworkNameSingular');
 
-                        $notificationGateway = new NotificationGateway($pdo);
-                        $notificationSender = new NotificationSender($notificationGateway, $session);
+                        $notificationSender = $container->get(NotificationSender::class);
 
                         //Create notification for homework owner, as long as it is not me.
                         if ($gibbonPersonID != $session->get('gibbonPersonID') and $gibbonPersonID != $replyToID) {

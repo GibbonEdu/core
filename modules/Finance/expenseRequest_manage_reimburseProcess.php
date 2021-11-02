@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
@@ -135,8 +134,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                         $reimbursementOfficer = $settingGateway->getSettingByScope('Finance', 'reimbursementOfficer');
                         if ($reimbursementOfficer != false and $reimbursementOfficer != '') {
                             $notificationText = sprintf(__('Someone has requested reimbursement for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                            $notificationGateway = new NotificationGateway($pdo);
-                            $notificationSender = new NotificationSender($notificationGateway, $session);
+                            $notificationSender = $container->get(NotificationSender::class);
                             $notificationSender->addNotification($reimbursementOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_edit.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                             $notificationSender->sendNotifications();
                         }

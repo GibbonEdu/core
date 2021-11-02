@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\NotificationGateway;
 
 //Returns amount paid on an particular table/ID combo
 function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID)
@@ -395,7 +394,7 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
 {
     global $container, $pdo, $session;
     
-    $notificationGateway = new NotificationGateway($pdo);
+    $notificationSender = $container->get(NotificationSender::class);
 
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
@@ -438,12 +437,11 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         return false;
                     } else {
                         while ($rowBudget = $resultBudget->fetch()) {
-                            $notificationSender = new NotificationSender($notificationGateway, $session);
                             $notificationSender->addNotification($rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-                            $notificationSender->sendNotifications();
-
-                            return true;
+                            
                         }
+                        $notificationSender->sendNotifications();
+                        return true;
                     }
                 } else { //School-level approval, what type is it?
                     if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
@@ -460,12 +458,11 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         } else {
                             while ($rowApprovers = $resultApprovers->fetch()) {
                                 if ($rowApprovers['gibbonFinanceExpenseLogID'] == '') {
-                                    $notificationSender = new NotificationSender($notificationGateway, $session);
                                     $notificationSender->addNotification($rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-                                    $notificationSender->sendNotifications();
                                 }
                             }
 
+                            $notificationSender->sendNotifications();
                             return true;
                         }
                     } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
@@ -494,7 +491,6 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                             if (is_null($gibbonPersonIDNext)) {
                                 return false;
                             } else {
-                                $notificationSender = new NotificationSender($notificationGateway, $session);
                                 $notificationSender->addNotification($gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 $notificationSender->sendNotifications();
 

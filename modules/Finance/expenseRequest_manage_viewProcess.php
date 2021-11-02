@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
@@ -93,8 +92,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                         } else {
                             $approvers = $result->fetchAll();
 
-                            $notificationGateway = new NotificationGateway($pdo);
-                            $notificationSender = new NotificationSender($notificationGateway, $session);
+                            $notificationSender = $container->get(NotificationSender::class);
 
                             //Ready to go! Just check record exists and we have access, and load it ready to use...
                             try {
