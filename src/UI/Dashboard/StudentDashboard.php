@@ -209,7 +209,7 @@ class StudentDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Student') {
-            $apiEndpoint = $this->session->get('absoluteURL').'/index_tt_ajax.php';
+            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $jsonQuery = [
                 'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
                 'ttDate' => $_POST['ttDate'] ?? '',
