@@ -132,7 +132,10 @@ class Visualise
                 ->setColorOpacity(0.6);
 
             $options = [
-                'height' => '120%',
+                'responsive' => 'true',
+                'maintainAspectRatio' => 'true',
+                'aspectRatio' => 2,
+                'height' => '32vw',
                 'scale'  => [
                     'ticks' => [
                         'min' => 0.0,
