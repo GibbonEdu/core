@@ -8067,20 +8067,6 @@ ALTER TABLE `gibbonYearGroup`
   MODIFY `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- Add new table for session
---
-CREATE TABLE IF NOT EXISTS `gibbonSession` (
-    `gibbonSessionID` VARCHAR(40) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-    `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL,
-    `gibbonActionID` INT(7) UNSIGNED ZEROFILL NULL DEFAULT NULL,
-    `sessionData` TEXT NULL,
-    `sessionStatus` VARCHAR(20) DEFAULT NULL,
-    `timestampCreated` TIMESTAMP NULL,
-    `timestampModified` TIMESTAMP NULL,
-    PRIMARY KEY (`gibbonSessionID`)
-) ENGINE = InnoDB;
-
---
 -- Add setting 'registerGibbonSupport' to `gibbonSetting`
 --
 INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`)
