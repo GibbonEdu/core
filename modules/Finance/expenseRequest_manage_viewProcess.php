@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
@@ -90,8 +92,9 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                             header("Location: {$URL}");
                         } else {
                             $approvers = $result->fetchAll();
-                            
-                            $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
+
+                            $notificationGateway = new NotificationGateway($pdo);
+                            $notificationSender = new NotificationSender($notificationGateway, $session);
 
                             //Ready to go! Just check record exists and we have access, and load it ready to use...
                             try {
@@ -149,19 +152,17 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                     $resultHolder = $connection2->prepare($sqlHolder);
                                     $resultHolder->execute($dataHolder);
                                     while ($rowHolder = $resultHolder->fetch()) {
-                                        $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                         $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                         $notificationSender->addNotification($rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-                                        $notificationSender->sendNotifications();
                                     }
                                 }
 
                                 //Notify approvers that it is commented upon
-                                $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $session);
                                 $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                 foreach ($approvers as $approver) {
                                     $notificationSender->addNotification($approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
+
                                 $notificationSender->sendNotifications();
 
                                 $URL .= '&return=success0';
