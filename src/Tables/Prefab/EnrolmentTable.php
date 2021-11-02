@@ -95,9 +95,11 @@ class EnrolmentTable implements OutputableInterface
                 'tooltip' => [
                     'mode' => 'x-axis',
                 ],
+                'animation' => false,
                 'scales' => [
                     'y' => [
                         'display' => false,
+                        'beginAtZero' => true,
                     ],
                     'x' => [
                         'display'   => true,
