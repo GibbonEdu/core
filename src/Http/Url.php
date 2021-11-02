@@ -66,6 +66,13 @@ class Url extends Uri implements UriInterface
     protected $module;
 
     /**
+     * Whether to apply an absolute URL to this route.
+     *
+     * @var bool
+     */
+    protected $isAbsolute = false;
+
+    /**
      * Gibbon's internal route path. Would be non-null if created from methods
      * like fromRoute, fromModuleRoute. Affects how __toString works.
      *
@@ -87,23 +94,6 @@ class Url extends Uri implements UriInterface
     {
         return (new static())
             ->withPath(static::$basePath)
-            ->withRoutePath($route_path);
-    }
-
-    /**
-     * Create Uri instance for the absolute url of the given Gibbon routes.
-     * This can be used for external links, such as those sent in emails.
-     *
-     * @param string $route_path
-     *   The core route path (e.g. "preferences", "privacyPolicy"). If left empty,
-     *   will use the base path (Home).
-     *
-     * @return static
-     *   The URL object.
-     */
-    public static function fromAbsoluteRoute(string $route_path = ''): self
-    {
-        return (new static(static::$baseUrl))
             ->withRoutePath($route_path);
     }
 
@@ -180,6 +170,18 @@ class Url extends Uri implements UriInterface
      */
     public function __toString()
     {
+        // Apply an absolute URL to this route before rendering.
+        if ($this->isAbsolute) {
+            $parsed = parse_url(self::$baseUrl);
+
+            $new = $this
+                ->withScheme($parsed['scheme'] ?? '')
+                ->withHost($parsed['host'] ?? '')
+                ->withPort($parsed['port'] ?? null);
+            $new->isAbsolute = false;
+            return $new->__toString();
+        }
+
         // Only override rendering if a route path is set.
         // Supposed to only happen if created by the
         // fromRoute() or fromModuleRoute() methods.
@@ -261,6 +263,22 @@ class Url extends Uri implements UriInterface
     public function withReturn(string $return_type): self
     {
         return $this->withQueryParam('return', $return_type);
+    }
+
+    /**
+     * Ensure the rendered url contains the scheme, host and (optional) port.
+     *
+     * @param bool $isAbsolute
+     * @return self
+     */
+    public function withAbsoluteUrl(bool $isAbsolute = true): self
+    {
+        if ($this->isAbsolute === $isAbsolute) {
+            return $this;
+        }
+        $new = clone $this;
+        $new->isAbsolute = $isAbsolute;
+        return $new;
     }
 
     /**
