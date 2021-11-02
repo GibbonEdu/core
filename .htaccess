@@ -1,4 +1,0 @@
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql|neon)$">
-Order Allow,Deny
-Deny from all
-</FilesMatch>
