@@ -88,13 +88,27 @@ jobs:
       - name: Check PHP warning and deprecated messages in server_log
         run: |
           # Check number of warning messages.
-          export NUM_WARNING=$(grep 'PHP Warning: ' ./tests/log/server_log | wc -l)
+          export NUM_WARNING=$(grep --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log | wc -l)
           if [ "$NUM_WARNING" -eq 0 ]; then
             echo -e '\e[32mNo warning message.\e[0m'
+            echo
           else
             echo -e "\e[1m\e[33mGot $NUM_WARNING warning messages:\e[0m"
-            grep --line-number --color=always 'PHP Warning: ' ./tests/log/server_log || echo -e '\e[32mNo warning or deprecated message found in log.\e[0m'
+            grep --line-number --color=always --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log || echo -e '\e[32mNo Warning message found in log.\e[0m'
             echo
+            (exit 1)
+          fi
+
+          # Check number of PHP warning messages.
+          export NUM_PHP_WARNING=$(grep 'PHP Warning: ' ./tests/log/server_log | wc -l)
+          if [ "$NUM_PHP_WARNING" -eq 0 ]; then
+            echo -e '\e[32mNo warning message.\e[0m'
+            echo
+          else
+            echo -e "\e[1m\e[31mGot $NUM_PHP_WARNING PHP warning messages:\e[0m"
+            grep --line-number --color=always 'PHP Warning: ' ./tests/log/server_log || echo -e '\e[32mNo PHP Warning message found in log.\e[0m'
+            echo
+            (exit 1)
           fi
 
           # Check number of deprecated messages. Cause error if found.
@@ -103,7 +117,8 @@ jobs:
             echo -e '\e[32mNo deprecated message.\e[0m'
           else
             echo -e "\e[1m\e[31mGot $NUM_DEPRECATED deprecated messages:\e[0m"
-            grep --line-number --color=always 'Deprecated: ' ./tests/log/server_log || echo -e '\e[32mNo warning or deprecated message found in log.\e[0m'
+            grep --line-number --color=always 'Deprecated: ' ./tests/log/server_log || echo -e '\e[32mNo Deprecated message found in log.\e[0m'
+            echo
             (exit 1)
           fi
         continue-on-error: ${{ matrix.experimental }}
