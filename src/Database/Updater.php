@@ -144,7 +144,6 @@ class Updater implements ContainerAwareInterface
         $cuttingEdge = $this->isCuttingEdge();
 
         foreach ($this->sql as $version) {
-            error_log(sprintf('Updater: fullVersionUpdate - updating version %s', $version[0]));
             $tokenCount = 0;
 
             if (!empty($this->errors)) {
@@ -153,7 +152,7 @@ class Updater implements ContainerAwareInterface
             }
 
             if (version_compare($version[0], $this->versionDB, $cuttingEdge ? '>=' : '>') && version_compare($version[0], $this->versionCode, '<=')) {
-                error_log(sprintf('Updater: fullVersionUpdate - version %s is needed for the update.', $version[0]));
+                error_log(sprintf('Updater: fullVersionUpdate - updating version %s', $version[0]));
                 $sqlTokens = explode(';end', $version[1]);
                 foreach ($sqlTokens as $sqlToken) {
                     // Only run lines that haven't already been run for cutting edge
