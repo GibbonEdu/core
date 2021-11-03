@@ -464,7 +464,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= '<tr>';
-            $output .= "<td style='vertical-align: top;width:300px'>";
+            $output .= "<td style='vertical-align: top;width:360px'>";
             $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
@@ -1709,7 +1709,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
         $output .= "<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>";
         $output .= '<tr>';
-        $output .= "<td style='vertical-align: top;width:300px;'>";
+        $output .= "<td style='vertical-align: top;width:360px;'>";
         $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
         $output .= "<input name='ttDate' maxlength=10 value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
         $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
