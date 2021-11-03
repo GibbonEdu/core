@@ -176,7 +176,6 @@ class Installer
             preferredName=:preferredName,
             officialName=:officialName,
             username=:username,
-            password="",
             passwordStrong=:passwordStrong,
             passwordStrongSalt=:passwordStrongSalt,
             status=:status,
