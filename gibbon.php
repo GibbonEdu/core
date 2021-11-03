@@ -65,6 +65,7 @@ $version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
+    define('SESSION_TABLE_AVAILABLE', false);
     header("Location: ./installer/install.php");
     exit;
 }
@@ -88,14 +89,16 @@ if ($gibbon->isInstalled()) {
         // Initialize core
         $gibbon->initializeCore($container);
     } else {
-        define('SESSION_TABLE_AVAILABLE', false);
-
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
             include __DIR__.'/error.php';
             exit;
         }
     }
+}
+
+if (!defined('SESSION_TABLE_AVAILABLE')) {
+    define('SESSION_TABLE_AVAILABLE', false);
 }
 
 // Globals for backwards compatibility
