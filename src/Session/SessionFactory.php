@@ -51,7 +51,7 @@ class SessionFactory
         $config = $container->get('config')->getConfig();
 
         // Check if the database exists, if not, use the built-in PHP session handler class
-        if ($container->has(Connection::class)) {
+        if (SESSION_TABLE_AVAILABLE && $container->has(Connection::class)) {
             $sessionGateway = $container->get(SessionGateway::class);
 
             if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
