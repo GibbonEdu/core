@@ -88,6 +88,8 @@ if ($gibbon->isInstalled()) {
         // Initialize core
         $gibbon->initializeCore($container);
     } else {
+        define('SESSION_TABLE_AVAILABLE', false);
+
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
             include __DIR__.'/error.php';

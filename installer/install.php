@@ -24,6 +24,8 @@ use Gibbon\Install\Http\Exception\RecoverableException;
 use Gibbon\Install\Http\InstallController;
 use Gibbon\Install\Installer;
 
+define('SESSION_TABLE_AVAILABLE', false);
+
 include '../version.php';
 include '../gibbon.php';
 
@@ -33,7 +35,6 @@ require_once '../modules/System Admin/moduleFunctions.php';
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
-define('SESSION_TABLE_AVAILABLE', false);
 
 // Fix missing locale causing failed page load
 if (empty($gibbon->locale->getLocale())) {
