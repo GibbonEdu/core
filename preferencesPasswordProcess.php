@@ -69,7 +69,7 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                     $passwordStrong = hash('sha256', $salt.$passwordNew);
                     try {
                         $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $session->get('username'));
-                        $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
+                        $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
