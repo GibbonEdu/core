@@ -24,8 +24,6 @@ use Gibbon\Install\Http\Exception\RecoverableException;
 use Gibbon\Install\Http\InstallController;
 use Gibbon\Install\Installer;
 
-define('SESSION_TABLE_AVAILABLE', false);
-
 include '../version.php';
 include '../gibbon.php';
 
