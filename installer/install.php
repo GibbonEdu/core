@@ -33,6 +33,7 @@ require_once '../modules/System Admin/moduleFunctions.php';
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
+define('SESSION_TABLE_AVAILABLE', false);
 
 // Fix missing locale causing failed page load
 if (empty($gibbon->locale->getLocale())) {
