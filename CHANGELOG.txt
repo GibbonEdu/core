@@ -46,6 +46,7 @@ v23.0.00
         System Admin: added an Active Sessions page to see who is currently logged in
 
     Changes With Important Notices
+        Running the database updater will log out all users except the current admin user
 
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths
