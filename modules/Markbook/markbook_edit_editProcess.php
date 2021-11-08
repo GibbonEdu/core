@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $row = $result->fetch();
                     //Validate Inputs
                     $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+                    $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
                     $name = $_POST['name'] ?? '';
                     $description = $_POST['description'] ?? '';
                     $type = $_POST['type'] ?? '';
