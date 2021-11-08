@@ -1057,4 +1057,5 @@ ALTER TABLE `gibbonPerson` CHANGE `microsoftAPIRefreshToken` `microsoftAPIRefres
 ALTER TABLE `gibbonPerson` CHANGE `genericAPIRefreshToken` `genericAPIRefreshToken` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonSession` CHANGE `sessionData` `sessionData` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonPerson` DROP `password`;end
+UPDATE `gibbonMarkbookColumn` SET gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=00000000000000;end
 ";
