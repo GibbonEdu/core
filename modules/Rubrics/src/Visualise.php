@@ -137,9 +137,9 @@ class Visualise
                 'aspectRatio' => 2,
                 'height' => '32vw',
                 'scale'  => [
+                    'min' => 0.0,
+                    'max' => 1.0,
                     'ticks' => [
-                        'min' => 0.0,
-                        'max' => 1.0,
                         'callback' => $chart->addFunction('function(tickValue, index, ticks) {
                             return Number(tickValue).toFixed(1);
                         }'),
