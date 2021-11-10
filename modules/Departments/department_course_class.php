@@ -134,29 +134,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             }
 
             // Menu Items Table
-            $gridRenderer = new GridView($container->get('twig'));
-            $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
-            $table->setTitle($row['courseLong']." - ".$row['classLong']);
-            $table->setDescription(Format::courseClassName($row['course'], $row['class']));
+            if (!empty($menuItems)) {
+                $gridRenderer = new GridView($container->get('twig'));
+                $table = $container->get(DataTable::class)->setRenderer($gridRenderer);
+                $table->setTitle($row['courseLong']." - ".$row['classLong']);
+                $table->setDescription(Format::courseClassName($row['course'], $row['class']));
 
-            $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
-            $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
-            $table->addMetaData('hidePagination', true);
+                $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border py-2');
+                $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/3 p-4 text-center');
+                $table->addMetaData('hidePagination', true);
 
-            $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
-            $table->addColumn('icon')
-                ->format(function ($menu) use ($iconPath) {
-                    $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
-                    return Format::link($menu['url'], $img);
-                });
+                $iconPath = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/';
+                $table->addColumn('icon')
+                    ->format(function ($menu) use ($iconPath) {
+                        $img = sprintf('<img src="%1$s" title="%2$s" class="w-24 sm:w-32 px-4 pb-2">', $iconPath.$menu['icon'], $menu['name']);
+                        return Format::link($menu['url'], $img);
+                    });
 
-            $table->addColumn('name')
-                ->setClass('font-bold text-xs')
-                ->format(function ($menu) {
-                    return Format::link($menu['url'], $menu['name']);
-                });
+                $table->addColumn('name')
+                    ->setClass('font-bold text-xs')
+                    ->format(function ($menu) {
+                        return Format::link($menu['url'], $menu['name']);
+                    });
 
-            echo $table->render(new DataSet($menuItems));
+                echo $table->render(new DataSet($menuItems));
+            }
 
             // Custom fields
             $table = DataTable::createDetails('fields');
