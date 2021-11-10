@@ -61,6 +61,7 @@ v23.0.00
         System: adjusted Excel export to format integers as numbers
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
+        Departments: updated participant view so it does not require other modules
         Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
         Messenger: improved mobile responsive size of inserted images
