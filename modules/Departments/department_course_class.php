@@ -164,12 +164,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             echo $table->render([$row]);
 
             // Participants
-            if (!empty($menuItems)) {
-                $table = $container->get(ClassGroupTable::class);
-                $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
+            $table = $container->get(ClassGroupTable::class);
+            $table->build($gibbon->session->get('gibbonSchoolYearID'), $gibbonCourseClassID);
 
-                echo $table->getOutput();
-            }
+            echo $table->getOutput();
 
             //Print sidebar
             if ($session->get('username')) {
