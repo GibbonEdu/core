@@ -102,7 +102,7 @@ class Core
         $this->locale->setStringReplacementList($this->session, $db);
 
         // Update the information for this session (except in ajax scripts)
-        if (stripos($this->session->get('action'), 'ajax') === false) {
+        if (\SESSION_TABLE_AVAILABLE && stripos($this->session->get('action'), 'ajax') === false) {
             $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('gibbonPersonID'));
         }
 

@@ -25,7 +25,7 @@ class Chart
     protected $chartType = '';
 
     protected $labels = [];
-    protected $options = [];
+    protected $options = ['maintainAspectRatio' => false];
     protected $datasets = [];
     protected $functions = [];
     protected $metadata = [];
@@ -186,7 +186,7 @@ class Chart
 
     public function setLegend($value)
     {
-        $this->options['legend'] = is_array($value)
+        $this->options['plugins']['legend'] = is_array($value)
             ? $value
             : ['display' => $value == true];
 
@@ -234,10 +234,11 @@ class Chart
      */
     public function onClick($function, $pointerOnHover = true)
     {
+        $this->options['events'] = ['click', 'mousemove'];
         $this->options['onClick'] = $this->addFunction($function);
 
         if ($pointerOnHover) {
-            $this->onHover('function(elements) { document.body.style.cursor = (elements.length) ? "pointer" : "default";}');
+            $this->onHover('function(event, elements) { document.body.style.cursor = (elements.length) ? "pointer" : "default";}');
         }
         return $this;
     }
@@ -250,7 +251,8 @@ class Chart
      */
     public function onHover($function)
     {
-        $this->options['hover']['onHover'] = $this->addFunction($function);
+        $this->options['events'] = ['click', 'mousemove'];
+        $this->options['onHover'] = $this->addFunction($function);
 
         return $this;
     }
@@ -264,11 +266,11 @@ class Chart
     public function onTooltip($labelFunction = null, $titleFunction = null)
     {
         if ($labelFunction) {
-            $this->options['tooltips']['callbacks']['label'] = $this->addFunction($labelFunction);
+            $this->options['plugins']['tooltip']['callbacks']['label'] = $this->addFunction($labelFunction);
         }
 
         if ($titleFunction) {
-            $this->options['tooltips']['callbacks']['title'] = $this->addFunction($titleFunction);
+            $this->options['plugins']['tooltip']['callbacks']['title'] = $this->addFunction($titleFunction);
         }
 
         return $this;
@@ -435,7 +437,10 @@ class Chart
      */
     public function render()
     {
-        $canvas = '<canvas id="'.$this->getElementID().'" height="'.($this->options['height'] ?? '').'"></canvas>';
+
+        $canvas = '<div class="chart-container" style="position: relative; height:'.($this->options['height'] ?? '300px').'; width:'.($this->options['width'] ?? '100%').';">';
+        $canvas .= '<canvas id="'.$this->getElementID().'" ></canvas>';
+        $canvas .= '</div>';
         $script = '<script type="text/javascript">'.$this->getScriptContents().'</script>';
 
         return $canvas . $script;

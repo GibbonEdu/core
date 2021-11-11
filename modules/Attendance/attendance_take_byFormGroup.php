@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -40,11 +41,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         echo '</div>';
     } else {
         //Proceed!
-        if (isset($_GET['return'])) {
-            returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
-        }
+        $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
-        $attendance = new AttendanceView($gibbon, $pdo);
+        $settingGateway = $container->get(SettingGateway::class);
+
+        $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
         $gibbonFormGroupID = '';
         if (isset($_GET['gibbonFormGroupID']) == false) {
@@ -95,8 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
                     echo '</div>';
                 } else {
-                    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-                    $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultFormGroupAttendanceType');
+                    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
+                    $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType');
 
                     //Check form group
 

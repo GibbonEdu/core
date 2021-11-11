@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Finance\Forms;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Services\Format;
@@ -42,6 +43,8 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectInvoicee($name, $gibbonSchoolYearID = '', $params = array())
     {
+        global $container;
+
         // Check params and set defaults if not defined
         $params = array_replace(array('allStudents' => false), $params);
 
@@ -95,7 +98,7 @@ class FinanceFormFactory extends DatabaseFormFactory
         }
 
         // Add students by Day Type (optionally)
-        $dayTypeOptions = getSettingByScope($this->pdo->getConnection(), 'User Admin', 'dayTypeOptions');
+        $dayTypeOptions = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'dayTypeOptions');
         if (!empty($dayTypeOptions)) {
             $dayTypes = explode(',', $dayTypeOptions);
 

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
@@ -63,7 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $priority = $_POST['priority'] ?? '';
             $status = $_POST['status'] ?? '';
             $milestones = '';
-            $milestonesMaster = explode(',', getSettingByScope($connection2, 'Application Form', 'milestones'));
+            $settingGateway = $container->get(SettingGateway::class);
+            $milestonesMaster = explode(',', $settingGateway->getSettingByScope('Application Form', 'milestones'));
             foreach ($milestonesMaster as $milestoneMaster) {
                 if (isset($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)])) {
                     if ($_POST['milestone_'.preg_replace('/\s+/', '', $milestoneMaster)] == 'on') {
@@ -378,8 +380,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $partialFail = false;
 
                     //Deal with required documents
-                    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
-                    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
+                    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
+                    $internalDocuments = $settingGateway->getSettingByScope('Application Form', 'internalDocuments');
                     if ($internalDocuments != '') {
                         $requiredDocuments .= ','.$internalDocuments;
                     }

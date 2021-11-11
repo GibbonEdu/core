@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 
@@ -85,11 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                     $lessonCount = count($lessons);
 
                     foreach ($lessonsChecked as $lesson) {
-                        list($gibbonTTDayRowClassID, $gibbonTTDayDateID) = explode('-', $lesson);
+                        [$gibbonTTDayRowClassID, $gibbonTTDayDateID] = explode('-', $lesson);
                         $values = $plannerEntryGateway->getPlannerTTByIDs($gibbonTTDayRowClassID, $gibbonTTDayDateID);
 
                         $summary = 'Part of the '.$row['name'].' unit.';
-                        $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
+                        $teachersNotes = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'teachersNotesTemplate');
 
                         $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $values['date'], 'timeStart' => $values['timeStart'], 'timeEnd' => $values['timeEnd'], 'gibbonUnitID' => $gibbonUnitID, 'name' => $row['name'].' '.($lessonCount + 1), 'summary' => $summary, 'teachersNotes' => $teachersNotes, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'gibbonPersonIDLastEdit' => $session->get('gibbonPersonID'));
                         $sql = "INSERT INTO gibbonPlannerEntry SET gibbonCourseClassID=:gibbonCourseClassID, date=:date, timeStart=:timeStart, timeEnd=:timeEnd, gibbonUnitID=:gibbonUnitID, name=:name, summary=:summary, description='', teachersNotes=:teachersNotes, homework='N', viewableParents='Y', viewableStudents='Y', gibbonPersonIDCreator=:gibbonPersonIDCreator, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit";

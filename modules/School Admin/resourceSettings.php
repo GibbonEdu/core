@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSettings.php') == false) {
@@ -30,17 +31,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSetti
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'Resources', 'categories', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('Resources', 'categories', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Resources', 'purposesGeneral', true);
+    $setting = $settingGateway->getSettingByScope('Resources', 'purposesGeneral', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Resources', 'purposesRestricted', true);
+    $setting = $settingGateway->getSettingByScope('Resources', 'purposesRestricted', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);

@@ -82,7 +82,7 @@ class StudentHistoryView extends DataTableView implements RendererInterface
     protected function getChart($summary)
     {
         $chart = Chart::create('attendanceSummary', 'doughnut')
-            ->setOptions(['height' => 200])
+            ->setOptions(['height' => '240px'])
             ->setLabels([__('Present'), __('Partial'), __('Absent'), __('No Data')])
             ->setColors(['#9AE6B4', '#FFD2A8', '#FC8181', 'rgba(0, 0, 0, 0.05)']);
     

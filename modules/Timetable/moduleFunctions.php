@@ -17,9 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model\Event;
+use Microsoft\Graph\Model\Location;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\Staff\StaffCoverageGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -173,9 +177,67 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 {
     global $container, $session;
 
-    $googleOAuth = getSettingByScope($connection2, 'System', 'googleOAuth');
+    $settingGateway = $container->get(SettingGateway::class);
+    $ssoMicrosoft = $settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft');
+    $ssoMicrosoft = json_decode($ssoMicrosoft, true);
 
-    if ($googleOAuth == 'Y' and $session->has('googleAPIAccessToken')) {
+    if (!empty($ssoMicrosoft) && $ssoMicrosoft['enabled'] == 'Y' && $session->has('microsoftAPIAccessToken')) {
+        $eventsSchool = array();
+
+        // Create a Graph client
+        $oauthProvider = $container->get('Microsoft_Auth');
+        if (empty($oauthProvider)) return;
+        
+        $graph = new Graph();
+        $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
+
+        $startOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $startDayStamp));
+        $endOfWeek = new \DateTimeImmutable(date('Y-m-d H:i:s', $endDayStamp+ 86399));
+
+        $queryParams = array(
+            'startDateTime' => $startOfWeek->format(\DateTimeInterface::ISO8601),
+            'endDateTime' => $endOfWeek->format(\DateTimeInterface::ISO8601),
+            // Only request the properties used by the app
+            '$select' => 'subject,start,end,location,webLink',
+            // Sort them by start time
+            '$orderby' => 'start/dateTime',
+            // Limit results to 25
+            '$top' => 25
+          );
+
+        $getEventsUrl = '/me/calendarView?'.http_build_query($queryParams);
+
+        $events = $graph->createRequest('GET', $getEventsUrl)
+            // Add the user's timezone to the Prefer header
+            ->addHeaders(array(
+            'Prefer' => 'outlook.timezone="'."China Standard Time".'"'
+            ))
+            ->setReturnType(Event::class)
+            ->execute();
+
+        foreach ($events as $event) {
+            $properties = $event->getProperties();
+
+            $allDay = substr($properties['start']['dateTime'], 11, 8) == '00:00:00' && substr($properties['end']['dateTime'], 11, 8) == '00:00:00';
+
+            $eventsSchool[] = [
+                $event->getSubject(),
+                $allDay ? 'All Day' : 'Specified Time',
+                strtotime($properties['start']['dateTime']),
+                strtotime($properties['end']['dateTime']),
+                $properties['location']['displayName'],
+                $event->getWebLink(),
+            ];
+        }
+
+        return $eventsSchool;
+    }
+
+    $ssoGoogle = $settingGateway->getSettingByScope('System Admin', 'ssoGoogle');
+    $ssoGoogle = json_decode($ssoGoogle, true);
+
+    if (!empty($ssoGoogle) && $ssoGoogle['enabled'] == 'Y' && $session->has('googleAPIAccessToken')) {
+
         $eventsSchool = array();
         $start = date("Y-m-d\TH:i:s", strtotime(date('Y-m-d', $startDayStamp)));
         $end = date("Y-m-d\TH:i:s", (strtotime(date('Y-m-d', $endDayStamp)) + 86399));
@@ -402,7 +464,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= '<tr>';
-            $output .= "<td style='vertical-align: top;width:300px'>";
+            $output .= "<td style='vertical-align: top;width:360px'>";
             $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
@@ -528,7 +590,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Get school calendar array
             $allDay = false;
             $eventsSchool = false;
-            if ($self == true and $session->get('viewCalendarSchool') == 'Y') {
+            if ($self == true and $session->get('viewCalendarSchool') == 'Y' && $session->has('googleAPIAccessToken')) {
                 if ($session->get('calendarFeed') != '') {
                     $eventsSchool = getCalendarEvents($connection2, $guid,  $session->get('calendarFeed'), $startDayStamp, $endDayStamp);
                 }
@@ -545,9 +607,8 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             //Get personal calendar array
             $eventsPersonal = false;
             if ($self == true and $session->get('viewCalendarPersonal') == 'Y') {
-                if ($session->get('calendarFeedPersonal') != '') {
-                    $eventsPersonal = getCalendarEvents($connection2, $guid,  $session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
-                }
+                $eventsPersonal = getCalendarEvents($connection2, $guid,  $session->get('calendarFeedPersonal'), $startDayStamp, $endDayStamp);
+
                 //Any all days?
                 if ($eventsPersonal != false) {
                     foreach ($eventsPersonal as $event) {
@@ -775,11 +836,13 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             }
             $output .= ";'>";
                 //Spit out controls for displaying calendars
-                if ($self == true and ($session->get('calendarFeed') != '' or $session->get('calendarFeedPersonal') != '' or $session->get('viewCalendarSpaceBooking') != '')) {
+                if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
                     $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
-                    if ($session->get('calendarFeed') != '' and $session->get('googleAPIAccessToken') != null) {
+
+                    $displayCalendars = $session->has('googleAPIAccessToken') || $session->has('microsoftAPIAccessToken');
+                    if ($session->has('calendarFeed') && $session->has('googleAPIAccessToken')) {
                         $checked = '';
                         if ($session->get('viewCalendarSchool') == 'Y') {
                             $checked = 'checked';
@@ -788,7 +851,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
                         $output .= '</span>';
                     }
-                    if ($session->get('calendarFeedPersonal') != '' and $session->has('googleAPIAccessToken')) {
+                    if ($displayCalendars) {
                         $checked = '';
                         if ($session->get('viewCalendarPersonal') == 'Y') {
                             $checked = 'checked';
@@ -1557,6 +1620,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 //TIMETABLE FOR ROOM
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
+    global $session;
+    
     $output = '';
 
     $blank = true;
@@ -1644,7 +1709,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
         $output .= "<table cellspacing='0' class='noIntBorder' cellspacing='0' style='width: 100%; margin: 10px 0 10px 0'>";
         $output .= '<tr>';
-        $output .= "<td style='vertical-align: top;width:300px;'>";
+        $output .= "<td style='vertical-align: top;width:360px;'>";
         $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params.'&gibbonTTID='.$row['gibbonTTID']."'>";
         $output .= "<input name='ttDate' maxlength=10 value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
         $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
@@ -2026,6 +2091,8 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
 
 function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $count, $daysInWeek, $gibbonSpaceID, $gridTimeStart, $diffTime, $eventsSpaceBooking, $specialDayStart = '', $specialDayEnd = '')
 {
+    global $session;
+
     $schoolCalendarAlpha = 0.85;
     $ttAlpha = 1.0;
 
@@ -2273,7 +2340,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $gibbonTTDayRowClassID = str_pad($rowPeriods['gibbonTTDayRowClassID'], 12, "0", STR_PAD_LEFT);
                     $targetDate = date('Y-m-d', ($startDayStamp + (86400 * $count)));
                     if ($targetDate >= date('Y-m-d') && $canAddChanges) {
-                        $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}'><img style='' title='".__('Add Facility Change')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/copyforward.png' width=20 height=20/></a>";
+                        $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/spaceChange_manage_add.php&step=2&gibbonTTDayRowClassID={$gibbonTTDayRowClassID}-{$targetDate}&gibbonCourseClassID={$rowPeriods['gibbonCourseClassID']}&source={$gibbonSpaceID}'><img style='' title='".__('Add Facility Change')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/copyforward.png' width=20 height=20/></a>";
                     }
 
                     if ($canEditTTDays) {

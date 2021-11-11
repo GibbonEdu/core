@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
@@ -41,11 +42,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Proceed!
+        $settingGateway = $container->get(SettingGateway::class);
         
-            $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-            $sql = "SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+        $sql = "SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -96,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($resultSelect->rowCount() == 1) {
                 $rowSelect = $resultSelect->fetch();
                 echo '<i>'.__($rowSelect['name']);
-                $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+                $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
                 if ($dayTypeOptions != '') {
                     echo ' ('.$row['dayType'].')';
                 }
@@ -122,8 +124,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '<i>'.htmlPrep($row['milestones']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            $currency = getSettingByScope($connection2, 'System', 'currency');
-            $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
+            $currency = $settingGateway->getSettingByScope('System', 'currency');
+            $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
             if ($applicationFee > 0 and is_numeric($applicationFee)) {
                 echo "<span style='font-size: 115%; font-weight: bold'>Payment</span><br/>";
                 echo '<i>'.htmlPrep($row['paymentMade']).'</i><br/>';
@@ -233,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($row['phone1CountryCode'] != '') {
                 echo htmlPrep($row['phone1CountryCode']).' ';
             }
-            echo htmlPrep(formatPhone($row['phone1'])).' ';
+            echo htmlPrep(Format::phone($row['phone1'])).' ';
             echo '</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -328,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                         echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                     }
-                                    echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                    echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                 }
                             }
                         }
@@ -407,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 if ($row['parent'.$i.'phone'.$n.'CountryCode'] != '') {
                                     echo '+'.$row['parent'.$i.'phone'.$n.'CountryCode'].' ';
                                 }
-                                echo formatPhone($row['parent'.$i.'phone'.$n]).'<br/>';
+                                echo Format::phone($row['parent'.$i.'phone'.$n]).'<br/>';
                             }
                         }
                     }
@@ -537,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                             echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                         }
-                                        echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                        echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                     }
                                 }
                             }

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -36,8 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         echo '</div>';
     } else {
         //Check access controls
-        $access = getSettingByScope($connection2, 'Activities', 'access');
-        $hideExternalProviderCost = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost');
+        $settingGateway = $container->get(SettingGateway::class);
+        $access = $settingGateway->getSettingByScope('Activities', 'access');
+        $hideExternalProviderCost = $settingGateway->getSettingByScope('Activities', 'hideExternalProviderCost');
 
         if (!($access == 'View' or $access == 'Register')) {
             echo "<div class='error'>";
@@ -45,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo '</div>';
         } else {
             //Should we show date as term or date?
-            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
             //Proceed!
             //Get class variable
@@ -82,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     //Should we show date as term or date?
                     echo '<h1>';
                     echo $row['name'].'<br/>';
-                    $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
+                    $options = $settingGateway->getSettingByScope('Activities', 'activityTypes');
                     if ($options != '') {
                         echo "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>";
                         echo trim($row['type']);

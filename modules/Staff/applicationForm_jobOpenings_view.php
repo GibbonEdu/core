@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes from User Admin (for custom fields)
+use Gibbon\Domain\System\SettingGateway;
+
 include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
@@ -25,7 +27,7 @@ $public = false;
 if (!$session->has('username')) {
     $public = true;
     //Get public access
-    $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+    $access = $container->get(SettingGateway::class)->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications');
     if ($access == 'Y') {
         $proceed = true;
     }

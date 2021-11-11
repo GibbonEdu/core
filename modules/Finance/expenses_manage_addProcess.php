@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
@@ -36,7 +37,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
+        $allowExpenseAdd = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'allowExpenseAdd');
         if ($allowExpenseAdd != 'Y') {
             $URL .= '&return=error0';
             header("Location: {$URL}");

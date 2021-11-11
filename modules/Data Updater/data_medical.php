@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -295,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
 						$form->toggleVisibilityByClass('addConditionRow')->onCheckbox('addCondition')->when('Yes');
 
-                        if ($medicalConditionIntro = getSettingByScope($connection2, 'Students', 'medicalConditionIntro')) {
+                        if ($medicalConditionIntro = $container->get(SettingGateway::class)->getSettingByScope('Students', 'medicalConditionIntro')) {
                             $row = $form->addRow();
                                 $row->addContent($medicalConditionIntro);
                         }

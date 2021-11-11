@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
@@ -45,8 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         echo '</div>';
     } else {
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
-        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+        $settingGateway = $container->get(SettingGateway::class);
+        $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
+        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
@@ -68,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $date = Format::dateConvert($_GET['dateHuman']);
             }
 
-            list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
+            [$dateYear, $dateMonth, $dateDay] = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
             $class = null;
@@ -1163,10 +1165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $canTakeAttendance = $attendanceEnabled && isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php");
 
                         // Get attendance pre-fill and default settings
-                        $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
-                        $crossFillClasses = getSettingByScope($connection2, 'Attendance', 'crossFillClasses');
+                        $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultClassAttendanceType');
+                        $crossFillClasses = $settingGateway->getSettingByScope('Attendance', 'crossFillClasses');
 
-                        $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
+                        $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo, $settingGateway);
                         $attendanceGateway = $container->get(AttendanceLogPersonGateway::class);
 
                         $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();

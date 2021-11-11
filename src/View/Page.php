@@ -37,9 +37,33 @@ class Page extends View
      * After constructing these class properties are publicly read-only.
      */
     protected $title = '';
+
+    /**
+     * Address of the page.
+     *
+     * @var string
+     */
     protected $address = '';
+
+    /**
+     * Action of the page
+     *
+     * @var Action
+     */
     protected $action;
+
+    /**
+     * Module that the page belongs to.
+     *
+     * @var Module
+     */
     protected $module;
+
+    /**
+     * Theme to render the page with.
+     *
+     * @var Theme
+     */
     protected $theme;
 
     /**
@@ -47,10 +71,35 @@ class Page extends View
      * and will be output at the end during template rendering.
      */
     protected $content = [];
+
+    /**
+     * Stylesheet asset.
+     *
+     * @var AssetBundle
+     */
     protected $stylesheets;
+
+    /**
+     * Stylesheet asset.
+     *
+     * @var AssetBundle
+     */
     protected $scripts;
+
+    /**
+     * Breadcrumb for the page.
+     *
+     * @var Breadcrumbs
+     */
     protected $breadcrumbs;
+
+    /**
+     * Return message, if any.
+     *
+     * @var ReturnMessage
+     */
     protected $return;
+
     protected $alerts = ['error' => [], 'warning' => [], 'success' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
 
@@ -62,7 +111,7 @@ class Page extends View
     public function __construct(Environment $templateEngine = null, array $params = [])
     {
         parent::__construct($templateEngine);
-        
+
         $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
@@ -305,7 +354,7 @@ class Page extends View
             ? $this->extra[$context]
             : $this->extra;
     }
-    
+
     /**
      * Builds an array of page data to be passed to the template engine.
      *
@@ -318,7 +367,7 @@ class Page extends View
         // Eg: more than one on a non-module page, more than two on a module-page.
         $breadcrumbs = $this->breadcrumbs->getItems();
         $displayTrail = ((empty($this['isLoggedIn']) || empty($this->getModule())) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
-        
+
         return [
             'title'        => $this->getTitle(),
             'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],

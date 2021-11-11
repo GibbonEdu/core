@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -51,7 +52,7 @@ $settingGateway = $container->get(SettingGateway::class);
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->setBaseURL(Url::fromModuleRoute($module->name));
     $page->breadcrumbs->add($module->type == 'Core' ? __($module->name) : __m($module->name), $module->entryURL);
 }
 
@@ -97,9 +98,7 @@ if (!$session->has('systemSettingsSet')) {
 // Check for force password reset flag
 if ($session->has('passwordForceReset')) {
     if ($session->get('passwordForceReset') == 'Y' and $session->get('address') != 'preferences.php') {
-        $URL = $session->get('absoluteURL').'/index.php?q=preferences.php';
-        $URL = $URL.'&forceReset=Y';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromRoute('preferences')->withQueryParam('forceReset', 'Y'));
         exit();
     }
 }
@@ -113,8 +112,7 @@ if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, 
         $upgrade = true;
     }
     else {
-        $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
-        header("Location: {$URL}");
+        header('Location: ' . Url::fromModuleRoute('System Admin', 'update'));
         exit();
     }
 }
@@ -131,8 +129,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
             // Can we self register?
             if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) {
                 // Check to see if student is on site
-                $studentSelfRegistrationIPAddresses = getSettingByScope(
-                    $connection2,
+                $studentSelfRegistrationIPAddresses = $settingGateway->getSettingByScope(
                     'Attendance',
                     'studentSelfRegistrationIPAddresses'
                 );
@@ -160,10 +157,8 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                             if ($result->rowCount() == 0) {
                                 // No registration yet
                                 // Redirect!
-                                $URL = $session->get('absoluteURL').
-                                    '/index.php?q=/modules/Attendance'.
-                                    '/attendance_studentSelfRegister.php'.
-                                    '&redirect=true';
+                                $URL = Url::fromModuleRoute('Attendance', 'attendance_studentSelfRegister')
+                                    ->withQueryParam('redirect', 'true');
                                 $session->forget('pageLoads');
                                 header("Location: {$URL}");
                                 exit;
@@ -178,8 +173,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') {
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { // Can we update data?
-                $redirectByRoleCategory = getSettingByScope(
-                    $connection2,
+                $redirectByRoleCategory = $settingGateway->getSettingByScope(
                     'Data Updater',
                     'redirectByRoleCategory'
                 );
@@ -192,7 +186,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
 
                     if ($updatesRequiredCount > 0) {
-                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = Url::fromModuleRoute('Data Updater', 'data_updates')->withQueryParam('redirect', 'true');
                         $session->forget('pageLoads');
                         header("Location: {$URL}");
                         exit;
@@ -343,7 +337,7 @@ $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptCon
 $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
-$page->scripts->register('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js', ['context' => 'head']);
+$page->scripts->register('chart', 'lib/Chart.js/3.0/chart.min.js', ['context' => 'head']);
 
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
@@ -469,6 +463,9 @@ if ($isLoggedIn && !$upgrade) {
         $session->set('fastFinder', $fastFinder);
     }
 
+    /**
+     * @var ModuleGateway
+     */
     $moduleGateway = $container->get(ModuleGateway::class);
 
     if ($page->getModule()) {
@@ -486,8 +483,10 @@ if ($isLoggedIn && !$upgrade) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
+                $item['url'] = (string) Url::fromModuleRoute(
+                    $item['moduleName'],
+                    preg_replace('/\.php$/i', '', $item['entryURL'])
+                );
             }
         }
 
@@ -502,20 +501,21 @@ if ($isLoggedIn && !$upgrade) {
 
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL']))
+                $entryURL = ($item['entryURL'] == 'index.php' || isActionAccessible($guid, $connection2, '/modules/'.$item['name'].'/'.$item['entryURL']))
                     ? $item['entryURL']
                     : $item['alternateEntryURL'];
 
+                // Note: only for backward compatibility. Should remove .php
+                // from the gibbonAction table.
+                $entryURL = preg_replace('/\.php$/i', '', $entryURL);
+
                 $item['active'] = $session->get('menuModuleName') == $item['name'];
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+                $item['url'] =  (string) Url::fromModuleRoute($item['name'], $entryURL);
             }
         }
 
         $session->set('menuMainItems', $menuMainItems);
     }
-
-
 
     // Setup cached message array only if there are recent posts, or if more than one hour has elapsed
     $messageWallLatestPost = $container->get(MessengerGateway::class)->getRecentMessageWallTimestamp();
@@ -567,7 +567,7 @@ if (!$session->has('address')) {
         // Create auto timeout message
         if (isset($_GET['timeout'])) {
             $page->addWarning(
-                $_GET['timeout'] == 'force' 
+                $_GET['timeout'] == 'force'
                     ? __('You have been manually logged out of {system} by a system administrator.', ['system' => $session->get('systemName')])
                     : __('Your session expired, so you were automatically logged out of the system.'));
         }

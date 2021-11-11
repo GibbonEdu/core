@@ -8065,3 +8065,10 @@ ALTER TABLE `gibbonUsernameFormat`
 --
 ALTER TABLE `gibbonYearGroup`
   MODIFY `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Add setting 'registerGibbonSupport' to `gibbonSetting`
+--
+INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`)
+VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');
+

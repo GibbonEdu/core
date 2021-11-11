@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -25,15 +26,16 @@ use Gibbon\Services\Format;
 require_once __DIR__ . '/moduleFunctions.php';
 
 //Get settings
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-$enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-$enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
-$enableGroupByTerm = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm');
-$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+$enableRawAttainment = $settingGateway->getSettingByScope('Markbook', 'enableRawAttainment');
+$enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+$attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+$attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+$effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+$effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edit.php') == false) {
     // Access denied
@@ -124,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $page->return->addReturns($returns);
 
                         echo "<div class='linkTop'>";
-                        if ($values['gibbonPlannerEntryID'] != '') {
+                        if (!empty($values['gibbonPlannerEntryID'])) {
                         echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$values['gibbonPlannerEntryID']."'>".__('View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__('View Linked Lesson')."' src='./themes/".$session->get('gibbonThemeName')."/img/planner.png'/></a> | ";
                         }
                         echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__('Enter Data')."<img style='margin: 0 0 0px 5px' title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
@@ -162,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             $row->addTextField('description')->required()->maxLength(1000);
 
                         // TYPE
-                        $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+                        $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
                         if (!empty($types)) {
                             $row = $form->addRow();
                                 $row->addLabel('type', __('Type'));

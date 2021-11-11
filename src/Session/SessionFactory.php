@@ -51,7 +51,7 @@ class SessionFactory
         $config = $container->get('config')->getConfig();
 
         // Check if the database exists, if not, use the built-in PHP session handler class
-        if ($container->has(Connection::class)) {
+        if (\SESSION_TABLE_AVAILABLE && $container->has(Connection::class)) {
             $sessionGateway = $container->get(SessionGateway::class);
 
             if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
@@ -120,64 +120,6 @@ class SessionFactory
 
         while ($row = $result->fetch()) {
             $session->set('i18n', $row);
-        }
-    }
-
-    /**
-     * Populates the session with data about a specific logged in user, called after 
-     * logging in successfully.
-     *
-     * @param Session $session
-     * @param Connection $db
-     * @param string $username
-     * @param string $userData
-     * @return void
-     */
-    public static function populateUser(Session $session, Connection $db, $username, $userData)
-    {
-        $session->set('username', $username);
-        $session->set('passwordStrong', $userData['passwordStrong']);
-        $session->set('passwordStrongSalt', $userData['passwordStrongSalt']);
-        $session->set('passwordForceReset', $userData['passwordForceReset']);
-        $session->set('gibbonPersonID', $userData['gibbonPersonID']);
-        $session->set('surname', $userData['surname']);
-        $session->set('firstName', $userData['firstName']);
-        $session->set('preferredName', $userData['preferredName']);
-        $session->set('officialName', $userData['officialName']);
-        $session->set('email', $userData['email']);
-        $session->set('emailAlternate', $userData['emailAlternate']);
-        $session->set('website', filter_var($userData['website'], FILTER_VALIDATE_URL));
-        $session->set('gender', $userData['gender']);
-        $session->set('status', $userData['status']);
-        $session->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
-        $session->set('gibbonRoleIDCurrent', $userData['gibbonRoleIDPrimary']);
-        $session->set('gibbonRoleIDCurrentCategory', getRoleCategory($userData['gibbonRoleIDPrimary'], $db->getConnection()) );
-        $session->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $db->getConnection()) );
-        $session->set('image_240', $userData['image_240']);
-        $session->set('lastTimestamp', $userData['lastTimestamp']);
-        $session->set('messengerLastRead', $userData['messengerLastRead']);
-        $session->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
-        $session->set('viewCalendarSchool', $userData['viewCalendarSchool']);
-        $session->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
-        $session->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
-        $session->set('dateStart', $userData['dateStart']);
-        $session->set('personalBackground', $userData['personalBackground']);
-        $session->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
-        $session->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
-        $session->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
-        $session->set('cookieConsent', $userData['cookieConsent'] ?? '');
-        $session->set('gibbonHouseID', $userData['gibbonHouseID']);
-
-        //Deal with themes
-        $session->set('gibbonThemeIDPersonal', null);
-        if (!empty($userData['gibbonThemeIDPersonal'])) {
-            $data = array( 'gibbonThemeID' => $userData['gibbonThemeIDPersonal']);
-            $sql = "SELECT gibbonThemeID FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
-            $result = $db->select($sql, $data);
-
-            if ($result->rowCount() > 0) {
-                $session->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
-            }
         }
     }
 }

@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Format;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
 /**
  * Student Dashboard View Composer
@@ -34,11 +36,13 @@ class StudentDashboard implements OutputableInterface
 {
     protected $db;
     protected $session;
+    protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session)
+    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->session = $session;
+        $this->settingGateway = $settingGateway;
     }
 
     public function getOutput()
@@ -69,7 +73,7 @@ class StudentDashboard implements OutputableInterface
         $gibbonPersonID = $this->session->get('gibbonPersonID');
         $session = $this->session;
 
-        $homeworkNameSingular = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular');
+        $homeworkNameSingular = $this->settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
 
         $return = false;
 
@@ -110,7 +114,7 @@ class StudentDashboard implements OutputableInterface
                 $planner .= '</div>';
             } else {
                 $planner .= "<div class='linkTop'>";
-                $planner .= "<a href='".$this->session->get('absoluteURL')."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
+                $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner')."'>".__('View Planner').'</a>';
                 $planner .= '</div>';
 
                 $planner .= "<table cellspacing='0' style='width: 100%'>";
@@ -189,7 +193,11 @@ class StudentDashboard implements OutputableInterface
                         $planner .= Format::truncate($row['summary'], 360);
                         $planner .= '</td>';
                         $planner .= '<td>';
-                        $planner .= "<a href='".$this->session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
+                        $planner .= "<a href='".Url::fromModuleRoute('Planner', 'planner_view_full')->withQueryParams([
+                            'viewBy' => 'class',
+                            'gibbonCourseClassID' => $row['gibbonCourseClassID'],
+                            'gibbonPlannerEntryID' => $row['gibbonPlannerEntryID'],
+                        ])."'><img title='".__('View')."' src='./themes/".$this->session->get('gibbonThemeName')."/img/plus.png'/></a>";
                         $planner .= '</td>';
                         $planner .= '</tr>';
                     }
@@ -201,11 +209,19 @@ class StudentDashboard implements OutputableInterface
         //GET TIMETABLE
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Student') {
-
+            $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
+            $jsonQuery = [
+                'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
+                'ttDate' => $_POST['ttDate'] ?? '',
+                'fromTT' => $_POST['fromTT'] ?? '',
+                'personalCalendar' => $_POST['personalCalendar'] ?? '',
+                'schoolCalendar' => $_POST['schoolCalendar'] ?? '',
+                'spaceBookingCalendar' => $_POST['spaceBookingCalendar'] ?? '',
+            ];
             $timetable .= '
             <script type="text/javascript">
                 $(document).ready(function(){
-                    $("#tt").load("'.$this->session->get('absoluteURL').'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
+                    $("#tt").load('.json_encode($apiEndpoint).', '.json_encode($jsonQuery).');
                 });
             </script>';
 
@@ -245,7 +261,7 @@ class StudentDashboard implements OutputableInterface
             $return .= __('There are no records to display.');
             $return .= '</div>';
         } else {
-            $studentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab');
+            $studentDashboardDefaultTab = $this->settingGateway->getSettingByScope('School Admin', 'studentDashboardDefaultTab');
             $studentDashboardDefaultTabCount = null;
 
             $return .= "<div id='".$gibbonPersonID."tabs' style='margin: 0 0'>";

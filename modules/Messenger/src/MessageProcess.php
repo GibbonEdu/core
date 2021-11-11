@@ -56,9 +56,9 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $session = $gibbon->session;
 
         // Setup session variables for this user
-        $userData = $container->get(UserGateway::class)->getByID($gibbonPersonID);
         SessionFactory::populateSettings($session, $pdo);
-        SessionFactory::populateUser($session, $pdo, $userData['username'], $userData);
+        $userData = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
+        $session->set($userData);
 
         $gibbon->session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
         $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);

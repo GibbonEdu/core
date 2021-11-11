@@ -68,7 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             echo '</div>';
             return;
         } else {
-            $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+            $settingGateway = $container->get(SettingGateway::class);
+            $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
             $skipBrief = false;
 
             //Skip brief for those with _full or _fullNoNotes, and _brief
@@ -177,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</table>';
 
                     //Set sidebar
-                    $session->set('sidebarExtra', getUserPhoto($guid, $row['image_240'], 240));
+                    $session->set('sidebarExtra', Format::userPhoto($row['image_240'], 240));
                 }
                 return;
             } else {
@@ -265,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     echo '<h2>';
                     if ($subpage == 'Homework') {
-                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
                         echo __($homeworkNamePlural);
                     } elseif ($subpage != '') {
                         echo __($subpage);
@@ -323,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             if ($resultDetail->rowCount() == 1) {
                                 $rowDetail = $resultDetail->fetch();
                                 echo __($rowDetail['name']);
-                                $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+                                $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
                                 if (!empty($dayTypeOptions) && !empty($row['dayType'])) {
                                     echo ' ('.$row['dayType'].')';
                                 }
@@ -464,7 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo '</tr>';
-                        $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+                        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
                         if ($privacySetting == 'Y') {
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
@@ -482,7 +483,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</td>';
                             echo '</tr>';
                         }
-                        $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
+                        $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
                         if ($studentAgreementOptions != '') {
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
@@ -729,7 +730,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $col->addColumn('vehicleRegistration', __('Vehicle Registration'));
                         $col->addColumn('lockerNumber', __('Locker Number'));
 
-                        $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+                        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
                         if ($privacySetting == 'Y') {
                             $col->addColumn('privacy', __('Privacy'))->format(function ($values) {
                                 if (!empty($values['privacy'])) {
@@ -739,7 +740,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             });
                         }
-                        $studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
+                        $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
                         if (!empty($studentAgreementOptions)) {
                             $col->addColumn('studentAgreements', __('Student Agreements:'))->format(function ($values) {
                                 return __('Agreements Signed:') .' '.$values['studentAgreements'];
@@ -848,7 +849,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                                     echo '<tr>';
                                     echo "<td $class style='width: 33%; vertical-align: top' rowspan=2>";
-                                    echo getUserPhoto($guid, $rowMember['image_240'], 75);
+                                    echo Format::userPhoto($rowMember['image_240'], 75);
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
@@ -899,7 +900,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                                     echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                                 }
-                                                echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                                echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
                                     }
@@ -917,7 +918,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($rowMember['phone'.$i.'CountryCode'] != '') {
                                                     echo '+'.$rowMember['phone'.$i.'CountryCode'].' ';
                                                 }
-                                                echo formatPhone($rowMember['phone'.$i]).'<br/>';
+                                                echo Format::phone($rowMember['phone'.$i]).'<br/>';
                                             }
                                         }
                                     }
@@ -1001,7 +1002,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $highlightClass = $rowMember['status'] != 'Full'? 'error' : '';
                                         echo "<td style='width:30%; text-align: left; vertical-align: top' class='".$highlightClass."'>";
                                         //User photo
-                                        echo getUserPhoto($guid, $rowMember['image_240'], 75);
+                                        echo Format::userPhoto($rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
 
                                         if ($rowMember['gibbonStudentEnrolmentID'] == null) {
@@ -1417,19 +1418,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 include './modules/Markbook/moduleFunctions.php';
 
                                 //Get settings
-                                $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-                                $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-                                $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-                                $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-                                $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-                                $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
-                                $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
+                                $enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+                                $enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+                                $attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+                                $attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+                                $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+                                $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
+                                $enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
                                 $alert = getAlert($guid, $connection2, 002);
                                 $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                                 if ($role == 'Parent') {
-                                    $showParentAttainmentWarning = getSettingByScope($connection2, 'Markbook', 'showParentAttainmentWarning');
-                                    $showParentEffortWarning = getSettingByScope($connection2, 'Markbook', 'showParentEffortWarning');
+                                    $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
+                                    $showParentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
                                 } else {
                                     $showParentAttainmentWarning = 'Y';
                                     $showParentEffortWarning = 'Y';
@@ -1489,7 +1490,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->fromQuery($pdo, $sqlSelect, $dataSelect)
                                         ->selected($filter);
 
-                                $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+                                $types = $settingGateway->getSettingByScope('Markbook', 'markbookType');
                                 if (!empty($types)) {
                                     $rowFilter = $form->addRow();
                                     $rowFilter->addLabel('filter3', __('Type'));
@@ -1678,7 +1679,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 if ($enableModifiedAssessment == 'Y') {
                                                     if (!is_null($rowEntry['modifiedAssessment'])) {
                                                         echo "<td>";
-                                                        echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                                        echo Format::yesNo($rowEntry['modifiedAssessment']);
                                                         echo '</td>';
                                                     } else {
                                                         echo "<td class='dull' style='color: #bbb; text-align: center'>";
@@ -1857,8 +1858,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 }
                                             }
 
-                                            $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
-                                            $enableDisplayCumulativeMarks = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks');
+                                            $enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+                                            $enableDisplayCumulativeMarks = $settingGateway->getSettingByScope('Markbook', 'enableDisplayCumulativeMarks');
 
                                             if ($enableColumnWeighting == 'Y' && $enableDisplayCumulativeMarks == 'Y') {
                                                 renderStudentCumulativeMarks($gibbon, $pdo, $_GET['gibbonPersonID'], $rowList['gibbonCourseClassID']);
@@ -2219,9 +2220,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('This report shows the current and historical activities that a student has enrolled in.');
                             echo '</p>';
 
-                            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                            $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
                             if ($dateType == 'Term') {
-                                $maxPerTerm = getSettingByScope($connection2, 'Activities', 'maxPerTerm');
+                                $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
                             }
 
 
@@ -2382,7 +2383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                          $sidebarExtra .= '</div>';
                     }
 
-                     $sidebarExtra .= getUserPhoto($guid, $studentImage, 240);
+                     $sidebarExtra .= Format::userPhoto($studentImage, 240);
 
                     //PERSONAL DATA MENU ITEMS
                      $sidebarExtra .= '<div class="column-no-break">';
@@ -2497,7 +2498,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if ($subpage == 'Homework') {
                             $style = "style='font-weight: bold'";
                         }
-                        $homeworkNamePlural = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural');
+                        $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
                         $studentMenuCategory[$studentMenuCount] = $mainMenu['Planner'];
                         $studentMenuName[$studentMenuCount] = __($homeworkNamePlural);
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Homework'>".__($homeworkNamePlural).'</a></li>';
@@ -2597,7 +2598,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
 
                     //Menu ordering categories
-                    $mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
+                    $mainMenuCategoryOrder = $settingGateway->getSettingByScope('System', 'mainMenuCategoryOrder');
                     $orders = explode(',', $mainMenuCategoryOrder);
 
                     //Sort array

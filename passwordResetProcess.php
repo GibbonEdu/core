@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\Validator;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 
@@ -34,12 +35,11 @@ $_POST = $validator->sanitize($_POST);
 $input = $_GET['input'] ?? ($_POST['email'] ?? '');
 $step = $_GET['step'];
 
-$URL = $session->get('absoluteURL').'/index.php?q=passwordReset.php';
-$URLSuccess1 = $session->get('absoluteURL').'/index.php';
+$URL = Url::fromRoute('passwordReset');
+$URLSuccess1 = Url::fromRoute();
 
 if ($input == '' or ($step != 1 and $step != 2)) {
-    $URL = $URL.'&return=error0';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error0')}");
 }
 //Otherwise proceed
 else {
@@ -49,22 +49,20 @@ else {
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $URL = $URL.'&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        $URL = $URL.'&return=error4';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error0')}");
+        exit();
     } else {
         $row = $result->fetch();
 
         // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
-            $URL .= '&return=fail2';
-            header("Location: {$URL}");
-            exit;
+            header("Location: {$URL->withReturn('fail2')}");
+            exit();
         }
 
         // Get primary role info
@@ -88,7 +86,7 @@ else {
             $key = randomPassword(40);
 
             //Try to delete other recors for this user
-            
+
                 $data = array('gibbonPersonID' => $gibbonPersonID);
                 $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
                 $result = $connection2->prepare($sql);
@@ -101,8 +99,7 @@ else {
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL = $URL.'&return=error2';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error2')}");
                 exit();
             }
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
@@ -125,17 +122,21 @@ else {
                 'title'  => __('Password Reset'),
                 'body'   => nl2br(trim($body, "\n")),
                 'button' => [
-                    'url'  => "/index.php?q=/passwordReset.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key",
+                    'url'  => Url::fromRoute('passwordReset')->withAbsoluteUrl()->withQueryParams([
+                        'input' => $input,
+                        'step' => 2,
+                        'gibbonPersonResetID' => $gibbonPersonResetID,
+                        'key' => $key,
+                    ]),
+                    'external' => true,
                     'text' => __('Click Here'),
                 ],
             ]);
 
             if ($mail->Send()) {
-                $URL = $URL.'&return=success0';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('success0')}");
             } else {
-                $URL = $URL.'&return=error3';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error3')}");
             }
         }
         else { //This is the confirmation/reset phase
@@ -151,14 +152,13 @@ else {
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL = $URL.'&return=error2';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error2')}");
                 exit();
             }
 
         	if ($result->rowCount() != 1) {
-                $URL = $URL.'&return=error2';
-                header("Location: {$URL}");
+                header("Location: {$URL->withReturn('error2')}");
+                exit();
         	} else {
                 $row = $result->fetch();
                 $gibbonPersonID = $row['gibbonPersonID'];
@@ -167,50 +167,48 @@ else {
 
                 //Check passwords are not blank
                 if ($passwordNew == '' or $passwordConfirm == '') {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
+                    header("Location: {$URL->withReturn('error1')}");
+                    exit();
                 } else {
                     //Check that new password is not same as old password
                     if ($password == $passwordNew) {
-                        $URL .= '&return=error7';
-                        header("Location: {$URL}");
+                        header("Location: {$URL->withReturn('error7')}");
+                        exit();
                     } else {
                         //Check strength of password
                         $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
 
                         if ($passwordMatch == false) {
-                            $URL .= '&return=error6';
-                            header("Location: {$URL}");
+                            header("Location: {$URL->withReturn('error6')}");
+                            exit();
                         } else {
                             //Check new passwords match
                             if ($passwordNew != $passwordConfirm) {
-                                $URL .= '&return=error5';
-                                header("Location: {$URL}");
+                                header("Location: {$URL->withReturn('error5')}");
+                                exit();
                             } else {
                                 //Update password
                                 $salt = getSalt();
                                 $passwordStrong = hash('sha256', $salt.$passwordNew);
                                 try {
                                     $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
-                                    $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                                    $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 } catch (PDOException $e) {
-                                    $URL .= '&return=error2';
-                                    header("Location: {$URL}");
+                                    header("Location: {$URL->withReturn('error2')}");
                                     exit();
                                 }
 
                                 //Remove requests for this person
-                                
-                                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                                    $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
+                                $data = array('gibbonPersonID' => $gibbonPersonID);
+                                $sql = "DELETE FROM gibbonPersonReset WHERE gibbonPersonID=:gibbonPersonID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
 
                                 //Return
-                                $URL = $URLSuccess1.'?return=success1';
-                                header("Location: {$URL}");
+                                header("Location: {$URL->withReturn('success1')}");
+                                exit();
                             }
                         }
                     }

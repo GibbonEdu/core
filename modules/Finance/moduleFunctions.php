@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\SettingGateway;
 
 //Returns amount paid on an particular table/ID combo
 function getAmountPaid($connection2, $guid, $foreignTable, $foreignTableID)
@@ -180,6 +182,8 @@ function setPaymentLog($connection2, $guid, $foreignTable, $foreignTableID, $typ
 //Checks log to see if approval is complete. Returns false (on error), none (if no completion), budget (if budget completion done or not required), school (if all complete)
 function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection2)
 {
+    global $container;
+
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
@@ -195,8 +199,9 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
         $row = $result->fetch();
 
         //Get settings for budget-level and school-level approval
-        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+        $settingGateway = $container->get(SettingGateway::class);
+        $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
 
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
@@ -265,6 +270,8 @@ function checkLogForApprovalComplete($guid, $gibbonFinanceExpenseID, $connection
 //Checks a certain expense request, and returns FALSE on error, TRUE if specified person can approve it.
 function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2, $locking = true)
 {
+    global $container;
+
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
@@ -283,8 +290,9 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
         $row = $result->fetch();
 
         //Get settings for budget-level and school-level approval
-        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+        $settingGateway = $container->get(SettingGateway::class);
+        $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
 
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
@@ -384,6 +392,10 @@ function approvalRequired($guid, $gibbonPersonID, $gibbonFinanceExpenseID, $gibb
 //Tries to avoid issue duplicate notifications
 function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBudgetCycleID, $connection2)
 {
+    global $container, $pdo, $session;
+    
+    $notificationSender = $container->get(NotificationSender::class);
+
     try {
         $data = array('gibbonFinanceExpenseID' => $gibbonFinanceExpenseID);
         $sql = 'SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget FROM gibbonFinanceExpense JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID) WHERE gibbonFinanceExpense.gibbonFinanceExpenseID=:gibbonFinanceExpenseID';
@@ -399,8 +411,9 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
         $row = $result->fetch();
 
         //Get settings for budget-level and school-level approval
-        $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-        $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
+        $settingGateway = $container->get(SettingGateway::class);
+        $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+        $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
 
         if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
             return false;
@@ -424,10 +437,11 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         return false;
                     } else {
                         while ($rowBudget = $resultBudget->fetch()) {
-                            setNotification($connection2, $guid, $rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
-
-                            return true;
+                            $notificationSender->addNotification($rowBudget['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                            
                         }
+                        $notificationSender->sendNotifications();
+                        return true;
                     }
                 } else { //School-level approval, what type is it?
                     if ($expenseApprovalType == 'One Of' or $expenseApprovalType == 'Two Of') { //One Of or Two Of, so alert all approvers
@@ -444,10 +458,11 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                         } else {
                             while ($rowApprovers = $resultApprovers->fetch()) {
                                 if ($rowApprovers['gibbonFinanceExpenseLogID'] == '') {
-                                    setNotification($connection2, $guid, $rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($rowApprovers['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
                             }
 
+                            $notificationSender->sendNotifications();
                             return true;
                         }
                     } elseif ($expenseApprovalType == 'Chain Of All') { //Chain of all
@@ -476,7 +491,8 @@ function setExpenseNotification($guid, $gibbonFinanceExpenseID, $gibbonFinanceBu
                             if (is_null($gibbonPersonIDNext)) {
                                 return false;
                             } else {
-                                setNotification($connection2, $guid, $gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                $notificationSender->addNotification($gibbonPersonIDNext, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                $notificationSender->sendNotifications();
 
                                 return true;
                             }
@@ -741,13 +757,15 @@ function makeFeeBlock($guid, $connection2, $i, $mode, $feeType, $gibbonFinanceFe
 
 function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $preview = false)
 {
-    global $session;
+    global $session, $container;
+
+    $settingGateway = $container->get(SettingGateway::class);
 
     $return = '';
 
     //Get currency
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $invoiceeNameStyle = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle');
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $invoiceeNameStyle = $settingGateway->getSettingByScope('Finance', 'invoiceeNameStyle');
 
     try {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
@@ -763,7 +781,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $row = $result->fetch();
 
         //Invoice Text
-        $invoiceText = getSettingByScope($connection2, 'Finance', 'invoiceText');
+        $invoiceText = $settingGateway->getSettingByScope('Finance', 'invoiceText');
         if ($invoiceText != '') {
             $return .= '<p>';
             $return .= $invoiceText;
@@ -894,7 +912,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice Number').'</span><br/>';
-        $invoiceNumber = getSettingByScope($connection2, 'Finance', 'invoiceNumber');
+        $invoiceNumber = $settingGateway->getSettingByScope('Finance', 'invoiceNumber');
         if ($invoiceNumber == 'Person ID + Invoice ID') {
             $return .= ltrim($row['gibbonPersonID'], '0').'-'.ltrim($gibbonFinanceInvoiceID, '0');
         } elseif ($invoiceNumber == 'Student ID + Invoice ID') {
@@ -1022,12 +1040,12 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Online payment
-        $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-        $paymentGateway = getSettingByScope($connection2, 'System', 'paymentGateway');
+        $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
+        $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
 
         if (!$preview && $enablePayments == 'Y' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
-            $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
-            $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
+            $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
+            $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
             if ($financeOnlinePaymentEnabled == 'Y') {
                 $return .= "<h3 style='margin-top: 40px'>";
                 $return .= __('Online Payment');
@@ -1044,7 +1062,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Invoice Notes
-        $invoiceNotes = getSettingByScope($connection2, 'Finance', 'invoiceNotes');
+        $invoiceNotes = $settingGateway->getSettingByScope('Finance', 'invoiceNotes');
         if ($invoiceNotes != '') {
             $return .= "<h3 style='margin-top: 40px'>";
             $return .= __('Notes');
@@ -1075,11 +1093,15 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
  */
 function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $currency = '', $email = false, $receiptNumber = null)
 {
+    global $container;
+
+    $settingGateway = $container->get(SettingGateway::class);
+
     $return = '';
 
     //Get currency
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $invoiceeNameStyle = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle');
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $invoiceeNameStyle = $settingGateway->getSettingByScope('Finance', 'invoiceeNameStyle');
 
     try {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
@@ -1095,7 +1117,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $row = $result->fetch();
 
         //Receipt Text
-        $receiptText = getSettingByScope($connection2, 'Finance', 'receiptText');
+        $receiptText = $settingGateway->getSettingByScope('Finance', 'receiptText');
         if ($receiptText != '') {
             $return .= '<p>';
             $return .= $receiptText;
@@ -1253,7 +1275,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</td>';
         $return .= "<td style='width: 33%; padding-top: 15px; vertical-align: top; $style $style2 $style3'>";
         $return .= "<span style='font-size: 115%; font-weight: bold'>".__('Invoice Number').'</span><br/>';
-        $invoiceNumber = getSettingByScope($connection2, 'Finance', 'invoiceNumber');
+        $invoiceNumber = $settingGateway->getSettingByScope('Finance', 'invoiceNumber');
         if ($invoiceNumber == 'Person ID + Invoice ID') {
             $return .= ltrim($row['gibbonPersonID'], '0').'-'.ltrim($gibbonFinanceInvoiceID, '0');
         } elseif ($invoiceNumber == 'Student ID + Invoice ID') {
@@ -1279,7 +1301,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $return .= '</table>';
 
         //Check itemisation status
-        $hideItemisation = getSettingByScope($connection2, 'Finance', 'hideItemisation');
+        $hideItemisation = $settingGateway->getSettingByScope('Finance', 'hideItemisation');
 
         try {
             $dataFees['gibbonFinanceInvoiceID'] = $row['gibbonFinanceInvoiceID'];
@@ -1520,7 +1542,7 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         }
 
         //Receipts Notes
-        $receiptNotes = getSettingByScope($connection2, 'Finance', 'receiptNotes');
+        $receiptNotes = $settingGateway->getSettingByScope('Finance', 'receiptNotes');
         if ($receiptNotes != '') {
             $return .= "<h3 style='margin-top: 40px'>";
             $return .= __('Notes');

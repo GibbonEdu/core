@@ -148,4 +148,14 @@ class RoleGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectRoleListByIDs($gibbonRoleIDAll)
+    {
+        $data = ['gibbonRoleIDAll' => $gibbonRoleIDAll];
+        $sql = "SELECT gibbonRoleID as `0`, name as `1`
+                FROM gibbonRole 
+                WHERE FIND_IN_SET(gibbonRoleID, :gibbonRoleIDAll)";
+
+        return $this->db()->select($sql, $data);
+    }
 }

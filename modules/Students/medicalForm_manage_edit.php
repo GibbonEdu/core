@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -95,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $table = DataTable::create('medicalConditions');
             $table->setTitle(__('Medical Conditions'));
-            $table->setDescription(getSettingByScope($connection2, 'Students', 'medicalConditionIntro'));
+            $table->setDescription($container->get(SettingGateway::class)->getSettingByScope('Students', 'medicalConditionIntro'));
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Students/medicalForm_manage_condition_add.php')

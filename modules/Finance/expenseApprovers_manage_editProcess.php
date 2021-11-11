@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Validate Inputs
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+            $expenseApprovalType = $contaainer->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
                 $sequenceNumber = abs($_POST['sequenceNumber']);

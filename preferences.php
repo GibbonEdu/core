@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -31,10 +32,7 @@ if (!$session->exists("username")) {
     //Deal with force reset notification
     $forceReset = $_GET['forceReset'] ?? null;
     if ($forceReset == 'Y' AND $return != 'successa') {
-        $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
-        echo "<div class='error'>";
-        echo $forceResetReturnMessage;
-        echo '</div>';
+        $page->addMessage(__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.'));
     }
 
     $returns = array();
@@ -45,11 +43,10 @@ if (!$session->exists("username")) {
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     $page->return->addReturns($returns);
 
-    
-        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-        $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }
@@ -70,7 +67,6 @@ if (!$session->exists("username")) {
             ->maxLength(30);
 
     $row = $form->addRow();
-
         $row->addLabel('passwordNew', __('New Password'));
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
@@ -107,7 +103,7 @@ if (!$session->exists("username")) {
             $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__('Only enables timetable integration when logging in via Google.'));
             $password = $row->addTextField('calendarFeedPersonal');
 
-        $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
+        $personalBackground = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'personalBackground');
         if ($personalBackground == 'Y') {
             $row = $form->addRow();
                 $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__('Please provide URL to image.'));

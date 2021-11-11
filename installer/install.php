@@ -19,12 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\View\Page;
 use Gibbon\Data\Validator;
-use Gibbon\Install\Config;
 use Gibbon\Install\Context;
-use Gibbon\Install\Exception\RecoverableException;
-use Gibbon\Install\HttpInstallController;
+use Gibbon\Install\Http\Exception\RecoverableException;
+use Gibbon\Install\Http\InstallController;
 use Gibbon\Install\Installer;
-use Gibbon\Install\NonceService;
 
 include '../version.php';
 include '../gibbon.php';
@@ -36,19 +34,21 @@ require_once '../modules/System Admin/moduleFunctions.php';
 $validator = $container->get(Validator::class);
 $_POST = $validator->sanitize($_POST);
 
-// Get or set the current step
-$step = isset($_GET['step'])? intval($_GET['step']) : 1;
-$step = min(max($step, 1), 4);
+// Fix missing locale causing failed page load
+if (empty($gibbon->locale->getLocale())) {
+    $gibbon->locale->setLocale('en_GB');
+}
 
-// Deal with $guid setup, otherwise get and filter the existing $guid
-if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
-    $guid = Config::randomGuid();
-    setcookie('gibbon_install_guid', $guid, 0, '', '', false, true);
-    error_log(sprintf('Installer: Step %s: assigning random guid: %s', var_export($step, true), var_export($guid, true)));
-} else {
-    $guid = $_COOKIE['gibbon_install_guid'] ?? '';
-    $guid = preg_replace('/[^a-z0-9-]/', '', substr($guid, 0, 36));
-    error_log(sprintf('Installer: Step %s: Using guid from $_POST: %s', var_export($step, true), isset($_POST['guid']) ? var_export($_POST['guid'], true): 'undefined'));
+// Page object for rendering
+$page = new Page($container->get('twig'), [
+    'title'   => __('Gibbon Installer'),
+    'address' => '/installer/install.php',
+]);
+
+// Get or variables from environment.
+$step = InstallController::stepFromEnvironment($_GET);
+if ($step < 4) {
+    $guid = InstallController::guidFromEnvironment($_COOKIE, $step);
 }
 
 /**
@@ -56,37 +56,19 @@ if ($step <= 1 && empty($_COOKIE['gibbon_install_guid'])) {
  * @var \Gibbon\Session\Session $session
  */
 
-// Use the POSTed GUID in place of "undefined".
-// Later steps have the guid in the config file but without
-// a way to store variables relibly prior to that, installation can fail
-$session->setGuid($guid);
+// Setup session variables for gibbon to work properly.
+if ($step < 4) {
+    $session->setGuid($guid);
+}
 $session->set('guid', $guid);
 $session->set('absolutePath', realpath('../'));
-if (!$session->has('nonceToken')) {
-    $session->set('nonceToken', \getSalt());
-}
-
-// Generate and save a nonce for forms on this page to use
-$nonceService = new NonceService($session->get('nonceToken'));
-
-// Deal with non-existent stringReplacement session
-$session->set('stringReplacement', []);
-
-// Fix missing locale causing failed page load
-if (empty($gibbon->locale->getLocale())) {
-    $gibbon->locale->setLocale('en_GB');
-}
+$session->set('stringReplacement', []); // Deal with non-existent stringReplacement session
 
 // Create a controller instance.
-$controller = HttpInstallController::create(
+$controller = InstallController::create(
     $container,
     $session
 );
-
-$page = new Page($container->get('twig'), [
-    'title'   => __('Gibbon Installer'),
-    'address' => '/installer/install.php',
-]);
 
 // Generate installer object.
 $installer = new Installer($container->get('twig'));
@@ -115,7 +97,7 @@ try {
     if ($step === 1) {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
-                $controller->handleStepOneSubmit($nonceService, $session, $_POST);
+                $controller->handleStepOneSubmit($session, $_POST);
                 header('Location: ./install.php?step=2');
                 exit;
             } catch (RecoverableException $e) {
@@ -130,7 +112,6 @@ try {
         // Validate the installation context and show warning.
         // If suitable for installation, show form to choose language.
         echo $controller->viewStepOne(
-            $nonceService,
             './install.php?step=1',
             $gibbon->getConfig('version')
         );
@@ -143,9 +124,7 @@ try {
                 $controller->handleStepTwoSubmit(
                     $context,
                     $installer,
-                    $nonceService,
                     $session,
-                    $guid,
                     $_POST
                 );
                 header('Location: ./install.php?step=3');
@@ -157,7 +136,6 @@ try {
 
         // Show the form to input database options.
         echo $controller->viewStepTwo(
-            $nonceService,
             './install.php?step=2',
             $_POST
         );
@@ -168,20 +146,16 @@ try {
                     $container,
                     $context,
                     $installer,
-                    $nonceService,
+                    $session,
                     $version,
                     $_POST
                 );
-
-                // Forget installation details in session and cookie.
-                $session->remove('installLocale');
-                setcookie('gibbon_install_guid', '', -1);
 
                 // Redirect to next step
                 header('Location: ./install.php?step=4');
                 exit;
             } catch (RecoverableException $e) {
-                $session->set('flashMessage', $e);
+                $controller->flashMessage($session, $e);
                 header('Location: ./install.php?step=4');
                 exit;
             } catch (\Exception $e) {
@@ -193,7 +167,6 @@ try {
         echo $controller->viewStepThree(
             $context,
             $installer,
-            $nonceService,
             './install.php?step=3',
             $version,
             $_POST
@@ -230,8 +203,8 @@ $page->write(ob_get_clean());
 
 $page->addData([
     'gibbonThemeName' => 'Default',
-    'absolutePath'    => realpath('../'),
-    'absoluteURL'     => str_replace('/installer/install.php', '', $_SERVER['PHP_SELF']),
+    'absolutePath'    => realpath(dirname(__DIR__)),
+    'absoluteURL'     => InstallController::guessAbsoluteUrl(),
     'sidebar'         => true,
     'contentClass'    => 'max-w-4xl mx-auto px-12 pt-6 pb-12',
     'step'            => $step,

@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('invoiceNumber', __('Invoice Number'));
         $row->addTextField('invoiceNumber')->maxLength(50);
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('general');
         $row->addLabel('cost', __('Cost'));
         $row->addCurrency('cost')->maxLength(9);
 

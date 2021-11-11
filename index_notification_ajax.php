@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 // Gibbon system-wide includes
 include './gibbon.php';
@@ -28,7 +29,7 @@ $result = ['count' => 0, 'alarm' => false, 'timeout' => 'expire'];
 if ($session->has('gibbonPersonID')) {
     // Check for system alarm
     if ($session->get('gibbonRoleIDCurrentCategory') == 'Staff') {
-        $alarm = getSettingByScope($connection2, 'System', 'alarm');
+        $alarm = $container->get(SettingGateway::class)->getSettingByScope('System', 'alarm');
         $result['alarm'] = $alarm == 'General' || $alarm == 'Lockdown' || $alarm == 'Custom'
             ? strtolower($alarm)
             : false;
@@ -44,7 +45,7 @@ if ($session->has('gibbonPersonID')) {
     // Check for session timeout
     $sessionGateway = $container->get(SessionGateway::class);
     $sessionInfo = $sessionGateway->getByID(session_id());
-    if (!empty($sessionInfo)) {
+    if (\SESSION_TABLE_AVAILABLE && !empty($sessionInfo)) {
         $sessionLastActive = strtotime($sessionInfo['timestampModified']);
         $sessionDuration = $session->get('sessionDuration');
         $timeDifference = time() - $sessionLastActive;
@@ -56,6 +57,8 @@ if ($session->has('gibbonPersonID')) {
         } else {
             $result['timeout'] = false;
         }
+    } else {
+        $result['timeout'] = false;
     }
 }
 

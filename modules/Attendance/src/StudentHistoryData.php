@@ -23,6 +23,7 @@ use DatePeriod;
 use DateInterval;
 use DateTimeImmutable;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\School\SchoolYearTermGateway;
@@ -39,12 +40,18 @@ class StudentHistoryData
     protected $pdo;
     protected $termGateway;
     protected $attendanceLogGateway;
+    protected $settingGateway;
 
-    public function __construct(Connection $pdo, SchoolYearTermGateway $termGateway, AttendanceLogPersonGateway $attendanceLogGateway)
-    {
+    public function __construct(
+        Connection $pdo,
+        SchoolYearTermGateway $termGateway,
+        AttendanceLogPersonGateway $attendanceLogGateway,
+        SettingGateway $settingGateway
+    ) {
         $this->pdo = $pdo;
         $this->termGateway = $termGateway;
         $this->attendanceLogGateway = $attendanceLogGateway;
+        $this->settingGateway = $settingGateway;
     }
 
     /**
@@ -58,10 +65,8 @@ class StudentHistoryData
      */
     public function getAttendanceData($gibbonSchoolYearID, $gibbonPersonID, $dateStart, $dateEnd)
     {
-        $connection2 = $this->pdo->getConnection();
-
-        $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
-        $firstDayOfTheWeek = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek');
+        $countClassAsSchool = $this->settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
+        $firstDayOfTheWeek = $this->settingGateway->getSettingByScope('System', 'firstDayOfTheWeek');
 
         // Get Logs
         $logs = $this->attendanceLogGateway

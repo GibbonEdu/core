@@ -17,22 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SessionGateway;
+use Aura\Auth\AuthFactory;
+use Gibbon\Http\Url;
+use Gibbon\Auth\Adapter\DefaultAdapter;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
+$URL = Url::fromRoute();
 if (isset($_GET['timeout'])) {
-    $URL = './index.php?timeout='.$_GET['timeout'];
+    $URL = $URL->withQueryParam('timeout', 'true');
 }
+// Setup authentication classes
+$authFactory = $container->get(AuthFactory::class);
+$authAdapter = $container->get(DefaultAdapter::class);
+$auth = $authFactory->newInstance();
 
-// Update current session to detach it from this user
-$container->get(SessionGateway::class)->update(session_id(), ['gibbonPersonID' => null, 'gibbonActionID' => null, 'sessionStatus' => null]);
-
-$session->forget('googleAPIAccessToken');
-$session->forget('gplusuer');
-
-session_destroy();
+// Logout
+$logoutService = $authFactory->newLogoutService($authAdapter);
+$logoutService->logout($auth);
 
 header("Location: {$URL}");

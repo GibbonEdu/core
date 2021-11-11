@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Psr\Container\ContainerInterface;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -32,8 +33,10 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
     $guid = $container->get('config')->getConfig('guid');
     $connection2 = $container->get('db')->getConnection();
 
-    $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-    $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+    $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
     $behaviourGateway = $container->get(BehaviourGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -69,7 +72,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                         ->displayLabel();
                 }
 
-                $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+                $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
                 if (!empty($policyLink)) {
                     $table->addHeaderAction('policy', __('View Behaviour Policy'))
                         ->setExternalURL($policyLink)
@@ -106,7 +109,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
 
             $table->addColumn('type', __('Type'))
                 ->width('5%')
-                ->format(function($beahviour) use ($guid, $session) {
+                ->format(function($beahviour) use ($session) {
                     if ($beahviour['type'] == 'Negative') {
                         return "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/> ";
                     } elseif ($beahviour['type'] == 'Positive') {
@@ -138,7 +141,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     ->addParam('gibbonYearGroupID', '')
                     ->addParam('type', '')
                     ->addParam('gibbonBehaviourID')
-                    ->format(function ($person, $actions) use ($guid, $highestAction) {
+                    ->format(function ($person, $actions) use ($session, $highestAction) {
                         if ($highestAction == 'Manage Behaviour Records_all'
                         || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $session->get('gibbonPersonID'))) {
                             $actions->addAction('edit', __('Edit'))

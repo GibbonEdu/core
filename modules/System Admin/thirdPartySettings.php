@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Contracts\Services\Payment;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -45,50 +48,74 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
 
-    // GOOGLE
-    $form->addRow()->addHeading(__('Google Integration'))->append(sprintf(__('If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>'));
+    // SINGLE SIGN-ON
+    $form->addRow()->addHeading(__('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon.'));
 
-    $setting = getSettingByScope($connection2, 'System', 'googleOAuth', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+    $settingGateway = $container->get(SettingGateway::class);
+    $ssoGoogle = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
+    $ssoMicrosoft = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
+    $ssoOther = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
 
-    $form->toggleVisibilityByClass('googleSettings')->onSelect($setting['name'])->when('Y');
+    $ssoList = [
+        [
+            'sso' => 'Google',
+            'name' => __('Google'),
+            'service' => __('Google Cloud Platform'),
+            'url' => 'https://console.cloud.google.com',
+            'enabled' => $ssoGoogle['enabled'] ?? 'N',
+        ],
+        [
+            'sso' => 'Microsoft',
+            'name' => __('Microsoft'),
+            'service' => __('Microsoft Azure Portal'),
+            'url' => 'https://portal.azure.com',
+            'enabled' => $ssoMicrosoft['enabled'] ?? 'N',
+        ],
+        [
+            'sso' => 'Other',
+            'name' => !empty($ssoOther['clientName']) ? $ssoOther['clientName'] : __('Other'),
+            'service' => __('Generic OAuth2 Provider'),
+            'url' => '',
+            'enabled' => $ssoOther['enabled'] ?? 'N',
+        ],
+    ];
 
-    $setting = getSettingByScope($connection2, 'System', 'googleClientName', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $table = DataTable::create('ssoList');
 
-    $setting = getSettingByScope($connection2, 'System', 'googleClientID', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $table->modifyRows(function ($values, $row) {
+        if ($values['enabled'] == 'Y') $row->addClass('success');
+        return $row;
+    });
 
-    $setting = getSettingByScope($connection2, 'System', 'googleClientSecret', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $table->addColumn('name', __('Name'))
+        ->format(function ($values) use ($session) {
+            $output = $values['name'];
+            $imagePath = '/themes/'.$session->get('gibbonThemeName').'/img/'.strtolower($values['sso']).'-login.svg';
+            if (file_exists($session->get('absolutePath').$imagePath)) {
+                $output = '<img src="'.$session->get('absoluteURL').$imagePath.'" class="w-6 h-6 -mt-1 mr-2 inline-block align-middle">' . $values['name'];
+            }
+            return $output;
+        });
+    $table->addColumn('service', __('Service'))
+        ->format(function ($values) {
+            return Format::link($values['url'], $values['service']);
+        });
+    $table->addColumn('enabled', __('Enabled'))
+        ->format(Format::using('yesNo', 'enabled'));
 
-    $setting = getSettingByScope($connection2, 'System', 'googleRedirectUri', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $table->addActionColumn()
+        ->addParam('sso')
+        ->format(function ($values, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/System Admin/thirdPartySettings_ssoEdit.php');
+        });
 
-    $setting = getSettingByScope($connection2, 'System', 'googleDeveloperKey', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
-
-    $setting = getSettingByScope($connection2, 'System', 'calendarFeed', true);
-    $row = $form->addRow()->addClass('googleSettings');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value']);
+    $form->addRow()->addContent($table->render($ssoList));
 
     // PAYMENTS
     $form->addRow()->addHeading(__('Payment Gateway'))->append(__('Gibbon can handle payments using a payment gateway API. These are external services, not affiliated with Gibbon, and you must create your own account with them before being able to accept payments. Gibbon does not store or process any credit card details.'));
 
-    $setting = getSettingByScope($connection2, 'System', 'enablePayments', true);
+    $setting = $settingGateway->getSettingByScope('System', 'enablePayments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
@@ -99,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'PayPal' => __('PayPal'),
         'Stripe' => __('Stripe'),
     ];
-    $setting = getSettingByScope($connection2, 'System', 'paymentGateway', true);
+    $setting = $settingGateway->getSettingByScope('System', 'paymentGateway', true);
     $row = $form->addRow()->addClass('paymentGateway');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
@@ -112,22 +139,22 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->toggleVisibilityByClass('stripeSettings')->onSelect($setting['name'])->when('Stripe');
     $form->toggleVisibilityByClass('paymentTest')->onSelect($setting['name'])->whenNot('Please select...');
 
-    $setting = getSettingByScope($connection2, 'System', 'paymentAPIUsername', true);
+    $setting = $settingGateway->getSettingByScope('System', 'paymentAPIUsername', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'System', 'paymentAPIPassword', true);
+    $setting = $settingGateway->getSettingByScope('System', 'paymentAPIPassword', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'System', 'paymentAPISignature', true);
+    $setting = $settingGateway->getSettingByScope('System', 'paymentAPISignature', true);
     $row = $form->addRow()->addClass('paypalSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'System', 'paymentAPIKey', true);
+    $setting = $settingGateway->getSettingByScope('System', 'paymentAPIKey', true);
     $row = $form->addRow()->addClass('stripeSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->required();
@@ -146,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     // SMS Gateway Options - these are not translated, as they represent company names
     $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsGateway', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsGateway', true);
     $smsGatewaySetting = $setting['value'];
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -161,13 +188,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->toggleVisibilityByClass('smsAPIToken')->onSelect($setting['name'])->when(['Twilio', 'Nexmo']);
     $form->toggleVisibilityByClass('smsDomain')->onSelect($setting['name'])->when('Mail to SMS');
     
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsSenderID', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsSenderID', true);
     $row = $form->addRow()->addClass('smsSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
 
     // SMS Username variations - these aim to simplify the setup by using the matching terminology for each gateway.
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsUsername', true);
     $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
@@ -181,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
 
     // SMS Password variations
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsPassword', true);
     $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
@@ -191,12 +218,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
 
     // SMS Endpoint URLs - currently used by OneWaySMS
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsURL', true);
     $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsURLCredit', true);
+    $setting = $settingGateway->getSettingByScope('Messenger', 'smsURLCredit', true);
     $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
@@ -213,19 +240,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     // SMTP MAIL
     $form->addRow()->addHeading(__('SMTP Mail'));
 
-    $setting = getSettingByScope($connection2, 'System', 'enableMailerSMTP', true);
+    $setting = $settingGateway->getSettingByScope('System', 'enableMailerSMTP', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('smtpSettings')->onSelect($setting['name'])->when('Y');
 
-    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPHost', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mailerSMTPHost', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPPort', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mailerSMTPPort', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
@@ -236,17 +263,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         'ssl'  => 'SSL',
         'none' => __('None'),
     ];
-    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPSecure', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mailerSMTPSecure', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($encryptionOptions)->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPUsername', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mailerSMTPUsername', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPPassword', true);
+    $setting = $settingGateway->getSettingByScope('System', 'mailerSMTPPassword', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addPassword($setting['name'])->setValue($setting['value']);

@@ -49,6 +49,25 @@ class Installer
     }
 
     /**
+     * Generate a randomized uuid-like string for the installation.
+     *
+     * @return string Random guid string.
+     */
+    public static function randomGuid(): string
+    {
+        $charList = 'abcdefghijkmnopqrstuvwxyz023456789';
+        $guid = '';
+        for ($i = 0;$i < 36;++$i) {
+            if ($i == 9 or $i == 14 or $i == 19 or $i == 24) {
+                $guid .= '-';
+            } else {
+                $guid .= substr($charList, rand(1, strlen($charList)), 1);
+            }
+        }
+        return $guid;
+    }
+
+    /**
      * Generate configuration file from twig template.
      *
      * @version v23
@@ -157,7 +176,6 @@ class Installer
             preferredName=:preferredName,
             officialName=:officialName,
             username=:username,
-            password="",
             passwordStrong=:passwordStrong,
             passwordStrongSalt=:passwordStrongSalt,
             status=:status,
@@ -202,6 +220,13 @@ class Installer
      * @return boolean  True on success, or false on failure.
      */
     public function setSetting(string $name, string $value, string $scope = 'System', bool $throw_on_error=false): bool {
+        error_log("Installer: set {$name} in {$scope} to {$value}");
+
+        if ($this->getSetting($name, $scope) === false) {
+            // Settings not found.
+            error_log("Installer: unable to find {$name} in {$scope}");
+            return false;
+        }
         if ($throw_on_error) {
             $statement = $this->getPDO()->prepare('UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name');
             return $statement->execute([':scope' => $scope, ':name' => $name, ':value' => $value]);

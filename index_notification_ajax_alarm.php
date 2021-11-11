@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
 
@@ -41,7 +42,7 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         'alarm'              => $alarm,
         'confirmed'          => $confirmed,
         'gibbonPersonID'     => $session->get('gibbonPersonID'),
-        'customAlarmSound'   => getSettingByScope($connection2, 'System Admin', 'customAlarmSound'),
+        'customAlarmSound'   => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
         'canViewReport'      => $canViewReport,
         'confirmationReport' => $canViewReport ? $confirmationReport : [],
     ]);

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -87,7 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 $row->addLabel('dateEnd', __('End Date'));
                 $row->addDate('dateEnd');
 
-            $scalePositions = getSettingByScope($connection2, 'Staff', 'salaryScalePositions');
+            $settingGateway = $container->get(SettingGateway::class);
+
+            $scalePositions = $settingGateway->getSettingByScope('Staff', 'salaryScalePositions');
             $scalePositions = ($scalePositions != '' ? explode(',', $scalePositions) : '');
             $row = $form->addRow();
                 $row->addLabel('salaryScale', __('Salary Scale'));
@@ -105,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                     $col->addCurrency('salaryAmount')->setClass('shortWidth');
                     $col->addSelect('salaryPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
-            $responsibilityPosts = getSettingByScope($connection2, 'Staff', 'responsibilityPosts');
+            $responsibilityPosts = $settingGateway->getSettingByScope('Staff', 'responsibilityPosts');
             $responsibilityPosts = ($responsibilityPosts != '' ? explode(',', $responsibilityPosts) : '');
             if (is_array($responsibilityPosts)) {
                 $row = $form->addRow();

@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
@@ -66,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $row = $result->fetch();
                     //Validate Inputs
                     $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
-                    $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? null;
+                    $gibbonPlannerEntryID = !empty($_POST['gibbonPlannerEntryID']) ? $_POST['gibbonPlannerEntryID'] : null;
                     $name = $_POST['name'] ?? '';
                     $description = $_POST['description'] ?? '';
                     $type = $_POST['type'] ?? '';

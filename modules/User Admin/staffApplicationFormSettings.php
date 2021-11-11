@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicationFormSettings.php') == false) {
@@ -32,37 +33,39 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
 
     $row = $form->addRow()->addHeading(__('General Options'));
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormIntroduction', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormIntroduction', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormQuestions', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormQuestions', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormPostscript', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormPostscript', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormAgreement', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormAgreement', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications', true);
+    $setting = $settingGateway->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormMilestones', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink', true);
     $row = $form->addRow()->addHeading(__($setting['nameDisplay']))->append(__($setting['description']));
 
     $applicationFormRefereeLink = unserialize($setting['value']);
@@ -81,44 +84,44 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
 
     $row = $form->addRow()->addHeading(__('Required Documents Options'));
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsText', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsText', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsCompulsory', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Acceptance Options'));
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormUsernameFormat', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormUsernameFormat', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationMessage', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationMessage', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationDefault', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultEmail', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultWebsite', true);
+    $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultWebsite', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);

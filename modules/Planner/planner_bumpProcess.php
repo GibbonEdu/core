@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                             $partialFail = true;
                         }
                         while ($rowNext = $resultNext->fetch()) {
-                            if (isSchoolOpen($guid, $row['date'], $connection2)) {
+                            if (isSchoolOpen($guid, $rowNext['date'], $connection2)) {
                                 try {
                                     $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                             $partialFail = true;
                         }
                         while ($rowNext = $resultNext->fetch()) {
-                            if (isSchoolOpen($guid, $row['date'], $connection2)) {
+                            if (isSchoolOpen($guid, $rowNext['date'], $connection2)) {
                                 try {
                                     $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';

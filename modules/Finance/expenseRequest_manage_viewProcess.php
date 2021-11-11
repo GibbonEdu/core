@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -65,9 +68,10 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                     header("Location: {$URL}");
                 } else {
                     //Get and check settings
-                    $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-                    $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-                    $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+                    $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+                    $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                     if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                         $URL .= '&return=error0';
                         header("Location: {$URL}");
@@ -87,6 +91,8 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                             header("Location: {$URL}");
                         } else {
                             $approvers = $result->fetchAll();
+
+                            $notificationSender = $container->get(NotificationSender::class);
 
                             //Ready to go! Just check record exists and we have access, and load it ready to use...
                             try {
@@ -139,22 +145,23 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
 
                                 //Notify budget holders
                                 if ($budgetLevelExpenseApproval == 'Y') {
-
-                                        $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
-                                        $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
-                                        $resultHolder = $connection2->prepare($sqlHolder);
-                                        $resultHolder->execute($dataHolder);
+                                    $dataHolder = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+                                    $sqlHolder = "SELECT * FROM gibbonFinanceBudgetPerson WHERE access='Full' AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
+                                    $resultHolder = $connection2->prepare($sqlHolder);
+                                    $resultHolder->execute($dataHolder);
                                     while ($rowHolder = $resultHolder->fetch()) {
                                         $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                                        setNotification($connection2, $guid, $rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                        $notificationSender->addNotification($rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                     }
                                 }
 
                                 //Notify approvers that it is commented upon
+                                $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                 foreach ($approvers as $approver) {
-                                    $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
-                                    setNotification($connection2, $guid, $approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
+                                    $notificationSender->addNotification($approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
+
+                                $notificationSender->sendNotifications();
 
                                 $URL .= '&return=success0';
                                 header("Location: {$URL}");

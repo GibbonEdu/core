@@ -12,13 +12,6 @@ $I->seeInFormFields('#content form', $originalFormValues);
 // Make Changes ------------------------------------------------
 
 $newFormValues = array(
-    'googleOAuth'        => 'Y',
-    'googleClientName'   => 'Gibbon Test',
-    'googleClientID'     => '1234',
-    'googleClientSecret' => '5678',
-    'googleRedirectUri'  => 'http://test.test',
-    'googleDeveloperKey' => '1234-5678-90',
-    'calendarFeed'       => 'http://calendar.test',
     'enablePayments'     => 'Y',
     'paymentGateway'     => 'PayPal',
     'paymentAPIUsername'  => 'paypalUsernameTest',

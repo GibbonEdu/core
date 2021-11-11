@@ -46,7 +46,9 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
     private static $scrubbableKey = false;
-    private static $scrubbableColumns = ['password' => 'randomString', 'passwordStrong' => 'randomString', 'passwordStrongSalt' => 'randomString', 'address1' => '', 'address1District' => '', 'address1Country' => '', 'address2' => '', 'address2District' => '', 'address2Country' => '', 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone3Type' => '', 'phone3CountryCode' => '', 'phone3' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'phone4Type' => '', 'phone4CountryCode' => '', 'phone4' => '', 'website' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'countryOfBirth' => '',  'ethnicity' => '', 'religion' => '', 'profession' => '', 'employer' => '', 'jobTitle' => '', 'emergency1Name' => '', 'emergency1Number1' => '', 'emergency1Number2' => '', 'emergency1Relationship' => '', 'emergency2Name' => '', 'emergency2Number1' => '', 'emergency2Number2' => '', 'emergency2Relationship' => '', 'transport' => '', 'transportNotes' => '', 'calendarFeedPersonal' => '', 'lockerNumber' => '', 'vehicleRegistration' => '', 'personalBackground' => '', 'studentAgreements' =>null, 'fields' => ''];
+    private static $scrubbableColumns = ['passwordStrong' => 'randomString', 'passwordStrongSalt' => 'randomString', 'address1' => '', 'address1District' => '', 'address1Country' => '', 'address2' => '', 'address2District' => '', 'address2Country' => '', 'phone1Type' => '', 'phone1CountryCode' => '', 'phone1' => '', 'phone3Type' => '', 'phone3CountryCode' => '', 'phone3' => '', 'phone2Type' => '', 'phone2CountryCode' => '', 'phone2' => '', 'phone4Type' => '', 'phone4CountryCode' => '', 'phone4' => '', 'website' => '', 'languageFirst' => '', 'languageSecond' => '', 'languageThird' => '', 'countryOfBirth' => '',  'ethnicity' => '', 'religion' => '', 'profession' => '', 'employer' => '', 'jobTitle' => '', 'emergency1Name' => '', 'emergency1Number1' => '', 'emergency1Number2' => '', 'emergency1Relationship' => '', 'emergency2Name' => '', 'emergency2Number1' => '', 'emergency2Number2' => '', 'emergency2Relationship' => '', 'transport' => '', 'transportNotes' => '', 'calendarFeedPersonal' => '', 'lockerNumber' => '', 'vehicleRegistration' => '', 'personalBackground' => '', 'studentAgreements' =>null, 'fields' => ''];
+
+    private static $safeUserFields = ['gibbonPersonID', 'username', 'surname', 'firstName', 'preferredName', 'officialName', 'email', 'emailAlternate', 'website', 'gender', 'status', 'image_240', 'lastTimestamp', 'messengerLastRead', 'calendarFeedPersonal', 'viewCalendarSchool', 'viewCalendarPersonal', 'viewCalendarSpaceBooking', 'dateStart', 'personalBackground', 'gibboni18nIDPersonal', 'googleAPIRefreshToken', 'microsoftAPIRefreshToken', 'genericAPIRefreshToken', 'receiveNotificationEmails', 'cookieConsent', 'gibbonHouseID'];
 
     /**
      * Queries the list of users for the Manage Users page.
@@ -68,6 +70,50 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria);
+    }
+
+    /**
+     * Gets basic user and role fields required for login.
+     *
+     * @param string $username
+     * @return Result
+     */
+    public function selectLoginDetailsByUsername($username)
+    {
+        $data = ['username' => $username];
+        $sql = "SELECT 
+                    gibbonPerson.gibbonPersonID,
+                    gibbonPerson.username,
+                    gibbonPerson.passwordStrong,
+                    gibbonPerson.passwordStrongSalt,
+                    gibbonPerson.gibbonRoleIDPrimary,
+                    gibbonPerson.gibbonRoleIDAll,
+                    gibbonPerson.canLogin,
+                    gibbonPerson.failCount,
+                    gibbonRole.futureYearsLogin,
+                    gibbonRole.pastYearsLogin,
+                    gibbonRole.name as roleName,
+                    gibbonRole.category as roleCategory
+                FROM gibbonPerson 
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                WHERE (
+                    (username=:username OR (LOCATE('@', :username)>0 AND email=:username)) 
+                    AND status='Full' 
+                )";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Gets a set of fields to populate the session data, excluding unsafe fields such as passwords.
+     *
+     * @param string $gibbonPersonID
+     * @return Result
+     */
+    public function getSafeUserData($gibbonPersonID)
+    {
+        $user = $this->getByID($gibbonPersonID);
+        return array_intersect_key($user, array_flip(self::$safeUserFields));
     }
 
     /**
