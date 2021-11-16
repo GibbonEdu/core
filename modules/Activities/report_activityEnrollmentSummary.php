@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Enrolment Summary'));

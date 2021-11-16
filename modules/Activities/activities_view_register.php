@@ -52,8 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             //Check access controls
             $access = $settingGateway->getSettingByScope('Activities', 'access');
 
-            $gibbonPersonID = $_GET['gibbonPersonID'];
-            $search = isset($_GET['search'])? $_GET['search'] : '';
+            $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+            $search = $_GET['search'] ?? '';
 
             if ($access != 'Register') {
                 echo "<div class='error'>";
