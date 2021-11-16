@@ -148,7 +148,7 @@ if ($proceed == false) {
 
         $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is pending approval.'), Format::name('', $preferredName, $surname, 'Student')));
-        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withAbsoluteURL()->withQueryParams([
+        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withQueryParams([
             'gibbonPersonID' => $gibbonPersonID,
             'search' => '',
         ]));
@@ -162,7 +162,7 @@ if ($proceed == false) {
 
         $event->addRecipient($session->get('organisationAdmissions'));
         $event->setNotificationText(sprintf(__('A new public registration, for %1$s, is now live.'), Format::name('', $preferredName, $surname, 'Student')));
-        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withAbsoluteURL()->withQueryParams([
+        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage_edit')->withQueryParams([
             'gibbonPersonID' => $gibbonPersonID,
             'search' => '',
         ]));
