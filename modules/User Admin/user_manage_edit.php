@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
          ->add(__('Edit User'));
 
     $returns = array();
-    $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+    $returns['warning3'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
     $page->return->addReturns($returns);
 
     //Check if gibbonPersonID specified

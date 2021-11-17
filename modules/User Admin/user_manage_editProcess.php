@@ -405,18 +405,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 }
                             }
                         }
-                        if ($partialFail == true) {
+                        if ($partialFail || $personalDocumentFail) {
                             $URL .= '&return=warning1';
                             header("Location: {$URL}");
+                        } else if ($imageFail) {
+                            $URL .= '&return=warning3';
+                            header("Location: {$URL}");
                         } else {
-                            if ($personalDocumentFail) {
-                                $URL .= '&return=warning1';
-                                header("Location: {$URL}");
-                            } else {
-                                $URL .= '&return=success0';
-                                header("Location: {$URL}");
-                            }
+                            $URL .= '&return=success0';
+                            header("Location: {$URL}");
                         }
+                        
                     }
                 }
             }
