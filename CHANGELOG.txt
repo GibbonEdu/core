@@ -94,6 +94,7 @@ v23.0.00
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
+        User Admin: fixed return message for image upload failure
 
 v22.0.01
 --------

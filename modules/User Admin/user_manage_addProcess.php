@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($studentData['gibbonFormGroupID'], $AI);
 
                                 if (!$inserted) {
-                                    $URL .= "&return=warning2&editID=$AI";
+                                    $URL .= "&return=warning1&editID=$AI";
                                     header("Location: {$URL}");
                                     exit;
                                 }
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     }
 
                     if ($imageFail) {
-                        $URL .= "&return=warning1&editID=$AI";
+                        $URL .= "&return=warning3&editID=$AI";
                         header("Location: {$URL}");
                     } else {
                         $URL .= "&return=success0&editID=$AI";
