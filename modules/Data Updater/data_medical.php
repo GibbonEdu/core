@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             $gibbonPersonID = $_GET['gibbonPersonID'];
 		}
 
-		$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+		$gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
 		$form = Form::create('selectFamily', $session->get('absoluteURL').'/index.php', 'get');
 		$form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_medical.php');
