@@ -45,11 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
             ->add(__('Add'));
 
-        $gibbonBehaviourID = isset($_GET['gibbonBehaviourID'])? $_GET['gibbonBehaviourID'] : null;
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
-        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
-        $type = isset($_GET['type'])? $_GET['type'] : '';
+        $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+        $type = $_GET['type'] ?? '';
 
         $editLink = '';
         $editID = '';
