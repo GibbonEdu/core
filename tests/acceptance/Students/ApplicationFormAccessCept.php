@@ -20,7 +20,7 @@ $I->seeInFormFields('#content form', $newApplicationSettings);
 
 $I->click('Logout', 'a');
 $I->amOnModulePage('Students', 'applicationForm.php');
-$I->see('You do not have access to this action.', '.error');
+$I->see('access', '.error');
 
 // Change Application Settings ---------------------------------
 
