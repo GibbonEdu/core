@@ -70,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         } else {
             $student = $result->fetch();
 
-            $search = isset($_GET['search'])? $_GET['search'] : null;
-            $source = isset($_GET['source'])? $_GET['source'] : null;
-            $gibbonINDescriptorID = isset($_GET['gibbonINDescriptorID'])? $_GET['gibbonINDescriptorID'] : null;
-            $gibbonAlertLevelID = isset($_GET['gibbonAlertLevelID'])? $_GET['gibbonAlertLevelID'] : null;
-            $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
-            $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
+            $search = $_GET['search'] ?? null;
+            $source = $_GET['source'] ?? null;
+            $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? null;
+            $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'] ?? null;
+            $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
+            $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? null;
 
             if ($search != '' and $source == '') {
                 echo "<div class='linkTop'>";
