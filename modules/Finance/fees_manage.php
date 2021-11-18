@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         }
         echo '</div>';
 
-        $search = isset($_GET['search'])? $_GET['search'] : '';
+        $search = $_GET['search'] ?? '';
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Search'));
