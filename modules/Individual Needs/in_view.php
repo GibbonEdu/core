@@ -39,8 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         $search = $_GET['search'] ?? '';
-        //Why is this in brackets?
-        $allStudents = (isset($_GET['allStudents']) ? $_GET['allStudents'] : '');
+        $allStudents =  $_GET['allStudents'] ?? '';
 
         // CRITERIA
         $criteria = $studentGateway->newQueryCriteria(true)
