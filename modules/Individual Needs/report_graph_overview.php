@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
     $onClickURL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/';
