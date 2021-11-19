@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     echo __('When you create invoices using the billing schedule or pre-defined fee features, the invoice will remain linked to these areas whilst pending. Thus, changes made to the billing schedule and pre-defined fees will be reflected in any pending invoices. Once invoices are issued, this link is removed, and the values are fixed at the levels when the invoice was issued.');
     echo '</p>';
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
         $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
