@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
     } else {
         $page->breadcrumbs->add(__('View Behaviour Records'));
 
-        $search = isset($_GET['search'])? $_GET['search'] : '';
+        $search = $_GET['search'] ?? '';
 
         if ($highestAction == 'View Behaviour Records_all') {
             $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');

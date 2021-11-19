@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     } else {
         $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
-        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
-        $type = isset($_GET['type'])? $_GET['type'] : '';
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+        $type = $_GET['type'] ?? '';
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));

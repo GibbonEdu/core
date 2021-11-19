@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
 } else {
     $page->breadcrumbs->add(__('View Behaviour Letters'));
 
-    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
     $form = Form::create('filter', $session->get('absoluteURL')."/index.php", 'get', 'noIntBorder fullWidth standardForm');
     $form->setTitle(__('Filter'));
