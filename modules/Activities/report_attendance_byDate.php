@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $today = date('Y-m-d');
     $date = (isset($_GET['date']))? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $sort = (isset($_GET['sort']))? $_GET['sort'] : 'surname';
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Attendance by Date'));

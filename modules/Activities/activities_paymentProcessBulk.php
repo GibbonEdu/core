@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $gibbonActivityStudentIDList = isset($_POST['gibbonActivityStudentID'])? $_POST['gibbonActivityStudentID'] : array();
+    $gibbonActivityStudentIDList = $_POST['gibbonActivityStudentID'] ?? array();
     $payment = $_POST['payment'] ?? array();
 
     $students = array();
