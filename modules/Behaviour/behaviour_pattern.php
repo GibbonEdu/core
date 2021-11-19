@@ -38,12 +38,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 } else {
     $page->breadcrumbs->add(__('Find Behaviour Patterns'));
 
-    $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
-    $level = isset($_GET['level'])? $_GET['level'] : '';
-    $fromDate = isset($_GET['fromDate'])? $_GET['fromDate'] : '';
-    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
-    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
-    $minimumCount = isset($_GET['minimumCount'])? $_GET['minimumCount'] : 1;
+    $descriptor = $_GET['descriptor'] ?? '';
+    $level = $_GET['level'] ?? '';
+    $fromDate = $_GET['fromDate'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $minimumCount = $_GET['minimumCount'] ?? 1;
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
