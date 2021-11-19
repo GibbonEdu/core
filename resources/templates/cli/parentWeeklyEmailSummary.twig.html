@@ -57,7 +57,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <li>
             <div style="{{ style }}; padding: 4px 6px; margin-bottom: 10px;">
             <b>
-                {{ formatUsing('courseClassName', item.course, item.class) }} - {{ item.name }}
+                <a href="{{ absoluteURL }}/index.php?q=/modules/Planner/planner_deadlines.php&search={{ student.gibbonPersonID }}"  style="color:#222">{{ formatUsing('courseClassName', item.course, item.class) }}</a> - {{ item.name }}
             </b>
             <br/>
             <span style="font-size: 80%; font-style: italic;">
@@ -97,7 +97,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     <ul>
         {% for item in markbook %}
         <li>
-            {{ item.class }} - {{ item.name }}
+            <a href="{{ absoluteURL }}/index.php?q=/modules/Markbook/markbook_view.php&search={{ student.gibbonPersonID }}"  style="color:#222; font-weight: bold;">{{ item.class }} </a> - {{ item.name }}
         </li>
         {% else %}
         <li>
