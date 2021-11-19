@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
             ->add(__('View Expense'));
 
         //Check if params are specified
-        $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-        $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
-        $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
+        $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
+        $status2 = $_GET['status2'] ?? '';
+        $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
