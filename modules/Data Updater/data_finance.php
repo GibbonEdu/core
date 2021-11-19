@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
         echo __('Choose User');
         echo '</h2>';
 
-		$gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : null;
+		$gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? null;
 
         $form = Form::create('selectInvoicee', $session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_finance.php');

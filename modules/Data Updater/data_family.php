@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         echo __('Choose Family');
         echo '</h2>';
 
-        $gibbonFamilyID = isset($_GET['gibbonFamilyID'])? $_GET['gibbonFamilyID'] : null;
+        $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? null;
 
         $form = Form::create('selectFamily', $gibbon->session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/data_family.php');
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
             //Check access to person
             if ($highestAction == 'Update Family Data_any') {
-                
+
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
                     $sqlCheck = 'SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultCheck = $connection2->prepare($sqlCheck);
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 //Check if there is already a pending form for this user
                 $existing = false;
                 $proceed = false;
-                
+
                     $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonIDUpdater' => $gibbon->session->get('gibbonPersonID'));
                     $sql = "SELECT * FROM gibbonFamilyUpdate WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
                     $result = $connection2->prepare($sql);
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                     $proceed = true;
                 } else {
                     //Get user's data
-                    
+
                         $data = array('gibbonFamilyID' => $gibbonFamilyID);
                         $sql = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                         $result = $connection2->prepare($sql);

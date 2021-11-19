@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     //Proceed!
     $page->breadcrumbs->add(__('Personal Data Updates'));
 
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID)) {
