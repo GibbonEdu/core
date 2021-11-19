@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
 
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             }
 
             $form = Form::createTable('updatePerson', $session->get('absoluteURL').'/modules/'.$session->get('module').'/data_personal_manage_editProcess.php?gibbonPersonUpdateID='.$gibbonPersonUpdateID);
-            
+
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $oldValues['gibbonPersonID']);

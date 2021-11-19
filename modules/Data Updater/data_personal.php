@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         echo __('Choose User');
         echo '</h2>';
 
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
         $form = Form::create('selectPerson', $session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_personal.php');
@@ -520,7 +520,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
                     $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
-                    
+
                     // PERSONAL DOCUMENTS
                     $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
                     if ($existing) {
@@ -528,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     } else {
                         $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params )->fetchAll();
                     }
-                    
+
                     if (!empty($documents)) {
                         $col = $form->addRow()->addColumn();
                             $col->addLabel('document', __('Personal Documents'));
