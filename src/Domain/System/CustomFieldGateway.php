@@ -46,7 +46,7 @@ class CustomFieldGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther'
+                'gibbonCustomFieldID', 'context', 'heading', 'name', 'type', 'active', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther', 'required'
             ]);
         
         $criteria->addFilterRules([
