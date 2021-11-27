@@ -113,7 +113,7 @@ class Url extends Uri implements UriInterface
     public static function fromModuleRoute(string $module, string $route_path = ''): self
     {
         return (new static())
-            ->withPath(static::$basePath)
+            ->withPath('./')
             ->withModule($module)
             ->withRoutePath($route_path);
     }
