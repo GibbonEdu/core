@@ -93,7 +93,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
-        $this->sortBySelect->fromArray(array($attribute => __("Sort by " . $attribute)));
+        $this->sortBySelect->fromArray(array($attribute => __("Sort by ") . $attribute));
         return $this;
     }
 
