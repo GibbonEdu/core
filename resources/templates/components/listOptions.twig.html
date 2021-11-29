@@ -11,7 +11,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% set buttonClass = 'h-8 text-sm bg-white text-gray-700 border-gray-500 hover:bg-blue-500 hover:border-blue-700 hover:text-white border -ml-px px-3 md:px-5 py-1 leading-normal overflow-hidden' %}
 
     {% for view, label in listOptions %}
-    <a class="{{ buttonClass }} {{ loop.first ?'rounded-l' : loop.last ? 'rounded-r' }}" href="{{ absoluteURL }}/{{ url }}&view={{ view }}" title="{{ label }}">
+    <a class="{{ buttonClass }} {{ loop.first ?'rounded-l' : loop.last ? 'rounded-r' }}" href="{{ url }}&view={{ view }}" title="{{ label }}">
         <span class="hidden md:inline-block">{{- label -}}</span>
 
         {% if view == 'list' %}
