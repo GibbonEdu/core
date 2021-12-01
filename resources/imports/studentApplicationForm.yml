@@ -34,6 +34,10 @@ table:
         name: "Start Date"
         desc: "Users's first day at school."
         args: {filter: date}
+    username:
+        name: "Username"
+        desc: ""
+        args: {filter: string}
     surname:
         name: "Surname"
         desc: "Family Name"
