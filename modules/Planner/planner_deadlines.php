@@ -90,9 +90,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
     if (isset($_GET['show'])) {
         $show = $_GET['show'];
     }
-    $gibbonCourseClassIDFilter = null;
+
     if (isset($_GET['gibbonCourseClassIDFilter'])) {
-        $gibbonCourseClassIDFilter = $_GET['gibbonCourseClassIDFilter'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassIDFilter'];
+        $params['gibbonCourseClassID'] = $gibbonCourseClassID;
     }
     $gibbonPersonID = null;
     if (isset($_GET['search'])) {
@@ -277,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
             ]);
 
             // HOMEWORK TABLE
-            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category);
+            $table = $container->get(HomeworkTable::class)->create($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID, $category, $gibbonCourseClassID);
             $table->setTitle($homeworkNamePlural);
 
             echo $table->getOutput();
