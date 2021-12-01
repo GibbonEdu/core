@@ -103,6 +103,10 @@ table:
         name: "Parent 1 Preferred Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
+    parent1officialName:
+        name: "Parent 1 Official Name"
+        desc: ""
+        args: {filter: string, required: true, custom: true}
     parent1gender:
         name: "Parent 1 Gender"
         desc: ""
@@ -154,6 +158,10 @@ table:
         args: {filter: string, required: true, custom: true}
     parent2preferredName:
         name: "Parent 2 Preferred Name"
+        desc: ""
+        args: {filter: string, required: true, custom: true}
+    parent2officialName:
+        name: "Parent 2 Official Name"
         desc: ""
         args: {filter: string, required: true, custom: true}
     parent2gender:
