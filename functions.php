@@ -379,6 +379,7 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
     if ($resultAlert->rowCount() == 1) {
         $rowAlert = $resultAlert->fetch();
         $output = array();
+        $output['gibbonAlertLevelID'] = $rowAlert['gibbonAlertLevelID'];
         $output['name'] = $rowAlert['name'];
         $output['nameShort'] = $rowAlert['nameShort'];
         $output['color'] = $rowAlert['color'];
