@@ -98,7 +98,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                     $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
 
                     // Has the medical condition risk changed?
-                    if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                    if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['gibbonAlertLevelID'] == '001' || $alert['gibbonAlertLevelID'] == '002')) {
                         $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
 
                         // Raise a new notification event
