@@ -88,6 +88,7 @@ v23.0.00
         Messenger: fixed duplicate student names when using Individual Naming
         Planner: fixed school closure checks when bumping lessons forward and backward
         Planner: fixed smart block deletion not working in Edit Lesson Plan
+        Planner: fixed planner deadlines page not filtering by class
         Reports: fixed Student Info template borders when no image is present
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities
