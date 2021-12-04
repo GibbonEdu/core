@@ -19,11 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
-use Twig\Environment;
 use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
 use Gibbon\View\Components\Breadcrumbs;
 use Gibbon\View\Components\ReturnMessage;
+use Psr\Container\ContainerInterface;
+use Gibbon\View\Components\Navigator;
 
 /**
  * Holds the details for rendering the current page.
@@ -33,6 +34,11 @@ use Gibbon\View\Components\ReturnMessage;
  */
 class Page extends View
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+    
     /**
      * After constructing these class properties are publicly read-only.
      */
@@ -94,6 +100,13 @@ class Page extends View
     protected $breadcrumbs;
 
     /**
+     * School Year and Search Result navigation.
+     *
+     * @var Navigator
+     */
+    protected $navigator;
+
+    /**
      * Return message, if any.
      *
      * @var ReturnMessage
@@ -106,16 +119,18 @@ class Page extends View
     /**
      * Create a new page from a variable set of constructor params.
      *
+     * @param ContainerInterface $container
      * @param array $params Essential parameters for building a page.
      */
-    public function __construct(Environment $templateEngine = null, array $params = [])
+    public function __construct(ContainerInterface $container = null, array $params = [])
     {
-        parent::__construct($templateEngine);
+        parent::__construct($container->get('twig'));
 
-        $this->breadcrumbs = new Breadcrumbs();
-        $this->stylesheets = new AssetBundle();
-        $this->scripts = new AssetBundle();
-        $this->return = new ReturnMessage();
+        $this->breadcrumbs = $container->get(Breadcrumbs::class);
+        $this->stylesheets = $container->get(AssetBundle::class);
+        $this->scripts = $container->get(AssetBundle::class);
+        $this->return = $container->get(ReturnMessage::class);
+        $this->navigator = $container->get(Navigator::class);
 
         // Merge constructor params into class properties
         foreach ($params as $key => $value) {
@@ -371,6 +386,7 @@ class Page extends View
         return [
             'title'        => $this->getTitle(),
             'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],
+            'navigator'    => $this->navigator->getData(),
             'helpLink'     => $this->action['helpURL'] ?? '',
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),

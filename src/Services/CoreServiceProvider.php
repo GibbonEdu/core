@@ -234,7 +234,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $pageTitle .= ' - '.__($session->get('module'));
             }
 
-            $page = new Page($container->get('twig'), [
+            $page = new Page($container, [
                 'title'   => $pageTitle,
                 'address' => $session->get('address'),
                 'action'  => $container->get('action'),
