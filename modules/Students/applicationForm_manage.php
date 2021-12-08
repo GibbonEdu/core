@@ -32,11 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $page->breadcrumbs->add(__('Manage Applications'));
 
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $search = $_GET['search']  ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID']  ?? '';
 
-    $page->navigator->addSchoolYear($gibbonSchoolYearID);
-
-    $search = isset($_GET['search']) ? $_GET['search']  : '';
-    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID']) ? $_GET['gibbonYearGroupID']  : '';
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     $familyGateway = $container->get(FamilyGateway::class);
     $applicationGateway = $container->get(ApplicationFormGateway::class);

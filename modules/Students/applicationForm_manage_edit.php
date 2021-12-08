@@ -26,6 +26,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -42,26 +43,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $search = $_GET['search'] ?? '';
 
+    $urlParams = compact('gibbonApplicationFormID', 'gibbonSchoolYearID', 'search');
+
     $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', $urlParams)
         ->add(__('Edit Form'));
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
 
     //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-
     
-        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-        $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+    $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ($result->rowCount() != 1) {
-        echo "<div class='error'>";
-        echo __('The specified record does not exist.');
-        echo '</div>';
+        $page->addError(__('The specified record does not exist.'));
         return;
     }
 
@@ -69,23 +73,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $application = $result->fetch();
     $proceed = true;
 
-    echo "<div class='linkTop'>";
-    if ($search != '') {
-        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
-    }
-
-    $settingGateway = $container->get(SettingGateway::class);
+    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage')->withQueryParams($urlParams));
 
     $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
     if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+        $page->navigator->addHeaderAction('payment', __('Send Payment Request'))
+            ->setUrl('/index.php?q=/modules/Students/applicationForm_manage_edit_fee.php')
+            ->setIcon('page_right')
+            ->addParams($urlParams)
+            ->displayLabel(true);
     }
 
-    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-    echo '</div>';
-
-    $customFieldHandler = $container->get(CustomFieldHandler::class);
-    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
+    $page->navigator->addHeaderAction('print', __('Print'))
+        ->setUrl('/report.php?q=/modules/Students/applicationForm_manage_edit_print.php')
+        ->setTarget('_blank')
+        ->addParams($urlParams)
+        ->displayLabel(true);
 
     $form = Form::create('applicationFormEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
