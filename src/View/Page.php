@@ -35,11 +35,6 @@ use Gibbon\View\Components\Navigator;
 class Page extends View
 {
     /**
-     * @var ContainerInterface
-     */
-    protected $container;
-    
-    /**
      * After constructing these class properties are publicly read-only.
      */
     protected $title = '';
@@ -130,7 +125,7 @@ class Page extends View
         $this->stylesheets = $container->get(AssetBundle::class);
         $this->scripts = $container->get(AssetBundle::class);
         $this->return = $container->get(ReturnMessage::class);
-        $this->navigator = $container->get(Navigator::class);
+        $this->navigator = $container->has('db') ? $container->get(Navigator::class) : null;
 
         // Merge constructor params into class properties
         foreach ($params as $key => $value) {
@@ -386,7 +381,7 @@ class Page extends View
         return [
             'title'        => $this->getTitle(),
             'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],
-            'navigator'    => $this->navigator->getData(),
+            'navigator'    => $this->navigator ? $this->navigator->getData() : [],
             'helpLink'     => $this->action['helpURL'] ?? '',
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
