@@ -76,9 +76,10 @@ class SessionFactory
                 'cookie_httponly'  => true,
                 'cookie_secure'    => isset($_SERVER['HTTPS']),
             ]);
-
-            header('X-Frame-Options: SAMEORIGIN');
         }
+
+        header('X-Frame-Options: SAMEORIGIN');
+        header_remove('X-Powered-By');
 
         // If session guid is not set, fallback to global $guid.
         $_guid = $config['guid'] ?? $guid ?? '';

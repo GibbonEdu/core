@@ -74,14 +74,16 @@ class InstallController
      * container.
      *
      * @param ContainerInterface $container
-     * @param string $absolutePath
+     * @param Session $session
+     * @param Page $page
      *
      * @return InstallController
      * @throws \Exception
      */
     public static function create(
         ContainerInterface $container,
-        Session $session
+        Session $session,
+        Page $page
     ): InstallController
     {
         /**
@@ -115,12 +117,6 @@ class InstallController
             $session->set('nonceToken', \getSalt());
         }
         $nonceService = new NonceService($session->get('nonceToken'));
-
-        // Generate page object for display.
-        $page = new Page($templateEngine, [
-            'title'   => __('Gibbon Installer'),
-            'address' => '/installer/install.php',
-        ]);
 
         return new static(
             $context,

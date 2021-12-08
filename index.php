@@ -545,6 +545,7 @@ $page->addData([
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
     'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
     'lang'              => $localeCode,
+    'address'           => $page->getAddress(),
 ]);
 
 if ($isLoggedIn) {

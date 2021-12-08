@@ -64,7 +64,7 @@ class Action extends WebLink
     /**
      * The icon name, without any path or filetype
      *
-     * @var string
+     * @var string|Gibbon\Url
      */
     protected $icon;
 
@@ -314,7 +314,9 @@ class Action extends WebLink
             $queryParams[$key] = $value;
         }
 
-        if ($this->external) {
+        if ($this->url instanceof Url) {
+            $this->setAttribute('href', (string)$this->url);
+        } elseif ($this->external) {
             $this->setAttribute('href', $this->url.$this->urlFragment);
         } else if ($this->direct) {
             $this->setAttribute('href', Url::fromHandlerRoute(ltrim($this->url, '/'))

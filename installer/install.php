@@ -40,7 +40,7 @@ if (empty($gibbon->locale->getLocale())) {
 }
 
 // Page object for rendering
-$page = new Page($container->get('twig'), [
+$page = new Page($container, [
     'title'   => __('Gibbon Installer'),
     'address' => '/installer/install.php',
 ]);
@@ -67,7 +67,8 @@ $session->set('stringReplacement', []); // Deal with non-existent stringReplacem
 // Create a controller instance.
 $controller = InstallController::create(
     $container,
-    $session
+    $session,
+    $page
 );
 
 // Generate installer object.
