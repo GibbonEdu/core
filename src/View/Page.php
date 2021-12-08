@@ -121,10 +121,10 @@ class Page extends View
     {
         parent::__construct($container->get('twig'));
 
-        $this->breadcrumbs = $container->get(Breadcrumbs::class);
-        $this->stylesheets = $container->get(AssetBundle::class);
-        $this->scripts = $container->get(AssetBundle::class);
-        $this->return = $container->get(ReturnMessage::class);
+        $this->breadcrumbs = new Breadcrumbs();
+        $this->stylesheets = new AssetBundle();
+        $this->scripts = new AssetBundle();
+        $this->return = new ReturnMessage();
         $this->navigator = $container->has('db') ? $container->get(Navigator::class) : null;
 
         // Merge constructor params into class properties
