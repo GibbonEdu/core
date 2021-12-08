@@ -118,14 +118,14 @@ class Page extends View
      * @param array $params Essential parameters for building a page.
      */
     public function __construct(ContainerInterface $container = null, array $params = [])
-    {
-        parent::__construct($container->get('twig'));
+    { 
+        parent::__construct($container ? $container->get('twig') : null);
 
         $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
         $this->return = new ReturnMessage();
-        $this->navigator = $container->has('db') ? $container->get(Navigator::class) : null;
+        $this->navigator = $container && $container->has('db') ? $container->get(Navigator::class) : null;
 
         // Merge constructor params into class properties
         foreach ($params as $key => $value) {
