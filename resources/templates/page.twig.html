@@ -35,25 +35,34 @@ all stylesheets and scripts with a 'head' context.
 </div>
 
 {% if page.navigator %}
-<div class="w-full flex justify-between align-center mb-4">
+<div class="w-full flex justify-end align-center mb-4">
 
     {% if page.navigator.schoolYears %}
     
     {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose text-xxs' %}
     {% set schoolYears = page.navigator.schoolYears %}
 
-    <h2 class="m-0 p-0 pt-1">
-        {{ schoolYears.current.name }}
-    </h2>
+    <div class="flex-1">
+        <h2 class="m-0 p-0 pt-1">
+            {{ schoolYears.current.name }}
+        </h2>
+    </div>
     
     <div class="flex">
+
+        <div class="linkTop mt-0">
+            {% for action in table.getHeader %}
+                {{ action.getOutput|raw }}
+            {% endfor %}
+        </div>
+
         <button type="button" class="rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ schoolYears.previous is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" onclick="window.location = '{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.previous.gibbonSchoolYearID }}'" {{ schoolYears.previous is empty ? 'disabled'}}>
             {{ __('Prev') }}
         </button>
 
         <form action="{{ absoluteURL }}/index.php?q={{ address }}" method="get">
             <input type="hidden" name="q" value="{{ address }}">
-            <select name="gibbonSchoolYearID" class="auto-submit border-gray-500 border-r-0 {{ buttonStyle }}">
+            <select name="gibbonSchoolYearID" class="auto-submit bg-gray-200 border-gray-500 border-r-0 {{ buttonStyle }}">
             {%- for value, name in schoolYears.years -%}
                 <option value="{{ value }}" {{ schoolYears.current.gibbonSchoolYearID == value ? 'selected' : ''}}>{{ name }}</option>
             {%- endfor -%}
@@ -64,6 +73,19 @@ all stylesheets and scripts with a 'head' context.
         {{ __('Next') }}
         </button>
     </div>
+    {% endif %}
+    
+
+    {% if page.navigator.actions %}
+
+    <div class="linkTop mt-0">
+        {% for action in page.navigator.actions %}
+            {{ action.getOutput|raw }}
+
+            {{ not loop.last ? '&nbsp;|&nbsp;' : '' }}
+        {% endfor %}
+    </div>
+
     {% endif %}
 </div>
 {% endif %}

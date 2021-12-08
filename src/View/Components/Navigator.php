@@ -47,7 +47,7 @@ class Navigator
         return !empty($this->schoolYears) || !empty($this->actions);
     }
 
-    public function addSchoolYear(string $gibbonSchoolYearID)
+    public function addSchoolYearNavigation(string $gibbonSchoolYearID)
     {
         $this->schoolYears = [
             'current'  => $this->schoolYearGateway->getByID($gibbonSchoolYearID),
@@ -57,11 +57,13 @@ class Navigator
         ];
     }
 
-    public function addSearchResultLink(Url $url)
+    public function addSearchResultsAction(Url $url)
     {
         $action = $this->addHeaderAction('searchResults', __('Back to Search Results'))
-            ->setIcon('copyback')
-            ->setUrl((string)$url);
+            ->setIcon('search')
+            ->setUrl($url)
+            ->displayLabel(true)
+            ->directLink();
 
         return $action;
     }
