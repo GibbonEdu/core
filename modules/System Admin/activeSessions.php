@@ -86,7 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
         });
 
     $table->addColumn('roleCategory', __('Role Category'))
-        ->context('secondary');
+        ->context('secondary')
+        ->translatable();
 
     $table->addColumn('lastIPAddress', __('IP Address'))
         ->context('secondary');
