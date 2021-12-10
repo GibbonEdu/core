@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -70,9 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $mode = $_GET['mode'];
 
                     if ($_GET['search'] != '' or $gibbonPersonID != '') {
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."'>".__('Back to Search Results').'</a>';
-                        echo '</div>';
+                        $params = [
+                            "gibbonPersonID" => $gibbonPersonID,
+                            "search" => $_GET['search'] ?? ''
+                        ];
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Activities', 'activities_view.php')->withQueryParams($params));
                     }
 
                     //Check Access
