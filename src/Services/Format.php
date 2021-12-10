@@ -664,7 +664,7 @@ class Format
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
-            $url = Url::fromModuleRoute('Students', 'staff_view_details')
+            $url = Url::fromModuleRoute('Students', 'student_view_details')
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } else {
