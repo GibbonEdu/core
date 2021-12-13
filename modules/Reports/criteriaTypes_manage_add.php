@@ -71,6 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         $row->addLabel('gibbonScaleID', __('Grade Scale'));
         $row->addSelectGradeScale('gibbonScaleID');
 
+    $form->toggleVisibilityByClass('yesNoDefault')->onSelect('valueType')->when('Yes/No');
+    $row = $form->addRow()->addClass('yesNoDefault');
+        $row->addLabel('defaultValue', __('Default Value'));
+        $row->addYesNo('defaultValue')
+            ->placeholder();
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
