@@ -129,6 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->addParam('gibbonPersonID')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($person, $actions) use ($gibbon, $highestAction) {
+            $actions->addAction('view', __('View Status Log'))
+                    ->setURL('/modules/User Admin/user_manage_view_status_log.php')
+                    ->modalWindow();
+
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
