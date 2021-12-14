@@ -177,6 +177,13 @@ jQuery(function($){
         $(this).toggleClass('expanded');
         $(this).parents('tr').next('tr').toggle();
     });
+    
+    /**
+    * Forms: Expandable Rows
+    */
+    $(document).on('change', '.auto-submit', function () {
+        $(this).parents('form').submit();
+    });
 });
 
 var DraggableDataTable = function () {
