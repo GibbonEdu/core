@@ -79,7 +79,9 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             } else {
                 //CYCLE THROUGH STUDENTS
                 foreach ($gibbonFinanceInvoiceeIDs as $gibbonFinanceInvoiceeID) {
+                    // Check for a dash, for cases where the ID has been joined with a gibbonCourseClassID
                     $gibbonFinanceInvoiceeID = (strpos($gibbonFinanceInvoiceeID, "-") == 8) ? substr($gibbonFinanceInvoiceeID, 9) : $gibbonFinanceInvoiceeID;
+
                     $thisStudentFailed = false;
                     $invoiceTo = '';
                     $companyAll = '';
