@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -73,9 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                 $search = (isset($_GET['search']))? $_GET['search'] : null;
 
                 if (!empty($search)) {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/resources_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
-                    echo '</div>';
+                    $params = [
+                        "search" => $search
+                    ];
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'resources_manage.php')->withQueryParams($params));
                 }
 
                 $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/resources_manage_editProcess.php?gibbonResourceID='.$gibbonResourceID.'&search='.$search);

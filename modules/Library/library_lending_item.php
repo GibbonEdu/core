@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Library\LibraryGateway;
 
 //Module includes
@@ -77,9 +78,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             }
 
             if ($name != '' or $gibbonLibraryTypeID != '' or $gibbonSpaceID != '' or $status != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_lending.php&name='.$name.'&gibbonLibraryTypeID='.$gibbonLibraryTypeID.'&gibbonSpaceID='.$gibbonSpaceID.'&status='.$status."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $params = [
+                    "name" => $name,
+                    "gibbonLibraryTypeID" => $gibbonLibraryTypeID,
+                    "gibbonSpaceID" => $gibbonSpaceID,
+                    "status" => $status,
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Library', 'library_lending.php')->withQueryParams($params));
             }
 
             echo '<h3>';

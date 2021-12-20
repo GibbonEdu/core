@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -64,9 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '</div>';
         } else {
             if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/externalAssessment.php&search=$search&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $params = [
+                    "search" => $search,
+                    "allStudents" => $allStudents
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Formal Assessment', 'externalAssessment.php')->withQueryParams($params));
             }
 
             $row = $result->fetch();
