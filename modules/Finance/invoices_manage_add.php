@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
-            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID)->required()->selectMultiple();
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID, ["byClass" => true])->required()->selectMultiple();
 
         $scheduling = array('Scheduled' => __('Scheduled'), 'Ad Hoc' => __('Ad Hoc'));
         $row = $form->addRow();
