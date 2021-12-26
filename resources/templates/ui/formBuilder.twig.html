@@ -1,0 +1,72 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<section class="lg:flex items-stretch">
+    <div class="flex-1 pr-6">
+        {{ fields.getOutput|raw }}
+    </div>
+
+    <div id="sections" class="w-full lg:w-sidebar lg:max-w-xs h-full">
+        <h3>
+            {{ __('Add Fields') }} <span class="text-xxs font-normal"></span>
+        </h3>
+
+        <div id="fieldGroups" class="">
+            {{ fieldGroups.getOutput|raw }}
+        </div>
+
+        <div id="fieldAddContainer" class="">
+
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).on('change', '.auto-submit', function () {
+        var data = $('#formFieldGroups').data('reload-data');
+        data.fieldGroup = $("#fieldGroup").val();
+
+        $('#fieldAddContainer').load($('#formFieldGroups').data('reload-url'), data);
+    });
+
+    $('.auto-submit').trigger('change');
+
+    $('#formFields .standardForm').sortable({
+        placeholder: "drag-placeholder bg-gray-400 shadow-inner",
+        handle: ".drag-handle",
+        start: function(event, ui) {
+            console.log('sort start');
+            $(ui.item).addClass('bg-gray-100').addClass('border');
+            $(ui.placeholder).outerHeight($(ui.item).outerHeight());
+        },
+        update: function(event, ui) {
+            $(ui.item).removeClass('bg-gray-100').removeClass('border');
+            var elementOrder = new Array();
+            $('.draggableRow', this).each(function() {
+                elementOrder.push($(this).data('drag-id'));
+            });
+
+            var container = $(this).parent();
+            $.ajax({
+                url: $(container).data('drag-url'),
+                data: {
+                    data: $(container).data('drag-data'),
+                    order: JSON.stringify(elementOrder)
+                },
+                type: 'POST',
+                success: function(data) {
+                    console.log('success '+data);
+                }
+            });
+        },
+        stop: function(event, ui) {
+            $(ui.item).removeClass('bg-gray-100').removeClass('border');
+        },
+    });
+
+</script>
