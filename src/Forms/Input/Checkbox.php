@@ -92,10 +92,10 @@ class Checkbox extends Input
 
         if (is_array($values)) {
             foreach ($values as $key => $value) {
-                $this->checked[trim($key)] = (!is_array($value))? trim((string) $value) : $value;
+                $this->checked[trim($key)] = (!is_array($value))? trim($value) : $value;
             }
         } else {
-            $this->checked = array(trim((string) $values));
+            $this->checked = array(trim($values));
         }
 
         return $this;
@@ -203,12 +203,12 @@ class Checkbox extends Input
 
         if (!empty($this->options) && is_array($this->options)) {
             $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
-            $hasMultiple = count($this->options) > 1;
+            $hasMultiple = count($this->options, COUNT_RECURSIVE) > 1;
 
             if ($hasMultiple) {
                 $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
             }
-
+            
             if (!empty($this->checkall)) {
                 $checked = (count($this->options) == count($this->checked))? 'checked' : '';
                 $output .= '<div class="flex mt-1 '.($this->align == 'right' ? 'justify-end text-right' : '').'">';
@@ -226,7 +226,7 @@ class Checkbox extends Input
                     : $this->options;
 
             foreach ($optionGroups as $group => $options) {
-
+            
                 if (!empty($group)) {
                     $output .= '<label class="flex font-bold pb-1 border-b border-gray-400">'.$group.'</label>';
                 }

@@ -61,8 +61,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
                 {% endif %}
 
-                <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not (sectionLoop.last and loop.last) ? 'border-b' }} ">
 
+                <div id="{{ row.getID }}" class="formRow {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}" {{ row.getAttributeString("data-drag-id")|raw }}>
+
+                {% if "draggableRow" in row.getClass %}
+                    <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
+                {% endif %}
+        
                 {% for element in row.getElements %}
                     {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
 
