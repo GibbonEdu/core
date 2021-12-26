@@ -27,14 +27,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 </section>
 
 <script>
-    $(document).on('change', '.auto-submit', function () {
+    $(document).on('change', '.auto-update', function () {
         var data = $('#formFieldGroups').data('reload-data');
         data.fieldGroup = $("#fieldGroup").val();
 
         $('#fieldAddContainer').load($('#formFieldGroups').data('reload-url'), data);
     });
 
-    $('.auto-submit').trigger('change');
+    $('.auto-update').trigger('change');
 
     $('#formFields .standardForm').sortable({
         placeholder: "drag-placeholder bg-gray-400 shadow-inner",

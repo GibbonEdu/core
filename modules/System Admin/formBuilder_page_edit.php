@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     ];
     $row = $formFieldGroups->addRow();
         $row->addSelect('fieldGroup')->fromArray($fieldGroups)
-            ->addClass('auto-submit')
+            ->addClass('auto-update')
             ->selected($fieldGroup)
             ->placeholder(); 
 
