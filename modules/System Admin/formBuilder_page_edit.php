@@ -26,6 +26,8 @@ use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Forms\MultiPartForm;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
     // Access denied
@@ -35,6 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
     $gibbonFormPageID = $_REQUEST['gibbonFormPageID'] ?? '';
     $fieldGroup = $_REQUEST['fieldGroup'] ?? '';
+
+    $urlParams = compact('gibbonFormID', 'gibbonFormPageID', 'fieldGroup');
 
     $page->breadcrumbs
         ->add(__('Form Builder'), 'formBuilder.php')
@@ -58,10 +62,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
-    $form = Form::create('formsManage', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_page_editProcess.php');
+    $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('gibbonFormPageID', $gibbonFormPageID);
 
@@ -90,18 +94,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $formBuilder = $container->get(FormBuilder::class);
     
     // FORM FIELDS
-    $formFields = Form::create('formFields', '');
+    $formFields = MultiPartForm::create('formFields', '');
     $formFields->setTitle($values['name']);
     $formFields->setFactory(DatabaseFormFactory::create($pdo));
 
-    $formFields->addData('drag-url', $gibbon->session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_editOrderAjax.php');
+    $formFields->addData('drag-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_editOrderAjax.php');
     $formFields->addData('drag-data', ['gibbonFormPageID' => $gibbonFormPageID]);
 
-    $params = [
-        'gibbonFormID' => $gibbonFormID,
-        'gibbonFormPageID' => $gibbonFormPageID,
-        'fieldGroup' => $fieldGroup,
-    ];
+    $formPages = $formPageGateway->queryPagesByForm($criteria, $gibbonFormID)->toArray();
+
+    if (count($formPages) > 1) {
+        $formFields->setCurrentPage($values['sequenceNumber']);
+
+        foreach ($formPages as $formPage) {
+            $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_page_edit.php')->withQueryParams(['gibbonFormPageID' => $formPage['gibbonFormPageID'], 'sidebar' => 'false'] + $urlParams);
+            $formFields->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
+        }
+    }
     
     foreach ($fields as $field) {
         $fieldGroupClass = $formBuilder->getFieldGroupClass($field['fieldGroup']);
@@ -124,13 +133,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addContent((new Action('edit', __('Edit')))
             ->setURL('/modules/System Admin/formBuilder_page_edit_field_edit.php')
             ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
-            ->addParams($params)
+            ->addParams($urlParams)
             ->modalWindow(900, 500)
             ->getOutput().
             (new Action('delete', __('Delete')))
             ->setURL('/modules/System Admin/formBuilder_page_edit_field_delete.php')
             ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
-            ->addParams($params)
+            ->addParams($urlParams)
             ->getOutput()
         );
     }
@@ -138,8 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     // FIELD GROUPS
     $formFieldGroups = Form::create('formFieldGroups', '');
-    $formFieldGroups->addData('reload-url', $gibbon->session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_edit_field_add.php');
-    $formFieldGroups->addData('reload-data', $params);
+    $formFieldGroups->addData('reload-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_edit_field_add.php');
+    $formFieldGroups->addData('reload-data', $urlParams);
 
     $fieldGroups = [
         __('General') => [
@@ -160,15 +169,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             'AgreementFields' => __('Agreement'),
         ], 
     ];
+    
     $row = $formFieldGroups->addRow();
-        $row->addSelect('fieldGroup')->fromArray($fieldGroups)
-            ->addClass('auto-update')
-            ->selected($fieldGroup)
-            ->placeholder(); 
+    $row->addSelect('fieldGroup')->fromArray($fieldGroups)
+        ->addClass('auto-update')
+        ->selected($fieldGroup)
+        ->placeholder(); 
 
 
     // TEMPLATE
-    echo $page->fetchFromTemplate('ui/formBuilder.twig.html', [
+    echo $page->fetchFromTemplate('components/formBuilder.twig.html', [
         'gibbonFormID' => $gibbonFormID,
         'form'         => $values,
         'fields'       => $formFields,
