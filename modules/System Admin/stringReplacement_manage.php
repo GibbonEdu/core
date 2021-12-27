@@ -42,19 +42,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
-    
+
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
-    
+
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/stringReplacement_manage.php');
-    
+
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Original string, replacement string.'));
         $row->addTextField('search')->setValue($criteria->getSearchText());
-    
+
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
-    
+
     echo $form->getOutput();
 
     echo '<h2>';
@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/System Admin/stringReplacement_manage_add.php')
+        ->addParam('search', $search)
         ->displayLabel();
 
     // COLUMNS
@@ -78,13 +79,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $table->addColumn('priority', __('Priority'));
 
     $table->addActionColumn()
+        ->addParam('search', $search)
         ->addParam('gibbonStringID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/System Admin/stringReplacement_manage_edit.php');
+                ->setURL('/modules/System Admin/stringReplacement_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/System Admin/stringReplacement_manage_delete.php');
+                ->setURL('/modules/System Admin/stringReplacement_manage_delete.php');
         });
 
     echo $table->render($strings);

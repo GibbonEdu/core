@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
     $type = isset($_GET['type'])? $_GET['type'] : '';
-    $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
+    echo $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     if (empty($gibbonPersonID) or empty($gibbonSchoolYearID)) {
@@ -76,13 +76,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(__('Course Enrolment by Person'), 'courseEnrolment_manage_byPerson.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'allUsers' => $allUsers])
                 ->add(Format::name('', $values['preferredName'], $values['surname'], 'Student'));
 
-            echo "<div class='linkTop'>";
-            if ($search != '') {
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson.php&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Back to Search Results').'</a> | ';
-            }
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers'>".__('View')."<img style='margin: 0 0 -4px 3px' title='".__('View')."' src='./themes/".$session->get('gibbonThemeName')."/img/planner.png'/></a> ";
-            echo '</div>';
-
             //INTERFACE TO ADD NEW CLASSES
             echo '<h2>';
             echo __('Add Classes');
@@ -91,7 +84,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
                 
             $form->addHiddenValue('address', $session->get('address'));
-
+            
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "allUsers" => $allUsers,
+                    "gibbonSchoolYearID" => $gibbonSchoolYearID
+                ];
+                $form->addHeaderAction('back', __('Back to Search Results'))
+                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson.php')
+                    ->addParams($params)
+                    ->setIcon('search')
+                    ->displayLabel();
+            }
+            $params = [
+                    "gibbonPersonID" => $gibbonPersonID,
+                    "allUsers" => $allUsers,
+                    "gibbonSchoolYearID" => $gibbonSchoolYearID
+                ];
+            $form->addHeaderAction('view', __('View'))
+                ->setURL('/modules/Timetable/tt_view.php')
+                ->addParams($params)
+                ->setIcon('planner')
+                ->displayLabel()
+                ->prepend((!empty($search)) ? ' | ' : '');
+            
             $classes = array();
             if ($type == 'Student') {
                 $enrolableClasses = $courseEnrolmentGateway->selectEnrolableClassesByYearGroup($gibbonSchoolYearID, $values['gibbonYearGroupID'])->fetchAll();

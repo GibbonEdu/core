@@ -59,14 +59,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->setExternalURL($policyLink);
     }
     if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
-        $form->addHeaderAction('back', (empty($policyLink) ? '' : '| ') . __('Back to Search Results'))
+        $form->addHeaderAction('back', __('Back to Search Results'))
             ->setURL('/modules/Behaviour/behaviour_manage.php')
             ->setIcon('search')
             ->displayLabel()
             ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
             ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
             ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
-            ->addParam('type', $_GET['type']);
+            ->addParam('type', $_GET['type'])
+            ->prepend((!empty($policyLink)) ? ' | ' : '');
     }
 
     //Student

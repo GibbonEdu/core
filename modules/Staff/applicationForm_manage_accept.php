@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
@@ -70,11 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                echo "<div class='linkTop'>";
-                if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+               if ($search != '') {
+                    $params = [
+                        "search" => $search
+                    ];
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParams($params));
                 }
-                echo '</div>'; 
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
                 
@@ -122,11 +124,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
+                    $params = [
+                        "search" => $search
+                    ];
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParams($params));
                 }
-                echo '</div>';
 
                 if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
                     $informApplicant = 'N';
