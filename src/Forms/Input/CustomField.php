@@ -179,11 +179,13 @@ class CustomField extends Input
      */
     public function setValue($value = '')
     {
-        global $guid;
+        global $session;
 
         switch($this->type) {
 
+            case 'Select':
             case 'select':
+            case 'YesNo':
             case 'yesno':
                 $this->customField->selected($value);
                 break;
@@ -193,19 +195,20 @@ class CustomField extends Input
                 $this->customField->checked($value);
                 break;
 
+            case 'Date':
             case 'date':
                 $this->customField->setDateFromValue($value);
                 break;
 
             case 'image':
             case 'file':
-                $this->customField->setAttachment($this->name, $_SESSION[$guid]['absoluteURL'], $value);
+                $this->customField->setAttachment($this->name, $session->get('absoluteURL'), $value);
                 break;
 
-            default:
             case 'url':
             case 'text':
             case 'varchar':
+            default:
                 $this->customField->setValue($value);
                 break;
         }
