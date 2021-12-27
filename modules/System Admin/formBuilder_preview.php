@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -38,9 +39,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     $formBuilder = $container->get(FormBuilder::class);
 
-    $form = $formBuilder->build($gibbonFormID, $page, $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_preview.php');
+    // Build the form
+    $form = $formBuilder->build($gibbonFormID, $page, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
-    $form->addHiddenValue('page', $page+1);
+    $form->addHiddenValue('page', $page);
+
+    // Load values from the form data storage
+    $formProcessor = $container->get(PreviewFormProcessor::class);
+    $values = $formProcessor->loadData('preview');
+    $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
 }

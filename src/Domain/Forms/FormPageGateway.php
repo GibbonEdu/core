@@ -53,6 +53,22 @@ class FormPageGateway extends QueryableGateway
         return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'sequenceNumber' => $page], ['gibbonFormPageID'])->fetchColumn(0);
     }
 
+    public function getNextPageByNumber($gibbonFormID, $page)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID, 'page' => $page];
+        $sql = "SELECT * FROM gibbonFormPage WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonFormPage WHERE sequenceNumber > :page AND gibbonFormID=:gibbonFormID) AND gibbonFormID=:gibbonFormID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getFinalPageNumber($gibbonFormID)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID];
+        $sql = "SELECT MAX(sequenceNumber) FROM gibbonFormPage WHERE gibbonFormID=:gibbonFormID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getNextSequenceNumberByForm($gibbonFormID)
     {
         $select = $this

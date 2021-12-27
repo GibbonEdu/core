@@ -60,6 +60,7 @@ class FormBuilder implements ContainerAwareInterface
         
         $gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($gibbonFormID, $pageNumber);
         $pages = $this->formPageGateway->queryPagesByForm($criteria, $gibbonFormID)->toArray();
+        $finalPage = end($pages);
 
         if (count($pages) > 1) {
             $this->form->setCurrentPage($pageNumber);
@@ -78,10 +79,10 @@ class FormBuilder implements ContainerAwareInterface
             $row = $fieldGroup->addFieldToForm($this->form, $field);
         }
 
-        if ($pageNumber <= count($pages)) {
+        if ($pageNumber <= $finalPage['sequenceNumber']) {
             $row = $this->form->addRow();
                 $row->addFooter();
-                $row->addSubmit($pageNumber == count($pages) ? __('Submit') : __('Next'));
+                $row->addSubmit($pageNumber == $finalPage['sequenceNumber'] ? __('Submit') : __('Next'));
         }
 
         return $this->form;
