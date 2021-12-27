@@ -30,6 +30,7 @@ class StudentFields extends AbstractFieldGroup
         $this->fields = [
             'heading1' => [
                 'label' => __('Student Personal Data'),
+                'type' => 'optgroup',
             ],
             'surname' => [
                 'label' => __('Surname'),
@@ -65,6 +66,7 @@ class StudentFields extends AbstractFieldGroup
             ],
             'heading2' => [
                 'label' => __('Student Background'),
+                'type' => 'optgroup',
             ],
             'languageHomePrimary' => [
                 'label' => __('Home Language - Primary'),

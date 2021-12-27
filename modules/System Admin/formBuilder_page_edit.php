@@ -152,10 +152,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $fieldGroups = [
         __('General') => [
-            'LayoutFields' => __('Headings'),
             'GenericFields' => __('Generic Fields'),
             'CustomFields' => __('Custom Fields'),
+            'PersonalDocuments' => __('Personal Documents'),
         ], 
+        __('Layout') => [
+            'LayoutHeadings' => __('Heading'),
+            'LayoutText' => __('Text'),
+        ],
         __('Application Form') => [
             'AdmissionsFields' => __('Admissions'),
             'StudentFields' => __('Student'),

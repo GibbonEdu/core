@@ -65,13 +65,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $col->addContent('<p>'.$description.'</p>');
     }
 
-    if ($fieldGroup == 'LayoutFields') {
+    if ($fieldGroup == 'LayoutHeadings') {
         $col->addLabel('labelLabel', __('Heading Name'))->setClass('text-xs');
         $col->addTextField('label')->maxLength(90)->required();
 
         $col->addLabel('typeLabel', __('Type'))->setClass('text-xs');
-        $col->addSelect('fields[0]')->fromArray(['heading' => __('Heading'), 'subheading' => __('Subheading')]);
+        $col->addSelect('fields[0]')->fromArray($fieldGroupClass->getFieldOptions());
 
+    } elseif ($fieldGroup == 'LayoutText') {
+        $col->addLabel('labelDescription', __('Text'))->setClass('text-xs');
+        $col->addTextArea('description')->setRows(4)->maxLength(255)->required();
+
+        $form->addHiddenValue('fields[0]', 'text');
+
+    } elseif ($fieldGroup == 'PersonalDocuments') {
+
+        $col->addLabel('labelLabel', __('Label'))->setClass('text-xs');
+        $col->addTextField('label')->maxLength(90)->required()->setValue(__('Personal Documents'));
+
+        $col->addLabel('typeLabel', __('Role Category'))->setClass('text-xs');
+        $col->addSelect('fields[0]')->fromArray($fieldGroupClass->getFieldOptions());
+    
     } elseif ($fieldGroup == 'GenericFields') {
         $form->addHiddenValue('fields[0]', 'generic');
 
@@ -134,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }, ['0' => __('Start of form'), '-1' => __('End of form')]);
 
     $col->addLabel('sequenceNumberLabel', __('Where').':')->setClass('text-xs');
-    $col->addSelect('sequenceNumber')->fromArray($fieldOrder);
+    $col->addSelect('sequenceNumber')->fromArray($fieldOrder)->selected(-1);
 
     $col->addSubmit(__('Add'))->addClass('mt-4');
 

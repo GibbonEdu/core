@@ -23,39 +23,28 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 
-class LayoutFields extends AbstractFieldGroup
+class LayoutText extends AbstractFieldGroup
 {
     public function __construct()
     {
         $this->fields = [
-            'heading' => [
-                'label' => __('Heading'),
-                'type'  => 'heading',
-            ],
-            'subheading' => [
-                'label' => __('Subheading'),
-                'type'  => 'subheading',
+            'text' => [
+                'label' => '',
+                'type'  => 'layout',
             ],
         ];
     }
 
     public function getDescription() : string
     {
-        return __('Headings enable you to break your form up into sections as well as add additional instructions.');
+        return __('Add blocks of text to your form, such as additional information or instructions for users to follow.');
     }
 
     public function addFieldToForm(Form $form, array $field): Row
     {
         $row = $form->addRow();
         
-        switch ($field['fieldType']) {
-            case 'heading':
-                $row->addHeading(__($field['label']))->append(__($field['description']));
-                break;
-            case 'subheading':
-                $row->addSubheading(__($field['label']))->append(__($field['description']));
-                break;
-        }
+        $row->addContent(__($field['description']));
         
         return $row;
     }
