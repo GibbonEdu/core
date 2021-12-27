@@ -48,6 +48,20 @@ class FormFieldGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectFieldsByForm($gibbonFormID)
+    {
+        $select = $this
+            ->newSelect()
+            ->cols(['gibbonFormField.fieldName as groupBy', 'gibbonFormField.*'])
+            ->from('gibbonFormField')
+            ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
+            ->where('gibbonFormPage.gibbonFormID=:gibbonFormID')
+            ->bindValue('gibbonFormID', $gibbonFormID)
+            ->orderBy(['gibbonFormPage.sequenceNumber', 'gibbonFormField.sequenceNumber']);
+
+        return $this->runSelect($select);
+    }
+
     public function selectFieldOrderByPage($gibbonFormPageID)
     {
         $select = $this

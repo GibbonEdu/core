@@ -21,5 +21,29 @@ namespace Gibbon\Forms\Builder;
 
 abstract class AbstractFormProcess 
 {
-    
+    protected $requiredFields = [];
+    protected $errors = [];
+
+    public function configure()
+    {
+
+    }
+
+    public function getRequiredFields()
+    {
+        return $this->requiredFields;
+    }
+
+    public function validate(array $fields) : array
+    {
+        foreach ($this->requiredFields as $fieldName) {
+            if (empty($fields[$fieldName])) {
+                $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $fieldName]);
+            }
+        }
+
+        return $this->errors;
+    }
+
+    abstract public function process(array $fields, array $data) : array;
 }

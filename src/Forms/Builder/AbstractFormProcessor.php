@@ -20,24 +20,103 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Forms\Builder\Storage\FormStorageInterface;
+use Gibbon\Forms\Builder\AbstractFormProcess;
+use League\Container\ContainerAwareInterface;
+use League\Container\ContainerAwareTrait;
+use RuntimeException;
+use Gibbon\Domain\Forms\FormFieldGateway;
 
-class AbstractFormProcessor 
+abstract class AbstractFormProcessor implements ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
+    /**
+     * @var FormStorageInterface
+     */
     protected $storage;
+
+    /**
+     * @var FormFieldGateway
+     */
+    protected $fieldGateway;
+
+    /**
+     * @var AbstractFormProcess
+     */
     protected $processes = [];
 
-    public function __construct(FormStorageInterface $storage)
+    protected $fields = [];
+    protected $data = [];
+
+    public function __construct(FormStorageInterface $storage, FormFieldGateway $fieldGateway)
     {
         $this->storage = $storage;
+        $this->fieldGateway = $fieldGateway;
     }
 
-    public function saveData(string $identifier, array $data)
+    public function submitProcess()
     {
-        $this->storage->saveData($identifier, $data);
+        $this->boot();
     }
 
-    public function loadData(string $identifier)
+    public function editProcess()
     {
-        return $this->storage->loadData($identifier);
+        $this->boot();
+    }
+
+    public function acceptProcess()
+    {
+        $this->boot();
+    }
+
+    public function setForm(string $gibbonFormID, string $identifier)
+    {
+        $this->gibbonFormID = $gibbonFormID;
+        $this->identifier = $identifier;
+    }
+
+    public function boot()
+    {
+        $this->fields = $this->fieldGateway->selectFieldsByForm($this->gibbonFormID)->fetchGroupedUnique();
+        $this->data = $this->loadData();
+    }
+
+    public function run(string $processClass)
+    {
+        $process = $this->getContainer()->get($processClass);
+
+        if (!$process instanceof AbstractFormProcess) {
+            throw new RuntimeException(__('Invalid process class: {className}', ['className' => $processClass]));
+        }
+
+        $this->data += $process->process($this->fields, $this->data);
+    }
+
+    public function validate()
+    {
+        $this->boot();
+        $errors = [];
+
+        foreach ($this->processes as $processClass) {
+            $process = $this->getContainer()->get($processClass);
+
+            if (!$process instanceof AbstractFormProcess) {
+                $errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
+            }
+
+            $errors += $process->validate($this->fields);
+        }
+
+        return $errors;
+    }
+
+    public function saveData(array $data)
+    {
+        $this->storage->saveData($this->identifier, $data);
+    }
+
+    public function loadData()
+    {
+        return $this->storage->loadData($this->identifier);
     }
 }

@@ -76,6 +76,14 @@ class StudentFields extends AbstractFieldGroup
             'languageHomeSecondary' => [
                 'label' => __('Home Language - Secondary'),
             ],
+            'heading3' => [
+                'label' => __('Student Contact'),
+                'type' => 'optgroup',
+            ],
+            'email' => [
+                'label' => __('Email'),
+                'required' => 'N',
+            ],
             // 'thing' => [
             //     'label' => __('Label'),
             //     'description' => __('Description'),
@@ -139,6 +147,12 @@ class StudentFields extends AbstractFieldGroup
             case 'languageHomeSecondary':
                 $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
                 $row->addSelectLanguage('languageHomeSecondary')->required($required)->placeholder();
+                break;
+
+            // STUDENT CONTACT
+            case 'email':
+                $row->addLabel('email', __('Email'));
+                $email = $row->addEmail('email');
                 break;
         }
 

@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
+use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -30,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         ->add(__('Preview'));
 
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
-    $page = $_REQUEST['page'] ?? 1;
+    $pageNumber = $_REQUEST['page'] ?? 1;
 
     if (empty($gibbonFormID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -40,14 +42,38 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $formBuilder = $container->get(FormBuilder::class);
 
     // Build the form
-    $form = $formBuilder->build($gibbonFormID, $page, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
+    $form = $formBuilder->build($gibbonFormID, $pageNumber, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
-    $form->addHiddenValue('page', $page);
+    $form->addHiddenValue('page', $pageNumber);
+
+    
+    // Setup the form processor
+    $formProcessor = $container->get(PreviewFormProcessor::class);
+    $formProcessor->setForm($gibbonFormID, 'preview');
 
     // Load values from the form data storage
-    $formProcessor = $container->get(PreviewFormProcessor::class);
-    $values = $formProcessor->loadData('preview');
+    $values = $formProcessor->loadData();
     $form->loadAllValuesFrom($values);
+
+    if ($values) {
+        $formProcessor->saveData(['maxPage' => max($pageNumber, $values['page'] ?? 1)]);
+    }
+
+    echo '<pre>';
+    print_r($values);
+    echo '</pre>';
+
+    // Validate the form
+    $errors = $formProcessor->validate();
+
+    foreach ($errors as $errorMessage) {
+        echo Format::alert($errorMessage);
+    }
+
+    // echo '<pre>';
+    // print_r($fields);
+    // echo '</pre>';
+
 
     echo $form->getOutput();
 }
