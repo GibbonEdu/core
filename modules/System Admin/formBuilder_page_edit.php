@@ -98,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $formFields->setTitle($values['name']);
     $formFields->setFactory(DatabaseFormFactory::create($pdo));
 
+    $formFields->setMaxPage($formPageGateway->getFinalPageNumber($gibbonFormID));
     $formFields->addData('drag-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_editOrderAjax.php');
     $formFields->addData('drag-data', ['gibbonFormPageID' => $gibbonFormPageID]);
 

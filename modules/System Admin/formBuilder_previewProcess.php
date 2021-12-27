@@ -50,7 +50,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     if ($page >= $finalPageNumber) {
         $formProcessor->submitProcess();
-
         $session->set('formpreview', []);
 
         $URL = $URL->withQueryParam('return', 'success0');

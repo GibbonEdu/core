@@ -15,9 +15,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% if page.url and page.number <= form.getMaxPage and page.number != form.getCurrentPage %}
                     <a href="{{ page.url }}" class="-mt-10 pt-10 text-gray-800 hover:text-purple-600 hover:underline">
                 {% endif %}
-
                 {{- page.name -}}
-
                 {% if page.url and page.number <= form.getMaxPage and page.number != form.getCurrentPage %}
                     </a>
                 {% endif %}

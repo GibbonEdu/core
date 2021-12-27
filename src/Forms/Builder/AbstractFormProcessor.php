@@ -19,12 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
-use Gibbon\Forms\Builder\Storage\FormStorageInterface;
+use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
+use Gibbon\Forms\Builder\Storage\FormStorageInterface;
+use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
-use RuntimeException;
-use Gibbon\Domain\Forms\FormFieldGateway;
+use League\Container\Exception\NotFoundException;
 
 abstract class AbstractFormProcessor implements ContainerAwareInterface
 {
@@ -47,6 +48,7 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
 
     protected $fields = [];
     protected $data = [];
+    protected $errors = [];
 
     public function __construct(FormStorageInterface $storage, FormFieldGateway $fieldGateway)
     {
@@ -83,31 +85,34 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
 
     public function run(string $processClass)
     {
-        $process = $this->getContainer()->get($processClass);
+        try {
+            $process = $this->getContainer()->get($processClass);
+            $this->data += $process->process($this->fields, $this->data);
 
-        if (!$process instanceof AbstractFormProcess) {
-            throw new RuntimeException(__('Invalid process class: {className}', ['className' => $processClass]));
+        } catch (NotFoundException $e) {
+            $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
+        } catch (MissingFieldException $e) {
+            $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $e->getMessage()]);
         }
-
-        $this->data += $process->process($this->fields, $this->data);
     }
 
     public function validate()
     {
         $this->boot();
-        $errors = [];
 
         foreach ($this->processes as $processClass) {
-            $process = $this->getContainer()->get($processClass);
+            try {
+                $process = $this->getContainer()->get($processClass);
+                $process->validate($this->fields);
 
-            if (!$process instanceof AbstractFormProcess) {
-                $errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
+            } catch (NotFoundException $e) {
+                $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
+            } catch (MissingFieldException $e) {
+                $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $e->getMessage()]);
             }
-
-            $errors += $process->validate($this->fields);
         }
 
-        return $errors;
+        return $this->errors;
     }
 
     public function saveData(array $data)

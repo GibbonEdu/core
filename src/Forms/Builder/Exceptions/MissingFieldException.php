@@ -17,32 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder;
+namespace Gibbon\Forms\Builder\Exception;
 
-use Gibbon\Forms\Builder\Exception\MissingFieldException;
+use Exception;
 
-abstract class AbstractFormProcess 
-{
-    protected $requiredFields = [];
-
-    public function configure()
-    {
-
-    }
-
-    public function getRequiredFields()
-    {
-        return $this->requiredFields;
-    }
-
-    public function validate(array $fields)
-    {
-        foreach ($this->requiredFields as $fieldName) {
-            if (empty($fields[$fieldName])) {
-                throw new MissingFieldException($fieldName);
-            }
-        }
-    }
-
-    abstract public function process(array $fields, array $data) : array;
-}
+class MissingFieldException extends Exception {}
