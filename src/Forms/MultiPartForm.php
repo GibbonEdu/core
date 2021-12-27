@@ -32,6 +32,7 @@ class MultiPartForm extends Form
 {
     protected $pages = [];
     protected $currentPage = 0;
+    protected $maxPage = 0;
 
     /**
      * Create a form with the default factory and renderer.
@@ -92,5 +93,17 @@ class MultiPartForm extends Form
     public function getCurrentPage()
     {
         return $this->currentPage;
+    }
+
+    public function setMaxPage(int $pageNumber)
+    {
+        $this->maxPage = $pageNumber;
+
+        return $this;
+    }
+
+    public function getMaxPage()
+    {
+        return $this->maxPage;
     }
 }

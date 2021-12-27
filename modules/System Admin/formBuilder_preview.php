@@ -39,29 +39,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         return;
     }
 
-    $formBuilder = $container->get(FormBuilder::class);
-
-    // Build the form
-    $form = $formBuilder->build($gibbonFormID, $pageNumber, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
-    $form->addHiddenValue('gibbonFormID', $gibbonFormID);
-    $form->addHiddenValue('page', $pageNumber);
-
-    
     // Setup the form processor
     $formProcessor = $container->get(PreviewFormProcessor::class);
     $formProcessor->setForm($gibbonFormID, 'preview');
 
-    // Load values from the form data storage
     $values = $formProcessor->loadData();
+    $maxPage = max($pageNumber, $values['maxPage'] ?? $values['page'] ?? 1);
+    
+
+    // Build the form
+    $formBuilder = $container->get(FormBuilder::class);
+    $form = $formBuilder->build($gibbonFormID, $pageNumber, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
+    $form->addHiddenValue('gibbonFormID', $gibbonFormID);
+    $form->addHiddenValue('page', $pageNumber);
+    $form->setMaxPage($maxPage);
+    
+    // Load values from the form data storage
     $form->loadAllValuesFrom($values);
 
     if ($values) {
-        $formProcessor->saveData(['maxPage' => max($pageNumber, $values['page'] ?? 1)]);
+        $formProcessor->saveData(['maxPage' => $maxPage]);
     }
-
-    echo '<pre>';
-    print_r($values);
-    echo '</pre>';
 
     // Validate the form
     $errors = $formProcessor->validate();
@@ -69,11 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     foreach ($errors as $errorMessage) {
         echo Format::alert($errorMessage);
     }
-
-    // echo '<pre>';
-    // print_r($fields);
-    // echo '</pre>';
-
 
     echo $form->getOutput();
 }
