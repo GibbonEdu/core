@@ -47,24 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('The specified record does not exist.');
         echo '</div>';
     } else {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-			echo ' | ';
-			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-			} else {
-				echo __('Next Year').' ';
-			}
-        echo '</div>';
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         $allUsers = isset($_GET['allUsers'])? $_GET['allUsers'] : '';
         $search = isset($_GET['search'])? $_GET['search'] : '';

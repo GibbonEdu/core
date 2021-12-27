@@ -53,30 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     }
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-        echo '</div>';
-
-        
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";

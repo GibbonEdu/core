@@ -57,25 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
     }
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/tt.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-			echo ' | ';
-			if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/tt.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-			} else {
-				echo __('Next Year').' ';
-			}
-        echo '</div>';
-
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         $timetableGateway = $container->get(TimetableGateway::class);
         $timetables = $timetableGateway->selectTimetablesBySchoolYear($gibbonSchoolYearID);

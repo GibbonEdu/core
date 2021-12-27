@@ -70,33 +70,14 @@ if ($makeUnitsPublic != 'Y') {
         }
     }
 
-    echo '<h2>';
-    echo $gibbonSchoolYearName;
-    echo '</h2>';
-
-    echo "<div class='linkTop'>";
-        //Print year picker
-        if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/units_public.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-        } else {
-            echo __('Previous Year').' ';
-        }
-		echo ' | ';
-		if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-			echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/units_public.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-		} else {
-			echo __('Next Year').' ';
-		}
-    echo '</div>';
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     //Fetch units
     
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, gibbonCourse.name AS course FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND sharedPublic='Y' ORDER BY course, name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-    echo "<div class='linkTop'></div>";
+    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+    $sql = "SELECT gibbonUnitID, gibbonUnit.gibbonCourseID, nameShort, gibbonUnit.name, gibbonUnit.description, gibbonCourse.name AS course FROM gibbonUnit JOIN gibbonCourse ON gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND sharedPublic='Y' ORDER BY course, name";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";

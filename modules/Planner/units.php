@@ -119,24 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
 
-    echo '<h2>';
-    echo $gibbonSchoolYearName;
-    echo '</h2>';
-
-    echo "<div class='linkTop'>";
-        //Print year picker
-        if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
-        } else {
-            echo __('Previous Year').' ';
-        }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-					echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-    echo '</div>';
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     if (empty($gibbonCourseID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));
