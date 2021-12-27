@@ -31,14 +31,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$_GET['editID'];
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$_GET['editID'];
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('formsManage', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_addProcess.php');
+    $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Basic Information'));
 

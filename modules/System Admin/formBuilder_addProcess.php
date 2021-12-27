@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $search = $_GET['search'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_add.php&search='.$search;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_add.php&search='.$search;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_add.php') == false) {
     $URL .= '&return=error0';

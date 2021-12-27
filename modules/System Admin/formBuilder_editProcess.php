@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID.'&sidebar=false';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID.'&sidebar=false';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     $URL .= '&return=error0';

@@ -50,10 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         return;
     }
 
-    $form = Form::create('formsManage', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_editProcess.php');
+    $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
     $form->addRow()->addHeading(__('Basic Details'));
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         ->addParam('gibbonFormID', $gibbonFormID)
         ->displayLabel();
 
-    $draggableAJAX = $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_editOrderAjax.php';
+    $draggableAJAX = $session->get('absoluteURL').'/modules/System Admin/formBuilder_editOrderAjax.php';
     $table->addDraggableColumn('gibbonFormPageID', $draggableAJAX, [
         'gibbonFormID' => $gibbonFormID,
     ]);
@@ -133,12 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // FUNCTIONALITY
 
-    $form = Form::create('formsFunctionality', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
+    $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
     // $form->setClass('blank mt-8');
     $form->setTitle(__('Functionality'));
     $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
     // $subform = Form::create('subform', '')->addClass('mt-4');

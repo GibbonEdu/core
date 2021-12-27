@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
-    $form = Form::create('formsManage', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_editProcess.php');
+    $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_editProcess.php');
     
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);
 
     // $form->addRow()->addHeading(__('Basic Information'));

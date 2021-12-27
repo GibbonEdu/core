@@ -28,7 +28,7 @@ $urlParams = [
     'fieldGroup'       => $_POST['fieldGroup'] ?? '',
 ];
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_edit.php&sidebar=false&'.http_build_query($urlParams);
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_edit.php&sidebar=false&'.http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
     $URL .= '&return=error0';

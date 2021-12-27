@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     $formFieldGateway = $container->get(FormFieldGateway::class);
 
-    $form = Form::create('formFieldAdd', $gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_addProcess.php');
+    $form = Form::create('formFieldAdd', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', '/modules/System Admin/formBuilder_page_edit.php');

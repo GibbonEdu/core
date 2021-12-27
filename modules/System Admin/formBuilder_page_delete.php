@@ -40,6 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_page_deleteProcess.php?gibbonFormID='.$gibbonFormID.'&gibbonFormPageID='.$gibbonFormPageID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_page_deleteProcess.php?gibbonFormID='.$gibbonFormID.'&gibbonFormPageID='.$gibbonFormPageID, true);
     echo $form->getOutput();
 }

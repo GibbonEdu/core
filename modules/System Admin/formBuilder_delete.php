@@ -39,6 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_deleteProcess.php?gibbonFormID='.$gibbonFormID, true);
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_deleteProcess.php?gibbonFormID='.$gibbonFormID, true);
     echo $form->getOutput();
 }

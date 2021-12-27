@@ -44,6 +44,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
-    $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_deleteProcess.php?'.http_build_query($urlParams));
+    $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_deleteProcess.php?'.http_build_query($urlParams));
     echo $form->getOutput();
 }
