@@ -1275,13 +1275,13 @@ table.smallIntBorder td.noPadding {
     content: counter(step);
     counter-increment: step;
     width: 30px;
-    line-height: 30px;
+    line-height: 32px;
     display: block;
     font-size: 16px;
     color: #333;
     background-color: #f4f4f4;
     border-radius: 3px;
-    margin: 0 auto 5px auto;
+    margin: 1px auto 5px auto;
     z-index: 0;
 }
 

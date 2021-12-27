@@ -9,7 +9,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
 
     {% if form.hasPages %}
-        <ul class="multiPartForm mb-6">
+        <ul class="multiPartForm my-6">
             {% for page in form.getPages %}
             <li class="step {{ page.number <= form.getCurrentPage ? 'active' : '' }}">
                 {% if page.url %}<a href="{{ page.url }}" class="text-gray-800 hover:text-purple-600 hover:underline">{% endif %}
