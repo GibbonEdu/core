@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
-use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Services\Format;
+use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Forms\Builder\FormData;
+use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
+use Gibbon\Domain\Forms\FormPageGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -39,33 +40,40 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         return;
     }
 
-    // Setup the form processor
-    $formProcessor = $container->get(PreviewFormProcessor::class);
-    $formProcessor->setForm($gibbonFormID, 'preview');
+    // Setup the form data
+    $formData = $container->get(FormData::class);
+    $formData->populate($gibbonFormID, 'preview');
 
-    $values = $formProcessor->loadData();
-    $maxPage = max($pageNumber, $values['maxPage'] ?? $values['page'] ?? 1);
-    
+    // Validate the form
+    $formProcessor = $container->get(PreviewFormProcessor::class);
+    $errors = $formProcessor->validate($formData);
+
+    foreach ($errors as $errorMessage) {
+        echo Format::alert($errorMessage);
+    }
 
     // Build the form
     $formBuilder = $container->get(FormBuilder::class);
     $form = $formBuilder->build($gibbonFormID, $pageNumber, $session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
+    
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('page', $pageNumber);
-    $form->setMaxPage($maxPage);
+    $form->setMaxPage($formData->get('maxPage') ?? $pageNumber);
     
     // Load values from the form data storage
+    $values = $formData->getData();
     $form->loadAllValuesFrom($values);
 
-    if ($values) {
-        $formProcessor->saveData(['maxPage' => $maxPage]);
-    }
+    // Display results?
 
-    // Validate the form
-    $errors = $formProcessor->validate();
+    $finalPageNumber = $container->get(FormPageGateway::class)->getFinalPageNumber($gibbonFormID);
+    if ($pageNumber > $finalPageNumber) {
+        $views = $formProcessor->getViews();
+        foreach ($views as $viewClass) {
+            $view = $container->get($viewClass);
 
-    foreach ($errors as $errorMessage) {
-        echo Format::alert($errorMessage);
+            $view->display($form, $formData);
+        }
     }
 
     echo $form->getOutput();

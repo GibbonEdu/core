@@ -24,6 +24,8 @@ use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
+use Gibbon\Forms\Builder\FormData;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -133,42 +135,63 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // FUNCTIONALITY
 
-    $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
-    // $form->setClass('blank mt-8');
-    $form->setTitle(__('Functionality'));
-    $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
+    // Setup the form data
+    $formData = $container->get(FormData::class);
+    $formData->populate($gibbonFormID, '');
+
+    // Validate the form processes
+    $formProcessor = $container->get(PreviewFormProcessor::class);
+
+    $errors = $formProcessor->validate($formData);
+    $processes = $formProcessor->getProcesses();
+
+    $activeProcesses = array_filter($processes, function ($process) {
+        return ($process['valid'] ?? false) == true;
+    });
+    $inactiveProcesses = array_diff_key($processes, $activeProcesses);
     
-    $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
-    // $subform = Form::create('subform', '')->addClass('mt-4');
+    if (!empty($activeProcesses)) {
+        $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
 
-    $form->addRow()->addHeading(__('Application Form'));
+        $form->setTitle(__('Active Features'));
+        $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
+        
+        $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
-    $row = $form->addRow();
-        $row->addLabel('name1', __('Create New User'))->description(__('Must be unique'));
-        $row->addYesNo('name1');
+        foreach ($activeProcesses as $processDetails) {
+            $view = $container->get($processDetails['view']);
 
-    $row = $form->addRow();
-        $row->addLabel('name2', __('Create New Family'))->description(__('Must be unique'));
-        $row->addYesNo('name2');
+            $view->configure($form);
+        }
 
-    $form->addRow()->addSubheading(__('Application Form'));
+        $row = $form->addRow()->addClass('mt-4');
+            $row->addSubmit();
 
-    $row = $form->addRow()->addClass('bg-gray-300');
-        $row->addLabel('name3', __('Name'))->description(__('Must be unique'));
-        $row->addContent(Format::small(__('Requires fields: Username, Surname, First Name')));
-
-    $row = $form->addRow();
-        $row->addLabel('name4', __('Name'))->description(__('Must be unique'));
-        $row->addYesNo('name4');
-
-    // $form->addRow()->addContent($subform->getOutput());
+        echo $form->getOutput();
+    }
 
 
+    if (!empty($inactiveProcesses)) {
+        $form = Form::create('formsInactiveFunctionality', '');
 
-    $row = $form->addRow()->addClass('mt-4');
-        $row->addSubmit();
+        $form->setTitle(__('Inactive Features'));
+        $form->setDescription(__('The following functionality is inactive because it depends on one or more fields that are not present in your form. You can add the required fields to your form to enable this functionality.'));
 
-    echo $form->getOutput();
+        foreach ($inactiveProcesses as $processName => $processDetails) {
+            $process = $container->get($processDetails['process'] ?? '');
+            $view = $container->get($processDetails['view']);
+
+            $missingRequiredFields = array_filter($process->getRequiredFields(), function ($fieldName) use ($formData) {
+                return !$formData->hasField($fieldName);
+            });
+
+            $row = $form->addRow()->addClass('bg-gray-300');
+                $row->addLabel($processName, $view->getName())->description($view->getDescription());
+                $row->addContent(__('Missing required fields: '). implode(', ', $missingRequiredFields));
+        }
+
+        echo $form->getOutput();
+    }
 }

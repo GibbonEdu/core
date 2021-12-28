@@ -71,18 +71,21 @@ class FormBuilder implements ContainerAwareInterface
             }
         }
 
-        $fields = $this->formFieldGateway->queryFieldsByPage($criteria, $gibbonFormPageID);
-
-        foreach ($fields as $field) {
-            $fieldGroup = $this->getFieldGroupClass($field['fieldGroup']);
-
-            $row = $fieldGroup->addFieldToForm($this->form, $field);
-        }
-
+        // If form is not complete, add fields to current page
         if ($pageNumber <= $finalPage['sequenceNumber']) {
+            $fields = $this->formFieldGateway->queryFieldsByPage($criteria, $gibbonFormPageID);
+
+            foreach ($fields as $field) {
+                $fieldGroup = $this->getFieldGroupClass($field['fieldGroup']);
+                $row = $fieldGroup->addFieldToForm($this->form, $field);
+            }
+
             $row = $this->form->addRow();
                 $row->addFooter();
                 $row->addSubmit($pageNumber == $finalPage['sequenceNumber'] ? __('Submit') : __('Next'));
+        } else {
+            // Form is complete, display any results?
+            
         }
 
         return $this->form;

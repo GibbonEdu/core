@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Domain\Forms\FormPageGateway;
-use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Forms\Builder\FormData;
 use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
 
 require_once '../../gibbon.php';
@@ -30,31 +30,46 @@ $page = $_REQUEST['page'] ?? 1;
 $URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $page]);
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
     // Proceed!
-    $formPageGateway = $container->get(FormPageGateway::class);
+    
+    // Setup the form data
+    $formData = $container->get(FormData::class);
+    $formData->populate($gibbonFormID, 'preview');
 
-    // Setup the form processor
-    $formProcessor = $container->get(PreviewFormProcessor::class);
-    $formProcessor->setForm($gibbonFormID, 'preview');
+    // Get any submitted values, the lazy way
+    $data = $_POST + $_FILES;
 
-    // Save any submitted values, the lazy way
-    $formProcessor->saveData($_POST + $_FILES);
+    $formData->save($data);
+
+    $validated = $formData->validate($data);
+
+    if (!$validated) {
+        header("Location: {$URL->withReturn('error1')}");
+        exit;
+    }
 
     // Determine how to handle the next page
+    $formPageGateway = $container->get(FormPageGateway::class);
     $finalPageNumber = $formPageGateway->getFinalPageNumber($gibbonFormID);
     $nextPage = $formPageGateway->getNextPageByNumber($gibbonFormID, $page);
+    $maxPage = max($nextPage['sequenceNumber'] ?? $page, $formData->get('maxPage') ?? 1);
 
     if ($page >= $finalPageNumber) {
-        $formProcessor->submitProcess();
+        // Run the form processor on this data
+        $formProcessor = $container->get(PreviewFormProcessor::class);
+        $formProcessor->submitForm($formData);
+
         $session->set('formpreview', []);
 
-        $URL = $URL->withQueryParam('return', 'success0');
-        $URL = $URL->withQueryParam('page', $page+1);
+        $URL = $URL
+            ->withQueryParam('return', 'success0')
+            ->withQueryParam('page', $page+1);
+
     } elseif ($nextPage) {
+        $formData->save(['maxPage' => $maxPage]);
         $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
     }
 
