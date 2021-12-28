@@ -59,6 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/System Admin/formBuilder_edit.php');
 
+            $actions->addAction('design', __('Design'))
+                ->setIcon('markbook')
+                ->setClass('mx-1')
+                ->addParam('sidebar', 'false')
+                ->setURL('/modules/System Admin/formBuilder_page_design.php');
+
             $actions->addAction('copy', __('Duplicate'))
                 ->setIcon('copy')
                 ->setURL('/modules/System Admin/formBuilder_duplicate.php');

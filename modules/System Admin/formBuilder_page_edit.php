@@ -74,8 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addTextField('formName')->readonly()->required()->setValue($formValues['name']);
 
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+        $row->addLabel('name', __('Page Name'))->description(__('Must be unique'));
         $row->addTextField('name')->maxLength(90)->required();
+
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('introduction', __('Introduction'))->description(__('Information to display before the form'));
+        $col->addEditor('introduction', $guid)->setRows(8);
+
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('postscript', __('Postscript'))->description(__('Information to display at the end of the form'));
+        $col->addEditor('postscript', $guid)->setRows(8);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -84,109 +92,4 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();
-
-    // QUERY
-    $criteria = $formGateway->newQueryCriteria()
-        ->sortBy('sequenceNumber', 'ASC')
-        ->fromPOST();
-
-    $fields = $formFieldGateway->queryFieldsByPage($criteria, $gibbonFormPageID);
-    $formBuilder = $container->get(FormBuilder::class);
-    
-    // FORM FIELDS
-    $formFields = MultiPartForm::create('formFields', '');
-    $formFields->setTitle($values['name']);
-    $formFields->setFactory(DatabaseFormFactory::create($pdo));
-
-    $formFields->setMaxPage($formPageGateway->getFinalPageNumber($gibbonFormID));
-    $formFields->addData('drag-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_editOrderAjax.php');
-    $formFields->addData('drag-data', ['gibbonFormPageID' => $gibbonFormPageID]);
-
-    $formPages = $formPageGateway->queryPagesByForm($criteria, $gibbonFormID)->toArray();
-
-    if (count($formPages) > 1) {
-        $formFields->setCurrentPage($values['sequenceNumber']);
-
-        foreach ($formPages as $formPage) {
-            $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_page_edit.php')->withQueryParams(['gibbonFormPageID' => $formPage['gibbonFormPageID'], 'sidebar' => 'false'] + $urlParams);
-            $formFields->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
-        }
-    }
-    
-    foreach ($fields as $field) {
-        $fieldGroupClass = $formBuilder->getFieldGroupClass($field['fieldGroup']);
-
-        if (empty($fieldGroupClass)) {
-            $formFields->addRow()->addContent(Format::alert(__('The specified record cannot be found.')));
-            continue;
-        }
-
-        $row = $fieldGroupClass->addFieldToForm($formFields, $field);
-
-        $row->addClass('draggableRow')
-            ->addData('drag-id', $field['gibbonFormFieldID']);
-
-        $element = $row->getElement($field['fieldName']);
-        if (!empty($element)) {
-            $element->addClass('flex-1')->setTitle($field['fieldName']);
-        }
-
-        $row->addContent((new Action('edit', __('Edit')))
-            ->setURL('/modules/System Admin/formBuilder_page_edit_field_edit.php')
-            ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
-            ->addParams($urlParams)
-            ->modalWindow(900, 500)
-            ->getOutput().
-            (new Action('delete', __('Delete')))
-            ->setURL('/modules/System Admin/formBuilder_page_edit_field_delete.php')
-            ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
-            ->addParams($urlParams)
-            ->getOutput()
-        );
-    }
-
-
-    // FIELD GROUPS
-    $formFieldGroups = Form::create('formFieldGroups', '');
-    $formFieldGroups->addData('reload-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_edit_field_add.php');
-    $formFieldGroups->addData('reload-data', $urlParams);
-
-    $fieldGroups = [
-        __('General') => [
-            'GenericFields' => __('Generic Fields'),
-            'CustomFields' => __('Custom Fields'),
-            'PersonalDocuments' => __('Personal Documents'),
-        ], 
-        __('Layout') => [
-            'LayoutHeadings' => __('Heading'),
-            'LayoutText' => __('Text'),
-        ],
-        __('Application Form') => [
-            'AdmissionsFields' => __('Admissions'),
-            'StudentFields' => __('Student'),
-            'ParentFields' => __('Parent'),
-            'FamilyFields' => __('Family'),
-            'MedicalFields' => __('Medical'),
-            'DocumentsFields' => __('Documents'),
-            'FinanceFields' => __('Finance'),
-            'LanguageFields' => __('Language'),
-            'PrivacyFields' => __('Privacy'),
-            'AgreementFields' => __('Agreement'),
-        ], 
-    ];
-    
-    $row = $formFieldGroups->addRow();
-    $row->addSelect('fieldGroup')->fromArray($fieldGroups)
-        ->addClass('auto-update')
-        ->selected($fieldGroup)
-        ->placeholder(); 
-
-
-    // TEMPLATE
-    echo $page->fetchFromTemplate('components/formBuilder.twig.html', [
-        'gibbonFormID' => $gibbonFormID,
-        'form'         => $values,
-        'fields'       => $formFields,
-        'fieldGroups'  => $formFieldGroups,
-    ]);
 }
