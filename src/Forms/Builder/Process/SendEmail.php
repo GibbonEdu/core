@@ -26,7 +26,7 @@ use Gibbon\Forms\Builder\FormData;
 
 class SendEmail extends AbstractFormProcess
 {
-    protected $requiredFields = ['email', 'firstName'];
+    protected $requiredFields = ['email'];
 
     protected $session;
     protected $mail;
