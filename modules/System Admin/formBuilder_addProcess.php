@@ -35,8 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
 
     $data = [
         'name'                  => $_POST['name'] ?? '',
+        'description'           => $_POST['description'] ?? '',
         'type'                  => $_POST['type'] ?? '',
-        'active'                => $_POST['active'] ?? '',
+        'active'                => 'N',
         'gibbonYearGroupIDList' => $_POST['gibbonYearGroupIDList'] ?? [],
     ];
 

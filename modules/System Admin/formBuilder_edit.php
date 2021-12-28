@@ -21,11 +21,10 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Forms\FormGateway;
-use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormPageGateway;
-use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Builder\FormData;
+use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -60,10 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     $form->addRow()->addHeading(__('Basic Details'));
 
-    $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
-        $row->addTextField('name')->maxLength(90)->required();
-
     $types = [
         'Application'      => __('Application'),
         'Post-application' => __('Post-application'),
@@ -72,11 +67,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         'Family'           => __('Family'),
         'Staff'            => __('Staff'),
     ];
-    
+
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->required()->placeholder();
-    
+        $row->addSelect('type')->fromArray($types)->readonly();
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+        $row->addTextField('name')->maxLength(90)->required();
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextArea('description')->setRows(2);
+
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
@@ -124,8 +127,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         ->addParam('gibbonFormPageID')
         ->format(function ($form, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->addParam('sidebar', 'false')
                 ->setURL('/modules/System Admin/formBuilder_page_edit.php');
+
+            $actions->addAction('design', __('Design'))
+                ->setIcon('markbook')
+                ->setClass('mx-1')
+                ->addParam('sidebar', 'false')
+                ->setURL('/modules/System Admin/formBuilder_page_design.php');
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/System Admin/formBuilder_page_delete.php');
@@ -139,9 +147,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $formData = $container->get(FormData::class);
     $formData->populate($gibbonFormID, '');
 
-    // Validate the form processes
-    $formProcessor = $container->get(PreviewFormProcessor::class);
+    // Get the processor for this type of form
+    $formProcessorFactory = $container->get(FormProcessorFactory::class);
+    $formProcessor = $formProcessorFactory->getProcessor($values['type']);
 
+    // Validate the form processes
     $errors = $formProcessor->validate($formData);
     $processes = $formProcessor->getProcesses();
 

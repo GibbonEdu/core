@@ -36,6 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $data = [
         'gibbonFormID'   => $gibbonFormID,
         'name'           => $_POST['name'] ?? '',
+        'introduction'   => $_POST['introduction'] ?? '',
+        'postscript'     => $_POST['postscript'] ?? '',
         'sequenceNumber' => $formPageGateway->getNextSequenceNumberByForm($gibbonFormID),
     ];
 

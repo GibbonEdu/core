@@ -42,10 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
 
     $form->addRow()->addHeading(__('Basic Information'));
 
-    $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
-        $row->addTextField('name')->maxLength(90)->required();
-
     $types = [
         'Application'      => __('Application'),
         'Post-application' => __('Post-application'),
@@ -58,10 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->required()->placeholder();
-    
+
     $row = $form->addRow();
-        $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->required();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+        $row->addTextField('name')->maxLength(90)->required();
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextArea('description')->setRows(2);
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));

@@ -23,7 +23,7 @@ require_once '../../gibbon.php';
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID.'&sidebar=false';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     $URL .= '&return=error0';
@@ -34,24 +34,24 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $formGateway = $container->get(FormGateway::class);
 
     $data = [
-        'name'        => $_POST['name'] ?? '',
-        'orientation' => $_POST['orientation'] ?? '',
-        'pageSize'    => $_POST['pageSize'] ?? '',
-        'marginX'     => $_POST['marginX'] ?? '',
-        'marginY'     => $_POST['marginY'] ?? '',
-        'stylesheet'  => $_POST['stylesheet'] ?? '',
-        'flags'       => $_POST['flags'] ?? '',
+        'name'                  => $_POST['name'] ?? '',
+        'description'           => $_POST['description'] ?? '',
+        'active'                => $_POST['active'] ?? '',
+        'gibbonYearGroupIDList' => $_POST['gibbonYearGroupIDList'] ?? [],
     ];
 
-    $config = [
-        'fonts' => $_POST['fonts'] ?? [],
-    ];
-
-    $data['config'] = json_encode($config);
+    $data['gibbonYearGroupIDList'] = implode(',', $data['gibbonYearGroupIDList']);
 
     // Validate the required values are present
-    if (empty($data['name'])) {
+    if (empty($data['name']) || empty($data['active'])) {
         $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Validate that this record is unique
+    if (!$formGateway->unique($data, ['name'], $gibbonFormID)) {
+        $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;
     }

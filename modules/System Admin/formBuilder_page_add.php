@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Forms\FormGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_add.php') == false) {
     // Access denied
@@ -38,17 +39,35 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
     $page->return->setEditLink($editLink);
 
+    if (empty($gibbonFormID)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
+    }
+
+    $formValues = $container->get(FormGateway::class)->getByID($gibbonFormID);
+
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
-    $form->addRow()->addHeading(__('Basic Details'));
-
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique'));
+        $row->addLabel('formName', __('Form Name'));
+        $row->addTextField('formName')->readonly()->required()->setValue($formValues['name']);
+        
+    $row = $form->addRow();
+        $row->addLabel('name', __('Page Name'))->description(__('Must be unique'));
         $row->addTextField('name')->maxLength(90)->required();
+
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('introduction', __('Introduction'))->description(__('Information to display before the form'));
+        $col->addEditor('introduction', $guid)->setRows(8);
+
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('postscript', __('Postscript'))->description(__('Information to display at the end of the form'));
+        $col->addEditor('postscript', $guid)->setRows(8);
+
 
     $row = $form->addRow();
         $row->addFooter();
