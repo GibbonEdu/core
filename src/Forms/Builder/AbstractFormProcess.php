@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Forms\Builder\Exception\MissingFieldException;
+use Gibbon\Forms\Builder\FormData;
 
 abstract class AbstractFormProcess 
 {
@@ -35,14 +36,16 @@ abstract class AbstractFormProcess
         return $this->requiredFields;
     }
 
-    public function validate(array $fields)
+    public function validate(FormData $data)
     {
         foreach ($this->requiredFields as $fieldName) {
-            if (empty($fields[$fieldName])) {
+            if (!$data->hasField($fieldName)) {
                 throw new MissingFieldException($fieldName);
             }
         }
     }
 
-    abstract public function process(array $fields, array $data) : array;
+    abstract public function process(FormData $data);
+
+    abstract public function rollback(FormData $data);
 }

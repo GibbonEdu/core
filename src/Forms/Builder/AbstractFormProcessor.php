@@ -19,9 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
-use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
-use Gibbon\Forms\Builder\Storage\FormStorageInterface;
 use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -32,62 +30,49 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * @var FormStorageInterface
+     * @var FormData
      */
-    protected $storage;
+    protected $data;
 
     /**
-     * @var FormFieldGateway
-     */
-    protected $fieldGateway;
-
-    /**
-     * @var AbstractFormProcess
+     * @var array[]
      */
     protected $processes = [];
 
-    protected $fields = [];
-    protected $data = [];
+    /**
+     * @var string[]
+     */
     protected $errors = [];
 
-    public function __construct(FormStorageInterface $storage, FormFieldGateway $fieldGateway)
+    abstract public function submitProcess();
+
+    public function editProcess() {}
+
+    public function acceptProcess() {}
+
+    public function submitForm(FormData $data)
     {
-        $this->storage = $storage;
-        $this->fieldGateway = $fieldGateway;
+        $this->data = $data;
+        $this->submitProcess();
     }
 
-    public function submitProcess()
+    public function editForm(FormData $data)
     {
-        $this->boot();
+        $this->data = $data;
+        $this->editProcess();
     }
 
-    public function editProcess()
+    public function acceptForm(FormData $data)
     {
-        $this->boot();
-    }
-
-    public function acceptProcess()
-    {
-        $this->boot();
-    }
-
-    public function setForm(string $gibbonFormID, string $identifier)
-    {
-        $this->gibbonFormID = $gibbonFormID;
-        $this->identifier = $identifier;
-    }
-
-    public function boot()
-    {
-        $this->fields = $this->fieldGateway->selectFieldsByForm($this->gibbonFormID)->fetchGroupedUnique();
-        $this->data = $this->loadData();
+        $this->data = $data;
+        $this->acceptProcess();
     }
 
     public function run(string $processClass)
     {
         try {
             $process = $this->getContainer()->get($processClass);
-            $this->data += $process->process($this->fields, $this->data);
+            $process->process($this->data);
 
         } catch (NotFoundException $e) {
             $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
@@ -96,14 +81,16 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         }
     }
 
-    public function validate()
+    public function validate(FormData $data)
     {
-        $this->boot();
-
-        foreach ($this->processes as $processClass) {
+        foreach ($this->processes as $processName => $processDetails) {
             try {
+                $processClass = $processDetails['process'] ?? '';
+
                 $process = $this->getContainer()->get($processClass);
-                $process->validate($this->fields);
+                $process->validate($data);
+
+                $this->processes[$processName]['valid'] = true;
 
             } catch (NotFoundException $e) {
                 $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
@@ -115,13 +102,8 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         return $this->errors;
     }
 
-    public function saveData(array $data)
+    public function getProcesses()
     {
-        $this->storage->saveData($this->identifier, $data);
-    }
-
-    public function loadData()
-    {
-        return $this->storage->loadData($this->identifier);
+        return $this->processes;
     }
 }

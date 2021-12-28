@@ -20,25 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\Processor;
 
 use Gibbon\Forms\Builder\AbstractFormProcessor;
-use Gibbon\Forms\Builder\Process\SendEmailProcess;
-use Gibbon\Forms\Builder\Storage\FormSessionStorage;
-use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Forms\Builder\Process\SendEmail;
+use Gibbon\Forms\Builder\View\SendEmailView;
 
 class PreviewFormProcessor extends AbstractFormProcessor 
 {
     protected $processes = [
-        SendEmailProcess::class
+        'SendEmail' => [
+            'process' => SendEmail::class,
+            'view'    => SendEmailView::class,
+        ],
+        
     ];
-
-    public function __construct(FormSessionStorage $storage, FormFieldGateway $fieldGateway)
-    {
-        parent::__construct($storage, $fieldGateway);
-    }
 
     public function submitProcess()
     {
-        $this->boot();
-
-        $this->run(SendEmailProcess::class);
+        $this->run(SendEmail::class);
     }
 }
