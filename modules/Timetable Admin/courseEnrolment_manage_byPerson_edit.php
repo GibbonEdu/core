@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
     $type = isset($_GET['type'])? $_GET['type'] : '';
-    echo $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
+    $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     if (empty($gibbonPersonID) or empty($gibbonSchoolYearID)) {
