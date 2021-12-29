@@ -26,8 +26,8 @@ include '../../gibbon.php';
 include $session->get('absolutePath').'/modules/Library/moduleFunctions.php';
 
 //Setup variables
-$gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';
-$gibbonLibraryItemID = isset($_POST['gibbonLibraryItemID'])? $_POST['gibbonLibraryItemID'] : '';
+$gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'] ?? '';
+$gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_add.php') == false) {
     //Acess denied

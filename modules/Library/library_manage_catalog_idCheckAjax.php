@@ -23,7 +23,7 @@ include '../../gibbon.php';
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog.php') == false) {
     die(__('Your request failed because you do not have access to this action.'));
 } else {
-    $gibbonLibraryItemID = isset($_POST['gibbonLibraryItemID'])? $_POST['gibbonLibraryItemID'] : '';
+    $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
     $id = isset($_POST['id'])? $_POST['id'] : (isset($_POST['idCheck'])? $_POST['idCheck'] : '');
 
     $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'id' => $id);
