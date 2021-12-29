@@ -26,7 +26,7 @@ use Gibbon\Forms\Builder\View\SendEmailView;
 class PreviewFormProcessor extends AbstractFormProcessor 
 {
     protected $processes = [
-        'SendEmail' => [
+        SendEmail::class => [
             'process' => SendEmail::class,
             'view'    => SendEmailView::class,
         ],

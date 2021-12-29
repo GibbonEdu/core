@@ -74,6 +74,8 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
             $process = $this->getContainer()->get($processClass);
             $process->process($this->data);
 
+            $this->processes[$processClass]['valid'] = true;
+
         } catch (NotFoundException $e) {
             $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
         } catch (MissingFieldException $e) {
@@ -83,14 +85,12 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
 
     public function validate(FormData $data)
     {
-        foreach ($this->processes as $processName => $processDetails) {
+        foreach ($this->processes as $processClass => $processDetails) {
             try {
-                $processClass = $processDetails['process'] ?? '';
-
                 $process = $this->getContainer()->get($processClass);
                 $process->validate($data);
 
-                $this->processes[$processName]['valid'] = true;
+                $this->processes[$processClass]['valid'] = true;
 
             } catch (NotFoundException $e) {
                 $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
