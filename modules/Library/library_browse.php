@@ -137,13 +137,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</table>';
 
     //Get current filter values
-    $name = trim($_REQUEST['name'] ?? null);
-    $producer = trim($_REQUEST['producer'] ?? null);
-    $category = trim($_REQUEST['category'] ?? null);
-    $collection = trim($_REQUEST['collection'] ?? null);
-    $everything = trim($_REQUEST['everything'] ?? null);
+    $name = trim($_REQUEST['name'] ?? '');
+    $producer = trim($_REQUEST['producer'] ?? '');
+    $category = trim($_REQUEST['category'] ?? '');
+    $collection = trim($_REQUEST['collection'] ?? '');
+    $everything = trim($_REQUEST['everything'] ?? '');
 
-    $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? null);
+    $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 
     // Build the category/collection arrays
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
