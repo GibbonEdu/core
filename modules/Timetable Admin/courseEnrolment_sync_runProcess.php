@@ -68,7 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
                         LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
+                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID)
                         WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                        AND (:role='Teacher' OR gibbonCourseClassMap.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                         AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                 $pdo->executeQuery($data, $sql);
 
