@@ -36,8 +36,8 @@ else {
 		print "</div>" ;
 	}
 	else {
-        $gibbonMessengerID = isset($_GET['gibbonMessengerID']) ? $_GET['gibbonMessengerID'] : null;
-        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? null;
+        $search = $_GET['search'] ?? null;
 
         $page->breadcrumbs
             ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
@@ -51,7 +51,7 @@ else {
 		$noConfirm = 0;
 		$yesConfirm = 0;
 
-		
+
 			$data = array('gibbonMessengerID' => $gibbonMessengerID);
 			$sql = "SELECT gibbonMessenger.* FROM gibbonMessenger WHERE gibbonMessengerID=:gibbonMessengerID";
 			$result = $connection2->prepare($sql);
@@ -123,7 +123,7 @@ else {
 
 				//Tab content
 				echo "<div id='tabs1'>";
-					
+
 						$data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
 						$sql = "SELECT gibbonFormGroup.nameShort AS formGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
 							FROM gibbonPerson
@@ -148,7 +148,7 @@ else {
 						echo '</div>';
 					} else {
 						//Store receipt for this message data in an array
-						
+
 							$dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
 							$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key`, gibbonPersonIDListStudent FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
 							$resultReceipts = $connection2->prepare($sqlReceipts);
@@ -284,7 +284,7 @@ else {
 				echo "</div>";
 				echo "<div id='tabs2'>";
 					if (!is_null($gibbonMessengerID)) {
-						
+
 							$data = array('gibbonMessengerID' => $gibbonMessengerID);
 							$sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.*, gibbonRole.category as roleCategory
 								FROM gibbonMessengerReceipt
