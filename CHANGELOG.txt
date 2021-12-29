@@ -71,6 +71,7 @@ v23.0.00
         Messenger: improved mobile responsive size of inserted images
         Planner: added facility name to Year Overview and Edit Working Copy pages, if available
         Planner: added explicit links to daily and weekly summary emails
+        Reports: added default value for Yes/No criteria
         Rubrics: enabled visualization to use custom colours, if unique row colours are used
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
         Staff: added a link to view coverage details on the Open Requests page

@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
                 $row->addYesNo($fieldName)
                     ->addClass('reportCriteria')
                     ->setID($fieldID)
-                    ->selected($criteria['value'])
+                    ->selected($criteria['value'] ?? $criteria['defaultValue'])
                     ->placeholder()
                     ->readonly(!$canWriteReport);
             } elseif ($criteria['valueType'] == 'Number') {

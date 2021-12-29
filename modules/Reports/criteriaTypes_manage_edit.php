@@ -77,6 +77,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
             $row->addTextField('gradeScale')->readonly()->setValue($gradeScale['name'] ?? '');
     }
 
+    if ($values['valueType'] == 'Yes/No') {
+        $row = $form->addRow();
+            $row->addLabel('defaultValue', __('Default Value'));
+            $row->addYesNo('defaultValue')
+                ->placeholder()
+                ->selected($values['defaultValue']);
+    }
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
