@@ -88,17 +88,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
     if (empty($gibbonReportID) && !empty($reportIdentifier)) {
         $reports = $reportArchiveEntryGateway->queryArchiveByReportIdentifier($criteria, $gibbonSchoolYearID, $reportIdentifier, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
-        $reports->transform(function (&$report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
-            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'] ?? '', $roleCategory, $canViewDraftReports, $canViewPastReports);
+        $reports->transform(function (&$report) use ($roleCategory, $gibbonSchoolYearID, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
+            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReportIdentifier($gibbonSchoolYearID, $report['reportIdentifier'], 'Single', $report['gibbonPersonID'] ?? '', $roleCategory, $canViewDraftReports, $canViewPastReports);
         });
     } elseif (!empty($gibbonFormGroupID)) {
         $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, !empty($gibbonReportID) ? $gibbonReportID : $reportIdentifier, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
         $reports->transform(function (&$report) use ($roleCategory, $canViewDraftReports, $canViewPastReports, &$reportArchiveEntryGateway) {
-            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport($report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
+            $report['archive'] = $reportArchiveEntryGateway->getRecentArchiveEntryByReport( $report['gibbonReportID'] ?? $report['reportIdentifier'], 'Single', $report['gibbonPersonID'], $roleCategory, $canViewDraftReports, $canViewPastReports);
         });
     } elseif (!empty($gibbonYearGroupID)) {
-        $reports = $reportGateway->queryFormGroupsByReport($criteria, $gibbonReportID, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
+        $reports = $reportGateway->queryFormGroupsByReport($criteria, !empty($gibbonReportID) ? $gibbonReportID : $reportIdentifier, $gibbonYearGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
     } else {
         $reports = $reportGateway->queryYearGroupsByReport($criteria, $gibbonReportID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 

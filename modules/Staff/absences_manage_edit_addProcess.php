@@ -49,12 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
 
     $date = Format::dateConvert($_POST['date']);
 
-    if (!isSchoolOpen($guid, $date, $connection2)) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
-        exit;
-    }
-
     $data = [
         'gibbonStaffAbsenceID' => $gibbonStaffAbsenceID,
         'date'                 => $date,

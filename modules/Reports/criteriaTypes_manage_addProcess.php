@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
         'name'           => $_POST['name'] ?? '',
         'active'         => $_POST['active'] ?? '',
         'valueType'      => $_POST['valueType'] ?? '',
+        'defaultValue'   => $_POS['defaultValue'] ?? null,
         'characterLimit' => $_POST['characterLimit'] ?? null,
         'gibbonScaleID'  => $_POST['gibbonScaleID'] ?? null,
     ];
