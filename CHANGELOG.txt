@@ -62,7 +62,10 @@ v23.0.00
         System: added CSS ID myClasses to sidebar
         Attendance: added the ability to Take Ad Hoc Attendance
         Attendance: added birthday icons to Take Attendance pages
+        Behaviour: enabled Find Behaviour Patterns to filter Positive behaviour
         Departments: updated participant view so it does not require other modules
+        Departments: highlight department coordinator, add hover text
+        Finance: added ability to invoice students by class enrolment 
         Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
         Messenger: improved mobile responsive size of inserted images
@@ -71,6 +74,7 @@ v23.0.00
         Reports: added default value for Yes/No criteria
         Rubrics: enabled visualization to use custom colours, if unique row colours are used
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
+        Staff: added a link to view coverage details on the Open Requests page
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
         System Admin: added link to Import History at the top of Import from File
@@ -92,8 +96,11 @@ v23.0.00
         Planner: fixed smart block deletion not working in Edit Lesson Plan
         Planner: fixed planner deadlines page not filtering by class
         Reports: fixed Student Info template borders when no image is present
+        Reports: fixed bug when viewing uploaded reports from past years
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities
+        Staff: fixed substitute unavailability showing previous school years
+        Staff: fixed manually adding/editing absences on non-school days
         Students: fixed missing Official Name fields for parents in Student Application import
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above

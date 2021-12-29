@@ -1058,5 +1058,8 @@ ALTER TABLE `gibbonPerson` CHANGE `genericAPIRefreshToken` `genericAPIRefreshTok
 ALTER TABLE `gibbonSession` CHANGE `sessionData` `sessionData` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonPerson` DROP `password`;end
 UPDATE `gibbonMarkbookColumn` SET gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=00000000000000;end
+UPDATE `gibbonCountry` SET `printable_name` = 'Libya', `iddCountryCode` = '00218' WHERE `gibbonCountry`.`printable_name` LIKE '%Libya%';end 
+INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Tamazight');end
 ALTER TABLE `gibbonReportingCriteriaType` ADD `defaultValue` VARCHAR(255) DEFAULT NULL AFTER `valueType`;end
+
 ";

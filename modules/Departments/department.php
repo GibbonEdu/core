@@ -75,7 +75,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             //Print staff
             $dataStaff = array('gibbonDepartmentID' => $gibbonDepartmentID);
-            $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID ORDER BY role, surname, preferredName";
+            $sqlStaff = "SELECT gibbonPerson.gibbonPersonID, gibbonDepartmentStaff.role, title, surname, preferredName, image_240, gibbonStaff.jobTitle, FIND_IN_SET(role, 'Manager,Assistant Coordinator,Coordinator,Director') as roleOrder
+            FROM gibbonDepartmentStaff 
+            JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID 
+            ORDER BY roleOrder DESC, surname, preferredName";
 
             $staff = $pdo->select($sqlStaff, $dataStaff)->toDataSet();
 
@@ -89,11 +94,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $canViewProfile = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
             $table->addColumn('image_240')
                 ->format(function ($person) use ($canViewProfile) {
-                    $userPhoto = Format::userPhoto($person['image_240'], 'sm', '');
+                    $class = !empty($person['roleOrder'])? 'bg-blue-300' : '';
+                    $userPhoto = Format::userPhoto($person['image_240'], 'sm', $class);
+                    $title = !empty($person['roleOrder'])? __('Department {role}', ['role' => __($person['role'])]): '';
                     $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
 
                     return $canViewProfile
-                        ? Format::link($url, $userPhoto)
+                        ? Format::link($url, $userPhoto, ['title' => $title])
                         : $userPhoto;
                 });
 
@@ -101,15 +108,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 ->setClass('text-xs font-bold mt-1')
                 ->format(function ($person) use ($canViewProfile) {
                     $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff');
+                    $title = !empty($person['roleOrder'])? __('Department {role}', ['role' => __($person['role'])]): '';
                     $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
+
                     return $canViewProfile
-                        ? Format::link($url, $name)
+                        ? Format::link($url, $name, ['title' => $title])
                         : $name;
                 });
 
             $table->addColumn('jobTitle')
                 ->setClass('text-xs text-gray-600 italic leading-snug')
                 ->format(function ($person) {
+                    $jobTitle = !empty($person['jobTitle']) ? $person['jobTitle'] : __($person['role']);
                     return !empty($person['jobTitle']) ? $person['jobTitle'] : __($person['role']);
                 });
 
