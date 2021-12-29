@@ -247,10 +247,40 @@ class ReportArchiveEntryGateway extends QueryableGateway
             ->cols(['gibbonReportArchiveEntry.*'])
             ->innerJoin('gibbonReportArchive', 'gibbonReportArchive.gibbonReportArchiveID=gibbonReportArchiveEntry.gibbonReportArchiveID')
             ->leftJoin('gibbonReport', 'gibbonReport.gibbonReportID=gibbonReportArchiveEntry.gibbonReportID')
-            ->where('(gibbonReportArchiveEntry.gibbonReportID=:gibbonReportID OR gibbonReportArchiveEntry.reportIdentifier=:gibbonReportID)')
+            ->where('gibbonReportArchiveEntry.gibbonReportID=:gibbonReportID')
             ->bindValue('gibbonReportID', $gibbonReportID)
             ->where('gibbonReportArchiveEntry.type=:type')
             ->bindValue('type', $type)
+            ->orderBy(['gibbonReportArchiveEntry.timestampModified DESC'])
+            ->limit(1);
+
+        $query = $this->applyArchiveAccessLogic($query, $roleCategory, $viewDraft, $viewPast);
+
+        if ($type == 'Batch') {
+            $query->where('gibbonReportArchiveEntry.gibbonYearGroupID=:contextID')
+                  ->bindValue('contextID', $contextID);
+        } else {
+            $query->where('gibbonReportArchiveEntry.gibbonPersonID=:contextID')
+                  ->bindValue('contextID', $contextID);
+        }
+
+        return $this->runSelect($query)->fetch();
+    }
+
+    public function getRecentArchiveEntryByReportIdentifier($gibbonSchoolYearID, $reportIdentifier, $type, $contextID, $roleCategory = 'Other', $viewDraft = false, $viewPast = false)
+    {
+        $query = $this
+            ->newSelect()
+            ->from($this->getTableName())
+            ->cols(['gibbonReportArchiveEntry.*'])
+            ->innerJoin('gibbonReportArchive', 'gibbonReportArchive.gibbonReportArchiveID=gibbonReportArchiveEntry.gibbonReportArchiveID')
+            ->leftJoin('gibbonReport', 'gibbonReport.gibbonReportID=gibbonReportArchiveEntry.gibbonReportID')
+            ->where('gibbonReportArchiveEntry.reportIdentifier=:reportIdentifier')
+            ->bindValue('reportIdentifier', $reportIdentifier)
+            ->where('gibbonReportArchiveEntry.type=:type')
+            ->bindValue('type', $type)
+            ->where('gibbonReportArchiveEntry.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->orderBy(['gibbonReportArchiveEntry.timestampModified DESC'])
             ->limit(1);
 
