@@ -38,11 +38,11 @@ $effortAltName = $settingGateway->getSettingByScope('Markbook', 'effortAlternati
 $effortAltNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
 //Get variables from Planner
-$gibbonUnitID = isset($_GET['gibbonUnitID'])? $_GET['gibbonUnitID'] : null;
-$gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : null;
-$name = isset($_GET['name'])? $_GET['name'] : null;
-$summary = isset($_GET['summary'])? $_GET['summary'] : null;
-$date = isset($_GET['date'])? $_GET['date'] : date('Y-m-d');
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? null;
+$gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? null;
+$name = $_GET['name'] ?? null;
+$summary = $_GET['summary'] ?? null;
+$date = $_GET['date'] ?? date('Y-m-d');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     // Access denied
