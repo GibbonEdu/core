@@ -95,6 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
             ->format(function ($coverage, $actions) use ($gibbonPersonID) {
+                $actions->addAction('view', __('View Details'))
+                    ->isModal(800, 550)
+                    ->setURL('/modules/Staff/coverage_view_details.php');
+
                 $actions->addAction('accept', __('Accept'))
                     ->setIcon('iconTick')
                     ->setURL('/modules/Staff/coverage_view_accept.php');
@@ -104,6 +108,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_decline.php');
                 }
+            });
+    } else {
+        $table->addActionColumn()
+            ->addParam('gibbonStaffCoverageID')
+            ->format(function ($coverage, $actions) {
+                $actions->addAction('view', __('View Details'))
+                    ->isModal(800, 550)
+                    ->setURL('/modules/Staff/coverage_view_details.php');
             });
     }
 
