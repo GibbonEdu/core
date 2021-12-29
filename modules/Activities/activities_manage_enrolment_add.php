@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
 
             $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -146,11 +146,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
 				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
-
+				
+			// Load the enrolmentType system setting, optionally override with the Activity Type setting
+            $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
+            $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
+			
 			$statuses = array('Accepted' => __('Accepted'));
-			$enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
 			if ($enrolment == 'Competitive') {
-				$statuses['Waiting List'] = __('Waiting List');
+                if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
+                    $statuses['Waiting List'] = __('Waiting List');
+                }
 			} else {
 				$statuses['Pending'] = __('Pending');
 			}

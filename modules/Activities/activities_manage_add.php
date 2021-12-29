@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
     $page->return->setEditLink($editLink);
 
-    $search = $_GET['search'] ?? null;
+    $search = $_GET['search'] ?? '';
     
     $activityGateway = $container->get(ActivityGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
@@ -73,14 +73,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 'School'    => $session->get('organisationNameShort'),
                 'External'  => __('External')
             ]);
-    
-    $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
+
+    $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
+    if (empty($activityTypes)) {
+        $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
+        $activityTypes = array_map('trim', explode(',', $activityTypes));
+    }
+
     if (!empty($activityTypes)) {
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')
-                ->fromString($activityTypes)
-                ->placeholder();
+            $row->addSelect('type')->fromArray($activityTypes)->placeholder();
     }
 
     $row = $form->addRow();
