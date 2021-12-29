@@ -1060,4 +1060,7 @@ ALTER TABLE `gibbonPerson` DROP `password`;end
 UPDATE `gibbonMarkbookColumn` SET gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=00000000000000;end
 UPDATE `gibbonCountry` SET `printable_name` = 'Libya', `iddCountryCode` = '00218' WHERE `gibbonCountry`.`printable_name` LIKE '%Libya%';end 
 INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Tamazight');end
+CREATE TABLE `gibbonActivityType` ( `gibbonActivityTypeID` INT(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT , `name` VARCHAR(60) NULL, `description` TEXT NULL , `access` ENUM('None','View','Register') NULL DEFAULT 'Register', `enrolmentType` ENUM('Competitive','Selection') NULL DEFAULT 'Competitive', `maxPerStudent` INT(3) NOT NULL DEFAULT '0' , `waitingList` ENUM('Y','N') NULL DEFAULT 'Y', `backupChoice` ENUM('Y','N') NULL DEFAULT 'Y', PRIMARY KEY (`gibbonActivityTypeID`), UNIQUE KEY (`name`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;end
+UPDATE `gibbonAction` SET `URLList` = 'activitySettings.php,activitySettings_type_add.php,activitySettings_type_edit.php,activitySettings_type_delete.php' WHERE `name`='Activity Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
+
 ";
