@@ -3692,20 +3692,6 @@ CREATE TABLE `gibbonPersonReset` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gibbonPersonStatusLog`
---
-
-CREATE TABLE `gibbonPersonStatusLog` (
-  `gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL,
-  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `statusOld` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
-  `statusNew` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
-  `reason` text NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
--- --------------------------------------------------------
-
---
 -- Table structure for table `gibbonPersonUpdate`
 --
 
@@ -6518,12 +6504,6 @@ ALTER TABLE `gibbonPersonReset`
   ADD PRIMARY KEY (`gibbonPersonResetID`);
 
 --
--- Indexes for table `gibbonPersonStatusLog`
---
-ALTER TABLE `gibbonPersonStatusLog`
-  ADD PRIMARY KEY (`gibbonPersonStatusLogID`),
-  ADD KEY `gibbonPersonID` (`gibbonPersonID`);
---
 -- Indexes for table `gibbonPersonUpdate`
 --
 ALTER TABLE `gibbonPersonUpdate`
@@ -7641,12 +7621,6 @@ ALTER TABLE `gibbonPersonMedicalUpdate`
 --
 ALTER TABLE `gibbonPersonReset`
   MODIFY `gibbonPersonResetID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `gibbonPersonStatusLog`
---
-ALTER TABLE `gibbonPersonStatusLog`
-  MODIFY `gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonPersonUpdate`
