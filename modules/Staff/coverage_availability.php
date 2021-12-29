@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $criteria = $staffCoverageGateway->newQueryCriteria();
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
-    $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
+    $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
     $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
     // CALENDAR VIEW
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
         ->sortBy('date')
         ->fromPOST();
 
-    $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
+    $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
     
     $bulkActions = array(
         'Delete' => __('Delete'),
