@@ -661,10 +661,12 @@ class Format
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
         if ($roleCategory == 'Staff') {
             $url = Url::fromModuleRoute('Staff', 'staff_view_details')
+                ->withAbsoluteUrl()
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } elseif ($roleCategory == 'Student') {
             $url = Url::fromModuleRoute('Students', 'student_view_details')
+                ->withAbsoluteUrl()
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
             $output = self::link($url, $name);
         } else {
