@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -259,9 +260,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
 
                     if ($search != '' or $allStudents != '') {
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Students/student_view.php&search='.$search."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
-                        echo '</div>';
+                         $params = [
+                            "search" => $search,
+                            "allStudents" => $allStudents,
+                        ];
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'student_view.php')->withQueryParams($params));
                     }
 
                     echo '<h2>';

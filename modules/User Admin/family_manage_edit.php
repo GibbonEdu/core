@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHeaderAction('back', __('Back to Search Results'))
                 ->displayLabel()
+                ->setIcon('search')
                 ->addParam('search', $search)
                 ->setURL('/modules/User Admin/family_manage.php');
 

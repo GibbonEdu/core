@@ -17,15 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
-use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -93,11 +94,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+                    $params = [
+                        "search" => $search,
+                        "gibbonSchoolYearID" => $gibbonSchoolYearID
+                    ];
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage.php')->withQueryParams($params));
                 }
-                echo '</div>';
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID='.$gibbonApplicationFormID.'&gibbonSchoolYearID='.$gibbonSchoolYearID.'&search='.$search);
 
@@ -197,11 +200,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
+                    $params = [
+                        "search" => $search,
+                        "gibbonSchoolYearID" => $gibbonSchoolYearID
+                    ];
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage.php')->withQueryParams($params));
                 }
-                echo '</div>';
 
                 //Set up variables for automatic email to participants, if selected in Step 1.
                 $informParents = 'N';

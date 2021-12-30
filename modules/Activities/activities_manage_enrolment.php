@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -72,9 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $settingGateway = $container->get(SettingGateway::class);
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $params = [
+                    "search" => $_GET['search'] ?? '',
+                    "gibbonSchoolYearTermID" => $_GET['gibbonSchoolYearTermID'] ?? null
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Activities', 'activities_manage.php')->withQueryParams($params));
             }
 
             $form = Form::create('activityEnrolment', $gibbon->session->get('absoluteURL').'/index.php');

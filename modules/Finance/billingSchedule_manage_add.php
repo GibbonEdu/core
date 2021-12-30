@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage_add.php') == false) {
@@ -45,9 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         if ($search != '') {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
-            echo '</div>';
+            $params = [
+                "gibbonSchoolYearID" => $gibbonSchoolYearID,
+                "search" => $search
+            ];
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'billingSchedule_manage.php')->withQueryParams($params));
         }
 
         $form = Form::create("scheduleManageAdd", $session->get('absoluteURL').'/modules/'.$session->get('module')."/billingSchedule_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");

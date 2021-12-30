@@ -40,6 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
         ->add(__('Add Multiple'));
 
+    $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $type = $_GET['type'] ?? '';
+
     $settingGateway = $container->get(SettingGateway::class);
 
     $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
@@ -48,18 +54,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $form->addRow()->addHeading(__('Step 1'));
 
     $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
-    $policyLink = 'google.com';
     if (!empty($policyLink)) {
         $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
             ->setExternalURL($policyLink);
     }
-    if (!empty($_GET['gibbonPersonID']) || !empty($_GET['gibbonFormGroupID']) || !empty($_GET['gibbonYearGroupID']) || !empty($_GET['type'])) {
-        $form->addHeaderAction('back', (empty($policyLink) ? '' : '| ') . __('Back to Search Results'))
+    if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
+        $form->addHeaderAction('back', __('Back to Search Results'))
             ->setURL('/modules/Behaviour/behaviour_manage.php')
+            ->setIcon('search')
+            ->displayLabel()
             ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
             ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
             ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
-            ->addParam('type', $_GET['type']);
+            ->addParam('type', $_GET['type'])
+            ->prepend((!empty($policyLink)) ? ' | ' : '');
     }
 
     //Student
@@ -72,11 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->sortBy(['surname', 'preferredName']);
 
             $students = array_reduce($studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'))->toArray(), function ($array, $student) {
-                $array['students'][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup']; 
+                $array['students'][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
                 $array['form'][$student['gibbonPersonID']] = $student['formGroup'];
                 return $array;
             });
-            
+
             $multiSelect = $col->addMultiSelect('gibbonPersonIDMulti')
                 ->addSortableAttribute('Form', $students['form']);
 
@@ -127,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     }
 
     $form->addRow()->addHeading(__('Details'));
-    
+
     //Incident
     $row = $form->addRow();
         $col = $row->addColumn();
@@ -146,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
-    
+
     //Copy to Notes
     $row = $form->addRow();
         $row->addLabel('copyToNotes', __('Copy To Notes'));

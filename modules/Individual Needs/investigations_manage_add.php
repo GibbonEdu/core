@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_add.php') == false) {
     // Access denied
@@ -48,9 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
 
         if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Back to Search Results').'</a>';
-            echo '</div>';
+           $params = [
+                "gibbonPersonID" => $gibbonPersonID,
+                "gibbonFormGroupID" => $gibbonFormGroupID,
+                "gibbonYearGroupID" => $gibbonYearGroupID
+            ];
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'investigations_manage.php')->withQueryParams($params));
         }
 
         $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_manage_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");

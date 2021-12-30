@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -38,9 +39,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
         ->add(__('Edit Invoicee'));
 
     if ($search != '' or $allUsers == 'on') {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$search.'&allUsers='.$allUsers."'>".__('Back to Search Results').'</a>';
-        echo '</div>';
+        $params = [
+            "search" => $search,
+            "allUsers" => $allUsers,
+        ];
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'invoicees_manage.php')->withQueryParams($params));
     }
 
     //Check if invoicee is specified

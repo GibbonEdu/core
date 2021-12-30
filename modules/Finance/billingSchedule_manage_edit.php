@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -52,10 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             //Let's go!
             $resultRow = $result->fetch();
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/billingSchedule_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                if ($search != '') {
+                     $params = [
+                    "gibbonSchoolYearID" => $gibbonSchoolYearID,
+                    "search" => $search
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'billingSchedule_manage.php')->withQueryParams($params));
             }
 
             $yearName = '';

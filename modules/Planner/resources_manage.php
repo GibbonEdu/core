@@ -37,16 +37,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
-    
+
     $search = $_GET['search'] ?? null;
-    
+
     // FORM
     $form = Form::create('resourcesManage', $gibbon->session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
-    
+
     $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/resources_manage.php');
-    
+
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Resource name.'));
         $row->addTextField('search')->setValue($search);
@@ -66,21 +66,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
 
     $gibbonPersonID = $highestAction == 'Manage Resources_all' ? null : $gibbon->session->get('gibbonPersonID');
     $resources = $resourceGateway->queryResources($criteria, $gibbonPersonID);
-    
+
     // TABLE
     $table = DataTable::createPaginated('resources', $criteria);
     $table->setTitle('View');
-        $table->addHeaderAction('add', __('Add'))
+    $table->addHeaderAction('add', __('Add'))
+        ->addParam('search', $search)
         ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
         ->displayLabel();
-        
+
     $table->addColumn('name', __('Name'))
         ->description(__('Contributor'))
         ->format(function ($resource) use ($guid) {
-            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content']) 
+            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content'])
                 . Format::small(Format::name($resource['title'], $resource['preferredName'], $resource['surname'], 'Staff'));
         });
-    
+
     $table->addColumn('type', __('Type'));
 
     $table->addColumn('category', __('Category'))
@@ -99,16 +100,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
             }
             return substr($output, 0, -2);
         });
-    
+
     $table->addColumn('yearGroupList', __('Year Groups'))
         ->format(function ($resource) {
             return $resource['yearGroups'] >= $resource['totalYearGroups']
             ? __('All Years')
             : $resource['yearGroupList'];
         });
-    
+
     $actions = $table->addActionColumn()
         ->addParam('gibbonResourceID')
+        ->addParam('search', $search)
         ->format(function ($resource, $actions) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Planner/resources_manage_edit.php');

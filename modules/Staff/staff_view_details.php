@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -54,11 +55,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
             if ($highestAction == 'Staff Directory_brief') {
                 //Proceed!
-
-                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = "SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography, image_240 FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = "SELECT title, surname, preferredName, type, gibbonStaff.jobTitle, email, website, countryOfOrigin, qualifications, biography, image_240 FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($result->rowCount() != 1) {
                     $page->addError(__('The selected record does not exist, or you do not have access to it.'));
@@ -70,9 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     if ($search != '') {
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
-                        echo '</div>';
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParam('search', $search));
                     }
 
                     // Overview
@@ -133,9 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     }
 
                     if ($search != '') {
-                        echo "<div class='linkTop'>";
-                        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
-                        echo '</div>';
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParam('search', $search));
                     }
 
                     echo '<h2>';

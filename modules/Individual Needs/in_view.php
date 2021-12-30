@@ -99,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID')
+            ->addParam('allStudents', $allStudents)
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($person, $actions) use ($highestAction) {
                 if ($person['status'] != 'Full') return;

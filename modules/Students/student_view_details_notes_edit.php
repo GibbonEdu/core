@@ -97,15 +97,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Let's go!
                             $values = $result->fetch();
 
-                            if ($_GET['search'] != '') {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
-                                echo '</div>';
-                            }
-
-                            $form = Form::create('notes', $session->get('absoluteURL').'/modules/'.$session->get('module')."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents");
+                            $form = Form::create('notes', $session->get('absoluteURL').'/modules/'.$session->get('module')."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$search."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$category."&allStudents=$allStudents");
 
                             $form->addHiddenValue('address', $session->get('address'));
+                            
+                            if ($search != '') {
+                                $params = [
+                                    "search" => $search,
+                                    "gibbonPersonID" => $gibbonPersonID,
+                                    "subpage" => $subpage,
+                                    "category" => $category,
+                                    "allStudents" => $allStudents,
+                                ];
+                                $form->addHeaderAction('back', __('Back'))
+                                    ->setURL('/modules/Students/student_view_details.php')
+                                    ->addParams($params);
+                            }
 
                             $row = $form->addRow();
                                 $row->addLabel('title', __('Title'));

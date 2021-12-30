@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Finance\ExpenseGateway;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Finance\ExpenseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -137,9 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                             $row = $result->fetch();
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
-                                echo '</div>';
+                                $params = [
+                                    "gibbonFinanceBudgetCycleID" => $gibbonFinanceBudgetCycleID,
+                                    "status2" => $status2,
+                                    "gibbonFinanceBudgetID2" => $gibbonFinanceBudgetID2,
+                                ];
+                                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenses_manage.php')->withQueryParams($params));
                             }
                             ?>
                                 <table class='smallIntBorder fullWidth' cellspacing='0'>
@@ -156,10 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <?php
                                             $yearName = '';
 
-                                                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                                                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                                                $resultYear = $connection2->prepare($sqlYear);
-                                                $resultYear->execute($dataYear);
+                                            $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+                                            $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+                                            $resultYear = $connection2->prepare($sqlYear);
+                                            $resultYear->execute($dataYear);
                                             if ($resultYear->rowCount() == 1) {
                                                 $rowYear = $resultYear->fetch();
                                                 $yearName = $rowYear['name'];

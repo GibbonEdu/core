@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -55,9 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 ->add($row['name']);
 
             if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
             }
 
             $ttDate = null;

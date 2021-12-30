@@ -38,12 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         ->add(__('Template Builder'), 'templates_manage.php', ['search' => $search])
         ->add(__('Edit Template'));
 
-    if ($search != '') {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Reports/templates_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-        echo '</div>';
-    }
-
     $gibbonReportTemplateID = $_GET['gibbonReportTemplateID'] ?? '';
     $templateGateway = $container->get(ReportTemplateGateway::class);
     $templateFontGateway = $container->get(ReportTemplateFontGateway::class);
@@ -63,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         return;
     }
 
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php?search='.$search);
+    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_editProcess.php');
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
