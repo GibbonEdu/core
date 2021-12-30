@@ -48,10 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     $search = (isset($_GET['search']))? $_GET['search'] : '';
 
     if (!empty($search)) {
-        $params = [
-            "search" => $search
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParams($params));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
     }
 
     echo Format::alert(__('Note that certain fields are available depending on the role categories (Staff, Student, Parent) that a user is assigned to. These fields, such as personal documents and custom fields, will be editable after the user has been created.'), 'message');

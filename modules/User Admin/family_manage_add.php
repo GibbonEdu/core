@@ -38,10 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
 
     $search = $_GET['search'];
     if ($search != '') {
-        $params = [
-            "search" => $search
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'family_manage.php')->withQueryParams($params));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'family_manage.php')->withQueryParam('search', $search));
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_addProcess.php?search=$search");

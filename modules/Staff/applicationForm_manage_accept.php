@@ -72,10 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</h3>';
 
                if ($search != '') {
-                    $params = [
-                        "search" => $search
-                    ];
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParams($params));
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
                 }
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
@@ -125,10 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '</h3>';
 
                 if ($search != '') {
-                    $params = [
-                        "search" => $search
-                    ];
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParams($params));
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
                 }
 
                 if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM

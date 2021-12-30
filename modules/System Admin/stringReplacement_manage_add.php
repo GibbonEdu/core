@@ -41,10 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $page->return->setEditLink($editLink);
 
     if ($search != '') {
-        $params = [
-            "search" => $search
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('System Admin', 'stringReplacement_manage.php')->withQueryParams($params));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('System Admin', 'stringReplacement_manage.php')->withQueryParam('search', $search));
     }
 
     $form = Form::create('addString', $session->get('absoluteURL').'/modules/'.$session->get('module').'/stringReplacement_manage_addProcess.php?search='.$search);

@@ -71,13 +71,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_e
                 $values = $result->fetch();
                 $values['gibbonYearGroupID'] = explode(',', $values['gibbonYearGroupIDList']);
 
-                $search = (isset($_GET['search']))? $_GET['search'] : null;
+                $search = $_GET['search'] ?? '';
 
                 if (!empty($search)) {
-                    $params = [
-                        "search" => $search
-                    ];
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'resources_manage.php')->withQueryParams($params));
+                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'resources_manage.php')->withQueryParam('search', $search));
                 }
 
                 $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/resources_manage_editProcess.php?gibbonResourceID='.$gibbonResourceID.'&search='.$search);

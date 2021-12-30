@@ -56,10 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 ->add($row['name']);
 
             if ($search != '') {
-                $params = [
-                    "search" => $search
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParams($params));
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable', 'tt_space.php')->withQueryParam('search', $search));
             }
 
             $ttDate = null;

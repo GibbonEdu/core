@@ -77,10 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $search = (isset($_GET['search']))? $_GET['search'] : '';
 
             if (!empty($search)) {
-                $params = [
-                    "search" => $search
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParams($params));
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
             $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
