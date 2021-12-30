@@ -29,6 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $enableDescriptors = $_POST['enableDescriptors'] ?? '';
     $enableLevels = $_POST['enableLevels'] ?? '';
     $enableNegativeBehaviourLetters = $_POST['enableNegativeBehaviourLetters'] ?? '';
+    $enablePositiveBehaviourLetters = $_POST['enablePositiveBehaviourLetters'] ?? '';
     $positiveDescriptors = '';
     $negativeDescriptors = '';
     if ($enableDescriptors == 'Y') {
