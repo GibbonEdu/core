@@ -380,11 +380,11 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
         $rowAlert = $resultAlert->fetch();
         $output = array();
         $output['gibbonAlertLevelID'] = $rowAlert['gibbonAlertLevelID'];
-        $output['name'] = $rowAlert['name'];
+        $output['name'] = __($rowAlert['name']);
         $output['nameShort'] = $rowAlert['nameShort'];
         $output['color'] = $rowAlert['color'];
         $output['colorBG'] = $rowAlert['colorBG'];
-        $output['description'] = $rowAlert['description'];
+        $output['description'] = __($rowAlert['description']);
         $output['sequenceNumber'] = $rowAlert['sequenceNumber'];
     }
 
@@ -665,7 +665,7 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
         $rowAlert = $resultAlert->fetch();
         $output = array();
         $output[0] = $rowAlert['gibbonAlertLevelID'];
-        $output[1] = $rowAlert['name'];
+        $output[1] = __($rowAlert['name']);
         $output[2] = $rowAlert['nameShort'];
         $output[3] = $rowAlert['color'];
         $output[4] = $rowAlert['colorBG'];
@@ -815,10 +815,10 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 : $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
 
             $alerts[] = [
-                'highestLevel'    => $alert['name'],
+                'highestLevel'    => __($alert['name']),
                 'highestColour'   => $alert['color'],
                 'highestColourBG' => $alert['colorBG'],
-                'tag'             => 'IN',
+                'tag'             => __('IN'),
                 'title'           => $title,
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                     ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
@@ -863,11 +863,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($gibbonAlertLevelID != '') {
             if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
                 $alerts[] = [
-                    'highestLevel'    => $alert['name'],
+                    'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
-                    'tag'             => 'A',
-                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), $alert['name']).' '.$alertThresholdText,
+                    'tag'             => __('A'),
+                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                             ->withQueryParams([
                                                 'gibbonPersonID' => $gibbonPersonID,
@@ -905,11 +905,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($gibbonAlertLevelID != '') {
             if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
                 $alerts[] = [
-                    'highestLevel'    => $alert['name'],
+                    'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
-                    'tag'             => 'B',
-                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), $alert['name']).' '.$alertThresholdText,
+                    'tag'             => __('B'),
+                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                             ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
                 ];
@@ -922,7 +922,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestLevel'    => $alert[1],
                 'highestColour'   => $alert[3],
                 'highestColourBG' => $alert[4],
-                'tag'             => 'M',
+                'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                         ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
@@ -934,10 +934,10 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         if ($privacySetting == 'Y' and $privacy != '') {
             if ($alert = getAlert($guid, $connection2, 001)) {
                 $alerts[] = [
-                    'highestLevel'    => $alert['name'],
+                    'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
-                    'tag'             => 'P',
+                    'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
                     'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                             ->withQueryParam('gibbonPersonID', $gibbonPersonID),
