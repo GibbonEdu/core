@@ -50,10 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
             $values = $result->fetch();
 
             if ($search != '') {
-                $params = [
-                    "search" => $search
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('System Admin', 'stringReplacement_manage.php')->withQueryParams($params));
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('System Admin', 'stringReplacement_manage.php')->withQueryParam('search', $search));
             }
 
             $form = Form::create('editString', $session->get('absoluteURL').'/modules/'.$session->get('module').'/stringReplacement_manage_editProcess.php?gibbonStringID='.$values['gibbonStringID'].'&search='.$search);

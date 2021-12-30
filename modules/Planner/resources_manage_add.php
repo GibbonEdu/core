@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $search = (isset($_GET['search']))? $_GET['search'] : null;
+        $search = $_GET['search'] ?? '';
 
         $editLink = '';
         if (isset($_GET['editID'])) {
@@ -50,10 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
 
         if ($search != '') {
-            $params = [
-                "search" => $search
-            ];
-            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'resources_manage.php')->withQueryParams($params));
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'resources_manage.php')->withQueryParam('search', $search));
         }
 
         $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/resources_manage_addProcess.php?search='.$search);

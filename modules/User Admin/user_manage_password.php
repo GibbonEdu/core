@@ -64,10 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
             $search = $_GET['search'] ?? '';
             if ($search != '') {
-                $params = [
-                    "search" => $search
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParams($params));
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
             $policy = getPasswordPolicy($guid, $connection2);

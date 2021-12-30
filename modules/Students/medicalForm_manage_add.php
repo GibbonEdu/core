@@ -40,10 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : '';
     $search = $_GET['search'];
     if ($search != '') {
-        $params = [
-            "search" => $search
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'medicalForm_manage.php')->withQueryParams($params));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'medicalForm_manage.php')->withQueryParam('search', $search));
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalForm_manage_addProcess.php?search=$search");

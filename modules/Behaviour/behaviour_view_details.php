@@ -48,6 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             ->add(__('View Behaviour Records'), 'behaviour_manage.php')
             ->add(__('View Student Record'));
 
+        $search = $_GET['search'] ?? '';
+        if (!empty($search)) {
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Behaviour', 'behaviour_view.php')->withQueryParam('search', $search));
+        }
+
         try {
             if ($highestAction == 'View Behaviour Records_all') {
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -68,13 +73,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             echo '</div>';
         } else {
             $row = $result->fetch();
-
-            if ($_GET['search'] != '') {
-                $params = [
-                    "search" => $_GET['search'] ?? ''
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Behaviour', 'behaviour_view.php')->withQueryParams($params));
-            }
 
             // DISPLAY STUDENT DATA
             $table = DataTable::createDetails('personal');

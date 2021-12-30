@@ -51,10 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_edit.php'
             }
 
             if ($filter2 != '') {
-                 $params = [
-                    "filter2" => $filter2
-                ];
-                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'outcomes.php')->withQueryParams($params));
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Planner', 'outcomes.php')->withQueryParam('filter2', $filter2));
             }
 
             //Check if gibbonOutcomeID specified

@@ -70,10 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     if ($search != '') {
-                        $params = [
-                            "search" => $search
-                        ];
-                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParams($params));
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParam('search', $search));
                     }
 
                     // Overview
@@ -134,12 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     }
 
                     if ($search != '') {
-                       if ($search != '') {
-                            $params = [
-                                "search" => $search
-                            ];
-                            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParams($params));
-                        }
+                        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_view.php')->withQueryParam('search', $search));
                     }
 
                     echo '<h2>';

@@ -40,10 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
     $page->return->setEditLink($editLink);
 
     if ($search != '') {
-        $params = [
-            "search" => $search
-        ];
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'substitutes_manage.php')->withQueryParams($params));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'substitutes_manage.php')->withQueryParam('search', $search));
     }
 
     $form = Form::create('subsManage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/substitutes_manage_addProcess.php?search='.$search);
