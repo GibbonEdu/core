@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
                 if ($gibbonSchoolYearID != '') {
-                   $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+                   $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['search' => $gibbonPersonID]);
 
                     //Add in filter wheres
                     $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
