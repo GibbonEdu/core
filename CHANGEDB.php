@@ -1060,6 +1060,7 @@ ALTER TABLE `gibbonPerson` DROP `password`;end
 UPDATE `gibbonMarkbookColumn` SET gibbonPlannerEntryID=NULL WHERE gibbonPlannerEntryID=00000000000000;end
 UPDATE `gibbonCountry` SET `printable_name` = 'Libya', `iddCountryCode` = '00218' WHERE `gibbonCountry`.`printable_name` LIKE '%Libya%';end 
 INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Tamazight');end
+ALTER TABLE `gibbonReportingCriteriaType` ADD `defaultValue` VARCHAR(255) DEFAULT NULL AFTER `valueType`;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enablePositiveBehaviourLetters', 'Enable Positive Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'behaviourLettersPositiveLetter1Count', 'Positive Letter 1 Count', 'After how many positive records should letter 1 be sent?', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'behaviourLettersPositiveLetter2Count', 'Positive Letter 2 Count', 'After how many positive records should letter 2 be sent?', '');end
