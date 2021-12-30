@@ -29,6 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $enableDescriptors = $_POST['enableDescriptors'] ?? '';
     $enableLevels = $_POST['enableLevels'] ?? '';
     $enableNegativeBehaviourLetters = $_POST['enableNegativeBehaviourLetters'] ?? '';
+    $enablePositiveBehaviourLetters = $_POST['enablePositiveBehaviourLetters'] ?? '';
     $positiveDescriptors = '';
     $negativeDescriptors = '';
     if ($enableDescriptors == 'Y') {
@@ -53,6 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $behaviourLettersNegativeLetter1Count = $_POST['behaviourLettersNegativeLetter1Count'] ?? '';
     $behaviourLettersNegativeLetter2Count = $_POST['behaviourLettersNegativeLetter2Count'] ?? '';
     $behaviourLettersNegativeLetter3Count = $_POST['behaviourLettersNegativeLetter3Count'] ?? '';
+
+    $behaviourLettersPositiveLetter1Count = $_POST['behaviourLettersPositiveLetter1Count'] ?? '';
+    $behaviourLettersPositiveLetter2Count = $_POST['behaviourLettersPositiveLetter2Count'] ?? '';
+    $behaviourLettersPositiveLetter3Count = $_POST['behaviourLettersPositiveLetter3Count'] ?? '';
 
     $notifyTutors = $_POST['notifyTutors'] ?? 'Y';
     $notifyEducationalAssistants = $_POST['notifyEducationalAssistants'] ?? 'N';
@@ -140,6 +145,39 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         try {
             $data = array('value' => $behaviourLettersNegativeLetter3Count);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersNegativeLetter3Count'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('value' => $enablePositiveBehaviourLetters);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='enablePositiveBehaviourLetters'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+        try {
+            $data = array('value' => $behaviourLettersPositiveLetter1Count);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersPositiveLetter1Count'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+        try {
+            $data = array('value' => $behaviourLettersPositiveLetter2Count);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersPositiveLetter2Count'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+        try {
+            $data = array('value' => $behaviourLettersPositiveLetter3Count);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Behaviour' AND name='behaviourLettersPositiveLetter3Count'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
