@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -71,21 +72,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
         //Step 1
         if ($step == 1 or $gibbonBehaviourID == null) {
-            echo "<div class='linkTop'>";
-            $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
-            if ($policyLink != '') {
-                echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
-            }
-            if ($gibbonPersonID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '' or $type != '') {
-                if ($policyLink != '') {
-                    echo ' | ';
-                }
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__('Back to Search Results').'</a>';
-            }
-            echo '</div>';
-
             $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
             $form->setFactory(DatabaseFormFactory::create($pdo));
+            
+            $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
+            if (!empty($policyLink)) {
+                $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
+                    ->setExternalURL($policyLink);
+            }
+            if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
+                $form->addHeaderAction('back', __('Back to Search Results'))
+                    ->setURL('/modules/Behaviour/behaviour_manage.php')
+                    ->setIcon('search')
+                    ->displayLabel()
+                    ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                    ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
+                    ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
+                    ->addParam('type', $_GET['type'])
+                    ->prepend((!empty($policyLink)) ? ' | ' : '');
+            }
+            
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
             $form->addRow()->addHeading(__('Step 1'));
 
