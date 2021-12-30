@@ -4020,7 +4020,6 @@ CREATE TABLE `gibbonReportingCriteriaType` (
   `gibbonReportingCriteriaTypeID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(90) DEFAULT NULL,
   `valueType` varchar(30) DEFAULT NULL,
-  `defaultValue` varchar(255) DEFAULT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `characterLimit` int(6) DEFAULT NULL,
   `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL
