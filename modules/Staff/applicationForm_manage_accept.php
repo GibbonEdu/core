@@ -57,12 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         } else {
             //Let's go!
             $values = $result->fetch();
-            $step = '';
-            if (isset($_GET['step'])) {
-                $step = $_GET['step'];
-            }
+            $step = $_GET['step'] ?? 1;
             if ($step != 1 and $step != 2) {
                 $step = 1;
+            }
+
+            if ($search != '') {
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
             }
 
             //Step 1
@@ -70,10 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '<h3>';
                 echo __('Step')." $step";
                 echo '</h3>';
-
-               if ($search != '') {
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
-                }
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
                 
@@ -120,10 +117,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '<h3>';
                 echo __('Step')." $step";
                 echo '</h3>';
-
-                if ($search != '') {
-                    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
-                }
 
                 if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
                     $informApplicant = 'N';

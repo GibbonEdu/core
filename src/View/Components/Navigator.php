@@ -47,13 +47,14 @@ class Navigator
         return !empty($this->schoolYears) || !empty($this->actions);
     }
 
-    public function addSchoolYearNavigation(string $gibbonSchoolYearID)
+    public function addSchoolYearNavigation(string $gibbonSchoolYearID, array $params = [])
     {
         $this->schoolYears = [
             'current'  => $this->schoolYearGateway->getByID($gibbonSchoolYearID),
             'previous' => $this->schoolYearGateway->getPreviousSchoolYearByID($gibbonSchoolYearID),
             'next'     => $this->schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID),
             'years'    => $this->schoolYearGateway->getSchoolYearList(),
+            'params'   => $params,
         ];
     }
 

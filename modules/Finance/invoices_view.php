@@ -123,59 +123,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
             } else {
                 $rowChild = $resultChild->fetch();
 
-                $gibbonSchoolYearID = '';
-                if (isset($_GET['gibbonSchoolYearID'])) {
-                    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-                }
-                if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
-                    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-                    $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
-                }
-
-                if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
-                    
-                        $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-                        $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    if ($result->rowcount() != 1) {
-                        echo "<div class='error'>";
-                        echo __('The specified record does not exist.');
-                        echo '</div>';
-                    } else {
-                        $row = $result->fetch();
-                        $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-                        $gibbonSchoolYearName = $row['name'];
-                    }
-                }
+                $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
                 if ($gibbonSchoolYearID != '') {
-                    echo '<h2>';
-                    echo $gibbonSchoolYearName;
-                    echo '</h2>';
+                   $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['search' => $gibbonPersonID]);
 
-                    echo "<div class='linkTop'>";
-                        //Print year picker
-                        if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-                        } else {
-                            echo __('Previous Year').' ';
-                        }
-                    echo ' | ';
-                    if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-                    } else {
-                        echo __('Next Year').' ';
-                    }
-                    echo '</div>';
-
-                    
-                        //Add in filter wheres
-                        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
-                        //SQL for NOT Pending
-                        $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    //Add in filter wheres
+                    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
+                    //SQL for NOT Pending
+                    $sql = "SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonFormGroup.name AS formGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND gibbonFinanceInvoicee.gibbonPersonID=:gibbonPersonID ORDER BY invoiceIssueDate, surname, preferredName";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
 
                     if ($result->rowCount() < 1) {
                         echo '<h3>';

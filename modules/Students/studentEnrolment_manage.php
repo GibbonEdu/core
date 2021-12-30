@@ -29,53 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     //Proceed!
     $page->breadcrumbs->add(__('Student Enrolment'));
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    }
-
-    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
-        
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowcount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
+    $search = $_GET['search'] ?? '';
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/studentEnrolment_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/studentEnrolment_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-        echo '</div>';
-
-        $search = isset($_GET['search'])? $_GET['search'] : '';
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         $studentGateway = $container->get(StudentGateway::class);
 

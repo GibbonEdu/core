@@ -56,12 +56,15 @@ all stylesheets and scripts with a 'head' context.
             {% endfor %}
         </div>
 
-        <button type="button" class="rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ schoolYears.previous is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" onclick="window.location = '{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.previous.gibbonSchoolYearID }}'" {{ schoolYears.previous is empty ? 'disabled'}}>
+        <button type="button" class="rounded-l text-gray-600 bg-gray-200 border-gray-500 {{ schoolYears.previous is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" onclick="window.location = '{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.previous.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}'" {{ schoolYears.previous is empty ? 'disabled'}}>
             {{ __('Prev') }}
         </button>
 
         <form action="{{ absoluteURL }}/index.php?q={{ address }}" method="get">
             <input type="hidden" name="q" value="{{ address }}">
+            {% for name, value in schoolYears.params %}
+                <input type="hidden" name="{{ name }}" value="{{ value }}">
+            {% endfor %}
             <select name="gibbonSchoolYearID" class="auto-submit bg-gray-200 border-gray-500 border-r-0 {{ buttonStyle }}">
             {%- for value, name in schoolYears.years -%}
                 <option value="{{ value }}" {{ schoolYears.current.gibbonSchoolYearID == value ? 'selected' : ''}}>{{ name }}</option>
@@ -69,7 +72,7 @@ all stylesheets and scripts with a 'head' context.
             </select>
         </form>
 
-        <button type="button" class="rounded-r text-gray-600 border-gray-500 {{ schoolYears.next is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" onclick="window.location = '{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.next.gibbonSchoolYearID }}'" {{ schoolYears.next is empty ? 'disabled'}}>
+        <button type="button" class="rounded-r text-gray-600 border-gray-500 {{ schoolYears.next is not empty ? 'hover:bg-gray-400'}} {{ buttonStyle }}" onclick="window.location = '{{ absoluteURL }}/index.php?q={{ address }}&gibbonSchoolYearID={{ schoolYears.next.gibbonSchoolYearID }}&{{ schoolYears.params|url_encode }}'" {{ schoolYears.next is empty ? 'disabled'}}>
         {{ __('Next') }}
         </button>
     </div>

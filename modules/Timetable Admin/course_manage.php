@@ -22,6 +22,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     // Access denied
@@ -30,54 +31,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     //Proceed!
     $page->breadcrumbs->add(__('Manage Courses & Classes'));
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    }
-
-    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
-        
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $nextYear = $container->get(SchoolYearGateway::class)->getNextSchoolYearByID($gibbonSchoolYearID);
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-
-        echo "<div class='linkTop'>";
-            //Print year picker
-            $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-			$nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-			if ($previousYear != false) {
-				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-			} else {
-				echo __('Previous Year').' ';
-			}
-			echo ' | ';
-			if ($nextYear != false) {
-				echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-			} else {
-				echo __('Next Year').' ';
-			}
-        echo '</div>';
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         $search = (isset($_GET['search']))? $_GET['search'] : '';
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
@@ -125,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         // DATA TABLE
         $table = DataTable::createPaginated('courseManage', $criteria);
 
-        if ($nextYear != false) {
+        if (!empty($nextYear)) {
             $table->addHeaderAction('copy', __('Copy All To Next Year'))
                 ->setURL('/modules/Timetable Admin/course_manage_copyProcess.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-                ->addParam('gibbonSchoolYearIDNext', $nextYear)
+                ->addParam('gibbonSchoolYearIDNext', $nextYear['gibbonSchoolYearID'])
                 ->addParam('search', $search)
                 ->setIcon('copy')
                 ->onCLick('return confirm("'.__('Are you sure you want to do this? All courses and classes, but not their participants, will be copied.').'");')

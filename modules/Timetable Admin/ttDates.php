@@ -26,60 +26,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
     //Proceed!
     $page->breadcrumbs->add(__('Tie Days to Dates'));
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    }
-
-    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
-
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowcount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $schoolYear = $result->fetch();
-            $gibbonSchoolYearID = $schoolYear['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $schoolYear['name'];
-        }
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-        echo '<p>';
-        echo __('To multi-add a single timetable day to multiple dates, use the checkboxes in the relevant dates, and then press the Submit button at the bottom of the page.');
-        echo '</p>';
+        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/ttDates.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/ttDates.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-        echo '</div>';
-
-
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
