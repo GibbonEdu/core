@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Domain\Activities\ActivityTypeGateway;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Activities\ActivityTypeGateway;
 use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings.php') == false) {
@@ -32,26 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $form = Form::create('activitySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activitySettingsProcess.php');
 
     $settingGateway = $container->get(SettingGateway::class);
-    $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
     $activityTypeGateway = $container->get(ActivityTypeGateway::class);
-    
-    // Activity Types - CSV to Table Migration
-    if (!empty($activityTypes)) {
-        $continue = true;
-        $activityTypes = array_map('trim', explode(',', $activityTypes));
-        $access = $settingGateway->getSettingByScope('Activities', 'access');
-        $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
-        $backupChoice = $settingGateway->getSettingByScope('Activities', 'backupChoice');
-
-        foreach ($activityTypes as $type) {
-            $inserted = $activityTypeGateway->insert(['name' => $type, 'access' => $access, 'enrolmentType' => $enrolmentType, 'backupChoice' => $backupChoice]);
-            $continue &= $inserted;
-        }
-
-        if ($continue) {
-            $settingGateway->updateSettingByScope('Activities', 'activityTypes', '');
-        }
-    }
 
     // QUERY
     $criteria = $activityTypeGateway->newQueryCriteria()
