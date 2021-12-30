@@ -65,8 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
 
                 echo '<h1>';
                 echo $row['name'].'<br/>';
-                $options = $settingGateway->getSettingByScope('Activities', 'activityTypes');
-                if ($options != '') {
+                if (!empty($row['type'])) {
                     echo "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>";
                     echo trim($row['type']);
                     echo '</div>';

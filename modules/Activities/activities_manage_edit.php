@@ -90,16 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ]);
 
             $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
-			if (empty($activityTypes)) {
-				$activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
-            	$activityTypes = array_map('trim', explode(',', $activityTypes));
-			}
 
-			if (!empty($activityTypes)) {
-				$row = $form->addRow();
-					$row->addLabel('type', __('Type'));
-					$row->addSelect('type')->fromArray($activityTypes)->placeholder();
-			}
+            if (!empty($activityTypes)) {
+                $row = $form->addRow();
+                    $row->addLabel('type', __('Type'));
+                    $row->addSelect('type')->fromArray($activityTypes)->placeholder();
+            }
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));

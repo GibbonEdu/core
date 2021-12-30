@@ -57,7 +57,7 @@ class ActivityTypes extends Migration
             }
 
             if (!$partialFail) {
-                $this->settingGateway->updateSettingByScope('Activities', 'activityTypes', '');
+                $this->settingGateway->deleteWhere(['scope' => 'Activities', 'name' => 'activityTypes']);
             }
         }
 
