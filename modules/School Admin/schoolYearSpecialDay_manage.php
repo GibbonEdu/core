@@ -26,31 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     //Proceed!
     $page->breadcrumbs->add(__('Manage Special Days'));
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
-    }
-
-    if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
-        
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if ($gibbonSchoolYearID != '') {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);

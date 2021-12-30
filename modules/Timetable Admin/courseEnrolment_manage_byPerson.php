@@ -29,20 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $page->breadcrumbs->add(__('Course Enrolment by Person'));
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
-    if (empty($gibbonSchoolYearID) || $gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    } else {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
-        $result = $pdo->executeQuery($data, $sql);
-        
-        $gibbonSchoolYearName = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
-    }
-
-    if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearName)) {
+    if (empty($gibbonSchoolYearID)) {
         echo '<div class="error">';
         echo __('The specified record does not exist.');
         echo '</div>';

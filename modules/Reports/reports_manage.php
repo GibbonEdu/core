@@ -29,13 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage.php
     // Proceed!
     $page->breadcrumbs->add(__('Manage Reports'));
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID)) {
-        $schoolYearGateway = $container->get(SchoolYearGateway::class);
-        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
-
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
     

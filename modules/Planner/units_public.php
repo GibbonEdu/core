@@ -24,7 +24,6 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 // common variables
 $makeUnitsPublic = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'makeUnitsPublic');
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
 $page->breadcrumbs->add(__('Learn With Us'));
@@ -36,39 +35,7 @@ if ($makeUnitsPublic != 'Y') {
     echo '</div>';
 } else {
     //Get action with highest precendence
-    if ($gibbonSchoolYearID == '') {
-        
-            $data = array();
-            $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    } else {
-        
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\School\SchoolYearGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_manage_add.php') == false) {
     // Access denied
@@ -91,13 +92,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
                 $row->addLabel('gibbonSpaceID', __('Location'));
                 $row->addSelectSpace('gibbonSpaceID');
 
-            $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+            $nextYear = $container->get(SchoolYearGateway::class)->getNextSchoolYearByID($gibbonSchoolYearID);
             $row = $form->addRow();
                 $row->addLabel('gibbonFormGroupIDNext', __('Next Form Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
                 } else {
-                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear);
+                    $row->addSelectFormGroup('gibbonFormGroupIDNext', $nextYear['gibbonSchoolYearID']);
                 }
 
             $row = $form->addRow();

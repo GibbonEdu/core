@@ -45,21 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
     // School Year Info
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-
-    if ($gibbonSchoolYearID != $session->get('gibbonSchoolYearID')) {
-        $schoolYear = $schoolYearGateway->getByID($gibbonSchoolYearID);
-        $gibbonSchoolYearName = $schoolYear['name'];
-    }
 
     if (empty($gibbonSchoolYearID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 
-    $gibbonCourseID = null;
-    if (isset($_GET['gibbonCourseID'])) {
-        $gibbonCourseID = $_GET['gibbonCourseID'];
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
     }
     if ($gibbonCourseID == '') {
         try {

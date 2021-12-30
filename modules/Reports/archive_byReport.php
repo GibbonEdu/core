@@ -39,9 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID) && $canViewPastReports) {
-        $schoolYearGateway = $container->get(SchoolYearGateway::class);
-        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
-
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
 

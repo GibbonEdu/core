@@ -31,15 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
-
-    if ($gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    } else {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
-        $gibbonSchoolYearName = $pdo->selectOne($sql, $data);
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 

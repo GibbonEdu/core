@@ -32,13 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
 
     $page->breadcrumbs->add(__('Manage Form Groups'));
 
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $nextYear = $container->get(SchoolYearGateway::class)->getNextSchoolYearByID($gibbonSchoolYearID);
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID)) {
-        $schoolYearGateway = $container->get(SchoolYearGateway::class);
-        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
-
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
         
@@ -61,11 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     // DATA TABLE
     $table = DataTable::createPaginated('formGroupManage', $criteria);
 
-    if (!empty($nextSchoolYear)) {
+    if (!empty($nextYear)) {
         $table->addHeaderAction('copy', __('Copy All To Next Year'))
             ->setURL('/modules/School Admin/formGroup_manage_copyProcess.php')
             ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->addParam('gibbonSchoolYearIDNext', $nextSchoolYear['gibbonSchoolYearID'])
+            ->addParam('gibbonSchoolYearIDNext', $nextYear['gibbonSchoolYearID'])
             ->setIcon('copy')
             ->onClick('return confirm("'.__('Are you sure you want to continue?').' '.__('This operation cannot be undone.').'");')
             ->displayLabel()

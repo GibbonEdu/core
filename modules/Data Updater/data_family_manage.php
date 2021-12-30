@@ -33,9 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID)) {
-        $schoolYearGateway = $container->get(SchoolYearGateway::class);
-        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
-
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
 
