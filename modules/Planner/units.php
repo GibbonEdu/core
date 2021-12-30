@@ -50,9 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
+    
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
-    }
     if ($gibbonCourseID == '') {
         try {
             if ($highestAction == 'Unit Planner_all') {
@@ -74,10 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
     if ($gibbonCourseID != '') {
 
-            $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonCourseID' => $gibbonCourseID);
+        $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
         }
@@ -88,10 +89,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
 
-            $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
-            $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
-            $resultPrevious = $connection2->prepare($sqlPrevious);
-            $resultPrevious->execute($dataPrevious);
+        $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
+        $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
+        $resultPrevious = $connection2->prepare($sqlPrevious);
+        $resultPrevious->execute($dataPrevious);
         if ($resultPrevious->rowCount() == 1) {
             $rowPrevious = $resultPrevious->fetch();
             $gibbonCourseIDPrevious = $rowPrevious['gibbonCourseID'];
@@ -101,17 +102,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
     if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
 
-            $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
-            $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
-            $resultNext = $connection2->prepare($sqlNext);
-            $resultNext->execute($dataNext);
+        $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
+        $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
+        $resultNext = $connection2->prepare($sqlNext);
+        $resultNext->execute($dataNext);
         if ($resultNext->rowCount() == 1) {
             $rowNext = $resultNext->fetch();
             $gibbonCourseIDNext = $rowNext['gibbonCourseID'];
         }
     }
-
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     if (empty($gibbonCourseID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));

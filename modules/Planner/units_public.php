@@ -37,7 +37,7 @@ if ($makeUnitsPublic != 'Y') {
     //Get action with highest precendence
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['sidebar' => 'false']);
 
     //Fetch units
     

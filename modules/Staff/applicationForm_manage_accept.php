@@ -58,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             //Let's go!
             $values = $result->fetch();
             $step = $_GET['step'] ?? 1;
-            }
             if ($step != 1 and $step != 2) {
                 $step = 1;
             }
