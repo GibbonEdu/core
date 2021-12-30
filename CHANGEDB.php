@@ -1061,6 +1061,9 @@ UPDATE `gibbonMarkbookColumn` SET gibbonPlannerEntryID=NULL WHERE gibbonPlannerE
 UPDATE `gibbonCountry` SET `printable_name` = 'Libya', `iddCountryCode` = '00218' WHERE `gibbonCountry`.`printable_name` LIKE '%Libya%';end 
 INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES (NULL, 'Tamazight');end
 ALTER TABLE `gibbonReportingCriteriaType` ADD `defaultValue` VARCHAR(255) DEFAULT NULL AFTER `valueType`;end
+CREATE TABLE IF NOT EXISTS `gibbonPersonStatusLog` (`gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL, `statusOld` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full', `statusNew` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full', `reason` text NOT NULL, `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonPersonStatusLog` ADD PRIMARY KEY (`gibbonPersonStatusLogID`), ADD KEY `gibbonPersonID` (`gibbonPersonID`);end
+ALTER TABLE `gibbonPersonStatusLog` MODIFY `gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'enablePositiveBehaviourLetters', 'Enable Positive Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'behaviourLettersPositiveLetter1Count', 'Positive Letter 1 Count', 'After how many positive records should letter 1 be sent?', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Behaviour', 'behaviourLettersPositiveLetter2Count', 'Positive Letter 2 Count', 'After how many positive records should letter 2 be sent?', '');end
