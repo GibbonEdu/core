@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -95,8 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
     });
 
-    $activityTypeSetting = $settingGateway->getSettingByScope('Activities', 'activityTypes');
-    $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
+    $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
 
     // DATA TABLE
     $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $session);

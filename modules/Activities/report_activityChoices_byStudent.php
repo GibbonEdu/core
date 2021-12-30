@@ -23,6 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -55,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     if (!empty($gibbonPersonID)) {
         $settingGateway = $container->get(SettingGateway::class);
-        $options = $settingGateway->getSettingByScope('Activities', 'activityTypes');
+        $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
         $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
         if ($dateType == 'Term') {
             $maxPerTerm = $settingGateway->getSettingByScope('Activities', 'maxPerTerm');
@@ -82,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
             $table->setTitle($enroledYear['name']);
             $table->addColumn('activityName', __('Activity'));
 
-            if ($options != '') {
+            if (!empty($activityTypes)) {
                 $table->addColumn('activityType', __('Type'));
             }
 

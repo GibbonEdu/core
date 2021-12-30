@@ -642,12 +642,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                         $activitiesOutput .= '<th>';
                         $activitiesOutput .= __('Activity');
                         $activitiesOutput .= '</th>';
-                        $options = $this->settingGateway->getSettingByScope('Activities', 'activityTypes');
-                        if ($options != '') {
-                            $activitiesOutput .= '<th>';
-                            $activitiesOutput .= __('Type');
-                            $activitiesOutput .= '</th>';
-                        }
+                        $activitiesOutput .= '<th>';
+                        $activitiesOutput .= __('Type');
+                        $activitiesOutput .= '</th>';
                         $activitiesOutput .= '<th>';
                         if ($dateType != 'Date') {
                             $activitiesOutput .= __('Term');
