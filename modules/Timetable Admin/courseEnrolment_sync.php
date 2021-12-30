@@ -31,36 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
-    if ($gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    } else {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
-        $gibbonSchoolYearName = $pdo->selectOne($sql, $data);
-    }
-
-    echo '<h2>';
-    echo $gibbonSchoolYearName;
-    echo '</h2>';
-
-    echo "<div class='linkTop'>";
-        //Print year picker
-        $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-        $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-        if ($previousYear != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-        } else {
-            echo __('Previous Year').' ';
-        }
-        echo ' | ';
-        if ($nextYear != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-    echo '</div>';
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     $form = Form::create('settings', $session->get('absoluteURL').'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
     $form->setTitle(__('Settings'));

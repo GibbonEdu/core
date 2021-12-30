@@ -31,51 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     echo __('The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specify due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.');
     echo '</p>';
 
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearID == $gibbon->session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-        $gibbonSchoolYearName = $gibbon->session->get('gibbonSchoolYearName');
-    }
-
-    if ($gibbonSchoolYearID != $gibbon->session->get('gibbonSchoolYearID')) {
-        
-            $data = array('gibbonSchoolYearID' => $_GET['gibbonSchoolYearID']);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowcount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } else {
-            $row = $result->fetch();
-            $gibbonSchoolYearID = $row['gibbonSchoolYearID'];
-            $gibbonSchoolYearName = $row['name'];
-        }
-    }
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if ($gibbonSchoolYearID != '') {
-        echo '<h2>';
-        echo $gibbonSchoolYearName;
-        echo '</h2>';
-
-        echo "<div class='linkTop'>";
-            //Print year picker
-            if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-        echo ' | ';
-        if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-        echo '</div>';
+       $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         echo '<h3>';
         echo __('Search');
