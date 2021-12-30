@@ -130,7 +130,7 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
-            ->leftJoin('gibbonBehaviour', "gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonBehaviour.type='Negative' 
+            ->leftJoin('gibbonBehaviour', "gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID 
                 AND gibbonBehaviour.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID")
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
@@ -138,6 +138,11 @@ class BehaviourGateway extends QueryableGateway implements ScrubbableGateway
             ->groupBy(['gibbonPerson.gibbonPersonID']);
 
         $criteria->addFilterRules([
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.type = :type)')
+                    ->bindValue('type', $type);
+            },
             'descriptor' => function ($query, $descriptor) {
                 return $query
                     ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.descriptor = :descriptor)')
