@@ -87,6 +87,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('address', $session->get('address'));
 
+            $form->addHeaderAction('view', __('View Status Log'))
+                    ->displayLabel()
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->setURL('/modules/User Admin/user_manage_view_status_log.php')
+                    ->modalWindow();
+
             // BASIC INFORMATION
             $form->addRow()->addHeading(__('Basic Information'));
 
