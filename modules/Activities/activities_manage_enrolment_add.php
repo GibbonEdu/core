@@ -77,14 +77,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $settingGateway = $container->get(SettingGateway::class);
 
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
-                echo '</div>';
-			}
 
 			$form = Form::create('activityEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
 
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
+                $params = [
+                    "search" => $_GET['search'] ?? '',
+                    "gibbonSchoolYearTermID" => $_GET['gibbonSchoolYearTermID'] ?? null,
+                    "gibbonActivityID" => $gibbonActivityID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Activities/activities_manage_enrolment.php')
+                    ->addParams($params);
+			}
+			
 			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();

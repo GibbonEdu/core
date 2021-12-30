@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\ExpenseGateway;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -123,9 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                             $values = $result->fetch();
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
-                                echo '</div>';
+                                 $params = [
+                                    "gibbonFinanceBudgetCycleID" => $gibbonFinanceBudgetCycleID,
+                                    "status2" => $status2,
+                                    "gibbonFinanceBudgetID2" =>$gibbonFinanceBudgetID2
+                                ];
+                                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenses_manage.php')->withQueryParams($params));
                             }
 
                             // Get budget allocation & allocated amounts

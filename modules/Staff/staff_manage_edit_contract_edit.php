@@ -52,16 +52,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             //Let's go!
             $values = $result->fetch();
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "gibbonStaffID" => $gibbonStaffID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Staff/staff_manage_edit.php')
+                    ->addParams($params);
+            }
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));
