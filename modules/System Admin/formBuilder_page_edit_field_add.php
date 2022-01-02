@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     // Get the field group class for the selected option
     $formBuilder = $container->get(FormBuilder::class);
-    $fieldGroupClass = $formBuilder->getFieldGroupClass($fieldGroup);
+    $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
     
     if (empty($fieldGroupClass)) {
         echo Format::alert(__('The specified record cannot be found.'));

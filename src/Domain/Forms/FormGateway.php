@@ -69,4 +69,17 @@ class FormGateway extends QueryableGateway
 
         return $this->runSelect($select);
     }
+
+    public function getNewUniqueIdentifier(string $gibbonFormID)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID];
+        $sql = "SELECT gibbonFormSubmissionID FROM gibbonFormSubmission WHERE gibbonFormID=:gibbonFormID AND identifier=:identifier";
+
+        do {
+            $data['identifier'] =  bin2hex(random_bytes(20));
+            $result = $this->db()->selectOne($sql, $data);
+        } while (!empty($result));
+
+        return $data['identifier'];
+    }
 }

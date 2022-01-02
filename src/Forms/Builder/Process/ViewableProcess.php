@@ -17,22 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder\Fields;
+namespace Gibbon\Forms\Builder\Process;
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\Layout\Row;
-
-interface FieldGroupInterface
+interface ViewableProcess 
 {
-    public function getDescription() : string;
-
-    public function getField($fieldName) : array;
-
-    public function getFields() : array;
-
-    public function getFieldOptions() : array;
-
-    public function addFieldToForm(Form $form, array $field) : Row;
-
-    public function getFieldDataFromPOST(string $fieldFame, string $fieldType);
+    public function getViewClass() : string;
 }

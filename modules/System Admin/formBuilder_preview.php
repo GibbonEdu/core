@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     }
 
     // Setup the form builder & data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
     // $formData = $container->get(FormSessionStorage::class);
     $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
     $formData->load($identifier);
@@ -63,7 +63,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Build the form
     $form = $formBuilder->build($session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
-    $form->addHiddenValue('identifier', $identifier);
     $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
     
     // Load values from the form data storage
@@ -72,11 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Display results?
     if ($formBuilder->getPageNumber() > $formBuilder->getFinalPageNumber()) {
-        $processes = $formProcessor->getProcesses();
-        foreach ($processes as $processClass => $processDetails) {
-            if (empty($processDetails['view'])) continue;
+        $processes = $formProcessor->getViewableProcesses();
+        foreach ($processes as $process) {
+            $viewClass = $process->getViewClass();
+            if (empty($viewClass)) continue;
 
-            $view = $container->get($processDetails['view']);
+            $view = $container->get($viewClass);
             $view->display($form, $formData);
         }
     }

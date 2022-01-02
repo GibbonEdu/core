@@ -37,6 +37,7 @@ class FormDatabaseStorage extends AbstractFormStorage
     {
         $this->context = [
             'gibbonFormID'     => $builder->getDetail('gibbonFormID'),
+            'gibbonFormPageID' => $builder->getDetail('gibbonFormPageID'),
             'foreignTable'     => $foreignTable,
             'foreignTableID'   => $foreignTableID,
             'owner'            => $builder->getDetail('owner'),
@@ -55,14 +56,12 @@ class FormDatabaseStorage extends AbstractFormStorage
             $data = array_merge($existingData, $this->getData());
 
             $saved = $this->formSubmissionGateway->update($values['gibbonFormSubmissionID'], [
-                'gibbonFormPageID'  => $this->get('gibbonFormPageID'),
                 'data'              => json_encode($data),
                 'timestampModified' => date('Y-m-d H:i:s'),
             ]);
         } else {
             // Create a new submission
             $saved = $this->formSubmissionGateway->insert($this->context + [
-                'gibbonFormPageID' => $this->get('gibbonFormPageID'),
                 'identifier'       => $identifier,
                 'data'             => json_encode($this->getData()),
                 'timestampCreated' => date('Y-m-d H:i:s'),

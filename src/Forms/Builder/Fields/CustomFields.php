@@ -94,4 +94,9 @@ class CustomFields extends AbstractFieldGroup
 
         return $row;
     }
+
+    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
+    {
+        return $this->customFieldHandler->getFieldValueFromPOST($fieldName, $fieldType);
+    }
 }

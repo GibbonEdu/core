@@ -19,73 +19,105 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
-use Gibbon\Forms\Builder\FormBuilderInterface;
-use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\Exception\NotFoundException;
+use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Forms\Builder\Exception\MissingFieldException;
+use Gibbon\Forms\Builder\Exception\MissingValueException;
+use Gibbon\Forms\Builder\Process\ViewableProcess;
 
 abstract class AbstractFormProcessor implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
     /**
+     * @var bool
+     */
+    private $mode = 'run';
+
+    /**
      * @var FormBuilderInterface
      */
-    protected $builder;
+    private $builder;
 
     /**
      * @var FormDataInterface
      */
-    protected $data;
-
-    /**
-     * @var array[]
-     */
-    protected $processes = [];
+    private $data;
 
     /**
      * @var string[]
      */
-    protected $errors = [];
+    private $processes = [];
+
+    /**
+     * @var string[]
+     */
+    private $errors = [];
 
     abstract public function submitProcess();
 
-    public function editProcess() {}
+    abstract public function editProcess();
 
-    public function acceptProcess() {}
+    abstract public function acceptProcess();
 
     public function submitForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->mode = 'run';
         $this->builder = $builder;
         $this->data = $data;
+        
         $this->submitProcess();
     }
 
     public function editForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->mode = 'run';
         $this->builder = $builder;
         $this->data = $data;
+
         $this->editProcess();
     }
 
     public function acceptForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->mode = 'run';
         $this->builder = $builder;
         $this->data = $data;
+
         $this->acceptProcess();
     }
 
     public function verifyForm(FormBuilderInterface $builder)
     {
+        $this->mode = 'verify';
         $this->builder = $builder;
-        return $this->verify();
+
+        $this->submitProcess();
+        $this->editProcess();
+        $this->acceptProcess();
+
+        return $this->errors;
     }
 
     public function getProcesses()
     {
+        $this->mode = 'boot';
+
+        $this->submitProcess();
+        $this->editProcess();
+        $this->acceptProcess();
+
         return $this->processes;
+    }
+
+    public function getViewableProcesses()
+    {
+        return array_filter($this->getProcesses(), function ($process) {
+            return $process instanceof ViewableProcess;
+        });
     }
 
     public function getErrors()
@@ -96,34 +128,34 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     protected function run(string $processClass)
     {
         try {
-            $process = $this->getContainer()->get($processClass);
-            $process->process($this->builder, $this->data);
+            $process = $this->getProcess($processClass);
 
-            $this->processes[$processClass]['processed'] = true;
+            if ($this->mode == 'verify') {
+                $process->verify($this->builder);
+                $process->setVerified();
+            } elseif ($this->mode == 'run') {
+                $process->verify($this->builder, $this->data);
+                $process->process($this->builder, $this->data);
+                $process->setProcessed();
+            }
 
         } catch (NotFoundException $e) {
             $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
         } catch (MissingFieldException $e) {
             $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $e->getMessage()]);
+        } catch (MissingValueException $e) {
+            $this->errors[] = __('Missing value for required field: {fieldName}', ['fieldName' => $e->getMessage()]);
         }
     }
 
-    protected function verify()
+    private function getProcess(string $processClass)
     {
-        foreach ($this->processes as $processClass => $processDetails) {
-            try {
-                $process = $this->getContainer()->get($processClass);
-                $process->verify($this->builder);
-
-                $this->processes[$processClass]['valid'] = true;
-
-            } catch (NotFoundException $e) {
-                $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
-            } catch (MissingFieldException $e) {
-                $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $e->getMessage()]);
-            }
+        if (isset($this->processes[$processClass])) {
+            return $this->processes[$processClass];
         }
 
-        return $this->errors;
+        $this->processes[$processClass] = $this->getContainer()->get($processClass);
+
+        return $this->processes[$processClass];
     }
 }

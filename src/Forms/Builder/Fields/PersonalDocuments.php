@@ -85,4 +85,14 @@ class PersonalDocuments extends AbstractFieldGroup
 
         return $form->getRow();
     }
+
+    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
+    {
+        $personalDocumentFail = false;
+        $params = [$fieldName => true, 'applicationForm' => true, 'class' => ''];
+
+        // $this->personalDocumentHandler->updateDocumentsFromPOST('gibbonFormSubmission', null, $params, $personalDocumentFail);
+
+        return $_POST['document'] ?? '';
+    }
 }

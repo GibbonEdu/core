@@ -20,28 +20,54 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Forms\Builder\FormBuilderInterface;
-use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Forms\Builder\Exception\MissingFieldException;
+use Gibbon\Forms\Builder\Exception\MissingValueException;
 
 abstract class AbstractFormProcess 
 {
-    protected $requiredFields = [];
-
-    public function getRequiredFields()
-    {
-        return $this->requiredFields;
-    }
-
-    public function verify(FormBuilderInterface $builder)
-    {
-        foreach ($this->requiredFields as $fieldName) {
-            if (!$builder->hasField($fieldName)) {
-                throw new MissingFieldException($fieldName);
-            }
-        }
-    }
+    protected $verified = false;
+    protected $processed = false;
 
     abstract public function process(FormBuilderInterface $builder, FormDataInterface $data);
 
     abstract public function rollback(FormBuilderInterface $builder, FormDataInterface $data);
+
+    public function isVerified()
+    {
+        return $this->verified;
+    }
+
+    public function setVerified($verified = true)
+    {
+        $this->verified = $verified;
+    }
+
+    public function isProcessed()
+    {
+        return $this->processed;
+    }
+
+    public function setProcessed($processed = true)
+    {
+        $this->processed = $processed;
+    }
+
+    public function getRequiredFields() : array
+    {
+        return $this->requiredFields ?? [];
+    }
+
+    public function verify(FormBuilderInterface $builder, FormDataInterface $data = null)
+    {
+        foreach ($this->getRequiredFields() as $fieldName) {
+            if (!$builder->hasField($fieldName)) {
+                throw new MissingFieldException($fieldName);
+            }
+
+            if (!empty($data) && !$data->has($fieldName)) {
+                throw new MissingValueException($fieldName);
+            }
+        }
+    }
 }

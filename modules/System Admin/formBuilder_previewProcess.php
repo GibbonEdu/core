@@ -30,7 +30,7 @@ $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
 $identifier = $_REQUEST['identifier'] ?? null;
 $pageNumber = $_REQUEST['page'] ?? 1;
 
-$URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber]);
+$URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier]);
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     header("Location: {$URL->withReturn('error0')}");
@@ -48,16 +48,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
     $formData->load($identifier);
 
-    // Get any submitted values, the lazy way
-    $data = $_POST + $_FILES;
+    // Acquire data and handle file uploads - on error, return to the current page
+    $data = $formBuilder->acquire();
+    if (!$data) {
+        header("Location: {$URL->withReturn('error1')}");
+        exit;
+    }
 
-    // Save data regardless of validation, so users don't lose data?
+    // Save data before validation, so users don't lose data?
     $formData->addData($data);
-    $formData->save('preview');
+    $formData->save($identifier);
 
+    // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
-
-    if (!$validated) {
+    if (!empty($validated)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
@@ -73,16 +77,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
         $formProcessor->submitForm($formBuilder, $formData);
 
-        $formData->save('preview');
+        $formData->save($identifier);
+        
+        // Cleanup data, probably remove file uploads here
         $session->set('formpreview', []);
 
-        $URL = $URL
-            ->withQueryParam('return', 'success0')
-            ->withQueryParam('page', $pageNumber+1);
+        $URL = $URL->withQueryParam('return', 'success0')->withQueryParam('page', $pageNumber+1);
 
     } elseif ($nextPage) {
+        // Save data and proceed to the next page
         $formData->addData(['maxPage' => $maxPage]);
-        $formData->save('preview');
+        $formData->save($identifier);
 
         $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
     }

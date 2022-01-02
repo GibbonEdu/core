@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $processes = $formProcessor->getProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
-        return ($process['valid'] ?? false) == true;
+        return $process->isVerified() == true;
     });
     $inactiveProcesses = array_diff_key($processes, $activeProcesses);
     
@@ -162,8 +162,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
-        foreach ($activeProcesses as $processDetails) {
-            $view = $container->get($processDetails['view']);
+        foreach ($activeProcesses as $process) {
+            $viewClass = $process->getViewClass();
+            if (empty($viewClass)) continue;
+
+            $view = $container->get($viewClass);
 
             $view->configure($form);
         }

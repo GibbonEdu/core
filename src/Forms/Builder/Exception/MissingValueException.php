@@ -17,22 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder\Fields;
+namespace Gibbon\Forms\Builder\Exception;
 
-use Gibbon\Forms\Form;
-use Gibbon\Forms\Layout\Row;
+use Exception;
 
-interface FieldGroupInterface
-{
-    public function getDescription() : string;
-
-    public function getField($fieldName) : array;
-
-    public function getFields() : array;
-
-    public function getFieldOptions() : array;
-
-    public function addFieldToForm(Form $form, array $field) : Row;
-
-    public function getFieldDataFromPOST(string $fieldFame, string $fieldType);
-}
+class MissingValueException extends Exception {}

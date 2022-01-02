@@ -24,13 +24,14 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Forms\Builder\View\SendEmailView;
 
-class SendEmail extends AbstractFormProcess
+class SendEmail extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['email'];
 
-    protected $session;
-    protected $mail;
+    private $session;
+    private $mail;
 
     public function __construct(Session $session, Mailer $mail)
     {
@@ -38,9 +39,16 @@ class SendEmail extends AbstractFormProcess
         $this->mail = $mail;
     }
 
+    public function getViewClass() : string
+    {
+        return SendEmailView::class;
+    }
+
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if ($builder->getConfig('sendEmail') != 'Y') return;
+        if ($builder->getConfig('sendEmail') != 'Y') {
+            return;
+        }
 
         $this->mail->Subject = 'Preview Test Mail';
         $this->mail->renderBody('mail/message.twig.html', [

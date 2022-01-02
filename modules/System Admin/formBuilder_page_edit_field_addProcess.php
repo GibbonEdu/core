@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     // Get the field group class for the selected option
     $formBuilder = $container->get(FormBuilder::class);
-    $fieldGroupClass = $formBuilder->getFieldGroupClass($urlParams['fieldGroup']);
+    $fieldGroupClass = $formBuilder->getFieldGroup($urlParams['fieldGroup']);
 
     if (empty($fieldGroupClass)) {
         $URL .= '&return=error1';

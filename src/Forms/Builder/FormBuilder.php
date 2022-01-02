@@ -96,7 +96,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->finalPageNumber;
     }
 
-    public function getFieldGroupClass($fieldGroup)
+    public function getFieldGroup($fieldGroup)
     {
         if (isset($this->fieldGroups[$fieldGroup])) {
             return $this->fieldGroups[$fieldGroup];
@@ -114,6 +114,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     {
         $this->gibbonFormID = $gibbonFormID;
         $this->pageNumber = $pageNumber;
+        $this->identifier = $identifier;        
         
         // Load form details
         $this->details = $this->formGateway->getByID($this->gibbonFormID);
@@ -122,7 +123,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Load all page data
         $criteria = $this->formPageGateway->newQueryCriteria()->sortBy('sequenceNumber', 'ASC');
         $this->pages = $this->formPageGateway->queryPagesByForm($criteria, $this->gibbonFormID)->toArray();
-        $this->gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
+        $this->details['gibbonFormPageID'] = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
 
         // Determine the final page number
         $finalPage = end($this->pages);
@@ -140,7 +141,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
 
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
-        $form->addHiddenValue('gibbonFormPageID', $this->gibbonFormPageID);
+        $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
+        $form->addHiddenValue('identifier', $this->identifier);
         $form->addHiddenValue('page', $this->pageNumber);
         
         // Add pages to the multi-part form
@@ -148,7 +150,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             $form->setCurrentPage($this->pageNumber);
 
             foreach ($this->pages as $formPage) {
-                $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview.php')->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber']]);
+                $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview.php')->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber'], 'identifier' => $this->identifier]);
                 $form->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
             }
         }
@@ -158,7 +160,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             foreach ($this->fields as $field) {
                 if ($field['pageNumber'] != $this->pageNumber) continue;
 
-                $fieldGroup = $this->getFieldGroupClass($field['fieldGroup']);
+                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($form, $field);
             }
 
@@ -170,17 +172,36 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $form;
     }
 
-    public function validate(array $data)
+    public function acquire()
     {
-        $validated = true;
-        foreach ($this->fields as $fieldName => $field) {
-            if (!isset($data[$fieldName])) continue;
+        $data = [];
 
-            if ($field['required'] != 'N' && empty($data[$fieldName])) {
-                $validated = false;
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['pageNumber'] != $this->pageNumber) continue;
+
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field['fieldType']);
+
+            if (!is_null($fieldValue)) {
+                $data[$fieldName] = $fieldValue;
             }
         }
 
-        return $validated;
+        return $data;
+    }
+
+    public function validate(array $data)
+    {
+        $invalid = [];
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['pageNumber'] != $this->pageNumber) continue;
+
+            $fieldValue = &$data[$fieldName];
+            if ($field['required'] != 'N' &&  (is_null($fieldValue) || $fieldValue == '')) {
+                $invalid[] = $fieldName;
+            }
+        }
+
+        return !empty($invalid);
     }
 }

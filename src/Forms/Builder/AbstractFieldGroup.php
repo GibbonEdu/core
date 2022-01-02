@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 
@@ -54,9 +55,9 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         }, []);
     }
 
-    public function getField($name) : array 
+    public function getField($fieldName) : array 
     {
-        return $this->fields[$name] ?? [];
+        return $this->fields[$fieldName] ?? [];
     }
 
     public function addFieldToForm(Form $form, array $field) : Row
@@ -75,10 +76,19 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $row;
     }
 
-    public function getFieldDataFromPOST() : array 
+    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
     {
-        $data = [];
+        $fieldValue = $_POST[$fieldName] ?? null;
 
-        return $data;
+        switch ($fieldType) {
+            case 'date': 
+                $fieldValue = !empty($fieldValue) ? Format::dateConvert($fieldValue) : null;
+                break;
+            case 'checkboxes': 
+                $fieldValue = !empty($fieldValue) ? implode(',', $fieldValue) : '';
+                break;
+        }
+
+        return $fieldValue;
     }
 }

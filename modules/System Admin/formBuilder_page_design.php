@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
     
     foreach ($fields as $field) {
-        $fieldGroupClass = $formBuilder->getFieldGroupClass($field['fieldGroup']);
+        $fieldGroupClass = $formBuilder->getFieldGroup($field['fieldGroup']);
 
         if (empty($fieldGroupClass)) {
             $formFields->addRow()->addContent(Format::alert(__('The specified record cannot be found.')));

@@ -21,20 +21,21 @@ namespace Gibbon\Forms\Builder\Processor;
 
 use Gibbon\Forms\Builder\AbstractFormProcessor;
 use Gibbon\Forms\Builder\Process\SendEmail;
-use Gibbon\Forms\Builder\View\SendEmailView;
 
 class PreviewFormProcessor extends AbstractFormProcessor 
 {
-    protected $processes = [
-        SendEmail::class => [
-            'process' => SendEmail::class,
-            'view'    => SendEmailView::class,
-        ],
-        
-    ];
-
     public function submitProcess()
     {
         $this->run(SendEmail::class);
+    }
+
+    public function editProcess()
+    {
+
+    }
+
+    public function acceptProcess()
+    {
+
     }
 }

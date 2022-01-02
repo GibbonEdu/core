@@ -192,6 +192,10 @@ class CustomField extends Input
 
             case 'radio':
             case 'checkboxes':
+                if (stripos($value, ',') !== false) {
+                    $value = array_map('trim', explode(',', $value));
+                }
+
                 $this->customField->checked($value);
                 break;
 
