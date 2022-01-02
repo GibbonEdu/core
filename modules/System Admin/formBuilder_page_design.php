@@ -61,20 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $formValues = $formGateway->getByID($gibbonFormID);
     $values = $formPageGateway->getByID($gibbonFormPageID);
 
-    if (empty($values)) {
-        $page->addError(__('The specified record cannot be found.'));
+    if (empty($formValues) || empty($values)) {
+        $page->addError(__('There are no records to display.'));
         return;
     }
-
-    $form = Form::create('formsManage', '');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    
-    $row = $form->addRow();
-        $row->addLabel('formName', __('Form Name'));
-        $row->addTextField('formName')->readonly()->required()->setValue($formValues['name']);
-
-
-    // echo $form->getOutput();
 
     // QUERY
     $criteria = $formGateway->newQueryCriteria()
@@ -177,6 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     echo $page->fetchFromTemplate('components/formBuilder.twig.html', [
         'gibbonFormID' => $gibbonFormID,
         'form'         => $values,
+        'fieldCount'   => count($fields),
         'fields'       => $formFields,
         'fieldGroups'  => $formFieldGroups,
     ]);

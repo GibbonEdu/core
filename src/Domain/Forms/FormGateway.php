@@ -40,8 +40,10 @@ class FormGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->distinct()
+            ->cols(['gibbonForm.gibbonFormID', 'gibbonForm.name', 'gibbonForm.active', 'gibbonForm.type', 'COUNT(gibbonFormPageID) as pages'])
             ->from($this->getTableName())
-            ->cols(['gibbonForm.gibbonFormID', 'gibbonForm.name', 'gibbonForm.active', 'gibbonForm.type']);
+            ->leftJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormID=gibbonForm.gibbonFormID')
+            ->groupBy(['gibbonForm.gibbonFormID']);
 
         $criteria->addFilterRules([
             'active' => function ($query, $active) {

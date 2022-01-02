@@ -33,11 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         ->add(__('Edit Form'), 'formBuilder_edit.php', ['gibbonFormID' => $gibbonFormID])
         ->add(__('Add Page'));
 
-    $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_edit.php&sidebar=false&gibbonFormID='.$gibbonFormID.'&gibbonFormPageID='.$_GET['editID'];
+        $page->return->setEditLink($session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_edit.php&gibbonFormID='.$gibbonFormID.'&gibbonFormPageID='.$_GET['editID']);
     }
-    $page->return->setEditLink($editLink);
 
     if (empty($gibbonFormID)) {
         $page->addError(__('You have not specified one or more required parameters.'));

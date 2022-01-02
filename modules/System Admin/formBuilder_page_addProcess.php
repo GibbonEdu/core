@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         'name'           => $_POST['name'] ?? '',
         'introduction'   => $_POST['introduction'] ?? '',
         'postscript'     => $_POST['postscript'] ?? '',
-        'sequenceNumber' => $formPageGateway->getNextSequenceNumberByForm($gibbonFormID),
+        'sequenceNumber' => $formPageGateway->getNextSequenceNumberByForm($gibbonFormID) ?? 1,
     ];
 
     // Validate the required values are present
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     // Validate that this record is unique
-    if (!$formPageGateway->unique($data, ['name'])) {
+    if (!$formPageGateway->unique($data, ['name', 'gibbonFormID'])) {
         $URL .= '&return=error7';
         header("Location: {$URL}");
         exit;

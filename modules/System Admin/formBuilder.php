@@ -48,26 +48,31 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('type', __('Type'));
+    $table->addColumn('pages', __('Pages'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     $table->addActionColumn()
         ->addParam('gibbonFormID')
         ->format(function ($form, $actions) {
-            $actions->addAction('view', __('Preview'))
-                ->setURL('/modules/System Admin/formBuilder_preview.php');
+            if ($form['pages'] > 0) {
+                $actions->addAction('view', __('Preview'))
+                    ->setURL('/modules/System Admin/formBuilder_preview.php');
+            }
 
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/System Admin/formBuilder_edit.php');
 
-            $actions->addAction('design', __('Design'))
-                ->setIcon('markbook')
-                ->setClass('mx-1')
-                ->addParam('sidebar', 'false')
-                ->setURL('/modules/System Admin/formBuilder_page_design.php');
-
-            $actions->addAction('copy', __('Duplicate'))
-                ->setIcon('copy')
-                ->setURL('/modules/System Admin/formBuilder_duplicate.php');
+            if ($form['pages'] > 0) {
+                $actions->addAction('design', __('Design'))
+                    ->setIcon('markbook')
+                    ->setClass('mx-1')
+                    ->addParam('sidebar', 'false')
+                    ->setURL('/modules/System Admin/formBuilder_page_design.php');
+            
+                $actions->addAction('copy', __('Duplicate'))
+                    ->setIcon('copy')
+                    ->setURL('/modules/System Admin/formBuilder_duplicate.php');
+            }
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/System Admin/formBuilder_delete.php');
