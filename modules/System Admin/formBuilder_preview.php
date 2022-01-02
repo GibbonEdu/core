@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
-use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
+use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -33,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         ->add(__('Preview'));
 
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
+    $identifier = $_REQUEST['identifier'] ?? null;
     $pageNumber = $_REQUEST['page'] ?? 1;
 
     if (empty($gibbonFormID)) {
@@ -40,15 +42,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         return;
     }
 
+    if (empty($identifier) && $pageNumber <= 1) {
+        $identifier = $container->get(FormSubmissionGateway::class)->getNewUniqueIdentifier($gibbonFormID);
+    }
+
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber);
     // $formData = $container->get(FormSessionStorage::class);
-    $formData = $container->get(FormDatabaseStorage::class)->setSubmissionDetails($formBuilder, 'preview', 1);
-    $formData->load('preview');
+    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
+    $formData->load($identifier);
 
-    // Validate the form
-    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getFormType());
-    $errors = $formProcessor->checkForm($formBuilder);
+    // Verify the form
+    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    $errors = $formProcessor->verifyForm($formBuilder);
 
     // Display any validation errors
     foreach ($errors as $errorMessage) {
@@ -57,6 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Build the form
     $form = $formBuilder->build($session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
+    $form->addHiddenValue('identifier', $identifier);
     $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
     
     // Load values from the form data storage

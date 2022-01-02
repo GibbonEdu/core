@@ -27,6 +27,7 @@ use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
 require_once '../../gibbon.php';
 
 $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
+$identifier = $_REQUEST['identifier'] ?? null;
 $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber]);
@@ -42,14 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     }
     
     // Setup the form data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
     // $formData = $container->get(FormSessionStorage::class);
-    $formData = $container->get(FormDatabaseStorage::class)->setSubmissionDetails($formBuilder, 'preview', 1);
-    $formData->load('preview');
+    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
+    $formData->load($identifier);
 
     // Get any submitted values, the lazy way
     $data = $_POST + $_FILES;
 
+    // Save data regardless of validation, so users don't lose data?
     $formData->addData($data);
     $formData->save('preview');
 
@@ -68,9 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     if ($pageNumber >= $finalPageNumber) {
         // Run the form processor on this data
-        $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getFormType());
+        $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
         $formProcessor->submitForm($formBuilder, $formData);
 
+        $formData->save('preview');
         $session->set('formpreview', []);
 
         $URL = $URL
@@ -80,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     } elseif ($nextPage) {
         $formData->addData(['maxPage' => $maxPage]);
         $formData->save('preview');
+
         $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
     }
 
