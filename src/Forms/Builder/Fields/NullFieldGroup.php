@@ -17,21 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder\Storage;
+namespace Gibbon\Forms\Builder\Fields;
 
-interface FormDataInterface
+use Gibbon\Forms\Layout\Row;
+use Gibbon\Forms\Builder\AbstractFieldGroup;
+
+class NullFieldGroup extends AbstractFieldGroup
 {
-    public function exists(string $fieldName) : bool;
-
-    public function has(string $fieldName) : bool;
-
-    public function get(string $fieldName);
-
-    public function set(string $fieldName, $value);
-
-    public function getData() : array;
-
-    public function setData(array $data);
-
-    public function addData(array $data);
+    public function __construct()
+    {
+        $this->fields = [];
+    }
 }

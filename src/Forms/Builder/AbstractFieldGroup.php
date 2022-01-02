@@ -25,7 +25,7 @@ use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 
 abstract class AbstractFieldGroup implements FieldGroupInterface
 {
-    protected $fields;
+    protected $fields = [];
 
     public function getDescription() : string
     {

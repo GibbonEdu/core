@@ -143,8 +143,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     // Get the processor for this type of form
     $formProcessor = $formProcessorFactory->getProcessor($values['type']);
 
-    // Validate the form processes
-    $errors = $formProcessor->checkForm($formBuilder);
+    // Verify the form processes
+    $errors = $formProcessor->verifyForm($formBuilder);
     $processes = $formProcessor->getProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
@@ -152,6 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     });
     $inactiveProcesses = array_diff_key($processes, $activeProcesses);
     
+    // Configure active functionality
     if (!empty($activeProcesses)) {
         $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editConfigProcess.php');
 
@@ -176,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         echo $form->getOutput();
     }
 
-
+    // Display requirements for inactive functionality
     if (!empty($inactiveProcesses)) {
         $form = Form::create('formsInactiveFunctionality', '');
 

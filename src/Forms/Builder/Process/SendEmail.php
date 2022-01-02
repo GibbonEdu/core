@@ -40,6 +40,8 @@ class SendEmail extends AbstractFormProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
+        if ($builder->getConfig('sendEmail') != 'Y') return;
+
         $this->mail->Subject = 'Preview Test Mail';
         $this->mail->renderBody('mail/message.twig.html', [
             'title'  => 'Testing',
@@ -49,7 +51,9 @@ class SendEmail extends AbstractFormProcess
         $this->mail->SetFrom($this->session->get('organisationEmail'), $this->session->get('organisationName'));
         $this->mail->AddAddress($formData->get('email'));
 
-        $this->mail->Send();
+        $sent = $this->mail->Send();
+
+        $formData->set('sendEmailResult', $sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)

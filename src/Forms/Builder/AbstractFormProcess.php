@@ -32,7 +32,7 @@ abstract class AbstractFormProcess
         return $this->requiredFields;
     }
 
-    public function check(FormBuilderInterface $builder)
+    public function verify(FormBuilderInterface $builder)
     {
         foreach ($this->requiredFields as $fieldName) {
             if (!$builder->hasField($fieldName)) {

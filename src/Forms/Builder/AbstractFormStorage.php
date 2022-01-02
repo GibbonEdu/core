@@ -33,6 +33,11 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
 
     abstract public function save(string $identifier) : bool;
 
+    public function exists($fieldName) : bool
+    {
+        return isset($this->data[$fieldName]);
+    }
+    
     public function has($fieldName) : bool
     {
         return !empty($this->data[$fieldName]);

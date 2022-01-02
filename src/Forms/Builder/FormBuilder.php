@@ -24,6 +24,7 @@ use Gibbon\Forms\MultiPartForm;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Forms\Builder\Fields\NullFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
@@ -55,20 +56,73 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $this->formPageGateway = $formPageGateway;
     }
 
-    public function populate(string $gibbonFormID, int $pageNumber = 1)
+    public function hasField($fieldName) : bool
+    {
+        return !empty($this->fields[$fieldName]);
+    }
+
+    public function getField($fieldName)
+    {
+        return $this->fields[$fieldName] ?? [];
+    }
+
+    public function hasDetail($name) : bool
+    {
+        return !empty($this->details[$name]);
+    }
+
+    public function getDetail($name, $default = null)
+    {
+        return $this->details[$name] ?? $default;
+    }
+
+    public function hasConfig($name) : bool
+    {
+        return !empty($this->config[$name]);
+    }
+
+    public function getConfig($name, $default = null)
+    {
+        return $this->config[$name] ?? $default;
+    }
+
+    public function getPageNumber()
+    {
+        return $this->pageNumber;
+    }
+
+    public function getFinalPageNumber()
+    {
+        return $this->finalPageNumber;
+    }
+
+    public function getFieldGroupClass($fieldGroup)
+    {
+        if (isset($this->fieldGroups[$fieldGroup])) {
+            return $this->fieldGroups[$fieldGroup];
+        }
+
+        try {
+            $this->fieldGroups[$fieldGroup] = $this->getContainer()->get("\\Gibbon\\Forms\\Builder\\Fields\\".$fieldGroup);
+            return $this->fieldGroups[$fieldGroup];
+        } catch (NotFoundException $e) {
+            return new NullFieldGroup();
+        }
+    }
+    
+    public function populate(string $gibbonFormID, int $pageNumber = 1, string $identifier = null)
     {
         $this->gibbonFormID = $gibbonFormID;
         $this->pageNumber = $pageNumber;
         
+        // Load form details
         $this->details = $this->formGateway->getByID($this->gibbonFormID);
-        $this->config = json_decode($form['config'] ?? '', true);
-
-        $criteria = $this->formPageGateway->newQueryCriteria()
-            ->sortBy('sequenceNumber', 'ASC');
+        $this->config = json_decode($this->details['config'] ?? '', true);
 
         // Load all page data
-        $this->gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
+        $criteria = $this->formPageGateway->newQueryCriteria()->sortBy('sequenceNumber', 'ASC');
         $this->pages = $this->formPageGateway->queryPagesByForm($criteria, $this->gibbonFormID)->toArray();
+        $this->gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
 
         // Determine the final page number
         $finalPage = end($this->pages);
@@ -128,64 +182,5 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         }
 
         return $validated;
-    }
-
-    public function hasField($fieldName) : bool
-    {
-        return !empty($this->fields[$fieldName]);
-    }
-
-    public function getField($fieldName)
-    {
-        return $this->fields[$fieldName] ?? [];
-    }
-
-    public function hasDetail($name) : bool
-    {
-        return !empty($this->details[$name]);
-    }
-
-    public function getDetail($name, $default = null)
-    {
-        return $this->details[$name] ?? $default;
-    }
-
-    public function hasConfig($name) : bool
-    {
-        return !empty($this->config[$name]);
-    }
-
-    public function getConfig($name, $default = null)
-    {
-        return $this->config[$name] ?? $default;
-    }
-
-    public function getFormType()
-    {
-        return $this->details['type'];
-    }
-
-    public function getPageNumber()
-    {
-        return $this->pageNumber;
-    }
-
-    public function getFinalPageNumber()
-    {
-        return $this->finalPageNumber;
-    }
-
-    public function getFieldGroupClass($fieldGroup)
-    {
-        if (isset($this->fieldGroups[$fieldGroup])) {
-            return $this->fieldGroups[$fieldGroup];
-        }
-
-        try {
-            $this->fieldGroups[$fieldGroup] = $this->getContainer()->get("\\Gibbon\\Forms\\Builder\\Fields\\".$fieldGroup);
-            return $this->fieldGroups[$fieldGroup];
-        } catch (NotFoundException $e) {
-            return null;
-        }
     }
 }

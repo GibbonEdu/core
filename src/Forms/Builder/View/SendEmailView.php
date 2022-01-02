@@ -20,9 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\View;
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\Builder\View\FormViewInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-class SendEmailView 
+class SendEmailView implements FormViewInterface
 {
     public function getName()
     {
@@ -43,7 +44,14 @@ class SendEmailView
 
     public function display(Form $form, FormDataInterface $data)
     {
+        if (!$data->exists('sendEmailResult')) return;
+
         $row = $form->addRow();
+
+        if ($data->get('sendEmailResult')) {
             $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
+        } else {
+            $row->addContent(__('Email failed to send to {email}', ['email' => $data->get('email')]));
+        }
     }
 }

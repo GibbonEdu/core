@@ -53,4 +53,14 @@ class FormSubmissionGateway extends QueryableGateway
         return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier])->fetch();
     }
 
+    public function getNewUniqueIdentifier(string $gibbonFormID)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID];
+
+        do {
+            $data['identifier'] =  bin2hex(random_bytes(20));
+        } while (!$this->unique($data, ['gibbonFormID', 'identifier']));
+
+        return $data['identifier'];
+    }
 }

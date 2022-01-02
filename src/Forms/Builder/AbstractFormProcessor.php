@@ -77,10 +77,10 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         $this->acceptProcess();
     }
 
-    public function checkForm(FormBuilderInterface $builder)
+    public function verifyForm(FormBuilderInterface $builder)
     {
         $this->builder = $builder;
-        return $this->check();
+        return $this->verify();
     }
 
     public function getProcesses()
@@ -108,12 +108,12 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         }
     }
 
-    protected function check()
+    protected function verify()
     {
         foreach ($this->processes as $processClass => $processDetails) {
             try {
                 $process = $this->getContainer()->get($processClass);
-                $process->check($this->builder);
+                $process->verify($this->builder);
 
                 $this->processes[$processClass]['valid'] = true;
 

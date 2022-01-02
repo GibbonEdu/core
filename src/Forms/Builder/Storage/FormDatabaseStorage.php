@@ -26,16 +26,16 @@ use Gibbon\Domain\Forms\FormSubmissionGateway;
 class FormDatabaseStorage extends AbstractFormStorage
 {
     private $formSubmissionGateway;
-    private $details;
+    private $context;
     
     public function __construct(FormSubmissionGateway $formSubmissionGateway)
     {
         $this->formSubmissionGateway = $formSubmissionGateway;
     }
 
-    public function setSubmissionDetails(FormBuilderInterface $builder, string $foreignTable, string $foreignTableID)
+    public function setContext(FormBuilderInterface $builder, string $foreignTable, string $foreignTableID)
     {
-        $this->details = [
+        $this->context = [
             'gibbonFormID'     => $builder->getDetail('gibbonFormID'),
             'foreignTable'     => $foreignTable,
             'foreignTableID'   => $foreignTableID,
@@ -47,7 +47,7 @@ class FormDatabaseStorage extends AbstractFormStorage
     
     public function save(string $identifier) : bool
     {
-        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->details['gibbonFormID'], $identifier);
+        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->context['gibbonFormID'], $identifier);
         
         if (!empty($values)) {
             // Update the existing submission
@@ -55,12 +55,14 @@ class FormDatabaseStorage extends AbstractFormStorage
             $data = array_merge($existingData, $this->getData());
 
             $saved = $this->formSubmissionGateway->update($values['gibbonFormSubmissionID'], [
+                'gibbonFormPageID'  => $this->get('gibbonFormPageID'),
                 'data'              => json_encode($data),
                 'timestampModified' => date('Y-m-d H:i:s'),
             ]);
         } else {
             // Create a new submission
-            $saved = $this->formSubmissionGateway->insert($this->details + [
+            $saved = $this->formSubmissionGateway->insert($this->context + [
+                'gibbonFormPageID' => $this->get('gibbonFormPageID'),
                 'identifier'       => $identifier,
                 'data'             => json_encode($this->getData()),
                 'timestampCreated' => date('Y-m-d H:i:s'),
@@ -72,10 +74,8 @@ class FormDatabaseStorage extends AbstractFormStorage
 
     public function load(string $identifier) : bool
     {
-        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->details['gibbonFormID'], $identifier);
-        $data = json_decode($values['data'] ?? '', true);
-
-        $this->setData($data ?? []);
+        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->context['gibbonFormID'], $identifier);
+        $this->setData(json_decode($values['data'] ?? '', true) ?? []);
 
         return !empty($values);
     }
