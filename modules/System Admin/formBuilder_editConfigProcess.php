@@ -47,10 +47,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         exit;
     }
 
-
-    $config = [];
-
-
+    // Simple & dirty data, should be validated
+    $config = $_POST;
+    unset($config['address']);
+    unset($config['gibbonFormID']);
 
     // Update the record
     $updated = $formGateway->update($gibbonFormID, ['config' => json_encode($config)]);

@@ -34,16 +34,16 @@ class SendEmailView
         return __('Enables this form to send an email once the form has been submitted.');
     }
 
-    public function configure(Form &$form)
+    public function configure(Form $form)
     {
         $row = $form->addRow();
             $row->addLabel('sendEmail', $this->getName())->description($this->getDescription());
-            $row->addYesNo('sendEmail');
+            $row->addYesNo('sendEmail')->selected('N');
     }
 
-    public function display(Form &$form, FormDataInterface &$data)
+    public function display(Form $form, FormDataInterface $data)
     {
         $row = $form->addRow();
-        $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
+            $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
     }
 }

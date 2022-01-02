@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $inactiveProcesses = array_diff_key($processes, $activeProcesses);
     
     if (!empty($activeProcesses)) {
-        $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
+        $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editConfigProcess.php');
 
         $form->setTitle(__('Active Features'));
         $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
@@ -166,6 +166,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
             $view->configure($form);
         }
+
+        $config = json_decode($values['config'], true);
+        $form->loadAllValuesFrom($config);
 
         $row = $form->addRow()->addClass('mt-4');
             $row->addSubmit();

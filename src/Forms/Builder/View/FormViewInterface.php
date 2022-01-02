@@ -17,22 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder;
+namespace Gibbon\Forms\Builder\View;
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-abstract class AbstractFormView 
+interface FormViewInterface 
 {
-    abstract public function getName();
-    abstract public function getDescription();
+    public function getName();
 
-    public function configure(Form $form)
-    {
+    public function getDescription();
 
-    }
+    public function configure(Form $form);
 
-    public function display()
-    {
-
-    }
+    public function display(Form $form, FormDataInterface $data);
 }
