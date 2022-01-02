@@ -25,6 +25,7 @@ use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Builder\FormData;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
+use Gibbon\Forms\Builder\FormBuilder;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -37,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     $formGateway = $container->get(FormGateway::class);
     $formPageGateway = $container->get(FormPageGateway::class);
+    $formProcessorFactory = $container->get(FormProcessorFactory::class);
     $gibbonFormID = $_GET['gibbonFormID'] ?? '';
 
     if (empty($gibbonFormID)) {
@@ -59,18 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     $form->addRow()->addHeading(__('Basic Details'));
 
-    $types = [
-        'Application'      => __('Application'),
-        'Post-application' => __('Post-application'),
-        'Student'          => __('Student'),
-        'Parent'           => __('Parent'),
-        'Family'           => __('Family'),
-        'Staff'            => __('Staff'),
-    ];
-
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->readonly();
+        $row->addSelect('type')->fromArray($formProcessorFactory->getFormTypes())->readonly();
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));
@@ -143,16 +136,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // FUNCTIONALITY
 
-    // Setup the form data
-    $formData = $container->get(FormData::class);
-    $formData->populate($gibbonFormID, '');
+    // Setup the form builder
+    $formBuilder = $container->get(FormBuilder::class);
+    $formBuilder->populate($gibbonFormID);
 
     // Get the processor for this type of form
-    $formProcessorFactory = $container->get(FormProcessorFactory::class);
     $formProcessor = $formProcessorFactory->getProcessor($values['type']);
 
     // Validate the form processes
-    $errors = $formProcessor->validate($formData);
+    $errors = $formProcessor->checkForm($formBuilder);
     $processes = $formProcessor->getProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
@@ -160,7 +152,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     });
     $inactiveProcesses = array_diff_key($processes, $activeProcesses);
     
-
     if (!empty($activeProcesses)) {
         $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editFunctionalityProcess.php');
 
@@ -193,8 +184,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             $process = $container->get($processDetails['process'] ?? '');
             $view = $container->get($processDetails['view']);
 
-            $missingRequiredFields = array_filter($process->getRequiredFields(), function ($fieldName) use ($formData) {
-                return !$formData->hasField($fieldName);
+            $missingRequiredFields = array_filter($process->getRequiredFields(), function ($fieldName) use ($formBuilder) {
+                return !$formBuilder->hasField($fieldName);
             });
 
             $row = $form->addRow()->addClass('bg-gray-300');

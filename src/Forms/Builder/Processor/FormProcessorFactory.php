@@ -28,6 +28,18 @@ class FormProcessorFactory implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    public function getFormTypes()
+    {
+        return [
+            'Application'      => __('Application'),
+            'Post-application' => __('Post-application'),
+            'Student'          => __('Student'),
+            'Parent'           => __('Parent'),
+            'Family'           => __('Family'),
+            'Staff'            => __('Staff'),
+        ];
+    }
+
     public function getProcessor(string $formType)
     {
         $processor = null;

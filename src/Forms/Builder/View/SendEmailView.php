@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\View;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Builder\FormData;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 class SendEmailView 
 {
@@ -41,7 +41,7 @@ class SendEmailView
             $row->addYesNo('sendEmail');
     }
 
-    public function display(Form &$form, FormData &$data)
+    public function display(Form &$form, FormDataInterface &$data)
     {
         $row = $form->addRow();
         $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));

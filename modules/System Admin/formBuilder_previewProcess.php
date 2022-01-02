@@ -19,32 +19,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Http\Url;
 use Gibbon\Domain\Forms\FormPageGateway;
-use Gibbon\Forms\Builder\FormData;
-use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
+use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Forms\Builder\Storage\FormSessionStorage;
+use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
+use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
 
 require_once '../../gibbon.php';
 
 $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
-$page = $_REQUEST['page'] ?? 1;
+$pageNumber = $_REQUEST['page'] ?? 1;
 
-$URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $page]);
+$URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber]);
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
     // Proceed!
+    if (empty($gibbonFormID) || empty($pageNumber)) {
+        header("Location: {$URL->withReturn('error1')}");
+        exit;
+    }
     
     // Setup the form data
-    $formData = $container->get(FormData::class);
-    $formData->populate($gibbonFormID, 'preview');
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber);
+    // $formData = $container->get(FormSessionStorage::class);
+    $formData = $container->get(FormDatabaseStorage::class)->setSubmissionDetails($formBuilder, 'preview', 1);
+    $formData->load('preview');
 
     // Get any submitted values, the lazy way
     $data = $_POST + $_FILES;
 
-    $formData->save($data);
+    $formData->addData($data);
+    $formData->save('preview');
 
-    $validated = $formData->validate($data);
+    $validated = $formBuilder->validate($data);
 
     if (!$validated) {
         header("Location: {$URL->withReturn('error1')}");
@@ -54,22 +63,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     // Determine how to handle the next page
     $formPageGateway = $container->get(FormPageGateway::class);
     $finalPageNumber = $formPageGateway->getFinalPageNumber($gibbonFormID);
-    $nextPage = $formPageGateway->getNextPageByNumber($gibbonFormID, $page);
-    $maxPage = max($nextPage['sequenceNumber'] ?? $page, $formData->get('maxPage') ?? 1);
+    $nextPage = $formPageGateway->getNextPageByNumber($gibbonFormID, $pageNumber);
+    $maxPage = max($nextPage['sequenceNumber'] ?? $pageNumber, $formData->get('maxPage') ?? 1);
 
-    if ($page >= $finalPageNumber) {
+    if ($pageNumber >= $finalPageNumber) {
         // Run the form processor on this data
-        $formProcessor = $container->get(PreviewFormProcessor::class);
-        $formProcessor->submitForm($formData);
+        $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getFormType());
+        $formProcessor->submitForm($formBuilder, $formData);
 
         $session->set('formpreview', []);
 
         $URL = $URL
             ->withQueryParam('return', 'success0')
-            ->withQueryParam('page', $page+1);
+            ->withQueryParam('page', $pageNumber+1);
 
     } elseif ($nextPage) {
-        $formData->save(['maxPage' => $maxPage]);
+        $formData->addData(['maxPage' => $maxPage]);
+        $formData->save('preview');
         $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
     }
 

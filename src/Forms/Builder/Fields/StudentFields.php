@@ -152,7 +152,7 @@ class StudentFields extends AbstractFieldGroup
             // STUDENT CONTACT
             case 'email':
                 $row->addLabel('email', __('Email'));
-                $email = $row->addEmail('email');
+                $email = $row->addEmail('email')->required($required);
                 break;
         }
 

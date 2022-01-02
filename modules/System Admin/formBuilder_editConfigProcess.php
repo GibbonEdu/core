@@ -17,48 +17,43 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Domain\Forms\FormGateway;
 
 require_once '../../gibbon.php';
 
-$urlParams = [
-    'gibbonFormID'      => $_REQUEST['gibbonFormID'] ?? '',
-    'gibbonFormPageID'  => $_REQUEST['gibbonFormPageID'] ?? '',
-    'gibbonFormFieldID' => $_REQUEST['gibbonFormFieldID'] ?? '',
-    'fieldGroup'        => $_REQUEST['fieldGroup'] ?? '',
-];
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_design.php&sidebar=false&'.http_build_query($urlParams);
+$gibbonFormID = $_POST['gibbonFormID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID;
+
+if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
 } else {
     // Proceed!
-    $formFieldGateway = $container->get(FormFieldGateway::class);
-
-    $data = [
-        'label'       => $_POST['label'] ?? '',
-        'description' => $_POST['description'] ?? null,
-        'required'    => $_POST['required'] ?? 'N',
-    ];
+    $formGateway = $container->get(FormGateway::class);
 
     // Validate the required values are present
-    if (empty($data['label']) && empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID']) || empty($urlParams['gibbonFormFieldID'])) {
+    if (empty($gibbonFormID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     // Validate the database relationships exist
-    if (!$formFieldGateway->exists($urlParams['gibbonFormFieldID'])) {
+    if (!$formGateway->exists($gibbonFormID)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
         exit;
     }
 
+
+    $config = [];
+
+
+
     // Update the record
-    $updated = $formFieldGateway->update($urlParams['gibbonFormFieldID'], $data);
+    $updated = $formGateway->update($gibbonFormID, ['config' => json_encode($config)]);
 
     $URL .= !$updated
         ? "&return=error2"

@@ -60,7 +60,7 @@ class FormGateway extends QueryableGateway
     {
         $select = $this
             ->newSelect()
-            ->cols(['gibbonFormField.fieldName as groupBy', 'gibbonFormField.*'])
+            ->cols(['gibbonFormField.fieldName as groupBy', 'gibbonFormField.*', 'gibbonFormPage.sequenceNumber as pageNumber'])
             ->from('gibbonFormField')
             ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
             ->where('gibbonFormPage.gibbonFormID=:gibbonFormID')
@@ -68,5 +68,16 @@ class FormGateway extends QueryableGateway
             ->orderBy(['gibbonFormPage.sequenceNumber', 'gibbonFormField.sequenceNumber']);
 
         return $this->runSelect($select);
+    }
+
+    public function getNewUniqueIdentifier($gibbonFormID)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID];
+
+        do {
+            $data['identifier'] =  bin2hex(random_bytes(20));
+        } while (!$this->unique($data, ['gibbonFormID', 'identifier']));
+
+        return $data['identifier'];
     }
 }

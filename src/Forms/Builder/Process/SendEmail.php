@@ -22,7 +22,8 @@ namespace Gibbon\Forms\Builder\Process;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormProcess;
-use Gibbon\Forms\Builder\FormData;
+use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 class SendEmail extends AbstractFormProcess
 {
@@ -37,7 +38,7 @@ class SendEmail extends AbstractFormProcess
         $this->mail = $mail;
     }
 
-    public function process(FormData $formData)
+    public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         $this->mail->Subject = 'Preview Test Mail';
         $this->mail->renderBody('mail/message.twig.html', [
@@ -51,7 +52,7 @@ class SendEmail extends AbstractFormProcess
         $this->mail->Send();
     }
 
-    public function rollback(FormData $data)
+    public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
     {
         
     }
