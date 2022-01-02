@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder;
+namespace Gibbon\Forms\Builder\Fields;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
@@ -33,4 +33,6 @@ interface FieldGroupInterface
     public function getFieldOptions() : array;
 
     public function addFieldToForm(Form $form, array $field) : Row;
+
+    public function getFieldDataFromPOST() : array;
 }

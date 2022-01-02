@@ -19,76 +19,160 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
-use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Forms\MultiPartForm;
-use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
-use Gibbon\Domain\Forms\FormFieldGateway;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
-use Gibbon\Http\Url;
 
-
-class FormBuilder implements ContainerAwareInterface
+class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
     use ContainerAwareTrait;
 
     protected $formGateway;
     protected $formPageGateway;
-    protected $formFieldGateway;
 
-    protected $form;
+    protected $gibbonFormID;
+    protected $gibbonFormPageID;
+    protected $pageNumber;
+    protected $finalPageNumber;
+
+    protected $pages = [];
+    protected $fields = [];
+    protected $details = [];
+    protected $config = [];
+    protected $type = '';
 
     protected $fieldGroups;
 
-    public function __construct(FormGateway $formGateway, FormPageGateway $formPageGateway, FormFieldGateway $formFieldGateway)
+    public function __construct(FormGateway $formGateway, FormPageGateway $formPageGateway)
     {
         $this->formGateway = $formGateway;
         $this->formPageGateway = $formPageGateway;
-        $this->formFieldGateway = $formFieldGateway;
     }
 
-    public function build(string $gibbonFormID, int $pageNumber, string $action)
+    public function populate(string $gibbonFormID, int $pageNumber = 1)
     {
-        $this->form = MultiPartForm::create('formBuilder', $action);
-        $this->form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
+        $this->gibbonFormID = $gibbonFormID;
+        $this->pageNumber = $pageNumber;
+        
+        $this->details = $this->formGateway->getByID($this->gibbonFormID);
+        $this->config = json_decode($form['config'] ?? '', true);
 
         $criteria = $this->formPageGateway->newQueryCriteria()
             ->sortBy('sequenceNumber', 'ASC');
+
+        // Load all page data
+        $this->gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($this->gibbonFormID, $this->pageNumber);
+        $this->pages = $this->formPageGateway->queryPagesByForm($criteria, $this->gibbonFormID)->toArray();
+
+        // Determine the final page number
+        $finalPage = end($this->pages);
+        $this->finalPageNumber = $finalPage['sequenceNumber'] ?? $this->pageNumber;
+
+        // Load all field data
+        $this->fields = $this->formGateway->selectFieldsByForm($this->gibbonFormID)->fetchGroupedUnique();
+    
+        return $this;
+    }
+
+    public function build(string $action)
+    {
+        $form = MultiPartForm::create('formBuilder', $action);
+        $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
+
+        $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
+        $form->addHiddenValue('gibbonFormPageID', $this->gibbonFormPageID);
+        $form->addHiddenValue('page', $this->pageNumber);
         
-        $gibbonFormPageID = $this->formPageGateway->getPageIDByNumber($gibbonFormID, $pageNumber);
-        $pages = $this->formPageGateway->queryPagesByForm($criteria, $gibbonFormID)->toArray();
-        $finalPage = end($pages);
+        // Add pages to the multi-part form
+        if (count($this->pages) > 1) {
+            $form->setCurrentPage($this->pageNumber);
 
-        if (count($pages) > 1) {
-            $this->form->setCurrentPage($pageNumber);
-
-            foreach ($pages as $formPage) {
-                $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview.php')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $formPage['sequenceNumber']]);
-                $this->form->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
+            foreach ($this->pages as $formPage) {
+                $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview.php')->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber']]);
+                $form->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
             }
         }
 
-        // If form is not complete, add fields to current page
-        if ($pageNumber <= $finalPage['sequenceNumber']) {
-            $fields = $this->formFieldGateway->queryFieldsByPage($criteria, $gibbonFormPageID);
+        // Form is not complete, add fields to current page
+        if ($this->pageNumber <= $this->finalPageNumber) {
+            foreach ($this->fields as $field) {
+                if ($field['pageNumber'] != $this->pageNumber) continue;
 
-            foreach ($fields as $field) {
                 $fieldGroup = $this->getFieldGroupClass($field['fieldGroup']);
-                $row = $fieldGroup->addFieldToForm($this->form, $field);
+                $row = $fieldGroup->addFieldToForm($form, $field);
             }
 
-            $row = $this->form->addRow();
+            $row = $form->addRow();
                 $row->addFooter();
-                $row->addSubmit($pageNumber == $finalPage['sequenceNumber'] ? __('Submit') : __('Next'));
-        } else {
-            // Form is complete, display any results?
-            
+                $row->addSubmit($this->pageNumber == $this->finalPageNumber ? __('Submit') : __('Next'));
         }
 
-        return $this->form;
+        return $form;
+    }
+
+    public function validate(array $data)
+    {
+        $validated = true;
+        foreach ($this->fields as $fieldName => $field) {
+            if (!isset($data[$fieldName])) continue;
+
+            if ($field['required'] != 'N' && empty($data[$fieldName])) {
+                $validated = false;
+            }
+        }
+
+        return $validated;
+    }
+
+    public function hasField($fieldName) : bool
+    {
+        return !empty($this->fields[$fieldName]);
+    }
+
+    public function getField($fieldName)
+    {
+        return $this->fields[$fieldName] ?? [];
+    }
+
+    public function hasDetail($name) : bool
+    {
+        return !empty($this->details[$name]);
+    }
+
+    public function getDetail($name, $default = null)
+    {
+        return $this->details[$name] ?? $default;
+    }
+
+    public function hasConfig($name) : bool
+    {
+        return !empty($this->config[$name]);
+    }
+
+    public function getConfig($name, $default = null)
+    {
+        return $this->config[$name] ?? $default;
+    }
+
+    public function getFormType()
+    {
+        return $this->details['type'];
+    }
+
+    public function getPageNumber()
+    {
+        return $this->pageNumber;
+    }
+
+    public function getFinalPageNumber()
+    {
+        return $this->finalPageNumber;
     }
 
     public function getFieldGroupClass($fieldGroup)

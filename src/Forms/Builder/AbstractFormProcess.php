@@ -19,33 +19,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
+use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Exception\MissingFieldException;
-use Gibbon\Forms\Builder\FormData;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 abstract class AbstractFormProcess 
 {
     protected $requiredFields = [];
-
-    public function configure()
-    {
-
-    }
 
     public function getRequiredFields()
     {
         return $this->requiredFields;
     }
 
-    public function validate(FormData $data)
+    public function check(FormBuilderInterface $builder)
     {
         foreach ($this->requiredFields as $fieldName) {
-            if (!$data->hasField($fieldName)) {
+            if (!$builder->hasField($fieldName)) {
                 throw new MissingFieldException($fieldName);
             }
         }
     }
 
-    abstract public function process(FormData $data);
+    abstract public function process(FormBuilderInterface $builder, FormDataInterface $data);
 
-    abstract public function rollback(FormData $data);
+    abstract public function rollback(FormBuilderInterface $builder, FormDataInterface $data);
 }

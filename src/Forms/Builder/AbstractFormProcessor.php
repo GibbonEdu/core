@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
-use Gibbon\Forms\Builder\AbstractFormProcess;
+use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
@@ -30,7 +31,12 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     use ContainerAwareTrait;
 
     /**
-     * @var FormData
+     * @var FormBuilderInterface
+     */
+    protected $builder;
+
+    /**
+     * @var FormDataInterface
      */
     protected $data;
 
@@ -50,31 +56,50 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
 
     public function acceptProcess() {}
 
-    public function submitForm(FormData $data)
+    public function submitForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->builder = $builder;
         $this->data = $data;
         $this->submitProcess();
     }
 
-    public function editForm(FormData $data)
+    public function editForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->builder = $builder;
         $this->data = $data;
         $this->editProcess();
     }
 
-    public function acceptForm(FormData $data)
+    public function acceptForm(FormBuilderInterface $builder, FormDataInterface $data)
     {
+        $this->builder = $builder;
         $this->data = $data;
         $this->acceptProcess();
     }
 
-    public function run(string $processClass)
+    public function checkForm(FormBuilderInterface $builder)
+    {
+        $this->builder = $builder;
+        return $this->check();
+    }
+
+    public function getProcesses()
+    {
+        return $this->processes;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    protected function run(string $processClass)
     {
         try {
             $process = $this->getContainer()->get($processClass);
-            $process->process($this->data);
+            $process->process($this->builder, $this->data);
 
-            $this->processes[$processClass]['valid'] = true;
+            $this->processes[$processClass]['processed'] = true;
 
         } catch (NotFoundException $e) {
             $this->errors[] = __('Invalid process class: {className}', ['className' => $processClass]);
@@ -83,12 +108,12 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         }
     }
 
-    public function validate(FormData $data)
+    protected function check()
     {
         foreach ($this->processes as $processClass => $processDetails) {
             try {
                 $process = $this->getContainer()->get($processClass);
-                $process->validate($data);
+                $process->check($this->builder);
 
                 $this->processes[$processClass]['valid'] = true;
 
@@ -100,10 +125,5 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         }
 
         return $this->errors;
-    }
-
-    public function getProcesses()
-    {
-        return $this->processes;
     }
 }

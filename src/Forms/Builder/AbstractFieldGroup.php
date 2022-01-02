@@ -21,7 +21,7 @@ namespace Gibbon\Forms\Builder;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
-use Gibbon\Forms\Builder\FieldGroupInterface;
+use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 
 abstract class AbstractFieldGroup implements FieldGroupInterface
 {
@@ -73,5 +73,12 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
             ->required($field['required'] != 'N');
 
         return $row;
+    }
+
+    public function getFieldDataFromPOST() : array 
+    {
+        $data = [];
+
+        return $data;
     }
 }
