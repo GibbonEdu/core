@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\Storage;
 
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\Builder\AbstractFormStorage;
 
-class FormSessionStorage implements FormStorageInterface
+class FormSessionStorage extends AbstractFormStorage
 {
     protected $session;
 
@@ -30,15 +31,19 @@ class FormSessionStorage implements FormStorageInterface
         $this->session = $session;
     }
     
-    public function saveData(string $identifier, array $data)
+    public function save(string $identifier) : bool
     {
-        $existing = $this->loadData($identifier);
+        $existingData = $this->session->get('form'.$identifier, []);
 
-        $this->session->set('form'.$identifier, array_merge($existing, $data));
+        $this->session->set('form'.$identifier, array_merge($existingData, $this->getData()));
+
+        return $this->session->exists('form'.$identifier);
     }
 
-    public function loadData(string $identifier)
+    public function load(string $identifier) : bool
     {
-        return $this->session->get('form'.$identifier, []);
+        $this->setData($this->session->get('form'.$identifier, []));
+
+        return $this->session->exists('form'.$identifier);
     }
 }

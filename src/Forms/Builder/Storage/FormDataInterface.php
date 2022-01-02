@@ -19,9 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Storage;
 
-interface FormStorageInterface
+interface FormDataInterface
 {
-    public function load(string $identifier) : bool;
+    public function has(string $fieldName) : bool;
 
-    public function save(string $identifier) : bool;
+    public function get(string $fieldName);
+
+    public function set(string $fieldName, $value);
+
+    public function getData() : array;
+
+    public function setData(array $data);
+
+    public function addData(array $data);
 }

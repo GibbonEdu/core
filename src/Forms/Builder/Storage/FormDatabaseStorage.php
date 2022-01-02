@@ -19,20 +19,64 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Storage;
 
-class FormDatabaseStorage implements FormStorageInterface
+use Gibbon\Forms\Builder\AbstractFormStorage;
+use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
+
+class FormDatabaseStorage extends AbstractFormStorage
 {
-    public function __construct()
+    private $formSubmissionGateway;
+    private $details;
+    
+    public function __construct(FormSubmissionGateway $formSubmissionGateway)
     {
-        
+        $this->formSubmissionGateway = $formSubmissionGateway;
+    }
+
+    public function setSubmissionDetails(FormBuilderInterface $builder, string $foreignTable, string $foreignTableID)
+    {
+        $this->details = [
+            'gibbonFormID'     => $builder->getDetail('gibbonFormID'),
+            'foreignTable'     => $foreignTable,
+            'foreignTableID'   => $foreignTableID,
+            'owner'            => $builder->getDetail('owner'),
+        ];
+
+        return $this;
     }
     
-    public function saveData(string $identifier, array $data)
+    public function save(string $identifier) : bool
     {
+        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->details['gibbonFormID'], $identifier);
+        
+        if (!empty($values)) {
+            // Update the existing submission
+            $existingData = json_decode($values['data'] ?? '', true);
+            $data = array_merge($existingData, $this->getData());
 
+            $saved = $this->formSubmissionGateway->update($values['gibbonFormSubmissionID'], [
+                'data'              => json_encode($data),
+                'timestampModified' => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            // Create a new submission
+            $saved = $this->formSubmissionGateway->insert($this->details + [
+                'identifier'       => $identifier,
+                'data'             => json_encode($this->getData()),
+                'timestampCreated' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
+        return !empty($saved);
     }
 
-    public function loadData(string $identifier)
+    public function load(string $identifier) : bool
     {
+        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->details['gibbonFormID'], $identifier);
+        $data = json_decode($values['data'] ?? '', true);
 
+        $this->setData($data ?? []);
+
+        return !empty($values);
     }
 }
