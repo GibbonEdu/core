@@ -85,9 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     $page->navigator->addHeaderAction('print', __('Print'))
-        ->setUrl('/report.php?q=/modules/Students/applicationForm_manage_edit_print.php')
-        ->setTarget('_blank')
+        ->setUrl('/report.php')
+        ->addParam('q', '/modules/Students/applicationForm_manage_edit_print.php')
         ->addParams($urlParams)
+        ->setTarget('_blank')
+        ->directLink()
         ->displayLabel(true);
 
     $form = Form::create('applicationFormEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_editProcess.php?search='.$search);
