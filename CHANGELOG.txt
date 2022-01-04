@@ -65,7 +65,7 @@ v23.0.00
         Behaviour: enabled Find Behaviour Patterns to filter Positive behaviour
         Departments: updated participant view so it does not require other modules
         Departments: highlight department coordinator, add hover text
-        Finance: added ability to invoice students by class enrolment 
+        Finance: added ability to invoice students by class enrolment
         Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
         Messenger: improved mobile responsive size of inserted images
@@ -92,6 +92,7 @@ v23.0.00
         System: fixed comma key clearing fast finder inputs
         System: fixed internal urls opening new tab in the nameLinked function
         Activities: fixed duplicate entries in Activity Choices by Student
+        Attendance: fixed table header nomenclature in Classes Not Registered report
         Messenger: fixed duplicate student names when using Individual Naming
         Planner: fixed school closure checks when bumping lessons forward and backward
         Planner: fixed smart block deletion not working in Edit Lesson Plan
