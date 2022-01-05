@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
                     ->setIcon('iconTick')
                     ->setURL('/modules/Staff/coverage_view_accept.php');
 
-                if ($gibbonPersonID == $coverage['gibbonPersonIDCoverage']) {
+                if ($gibbonPersonID == ($coverage['gibbonPersonIDCoverage'] ?? '')) {
                     $actions->addAction('decline', __('Decline'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_decline.php');
