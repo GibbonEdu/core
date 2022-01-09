@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             if ($search != '') {
                 $params = [
                     "search" => $search,
-                    "allStudents" => $allStudents,
+                    "allUsers" => $allUsers,
                 ];
                 $table->addHeaderAction('back', __('Back to Search Results'))
                     ->setURL('/modules/Timetable/tt.php')
