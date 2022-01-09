@@ -280,6 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 $width1 = $size1[0];
                                 $height1 = $size1[1];
                                 $aspect1 = $height1 / $width1;
+
                                 if ($width1 > 360 || $height1 > 480 || $aspect1 < 1.2 || $aspect1 > 1.4) {
                                     $src_x = 0;
                                     $src_y = 0;
@@ -316,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     }
 
                                     $image_name =  $path.'/'.$attachment1;
-
+ 
                                     // Resampling the image
                                     $image_p = imagecreatetruecolor($dst_w, $dst_h);
                                     $image = imagecreatefromjpeg($image_name);
