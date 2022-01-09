@@ -48,7 +48,7 @@ class SessionGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonSessionID', 'gibbonSession.timestampCreated', 'gibbonSession.timestampModified', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username',  'gibbonPerson.lastIPAddress', 'gibbonRole.category AS roleCategory', "CONCAT(gibbonModule.name, ': ', SUBSTRING_INDEX(gibbonAction.name, '_', 1)) AS actionName"
+                'gibbonSessionID', 'gibbonSession.timestampCreated', 'gibbonSession.sessionStatus', 'gibbonSession.timestampModified', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username',  'gibbonPerson.lastIPAddress', 'gibbonRole.category AS roleCategory', "CONCAT(gibbonModule.name, ': ', SUBSTRING_INDEX(gibbonAction.name, '_', 1)) AS actionName"
             ])
             ->leftJoin('gibbonPerson', 'gibbonSession.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')

@@ -96,6 +96,13 @@ try {
         $URL = Url::fromRoute()->withQueryParams($_GET);
     }
 
+    // Double-check the auth status
+    if (!$auth->isValid()) {
+        $logLoginAttempt('Login - Failed', 'Unknown error');
+        header("Location: {$URL->withQueryParam('loginReturn', 'fail1')}");
+        exit;
+    }
+
     $logLoginAttempt('Login - Success');
     header("Location: {$URL}");
     exit;
@@ -130,6 +137,7 @@ try {
     header("Location: {$URL->withQueryParam('loginReturn', 'fail4')}");
     exit;
 } catch (Exception\DatabaseLoginError $e) {
+    $logLoginAttempt('Login - Failed', 'Database login error');
     header("Location: {$URL->withQueryParam('loginReturn', 'fail5')}");
     exit;
 } catch (Exception\TooManyFailedLogins $e) {

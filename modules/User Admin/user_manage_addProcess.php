@@ -22,6 +22,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 
 include '../../gibbon.php';
 
@@ -200,6 +201,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+
+                    // Create the status log
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created')]);
 
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';

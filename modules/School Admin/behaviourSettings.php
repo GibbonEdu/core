@@ -85,7 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
     
-
     $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters', true);
@@ -93,11 +92,25 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $form->toggleVisibilityByClass('behaviourLetters')->onSelect($setting['name'])->when('Y');
+    $form->toggleVisibilityByClass('behaviourLettersNegative')->onSelect($setting['name'])->when('Y');
 
     for ($i = 1;$i < 4;++$i) {
         $setting = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersNegativeLetter'.$i.'Count', true);
-        $row = $form->addRow()->addClass('behaviourLetters');
+        $row = $form->addRow()->addClass('behaviourLettersNegative');
+            $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+            $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
+    }
+
+    $setting = $settingGateway->getSettingByScope('Behaviour', 'enablePositiveBehaviourLetters', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('behaviourLettersPositive')->onSelect($setting['name'])->when('Y');
+
+    for ($i = 1;$i < 4;++$i) {
+        $setting = $settingGateway->getSettingByScope('Behaviour', 'behaviourLettersPositiveLetter'.$i.'Count', true);
+        $row = $form->addRow()->addClass('behaviourLettersPositive');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
     }

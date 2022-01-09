@@ -17,11 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
@@ -56,12 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         } else {
             //Let's go!
             $values = $result->fetch();
-            $step = '';
-            if (isset($_GET['step'])) {
-                $step = $_GET['step'];
-            }
+            $step = $_GET['step'] ?? 1;
             if ($step != 1 and $step != 2) {
                 $step = 1;
+            }
+
+            if ($search != '') {
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
             }
 
             //Step 1
@@ -69,12 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '<h3>';
                 echo __('Step')." $step";
                 echo '</h3>';
-
-                echo "<div class='linkTop'>";
-                if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                }
-                echo '</div>'; 
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
                 
@@ -121,12 +117,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '<h3>';
                 echo __('Step')." $step";
                 echo '</h3>';
-
-                echo "<div class='linkTop'>";
-                if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                }
-                echo '</div>';
 
                 if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
                     $informApplicant = 'N';

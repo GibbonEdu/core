@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
 
             $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT * FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -77,14 +77,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $settingGateway = $container->get(SettingGateway::class);
 
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
-                echo '</div>';
-			}
 
 			$form = Form::create('activityEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_addProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
 
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
+                $params = [
+                    "search" => $_GET['search'] ?? '',
+                    "gibbonSchoolYearTermID" => $_GET['gibbonSchoolYearTermID'] ?? null,
+                    "gibbonActivityID" => $gibbonActivityID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Activities/activities_manage_enrolment.php')
+                    ->addParams($params);
+			}
+			
 			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
@@ -146,11 +152,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
 				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
-
+				
+			// Load the enrolmentType system setting, optionally override with the Activity Type setting
+            $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
+            $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
+			
 			$statuses = array('Accepted' => __('Accepted'));
-			$enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
 			if ($enrolment == 'Competitive') {
-				$statuses['Waiting List'] = __('Waiting List');
+                if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
+                    $statuses['Waiting List'] = __('Waiting List');
+                }
 			} else {
 				$statuses['Pending'] = __('Pending');
 			}

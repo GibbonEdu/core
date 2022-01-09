@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     $data = [
         'name'           => $_POST['name'] ?? '',
         'active'         => $_POST['active'] ?? '',
+        'defaultValue'   => $_POST['defaultValue'] ?? null,
         'characterLimit' => $_POST['characterLimit'] ?? '',
     ];
 

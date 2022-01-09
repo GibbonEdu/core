@@ -33,17 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$search;
     }
     $page->return->setEditLink($editLink);
 
-    if ($search != '') {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Reports/templates_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-        echo '</div>';
-    }
-
-    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_addProcess.php?search='.$search);
+    $form = Form::create('templatesManage', $gibbon->session->get('absoluteURL').'/modules/Reports/templates_manage_addProcess.php');
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 

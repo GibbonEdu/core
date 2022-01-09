@@ -21,9 +21,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 
 require_once '../../gibbon.php';
 
-$search = $_GET['search'] ?? '';
-
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_add.php&search='.$search;
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_add.php') == false) {
     $URL .= '&return=error0';

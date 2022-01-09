@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         echo '</div>';
     } else {
         //Proceed!
-        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $search = $_GET['search'] ?? null;
 
         //Check if gibbonMessengerID specified
         $gibbonMessengerID = $_GET['gibbonMessengerID'];

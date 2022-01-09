@@ -25,6 +25,7 @@ use Gibbon\Domain\System\LogGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 
 include '../../gibbon.php';
 
@@ -172,25 +173,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $address2District = $_POST['address2District'] ?? '';
             $address2Country = $_POST['address2Country'] ?? '';
             $phone1Type = $_POST['phone1Type'] ?? '';
-            if ($_POST['phone1'] != '' and $phone1Type == '') {
+            if ($_POST['phone1'] != '' && $phone1Type == '') {
                 $phone1Type = 'Other';
             }
             $phone1CountryCode = $_POST['phone1CountryCode'] ?? '';
             $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1'] ?? '');
             $phone2Type = $_POST['phone2Type'] ?? '';
-            if ($_POST['phone2'] != '' and $phone2Type == '') {
+            if ($_POST['phone2'] != '' && $phone2Type == '') {
                 $phone2Type = 'Other';
             }
             $phone2CountryCode = $_POST['phone2CountryCode'] ?? '';
             $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2'] ?? '');
             $phone3Type = $_POST['phone3Type'];
-            if ($_POST['phone3'] != '' and $phone3Type == '') {
+            if ($_POST['phone3'] != '' && $phone3Type == '') {
                 $phone3Type = 'Other';
             }
             $phone3CountryCode = $_POST['phone3CountryCode'] ?? '';
             $phone3 = preg_replace('/[^0-9+]/', '', $_POST['phone3'] ?? '');
             $phone4Type = $_POST['phone4Type'];
-            if ($_POST['phone4'] != '' and $phone4Type == '') {
+            if ($_POST['phone4'] != '' && $phone4Type == '') {
                 $phone4Type = 'Other';
             }
             $phone4CountryCode = $_POST['phone4CountryCode'] ?? '';
@@ -236,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $dayType = $_POST['dayType'] ?? null;
 
             //Validate Inputs
-            if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $username == '' or $status == '' or $gibbonRoleIDPrimary == '') {
+            if ($surname == '' || $firstName == '' || $preferredName == '' || $officialName == '' || $gender == '' || $username == '' || $status == '' || $gibbonRoleIDPrimary == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
@@ -282,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 $width1 = $size1[0];
                                 $height1 = $size1[1];
                                 $aspect1 = $height1 / $width1;
-                                if ($width1 > 360 or $height1 > 480 or $aspect1 < 1.2 or $aspect1 > 1.4) {
+                                if ($width1 > 360 || $height1 > 480 || $aspect1 < 1.2 || $aspect1 > 1.4) {
                                     $attachment1 = '';
                                     $imageFail = true;
                                 }
@@ -316,8 +317,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             exit();
                         }
 
+                        if ($row['status'] != $status) {
+                            $statusReason = $_POST['statusReason'] ?? '';
+
+                            $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
+                            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => $status, 'reason' => $statusReason]);
+                        }
+
                         //Deal with change to privacy settings
-                        if ($student and $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
+                        if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
                             if ($privacy_old != $privacy) {
 
                                 //Notify tutor
@@ -361,13 +369,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
                                         $notificationText .= $privacyText;
 
-                                        if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor'] != null && $rowDetail['gibbonPersonIDTutor'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
                                         }
-                                        if ($rowDetail['gibbonPersonIDTutor2'] != null and $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor2'] != null && $rowDetail['gibbonPersonIDTutor2'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor2'], $notificationText, 'Students', $actionLink);
                                         }
-                                        if ($rowDetail['gibbonPersonIDTutor3'] != null and $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
+                                        if ($rowDetail['gibbonPersonIDTutor3'] != null && $rowDetail['gibbonPersonIDTutor3'] != $session->get('gibbonPersonID')) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor3'], $notificationText, 'Students', $actionLink);
                                         }
                                     }

@@ -200,8 +200,6 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         // Check fail count, reject & alert if 3rd time
         if ($userData['failCount'] >= 3) {
             $this->updateFailCount($userData, $userData['failCount'] + 1);
-            $this->notifySystemAdmin($userData);
-            throw new Exception\TooManyFailedLogins;
         }
     }
 
@@ -273,6 +271,9 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
             'timestampModified' => date('Y-m-d H:i:s'),
         ]);
 
+        // Force a garbage collection of inactive sessions older than 1 day
+        $this->sessionGateway->deleteExpiredSessions(86400);
+
         // Update user personal theme
         if (!empty($userData['gibbonThemeIDPersonal'])) {
             $themeGateway = $this->getContainer()->get(ThemeGateway::class);
@@ -298,12 +299,19 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
      */
     protected function updateFailCount($userData, $failCount = 0)
     {
+        $userData['failCount'] = $failCount;
+
         $this->userGateway->update($userData['gibbonPersonID'], [
             'lastFailIPAddress' => $_SERVER['REMOTE_ADDR'],
             'lastFailTimestamp' => date('Y-m-d H:i:s'),
-            'failCount' => $failCount,
+            'failCount' => $userData['failCount'],
             'username' => $userData['username'],
         ]);
+
+        if ($failCount >= 3) {
+            $this->notifySystemAdmin($userData);
+            throw new Exception\TooManyFailedLogins;
+        }
     }
 
     /**
@@ -345,12 +353,14 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
     {
         if ($userData['failCount'] != 3) return;
 
+        $this->session = $this->getContainer()->get(Session::class);
+
         // Raise a new notification event
         $event = new NotificationEvent('User Admin', 'Login - Failed');
 
         $event->addRecipient($this->session->get('organisationAdministrator'));
         $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $userData['username']));
-        $event->setActionLink(Url::fromModuleRoute('User Admin', 'user_manage')->withAbsoluteURL()->withQueryParam('search', $userData['username']));
+        $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$userData['username']);
 
         $event->sendNotifications($this->getContainer()->get('db'), $this->session);
     }

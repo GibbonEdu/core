@@ -64,7 +64,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         ob_start();
 
         $loginReturn = $_GET['loginReturn'] ?? '';
-        
+
 
         if (!empty($loginReturn)) {
             $loginReturnMessage = '';
@@ -90,7 +90,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
-               
+
             }
             echo Format::alert($loginReturnMessage, 'error');
         }
@@ -166,7 +166,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 echo '</div>';
 
-            } 
+            }
 
             if (!$this->session->exists('username')) { // If Google Auth set to No make sure login screen not visible when logged in
                 echo '<div class="column-no-break">';
@@ -488,7 +488,7 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
             }
 
             if ($result->rowCount() > 0) {
-                echo '<div class="column-no-break">';
+                echo '<div class="column-no-break" id="myClasses">';
                 echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
                 echo __('My Classes');
                 echo '</h2>';

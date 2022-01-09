@@ -59,26 +59,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         return;
     }
 
-    echo "<div class='linkTop'>";
-    if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php')) {
-        echo (new Action('edit', __('Edit User')))
-            ->setURL('/modules/User Admin/user_manage_edit.php')
-            ->addParam('gibbonPersonID', $values['gibbonPersonID'])
-            ->displayLabel()
-            ->getOutput();
-    }
-
-    if ($search != '') {
-        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/substitutes_manage.php&search=$search'>".__('Back to Search Results').'</a>  ';
-    }
-    echo '</div>';
-
     $form = Form::create('subsManage', $session->get('absoluteURL').'/modules/'.$session->get('module')."/substitutes_manage_editProcess.php?search=$search");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSubstituteID', $gibbonSubstituteID);
+    
+    $canEdit = (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php'));
+    if ($canEdit) {
+        $form->addHeaderAction('edit', __('Edit User'))
+            ->setURL('/modules/User Admin/user_manage_edit.php')
+            ->addParam('gibbonPersonID', $values['gibbonPersonID'])
+            ->displayLabel();
+    }
+    if ($search != '') {
+        $form->addHeaderAction('back', __('Back to Search Results'))
+            ->setURL('/modules/Staff/substitutes_manage.php')
+            ->setIcon('search')
+            ->displayLabel()
+            ->prepend(($canEdit) ? ' | ' : '')
+            ->addParam('search', $search);
+    }
 
     $form->addRow()->addHeading(__('Basic Information'));
 

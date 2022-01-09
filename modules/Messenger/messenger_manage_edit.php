@@ -37,8 +37,8 @@ else {
 		print "</div>" ;
 	}
 	else {
-        $search = isset($_GET['search']) ? $_GET['search'] : null;
-        $updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : '';
+        $search = $_GET['search'] ?? null;
+        $updateReturn = $_GET["updateReturn"] ?? '';
 
         $page->breadcrumbs
             ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
@@ -245,7 +245,7 @@ else {
 
 					foreach ($roles AS $role) {
 						$arrRoles[$role['gibbonRoleID']] = __($role['name'])." (".__($role['category']).")";
-					}                                       
+					}
 					$row = $form->addRow()->addClass('role hiddenReveal');
 						$row->addLabel('roles[]', __('Select Roles'));
 						$row->addSelect('roles[]')->fromArray($arrRoles)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);

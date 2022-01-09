@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo __('History');
             echo '</th>';
             echo '<th>';
-            echo __('Tutor');
+            echo __('Teacher');
             echo '</th>';
             echo '</tr>';
 
@@ -240,11 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</td>';
                     echo '<td>';
 
-
-                        $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
-                        $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
-                        $resultTutor = $connection2->prepare($sqlTutor);
-                        $resultTutor->execute($dataTutor);
+                    $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
+                    $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
+                    $resultTutor = $connection2->prepare($sqlTutor);
+                    $resultTutor->execute($dataTutor);
 
                     if ($resultTutor->rowCount() > 0) {
                         while ($rowTutor = $resultTutor->fetch()) {

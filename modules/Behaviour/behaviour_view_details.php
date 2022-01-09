@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
+
+use Gibbon\Http\Url;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -46,6 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             ->add(__('View Behaviour Records'), 'behaviour_manage.php')
             ->add(__('View Student Record'));
 
+        $search = $_GET['search'] ?? '';
+        if (!empty($search)) {
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Behaviour', 'behaviour_view.php')->withQueryParam('search', $search));
+        }
+
         try {
             if ($highestAction == 'View Behaviour Records_all') {
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -66,12 +73,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             echo '</div>';
         } else {
             $row = $result->fetch();
-
-            if ($_GET['search'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_view.php&search='.$_GET['search']."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
 
             // DISPLAY STUDENT DATA
             $table = DataTable::createDetails('personal');

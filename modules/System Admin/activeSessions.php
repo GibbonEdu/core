@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     // QUERY
     $criteria = $sessionGateway->newQueryCriteria()
         ->sortBy('timestampModified', 'DESC')
-        ->pageSize(0)
+        ->pageSize(100)
         ->fromPOST();
 
     $sessions = $sessionGateway->queryActiveSessions($criteria);
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     $table->setTitle(__('View'));
 
     $table->modifyRows(function ($values, $row) {
-        // if (empty($values['gibbonPersonID'])) $row->addClass('dull');
+        if (empty($values['sessionStatus'])) $row->addClass('dull');
         return $row;
     });
 
@@ -86,7 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
         });
 
     $table->addColumn('roleCategory', __('Role Category'))
-        ->context('secondary');
+        ->context('secondary')
+        ->translatable();
 
     $table->addColumn('lastIPAddress', __('IP Address'))
         ->context('secondary');

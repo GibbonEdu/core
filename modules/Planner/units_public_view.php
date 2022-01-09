@@ -28,8 +28,9 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
 $page->breadcrumbs
-    ->add(__('Learn With Us'), 'units_public.php', [
+    ->add(__('Learn With Us'), 'modules/Planner/units_public.php', [
         'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'sidebar' => 'false',
     ])
     ->add(__('View Unit'));
 
