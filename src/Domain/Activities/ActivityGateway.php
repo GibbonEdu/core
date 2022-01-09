@@ -181,4 +181,20 @@ class ActivityGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    function getStudentActivityCountByType($type, $gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'date' => date('Y-m-d'));
+        $sql = "SELECT COUNT(*) 
+                FROM gibbonActivity 
+                JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) 
+                JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID)
+                WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
+                AND gibbonActivityStudent.status='Accepted' 
+                AND gibbonActivity.type=:type
+                AND gibbonActivity.active='Y'
+                AND :date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay";
+        $this->db()->selectOne($sql, $data);
+    }
+
 }
