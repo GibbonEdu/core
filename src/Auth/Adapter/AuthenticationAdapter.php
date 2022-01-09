@@ -273,6 +273,9 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
             'timestampModified' => date('Y-m-d H:i:s'),
         ]);
 
+        // Force a garbage collection of inactive sessions older than 1 day
+        $this->sessionGateway->deleteExpiredSessions(86400);
+
         // Update user personal theme
         if (!empty($userData['gibbonThemeIDPersonal'])) {
             $themeGateway = $this->getContainer()->get(ThemeGateway::class);
