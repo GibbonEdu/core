@@ -105,6 +105,7 @@ v23.0.00
         School Admin: fixed phone numbers not formatting in Manage Facilities
         Staff: fixed substitute unavailability showing previous school years
         Staff: fixed manually adding/editing absences on non-school days
+        Staff: fix Print action in Edit Application Form not opening in new tab
         Students: fixed missing Official Name fields for parents in Student Application import
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
