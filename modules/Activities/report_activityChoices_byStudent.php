@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                     $actions
                         ->addAction('view', __('View Details'))
                         ->setURL('/modules/Activities/activities_view_full.php')
-                        ->isModal(900, 500);
+                        ->isModal(1000, 500);
                 });
 
             echo $table->render($activities);
