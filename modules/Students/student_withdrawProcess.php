@@ -26,6 +26,7 @@ use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 
 require_once '../../gibbon.php';
 
@@ -83,6 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
             ]);
 
             $partialFail &= !$inserted;
+        }
+
+        if ($data['status'] != $person['status']) {
+            $statusReason = !empty($data['departureReason']) 
+                ? __('Student Withdrawn').': '.$data['departureReason'] 
+                : __('Student Withdrawn');
+
+            $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
+            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $person['status'], 'statusNew' => $data['status'], 'reason' => $statusReason]);
         }
 
         $notify = $_POST['notify'] ?? [];
