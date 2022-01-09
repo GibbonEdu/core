@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if ($result->isEmpty()) {
                 $page->addError( __('You do not have access to this action.'));
             } else {
-                $table = DataTable::create('students');
+                $table = DataTable::create('studentsView');
                 $table->setTitle($title);
 
                 $table->addColumn('student', __('Student'))
