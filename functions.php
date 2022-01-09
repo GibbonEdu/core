@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 function getIPAddress() {
     $return = false;
@@ -146,10 +148,10 @@ function __n(string $singular, string $plural, int $n, array $params = [], array
  */
 function __m(string $text, array $params = [], array $options = [])
 {
-    global $gibbon;
+    global $gibbon, $session;
 
-    if ($gibbon->session->has('module')) {
-        $options['domain'] = $gibbon->session->get('module');
+    if ($session->has('module')) {
+        $options['domain'] = $session->get('module');
     }
 
     return $gibbon->locale->translate($text, $params, $options);
@@ -198,33 +200,6 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-/**
- * DEPRECATED. Takes the provided string, and uses a tinymce style valid_elements string to strip out unwanted tags
- *
- * @param string $string
- * @param Connection $connection2
- * @return string
- * 
- * @deprecated in v23. Use Validator::sanitizeRichText
- */
-function tinymceStyleStripTags($string, $connection2)
-{
-    $return = '';
-
-    $comment = html_entity_decode($string);
-    $allowableTags = getSettingByScope($connection2, 'System', 'allowableHTML');
-    $allowableTags = preg_replace("/\[([^\[\]]|(?0))*]/", '', $allowableTags);
-    $allowableTagTokens = explode(',', $allowableTags);
-    $allowableTags = '';
-    foreach ($allowableTagTokens as $allowableTagToken) {
-        $allowableTags .= '&lt;'.$allowableTagToken.'&gt;';
-    }
-    $allowableTags = html_entity_decode($allowableTags);
-    $comment = strip_tags($comment, $allowableTags);
-
-    return $comment;
-}
-
 //Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
 function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 {
@@ -240,28 +215,6 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
     }
 
     return $return;
-}
-
-/**
- * @deprecated in v16. Use NotificationSender class.
- */
-function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink)
-{
-    global $pdo, $gibbon;
-
-    $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
-    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $gibbon->session);
-
-    $notificationSender->addNotification($gibbonPersonID, $text, $moduleName, $actionLink);
-    $success = $notificationSender->sendNotifications();
-}
-
-/**
- * @deprecated in v16. Use Format::yesNo
- */
-function ynExpander($guid, $yn, $translation = true)
-{
-    return Format::yesNo($yn, $translation);
 }
 
 //Accepts birthday in mysql date (YYYY-MM-DD) ;
@@ -303,12 +256,16 @@ function is_leap_year($year)
 
 function doesPasswordMatchPolicy($connection2, $passwordNew)
 {
+    global $container;
+
     $output = true;
 
-    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
+    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
+    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
+    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
 
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
         $output = false;
@@ -342,12 +299,16 @@ function doesPasswordMatchPolicy($connection2, $passwordNew)
 
 function getPasswordPolicy($guid, $connection2)
 {
+    global $container;
+
     $output = false;
 
-    $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-    $numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-    $punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
+    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
+    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
+    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
 
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
         $output .= __('An error occurred.');
@@ -374,14 +335,15 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
+    global $session;
+    $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
-            ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
+            ->fromAjax(Url::fromHandlerRoute('index_fastFinder_ajax.php'))
             ->setClass('w-full text-white flex items-center')
             ->setAria('label', __('Search'))
             ->setParameter('hintText', __('Start typing a name...'))
@@ -395,7 +357,7 @@ function getFastFinder($connection2, $guid)
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
     $templateData = [
-        'roleCategory'        => getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2),
+        'roleCategory'        => getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2),
         'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
         'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
         'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
@@ -417,6 +379,7 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
     if ($resultAlert->rowCount() == 1) {
         $rowAlert = $resultAlert->fetch();
         $output = array();
+        $output['gibbonAlertLevelID'] = $rowAlert['gibbonAlertLevelID'];
         $output['name'] = __($rowAlert['name']);
         $output['nameShort'] = $rowAlert['nameShort'];
         $output['color'] = $rowAlert['color'];
@@ -468,9 +431,11 @@ function getUnit($connection2, $gibbonUnitID, $gibbonCourseClassID)
 
 function getWeekNumber($date, $connection2, $guid)
 {
+    global $session;
+
     $week = 0;
     try {
-        $dataWeek = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $dataWeek = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sqlWeek = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
         $resultWeek = $connection2->prepare($sqlWeek);
         $resultWeek->execute($dataWeek);
@@ -499,50 +464,6 @@ function getWeekNumber($date, $connection2, $guid)
     }
 }
 
-function getModuleEntry($address, $connection2, $guid)
-{
-    $output = false;
-
-    try {
-        $data = array('moduleName' => getModuleName($address), 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent']);
-        $sql = "SELECT DISTINCT gibbonModule.name, gibbonModule.category, gibbonModule.entryURL FROM `gibbonModule`, gibbonAction, gibbonPermission WHERE gibbonModule.name=:moduleName AND (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) ORDER BY category, name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $entryURL = $row['entryURL'];
-            if (isActionAccessible($guid, $connection2, '/modules/'.$row['name'].'/'.$entryURL) == false and $entryURL != 'index.php') {
-                try {
-                    $dataEntry = array('gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'moduleName' => $row['name']);
-                    $sqlEntry = "SELECT DISTINCT gibbonAction.entryURL FROM gibbonModule, gibbonAction, gibbonPermission WHERE (active='Y') AND (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND gibbonModule.name=:moduleName ORDER BY gibbonAction.name";
-                    $resultEntry = $connection2->prepare($sqlEntry);
-                    $resultEntry->execute($dataEntry);
-                    if ($resultEntry->rowCount() > 0) {
-                        $rowEntry = $resultEntry->fetch();
-                        $entryURL = $rowEntry['entryURL'];
-                    }
-                } catch (PDOException $e) {
-                }
-            }
-        }
-    } catch (PDOException $e) {
-    }
-
-    if ($entryURL != '') {
-        $output = $entryURL;
-    }
-
-    return $output;
-}
-
-/**
- * @deprecated in v16. Use Format::name
- */
-function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
-{
-    return Format::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
-}
-
 /**
  * Updated v18 to use a twig template.
  *
@@ -550,14 +471,14 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
  */
 function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
 {
-    global $page;
+    global $page, $session;
 
     $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
 
     $templateData['name'] = $templateData['id'];
     $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
 
-    $templateData['absoluteURL'] = $_SESSION[$guid]['absoluteURL'];
+    $templateData['absoluteURL'] = $session->get('absoluteURL');
 
     return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
 }
@@ -697,14 +618,6 @@ function msort($array, $id = 'id', $sort_ascending = true)
     }
 }
 
-/**
- * @deprecated in v16. Use Format::address
- */
-function addressFormat($address, $addressDistrict, $addressCountry)
-{
-    return Format::address($address, $addressDistrict, $addressCountry);
-}
-
 //Print out, preformatted indicator of max file upload size
 function getMaxUpload($guid, $multiple = '')
 {
@@ -761,18 +674,12 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
     return $output;
 }
 
-/**
- * @deprecated in v16. Use Format::age
- */
-function getAge($guid, $stamp, $short = false, $yearsOnly = false)
-{
-    return Format::age(date('Y-m-d', $stamp), $short);
-}
-
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
 function getHighestGroupedAction($guid, $address, $connection2)
 {
-    if (empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) return false;
+    global $session;
+
+    if (empty($session->get('gibbonRoleIDCurrent'))) return false;
 
     $output = false;
     $moduleID = checkModuleReady($address, $connection2);
@@ -780,7 +687,7 @@ function getHighestGroupedAction($guid, $address, $connection2)
     try {
         $data = [
             'actionName' => '%'.getActionName($address).'%',
-            'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'],
+            'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
             'moduleID' => $moduleID,
         ];
         $sql = 'SELECT
@@ -826,40 +733,33 @@ function getRoleCategory($gibbonRoleID, $connection2)
     return $output;
 }
 
-/**
- * @deprecated in v16. Use Format::timestamp
- */
-function dateConvertToTimestamp($date)
-{
-    return Format::timestamp($date);
-}
-
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
 function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 {
+    global $session;
+
     //Set test variables
     $isInTerm = false;
     $isSchoolDay = false;
     $isSchoolOpen = false;
 
     //Turn $date into UNIX timestamp and extract day of week
-    $timestamp = dateConvertToTimestamp($date);
+    $timestamp = Format::timestamp($date);
+
     $dayOfWeek = date('D', $timestamp);
 
     //See if date falls into a school term
-    try {
-        $data = array();
-        $sqlWhere = '';
-        if ($allYears != true) {
-            $data[$_SESSION[$guid]['gibbonSchoolYearID']] = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $sqlWhere = ' AND gibbonSchoolYear.gibbonSchoolYearID=:'.$_SESSION[$guid]['gibbonSchoolYearID'];
-        }
+    $data = [];
+    $sql = "SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID";
 
-        $sql = "SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID $sqlWhere";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
+    if ($allYears != true) {
+        $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
+        $sql .= ' AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
     }
+
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+
     while ($row = $result->fetch()) {
         if ($date >= $row['firstDay'] and $date <= $row['lastDay']) {
             $isInTerm = true;
@@ -868,11 +768,10 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if date's day of week is a school day
     if ($isInTerm == true) {
-
-            $data = array('nameShort' => $dayOfWeek);
-            $sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('nameShort' => $dayOfWeek);
+        $sql = "SELECT * FROM gibbonDaysOfWeek WHERE nameShort=:nameShort AND schoolDay='Y'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
         if ($result->rowCount() > 0) {
             $isSchoolDay = true;
         }
@@ -880,11 +779,10 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 
     //See if there is a special day
     if ($isInTerm == true and $isSchoolDay == true) {
-
-            $data = array('date' => $date);
-            $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('date' => $date);
+        $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE type='School Closure' AND date=:date";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() < 1) {
             $isSchoolOpen = true;
@@ -894,24 +792,10 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     return $isSchoolOpen;
 }
 
-/**
- * @deprecated in v16. Use Format::userPhoto
- */
-function printUserPhoto($guid, $path, $size)
-{
-    echo Format::userPhoto($path, $size);
-}
-
-/**
- * @deprecated in v16. Use Format::userPhoto
- */
-function getUserPhoto($guid, $path, $size)
-{
-    return Format::userPhoto($path, $size);
-}
-
 function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divExtras = '', $div = true, $large = false, $target = "_self")
 {
+    global $session, $container;
+
     $output = '';
     $alerts = [];
 
@@ -919,13 +803,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
     if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes' or $highestAction == 'View Student Profile_fullEditAllNotes') {
-
         // Individual Needs
-
-            $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
-            $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
-            $resultAlert = $connection2->prepare($sqlAlert);
-            $resultAlert->execute($dataAlert);
+        $dataAlert = array('gibbonPersonID' => $gibbonPersonID);
+        $sqlAlert = "SELECT * FROM gibbonINPersonDescriptor JOIN gibbonAlertLevel ON (gibbonINPersonDescriptor.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY sequenceNumber DESC";
+        $resultAlert = $connection2->prepare($sqlAlert);
+        $resultAlert->execute($dataAlert);
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1
@@ -938,7 +820,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('IN'),
                 'title'           => $title,
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Individual Needs',
+                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                    ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Individual Needs']),
             ];
         }
 
@@ -946,25 +829,26 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         $gibbonAlertLevelID = '';
         $alertThresholdText = '';
 
-            $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
-            $sqlAlert = "SELECT *
-            FROM gibbonMarkbookEntry
-                JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-                JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-            WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
-                AND (attainmentConcern='Y' OR effortConcern='Y')
-                AND complete='Y'
-                AND gibbonSchoolYearID=:gibbonSchoolYearID
-                AND completeDate<=:today
-                AND completeDate>:date
-                ";
-            $resultAlert = $connection2->prepare($sqlAlert);
-            $resultAlert->execute($dataAlert);
+        $dataAlert = array('gibbonPersonIDStudent' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'), 'date' => date('Y-m-d', (time() - (24 * 60 * 60 * 60))));
+        $sqlAlert = "SELECT *
+        FROM gibbonMarkbookEntry
+            JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+            JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+            JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+        WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent
+            AND (attainmentConcern='Y' OR effortConcern='Y')
+            AND complete='Y'
+            AND gibbonSchoolYearID=:gibbonSchoolYearID
+            AND completeDate<=:today
+            AND completeDate>:date
+            ";
+        $resultAlert = $connection2->prepare($sqlAlert);
+        $resultAlert->execute($dataAlert);
 
-        $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
-        $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
-        $academicAlertHighThreshold = getSettingByScope($connection2, 'Students', 'academicAlertHighThreshold');
+        $settingGateway = $container->get(SettingGateway::class);
+        $academicAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertLowThreshold');
+        $academicAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertMediumThreshold');
+        $academicAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'academicAlertHighThreshold');
 
         if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
@@ -984,7 +868,12 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('A'),
                     'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID'],
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParams([
+                                                'gibbonPersonID' => $gibbonPersonID,
+                                                'subpage' => 'Markbook',
+                                                'filter' => $session->get('gibbonSchoolYearID'),
+                                            ]),
                 ];
             }
         }
@@ -998,9 +887,9 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
 
-        $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
-        $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
-        $behaviourAlertHighThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertHighThreshold');
+        $behaviourAlertLowThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertLowThreshold');
+        $behaviourAlertMediumThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertMediumThreshold');
+        $behaviourAlertHighThreshold = $settingGateway->getSettingByScope('Students', 'behaviourAlertHighThreshold');
 
         if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
@@ -1021,7 +910,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('B'),
                     'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Behaviour',
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Behaviour']),
                 ];
             }
         }
@@ -1034,12 +924,13 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestColourBG' => $alert[4],
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Medical',
+                'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                        ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
             ];
         }
 
         // Privacy
-        $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
             if ($alert = getAlert($guid, $connection2, 001)) {
                 $alerts[] = [
@@ -1048,7 +939,8 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID,
+                    'link'            => Url::fromModuleRoute('Students', 'student_view_details')
+                                            ->withQueryParam('gibbonPersonID', $gibbonPersonID),
                 ];
             }
         }
@@ -1081,6 +973,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 //Gets system settings from database and writes them to individual session variables.
 function getSystemSettings($guid, $connection2)
 {
+    global $session;
 
     //System settings from gibbonSetting
     try {
@@ -1089,58 +982,54 @@ function getSystemSettings($guid, $connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $_SESSION[$guid]['systemSettingsSet'] = false;
+        $session->set('systemSettingsSet', false);
     }
 
     while ($row = $result->fetch()) {
         $name = $row['name'];
-        $_SESSION[$guid][$name] = $row['value'];
+        $session->set($name, $row['value']);
     }
 
     //Get names and emails for administrator, dba, admissions
     //System Administrator
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdministrator']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationAdministrator'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+        $session->set('organisationAdministratorName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationAdministratorEmail', $row['email']);
     }
     //DBA
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationDBA']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationDBA'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
+        $session->set('organisationDBAName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationDBAEmail', $row['email']);
     }
     //Admissions
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationAdmissions']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonPersonID' => $session->get('organisationAdmissions'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
+        $session->set('organisationAdmissionsName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationAdmissionsEmail', $row['email']);
     }
-    //HR Administraotr
-
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['organisationHR']);
-        $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    //HR Administrator
+    $data = array('gibbonPersonID' => $session->get('organisationHR'));
+    $sql = 'SELECT surname, preferredName, email FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationHREmail'] = $row['email'];
+        $session->set('organisationHRName', Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true));
+        $session->set('organisationHREmail', $row['email']);
     }
 
     //Language settings from gibboni18n
@@ -1150,88 +1039,54 @@ function getSystemSettings($guid, $connection2)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $_SESSION[$guid]['systemSettingsSet'] = false;
+        $session->set('systemSettingsSet', false);
     }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         setLanguageSession($guid, $row);
     }
 
-    $_SESSION[$guid]['systemSettingsSet'] = true;
+    $session->set('systemSettingsSet', true);
 }
 
 //Set language session variables
 function setLanguageSession($guid, $row, $defaultLanguage = true)
 {
-    $_SESSION[$guid]['i18n']['gibboni18nID'] = $row['gibboni18nID'];
-    $_SESSION[$guid]['i18n']['code'] = $row['code'];
-    $_SESSION[$guid]['i18n']['name'] = $row['name'];
-    $_SESSION[$guid]['i18n']['dateFormat'] = $row['dateFormat'];
-    $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
-    $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
-    $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
+    global $session;
+
+    $i18n = [
+        'gibboni18nID' => $row['gibboni18nID'],
+        'code' => $row['code'],
+        'name' => $row['name'],
+        'dateFormat' => $row['dateFormat'],
+        'dateFormatRegEx' => $row['dateFormatRegEx'],
+        'dateFormatPHP' => $row['dateFormatPHP'],
+        'rtl' => $row['rtl'],
+    ];
 
     if ($defaultLanguage) {
-        $_SESSION[$guid]['i18n']['default']['code'] = $row['code'];
-        $_SESSION[$guid]['i18n']['default']['name'] = $row['name'];
-    }
-}
-
-//Gets the desired setting, specified by name and scope.
-function getSettingByScope($connection2, $scope, $name, $returnRow = false )
-{
-
-        $data = array('scope' => $scope, 'name' => $name);
-        $sql = 'SELECT * FROM gibbonSetting WHERE scope=:scope AND name=:name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-    if ($result && $result->rowCount() == 1) {
-
-        if ($returnRow) {
-            return $result->fetch();
-        } else {
-            $row = $result->fetch();
-            return $row['value'];
-        }
+        $i18n['default']['code'] = $row['code'];
+        $i18n['default']['name'] = $row['name'];
     }
 
-    return false;
-}
-
-/**
- * Converts date from language-specific format to YYYY-MM-DD. DEPRECATED.
- *
- * @deprecated in v16. Use Format::dateConvert
- */
-function dateConvert($guid, $date)
-{
-    return Format::dateConvert($date);
-}
-
-/**
- * Converts date from YYYY-MM-DD to language-specific format. DEPRECATED.
- *
- * @deprecated in v16. Use Format::date
- */
-function dateConvertBack($guid, $date)
-{
-    return Format::date($date);
+    $session->set('i18n', $i18n);
 }
 
 function isActionAccessible($guid, $connection2, $address, $sub = '')
 {
+    global $session;
+
     $output = false;
     //Check user is logged in
-    if (isset($_SESSION[$guid]['username'])) {
+    if ($session->has('username')) {
         //Check user has a current role set
-        if ($_SESSION[$guid]['gibbonRoleIDCurrent'] != '') {
+        if ($session->get('gibbonRoleIDCurrent') != '') {
             //Check module ready
             $moduleID = checkModuleReady($address, $connection2);
             if ($moduleID != false) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent']);
+                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
                     $sqlWhere = '';
                     if ($sub != '') {
                         $data['sub'] = $sub;
@@ -1252,30 +1107,33 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
     return $output;
 }
 
+/**
+ * @deprecated in v23
+ */
 function isModuleAccessible($guid, $connection2, $address = '')
 {
+    global $session;
+
     if ($address == '') {
-        $address = $_SESSION[$guid]['address'];
+        $address = $session->get('address');
     }
     $output = false;
-    //Check user is logged in
-    if (!empty($_SESSION[$guid]['username'])) {
-        //Check user has a current role set
-        if (!empty($_SESSION[$guid]['gibbonRoleIDCurrent'])) {
-            //Check module ready
-            $moduleID = checkModuleReady($address, $connection2);
-            if ($moduleID != false) {
-                //Check current role has access rights to an action in the current module.
-                try {
-                    $data = array('gibbonRoleID' => $_SESSION[$guid]['gibbonRoleIDCurrent'], 'moduleID' => $moduleID);
-                    $sql = 'SELECT * FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID)';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                    if ($result->rowCount() > 0) {
-                        $output = true;
-                    }
-                } catch (PDOException $e) {
+    //Check user is logged in && Check user has a current role set
+    if ($session->has('username') && $session->has('gibbonRoleIDCurrent')) {
+
+        //Check module ready
+        $moduleID = checkModuleReady($address, $connection2);
+        if ($moduleID != false) {
+            //Check current role has access rights to an action in the current module.
+            try {
+                $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleID' => $moduleID);
+                $sql = 'SELECT * FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=:moduleID)';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+                if ($result->rowCount() > 0) {
+                    $output = true;
                 }
+            } catch (PDOException $e) {
             }
         }
     }
@@ -1288,6 +1146,8 @@ function isModuleAccessible($guid, $connection2, $address = '')
  */
 function printPagination($guid, $total, $page, $pagination, $position, $get = '')
 {
+    global $session;
+
     if ($position == 'bottom') {
         $class = 'paginationBottom';
     } else {
@@ -1297,11 +1157,11 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     echo "<div class='$class'>";
     $totalPages = ceil($total / $pagination);
     $i = 0;
-    echo __('Records').' '.(($page - 1) * $_SESSION[$guid]['pagination'] + 1).'-';
-    if (($page * $_SESSION[$guid]['pagination']) > $total) {
+    echo __('Records').' '.(($page - 1) * $session->get('pagination') + 1).'-';
+    if (($page * $session->get('pagination')) > $total) {
         echo $total;
     } else {
-        echo $page * $_SESSION[$guid]['pagination'];
+        echo $page * $session->get('pagination');
     }
     echo ' '.__('of').' '.$total.' : ';
 
@@ -1310,13 +1170,13 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
             if ($i == ($page - 1)) {
                 echo "$page ";
             } else {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
             }
         }
     } else {
         if ($page > 1) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__('First').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address')."&page=1&$get'>".__('First').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
         } else {
             echo __('First').' '.__('Previous').' ';
         }
@@ -1326,46 +1186,18 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
             if ($i == ($page - 1)) {
                 echo "$page ";
             } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
             }
         }
 
         if ($page != $totalPages) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__('Last').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
+            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.$totalPages."&$get'>".__('Last').'</a> ';
         } else {
             echo __('Next').' '.__('Last');
         }
     }
     echo '</div>';
-}
-
-//Get list of user roles from database, and convert to array
-function getRoleList($gibbonRoleIDAll, $connection2)
-{
-    $output = array();
-
-    //Tokenise list of roles
-    $roles = explode(',', $gibbonRoleIDAll);
-
-    //Check that roles exist
-    $count = 0;
-    for ($i = 0; $i < count($roles); ++$i) {
-
-            $data = array('gibbonRoleID' => $roles[$i]);
-            $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $output[$count][0] = $row['gibbonRoleID'];
-            $output[$count][1] = $row['name'];
-            ++$count;
-        }
-    }
-
-    //Return list of roles
-    return $output;
 }
 
 //Get the module name from the address
@@ -1426,12 +1258,13 @@ function getModuleCategory($address, $connection2)
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
 function setCurrentSchoolYear($guid,  $connection2)
 {
-    //Run query
+    global $session;
 
-        $data = array();
-        $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    //Run query
+    $data = array();
+    $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current'";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     //Check number of rows returned.
     //If it is not 1, show error
@@ -1441,11 +1274,11 @@ function setCurrentSchoolYear($guid,  $connection2)
     //Else get schoolYearID
     else {
         $row = $result->fetch();
-        $_SESSION[$guid]['gibbonSchoolYearID'] = $row['gibbonSchoolYearID'];
-        $_SESSION[$guid]['gibbonSchoolYearName'] = $row['name'];
-        $_SESSION[$guid]['gibbonSchoolYearSequenceNumber'] = $row['sequenceNumber'];
-        $_SESSION[$guid]['gibbonSchoolYearFirstDay'] = $row['firstDay'];
-        $_SESSION[$guid]['gibbonSchoolYearLastDay'] = $row['lastDay'];
+        $session->set('gibbonSchoolYearID', $row['gibbonSchoolYearID']);
+        $session->set('gibbonSchoolYearName', $row['name']);
+        $session->set('gibbonSchoolYearSequenceNumber', $row['sequenceNumber']);
+        $session->set('gibbonSchoolYearFirstDay',$row['firstDay']);
+        $session->set('gibbonSchoolYearLastDay', $row['lastDay']);
     }
 }
 
@@ -1586,36 +1419,6 @@ function randomPassword($length)
     return $password;
 }
 
-/**
- * @deprecated in v16. Use Format::phone()
- */
-function formatPhone($num)
-{
-    return Format::phone($num);
-}
-
-/**
- * @deprecated in v22.
- *
- * Use $container->get(\Gibbon\Domain\System\LogGateway::class)->addLog() instead.
- * See \Gibbon\Domain\System\LogGateway::addLog() for details.
- */
-function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array = null, $ip = null)
-{
-    static $logGateway;
-    if (!isset($logGateway)) {
-        global $container;
-        if (!isset($container)) {
-            throw new \Exception('Unable to find $container object in global namespace.');
-        }
-        $logGateway = $container->get(LogGateway::class);
-        if (!$logGateway instanceof LogGateway) {
-            throw new \Exception('LogGateway not found in container.');
-        }
-    }
-    return $logGateway->addLog($gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array, $ip);
-}
-
 function getModuleID($connection2, $address)
 {
     $name = getModuleName($address);
@@ -1633,28 +1436,6 @@ function getModuleIDFromName($connection2, $name)
         $row = $resultModuleID->fetch();
 
     return $row['gibbonModuleID'];
-}
-
-/**
- * This method has been replaced by the Mailer class, and remains here only to handle legacy calls.
- * The Deprecation error will be logged, and if asked for in php.ini stop execution.
- *
- * @deprecated 30th Nov 2018
- * @version 1st September 2016
- * @since   1st September 2016
- */
-function getGibbonMailer($guid) {
-
-    global $container;
-    $displayErrors = ini_get('display_errors');
-
-    ini_set('display_errors', 'Off');
-    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\Mailer class', E_USER_DEPRECATED);
-    ini_set('display_errors', $displayErrors);
-
-    $mail = $container->get(Mailer::class);
-
-    return $mail;
 }
 
 /**

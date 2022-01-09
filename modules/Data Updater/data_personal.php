@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         echo __('Choose User');
         echo '</h2>';
 
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
         $form = Form::create('selectPerson', $session->get('absoluteURL').'/index.php', 'get');
         $form->addHiddenValue('q', '/modules/'.$session->get('module').'/data_personal.php');
@@ -205,8 +205,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $proceed = false;
                 $requiredFields = [];
 
+                $settingGateway = $container->get(SettingGateway::class);
+
                 if ($highestAction != 'Update Personal Data_any') {
-                    $requiredFieldsSetting = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
+                    $requiredFieldsSetting = unserialize($settingGateway->getSettingByScope('User Admin', 'personalDataUpdaterRequiredFields'));
                     if (is_array($requiredFieldsSetting)) {
                         if (!isset($requiredFieldsSetting[$primaryRoleCategory])) {
                             // If there's no per-role settings then handle the original required field Y/N settings
@@ -385,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('email', __('Email'));
                         $email = $row->addEmail('email');
 
-                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+                    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
                         $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
                     }
@@ -498,7 +500,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addLabel('countryOfBirth', __('Country of Birth'));
                         $row->addSelectCountry('countryOfBirth');
 
-                    $ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
+                    $ethnicities = $settingGateway->getSettingByScope('User Admin', 'ethnicity');
                     $row = $form->addRow()->onlyIf($isVisible('ethnicity'));
                         $row->addLabel('ethnicity', __('Ethnicity'));
                         if (!empty($ethnicities)) {
@@ -507,7 +509,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $row->addTextField('ethnicity')->maxLength(255);
                         }
 
-                    $religions = getSettingByScope($connection2, 'User Admin', 'religions');
+                    $religions = $settingGateway->getSettingByScope('User Admin', 'religions');
                     $row = $form->addRow()->onlyIf($isVisible('religion'));
                         $row->addLabel('religion', __('Religion'));
                         if (!empty($religions)) {
@@ -516,9 +518,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             $row->addTextField('religion')->maxLength(30);
                         }
 
-                    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-                    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-                    
+                    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
+                    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
+
                     // PERSONAL DOCUMENTS
                     $params = compact('student', 'staff', 'parent', 'other') + ['dataUpdater' => true];
                     if ($existing) {
@@ -526,11 +528,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     } else {
                         $documents = $container->get(PersonalDocumentGateway::class)->selectPersonalDocuments('gibbonPerson', $gibbonPersonID, $params )->fetchAll();
                     }
-                    
+
                     if (!empty($documents)) {
                         $col = $form->addRow()->addColumn();
                             $col->addLabel('document', __('Personal Documents'));
-                            $col->addPersonalDocuments('document', $documents, $container->get(View::class), $container->get(SettingGateway::class));
+                            $col->addPersonalDocuments('document', $documents, $container->get(View::class), $settingGateway);
                     }
 
                     // EMPLOYMENT
@@ -562,9 +564,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $row->addTextField('vehicleRegistration')->maxLength(20);
 
                     if ($student) {
-                        $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-                        $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-                        $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+                        $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
+                        $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
+                        $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
 
                         if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 

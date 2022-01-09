@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Finance\Forms\FinanceFormFactory;
 
@@ -27,12 +28,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
-    $status = isset($_GET['status'])? $_GET['status'] : '';
-    $gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '';
-    $monthOfIssue = isset($_GET['monthOfIssue'])? $_GET['monthOfIssue'] : '';
-    $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
-    $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $status = $_GET['status'] ?? '';
+    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
+    $monthOfIssue = $_GET['monthOfIssue'] ?? '';
+    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'] ?? '';
+    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'] ?? '';
 
     $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID');
 
@@ -68,9 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
         $schoolYearName = $result->rowCount() > 0? $result->fetchColumn(0) : '';
 
         if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
-            echo '</div>';
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'invoices_manage.php')->withQueryParams($urlParams));
         }
 
         $form = Form::create('invoice', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_manage_addProcess.php?'.http_build_query($urlParams));
@@ -86,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
-            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID)->required()->selectMultiple();
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeIDs', $gibbonSchoolYearID, ["byClass" => true])->required()->selectMultiple();
 
         $scheduling = array('Scheduled' => __('Scheduled'), 'Ad Hoc' => __('Ad Hoc'));
         $row = $form->addRow();

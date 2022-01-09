@@ -390,4 +390,54 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectAdHocAttendanceStudents($gibbonSchoolYearID, $target, $targetID, $currentDate)
+    {
+        switch ($target) {
+            case 'Activity':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonActivityID' => $targetID, 'date' => $currentDate];
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup
+                        FROM gibbonStudentEnrolment 
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                        JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonActivityStudent.gibbonActivityID=:gibbonActivityID
+                        AND gibbonActivityStudent.status='Accepted'
+                        AND gibbonPerson.status='Full' 
+                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
+                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                    break;
+            case 'Messenger':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonGroupID' => $targetID, 'date' => $currentDate];
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
+                        FROM gibbonStudentEnrolment 
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                        JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonGroupPerson.gibbonGroupID=:gibbonGroupID
+                        AND gibbonPerson.status='Full' 
+                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
+                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                    break;
+            case 'Select':
+                $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDList' => implode(',', $targetID), 'date' => $currentDate];
+                $sql = "SELECT gibbonPerson.image_240, gibbonPerson.dob, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup 
+                        FROM gibbonStudentEnrolment 
+                        JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)
+                        AND gibbonPerson.status='Full' 
+                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
+                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                break;
+        }
+
+        return $this->db()->select($sql, $data);
+    }
 }

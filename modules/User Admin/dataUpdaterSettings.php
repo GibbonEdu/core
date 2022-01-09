@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -32,7 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
 
     $row = $form->addRow()->addHeading(__('Settings'));
 
-    $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates', true);
+    $settingGateway = $container->get(SettingGateway::class);
+    $setting = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addYesNo($setting['name'])->selected($setting['value']);
@@ -46,18 +48,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         'Finance' => __('Finance'),
         'Staff' => __('Staff'),
     );
-    $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType', true);
+    $setting = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdatesByType', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addSelect($setting['name'])->fromArray($updateTypes)->required()->selectMultiple()->selected(explode(',', $setting['value']));
 
-    $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
+    $setting = $settingGateway->getSettingByScope('Data Updater', 'cutoffDate', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addDate($setting['name'])->required()->setValue(Format::date($setting['value']));
 
     $sql = "SELECT DISTINCT category as value, category as name FROM gibbonRole ORDER BY category";
-    $setting = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory', true);
+    $setting = $settingGateway->getSettingByScope('Data Updater', 'redirectByRoleCategory', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selectMultiple()->selected(explode(',', $setting['value']));
@@ -119,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     ];
 
     // Get setting and unserialize
-    $settings = unserialize(getSettingByScope($connection2, 'User Admin', 'personalDataUpdaterRequiredFields'));
+    $settings = unserialize($settingGateway->getSettingByScope('User Admin', 'personalDataUpdaterRequiredFields'));
 
     // Convert original Y/N settings
     if (!isset($settings['Staff'])) {

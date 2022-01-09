@@ -17,38 +17,37 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 include './gibbon.php';
 
-$URLBack = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
+$URLBack = Url::fromRoute('notifications');
 $gibbonNotificationID = $_GET['gibbonNotificationID'] ?? '';
 
-if (empty($gibbonNotificationID) || !$gibbon->session->has('gibbonPersonID')) {
-    $URLBack = $URLBack.'&return=error1';
-    header("Location: {$URLBack}");
+if (empty($gibbonNotificationID) || !$session->has('gibbonPersonID')) {
+    header("Location: {$URLBack->withReturn('error1')}");
     exit();
 } else {
     // Check for existence of notification, belonging to this user
-    $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+    $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = "SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
-    
+
     $notification = $pdo->selectOne($sql, $data);
 
     if (empty($notification)) {
-        $URLBack = $URLBack.'&return=error2';
-        header("Location: {$URLBack}");
+        header("Location: {$URLBack->withReturn('error2')}");
         exit();
     } else {
-        $URL = $gibbon->session->get('absoluteURL').$notification['actionLink'];
+        $URL = $session->get('absoluteURL').$notification['actionLink'];
 
         //Archive notification
-        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "UPDATE gibbonNotification SET status='Archived' WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID";
-            
+
         $pdo->update($sql, $data);
 
         if (!$pdo->getQuerySuccess()) {
-            $URLBack = $URLBack.'&return=error2';
-            header("Location: {$URLBack}");
+            header("Location: {$URLBack->withReturn('error2')}");
             exit();
         }
 

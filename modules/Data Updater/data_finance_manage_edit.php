@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
 

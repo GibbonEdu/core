@@ -21,6 +21,7 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             }
 
             //LS role
-            $notificationRole = getSettingByScope($connection2, 'Individual Needs', 'investigationNotificationRole');
+            $notificationRole = $container->get(SettingGateway::class)->getSettingByScope('Individual Needs', 'investigationNotificationRole');
             if (!empty($notificationRole)) {
                 $roleGateway = $container->get(RoleGateway::class);
                 $criteria = $roleGateway->newQueryCriteria();

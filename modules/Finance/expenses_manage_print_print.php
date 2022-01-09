@@ -1,6 +1,4 @@
 <?php
-
-use Gibbon\Module\Finance\Tables\ExpenseLog;
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -19,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Finance\Tables\ExpenseLog;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -33,8 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
         echo '</div>';
     } else {
         //Check if params are specified
-        $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-        $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
+        $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'] ?? '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -61,9 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                 echo '</div>';
             } else {
                 //Get and check settings
-                $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-                $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-                $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
+                $settingGateway = $container->get(SettingGateway::class);
+                $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+                $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+                $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                     echo "<div class='error'>";
                     echo __('An error has occurred with your expense and budget settings.');
@@ -241,7 +244,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 											<b><?php echo __('Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($row['countAgainstBudget']); ?>" type="text" class="standardWidth">
 										</td>
 									</tr>
 									<?php

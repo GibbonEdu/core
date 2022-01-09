@@ -61,12 +61,10 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->addClass("floatNone")
             ->wrap('<div class="w-full">', '</div>');
 
-        $this->addButton = $factory->createButton(__("Add"))
-            ->onClick('optionTransfer(\'' . $this->name . '\', true)')
+        $this->addButton = $factory->createButton(__("Add"), '', $name . 'Add')
             ->addClass("w-9/12")
             ->wrap('<div class="w-full">', '</div>');
-        $this->removeButton = $factory->createButton(__("Remove"))
-            ->onClick('optionTransfer(\'' . $this->name . '\', false)')
+        $this->removeButton = $factory->createButton(__("Remove"), '', $name . 'Remove')
             ->addClass("w-9/12 mt-1")
             ->wrap('<div class="w-full">', '</div>');
 
@@ -77,21 +75,45 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->wrap('<div class="w-full">', '</div>');
     }
 
+    /**
+     * Gets the id of the multi-select.
+     * @return  string
+     */
     public function getID()
     {
         return $this->name;
     }
 
+    /**
+     * Adds sortable attributes to the multi-select.
+     * @param   string  $attribute
+     * @param   array   $values
+     * @return  self
+     */
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
-        $this->sortBySelect->fromArray(array($attribute => __("Sort by " . $attribute)));
+        $this->sortBySelect->fromArray([$attribute => __("Sort by {attribute}", ['attribute' => $attribute])]);
         return $this;
     }
 
+    /**
+     * Sets the select displayed element size.
+     * @param   int     $size
+     * @return  self
+     */
     public function setSize($size=8) {
         $this->sourceSelect->setSize($size);
         $this->destinationSelect->setSize($size);
+        return $this;
+    }
+
+    /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isRequired($required = true)
+    {
+        $this->destinationSelect->setRequired($required);
         return $this;
     }
 
@@ -100,7 +122,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
      * @param   bool    $value
      * @return  self
      */
-    public function isRequired($required = true)
+    public function required($required = true)
     {
         $this->destinationSelect->setRequired($required);
         return $this;
@@ -115,94 +137,40 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         return $this->destinationSelect->getRequired();
     }
 
-    public function source() {
+    /**
+     * Gets the source select.
+     * @return  Source Select
+     */
+    public function source()
+    {
         return $this->sourceSelect;
     }
 
-    public function destination() {
+    /**
+     * Gets the destination select.
+     * @return  Destination Select
+     */
+    public function destination()
+    {
         return $this->destinationSelect;
     }
 
+    /**
+     * Merges the source select groups into the destination groupings.
+     * @return  self
+     */
+    public function mergeGroupings()
+    {
+        $this->destination()->fromArray(array_fill_keys(array_keys($this->source()->getOptions()), []));
+        return $this;
+    }
+
+    /**
+     * Gets the renderable output of the element.
+     * @return  string
+     */
     public function getOutput() {
         $output = '';
-
-        // TODO: Move javascript to somewhere more sensible
-
-        $output .= '<script type="text/javascript">';
-        $output .= 'var '.$this->name.'sortBy = null;';
-        $output .= 'function optionTransfer(name, add) {
-            var select0 = $(\'#\'+name+(add ? \'Source\' : \'\'));
-            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'\'));
-
-            select0.find(\'option:selected\').each(function(){
-                select1.append($(this).clone());
-                $(this).detach().remove();
-            });
-
-            sortSelects(name);
-
-            select1.change().focus();
-        }' . "\n";
-
-        $output .= 'function sortSelect(list, sortValues) {
-            var options = $(\'option\', list);
-            if(sortValues == null) {
-                sortValues = {};
-            }
-            var arr = options.map(function(_, o) { return { tSort: sortValues[o.value] + $(o).text(), t: $(o).text(), v: o.value }; }).get();
-            arr.sort(function(o1, o2) { return o1.tSort > o2.tSort ? 1 : o1.tSort < o2.tSort ? -1 : 0; });
-            options.each(function(i, o) {
-              o.value = arr[i].v;
-              $(o).text(arr[i].t);
-            });
-        }
-        ';
-
-        $output .= '
-            jQuery(function($){
-
-                var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
-                var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
-                var form = destinationSelect.parents(\'form\');
-
-                // Select all options on submit so we can validate this select input.
-                $("input[type=\'Submit\']", form).click(function() {
-                    $(\'option\', destinationSelect).each(function() {
-                        $(this).prop("selected", true);
-                    });
-                });
-
-                $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
-                    '.$this->name.'sortBy = $(this).val();
-                    sortSelects("'.$this->name.'");
-                });
-
-                $(\'#'. $this->searchBox->getID() .'\').keyup(function(){
-                    var search = $(this).val().toLowerCase();
-                    $(\'option\', sourceSelect).each(function(){
-                        var option = $(this);
-                        if (option.text().toLowerCase().includes(search)) {
-                            option.show();
-                        } else {
-                            option.hide();
-                        }
-                    });
-                });
-            });
-
-            function sortSelects(name) {
-                var values = null;
-
-                if (window[name+"sortBy"] != \'Sort by Name\' && window[name+"sortBy"] != null) {
-                    values = $(\'#\' + name +\'Container\').data(\'sortable\')[window[name+"sortBy"]];
-                }
-
-                sortSelect($(\'#\' + name + "Source"), values);
-                sortSelect($(\'#\' + name), values);
-            }
-
-        ';
-        $output .= '</script>';
 
         $output .= '<div id="'.$this->name.'Container" class="w-full flex flex-wrap items-center" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'">';
 
@@ -224,6 +192,12 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $output .= '</div>';
 
         $output .= '</div>';
+        
+        $output .= '<script type="text/javascript">
+            $(function(){
+                $("#'.$this->name.'Container").gibbonMultiSelect("'.$this->name.'");
+            });
+        </script>';
 
         return $output;
     }

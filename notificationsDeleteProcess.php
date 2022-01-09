@@ -17,49 +17,47 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 include './gibbon.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
+$URL = Url::fromRoute('notifications');
 
 if (!isset($_GET['gibbonNotificationID'])) {
-    $URL = $URL.'&return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
     exit();
 } else {
     $gibbonNotificationID = $_GET['gibbonNotificationID'];
 
     //Check for existence of notification, beloning to this user
     try {
-        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+        $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = 'SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
         echo $e->getMessage();
-        $URL = $URL.'&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     }
 
     if ($result->rowCount() != 1) {
-        $URL = $URL.'&return=error2';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('error2')}");
         exit();
     } else {
         //Delete notification
         try {
-            $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+            $data = array('gibbonNotificationID' => $gibbonNotificationID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = 'DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND gibbonNotificationID=:gibbonNotificationID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
+            header("Location: {$URL->withReturn('error2')}");
             exit();
         }
 
         //Success 0
-        $URL = $URL.'&return=success0';
-        header("Location: {$URL}");
+        header("Location: {$URL->withReturn('success0')}");
+        exit();
     }
 }

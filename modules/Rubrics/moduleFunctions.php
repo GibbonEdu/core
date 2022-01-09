@@ -23,7 +23,7 @@ use Gibbon\Module\Rubrics\Visualise;
 
 function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $search = '', $filter2 = '')
 {
-    global $pdo;
+    global $pdo, $session;
 
     $output = false;
 
@@ -68,13 +68,13 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
         }
 
         $output .= "<div class='linkTop'>";
-        $output .= "<a onclick='return confirm(\"".__('Are you sure you want to edit rows and columns? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>".__('Edit Rows & Columns')."<img title='Edit' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>";
+        $output .= "<a onclick='return confirm(\"".__('Are you sure you want to edit rows and columns? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2'>".__('Edit Rows & Columns')."<img title='Edit' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/ style='margin: 0px 1px -4px 3px'></a>";
         $output .= '</div>';
 
-        $form = Form::createTable('editRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
+        $form = Form::createTable('editRubric', $session->get('absoluteURL').'/modules/'.$session->get('module').'/rubrics_edit_editCellProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
         $form->setClass('rubricTable fullWidth');
-        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow()->addClass();
             $row->addContent()->addClass('rubricCellEmpty');
@@ -93,7 +93,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>");
         }
 
         // Rows
@@ -113,7 +113,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$session->get('absoluteURL').'/modules/'.$session->get('module')."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>");
 
             for ($n = 0; $n < $columnCount; ++$n) {
                 $cell = @$cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];
@@ -154,12 +154,12 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 //If $mark=TRUE, then marking tools are made available, otherwise it is view only
 function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID = '', $contextDBTable = '', $contextDBTableIDField = '', $contextDBTableID = '', $contextDBTableGibbonRubricIDField = '', $contextDBTableNameField = '', $contextDBTableDateField = '')
 {
-    global $pdo, $page, $gibbon;
+    global $pdo, $page, $gibbon, $session;
 
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
 
-    
+
         $data = array('gibbonRubricID' => $gibbonRubricID);
         $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
         $result = $connection2->prepare($sql);
@@ -260,7 +260,13 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $resultContext = $pdo->executeQuery($dataContext,  $sqlContext);
 
                 if ($resultContext->rowCount() > 0) {
+                    $currentDate = date('Y-m-d');
                     while ($rowContext = $resultContext->fetch()) {
+                        // Skip data for any column that has not met its complete date yet
+                        if (!empty($rowContext['completeDate']) && $currentDate < $rowContext['completeDate']) {
+                            continue;
+                        }
+
                         $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.Format::date($rowContext[$contextDBTableDateField]).')';
                         $cells[$rowContext['gibbonRubricRowID']][$rowContext['gibbonRubricColumnID']]['context'][] = $context;
 
@@ -289,7 +295,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $output .= '</p>';
                 }
 
-                $form = Form::createTable('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
+                $form = Form::createTable('viewRubric', $session->get('absoluteURL').'/index.php');
                 $form->setClass('rubricTable fullWidth');
 
                 $row = $form->addRow()->addClass();
@@ -330,7 +336,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                                 ->wrap('<span title="'.$outcome['description'].'">', '</span>');
                             // Highlight unit outcomes with a checkmark
                             if (isset($unitOutcomes[$rows[$i]['gibbonOutcomeID']])) {
-                                $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"/>');
+                                $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>');
                             }
                             $rows[$i]['title'] = $outcomes[$rows[$i]['gibbonOutcomeID']]['name'];
                             $rows[$i]['title'];
@@ -385,7 +391,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                                 $output .= "$(this).removeClass('rubricCellHighlight');";
                                 $output .= "mode = 'Remove';";
                             $output .= '}';
-                            $output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: mode, gibbonRubricID : "' . $gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'", gibbonRubricCellID : cellID, contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
+                            $output .= 'var request=$.ajax({ url: "'.$session->get('absoluteURL').'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: mode, gibbonRubricID : "' . $gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'", gibbonRubricCellID : cellID, contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
                             $output .= '});';
                         $output .= '});';
                         $output .= '</script>';

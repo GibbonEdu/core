@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -36,7 +37,10 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-if (!isCommandLineInterface()) {
+//Check for CLI, so this cannot be run through browser
+$remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     print __('This script cannot be run from a browser, only via CLI.');
     return;
 }
@@ -62,7 +66,7 @@ $mail->SMTPKeepAlive = true;
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 $currentDate = date('Y-m-d');
-$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 
 // Setup reusable gateways and criteria
 $userGateway = $container->get(UserGateway::class);
@@ -197,7 +201,7 @@ $event->setActionLink('/index.php?q=/modules/School Admin/emailSummarySettings.p
 $event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $gibbon->session);
+$event->sendNotifications($pdo, $session);
 
 
 // Output the result to terminal

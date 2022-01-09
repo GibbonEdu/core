@@ -74,16 +74,19 @@ class SubstituteGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryUnavailableDatesBySub(QueryCriteria $criteria, $gibbonPersonIDCoverage)
+    public function queryUnavailableDatesBySub(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCoverage)
     {
         $query = $this
             ->newQuery()
-            ->from('gibbonStaffCoverageDate')
             ->cols([
                 'date as groupBy', 'gibbonStaffCoverageDate.*', 'gibbonStaffCoverageDate.gibbonPersonIDUnavailable as gibbonPersonID'
             ])
+            ->from('gibbonStaffCoverageDate')
+            ->innerJoin('gibbonSchoolYear', 'date BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
             ->where('gibbonStaffCoverageDate.gibbonPersonIDUnavailable = :gibbonPersonIDCoverage')
-            ->bindValue('gibbonPersonIDCoverage', $gibbonPersonIDCoverage);
+            ->bindValue('gibbonPersonIDCoverage', $gibbonPersonIDCoverage)
+            ->where('gibbonSchoolYear.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         return $this->runQuery($query, $criteria);
     }

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
@@ -52,6 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             $form->setTitle(__('Step 1 - Choose Class'));
 
             $form->addHiddenValue('address', $session->get('address'));
+            $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
             $classes = array();
 
@@ -131,15 +133,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             } else {
                 $rowSelect = $resultSelect->fetch();
 
+                $studentCount = $container->get(CourseEnrolmentGateway::class)->getClassStudentCount($gibbonCourseClassID);
+
                 $form = Form::create('spaceChangeStep2', $session->get('absoluteURL').'/modules/'.$session->get('module').'/spaceChange_manage_addProcess.php');
                 $form->setFactory(DatabaseFormFactory::create($pdo));
 
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
                 $row = $form->addRow();
                     $row->addLabel('class', __('Class'));
                     $row->addTextField('class')->readonly()->setValue($rowSelect['course'].'.'.$rowSelect['class']);
+
+                $row = $form->addRow();
+                    $row->addLabel('students', __('Students'));
+                    $row->addTextField('students')->readonly()->setValue($studentCount);
 
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date1' => date('Y-m-d'), 'date2' => date('Y-m-d'), 'time' => date('H:i:s'));
                 $sql = 'SELECT gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.name AS period, timeStart, timeEnd, gibbonTTDay.name AS day, gibbonTTDayDate.date, gibbonTTSpaceChangeID FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) LEFT JOIN gibbonTTSpaceChange ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTSpaceChange.date=gibbonTTDayDate.date) WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID AND (gibbonTTDayDate.date>:date1 OR (gibbonTTDayDate.date=:date2 AND timeEnd>:time)) ORDER BY gibbonTTDayDate.date, timeStart';
@@ -158,7 +167,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonSpaceID', __('Facility'));
-                    $row->addSelectSpace('gibbonSpaceID');
+                    $col = $row->addColumn()->addClass('flex-col');
+                    $col->addSelectSpace('gibbonSpaceID')->addClass('flex-1');
+                    $col->addContent('<br/><div id="facilityStatus"></div>');
 
                 $row = $form->addRow();
                     $row->addFooter();
@@ -169,3 +180,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         }
     }
 }
+?>
+
+<script>
+
+$(document).ready(function() {
+    $('#gibbonSpaceID').on('change', function() {
+        $.ajax({
+            url: './modules/Timetable/spaceChange_manage_addAjax.php',
+            data: {
+                gibbonTTDayRowClassID: $('#gibbonTTDayRowClassID').val(),    
+                gibbonSpaceID: $('#gibbonSpaceID').val(),
+            },
+            type: 'POST',
+            success: function(data) {
+                $('#facilityStatus').html(data);
+            }
+        });
+    });
+}) ;
+
+</script>

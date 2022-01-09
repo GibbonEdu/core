@@ -10,6 +10,7 @@ file that was distributed with this source code.
 namespace Gibbon;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 
 /**
@@ -33,10 +34,10 @@ class FileUploaderTest extends TestCase
 
         // Create a stub for the Gibbon\Contracts\Database\Connection class using mock results
         $this->mockPDO = $this->createMock(Connection::class);
-        $this->mockPDO->method('executeQuery')
+        $this->mockPDO->method('select')
                       ->willReturn($mockResults);
 
-        // Create a stub for the Gibbon\session class
+        // Create a stub for the Gibbon\Contracts\Services\Session interface
         $this->mockSession = $this->createMock(Session::class);
         $this->mockSession->method('get')
                           ->willReturn(__DIR__);
@@ -110,7 +111,7 @@ class FileUploaderTest extends TestCase
     public function testCanGetFileExtensionsFromDatabase()
     {
         $extensions = array('foo','bar','baz');
-        $this->assertEquals($this->fileUploader->getFileExtensions(), $extensions);
+        $this->assertEquals($extensions, $this->fileUploader->getFileExtensions());
     }
 
     public function testCanGetRandomizedFilename()
@@ -171,7 +172,7 @@ class FileUploaderTest extends TestCase
         $mockResults->method('fetchAll')->willReturn(array('foo','php','bar','js','baz','py'));
 
         $mockPDO = $this->createMock(Connection::class);
-        $mockPDO->method('executeQuery')
+        $mockPDO->method('select')
                 ->willReturn($mockResults);
 
         $fileUploaderMock = new FileUploader($mockPDO, $this->mockSession);

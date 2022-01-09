@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         'error8' => __('Your request failed because the selected date is not in the future.'),
     ]);
 
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
     $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
     $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
     $gibbonThemeName = $gibbon->session->get('gibbonThemeName');
@@ -188,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
-                $row->addDate('dateEnd');
+                $row->addDate('dateEnd')->minimum(date('Y-m-d', strtotime('today +1 day')));
         } else {
             $form->addHiddenValue('dateStart', $date);
             $form->addHiddenValue('dateEnd', $date);
@@ -211,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         // Filter only attendance types with future = 'Y'
         $attendanceTypes = array_reduce($attendance->getAttendanceTypes(), function ($group, $item) {
-            if ($item['future'] == 'Y') $group[] = $item['name'];
+            if ($item['future'] == 'Y') $group[$item['name']] = __($item['name']);
             return $group;
         }, array());
 

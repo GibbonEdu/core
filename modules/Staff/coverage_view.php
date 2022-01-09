@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\SchoolYearGateway;
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
 } else {
     $page->breadcrumbs->add(__('Open Requests'));
 
-    $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
+    $urgencyThreshold = $container->get(SettingGateway::class)->getSettingByScope('Staff', 'urgencyThreshold');
 
     $gibbonPersonID = $session->get('gibbonPersonID');
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
@@ -94,15 +95,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
         $table->addActionColumn()
             ->addParam('gibbonStaffCoverageID')
             ->format(function ($coverage, $actions) use ($gibbonPersonID) {
+                $actions->addAction('view', __('View Details'))
+                    ->isModal(800, 550)
+                    ->setURL('/modules/Staff/coverage_view_details.php');
+
                 $actions->addAction('accept', __('Accept'))
                     ->setIcon('iconTick')
                     ->setURL('/modules/Staff/coverage_view_accept.php');
 
-                if ($gibbonPersonID == $coverage['gibbonPersonIDCoverage']) {
+                if ($gibbonPersonID == ($coverage['gibbonPersonIDCoverage'] ?? '')) {
                     $actions->addAction('decline', __('Decline'))
                         ->setIcon('iconCross')
                         ->setURL('/modules/Staff/coverage_view_decline.php');
                 }
+            });
+    } else {
+        $table->addActionColumn()
+            ->addParam('gibbonStaffCoverageID')
+            ->format(function ($coverage, $actions) {
+                $actions->addAction('view', __('View Details'))
+                    ->isModal(800, 550)
+                    ->setURL('/modules/Staff/coverage_view_details.php');
             });
     }
 

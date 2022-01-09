@@ -17,15 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+use Gibbon\Http\Url;
+use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_details.php') == false) {
     // Access denied
@@ -38,11 +42,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
         $page->breadcrumbs
             ->add(__('View Behaviour Records'), 'behaviour_manage.php')
             ->add(__('View Student Record'));
+
+        $search = $_GET['search'] ?? '';
+        if (!empty($search)) {
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Behaviour', 'behaviour_view.php')->withQueryParam('search', $search));
+        }
 
         try {
             if ($highestAction == 'View Behaviour Records_all') {
@@ -64,12 +73,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             echo '</div>';
         } else {
             $row = $result->fetch();
-
-            if ($_GET['search'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_view.php&search='.$_GET['search']."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
 
             // DISPLAY STUDENT DATA
             $table = DataTable::createDetails('personal');

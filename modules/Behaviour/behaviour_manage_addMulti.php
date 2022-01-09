@@ -17,15 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     // Access denied
@@ -36,46 +40,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
         ->add(__('Add Multiple'));
 
-    echo "<div class='linkTop'>";
-    $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
-    if ($policyLink != '') {
-        echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
-    }
-    if ($_GET['gibbonPersonID'] != '' or $_GET['gibbonFormGroupID'] != '' or $_GET['gibbonYearGroupID'] != '' or $_GET['type'] != '') {
-        if ($policyLink != '') {
-            echo ' | ';
-        }
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
-    }
-    echo '</div>';
+    $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $type = $_GET['type'] ?? '';
 
+    $settingGateway = $container->get(SettingGateway::class);
 
     $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_addMulti.php");
+    $form->addHiddenValue('address', '/modules/Behaviour/behaviour_manage_addMulti.php');
     $form->addRow()->addHeading(__('Step 1'));
+
+    $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
+    if (!empty($policyLink)) {
+        $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
+            ->setExternalURL($policyLink);
+    }
+    if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
+        $form->addHeaderAction('back', __('Back to Search Results'))
+            ->setURL('/modules/Behaviour/behaviour_manage.php')
+            ->setIcon('search')
+            ->displayLabel()
+            ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+            ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
+            ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
+            ->addParam('type', $_GET['type'])
+            ->prepend((!empty($policyLink)) ? ' | ' : '');
+    }
 
     //Student
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDMulti', __('Students'));
-        $row->addSelectStudent('gibbonPersonIDMulti', $session->get('gibbonSchoolYearID'), array('byName' => true, 'byForm' => true))->selectMultiple()->required();
+        $col = $row->addColumn();
+            $col->addLabel('gibbonPersonIDMulti', __('Students'));
+
+            $studentGateway = $container->get(StudentGateway::class);
+            $studentCriteria = $studentGateway->newQueryCriteria()
+                ->sortBy(['surname', 'preferredName']);
+
+            $students = array_reduce($studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'))->toArray(), function ($array, $student) {
+                $array['students'][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
+                $array['form'][$student['gibbonPersonID']] = $student['formGroup'];
+                return $array;
+            });
+
+            $multiSelect = $col->addMultiSelect('gibbonPersonIDMulti')
+                ->addSortableAttribute('Form', $students['form']);
+
+            $multiSelect->source()->fromArray($students['students']);
 
     //Date
     $row = $form->addRow();
-        $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('date', __('Date'));
         $row->addDate('date')->setValue(date($session->get('i18n')['dateFormatPHP']))->required();
 
     //Type
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->required();
+        $row->addSelect('type')->fromArray(['Positive' => __('Positive'), 'Negative' => __('Negative')])->required();
 
     //Descriptor
     if ($enableDescriptors == 'Y') {
-        $negativeDescriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
-        $negativeDescriptors = (!empty($negativeDescriptors))? explode(',', $negativeDescriptors) : array();
-        $positiveDescriptors = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors');
-        $positiveDescriptors = (!empty($positiveDescriptors))? explode(',', $positiveDescriptors) : array();
+        $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
+        $negativeDescriptors = (!empty($negativeDescriptors)) ? explode(',', $negativeDescriptors) : [];
+        $positiveDescriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
+        $positiveDescriptors = (!empty($positiveDescriptors)) ? explode(',', $positiveDescriptors) : [];
 
         $chainedToNegative = array_combine($negativeDescriptors, array_fill(0, count($negativeDescriptors), 'Negative'));
         $chainedToPositive = array_combine($positiveDescriptors, array_fill(0, count($positiveDescriptors), 'Positive'));
@@ -93,32 +123,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     //Level
     if ($enableLevels == 'Y') {
-        $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+        $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
         if ($optionsLevels != '') {
             $optionsLevels = explode(',', $optionsLevels);
         }
         $row = $form->addRow();
             $row->addLabel('level', __('Level'));
-            $row->addSelect('level')->fromArray($optionsLevels)->placeholder();
+            $row->addSelect('level')
+                ->fromArray($optionsLevels)
+                ->placeholder();
     }
 
     $form->addRow()->addHeading(__('Details'));
-    
+
     //Incident
     $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('comment', __('Incident'));
-        $column->addTextArea('comment')->setRows(5)->setClass('fullWidth');
+        $col = $row->addColumn();
+        $col->addLabel('comment', __('Incident'));
+        $col->addTextArea('comment')
+            ->setRows(5)
+            ->setClass('fullWidth');
 
     //Follow Up
     $row = $form->addRow();
-        $column = $row->addColumn();
-        $column->addLabel('followup', __('Follow Up'));
-        $column->addTextArea('followup')->setRows(5)->setClass('fullWidth');
+        $col = $row->addColumn();
+        $col->addLabel('followup', __('Follow Up'));
+        $col->addTextArea('followup')
+            ->setRows(5)
+            ->setClass('fullWidth');
 
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Behaviour', []);
-    
+
     //Copy to Notes
     $row = $form->addRow();
         $row->addLabel('copyToNotes', __('Copy To Notes'));

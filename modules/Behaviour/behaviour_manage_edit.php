@@ -17,16 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_edit.php') == false) {
     // Access denied
@@ -43,6 +46,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         $page->breadcrumbs
             ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
             ->add(__('Edit'));
+        
+        $gibbonBehaviourID = $_GET['gibbonBehaviourID'] ?? null;
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+        $type = $_GET['type'] ?? '';
 
         //Check if gibbonBehaviourID specified
         $gibbonBehaviourID = $_GET['gibbonBehaviourID'];
@@ -70,24 +79,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                echo "<div class='linkTop'>";
-                $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
-                if ($policyLink != '') {
-                    echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
-                }
-                if ($_GET['gibbonPersonID'] != '' or $_GET['gibbonFormGroupID'] != '' or $_GET['gibbonYearGroupID'] != '' or $_GET['type'] != '') {
-                    if ($policyLink != '') {
-                        echo ' | ';
-                    }
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']."'>".__('Back to Search Results').'</a>';
-                }
-                echo '</div>';
-
                 //Let's go!
                 $values = $result->fetch();
 
                 $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_editProcess.php?gibbonBehaviourID='.$gibbonBehaviourID.'&gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
+                
+                $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
+                if (!empty($policyLink)) {
+                    $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
+                        ->setExternalURL($policyLink);
+                }
+                if (!empty($gibbonPersonID) or !empty($gibbonFormGroupID) or !empty($gibbonYearGroupID) or !empty($type)) {
+                    $form->addHeaderAction('back', __('Back to Search Results'))
+                        ->setURL('/modules/Behaviour/behaviour_manage.php')
+                        ->setIcon('search')
+                        ->displayLabel()
+                        ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                        ->addParam('gibbonFormGroupID', $_GET['gibbonFormGroupID'])
+                        ->addParam('gibbonYearGroupID', $_GET['gibbonYearGroupID'])
+                        ->addParam('type', $_GET['type'])
+                        ->prepend((!empty($policyLink)) ? ' | ' : '');
+                }
+            
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                 $form->addRow()->addClass('hidden')->addHeading(__('Step 1'));
 
@@ -110,10 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Descriptor
                 if ($enableDescriptors == 'Y') {
                     if ($values['type'] == 'Negative') {
-                        $descriptors = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors');
+                        $descriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
                     }
                     else {
-                        $descriptors = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors');
+                        $descriptors = $settingGateway->getSettingByScope('Behaviour', 'positiveDescriptors');
                     }
                     $descriptors = (!empty($descriptors))? explode(',', $descriptors) : array();
 
@@ -128,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                 //Level
                 if ($enableLevels == 'Y') {
-                    $optionsLevels = getSettingByScope($connection2, 'Behaviour', 'levels');
+                    $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
                     if ($optionsLevels != '') {
                         $optionsLevels = explode(',', $optionsLevels);
                     }

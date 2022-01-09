@@ -75,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_courseClassesNotRegistered_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'));
         $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'));
         $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $row = $form->addRow();
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
             echo __('History');
             echo '</th>';
             echo '<th>';
-            echo __('Tutor');
+            echo __('Teacher');
             echo '</th>';
             echo '</tr>';
 
@@ -240,11 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</td>';
                     echo '<td>';
 
-
-                        $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
-                        $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
-                        $resultTutor = $connection2->prepare($sqlTutor);
-                        $resultTutor->execute($dataTutor);
+                    $dataTutor = array('gibbonCourseClassID' => $row['gibbonCourseClassID'] );
+                    $sqlTutor = 'SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.role = "Teacher"';
+                    $resultTutor = $connection2->prepare($sqlTutor);
+                    $resultTutor->execute($dataTutor);
 
                     if ($resultTutor->rowCount() > 0) {
                         while ($rowTutor = $resultTutor->fetch()) {

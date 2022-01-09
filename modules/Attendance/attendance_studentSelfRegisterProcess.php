@@ -18,18 +18,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_studentSelfRegister.php";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_studentSelfRegister.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+    $settingGateway = $container->get(SettingGateway::class);
+    $studentSelfRegistrationIPAddresses = $settingGateway->getSettingByScope('Attendance', 'studentSelfRegistrationIPAddresses');
     $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
         $URL .= '&return=error0';
@@ -97,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                     exit();
                 }
 
-                $selfRegistrationRedirect = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect');
+                $selfRegistrationRedirect = $settingGateway->getSettingByScope('Attendance', 'selfRegistrationRedirect');
                 if ($selfRegistrationRedirect == 'Y') {
                     $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/messageWall_view.php&return=message0&status=$status";
                 }

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Messenger;
 
 use Gibbon\Services\Format;
+use Gibbon\Session\SessionFactory;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Services\BackgroundProcess;
@@ -55,9 +56,10 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         $session = $gibbon->session;
 
         // Setup session variables for this user
-        $gibbon->session->loadSystemSettings($pdo);
-        $gibbon->session->loadLanguageSettings($pdo);
-        $gibbon->session->createUserSession($gibbonPersonID, $container->get(UserGateway::class)->getByID($gibbonPersonID));
+        SessionFactory::populateSettings($session, $pdo);
+        $userData = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
+        $session->set($userData);
+
         $gibbon->session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
         $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
         $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);

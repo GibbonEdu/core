@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use Gibbon\Module\Markbook\MarkbookView;
@@ -31,12 +32,13 @@ include __DIR__ . '/../../config.php';
 include __DIR__ . '/moduleFunctions.php';
 
 //Get settings
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
-$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
+$attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+$attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeNameAbrev');
+$effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
+$effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
 //Set up adjustment for presence of effort column or not
 if ($enableEffort == 'Y')
@@ -75,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         require_once __DIR__ . '/src/MarkbookView.php';
 
         // Build the markbook object for this class
-        $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
+        $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $settingGateway);
 
         // Calculate and cache all weighting data
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
@@ -84,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
         //Print table header
 		$excel = new Gibbon\Excel('markbookAll.xlsx');
-		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+		if ($excel->estimateCellCount($result) > 8000)    //  If too big, then render csv instead.
 			return Gibbon\csv::generate($pdo, 'markbookColumn');
 		$excel->setActiveSheetIndex(0);
 		$excel->getProperties()->setTitle('All Markbook Data');
@@ -284,8 +286,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                     // Cumulative Average
                     $cumulativeAverage = $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
-                    $cumulativeAverage = is_numeric($cumulativeAverage) 
-                        ? number_format(round($cumulativeAverage, 2),2).$markSuffix 
+                    $cumulativeAverage = is_numeric($cumulativeAverage)
+                        ? number_format(round($cumulativeAverage, 2),2).$markSuffix
                         : $cumulativeAverage.$markSuffix;
                     $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $cumulativeAverage);
                     $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);

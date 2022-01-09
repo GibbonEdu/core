@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Contracts\Database;
 
 /**
- * Database Connection Interface 
+ * Database Connection Interface
  * Borrowed in part from Illuminate\Database\ConnectionInterface
  *
  * @version	v16
@@ -40,7 +40,14 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return mixed
+     *
+     * @return mixed|array|false
+     *     Depends on the SQL statement. It returns either:
+     *     (a) a single column from the next row of a result
+     *         set if the query only has 1 column; or
+     *     (b) a normal result row of the next row of a result
+     *         set; or
+     *     (c) boolean false if there are no more rows.
      */
     public function selectOne($query, $bindings = []);
 
@@ -49,7 +56,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return object
+     *
+     * @return \Gibbon\Database\Result Result of the database query.
      */
     public function select($query, $bindings = []);
 
@@ -67,7 +75,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return bool  If the update statment is execute successfully.
      */
     public function update($query, $bindings = []);
 
@@ -76,7 +85,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return int  Affected row count.
      */
     public function delete($query, $bindings = []);
 
@@ -85,7 +95,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return bool
+     *
+     * @return bool  If the update statment is execute successfully.
      */
     public function statement($query, $bindings = []);
 
@@ -94,7 +105,8 @@ interface Connection
      *
      * @param  string  $query
      * @param  array   $bindings
-     * @return int
+     *
+     * @return int  Affected row count.
      */
     public function affectingStatement($query, $bindings = []);
 
@@ -121,8 +133,8 @@ interface Connection
 
     /**
      * @deprecated
-     * Backwards compatability for the old Gibbon\sqlConnection class. 
-     * Replaced with more expressive method names. Also because the 
+     * Backwards compatability for the old Gibbon\sqlConnection class.
+     * Replaced with more expressive method names. Also because the
      * parameters are backwards. Hoping to phase this one out in v17.
      *
      * @param  string  $query

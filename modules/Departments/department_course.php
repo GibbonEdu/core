@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
+$makeDepartmentsPublic = $container->get(SettingGateway::class)->getSettingByScope('Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course.php') == false and $makeDepartmentsPublic != 'Y') {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -60,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
 
             $page->breadcrumbs
-                ->add(__('View All'), 'departments.php')
-                ->add($row['department'], 'department.php', $urlParams)
+                ->add(__('Departments'), $session->has('username') ? 'departments.php' : '/modules/Departments/departments.php')
+                ->add($row['department'], $session->has('username') ? 'department.php' : '/modules/Departments/department.php', $urlParams)
                 ->add($row['name'].$extra);
 
             //Print overview

@@ -16,6 +16,8 @@ themes/*
 # Test generated temporary files
 tests/log/*
 tests/config/support/_generated/*
+tests/_output
+tests/_support
 .phpunit.result.cache
 
 # Template Cache

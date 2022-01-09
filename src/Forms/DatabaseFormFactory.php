@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Services\Format;
@@ -76,7 +77,7 @@ class DatabaseFormFactory extends FormFactory
             default:
                 $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber $orderBy"; break;
         }
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -87,7 +88,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectYearGroup($name, $all = false)
     {
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup ORDER BY sequenceNumber";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         if (!$all)
             return $this->createSelect($name)->fromResults($results)->placeholder();
@@ -102,7 +103,7 @@ class DatabaseFormFactory extends FormFactory
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonFormGroupID as value, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY LENGTH(name), name";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         if (!$all)
             return $this->createSelect($name)->fromResults($results)->placeholder();
@@ -117,18 +118,18 @@ class DatabaseFormFactory extends FormFactory
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
-    
+
     public function createSelectCourseByYearGroup($name, $gibbonSchoolYearID, $gibbonYearGroupIDList = '')
     {
         $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT gibbonCourse.gibbonCourseID as value, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) as name 
-                FROM gibbonCourse 
-                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)) 
-                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
-                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+        $sql = "SELECT gibbonCourse.gibbonCourseID as value, CONCAT(gibbonCourse.nameShort, ' - ', gibbonCourse.name) as name
+                FROM gibbonCourse
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList))
+                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
                 GROUP BY gibbonCourse.gibbonCourseID
                 ORDER BY gibbonCourse.nameShort";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -141,7 +142,7 @@ class DatabaseFormFactory extends FormFactory
 
         if (!empty($gibbonPersonID) && !empty($params['courseFilter'])) {
             $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'courseFilter' => '%'.$params['courseFilter'].'%'];
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class 
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID )
@@ -159,7 +160,7 @@ class DatabaseFormFactory extends FormFactory
 
         if (!empty($gibbonPersonID) && !empty($params['departments'])) {
             $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonDepartmentIDList' => $params['departments']];
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class 
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class
                 FROM gibbonCourse
                 JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                 JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID )
@@ -222,7 +223,7 @@ class DatabaseFormFactory extends FormFactory
     public function createCheckboxYearGroup($name)
     {
         $sql = "SELECT gibbonYearGroupID as `value`, name FROM gibbonYearGroup ORDER BY sequenceNumber";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         // Get the yearGroups in a $key => $value array
         $yearGroups = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
@@ -234,7 +235,7 @@ class DatabaseFormFactory extends FormFactory
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         // Get the terms in a $key => $value array
         $terms = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
@@ -245,7 +246,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectDepartment($name)
     {
         $sql = "SELECT type, gibbonDepartmentID as value, name FROM gibbonDepartment ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         $departments = array();
 
@@ -262,7 +263,7 @@ class DatabaseFormFactory extends FormFactory
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -270,7 +271,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectTheme($name)
     {
         $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -293,7 +294,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -301,7 +302,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectCountry($name)
     {
         $sql = "SELECT printable_name as value, printable_name as name FROM gibbonCountry ORDER BY printable_name";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
@@ -309,20 +310,22 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectRole($name)
     {
         $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole ORDER BY name";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectStatus($name)
     {
+        global $container;
+
         $statuses = array(
             'Full'     => __('Full'),
             'Expected' => __('Expected'),
             'Left'     => __('Left'),
         );
 
-        if (getSettingByScope($this->pdo->getConnection(), 'User Admin', 'enablePublicRegistration') == 'Y') {
+        if ($container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration') == 'Y') {
             $statuses['Pending Approval'] = __('Pending Approval');
         }
 
@@ -331,7 +334,7 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectStaff($name)
     {
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username 
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username
                 FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                 WHERE status='Full' ORDER BY surname, preferredName";
 
@@ -347,7 +350,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectUsersFromList($name, $people = [])
     {
         $data = ['gibbonPersonIDList' => implode(',', $people)];
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username 
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username
                 FROM gibbonPerson
                 WHERE status='Full'
                 AND FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList)
@@ -362,9 +365,9 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelectPerson($name)->fromArray($people);
     }
 
-    public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = array())
+    public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = [])
     {
-        $params = array_replace(['includeStudents' => false, 'includeStaff' => false], $params);
+        $params = array_replace(['includeStudents' => false, 'includeStaff' => false, 'useMultiSelect' => false], $params);
 
         $users = array();
 
@@ -385,7 +388,6 @@ class DatabaseFormFactory extends FormFactory
         }
 
         if ($params['includeStudents'] == true) {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName
                     FROM gibbonPerson
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
@@ -395,7 +397,7 @@ class DatabaseFormFactory extends FormFactory
                     AND gibbonPerson.status='FULL'
                     AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
                     ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
-            $result = $this->pdo->executeQuery($data, $sql);
+            $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
@@ -410,7 +412,7 @@ class DatabaseFormFactory extends FormFactory
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 WHERE status='Full' OR status='Expected'
                 ORDER BY surname, preferredName";
-        $result = $this->pdo->executeQuery(array(), $sql);
+        $result = $this->pdo->select($sql);
 
         if ($result->rowCount() > 0) {
             $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
@@ -419,7 +421,14 @@ class DatabaseFormFactory extends FormFactory
             }, array());
         }
 
-        return $this->createSelectPerson($name)->fromArray($users);
+        if ($params['useMultiSelect']) {
+            $multiSelect = $this->createMultiSelect($name);
+            $multiSelect->source()->fromArray($users);
+
+            return $multiSelect;
+        } else {
+            return $this->createSelectPerson($name)->fromArray($users);
+        }
     }
 
     /*
@@ -476,7 +485,7 @@ class DatabaseFormFactory extends FormFactory
                     ORDER BY name, surname, preferredName";
             }
 
-            $results = $this->pdo->executeQuery($data, $sql);
+            $results = $this->pdo->select($sql, $data);
 
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
@@ -520,7 +529,7 @@ class DatabaseFormFactory extends FormFactory
                     ORDER BY surname, preferredName";
             }
 
-            $results = $this->pdo->executeQuery($data, $sql);
+            $results = $this->pdo->select($sql, $data);
 
             if ($results && $results->rowCount() > 0) {
                 while ($row = $results->fetch()) {
@@ -564,7 +573,7 @@ class DatabaseFormFactory extends FormFactory
 
         $data = array('gibbonScaleID' => $gibbonScaleID);
         $sql = "SELECT gibbonScaleGradeID, value, descriptor, isDefault FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
         $gradeOptions = array_reduce($grades, function ($group, $item) use ($params) {
@@ -613,8 +622,8 @@ class DatabaseFormFactory extends FormFactory
         $countryCodes = $this->getCachedQuery('phoneNumber');
 
         if (empty($countryCodes)) {
-            $sql = 'SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY printable_name';
-            $results = $this->pdo->executeQuery(array(), $sql);
+            $sql = "SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY (SELECT value FROM gibbonSetting WHERE scope='System' AND name='country' LIMIT 1)=printable_name DESC, printable_name";
+            $results = $this->pdo->select($sql);
             if ($results && $results->rowCount() > 0) {
                 $countryCodes = $results->fetchAll();
 
@@ -636,7 +645,7 @@ class DatabaseFormFactory extends FormFactory
 
         $data = array('sequenceNumber' => $sequenceNumber);
         $sql = "SELECT GROUP_CONCAT(DISTINCT `{$columnName}` SEPARATOR '\',\'') FROM `{$tableName}` WHERE (`{$columnName}` IS NOT NULL AND `{$columnName}` <> :sequenceNumber) ORDER BY `{$columnName}`";
-        $results = $this->pdo->executeQuery($data, $sql);
+        $results = $this->pdo->select($sql, $data);
 
         $field = $this->createNumber($name)->minimum(1)->onlyInteger(true);
 
@@ -648,7 +657,7 @@ class DatabaseFormFactory extends FormFactory
             $field->setValue($sequenceNumber);
         } else {
             $sql = "SELECT MAX(`{$columnName}`) FROM `{$tableName}`";
-            $results = $this->pdo->executeQuery(array(), $sql);
+            $results = $this->pdo->select($sql);
             $sequenceNumber = ($results && $results->rowCount() > 0)? $results->fetchColumn(0) : 1;
 
             $field->setValue($sequenceNumber+1);
@@ -663,7 +672,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectTransport($name, $all = false)
     {
         $sql = "SELECT DISTINCT transport AS value, transport AS name FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         if (!$all)
             return $this->createSelect($name)->fromResults($results)->placeholder();
@@ -676,15 +685,15 @@ class DatabaseFormFactory extends FormFactory
         $params = array_replace(array(
             'byType' => true,
         ), $params);
-        
+
         if ($params['byType'] == true) {
             $sql = "SELECT gibbonSpaceID as value, name, type as groupBy FROM gibbonSpace ORDER BY type, name";
-            $results = $this->pdo->executeQuery(array(), $sql);
+            $results = $this->pdo->select($sql);
             return $this->createSelect($name)->fromResults($results, 'groupBy')->placeholder();
-        
+
         } else {
             $sql = "SELECT gibbonSpaceID as value, name FROM gibbonSpace ORDER BY name";
-            $results = $this->pdo->executeQuery(array(), $sql);
+            $results = $this->pdo->select($sql);
             return $this->createSelect($name)->fromResults($results)->placeholder();
         }
     }
@@ -692,7 +701,7 @@ class DatabaseFormFactory extends FormFactory
     public function createTextFieldDistrict($name)
     {
         $sql = "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name";
-        $result = $this->pdo->executeQuery(array(), $sql);
+        $result = $this->pdo->select($sql);
         $districts = ($result && $result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN) : array();
 
         return $this->createTextField($name)->maxLength(30)->autocomplete($districts);
@@ -701,7 +710,7 @@ class DatabaseFormFactory extends FormFactory
     public function createSelectAlert($name)
     {
         $sql = 'SELECT gibbonAlertLevelID AS value, name FROM gibbonAlertLevel ORDER BY sequenceNumber';
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $results = $this->pdo->select($sql);
 
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }

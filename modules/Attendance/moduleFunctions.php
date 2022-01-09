@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 
@@ -25,9 +26,11 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
 {
     $queryFail = false;
 
-    global $gibbon, $session, $pdo;
+    global $gibbon, $session, $pdo, $container;
+
+    $settingGateway = $container->get(SettingGateway::class);
     require_once __DIR__ . '/src/AttendanceView.php';
-    $attendance = new AttendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
@@ -37,7 +40,7 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
                     LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
                 WHERE gibbonPersonID=:gibbonPersonID AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
         } else {
-            $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+            $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
             $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
             $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay
                     FROM gibbonAttendanceLogPerson
@@ -115,11 +118,13 @@ function getLastNSchoolDays( $guid, $connection2, $date, $n = 5, $inclusive = fa
 //Get's a count of late days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error.
 function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd)
 {
+    global $container;
+
     $queryFail = false;
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
-        $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+        $countClassAsSchool = $container->get(SettingGateway::class)->getSettingByScope('Attendance', 'countClassAsSchool');
         $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
         $sql = "SELECT count(*) AS count
                 FROM gibbonAttendanceLogPerson p, gibbonAttendanceCode c

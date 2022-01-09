@@ -17,9 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Planner\ResourceGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -56,13 +59,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         $row->addLabel('tag', __('Tags'));
         $row->addFinder('tag')->fromQuery($pdo, $sql)->setParameter('hintText', __('Type a tag...'))->selected($tagsArray);
 
-    $categories = getSettingByScope($connection2, 'Resources', 'categories');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $categories = $settingGateway->getSettingByScope('Resources', 'categories');
     $row = $form->addRow();
         $row->addLabel('category', __('Category'));
         $row->addSelect('category')->fromString($categories)->placeholder()->selected($category);
 
-    $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
-    $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+    $purposesGeneral = $settingGateway->getSettingByScope('Resources', 'purposesGeneral');
+    $purposesRestricted = $settingGateway->getSettingByScope('Resources', 'purposesRestricted');
     $row = $form->addRow();
         $row->addLabel('purpose', __('Purpose'));
         $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder()->selected($purpose);
@@ -76,164 +81,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     echo $form->getOutput();
 
-    //Set pagination variable
-    $page = null;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
 
-    echo '<h3>';
-    echo __('View');
-    echo '</h3>';
+    $resourceGateway = $container->get(ResourceGateway::class);
+    // QUERY
+    $criteria = $resourceGateway->newQueryCriteria(true)
+        ->filterBy('tags', $tags)
+        ->filterBy('category', $category)
+        ->filterBy('purpose', $purpose)
+        ->filterBy('gibbonYearGroupID', $gibbonYearGroupID)
+        ->sortBy('timestamp', 'DESC')
+        ->fromPOST();
+    
+    $resources = $resourceGateway->queryResources($criteria);
+    // TABLE
+    $table = DataTable::createPaginated('resources', $criteria);
+    $table->setTitle('View');
+        $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
+        ->displayLabel();
+        
+    $table->addColumn('name', __('Name'))
+        ->description(__('Contributor'))
+        ->format(function ($resource) use ($guid) {
+            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content']) 
+                . Format::small(Format::name($resource['title'], $resource['preferredName'], $resource['surname'], 'Staff'));
+        });
+    
+    $table->addColumn('type', __('Type'));
 
-    //Search with filters applied
-    try {
-        $data = array();
-        $sqlWhere = 'WHERE ';
-        if ($tags != '') {
-            $tagCount = 0;
-            $tagArray = explode(',', $tags);
-            foreach ($tagArray as $atag) {
-                $data['tag'.$tagCount] = "%,".$atag.",%";
-                $sqlWhere .= "concat(',', tags, ',') LIKE :tag".$tagCount." AND ";
-                ++$tagCount;
-            }
-        }
-        if ($category != '') {
-            $data['category'] = $category;
-            $sqlWhere .= 'category=:category AND ';
-        }
-        if ($purpose != '') {
-            $data['purpose'] = $purpose;
-            $sqlWhere .= 'purpose=:purpose AND ';
-        }
-        if ($gibbonYearGroupID != '') {
-            $data['gibbonYearGroupIDList'] = "%$gibbonYearGroupID%";
-            $sqlWhere .= 'gibbonYearGroupIDList LIKE :gibbonYearGroupIDList AND ';
-        }
-        if ($sqlWhere == 'WHERE ') {
-            $sqlWhere = '';
-        } else {
-            $sqlWhere = substr($sqlWhere, 0, -5);
-        }
-        $sql = "SELECT gibbonResource.*, surname, preferredName, title FROM gibbonResource JOIN gibbonPerson ON (gibbonResource.gibbonPersonID=gibbonPerson.gibbonPersonID) $sqlWhere ORDER BY timestamp DESC";
-        $sqlPage = $sql.' LIMIT '.$session->get('pagination').' OFFSET '.(($page - 1) * $session->get('pagination'));
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $table->addColumn('category', __('Category'))
+        ->description(__('Purpose'))
+        ->format(function ($resource) {
+            return $resource['category'] . '<br/>'. Format::small(__($resource['purpose']));
+        });
 
-    echo "<div class='linkTop'>";
-    echo " <a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/resources_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-    echo '</div>';
-
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $session->get('pagination')) {
-            printPagination($guid, $result->rowCount(), $page, $session->get('pagination'), 'top', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
-        }
-
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __('Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Contributor').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Type');
-        echo '</th>';
-        echo '<th>';
-        echo __('Category').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Purpose').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __('Tags');
-        echo '</th>';
-        echo '<th>';
-        echo __('Year Groups');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo getResourceLink($guid, $row['gibbonResourceID'], $row['type'], $row['name'], $row['content']);
-            echo "<span style='font-size: 85%; font-style: italic'>".Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</span>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['type'];
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['category'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['purpose'].'</span>';
-            echo '</td>';
-            echo '<td>';
+    $table->addColumn('tags', __('Tags'))
+        ->format(function ($resource) {
             $output = '';
-            $tagsInner = explode(',', $row['tags']);
-            natcasesort($tagsInner);
-            foreach ($tagsInner as $tag) {
-                $output .= trim($tag).'<br/>';
+            $tags = explode(',', $resource['tags']);
+            natcasesort($tags);
+            foreach ($tags as $tag) {
+                $output .= trim($tag).', ';
             }
-            echo substr($output, 0, -2);
-            echo '</td>';
-            echo '<td>';
+            return substr($output, 0, -2);
+        });
+    
+    $table->addColumn('yearGroupList', __('Year Groups'))
+        ->format(function ($resource) {
+            return $resource['yearGroups'] >= $resource['totalYearGroups']
+            ? __('All Years')
+            : $resource['yearGroupList'];
+        });
 
-                $dataYears = array();
-                $sqlYears = 'SELECT gibbonYearGroupID, nameShort, sequenceNumber FROM gibbonYearGroup ORDER BY sequenceNumber';
-                $resultYears = $connection2->prepare($sqlYears);
-                $resultYears->execute($dataYears);
-            $years = explode(',', $row['gibbonYearGroupIDList']);
-            if (count($years) > 0 and $years[0] != '') {
-                if (count($years) == $resultYears->rowCount()) {
-                    echo '<i>'.__('All Years').'</i>';
-                } else {
-                    $count3 = 0;
-                    $count4 = 0;
-                    while ($rowYears = $resultYears->fetch()) {
-                        for ($i = 0; $i < count($years); ++$i) {
-                            if ($rowYears['gibbonYearGroupID'] == $years[$i]) {
-                                if ($count3 > 0 and $count4 > 0) {
-                                    echo ', ';
-                                }
-                                echo __($rowYears['nameShort']);
-                                ++$count4;
-                            }
-                        }
-                        ++$count3;
-                    }
-                }
-            } else {
-                echo '<i>'.__('None').'</i>';
-            }
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $session->get('pagination')) {
-            printPagination($guid, $result->rowCount(), $page, $session->get('pagination'), 'bottom', "&tags=$tags&category=$category&purpose=$purpose&gibbonYearGroupID=$gibbonYearGroupID");
-        }
-    }
+    echo $table->render($resources);
 
     //Print sidebar
     $session->set('sidebarExtra', sidebarExtraResources($guid, $connection2));

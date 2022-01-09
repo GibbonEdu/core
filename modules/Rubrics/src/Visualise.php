@@ -132,11 +132,14 @@ class Visualise
                 ->setColorOpacity(0.6);
 
             $options = [
-                'height' => '120%',
+                'responsive' => 'true',
+                'maintainAspectRatio' => 'true',
+                'aspectRatio' => 2,
+                'height' => '32vw',
                 'scale'  => [
+                    'min' => 0.0,
+                    'max' => 1.0,
                     'ticks' => [
-                        'min' => 0.0,
-                        'max' => 1.0,
                         'callback' => $chart->addFunction('function(tickValue, index, ticks) {
                             return Number(tickValue).toFixed(1);
                         }'),
@@ -157,6 +160,12 @@ class Visualise
                 ];
             }
             $chart->setOptions($options);
+            
+            // Handle custom colours only if there is one unique colour per row
+            $rowColours = array_unique(array_column($this->rows, 'backgroundColor'));
+            if (count($rowColours) == count($this->rows)) {
+                $chart->setColors($rowColours);
+            }
 
             $chart->addDataset('rubric')->setData($data);
 

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Markbook\MarkbookView;
@@ -24,24 +25,25 @@ use Gibbon\Services\Format;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
+    global $session;
+
     $output = '';
 
     if (empty($basePage)) $basePage = 'markbook_view.php';
 
     //Show class picker in sidebar
-
     $output .= '<div class="column-no-break">';
     $output .= '<h2>';
     $output .= __('Choose A Class');
     $output .= '</h2>';
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
     $form->setClass('smallIntBorder w-full');
 
     $row = $form->addRow();
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)
+        $row->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $gibbonPersonID)
             ->selected($gibbonCourseClassID)
             ->placeholder()
             ->setClass('fullWidth');
@@ -55,9 +57,12 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
 function classChooser($guid, $pdo, $gibbonCourseClassID)
 {
-    $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-    $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
-    $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
+    global $session, $container;
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $enableColumnWeighting = $settingGateway->getSettingByScope('Markbook', 'enableColumnWeighting');
+    $enableGroupByTerm = $settingGateway->getSettingByScope('Markbook', 'enableGroupByTerm');
+    $enableRawAttainment = $settingGateway->getSettingByScope('Markbook', 'enableRawAttainment');
 
     $output = '';
 
@@ -65,11 +70,11 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= __('Choose Class');
     $output .= '</h3>';
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/markbook_view.php');
+    $form->addHiddenValue('q', '/modules/'.$session->get('module').'/markbook_view.php');
 
     $col = $form->addRow()->addColumn()->addClass('inline right');
 
@@ -83,10 +88,10 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     // TERM
     if ($enableGroupByTerm == 'Y' ) {
-        $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
+        $selectTerm = ($session->has('markbookTerm'))? $session->get('markbookTerm') : 0;
         $selectTerm = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $selectTerm;
 
-        $data = array("gibbonSchoolYearID"=>$_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array("gibbonSchoolYearID" => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
@@ -98,20 +103,20 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
             ->selected($selectTerm)
             ->setClass('shortWidth');
 
-        $_SESSION[$guid]['markbookTermName'] = isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm;
-        $_SESSION[$guid]['markbookTerm'] = $selectTerm;
+        $session->set('markbookTermName', isset($terms[$selectTerm])? $terms[$selectTerm] : $selectTerm);
+        $session->set('markbookTerm', $selectTerm);
     } else {
-        $_SESSION[$guid]['markbookTerm'] = 0;
-        $_SESSION[$guid]['markbookTermName'] = __('All Columns');
+        $session->set('markbookTerm', 0);
+        $session->set('markbookTermName', __('All Columns'));
     }
 
     // SORT BY
-    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'] );
+    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID'=>$session->get('gibbonSchoolYearID') );
     $sql = "SELECT COUNT(DISTINCT rollOrder) FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonSchoolYearID=:gibbonSchoolYearID";
     $result = $pdo->executeQuery($data, $sql);
     $rollOrderCount = ($result->rowCount() > 0)? $result->fetchColumn(0) : 0;
     if ($rollOrderCount > 0) {
-        $selectOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
+        $selectOrderBy = ($session->has('markbookOrderBy'))? $session->get('markbookOrderBy') : 'surname';
         $selectOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $selectOrderBy;
 
         $orderBy = array(
@@ -122,14 +127,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $col->addContent(__('Sort By').':')->prepend('&nbsp;&nbsp;');
         $col->addSelect('markbookOrderBy')->fromArray($orderBy)->selected($selectOrderBy)->setClass('shortWidth');
 
-        $_SESSION[$guid]['markbookOrderBy'] = $selectOrderBy;
+        $session->set('markbookOrderBy', $selectOrderBy);
     }
 
     // SHOW
-    $selectFilter = (isset($_SESSION[$guid]['markbookFilter']))? $_SESSION[$guid]['markbookFilter'] : '';
+    $selectFilter = ($session->has('markbookFilter'))? $session->get('markbookFilter') : '';
     $selectFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $selectFilter;
 
-    $_SESSION[$guid]['markbookFilter'] = $selectFilter;
+    $session->set('markbookFilter', $selectFilter);
 
     $filters = array('' => __('All Columns'));
     if ($enableColumnWeighting == 'Y') $filters['averages'] = __('Overall Grades');
@@ -145,19 +150,18 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     // CLASS
     $col->addContent(__('Class').':')->prepend('&nbsp;&nbsp;');
-    $col->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])
+    $col->addSelectClass('gibbonCourseClassID', $session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))
         ->setClass('mediumWidth')
         ->selected($gibbonCourseClassID);
 
     $col->addSubmit(__('Go'));
 
     if (!empty($search)) {
-        $clearURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'];
+        $clearURL = $session->get('absoluteURL').'/index.php?q='.$session->get('address');
         $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
 
         $form->addRow()->addContent($clearLink)->addClass('right');
     }
-
 
     $output .= $form->getOutput();
 
@@ -165,7 +169,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 }
 
 function isDepartmentCoordinator( $pdo, $gibbonPersonID ) {
-    
+
         $data = array('gibbonPersonID' => $gibbonPersonID );
         $sql = "SELECT count(*) FROM gibbonDepartmentStaff WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)')";
         $result = $pdo->executeQuery($data, $sql);
@@ -175,7 +179,7 @@ function isDepartmentCoordinator( $pdo, $gibbonPersonID ) {
 }
 
 function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
-    
+
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID);
         $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY course, class LIMIT 1';
         $result = $pdo->executeQuery($data, $sql);
@@ -203,7 +207,7 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction )
 }
 
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
-    
+
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
         $result = $pdo->executeQuery($data, $sql);
@@ -234,10 +238,12 @@ function getAlertStyle( $alert, $concern ) {
 
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
 
+    global $container;
+
     require_once __DIR__ . '/src/MarkbookView.php';
 
     // Build the markbook object for this class & student
-    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID, $container->get(SettingGateway::class));
     $assessmentScale = $markbook->getDefaultAssessmentScale();
 
     // Cancel our now if this isnt a percent-based mark
@@ -271,7 +277,7 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCou
 
 function renderStudentSubmission($student, $submission, $markbookColumn)
 {
-    global $guid;
+    global $guid, $session;
 
     $output = '';
 
@@ -294,7 +300,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         }
 
         if ($submission['type'] == 'File') {
-            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
+            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$session->get('absoluteURL').'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.Format::date(substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
         } else {

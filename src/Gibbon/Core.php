@@ -19,7 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Services\Format;
+use Gibbon\Session\SessionFactory;
 use Psr\Container\ContainerInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\SessionGateway;
 
 /**
  * Gibbon Core
@@ -38,7 +42,7 @@ class Core
     /**
      * Core classes available to all Gibbon scripts
      * TODO: These need removed & replaced with DI
-     * @var  \Gibbon\Session Session object.
+     * @var  \Gibbon\Contracts\Services\Session Session object.
      */
     public $session;
     public $locale;
@@ -79,12 +83,12 @@ class Core
         if ($this->initialized == true) return;
 
         $db = $container->get('db');
-
-        $this->session->setDatabaseConnection($db);
+        $this->session = $container->get('session');
+        
+        Format::setupFromSession($this->session);
 
         if (empty($this->session->get('systemSettingsSet'))) {
-            $this->session->loadSystemSettings($db);
-            $this->session->loadLanguageSettings($db);
+            SessionFactory::populateSettings($this->session, $db);
         }
 
         $installType = $this->session->get('installType');
@@ -95,7 +99,12 @@ class Core
         $this->locale->setLocale($this->session->get(array('i18n', 'code')));
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
-        $this->locale->setStringReplacementList($db);
+        $this->locale->setStringReplacementList($this->session, $db);
+
+        // Update the information for this session (except in ajax scripts)
+        if (\SESSION_TABLE_AVAILABLE && stripos($this->session->get('action'), 'ajax') === false) {
+            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('gibbonPersonID'));
+        }
 
         $this->initialized = true;
     }
@@ -136,15 +145,15 @@ class Core
     }
 
     /**
-     * Get a config value by name, othwerwise return the config array.
-     * @param string $name
+     * Get a config value by name, otherwise return the config array.
+     * @param string|null $name
      * 
      * @return mixed|array
      */
     public function getConfig($name = null)
     {
-        return !is_null($name) && isset($this->config[$name])
-            ? $this->config[$name]
+        return !is_null($name)
+            ? ($this->config[$name] ?? '')
             : $this->config;
     }
 
@@ -192,10 +201,12 @@ class Core
         $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';
+        if (!isset($sessionHandler)) $sessionHandler = 'default';
+        if (!isset($sessionEncryptionKey)) $sessionEncryptionKey = '';
 
         // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
-            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
+            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching', 'sessionHandler', 'sessionEncryptionKey');
         }
     }
 }

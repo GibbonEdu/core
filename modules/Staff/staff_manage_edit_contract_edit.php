@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -51,16 +52,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             //Let's go!
             $values = $result->fetch();
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_edit_contract_editProcess.php?gibbonStaffContractID=$gibbonStaffContractID&gibbonStaffID=$gibbonStaffID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "gibbonStaffID" => $gibbonStaffID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Staff/staff_manage_edit.php')
+                    ->addParams($params);
+            }
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));
@@ -82,7 +87,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                 $row->addLabel('dateEnd', __('End Date'));
                 $row->addDate('dateEnd');
 
-            $scalePositions = getSettingByScope($connection2, 'Staff', 'salaryScalePositions');
+            $settingGateway = $container->get(SettingGateway::class);
+
+            $scalePositions = $settingGateway->getSettingByScope('Staff', 'salaryScalePositions');
             $scalePositions = ($scalePositions != '' ? explode(',', $scalePositions) : '');
             $row = $form->addRow();
                 $row->addLabel('salaryScale', __('Salary Scale'));
@@ -100,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
                     $col->addCurrency('salaryAmount')->setClass('shortWidth');
                     $col->addSelect('salaryPeriod')->fromArray($periods)->setClass('shortWidth')->placeholder();
 
-            $responsibilityPosts = getSettingByScope($connection2, 'Staff', 'responsibilityPosts');
+            $responsibilityPosts = $settingGateway->getSettingByScope('Staff', 'responsibilityPosts');
             $responsibilityPosts = ($responsibilityPosts != '' ? explode(',', $responsibilityPosts) : '');
             if (is_array($responsibilityPosts)) {
                 $row = $form->addRow();

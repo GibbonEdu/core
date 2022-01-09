@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -47,11 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
         else {
             $today = date('Y-m-d');
 
-
-                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-                $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityID=:gibbonActivityID";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
+            $sql = "SELECT gibbonActivity.*, gibbonActivityType.description as activityTypeDescription FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityID=:gibbonActivityID";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
             if ($result->rowCount() != 1) {
                 echo "<div class='warning'>";
@@ -60,12 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
             } else {
                 $row = $result->fetch();
                 //Should we show date as term or date?
-                $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+                $settingGateway = $container->get(SettingGateway::class);
+                $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
                 echo '<h1>';
                 echo $row['name'].'<br/>';
-                $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
-                if ($options != '') {
+                if (!empty($row['type'])) {
                     echo "<div style='padding-top: 5px; font-size: 65%; font-style: italic'>";
                     echo trim($row['type']);
                     echo '</div>';
@@ -157,6 +157,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo '</i>';
                 echo '</td>';
                 echo '</tr>';
+                if (!empty($row['activityTypeDescription'])) {
+                    echo '<tr>';
+                    echo "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";
+                    echo '<h2>'.$row['type'].'</h2>';
+                    echo $row['activityTypeDescription'];
+                    echo '</td>';
+                    echo '</tr>';
+                }
                 if ($row['description'] != '') {
                     echo '<tr>';
                     echo "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";

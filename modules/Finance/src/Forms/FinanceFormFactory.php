@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Finance\Forms;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Services\Format;
@@ -42,8 +43,10 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectInvoicee($name, $gibbonSchoolYearID = '', $params = array())
     {
+        global $container;
+
         // Check params and set defaults if not defined
-        $params = array_replace(array('allStudents' => false), $params);
+        $params = array_replace(array('allStudents' => false, 'byClass' => false), $params);
 
         $values = array();
 
@@ -51,29 +54,31 @@ class FinanceFormFactory extends DatabaseFormFactory
         if ($params['allStudents'] != true) {
             $byFormGroup = __('All Enrolled Students by Form Group');
             $byName = __('All Enrolled Students by Alphabet');
+            $byClass = __('All Enrolled Students by Class');
         }
         else {
             $byFormGroup = __('All Students by Form Group');
             $byName = __('All Students by Alphabet');
+            $byClass = __('All Students by Class');
         }
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         if ($params['allStudents'] != true) {
             $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS formGroupName, dayType
                 FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full'
-                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
         else {
             $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS formGroupName, dayType
                 FROM gibbonPerson
-                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
         }
@@ -94,8 +99,31 @@ class FinanceFormFactory extends DatabaseFormFactory
             asort($values[$byName]);
         }
 
+        // Add students by class (optionally)
+        if ($params["byClass"]) {
+            $sql = "SELECT gibbonFinanceInvoiceeID, gibbonCourseClass.gibbonCourseClassID, preferredName, surname, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class
+                FROM gibbonPerson
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                    JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                    JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonCourseClassPerson.role='Student'
+                ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort, surname, preferredName";
+
+            $results = $this->pdo->executeQuery($data, $sql);
+            $studentsByClass = ($results->rowCount() > 0)? $results->fetchAll() : array();
+
+            foreach ($studentsByClass as $student) {
+                $fullName = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
+
+                $values[$byClass][$student['gibbonCourseClassID']."-".$student['gibbonFinanceInvoiceeID']] = $student['class'].' - '.$fullName;
+            }
+        }
+
         // Add students by Day Type (optionally)
-        $dayTypeOptions = getSettingByScope($this->pdo->getConnection(), 'User Admin', 'dayTypeOptions');
+        $dayTypeOptions = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'dayTypeOptions');
         if (!empty($dayTypeOptions)) {
             $dayTypes = explode(',', $dayTypeOptions);
 

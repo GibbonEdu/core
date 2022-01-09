@@ -44,10 +44,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
             exit;
         }
 
-        $gibbonMessengerReceiptIDs = array();
-        if (isset($_POST['gibbonMessengerReceiptIDs'])) {
-            $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'];
-        }
+        $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'] ?? array();
 
         if (count($gibbonMessengerReceiptIDs) < 1) {
             $URL .= '&return=error1';
@@ -79,7 +76,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                     //Prep message
                     $emailCount = 0;
                     $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
-                    
+
                     $mail= $container->get(Mailer::class);
                     $mail->SMTPKeepAlive = true;
     				$mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Attendance\AttendanceView;
 
@@ -26,10 +27,11 @@ require __DIR__ . '/../../gibbon.php';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=".Format::date($currentDate);
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=".Format::date($currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -68,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 } else {
                     //Write to database
                     require_once __DIR__ . '/src/AttendanceView.php';
-                    $attendance = new AttendanceView($gibbon, $pdo);
+                    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
                     $fail = false;
                     $type = $_POST['type'] ?? '';

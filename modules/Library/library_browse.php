@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -33,13 +34,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 } else {
     //Proceed!
     //Get display settings
+    $settingGateway = $container->get(SettingGateway::class);
+
     $browseBGColorStyle = null;
-    $browseBGColor = getSettingByScope($connection2, 'Library', 'browseBGColor');
+    $browseBGColor = $settingGateway->getSettingByScope('Library', 'browseBGColor');
     if ($browseBGColor != '') {
         $browseBGColorStyle = "; background-color: $browseBGColor";
     }
     $browseBGImageStyle = null;
-    $browseBGImage = getSettingByScope($connection2, 'Library', 'browseBGImage');
+    $browseBGImage = $settingGateway->getSettingByScope('Library', 'browseBGImage');
     if ($browseBGImage != '') {
         $browseBGImageStyle = "; background-image: url(\"$browseBGImage\")";
     }
@@ -134,17 +137,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</table>';
 
     //Get current filter values
-    $name = isset($_REQUEST['name']) ? trim($_REQUEST['name']) : null;
-    $producer = isset($_REQUEST['producer']) ? trim($_REQUEST['producer']) : null;
-    $category = isset($_REQUEST['category']) ? trim($_REQUEST['category']) : null;
-    $collection = isset($_REQUEST['collection']) ? trim($_REQUEST['collection']) : null;
-    $everything = isset($_REQUEST['everything']) ? trim($_REQUEST['everything']) : null;
+    $name = trim($_REQUEST['name'] ?? '');
+    $producer = trim($_REQUEST['producer'] ?? '');
+    $category = trim($_REQUEST['category'] ?? '');
+    $collection = trim($_REQUEST['collection'] ?? '');
+    $everything = trim($_REQUEST['everything'] ?? '');
 
-    $gibbonLibraryItemID = isset($_GET['gibbonLibraryItemID']) ? trim($_GET['gibbonLibraryItemID']) : null;
+    $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID'] ?? '');
 
     // Build the category/collection arrays
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    $result = $pdo->executeQuery(array(), $sql);
+    $result = $pdo->select($sql);
 
     $categoryList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
     $collections = $collectionsChained = array();

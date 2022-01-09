@@ -45,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     }
 
     //Check if gibbonActivityID and gibbonPersonID specified
-    $gibbonActivityID = $_GET['gibbonActivityID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     if ($gibbonPersonID == '' or $gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
@@ -61,11 +61,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         } else {
             //Let's go!
             $row = $result->fetch();
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
-                echo '</div>';
-            }
 
             $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_deleteProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
             echo $form->getOutput();

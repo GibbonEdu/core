@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
     // Access denied
@@ -27,8 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $allStudents = $_GET['allStudents'] ?? '';
     $search = $_GET['search'] ?? '';
     $sort = $_GET['sort'] ?? '';
+    $category = $_GET['category'] ?? '';
 
-    $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+    $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
         echo "<div class='error'>";
         echo __('You do not have access to this action.');
@@ -58,16 +60,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     ->add(__('View Student Profiles'), 'student_view.php')
                     ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
                     ->add(__('Add Student Note'));
-
-                if ($_GET['search'] != '') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
-                    echo '</div>';
-				}
 				
-				$form = Form::create('notes', $session->get('absoluteURL').'/modules/'.$session->get('module')."/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents");
+				$form = Form::create('notes', $session->get('absoluteURL').'/modules/'.$session->get('module')."/student_view_details_notes_addProcess.php?gibbonPersonID=$gibbonPersonID&search=".$search."&subpage=$subpage&category=".$category."&allStudents=$allStudents");
 
 				$form->addHiddenValue('address', $session->get('address'));
+				
+				if ($search != '') {
+                    $params = [
+                        "search" => $search,
+                        "gibbonPersonID" => $gibbonPersonID,
+                        "subpage" => $subpage,
+                        "category" => $category,
+                        "allStudents" => $allStudents,
+                    ];
+                    $form->addHeaderAction('back', __('Back'))
+                        ->setURL('/modules/Students/student_view_details.php')
+                        ->addParams($params);
+				}
 
 				$row = $form->addRow();
 					$row->addLabel('title', __('Title'));

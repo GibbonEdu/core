@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     $today = date('Y-m-d');
     $date = (isset($_GET['date']))? Format::dateConvert($_GET['date']) : date('Y-m-d');
     $sort = (isset($_GET['sort']))? $_GET['sort'] : 'surname';
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Attendance by Date'));
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         $form->addHiddenValue('address', $session->get('address'));
 
         $row = $form->addRow();
-            $row->addLabel('date', __('Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+            $row->addLabel('date', __('Date'));
             $row->addDate('date')->setValue(Format::date($date))->required();
 
         $sortOptions = array('absent' => __('Absent'), 'surname' => __('Surname'), 'preferredName' => __('Given Name'), 'formGroup' => __('Form Group'));
@@ -80,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     //Turn $date into UNIX timestamp and extract day of week
     $dayOfWeek = date('l', Format::timestamp($date));
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
 
     $activityGateway = $container->get(ActivityReportGateway::class);
 

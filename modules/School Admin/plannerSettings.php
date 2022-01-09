@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettings.php') == false) {
@@ -32,61 +33,63 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 
     $form->addRow()->addHeading(__('Planner Templates'));
 
-    $setting = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate', true);
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $setting = $settingGateway->getSettingByScope('Planner', 'lessonDetailsTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'teachersNotesTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'unitOutlineTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'unitOutlineTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'smartBlockTemplate', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'smartBlockTemplate', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
     $form->addRow()->addHeading(__('Interface'));
     
-    $setting = getSettingByScope($connection2, 'Planner', 'homeworkNameSingular', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->required()->setValue($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'homeworkNamePlural', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->required()->setValue($setting['value']);
 
     $form->addRow()->addHeading(__('Access Settings'));
 
-    $setting = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'makeUnitsPublic', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'shareUnitOutline', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'shareUnitOutline', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'sharingDefaultParents', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $setting = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents', true);
+    $setting = $settingGateway->getSettingByScope('Planner', 'sharingDefaultStudents', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);

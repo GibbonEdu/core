@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -44,10 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $page->return->setEditLink($editLink);
 
     if (array_filter($urlParams)) {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__('Back to Search Results').'</a>';
-        echo '</div>';
-	}
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Library', 'library_manage_catalog.php')->withQueryParams($urlParams));
+    }
 
     $form = Form::create('libraryCatalog', $session->get('absoluteURL').'/modules/Library/library_manage_catalog_addProcess.php?'.http_build_query($urlParams));
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -95,6 +94,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $row = $form->addRow()->addClass('general');
         $row->addLabel('invoiceNumber', __('Invoice Number'));
         $row->addTextField('invoiceNumber')->maxLength(50);
+
+    $row = $form->addRow()->addClass('general');
+        $row->addLabel('cost', __('Cost'));
+        $row->addCurrency('cost')->maxLength(9);
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('imageType', __('Image Type'));
@@ -207,13 +210,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 }
 ?>
 <script type='text/javascript'>
-	$(document).ready(function(){
-		$('#gibbonLibraryTypeID').change(function(){
-			var path = '<?php echo $session->get('absoluteURL').'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
+    $(document).ready(function(){
+        $('#gibbonLibraryTypeID').change(function(){
+            var path = '<?php echo $session->get('absoluteURL').'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
 
             $('#detailsRow .general').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $session->get('absoluteURL'); ?>/themes/<?php echo $session->get('gibbonThemeName'); ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
 
-			$('#detailsRow .general').load(path, { 'gibbonLibraryTypeID': $(this).val() });
-		});
-	});
+            $('#detailsRow .general').load(path, { 'gibbonLibraryTypeID': $(this).val() });
+        });
+    });
 </script>

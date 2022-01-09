@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/spaceSettings.php') == false) {
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/spaceSettings
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'School Admin', 'facilityTypes', true);
+    $setting = $container->get(SettingGateway::class)->getSettingByScope('School Admin', 'facilityTypes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();

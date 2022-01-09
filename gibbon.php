@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\View\Page;
-use Gibbon\View\View;
+use Gibbon\Http\Url;
 
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {
@@ -49,27 +48,81 @@ $container->add('autoloader', $autoloader);
 
 $container->inflector(\League\Container\ContainerAwareInterface::class)
           ->invokeMethod('setContainer', [$container]);
-          
+
 $container->inflector(\Gibbon\Services\BackgroundProcess::class)
           ->invokeMethod('setProcessor', [\Gibbon\Services\BackgroundProcessor::class]);
 
 $container->addServiceProvider(new Gibbon\Services\CoreServiceProvider(__DIR__));
 $container->addServiceProvider(new Gibbon\Services\ViewServiceProvider());
-$container->addServiceProvider(new Gibbon\Services\GoogleServiceProvider());
+$container->addServiceProvider(new Gibbon\Services\AuthServiceProvider());
 
 // Globals for backwards compatibility
 $gibbon = $container->get('config');
 $gibbon->locale = $container->get('locale');
-$gibbon->session = $container->get('session');
-$session = $container->get('session');
 $guid = $gibbon->getConfig('guid');
 $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
+    define('SESSION_TABLE_AVAILABLE', false);
     header("Location: ./installer/install.php");
     exit;
+}
+
+// Initialize the database connection
+if ($gibbon->isInstalled()) {
+    $mysqlConnector = new Gibbon\Database\MySqlConnector();
+
+    // Display a static error message for database connections after install.
+    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+        // Add the database to the container
+        $connection2 = $pdo->getConnection();
+        $container->add('db', $pdo);
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+
+        // Add a feature flag here to prevent errors before updating
+        // TODO: this can likely be removed in v24+
+        $hasSessionTable = $pdo->selectOne("SHOW TABLES LIKE 'gibbonSession'");
+        define('SESSION_TABLE_AVAILABLE', !empty($hasSessionTable));
+
+        // Initialize core
+        $gibbon->initializeCore($container);
+    } else {
+        if (!$gibbon->isInstalling()) {
+            $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');
+            include __DIR__.'/error.php';
+            exit;
+        }
+    }
+}
+
+if (!defined('SESSION_TABLE_AVAILABLE')) {
+    define('SESSION_TABLE_AVAILABLE', false);
+}
+
+// Globals for backwards compatibility
+$gibbon->session = $container->get('session');
+$session = $container->get('session');
+$container->share(\Gibbon\Contracts\Services\Session::class, $session);
+
+// Setup global absoluteURL for all urls.
+if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
+    Url::setBaseUrl($session->get('absoluteURL'));
+} else {
+    // TODO: put this absoluteURL detection somewhere?
+    $absoluteURL = (function () {
+        // Find out the base installation URL path.
+        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+        $baseDir = realpath(__DIR__) . '/';
+        $urlBasePath = substr($baseDir, $prefixLength);
+
+        // Construct the full URL to the base URL path.
+        $host = $_SERVER['HTTP_HOST'];
+        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+        return "{$protocol}://{$host}{$urlBasePath}";
+    })();
+    Url::setBaseUrl($absoluteURL);
 }
 
 // Autoload the current module namespace
@@ -80,30 +133,4 @@ if (!empty($gibbon->session->get('module'))) {
     // Temporary backwards-compatibility for external modules (Query Builder)
     $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module'));
     $autoloader->register(true);
-}
-
-// Initialize using the database connection
-if ($gibbon->isInstalled() == true) {
-    
-    $mysqlConnector = new Gibbon\Database\MySqlConnector();
-    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
-        $container->add('db', $pdo);
-        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
-        $connection2 = $pdo->getConnection();
-
-        $gibbon->initializeCore($container);
-    } else {
-        // We need to handle failed database connections after install. Display an error if no connection 
-        // can be established. Needs a specific error page once header/footer is split out of index.
-        if (!$gibbon->isInstalling()) {
-            $page = $container->get(Page::class)->setDefaults(__DIR__);
-            $page->writeFromTemplate('error.twig.html', [
-                'error' => sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', ''),
-                'message' => ' ',
-            ]);
-            
-            echo $page->render('index.twig.html');
-            exit;
-        }
-    }
 }

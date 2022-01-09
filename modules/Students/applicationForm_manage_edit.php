@@ -26,6 +26,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -42,26 +43,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $search = $_GET['search'] ?? '';
 
+    $urlParams = compact('gibbonApplicationFormID', 'gibbonSchoolYearID', 'search');
+
     $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', $urlParams)
         ->add(__('Edit Form'));
+
+    $settingGateway = $container->get(SettingGateway::class);
+    $customFieldHandler = $container->get(CustomFieldHandler::class);
+    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
 
     //Check if gibbonApplicationFormID and gibbonSchoolYearID specified
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-
     
-        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-        $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+    $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 
     if ($result->rowCount() != 1) {
-        echo "<div class='error'>";
-        echo __('The specified record does not exist.');
-        echo '</div>';
+        $page->addError(__('The specified record does not exist.'));
         return;
     }
 
@@ -69,21 +73,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $application = $result->fetch();
     $proceed = true;
 
-    echo "<div class='linkTop'>";
-    if ($search != '') {
-        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a> | ';
-    }
+    $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'applicationForm_manage')->withQueryParams($urlParams));
 
-    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
+    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
     if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_fee.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Send Payment Request')."<img style='margin-left: 5px' title='".__('Send Payment Request')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_right.png'/></a> &nbsp;|&nbsp; ";
+        $page->navigator->addHeaderAction('payment', __('Send Payment Request'))
+            ->setUrl('/index.php?q=/modules/Students/applicationForm_manage_edit_fee.php')
+            ->setIcon('page_right')
+            ->addParams($urlParams)
+            ->displayLabel(true);
     }
 
-    echo "<a target='_blank' href='".$session->get('absoluteURL').'/report.php?q=/modules/'.$session->get('module')."/applicationForm_manage_edit_print.php&gibbonApplicationFormID=$gibbonApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$session->get('gibbonThemeName')."/img/print.png'/></a>";
-    echo '</div>';
-
-    $customFieldHandler = $container->get(CustomFieldHandler::class);
-    $personalDocumentHandler = $container->get(PersonalDocumentHandler::class);
+    $page->navigator->addHeaderAction('print', __('Print'))
+        ->setUrl('/report.php')
+        ->addParam('q', '/modules/Students/applicationForm_manage_edit_print.php')
+        ->addParams($urlParams)
+        ->setTarget('_blank')
+        ->directLink()
+        ->displayLabel(true);
 
     $form = Form::create('applicationFormEdit', $session->get('absoluteURL').'/modules/'.$session->get('module').'/applicationForm_manage_editProcess.php?search='.$search);
     $form->setAutocomplete('on');
@@ -123,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // MILESTONES
-    $milestonesList = getSettingByScope($connection2, 'Application Form', 'milestones');
+    $milestonesList = $settingGateway->getSettingByScope('Application Form', 'milestones');
     if (!empty($milestonesList)) {
         $row = $form->addRow();
             $row->addLabel('milestones', __('Milestones'));
@@ -169,22 +176,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             ->placeholder();
 
     // DAY TYPE
-    $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+    $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
-            $row->addLabel('dayType', __('Day Type'))->description(getSettingByScope($connection2, 'User Admin', 'dayTypeText'));
+            $row->addLabel('dayType', __('Day Type'))->description($settingGateway->getSettingByScope('User Admin', 'dayTypeText'));
             $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
     // PAYMENT
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
-    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
+    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
+    $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
+    $paymentAPIUsername = $settingGateway->getSettingByScope('System', 'paymentAPIUsername');
+    $paymentAPIPassword = $settingGateway->getSettingByScope('System', 'paymentAPIPassword');
+    $paymentAPISignature = $settingGateway->getSettingByScope('System', 'paymentAPISignature');
+    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
     $paymentMadeOptions = array(
@@ -343,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'));
         $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND
@@ -374,8 +381,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addSelectCountry('countryOfBirth')->required();
 
     $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
+    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
     
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
@@ -398,12 +405,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SPECIAL EDUCATION & MEDICAL
-    $senOptionsActive = getSettingByScope($connection2, 'Application Form', 'senOptionsActive');
+    $senOptionsActive = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive');
 
     if ($senOptionsActive == 'Y') {
         $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
 
-        $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
+        $applicationFormSENText = $settingGateway->getSettingByScope('Students', 'applicationFormSENText');
         if (!empty($applicationFormSENText)) {
             $heading->append('<p>'.$applicationFormSENText.'<p>');
         }
@@ -433,7 +440,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $row = $form->addRow()->addSubheading(__('Previous Schools'))->append(__('Please give information on the last two schools attended by the applicant.'));
 
     // REFEREE EMAIL
-    $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
+    $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
     if (!empty($applicationFormRefereeLink)) {
         $row = $form->addRow();
             $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
@@ -683,9 +690,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // LANGUAGE OPTIONS
-    $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
-    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
-    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
+    $languageOptionsActive = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = $settingGateway->getSettingByScope('Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = $settingGateway->getSettingByScope('Application Form', 'languageOptionsLanguageList');
 
     if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
@@ -712,12 +719,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SCHOLARSHIPS
-    $scholarshipOptionsActive = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive');
+    $scholarshipOptionsActive = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive');
 
     if ($scholarshipOptionsActive == 'Y') {
         $heading = $form->addRow()->addHeading(__('Scholarships'));
 
-        $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
+        $scholarship = $settingGateway->getSettingByScope('Application Form', 'scholarships');
         if (!empty($scholarship)) {
             $heading->append($scholarship)->wrap('<p>','</p>');
         }
@@ -733,7 +740,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 
     // PAYMENT
-    $paymentOptionsActive = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive');
+    $paymentOptionsActive = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive');
 
     if ($paymentOptionsActive == 'Y') {
         $form->addRow()->addHeading(__('Payment'));
@@ -802,16 +809,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // REQURIED DOCUMENTS
-    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
-    $internalDocuments = getSettingByScope($connection2, 'Application Form', 'internalDocuments');
+    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
+    $internalDocuments = $settingGateway->getSettingByScope('Application Form', 'internalDocuments');
 
     if (!empty($internalDocuments)) {
         $requiredDocuments .= ','.$internalDocuments;
     }
 
     if (!empty($requiredDocuments)) {
-        $requiredDocumentsText = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText');
-        $requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
+        $requiredDocumentsText = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText');
+        $requiredDocumentsCompulsory = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory');
 
         $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -857,7 +864,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // MISCELLANEOUS
     $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $howDidYouHear = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
+    $howDidYouHear = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
     $howDidYouHearList = explode(',', $howDidYouHear);
 
     $row = $form->addRow();
@@ -876,16 +883,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // PRIVACY
-    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+    $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
+    $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
+    $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
         $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
 
         $options = array_map('trim', explode(',', $privacyOptions));
-        $checked = array_map('trim', explode(',', $application['privacy']));
+        $checked = !empty($application['privacy']) ? array_map('trim', explode(',', $application['privacy'])) : [];
 
         $row = $form->addRow();
             $row->addLabel('privacyOptions[]', __('Privacy'));

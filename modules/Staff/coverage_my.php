@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
@@ -42,7 +43,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
     $userGateway = $container->get(UserGateway::class);
-    $urgencyThreshold = getSettingByScope($connection2, 'Staff', 'urgencyThreshold');
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $urgencyThreshold = $settingGateway->getSettingByScope('Staff', 'urgencyThreshold');
 
     // TODAY'S COVERAGE
     $criteria = $staffCoverageGateway->newQueryCriteria(true)
@@ -57,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     if (count($todaysCoverage) > 0) {
         $page->write('<h2>'.__("Today's Coverage").'</h2>');
 
-        $substituteInfo = getSettingByScope($connection2, 'Staff', 'substituteInfo');
+        $substituteInfo = $settingGateway->getSettingByScope('Staff', 'substituteInfo');
         if (!empty($substituteInfo)) {
             $page->write('<p>'.$substituteInfo.'</p>');
         }
@@ -162,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $criteria = $staffCoverageGateway->newQueryCriteria();
 
         $coverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $gibbonPersonID, false);
-        $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $gibbonPersonID);
+        $exceptions = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
         $schoolYear = $schoolYearGateway->getSchoolYearByID($session->get('gibbonSchoolYearID'));
 
         // CALENDAR VIEW

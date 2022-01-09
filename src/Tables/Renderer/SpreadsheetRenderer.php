@@ -22,6 +22,8 @@ namespace Gibbon\Tables\Renderer;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Layout\Element;
+use Gibbon\Tables\Columns\ActionColumn;
+use Gibbon\Tables\Columns\ExpandableColumn;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -106,6 +108,8 @@ class SpreadsheetRenderer implements RendererInterface
 
                 $cellCount = 0;
                 foreach ($table->getColumns($i) as $columnName => $column) {
+                    if ($column instanceof ActionColumn || $column instanceof ExpandableColumn) continue;
+                    
                     if ($column->getDepth() < $i) {
                         $cellCount++;
                         continue;
@@ -114,7 +118,7 @@ class SpreadsheetRenderer implements RendererInterface
                     $alpha = $this->num2alpha($cellCount);
                     $range = $alpha.$rowCount;
 
-                    $sheet->setCellValue($alpha.$rowCount, $column->getLabel());  
+                    $sheet->setCellValue($alpha.$rowCount, $column->getLabel());
 
                     $colSpan = $column->getTotalSpan();
                     if ($colSpan > 1) {
@@ -138,7 +142,7 @@ class SpreadsheetRenderer implements RendererInterface
                     }
 
                     $sheet->getStyle($range)->applyFromArray($headerStyle);
-                    
+
                     $cellCount += $colSpan;
                 }
                 $rowCount++;
@@ -153,11 +157,17 @@ class SpreadsheetRenderer implements RendererInterface
                 // CELLS
                 $cellCount = 0;
                 foreach ($table->getColumns() as $columnName => $column) {
+                    if ($column instanceof ActionColumn || $column instanceof ExpandableColumn) continue;
+
                     $alpha = $this->num2alpha($cellCount);
 
                     $cellContent = $this->stripTags($column->getOutput($data));
 
-                    $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_STRING);
+                    if (is_numeric($cellContent) && strpos($cellContent, ".") === false) {
+                        $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_NUMERIC);
+                    } else {
+                        $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_STRING);
+                    }
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
@@ -251,7 +261,7 @@ class SpreadsheetRenderer implements RendererInterface
         for ($r = ''; $n >= 0; $n = intval($n / 26) - 1) {
             $r = chr($n % 26 + 0x41).$r;
         }
-    
+
         return $r;
     }
 }

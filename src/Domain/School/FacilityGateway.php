@@ -51,4 +51,67 @@ class FacilityGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectFacilityInfoByName($gibbonSpaceNameList)
+    {
+        $gibbonSpaceNameList = is_array($gibbonSpaceNameList) ? implode(',', $gibbonSpaceNameList) : $gibbonSpaceNameList;
+
+        $data = ['gibbonSpaceNameList' => $gibbonSpaceNameList];
+        $sql = "SELECT * FROM gibbonSpace 
+                WHERE FIND_IN_SET(name, :gibbonSpaceNameList) 
+                ORDER BY name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFacilityInUseByDateAndTime($gibbonSpaceID, $date, $timeStart, $timeEnd)
+    {
+        $data = ['gibbonSpaceID' => $gibbonSpaceID, 'date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd];
+        $sql = "(
+                SELECT CONCAT(gibbonPerson.preferredName, ' ', gibbonPerson.surname) AS name
+                FROM gibbonTTSpaceBooking 
+                JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID = gibbonTTSpaceBooking.gibbonPersonID )
+                WHERE foreignKey='gibbonSpaceID' 
+                AND foreignKeyID=:gibbonSpaceID 
+                AND date=:date 
+                AND (
+                    (gibbonTTSpaceBooking.timeStart > :timeStart AND gibbonTTSpaceBooking.timeStart < :timeEnd)
+                    OR (:timeStart > gibbonTTSpaceBooking.timeStart AND :timeStart < gibbonTTSpaceBooking.timeEnd)
+                )
+            )
+            UNION ALL
+            (
+                SELECT CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
+                FROM gibbonTTSpaceChange
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonTTSpaceChange.gibbonTTDayRowClassID)
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                WHERE gibbonTTSpaceChange.date=:date
+                AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID
+                AND (
+                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart <= :timeEnd)
+                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart <= gibbonTTColumnRow.timeEnd)
+                )
+            )
+            UNION ALL
+            (
+                SELECT CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
+                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID)
+                JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                WHERE gibbonTTDayDate.date=:date
+                AND gibbonTTDayRowClass.gibbonSpaceID=:gibbonSpaceID
+                AND (
+                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart < :timeEnd)
+                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart < gibbonTTColumnRow.timeEnd)
+                )
+                AND (SELECT gibbonTTSpaceChangeID FROM gibbonTTSpaceChange AS roomReleased JOIN gibbonTTDayRowClass AS roomTT ON (roomTT.gibbonTTDayRowClassID=roomReleased.gibbonTTDayRowClassID) WHERE roomReleased.date=:date AND roomReleased.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND roomTT.gibbonSpaceID=:gibbonSpaceID LIMIT 1) IS NULL
+            )";
+
+        return $this->db()->select($sql, $data);
+    }
 }

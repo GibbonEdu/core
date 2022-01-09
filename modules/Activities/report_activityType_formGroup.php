@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -32,11 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
-    $status = isset($_GET['status'])? $_GET['status'] : null;
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
+    $status = $_GET['status'] ?? null;
 
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $settingGateway = $container->get(SettingGateway::class);
+
+    $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
+
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Type by Form Group'));
@@ -91,8 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
     });
 
-    $activityTypeSetting = getSettingByScope($connection2, 'Activities', 'activityTypes');
-    $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
+    $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
 
     // DATA TABLE
     $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $session);

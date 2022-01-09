@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -148,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo "<div class='linkTop'>";
                     echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
 
-                    if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') == 'Y') {
+                    if ($container->get(SettingGateway::class)->getSettingByScope('Markbook', 'enableColumnWeighting') == 'Y') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
                             echo " | <a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Manage Weightings')."<img title='".__('Manage Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a>";
                         }

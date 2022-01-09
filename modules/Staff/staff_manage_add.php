@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\CustomFieldHandler;
@@ -41,9 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $page->return->setEditLink($editLink);
 
     if ($search != '' or $allStaff != '') {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
-        echo '</div>';
+        $params = [
+            "search" => $search,
+            "allStaff" => $allStaff,
+        ];
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'staff_manage.php')->withQueryParams($params));
     }
 
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_addProcess.php?search=$search&allStaff=$allStaff");

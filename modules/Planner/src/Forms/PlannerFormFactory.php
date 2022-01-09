@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Planner\Forms;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Database\Connection;
@@ -76,6 +77,8 @@ class PlannerFormFactory extends DatabaseFormFactory
      */
     public function createSmartBlockTemplate($guid) : OutputableInterface
     {
+        global $container;
+
         $blockTemplate = $this->createTable()->setClass('blank w-full');
             $row = $blockTemplate->addRow();
             $row->addTextField('title')
@@ -90,7 +93,7 @@ class PlannerFormFactory extends DatabaseFormFactory
                 $row->addTextField('length')->placeholder(__('length (min)'))
                     ->setClass('w-24 focus:bg-white')->prepend('');
 
-            $smartBlockTemplate = getSettingByScope($this->pdo->getConnection(), 'Planner', 'smartBlockTemplate');
+            $smartBlockTemplate = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'smartBlockTemplate');
             $col = $blockTemplate->addRow()->addClass('showHide w-full')->addColumn();
                 $col->addLabel('contentsLabel', __('Block Contents'))->setClass('mt-3 -mb-2');
                 $col->addTextArea('contents', $guid)->setRows(20)->addData('tinymce')->addData('media', '1')->setValue($smartBlockTemplate);
@@ -156,8 +159,8 @@ class PlannerFormFactory extends DatabaseFormFactory
     public function createSelectOutcome($name, $gibbonYearGroupIDList, $gibbonDepartmentID) : OutputableInterface
     {
         // Get School Outcomes
-        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT category AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']'];
+        $sql = "SELECT (CASE WHEN category='' THEN :noCategory ELSE category END) AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND scope='School'
@@ -188,8 +191,8 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->fromQueryChained($this->pdo, $sql2, $data2, $name.'Filter', 'groupBy');
 
         // Get Categories by Year Group
-        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql3 = "SELECT category as value, category as name
+        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']'];
+        $sql3 = "SELECT category as value, (CASE WHEN category='' THEN :noCategory ELSE category END) as name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)

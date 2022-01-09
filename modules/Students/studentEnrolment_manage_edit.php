@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_edit.php') == false) {
@@ -56,9 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
 
         if ($search != '') {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/studentEnrolment_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
-            echo '</div>';
+             $params = [
+                "search" => $search,
+                "gibbonSchoolYearID" => $gibbonSchoolYearID
+            ];
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'studentEnrolment_manage.php')->withQueryParams($params));
         }
 
         $form = Form::create('studentEnrolmentAdd', $session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
@@ -96,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         // Check to see if any class mappings exists -- otherwise this feature is inactive, hide it
         $classMapCount = $container->get(CourseSyncGateway::class)->countAll();
         if ($classMapCount > 0) {
-            $autoEnrolDefault = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses');
+            $autoEnrolDefault = $container->get(SettingGateway::class)->getSettingByScope('Timetable Admin', 'autoEnrolCourses');
             $row = $form->addRow();
                 $row->addLabel('autoEnrolStudent', __('Auto-Enrol Courses?'))
                     ->description(__('Should this student be automatically enrolled in courses for their Form Group?'))

@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Finance\ExpenseGateway;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Finance\ExpenseGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -44,9 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
             ->add(__('View Expense'));
 
         //Check if params are specified
-        $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-        $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
-        $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
+        $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'] ?? '';
+        $status2 = $_GET['status2'] ?? '';
+        $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'] ?? '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -75,9 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                 echo '</div>';
             } else {
                 //Get and check settings
-                $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
-                $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
-                $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
+                $settingGateway = $container->get(SettingGateway::class);
+                $expenseApprovalType = $settingGateway->getSettingByScope('Finance', 'expenseApprovalType');
+                $budgetLevelExpenseApproval = $settingGateway->getSettingByScope('Finance', 'budgetLevelExpenseApproval');
+                $expenseRequestTemplate = $settingGateway->getSettingByScope('Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                     echo "<div class='error'>";
                     echo __('An error has occurred with your expense and budget settings.');
@@ -135,9 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                             $row = $result->fetch();
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                                echo "<div class='linkTop'>";
-                                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
-                                echo '</div>';
+                                $params = [
+                                    "gibbonFinanceBudgetCycleID" => $gibbonFinanceBudgetCycleID,
+                                    "status2" => $status2,
+                                    "gibbonFinanceBudgetID2" => $gibbonFinanceBudgetID2,
+                                ];
+                                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'expenses_manage.php')->withQueryParams($params));
                             }
                             ?>
                                 <table class='smallIntBorder fullWidth' cellspacing='0'>
@@ -154,10 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <?php
                                             $yearName = '';
 
-                                                $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-                                                $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-                                                $resultYear = $connection2->prepare($sqlYear);
-                                                $resultYear->execute($dataYear);
+                                            $dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+                                            $sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
+                                            $resultYear = $connection2->prepare($sqlYear);
+                                            $resultYear->execute($dataYear);
                                             if ($resultYear->rowCount() == 1) {
                                                 $rowYear = $resultYear->fetch();
                                                 $yearName = $rowYear['name'];
@@ -229,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                             <b><?php echo __('Count Against Budget') ?> *</b><br/>
                                         </td>
                                         <td class="right">
-                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
+                                            <input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo Format::yesNo($row['countAgainstBudget']); ?>" type="text" class="standardWidth">
                                         </td>
                                     </tr>
                                     <tr>

@@ -17,50 +17,51 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-$URL = './index.php';
 $role = $_GET['gibbonRoleID'] ?? '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);
 
-$gibbon->session->set('pageLoads', null);
+$session->set('pageLoads', null);
 
 //Check for parameter
 if (empty(intval($role))) {
-    $URL .= '?return=error0';
+    $URL = Url::fromRoute()->withReturn('error0');
     header("Location: {$URL}");
     exit;
 } else {
     //Check for access to role
     try {
-        $data = array('username' => $gibbon->session->get('username'), 'gibbonRoleID' => $role);
+        $data = array('username' => $session->get('username'), 'gibbonRoleID' => $role);
         $sql = 'SELECT gibbonPerson.gibbonPersonID
                 FROM gibbonPerson JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
                 WHERE (gibbonPerson.username=:username) AND gibbonRole.gibbonRoleID=:gibbonRoleID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $URL .= '?return=error2';
+        $URL = Url::fromRoute()->withReturn('error2');
         header("Location: {$URL}");
         exit;
     }
 
     if ($result->rowCount() != 1) {
-        $URL .= '?return=error1';
+        $URL = Url::fromRoute()->withReturn('error1');
         header("Location: {$URL}");
         exit;
     } else {
         //Make the switch
-        $gibbon->session->set('gibbonRoleIDCurrent', $role);
+        $session->set('gibbonRoleIDCurrent', $role);
 
-        // Reload cached FF actions
-        $gibbon->session->cacheFastFinderActions($role);
+        // Clear cached FF actions
+        $session->forget('fastFinderActions');
 
         // Clear the main menu from session cache
-        $gibbon->session->forget('menuMainItems');
+        $session->forget('menuMainItems');
 
-        $URL .= '?return=success0';
+        $URL = Url::fromRoute()->withReturn('success0');
         header("Location: {$URL}");
         exit;
     }

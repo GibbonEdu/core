@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -38,7 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $today = date('Y-m-d');
 
-    $countClassAsSchool = getSettingByScope($connection2, 'Attendance', 'countClassAsSchool');
+    $settingGateway = $container->get(SettingGateway::class);
+    $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
     $dateEnd = (isset($_REQUEST['dateEnd']))? Format::dateConvert($_REQUEST['dateEnd']) : date('Y-m-d');
     $dateStart = (isset($_REQUEST['dateStart']))? Format::dateConvert($_REQUEST['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
@@ -75,11 +77,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $form->addHiddenValue('q', "/modules/".$session->get('module')."/report_summary_byDate.php");
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateStart', __('Start Date'));
         $row->addDate('dateStart')->setValue(Format::date($dateStart))->required();
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dateEnd', __('End Date'));
         $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
     $options = array("all" => __('All Students'));
@@ -181,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         }
         else if ($reportType == 'reasons') {
             $attendanceCodeInfo = $resultCodes->fetch();
-            $attendanceReasons = explode(',', getSettingByScope($connection2, 'Attendance', 'attendanceReasons') );
+            $attendanceReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceReasons') );
 
             for($i = 0; $i < count($attendanceReasons); $i++) {
                 $reasonIdentifier = "`".str_replace("`","``",$attendanceReasons[$i])."`";

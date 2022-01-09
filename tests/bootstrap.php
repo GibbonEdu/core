@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 global $gibbon, $guid, $connection2;
 
 // Prevent installer redirect
@@ -27,8 +29,8 @@ if (!file_exists(__DIR__ . '/../config.php')) {
 require_once __DIR__ . '/../gibbon.php';
 
 if ($gibbon->isInstalled()) {
-    $installType = getSettingByScope($connection2, 'System', 'installType');
+    $installType = $container->get(SettingGateway::class)->getSettingByScope('System', 'installType');
     if ($installType == 'Production') {
-        die('ERROR: Test suite cannot run on a production system.'."\n");
+        throw new \Exception('ERROR: Test suite cannot run on a production system.');
     }
 }

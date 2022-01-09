@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -25,12 +26,14 @@ use Gibbon\Forms\PersonalDocumentHandler;
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
+$settingGateway = $container->get(SettingGateway::class);
+
 $proceed = false;
 $public = false;
 if (!$session->has('username')) {
     $public = true;
     //Get public access
-    $access = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+    $access = $settingGateway->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications');
     if ($access == 'Y') {
         $proceed = true;
     }
@@ -54,7 +57,7 @@ if ($proceed == false) {
     $page->breadcrumbs->add(__('Staff Application Form'));
 
     //Get intro
-    $intro = getSettingByScope($connection2, 'Staff', 'staffApplicationFormIntroduction');
+    $intro = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormIntroduction');
     if ($intro != '') {
         echo '<p>';
         echo $intro;
@@ -120,7 +123,7 @@ if ($proceed == false) {
             $row->addLabel('gibbonStaffJobOpeningID[]', __('Job Openings'))->description(__('Please select one or more jobs to apply for.'));
             $row->addCheckbox('gibbonStaffJobOpeningID[]')->fromArray($jobOpeningsProcessed)->required();
 
-        $staffApplicationFormQuestions = getSettingByScope($connection2, 'Staff', 'staffApplicationFormQuestions');
+        $staffApplicationFormQuestions = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormQuestions');
         if ($staffApplicationFormQuestions != '') {
             $row = $form->addRow();
                 $column = $row->addColumn();
@@ -166,7 +169,7 @@ if ($proceed == false) {
                 $row->addSelectGender('gender')->required();
 
             $row = $form->addRow();
-                $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+                $row->addLabel('dob', __('Date of Birth'));
                 $row->addDate('dob')->required();
 
             $form->addRow()->addHeading(__('Background Data'));
@@ -187,8 +190,8 @@ if ($proceed == false) {
                 $row->addLabel('countryOfBirth', __('Country of Birth'));
                 $row->addSelectCountry('countryOfBirth')->required();
 
-            $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-            $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+            $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
+            $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
 
             // PERSONAL DOCUMENTS
             $params = ['staff' => true, 'applicationForm' => true];
@@ -222,11 +225,11 @@ if ($proceed == false) {
         $customFieldHandler->addCustomFieldsToForm($form, 'User', $params);
         
         // REQURIED DOCUMENTS
-        $staffApplicationFormRequiredDocuments = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocuments');
+        $staffApplicationFormRequiredDocuments = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments');
 
         if (!empty($staffApplicationFormRequiredDocuments)) {
-            $staffApplicationFormRequiredDocumentsText = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsText');
-            $staffApplicationFormRequiredDocumentsCompulsory = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
+            $staffApplicationFormRequiredDocumentsText = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsText');
+            $staffApplicationFormRequiredDocumentsCompulsory = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
 
             $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -261,7 +264,7 @@ if ($proceed == false) {
         }
 
         //REFERENCES
-        $applicationFormRefereeLink = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink');
+        $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
         if ($applicationFormRefereeLink != '') {
             $heading = $form->addRow()->addHeading(__('References'));
                 $heading->append(__('Your nominated referees will be emailed a confidential form to complete on your behalf.'));
@@ -280,7 +283,7 @@ if ($proceed == false) {
         $customFieldHandler->addCustomFieldsToForm($form, 'Staff', $params);
 
         //AGREEMENT
-        $agreement = getSettingByScope($connection2, 'Staff', 'staffApplicationFormAgreement');
+        $agreement = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormAgreement');
         if (!empty($agreement)) {
             $form->addRow()->addHeading(__('Agreement'))->append($agreement)->wrap('<p>', '</p>');
 
@@ -296,7 +299,7 @@ if ($proceed == false) {
         echo $form->getOutput();
 
         //POSTSCRIPT
-        $postscript = getSettingByScope($connection2, 'Staff', 'staffApplicationFormPostscript');
+        $postscript = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormPostscript');
         if ($postscript != '') {
             echo '<h2>';
             echo __('Further Information');

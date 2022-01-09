@@ -17,21 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Contracts\Services\Payment;
 
 //Get variables
-$gibbonFinanceInvoiceID = '';
-if (isset($_GET['gibbonFinanceInvoiceID'])) {
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-}
-$key = '';
-if (isset($_GET['key'])) {
-    $key = $_GET['key'];
-}
+$gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'] ?? '';
+$key = $_GET['key'] ?? '';
 
-    $page->return->addReturns(['error3' => __("Your payment could not be made as the payment gateway does not support the system's currency."), 'success1' => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'), 'success2' => __('Your payment could not be made to your credit card. Please try an alternative payment method.'), 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $session->get('systemName'), $gibbonFinanceInvoiceID)]);
+$payment = $container->get(Payment::class);
+$payment->setForeignTable('gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
+$page->return->addReturns($payment->getReturnMessages());
 
-if (!isset($_GET['return'])) { //No return message, so must just be landing to make payment
+if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { //No return message, so must just be landing to make payment
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -76,22 +74,18 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
                     $feeTotal += $rowFees['fee'];
                 }
 
-                $currency = getSettingByScope($connection2, 'System', 'currency');
-                $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-                $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-                $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-                $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
-
-                if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $feeTotal > 0) {
-                    $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
-                    $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
+                if ($payment->isEnabled() and $feeTotal > 0) {
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $financeOnlinePaymentEnabled = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentEnabled');
+                    $financeOnlinePaymentThreshold = $settingGateway->getSettingByScope('Finance', 'financeOnlinePaymentThreshold');
+                    $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
                     if ($financeOnlinePaymentEnabled == 'Y') {
                         echo "<h3 style='margin-top: 40px'>";
                         echo __('Online Payment');
                         echo '</h3>';
                         echo '<p>';
                         if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
-                            echo sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $session->get('systemName')).' ';
+                            echo sprintf(__('Payment can be made by credit card, using our secure %2$s payment gateway. When you press Pay Online Now, you will be directed to %2$s in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $session->get('systemName'), $paymentGateway).' ';
 
                             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/invoices_payOnlineProcess.php');
 

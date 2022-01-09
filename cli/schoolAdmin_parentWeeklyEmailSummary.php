@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -35,7 +36,12 @@ getSystemSettings($guid, $connection2);
 setCurrentSchoolYear($guid, $connection2);
 Format::setupFromSession($container->get('session'));
 
-if (!isCommandLineInterface()) {
+$settingGateway = $container->get(SettingGateway::class);
+
+//Check for CLI, so this cannot be run through browser
+$remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');
+$remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
+if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
     return;
 }
@@ -58,9 +64,9 @@ if ($session->get('organisationEmail') == '') {
     return;
 }
 
-$gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
-$parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
-$parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+$parentWeeklyEmailSummaryIncludeBehaviour = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
+$parentWeeklyEmailSummaryIncludeMarkbook = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
 
 // Prep for email sending later
@@ -140,8 +146,8 @@ foreach ($families as $gibbonFamilyID => $students) {
 
         // Format the student summary for emailing
         $content = $view->fetchFromTemplate('cli/parentWeeklyEmailSummary.twig.html', [
-            'homeworkNameSingular' => getSettingByScope($connection2, 'Planner', 'homeworkNameSingular'),
-            'homeworkNamePlural' => getSettingByScope($connection2, 'Planner', 'homeworkNamePlural'),
+            'homeworkNameSingular' => $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular'),
+            'homeworkNamePlural' => $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural'),
             'includeBehaviour' => $parentWeeklyEmailSummaryIncludeBehaviour,
             'includeMarkbook' => $parentWeeklyEmailSummaryIncludeMarkbook,
             'includeHomework' => 'Y',
@@ -207,12 +213,12 @@ foreach ($families as $gibbonFamilyID => $students) {
             // Prep email
             $buttonURL = "/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$student['gibbonPersonID'].'&gibbonPersonIDParent='.$parent['gibbonPersonID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID');
 
-            $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $student['surname'].', '.$student['preferredName'].' ('.$student['formGroup'].')', $gibbon->session->get('systemName'), $gibbon->session->get('organisationNameShort'));
+            $subject = sprintf(__('Weekly Planner Summary for %1$s via %2$s at %3$s'), $student['surname'].', '.$student['preferredName'].' ('.$student['formGroup'].')', $session->get('systemName'), $session->get('organisationNameShort'));
 
             $body = sprintf(__('Dear %1$s'), $parent['preferredName'].' '.$parent['surname']).',<br/><br/>';
             $body .= $content;
 
-            $mail->AddReplyTo($replyTo ?? $gibbon->session->get('organisationEmail'), $replyToName ?? '');
+            $mail->AddReplyTo($replyTo ?? $session->get('organisationEmail'), $replyToName ?? '');
             $mail->AddAddress($parent['email'], $parent['surname'].', '.$parent['preferredName']);
 
             $mail->setDefaultSender($subject);
@@ -257,10 +263,10 @@ $event->setNotificationText(__('A School Admin CLI script has run.').'<br/>'.$bo
 $event->setActionLink('/index.php?q=/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php');
 
 // Notify admin
-$event->addRecipient($gibbon->session->get('organisationAdministrator'));
+$event->addRecipient($session->get('organisationAdministrator'));
 
 // Send all notifications
-$event->sendNotifications($pdo, $gibbon->session);
+$event->sendNotifications($pdo, $session);
 
 // Output the result to terminal
 echo sprintf('Sent %1$s emails: %2$s emails sent, %3$s emails failed.', $sendReport['emailSent'] + $sendReport['emailFailed'], $sendReport['emailSent'], $sendReport['emailFailed'])."\n";

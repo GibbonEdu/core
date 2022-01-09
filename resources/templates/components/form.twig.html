@@ -19,12 +19,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     {% if form.getTitle %}
         <h2>{{ form.getTitle }}</h2>
     {% endif %}
-    
+
     {% if form.getDescription %}
         <p>{{ form.getDescription|raw }}</p>
     {% endif %}
 
-    
+
     {% block header %}
         <header class="relative">
             {% if form.getHeader %}
@@ -50,7 +50,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% set sectionLoop = loop %}
 
             {% for num, row in rows %}
-            
+
                 {% set rowLoop = loop %}
                 {% if true or renderStyle == 'flex' %}
                     {% set rowClass = 'flex flex-col sm:flex-row justify-between sm:items-center content-center p-0' %}
@@ -65,7 +65,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 {% for element in row.getElements %}
                     {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
-                    
+
                     {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Heading') %}
                         {% set class = 'flex-grow justify-center' %}
                     {% elseif element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
@@ -88,8 +88,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set class = class ~ " px-3 py-2" %}
                     {% endif %}
 
-
-                    <div class="{{ class }} {{ element.getClass|replace({'standardWidth': ''}) }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                    {% set hasClass = element.instanceOf('Gibbon\\Forms\\Layout\\Element') or element.instanceOf('Gibbon\\Forms\\Layout\\Row') %}
+                    <div class="{{ class }} {{ hasClass ? element.getClass|replace({'standardWidth': ''}) : '' }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
                         {{ element.getOutput|replace({'standardWidth': renderStyle == 'flex' ? 'w-full' : '' })|raw }}
 
                         {% if element.instanceOf('Gibbon\\Forms\\ValidatableInterface') %}

@@ -17,20 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 //$role can be teacher, student or parent. If no role is specified, the default is teacher.
 function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role = 'teacher')
 {
+    global $session, $container;
+
     $output = '';
 
+    $settingGateway = $container->get(SettingGateway::class);
     //Get alternative header names
-    $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-    $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-    $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-    $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
-    $alert = getAlert($guid, $connection2, 002);
+    $attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
+    $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
     //Get school years in reverse order
     try {
@@ -116,8 +117,8 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     } else {
                         $output .= __('Unmarked').'<br/>';
                     }
-                    if ($rowInternalAssessment['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
+                    if ($rowInternalAssessment['attachment'] != '' and file_exists($session->get('absolutePath').'/'.$rowInternalAssessment['attachment'])) {
+                        $output .= " | <a title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';
@@ -193,7 +194,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $output .= $rowInternalAssessment['comment'].'<br/>';
                         }
                         if ($rowInternalAssessment['response'] != '') {
-                            $output .= "<a title='".__('Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
+                            $output .= "<a title='".__('Uploaded Response')."' href='".$session->get('absoluteURL').'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
                         }
                         $output .= '</td>';
                     }
@@ -215,13 +216,15 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 
 function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage')
 {
+    global $session;
+
     $output = '';
 
     $output .= '<div class="column-no-break">';
 
     $classes = array();
 
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
     $result = $connection2->prepare($sql);
     $result->execute($data);
@@ -234,7 +237,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     }
 
     if ($mode == 'manage' or ($mode == 'write' and getHighestGroupedAction($guid, '/modules/Formal Assessment/internalAssessment_write_data.php', $connection2) == 'Write Internal Assessments_all')) {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
         $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY course, class";
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -247,7 +250,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
         }
     }
 
-    $form = Form::create('classSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('classSelect', $session->get('absoluteURL').'/index.php', 'get');
     $form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_'.$mode.'.php');
     $form->setTitle(__('Select Class'));
     $form->setClass('smallIntBorder w-full');
@@ -269,11 +272,12 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
 
 function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbonYearGroupID = null, $manage = false, $search = '', $allStudents = '')
 {
+    global $session;
 
-        $dataAssessments = array('gibbonPersonID' => $gibbonPersonID);
-        $sqlAssessments = 'SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date';
-        $resultAssessments = $connection2->prepare($sqlAssessments);
-        $resultAssessments->execute($dataAssessments);
+    $dataAssessments = array('gibbonPersonID' => $gibbonPersonID);
+    $sqlAssessments = 'SELECT * FROM gibbonExternalAssessmentStudent JOIN gibbonExternalAssessment ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY date';
+    $resultAssessments = $connection2->prepare($sqlAssessments);
+    $resultAssessments->execute($dataAssessments);
 
     if ($resultAssessments->rowCount() < 1) {
         echo "<div class='error'>";
@@ -284,8 +288,8 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
             echo '<h2>';
             echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))), 0, 3).' '.substr($rowAssessments['date'], 0, 4).')</span>';
             if ($manage == true) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents&width=600&height=135' class='thickbox'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
+                echo "<a href='".$session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents&width=600&height=135' class='thickbox'><img title='".__('Delete')."' src='./themes/".$session->get('gibbonThemeName')."/img/garbage.png'/></a>";
             }
             echo '</h2>';
             echo '<p>';
@@ -294,7 +298,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 
             if ($rowAssessments['attachment'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowAssessments['attachment']."'>".__('Uploaded File').'</a>';
+                echo "<a target='_blank' href='".$session->get('absoluteURL').'/'.$rowAssessments['attachment']."'>".__('Uploaded File').'</a>';
                 echo '</div>';
             }
 

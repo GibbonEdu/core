@@ -180,6 +180,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange)) {
+            $filenameChange =  preg_replace('/[^a-zA-Z0-9]/', '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
@@ -227,7 +228,7 @@ class FileUploader
                 if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') {
                     continue;
                 }
-                
+
                 $filename = $zip->getNameIndex($i);
                 $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
@@ -381,7 +382,7 @@ class FileUploader
                 $sql = "SELECT LOWER(extension) FROM gibbonFileExtension ORDER BY type, name";
             }
 
-            $result = $this->pdo->executeQuery($data, $sql);
+            $result = $this->pdo->select($sql, $data);
 
             if ($result && $result->rowCount() > 0) {
                 $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);

@@ -18,11 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 include './gibbon.php';
 
 //Check to see if academic year id variables are set, if not set them
-if ($gibbon->session->exists('gibbonAcademicYearID') == false or $gibbon->session->exists('gibbonSchoolYearName') == false) {
+if ($session->exists('gibbonAcademicYearID') == false or $session->exists('gibbonSchoolYearName') == false) {
     setCurrentSchoolYear($guid, $connection2);
 }
 
@@ -36,7 +37,7 @@ $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal']) ? $_POST['gibbo
 $gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal']) ? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=preferences.php';
+$URL = Url::fromRoute('preferences');
 
 $validated = true;
 
@@ -51,28 +52,26 @@ if (!empty($calendarFeedPersonal) && filter_var($calendarFeedPersonal, FILTER_VA
 }
 
 if (!$validated) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error1')}");
     exit();
 }
 
 try {
-    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $gibbon->session->get('username'));
+    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $session->get('username'));
     $sql = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    $URL .= '&return=error2';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error2')}");
     exit();
 }
 
 //Update personal preferences in session
-$gibbon->session->set('calendarFeedPersonal', $calendarFeedPersonal);
-$gibbon->session->set('personalBackground', $personalBackground);
-$gibbon->session->set('gibbonThemeIDPersonal', $gibbonThemeIDPersonal);
-$gibbon->session->set('gibboni18nIDPersonal', $gibboni18nIDPersonal);
-$gibbon->session->set('receiveNotificationEmails', $receiveNotificationEmails);
+$session->set('calendarFeedPersonal', $calendarFeedPersonal);
+$session->set('personalBackground', $personalBackground);
+$session->set('gibbonThemeIDPersonal', $gibbonThemeIDPersonal);
+$session->set('gibboni18nIDPersonal', $gibboni18nIDPersonal);
+$session->set('receiveNotificationEmails', $receiveNotificationEmails);
 
 //Update language settings in session (to personal preference if set, or system default if not)
 if (!empty($gibboni18nIDPersonal)) {
@@ -95,6 +94,5 @@ if (!empty($gibboni18nIDPersonal)) {
     }
 }
 
-$gibbon->session->set('pageLoads', null);
-$URL .= '&return=success0';
-header("Location: {$URL}");
+$session->set('pageLoads', null);
+header("Location: {$URL->withReturn('success0')}");

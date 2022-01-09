@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -26,8 +27,9 @@ use Gibbon\Domain\Behaviour\BehaviourGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
-$enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
+$settingGateway = $container->get(SettingGateway::class);
+$enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
+$enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') == false) {
     // Access denied
@@ -42,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     } else {
         $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
-        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
-        $type = isset($_GET['type'])? $_GET['type'] : '';
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+        $type = $_GET['type'] ?? '';
 
         $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
         $form->setTitle(__('Filter'));
@@ -122,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->addParam('type', $type)
             ->displayLabel();
 
-        $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
+        $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
         if (!empty($policyLink)) {
             $table->addHeaderAction('policy', __('View Behaviour Policy'))
                 ->setExternalURL($policyLink)

@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
@@ -41,11 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
-            $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
-            $sql = "SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND gibbonStaffApplicationForm.status='Pending'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $settingGateway = $container->get(SettingGateway::class);
+
+        $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
+        $sql = "SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND gibbonStaffApplicationForm.status='Pending'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -54,12 +57,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         } else {
             //Let's go!
             $values = $result->fetch();
-            $step = '';
-            if (isset($_GET['step'])) {
-                $step = $_GET['step'];
-            }
+            $step = $_GET['step'] ?? 1;
             if ($step != 1 and $step != 2) {
                 $step = 1;
+            }
+
+            if ($search != '') {
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Staff', 'applicationForm_manage.php')->withQueryParam('search', $search));
             }
 
             //Step 1
@@ -67,12 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo '<h3>';
                 echo __('Step')." $step";
                 echo '</h3>';
-
-                echo "<div class='linkTop'>";
-                if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                }
-                echo '</div>'; 
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
                 
@@ -84,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
-                $informApplicant = (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y');
+                $informApplicant = ($settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationDefault') == 'Y');
                 $col->addCheckbox('informApplicant')
                     ->description(__('Automatically inform <u>applicant</u> of their Gibbon login details by email?'))
                     ->inline(true)
@@ -120,12 +118,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 echo __('Step')." $step";
                 echo '</h3>';
 
-                echo "<div class='linkTop'>";
-                if ($search != '') {
-                    echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                }
-                echo '</div>';
-
                 if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
                     $informApplicant = 'N';
                     if (isset($_POST['informApplicant'])) {
@@ -154,10 +146,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
+
                     //Set default email address for applicant
                     $email = $values['email'];
                     $emailAlternate = '';
-                    $applicantDefaultEmail = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail');
+                    $applicantDefaultEmail = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultEmail');
                     if ($applicantDefaultEmail != '') {
                         $emailAlternate = $email;
                         $email = str_replace('[username]', $username, $applicantDefaultEmail);
@@ -165,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     //Set default website address for applicant
                     $website = '';
-                    $applicantDefaultWebsite = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultWebsite');
+                    $applicantDefaultWebsite = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormDefaultWebsite');
                     if ($applicantDefaultWebsite != '') {
                         $website = str_replace('[username]', $username, $applicantDefaultWebsite);
                     }
@@ -215,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $insertOK = true;
                         try {
                             $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields']);
-                            $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='$gibbonRoleID', gibbonRoleIDAll='$gibbonRoleID', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth,  email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
+                            $sql = "INSERT INTO gibbonPerson SET username=:username, passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='$gibbonRoleID', gibbonRoleIDAll='$gibbonRoleID', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth,  email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
@@ -289,7 +282,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             echo '<h4>';
                             echo __('New Staff Member Welcome Email');
                             echo '</h4>';
-                            $notificationApplicantMessage = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationMessage');
+                            $notificationApplicantMessage = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormNotificationMessage');
                             foreach ($informApplicantArray as $informApplicantEntry) {
                                 if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
                                     $to = $informApplicantEntry['email'];

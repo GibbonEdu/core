@@ -9,71 +9,59 @@ file that was distributed with this source code.
 
 namespace Gibbon;
 
-use Gibbon\Contracts\Database\Connection;
 use Gibbon\Locale;
-use League\Container\Container;
+use Gibbon\Contracts\Services\Session;
 use PHPUnit\Framework\TestCase;
 
+// Require the system-wide functions.
+require_once __DIR__.'/../../../../functions.php';
+
+// Require trait for testing.
+require_once __DIR__ . '/MockGibbonTrait.php';
+
 /**
- * @covers Locale
+ * @covers \Gibbon\Locale::translateN
+ * @covers __n function
  *
  * Test against PO file generated LocaleTest.sh in
  * the folder containing this file.
  */
 class TranslateNTest extends TestCase
 {
-    private $mockPDO;
-    private $mockSession;
+    use MockGibbonTrait;
 
+    /**
+     * Locale object to test with.
+     *
+     * @var \Gibbon\Locale
+     */
     private $locale;
-    private $gibbonToRestore;
 
     public function setUp(): void
     {
-
-        // Setup the composer autoloader
-        $autoloader = require_once __DIR__.'/../../../../vendor/autoload.php';
-
-        // Require the system-wide functions
-        require_once __DIR__.'/../../../../functions.php';
-
-        // Create a stub for the Gibbon\session class
-        $this->mockSession = $this->createMock(session::class);
-        $this->mockSession
+        // Create a stub for the Gibbon\Contracts\Services\Session interface
+        $mockSession = $this->createMock(Session::class);
+        $mockSession
             ->method('get')
             ->willReturn(null); // always return null
 
         // mocked locale object
         $i18ncode = 'es_ES';
-        $locale = new Locale(__DIR__ . '/mock', $this->mockSession);
+        $locale = new Locale(__DIR__ . '/mock', $mockSession);
         $locale->setLocale($i18ncode);
         $locale->setSystemTextDomain(__DIR__ . '/mock');
-
-        // mocked global gibbon object
-        global $gibbon;
-        $this->gibbonToRestore = isset($gibbon) ? $gibbon : null;
-        $gibbon = (object) [
-            'locale' => $locale,
-        ];
+        $this->locale = $locale;
     }
 
-    public function tearDown(): void
-    {
-        global $gibbon;
-        unset($gibbon);
-        if (isset($this->gibbonToRestore)) {
-            $gibbon = $this->gibbonToRestore; // restore gibbon before test
-        }
-    }
-
+    /**
+     * @covers \Gibbon\Locale::translateN
+     */
     public function testTranslateN()
     {
-        global $gibbon;
-
         $this->assertEquals(
             'I have an orange',
             # L10N: Untranslated plural string with string placeholder
-            $gibbon->locale->translateN('I have an orange', 'I have {num} oranges', 1, [
+            $this->locale->translateN('I have an orange', 'I have {num} oranges', 1, [
                 'num' => 1,
             ]),
             'Untranslated plural string with string placeholder, with n=1'
@@ -82,7 +70,7 @@ class TranslateNTest extends TestCase
         $this->assertEquals(
             'I have 3 oranges',
             # L10N: Untranslated plural string with string placeholder
-            $gibbon->locale->translateN('I have an orange', 'I have {num} oranges', 3, [
+            $this->locale->translateN('I have an orange', 'I have {num} oranges', 3, [
                 'num' => 3,
             ]),
             'Untranslated plural string with string placeholder, with n=3'
@@ -91,7 +79,7 @@ class TranslateNTest extends TestCase
         $this->assertEquals(
             'Yo quiero una manzana',
             # L10N: Translated plural string with string placeholder
-            $gibbon->locale->translateN('I have an apple', 'I have {num} apples', 1, [
+            $this->locale->translateN('I have an apple', 'I have {num} apples', 1, [
                 'num' => 1,
             ]),
             'Translated plural string with string placeholder, with n=1'
@@ -100,49 +88,98 @@ class TranslateNTest extends TestCase
         $this->assertEquals(
             'Yo quiero 3 manzanas',
             # L10N: Translated plural string with string placeholder
-            $gibbon->locale->translateN('I have an apple', 'I have {num} apples', 3, [
+            $this->locale->translateN('I have an apple', 'I have {num} apples', 3, [
                 'num' => 3,
             ]),
             'Translated plural string with string placeholder, with n=3'
         );
     }
 
-    public function testShortcut()
+    /**
+     * @covers __n(string $singular, string $plural, int $n)
+     */
+    public function testShortcutBasic()
     {
-        $this->assertEquals(
-            'I have an orange',
-            # L10N: Untranslated plural string with string placeholder
-            __n('I have an orange', 'I have {num} oranges', 1, [
-                'num' => 1,
-            ]),
-            'Untranslated plural string with string placeholder, with n=1'
-        );
+        $n = rand(1, 4096);
+        $localeObserver = $this->createMock(Locale::class);
+        $localeObserver->expects($this->once())
+                ->method('translateN')
+                ->with(
+                     $this->equalTo('Some text to translate'),
+                     $this->equalTo('Some text to translate for plural'),
+                     $this->equalTo($n),
+                     $this->equalTo([]),
+                     $this->equalTo([])
+                )
+                ->willReturn('Some translation result');
+        $restoreGibbon = $this->mockGlobalGibbon((object) [
+            'locale' => $localeObserver,
+        ]);
 
         $this->assertEquals(
-            'I have 3 oranges',
-            # L10N: Untranslated plural string with string placeholder
-            __n('I have an orange', 'I have {num} oranges', 3, [
-                'num' => 3,
-            ]),
-            'Untranslated plural string with string placeholder, with n=3'
+            'Some translation result',
+            __n('Some text to translate', 'Some text to translate for plural', $n),
+            '__n() calls $ibbon->locale->translateN()'
         );
-
-        $this->assertEquals(
-            'Yo quiero una manzana',
-            # L10N: Translated plural string with string placeholder
-            __n('I have an apple', 'I have {num} apples', 1, [
-                'num' => 1,
-            ]),
-            'Translated plural string with string placeholder, with n=1'
-        );
-
-        $this->assertEquals(
-            'Yo quiero 3 manzanas',
-            # L10N: Translated plural string with string placeholder
-            __n('I have an apple', 'I have {num} apples', 3, [
-                'num' => 3,
-            ]),
-            'Translated plural string with string placeholder, with n=3'
-        );
+        $restoreGibbon();
     }
+
+    /**
+     * @covers __n(string $singular, string $plural, int $n, array $params)
+     */
+    public function testShortcutTextWithParams()
+    {
+        $n = rand(1, 4096);
+        $localeObserver = $this->createMock(Locale::class);
+        $localeObserver->expects($this->once())
+                ->method('translateN')
+                ->with(
+                    $this->equalTo('Some text to translate'),
+                    $this->equalTo('Some text to translate for plural'),
+                    $this->equalTo($n),
+                    $this->equalTo(['some', 'param']),
+                    $this->equalTo([])
+                )
+                ->willReturn('Some translation result');
+        $restoreGibbon = $this->mockGlobalGibbon((object) [
+            'locale' => $localeObserver,
+        ]);
+
+        $this->assertEquals(
+            'Some translation result',
+            __n('Some text to translate', 'Some text to translate for plural', $n, ['some', 'param']),
+            '__n() calls $ibbon->locale->translateN()'
+        );
+        $restoreGibbon();
+    }
+
+    /**
+     * @covers __n(string $singular, string $plural, int $n, array $params, array $options)
+     */
+    public function testShortcutWithParamsAndOptions()
+    {
+        $n = rand(1, 4096);
+        $localeObserver = $this->createMock(Locale::class);
+        $localeObserver->expects($this->once())
+                ->method('translateN')
+                ->with(
+                    $this->equalTo('Some text to translate'),
+                    $this->equalTo('Some text to translate for plural'),
+                    $this->equalTo($n),
+                    $this->equalTo(['some', 'param']),
+                    $this->equalTo(['some', 'options'])
+                )
+                ->willReturn('Some translation result');
+        $restoreGibbon = $this->mockGlobalGibbon((object) [
+            'locale' => $localeObserver,
+        ]);
+
+        $this->assertEquals(
+            'Some translation result',
+            __n('Some text to translate', 'Some text to translate for plural', $n, ['some', 'param'], ['some', 'options']),
+            '__n() calls $ibbon->locale->translateN()'
+        );
+        $restoreGibbon();
+    }
+
 }

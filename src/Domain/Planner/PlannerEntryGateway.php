@@ -42,12 +42,13 @@ class PlannerEntryGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
-            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier"])
+            ->cols(['gibbonTTColumnRow.timeStart', 'gibbonTTColumnRow.timeEnd', 'gibbonTTDayDate.date', 'gibbonTTColumnRow.name AS period', 'gibbonTTDayRowClass.gibbonTTDayRowClassID', 'gibbonTTDayDate.gibbonTTDayDateID', 'gibbonPlannerEntry.gibbonPlannerEntryID', 'gibbonPlannerEntry.name as lesson', 'gibbonSchoolYearTerm.nameShort as termName', 'gibbonSchoolYearTerm.firstDay', 'gibbonSchoolYearTerm.lastDay', 'gibbonSchoolYearSpecialDay.name as specialDay', "CONCAT(gibbonTTDayRowClass.gibbonTTDayRowClassID, '-', gibbonTTDayDate.gibbonTTDayDateID) as identifier", 'gibbonSpace.name as spaceName'])
             ->from('gibbonTTDayRowClass')
             ->innerJoin('gibbonTTColumnRow', 'gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID')
             ->innerJoin('gibbonTTColumn', 'gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID')
             ->innerJoin('gibbonTTDayDate', 'gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID')
             ->innerJoin('gibbonSchoolYearTerm', 'gibbonTTDayDate.date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay')
+            ->leftJoin('gibbonSpace', 'gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID')
             ->leftJoin('gibbonSchoolYearSpecialDay', "gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date and gibbonSchoolYearSpecialDay.type='School Closure'")
             ->leftJoin('gibbonPlannerEntry', 'gibbonPlannerEntry.date=gibbonTTDayDate.date 
                 AND gibbonPlannerEntry.timeStart=gibbonTTColumnRow.timeStart 
@@ -77,7 +78,18 @@ class PlannerEntryGateway extends QueryableGateway
     public function getPlannerTTByClassTimes($gibbonCourseClassID, $date, $timeStart, $timeEnd)
     {
         $data = ['date' => $date, 'timeStart' => $timeStart, 'timeEnd' => $timeEnd, 'gibbonCourseClassID' => $gibbonCourseClassID];
-        $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY date, timestart';
+        $sql = 'SELECT timeStart, timeEnd, date, gibbonTTColumnRow.name AS period, gibbonTTDayRowClassID, gibbonTTDayDateID, gibbonSpace.name as spaceName 
+                FROM gibbonTTDayRowClass 
+                JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) 
+                JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
+                JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+                JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) 
+                LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
+                WHERE date=:date 
+                AND timeStart=:timeStart 
+                AND timeEnd=:timeEnd AND 
+                gibbonCourseClassID=:gibbonCourseClassID 
+                ORDER BY date, timestart';
         
         return $this->db()->selectOne($sql, $data);
     }

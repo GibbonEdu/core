@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     header("Location: {$URL}");
 } else {
     // Proceed!
-    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+    $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
     $customFieldGateway = $container->get(CustomFieldGateway::class);
     
     $data = [

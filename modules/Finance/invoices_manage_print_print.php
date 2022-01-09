@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Domain\System\SettingGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_print.php') == false) {
@@ -87,22 +89,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                         $result->execute($data);
                 }
 
+                $settingGateway = $container->get(SettingGateway::class);
+
                 //Reminder Text
                 if ($type == 'reminder1') {
                     echo '<h2>';
                     echo __('Reminder 1');
                     echo '</h2>';
-                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder1Text');
+                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder1Text');
                 } elseif ($type == 'reminder2') {
                     echo '<h2>';
                     echo __('Reminder 2');
                     echo '</h2>';
-                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder2Text');
+                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder2Text');
                 } elseif ($type == 'reminder3') {
                     echo '<h2>';
                     echo __('Reminder 3');
                     echo '</h2>';
-                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder3Text');
+                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder3Text');
                 }
                 if ($reminderText != '') {
                     echo '<p>';

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\DataUpdater;
 
 use Gibbon\Domain\Gateway;
+use Gibbon\Domain\System\SettingGateway;
 
 /**
  * Data Updater Gateway
@@ -31,7 +32,7 @@ class DataUpdaterGateway extends Gateway
 {
     /**
      * Gets a list of users this person can update data for, checking by family. Always returns the user themself even if not in a family.
-     * 
+     *
      * @param string $gibbonPersonID
      * @return \PDOStatement
      */
@@ -40,34 +41,34 @@ class DataUpdaterGateway extends Gateway
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "
         (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, 0 as sequenceNumber
-            FROM gibbonPerson 
+            FROM gibbonPerson
             LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' GROUP BY gibbonPerson.gibbonPersonID)
-        UNION ALL 
+        UNION ALL
         (SELECT gibbonFamilyAdult.gibbonFamilyID, child.surname, child.preferredName, child.image_240, child.gibbonPersonID, child.dateStart, 1 as sequenceNumber
-            FROM gibbonFamilyAdult 
-            JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+            FROM gibbonFamilyAdult
+            JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID) 
-            WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
-            AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full') 
-        UNION ALL 
+            JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
+            WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
+            AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full')
+        UNION ALL
         (SELECT gibbonFamily.gibbonFamilyID, adult.surname, adult.preferredName, adult.image_240, adult.gibbonPersonID, adult.dateStart, 2 as sequenceNumber
-            FROM gibbonFamilyAdult 
+            FROM gibbonFamilyAdult
             JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND familyAdult.gibbonPersonID<>:gibbonPersonID)
-            JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID) 
+            JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID)
             WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
         ORDER BY sequenceNumber, surname, preferredName
         ";
 
-        return $this->db()->executeQuery($data, $sql);
+        return $this->db()->select($sql, $data);
     }
 
     /**
      * Gets a list of data updates and the last updated timestamp for a given user.
-     * 
+     *
      * @param string $gibbonPersonID
      * @return \PDOStatement
      */
@@ -76,48 +77,48 @@ class DataUpdaterGateway extends Gateway
         $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDSource' => $gibbonPersonIDSource);
         $sql = "
         (SELECT 'Personal' as type, gibbonPerson.gibbonPersonID as id, 'gibbonPersonID' as idType, IFNULL(timestamp, 0) as lastUpdated, '' as name
-            FROM gibbonPerson 
-            LEFT JOIN gibbonPersonUpdate ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            FROM gibbonPerson
+            LEFT JOIN gibbonPersonUpdate ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC LIMIT 1)
         UNION ALL
         (SELECT 'Medical' as type, gibbonPerson.gibbonPersonID as id, 'gibbonPersonID' as idType, IFNULL(timestamp, 0) as lastUpdated, '' as name
-            FROM gibbonPerson 
+            FROM gibbonPerson
             JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
-            LEFT JOIN gibbonPersonMedicalUpdate ON (gibbonPersonMedicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            LEFT JOIN gibbonPersonMedicalUpdate ON (gibbonPersonMedicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonRole.category='Student'
             ORDER BY timestamp DESC LIMIT 1)
         UNION ALL
         (SELECT 'Finance' as type, gibbonFinanceInvoicee.gibbonFinanceInvoiceeID as id, 'gibbonFinanceInvoiceeID' as idType, IFNULL(timestamp, 0) as lastUpdated, '' as name
-            FROM gibbonPerson 
+            FROM gibbonPerson
             JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            LEFT JOIN gibbonFinanceInvoiceeUpdate ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) 
-            WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID 
-            ORDER BY timestamp DESC LIMIT 1)    
+            LEFT JOIN gibbonFinanceInvoiceeUpdate ON (gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)
+            WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+            ORDER BY timestamp DESC LIMIT 1)
         UNION ALL
         (SELECT 'Family' as type, gibbonFamilyAdult.gibbonFamilyID as id, 'gibbonFamilyID' as idType, IFNULL(timestamp, 0) as lastUpdated, gibbonFamily.name
-            FROM gibbonFamilyAdult 
+            FROM gibbonFamilyAdult
             JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
-            LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) 
+            LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
             WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID ORDER BY timestamp DESC LIMIT 1)
         UNION ALL
         (SELECT 'Family' as type, gibbonFamilyChild.gibbonFamilyID as id, 'gibbonFamilyID' as idType, IFNULL(timestamp, 0) as lastUpdated, gibbonFamily.name
-            FROM gibbonFamilyChild 
+            FROM gibbonFamilyChild
             JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
-            WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDSource 
+            LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
+            WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDSource
             ORDER BY timestamp DESC LIMIT 1)
         UNION ALL
         (SELECT 'Staff' as type, gibbonPerson.gibbonPersonID as id, 'gibbonPersonID' as idType, IFNULL(gibbonStaffUpdate.timestamp, 0) as lastUpdated, '' as name
-            FROM gibbonPerson 
+            FROM gibbonPerson
             JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
-            LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-            LEFT JOIN gibbonStaffUpdate ON (gibbonStaffUpdate.gibbonStaffID=gibbonStaff.gibbonStaffID) 
+            LEFT JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            LEFT JOIN gibbonStaffUpdate ON (gibbonStaffUpdate.gibbonStaffID=gibbonStaff.gibbonStaffID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonRole.category='Staff'
             ORDER BY timestamp DESC LIMIT 1)
         ";
 
-        return $this->db()->executeQuery($data, $sql);
+        return $this->db()->select($sql, $data);
     }
 
     public function countAllRequiredUpdatesByPerson($gibbonPersonID)
@@ -126,18 +127,20 @@ class DataUpdaterGateway extends Gateway
 
         if ($updatablePeople->rowCount() == 0) return 0;
 
-        $cutoffDate = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'cutoffDate');
-        $requiredUpdatesByType = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'requiredUpdatesByType');
+        global $container;
+
+        $cutoffDate = $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='cutoffDate'");
+        $requiredUpdatesByType = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='Data Updater' AND name='requiredUpdatesByType'");
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
 
         if (empty($requiredUpdatesByType) || empty($cutoffDate)) return 0;
-        
+
         $count = 0;
 
         // Loop over each updatable person to look for required updates
         foreach ($updatablePeople as $person) {
             $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID);
-            
+
             if (!$this->db()->getQuerySuccess()) return 0;
 
             $dataUpdatesByType = $dataUpdatesByType->fetchGrouped();

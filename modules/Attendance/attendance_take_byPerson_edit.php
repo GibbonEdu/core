@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
@@ -36,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $page->addError(__('You do not have access to this action.'));
 } else {
 
-	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
-	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+	$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
+	$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
 		$page->addError(__('You have not specified one or more required parameters.'));
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 	    //Proceed!
 	    $page->return->addReturns(['error3' => __('Your request failed because the specified date is in the future, or is not a school day.')]);
 
-	    $attendance = new AttendanceView($gibbon, $pdo);
+	    $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
 
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );

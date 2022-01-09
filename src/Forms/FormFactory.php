@@ -19,11 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Column;
 use Gibbon\Forms\Layout\Element;
-use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Layout\Trigger;
+use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
 
 /**
@@ -229,6 +231,9 @@ class FormFactory implements FormFactoryInterface
         return (new Input\Radio($name));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function createSelect($name)
     {
         return new Input\Select($name);
@@ -249,7 +254,7 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, \Gibbon\Session $session)
+    public function createCustomBlocks($name, Session $session)
     {
         return new Input\CustomBlocks($this, $name, $session);
     }
@@ -269,6 +274,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\Person($name);
     }
 
+    public function createScanner($name)
+    {
+        return new Input\Scanner($name);
+    }
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createAlert($content, $level = 'warning')
@@ -286,7 +296,7 @@ class FormFactory implements FormFactoryInterface
     {
         $passParams[] = 'q';
         $parameters = array_intersect_key($_GET, array_flip($passParams));
-        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
+        $clearURL = Url::fromRoute()->withQueryParams($parameters);
         $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
 
         return $this->createSubmit('Go')->prepend($clearLink);
@@ -465,6 +475,7 @@ class FormFactory implements FormFactoryInterface
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
                 'KES KSh' => 'Kenyan Shilling (KSh)',
+                'LYD د.ل' => 'Libyan Dinar (د.ل)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MGA' => 'Malagasy Ariary (Ar)',
                 'MVR Rf' => 'Maldivian Rufiyaa (Rf)',

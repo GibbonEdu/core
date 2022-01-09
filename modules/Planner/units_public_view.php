@@ -18,16 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Domain\System\SettingGateway;
+
 require_once __DIR__ . '/moduleFunctions.php';
 
 // common variables
-$makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$makeUnitsPublic = $container->get(SettingGateway::class)->getSettingByScope('Planner', 'makeUnitsPublic');
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
 $page->breadcrumbs
-    ->add(__('Learn With Us'), 'units_public.php', [
+    ->add(__('Learn With Us'), 'modules/Planner/units_public.php', [
         'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'sidebar' => 'false',
     ])
     ->add(__('View Unit'));
 

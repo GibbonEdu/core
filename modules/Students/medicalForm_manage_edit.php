@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == false) {
@@ -49,9 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         } else {
             //Let's go!
             if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'medicalForm_manage.php')->withQueryParam('search', $search));
             }
 
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/medicalForm_manage_editProcess.php?gibbonPersonMedicalID='.$gibbonPersonMedicalID."&search=$search");
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $table = DataTable::create('medicalConditions');
             $table->setTitle(__('Medical Conditions'));
-            $table->setDescription(getSettingByScope($connection2, 'Students', 'medicalConditionIntro'));
+            $table->setDescription($container->get(SettingGateway::class)->getSettingByScope('Students', 'medicalConditionIntro'));
 
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Students/medicalForm_manage_condition_add.php')

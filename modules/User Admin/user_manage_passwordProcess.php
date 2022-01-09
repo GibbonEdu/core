@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                         //Write to database
                         try {
                             $data = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'passwordForceReset' => $passwordForceReset, 'gibbonPersonID' => $gibbonPersonID);
-                            $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, passwordForceReset=:passwordForceReset, failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
+                            $sql = "UPDATE gibbonPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, passwordForceReset=:passwordForceReset, failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

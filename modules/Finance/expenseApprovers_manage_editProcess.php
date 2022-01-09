@@ -17,10 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
+
 include '../../gibbon.php';
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -49,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Validate Inputs
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
+            $expenseApprovalType = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
                 $sequenceNumber = abs($_POST['sequenceNumber']);

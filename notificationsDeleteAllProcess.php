@@ -17,20 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 include './gibbon.php';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=notifications.php';
+$URL = Url::fromRoute('notifications');
 
 try {
-    $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = 'DELETE FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    $URL = $URL.'&return=error2';
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('error2')}");
     exit();
 }
 
-$URL = $URL.'&return=success0';
-header("Location: {$URL}");
+header("Location: {$URL->withReturn('success0')}");

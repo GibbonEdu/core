@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
@@ -30,42 +31,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $session->get('gibbonSchoolYearID');
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
-    if ($gibbonSchoolYearID == $session->get('gibbonSchoolYearID')) {
-        $gibbonSchoolYearName = $session->get('gibbonSchoolYearName');
-    } else {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
-        $gibbonSchoolYearName = $pdo->selectOne($sql, $data);
-    }
-
-    echo '<h2>';
-    echo $gibbonSchoolYearName;
-    echo '</h2>';
-
-    echo "<div class='linkTop'>";
-        //Print year picker
-        $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-        $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-        if ($previousYear != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
-        } else {
-            echo __('Previous Year').' ';
-        }
-        echo ' | ';
-        if ($nextYear != false) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
-        } else {
-            echo __('Next Year').' ';
-        }
-    echo '</div>';
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
     $form = Form::create('settings', $session->get('absoluteURL').'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
     $form->setTitle(__('Settings'));
     $form->addHiddenValue('address', $session->get('address'));
 
-    $setting = getSettingByScope($connection2, 'Timetable Admin', 'autoEnrolCourses', true);
+    $setting = $container->get(SettingGateway::class)->getSettingByScope('Timetable Admin', 'autoEnrolCourses', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();

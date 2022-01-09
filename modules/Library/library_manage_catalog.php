@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         $row = $form->addRow();
             $row->addLabel('name', __('ID/Name/Producer'));
-            $row->addTextField('name')->setValue($name);
+            $row->addScanner('name')->setValue($name);
 
         $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
         $row = $form->addRow();
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row = $form->addRow();
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))
             ->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
-        $row->addTextField('typeSpecificFields')
+        $row->addScanner('typeSpecificFields')
             ->setValue($typeSpecificFields);
 
         $row = $form->addRow();
@@ -116,7 +116,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         ->addParam('status', $status)
         ->addParam('gibbonPersonIDOwnership', $gibbonPersonIDOwnership)
         ->addParam('typeSpecificFields', $typeSpecificFields)
-        ->displayLabel();
+        ->displayLabel()
+        ->prepend(' | ');
 
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))

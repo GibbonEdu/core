@@ -37,9 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $studentGateway = $container->get(StudentGateway::class);
 
-        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-        $search = isset($_GET['search'])? $_GET['search'] : '';
-        $allStudents = (isset($_GET['allStudents']) ? $_GET['allStudents'] : '');
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allStudents =  $_GET['allStudents'] ?? '';
 
         // CRITERIA
         $criteria = $studentGateway->newQueryCriteria(true)
@@ -99,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $table->addActionColumn()
             ->addParam('gibbonPersonID')
+            ->addParam('allStudents', $allStudents)
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($person, $actions) use ($highestAction) {
                 if ($person['status'] != 'Full') return;

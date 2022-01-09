@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -89,13 +89,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         'External' => __('External')
                     ]);
 
-            $activityTypes = $settingGateway->getSettingByScope('Activities', 'activityTypes');
+            $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
+
             if (!empty($activityTypes)) {
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')
-                        ->fromString($activityTypes)
-                        ->placeholder();
+                    $row->addSelect('type')->fromArray($activityTypes)->placeholder();
             }
 
             $row = $form->addRow();
@@ -248,7 +247,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $timeSlots = $activitySlotGateway->selectBy(['gibbonActivityID' => $gibbonActivityID]);
 
             foreach ($timeSlots as $slot) {
-                //Must cast to int for select to work.
                 $slot['location'] = empty($slot['gibbonSpaceID']) ? 'External' : 'Internal';
                 $slotBlocks->addBlock($slot['gibbonActivitySlotID'], $slot);
             }

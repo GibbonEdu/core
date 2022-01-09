@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\ApplicationFormGateway;
@@ -56,18 +57,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
-    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $settingGateway = $container->get(SettingGateway::class);
+    $enablePayments = $settingGateway->getSettingByScope('System', 'enablePayments');
+    $paymentAPIUsername = $settingGateway->getSettingByScope('System', 'paymentAPIUsername');
+    $paymentAPIPassword = $settingGateway->getSettingByScope('System', 'paymentAPIPassword');
+    $paymentAPISignature = $settingGateway->getSettingByScope('System', 'paymentAPISignature');
 
-    if ($enablePayments != 'Y' || empty($paypalAPIUsername) || empty($paypalAPIPassword) || empty($paypalAPISignature)) {
+    if ($enablePayments != 'Y' || empty($paymentAPIUsername) || empty($paymentAPIPassword) || empty($paymentAPISignature)) {
         echo Format::alert(__('Online payment options are not available at this time.'));
         return;
     }
 
-    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    $applicationProcessFeeText = getSettingByScope($connection2, 'Application Form', 'applicationProcessFeeText');
+    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
+    $applicationProcessFeeText = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFeeText');
 
     $form = Form::create('applicationFormFee', $gibbon->session->get('absoluteURL').'/modules/Students/applicationForm_manage_edit_feeProcess.php?search='.$search);
 

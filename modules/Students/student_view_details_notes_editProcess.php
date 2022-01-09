@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 include '../../gibbon.php';
 
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         $URL .= "&return=error0";
         header("Location: {$URL}");
     } else {
-        $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
+        $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
         if ($enableStudentNotes != 'Y') {
             $URL .= '&return=error0';
             header("Location: {$URL}");

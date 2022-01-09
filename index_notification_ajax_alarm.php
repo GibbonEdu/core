@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
 
@@ -25,7 +26,7 @@ include './gibbon.php';
 
 $type = $_GET['type'] ?? '';
 
-if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
+if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCategory') != 'Staff') {
     return;
 } elseif ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
     $alarmGateway = $container->get(AlarmGateway::class);
@@ -33,15 +34,15 @@ if (!$gibbon->session->has('gibbonPersonID') || $gibbon->session->get('gibbonRol
     $alarm = $alarmGateway->selectBy(['status' => 'Current'])->fetch();
     if (empty($alarm)) return;
 
-    $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $gibbon->session->get('gibbonPersonID'));
+    $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
     $canViewReport = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
     $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
     
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
         'alarm'              => $alarm,
         'confirmed'          => $confirmed,
-        'gibbonPersonID'     => $gibbon->session->get('gibbonPersonID'),
-        'customAlarmSound'   => getSettingByScope($connection2, 'System Admin', 'customAlarmSound'),
+        'gibbonPersonID'     => $session->get('gibbonPersonID'),
+        'customAlarmSound'   => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
         'canViewReport'      => $canViewReport,
         'confirmationReport' => $canViewReport ? $confirmationReport : [],
     ]);

@@ -19,26 +19,104 @@ CHANGELOG
 v23.0.00
 --------
     Headlines
+        Added support for database-driven sessions encrypted session data
+        Improved session timeout when using multiple tabs or windows
 
     Significant Changes
+        System: added ability to run CLI scripts remotely, with secure key
+        System: removed deprecated functions no longer used in core and additional modules
+            - addressFormat
+            - dateConvert
+            - dateConvertBack
+            - dateConvertToTimestamp
+            - formatName
+            - formatPhone
+            - getAge
+            - getGibbonMailer
+            - getModuleEntry
+            - getSettingByScope
+            - getUserPhoto
+            - printUserPhoto
+            - returnProcess
+            - setLog
+            - setNotification
+            - tinymceStyleStripTags
+            - ynExpander
+        System Admin: added a Maintenance Mode which restricts login access to admin only
+        System Admin: added an Active Sessions page to see who is currently logged in
 
     Changes With Important Notices
+        Running the database updater will log out all users except the current admin user
 
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths
         System: improved the appearance of the fatal error message page
         System: adjusted new student order in Staff Dashboard Enrolment tab
+        System: in forms, update the current country phone code to always display first
+        System: fixed typo in Public Registration notification
+        System: updated the mobile responsive view to display alerts above the login form
+        System: refactored all $_SESSION calls across the system
+        System: changed force password reset information in Preferences from error to message
+        System: updated the chart.js javascript library to v3.6.0
+        System: adjusted Excel export to format integers as numbers
+        System: added CSS ID myClasses to sidebar
+        Attendance: added the ability to Take Ad Hoc Attendance
+        Attendance: added birthday icons to Take Attendance pages
+        Behaviour: enabled Find Behaviour Patterns to filter Positive behaviour
+        Departments: updated participant view so it does not require other modules
+        Departments: highlight department coordinator, add hover text
+        Finance: added ability to invoice students by class enrolment
+        Library: added student Form Group to View Overdue Items report
         Messenger: updated New Message process to send SMS messages before emails
+        Messenger: improved mobile responsive size of inserted images
+        Planner: added facility name to Year Overview and Edit Working Copy pages, if available
+        Planner: added explicit links to daily and weekly summary emails
+        Reports: added default value for Yes/No criteria
+        Rubrics: enabled visualization to use custom colours, if unique row colours are used
         School Admin: Changing the school year start date now deletes days that are no longer within the school year
+        Staff: added a link to view coverage details on the Open Requests page
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
-        Timetable: added a copy to clipboard option for View Available Facilities/Teachers reports
+        System Admin: added link to Import History at the top of Import from File
+        Timetable: added an option to click for more information in View Available Facilities/Teachers reports
+        Timetable: added timetable day heading colours to View Timetable by Facility
+        Timetable: added an ajax check for availability when making a facility change
+        Timetable: redirect back to View Timetable by Facility when making a space change
         Timetable Admin: adjusted interface strings in timetable import
 
     Bug Fixes
+        System: fixed the Validator class so sanitizeHTML is multibyte safe
+        System: fixed phone number format for numbers 10 digits or greater
+        System: added Markbook and Planner permissions to Parent and Student Dashboard
+        System: fixed space before file extension causing failed file uploads
+        System: fixed comma key clearing fast finder inputs
+        System: fixed internal urls opening new tab in the nameLinked function
         Activities: fixed duplicate entries in Activity Choices by Student
+        Activities: fixed modal view in Activity Choices by Student
+        Attendance: fixed table header nomenclature in Classes Not Registered report
+        Finance: fixed incorrect column placement in Export Invoices
+        Messenger: fixed duplicate student names when using Individual Naming
+        Planner: fixed school closure checks when bumping lessons forward and backward
+        Planner: fixed smart block deletion not working in Edit Lesson Plan
+        Planner: fixed planner deadlines page not filtering by class
+        Planner: fixed outcomes dropdown in Lesson Planner when an outcome has no category
+        Reports: fixed Student Info template borders when no image is present
+        Reports: fixed bug when viewing uploaded reports from past years
+        Rubrics: fixed rubric data before the go live date visible in Historical Data
+        School Admin: fixed phone numbers not formatting in Manage Facilities
+        Staff: fixed substitute unavailability showing previous school years
+        Staff: fixed manually adding/editing absences on non-school days
+        Staff: fixed Print action in Edit Application Form not opening in new tab
+        Staff: fixed Edit User link on Manage Substitutes > Edit Substitute page
+        Students: fixed missing Official Name fields for parents in Student Application import
+        Students: fixed pagination in student view of View Student Profiles page
+        System Admin: fixed PHP notice in importer when skipping serialized fields
+        System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
-
+        Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
+        Timetable: fixed calendar options not persisting when using timetable switcher
+        Timetable Admin: fixed class enrolment sync when courses belong to more than one year group
+        User Admin: fixed return message for image upload failure
 
 v22.0.01
 --------

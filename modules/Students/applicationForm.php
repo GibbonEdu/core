@@ -21,9 +21,10 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Contracts\Services\Payment;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\PersonalDocumentHandler;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -31,11 +32,13 @@ include './modules/User Admin/moduleFunctions.php';
 $proceed = false;
 $public = false;
 
+$settingGateway = $container->get(SettingGateway::class);
+
 if (!$session->has('username')) {
     $public = true;
 
     //Get public access
-    $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
+    $publicApplications = $settingGateway->getSettingByScope('Application Form', 'publicApplications');
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
@@ -101,6 +104,13 @@ if ($proceed == false) {
         $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationAdmissionsEmail')."'>".$session->get('organisationAdmissionsName').'</a>');
     }
 
+    $payment = $container->get(Payment::class);
+
+    if ($payment->isEnabled()) {
+        $payment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
+        $page->return->addReturns($payment->getReturnMessages());
+    }
+
     $returns = array();
     $returns['success0'] = __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra;
     $returns['success1'] = __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra;
@@ -112,7 +122,7 @@ if ($proceed == false) {
     // JS success return addition
     $return = (isset($_GET['return']))? $_GET['return'] : '';
 
-    if ($return == 'success0' or $return == 'success1' or $return == 'success2'  or $return == 'success4') {
+    if ($return == 'success0' or $return == 'success1' or $return == 'success2' or $return == 'success3' or $return == 'success4') {
         echo "<script type='text/javascript'>";
         echo '$(document).ready(function(){';
         echo "alert('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.') ;";
@@ -121,21 +131,18 @@ if ($proceed == false) {
     }
 
     // Get intro
-    $intro = getSettingByScope($connection2, 'Application Form', 'introduction');
+    $intro = $settingGateway->getSettingByScope('Application Form', 'introduction');
     if ($intro != '') {
         echo '<p>';
         echo $intro;
         echo '</p>';
     }
 
-    $currency = getSettingByScope($connection2, 'System', 'currency');
-    $applicationFee = getSettingByScope($connection2, 'Application Form', 'applicationFee');
-    $applicationProcessFee = getSettingByScope($connection2, 'Application Form', 'applicationProcessFee');
-    $enablePayments = getSettingByScope($connection2, 'System', 'enablePayments');
-    $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
-    $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
-    $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $currency = $settingGateway->getSettingByScope('System', 'currency');
+    $applicationFee = $settingGateway->getSettingByScope('Application Form', 'applicationFee');
+    $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
+    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
+    $paymentGateway = $settingGateway->getSettingByScope('System', 'paymentGateway');
 
     if (!empty($applicationFee) || !empty($applicationProcessFee)) {
         echo "<div class='warning'>";
@@ -145,8 +152,8 @@ if ($proceed == false) {
         if ($applicationProcessFee > 0 and is_numeric($applicationProcessFee)) {
             echo __('A processing fee of {fee} may be sent by email after your application has been submitted.', ['fee' => '<b><u>'.$currency.$applicationProcessFee.'</u></b>']);
         }
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' && !empty($applicationFee)) {
-            echo ' '.__('Payment must be made by credit card, using our secure PayPal payment gateway. When you press Submit at the end of this form, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details.');
+        if ($payment->isEnabled() && !empty($applicationFee)) {
+            echo ' '.__('Payment must be made by credit card, using our secure {gateway} payment gateway. When you press Submit at the end of this form, you will be directed to {gateway} in order to make payment. During this process we do not see or store your credit card details.', ['gateway' => $paymentGateway]);
         }
         echo '</div>';
     }
@@ -229,7 +236,7 @@ if ($proceed == false) {
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'));
         $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND
@@ -260,8 +267,8 @@ if ($proceed == false) {
         $row->addSelectCountry('countryOfBirth')->required();
 
     $countryName = ($session->has('country')) ? __($session->get('country')).' ' : '';
-    $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+    $nationalityList = $settingGateway->getSettingByScope('User Admin', 'nationality');
+    $residencyStatusList = $settingGateway->getSettingByScope('User Admin', 'residencyStatus');
 
     // PERSONAL DOCUMENTS
     $params = ['student' => true, 'applicationForm' => true];
@@ -284,12 +291,12 @@ if ($proceed == false) {
     }
 
     // SPECIAL EDUCATION & MEDICAL
-    $senOptionsActive = getSettingByScope($connection2, 'Application Form', 'senOptionsActive');
+    $senOptionsActive = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive');
 
     if ($senOptionsActive == 'Y') {
         $heading = $form->addRow()->addSubheading(__('Special Educational Needs & Medical'));
 
-        $applicationFormSENText = getSettingByScope($connection2, 'Students', 'applicationFormSENText');
+        $applicationFormSENText = $settingGateway->getSettingByScope('Students', 'applicationFormSENText');
         if (!empty($applicationFormSENText)) {
             $heading->append($applicationFormSENText);
         }
@@ -325,8 +332,8 @@ if ($proceed == false) {
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearIDEntry', __('Anticipated Year of Entry'))->description(__('What school year will the student join in?'));
 
-        $enableLimitedYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'enableLimitedYearsOfEntry');
-        $availableYearsOfEntry = getSettingByScope($connection2, 'Application Form', 'availableYearsOfEntry');
+        $enableLimitedYearsOfEntry = $settingGateway->getSettingByScope('Application Form', 'enableLimitedYearsOfEntry');
+        $availableYearsOfEntry = $settingGateway->getSettingByScope('Application Form', 'availableYearsOfEntry');
         if ($enableLimitedYearsOfEntry == 'Y' && !empty($availableYearsOfEntry)) {
             $data = array('gibbonSchoolYearIDList' => $availableYearsOfEntry);
             $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
@@ -346,17 +353,17 @@ if ($proceed == false) {
         $row->addSelect('gibbonYearGroupIDEntry')->fromQuery($pdo, $sql)->required()->placeholder(__('Please select...'));
 
     // DAY TYPE
-    $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
+    $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
     if (!empty($dayTypeOptions)) {
         $row = $form->addRow();
-            $row->addLabel('dayType', __('Day Type'))->description(getSettingByScope($connection2, 'User Admin', 'dayTypeText'));
+            $row->addLabel('dayType', __('Day Type'))->description($settingGateway->getSettingByScope('User Admin', 'dayTypeText'));
             $row->addSelect('dayType')->fromString($dayTypeOptions);
     }
 
     // REFEREE EMAIL
-    $applicationFormRefereeLink = getSettingByScope($connection2, 'Students', 'applicationFormRefereeLink');
+    $applicationFormRefereeLink = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
     if (!empty($applicationFormRefereeLink)) {
-        $applicationFormRefereeRequired = getSettingByScope($connection2, 'Students', 'applicationFormRefereeRequired', true);
+        $applicationFormRefereeRequired = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeRequired', true);
         $row = $form->addRow();
             $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
             if ($applicationFormRefereeRequired["value"] == "Y") {
@@ -689,9 +696,9 @@ if ($proceed == false) {
     }
 
     // LANGUAGE OPTIONS
-    $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
-    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
-    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
+    $languageOptionsActive = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = $settingGateway->getSettingByScope('Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = $settingGateway->getSettingByScope('Application Form', 'languageOptionsLanguageList');
 
     if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
@@ -716,12 +723,12 @@ if ($proceed == false) {
     }
 
     // SCHOLARSHIPS
-    $scholarshipOptionsActive = getSettingByScope($connection2, 'Application Form', 'scholarshipOptionsActive');
+    $scholarshipOptionsActive = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive');
 
     if ($scholarshipOptionsActive == 'Y') {
         $heading = $form->addRow()->addHeading(__('Scholarships'));
 
-        $scholarship = getSettingByScope($connection2, 'Application Form', 'scholarships');
+        $scholarship = $settingGateway->getSettingByScope('Application Form', 'scholarships');
         if (!empty($scholarship)) {
             $heading->append($scholarship);
         }
@@ -737,7 +744,7 @@ if ($proceed == false) {
 
 
     // PAYMENT
-    $paymentOptionsActive = getSettingByScope($connection2, 'Application Form', 'paymentOptionsActive');
+    $paymentOptionsActive = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive');
 
     if ($paymentOptionsActive == 'Y') {
         $form->addRow()->addHeading(__('Payment'));
@@ -807,11 +814,11 @@ if ($proceed == false) {
     }
 
     // REQURIED DOCUMENTS
-    $requiredDocuments = getSettingByScope($connection2, 'Application Form', 'requiredDocuments');
+    $requiredDocuments = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments');
 
     if (!empty($requiredDocuments)) {
-        $requiredDocumentsText = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsText');
-        $requiredDocumentsCompulsory = getSettingByScope($connection2, 'Application Form', 'requiredDocumentsCompulsory');
+        $requiredDocumentsText = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText');
+        $requiredDocumentsCompulsory = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory');
 
         $heading = $form->addRow()->addHeading(__('Supporting Documents'));
 
@@ -848,7 +855,7 @@ if ($proceed == false) {
     // MISCELLANEOUS
     $form->addRow()->addHeading(__('Miscellaneous'));
 
-    $howDidYouHear = getSettingByScope($connection2, 'Application Form', 'howDidYouHear');
+    $howDidYouHear = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
     $howDidYouHearList = explode(',', $howDidYouHear);
 
     $row = $form->addRow();
@@ -867,9 +874,9 @@ if ($proceed == false) {
     }
 
     // PRIVACY
-    $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+    $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
+    $privacyBlurb = $settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
+    $privacyOptions = $settingGateway->getSettingByScope('User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyOptions)) {
 
@@ -883,7 +890,7 @@ if ($proceed == false) {
     }
 
     // AGREEMENT
-    $agreement = getSettingByScope($connection2, 'Application Form', 'agreement');
+    $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
     if (!empty($agreement)) {
         $form->addRow()->addHeading(__('Agreement'))->append($agreement);
 
@@ -908,7 +915,7 @@ if ($proceed == false) {
     echo $form->getOutput();
 
     //Get postscrript
-    $postscript = getSettingByScope($connection2, 'Application Form', 'postscript');
+    $postscript = $settingGateway->getSettingByScope('Application Form', 'postscript');
     if ($postscript != '') {
         echo '<h2>';
         echo __('Further Information');

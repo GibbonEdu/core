@@ -119,8 +119,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             } else {
                 $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
-                $copyToGCSECheck = isset($_GET['copyToGCSECheck'])? $_GET['copyToGCSECheck'] : null;
-                $copyToIBCheck = isset($_GET['copyToIBCheck'])? $_GET['copyToIBCheck'] : null;
+                $copyToGCSECheck = $_GET['copyToGCSECheck'] ?? null;
+                $copyToIBCheck = $_GET['copyToIBCheck'] ?? null;
 
 
                     $dataSelect = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);

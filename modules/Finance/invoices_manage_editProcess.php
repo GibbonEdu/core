@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
@@ -78,7 +79,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
             } else {
                 $row = $result->fetch();
                 $notes = $_POST['notes'] ?? '';
-                $status = $row['status'] ?? '';
+                $status = $row['status'];
                 if ($status != 'Pending') {
                     $status = $_POST['status'] ?? '';
                     if ($status == 'Paid - Complete') {
@@ -296,13 +297,14 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                             if (count($emails) > 0) {
                                 $body = '';
+                                $settingGateway = $container->get(SettingGateway::class);
                                 //Prep message
                                 if ($row['reminderCount'] == '0') {
-                                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder1Text');
+                                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder1Text');
                                 } elseif ($row['reminderCount'] == '1') {
-                                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder2Text');
+                                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder2Text');
                                 } elseif ($row['reminderCount'] >= '2') {
-                                    $reminderText = getSettingByScope($connection2, 'Finance', 'reminder3Text');
+                                    $reminderText = $settingGateway->getSettingByScope('Finance', 'reminder3Text');
                                 }
                                 if ($reminderText != '') {
                                     $reminderOutput = $row['reminderCount'] + 1;

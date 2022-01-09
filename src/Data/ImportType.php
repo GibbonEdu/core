@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Data;
 
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\System\SettingGateway;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -196,22 +197,22 @@ class ImportType
         }
     }
 
-    public static function getBaseDir(Connection $pdo)
+    public static function getBaseDir(SettingGateway $settingGateway)
     {
-        $absolutePath = getSettingByScope($pdo->getConnection(), 'System', 'absolutePath');
+        $absolutePath = $settingGateway->getSettingByScope('System', 'absolutePath');
         return rtrim($absolutePath, '/ ');
     }
 
-    public static function getImportTypeDir(Connection $pdo)
+    public static function getImportTypeDir(SettingGateway $settingGateway)
     {
-        return self::getBaseDir($pdo) . "/resources/imports";
+        return self::getBaseDir($settingGateway) . "/resources/imports";
     }
 
-    public static function getCustomImportTypeDir(Connection $pdo)
+    public static function getCustomImportTypeDir(SettingGateway $settingGateway)
     {
-        $customFolder = getSettingByScope($pdo->getConnection(), 'System Admin', 'importCustomFolderLocation');
+        $customFolder = $settingGateway->getSettingByScope('System Admin', 'importCustomFolderLocation');
 
-        return self::getBaseDir($pdo).'/uploads/'.trim($customFolder, '/ ');
+        return self::getBaseDir($settingGateway).'/uploads/'.trim($customFolder, '/ ');
     }
 
     /**
@@ -220,13 +221,13 @@ class ImportType
      * @param   Object  PDO Connection
      * @return  array   2D array of importType objects
      */
-    public static function loadImportTypeList(Connection $pdo = null, $validateStructure = false)
+    public static function loadImportTypeList(SettingGateway $settingGateway, Connection $pdo = null, $validateStructure = false)
     {
         $yaml = new Yaml();
         $importTypes = [];
 
         // Get the built-in import definitions
-        $defaultFiles = glob(self::getImportTypeDir($pdo) . "/*.yml");
+        $defaultFiles = glob(self::getImportTypeDir($settingGateway) . "/*.yml");
 
         // Create importType objects for each file
         foreach ($defaultFiles as $file) {
@@ -239,10 +240,10 @@ class ImportType
         }
 
         // Get the user-defined custom definitions
-        $customFiles = glob(self::getCustomImportTypeDir($pdo) . "/*.yml");
+        $customFiles = glob(self::getCustomImportTypeDir($settingGateway) . "/*.yml");
 
-        if (is_dir(self::getCustomImportTypeDir($pdo))==false) {
-            mkdir(self::getCustomImportTypeDir($pdo), 0755, true) ;
+        if (is_dir(self::getCustomImportTypeDir($settingGateway))==false) {
+            mkdir(self::getCustomImportTypeDir($settingGateway), 0755, true) ;
         }
 
         foreach ($customFiles as $file) {
@@ -284,13 +285,13 @@ class ImportType
      * @param   Object  PDO Conenction
      * @return  [importType]
      */
-    public static function loadImportType($importTypeName, Connection $pdo = null)
+    public static function loadImportType($importTypeName, SettingGateway $settingGateway, Connection $pdo = null)
     {
         // Check custom first, this allows for local overrides
-        $path = self::getCustomImportTypeDir($pdo).'/'.$importTypeName.'.yml';
+        $path = self::getCustomImportTypeDir($settingGateway).'/'.$importTypeName.'.yml';
         if (!file_exists($path)) {
             // Next check the built-in import types folder
-            $path = self::getImportTypeDir($pdo).'/'.$importTypeName.'.yml';
+            $path = self::getImportTypeDir($settingGateway).'/'.$importTypeName.'.yml';
 
             // Finally fail if nothing is found
             if (!file_exists($path)) {
@@ -301,7 +302,7 @@ class ImportType
         $yaml = new Yaml();
         $fileData = $yaml::parse(file_get_contents($path));
 
-        return new importType($fileData, $pdo);
+        return new ImportType($fileData, $pdo);
     }
 
     /**
@@ -331,13 +332,7 @@ class ImportType
      */
     protected function validateWithDatabase(Connection $pdo)
     {
-        try {
-            $sql="SHOW COLUMNS FROM " . $this->getDetail('table');
-            $result = $pdo->executeQuery([], $sql);
-        } catch (\PDOException $e) {
-            return false;
-        }
-
+        $result = $pdo->select('SHOW COLUMNS FROM ' . $this->getDetail('table'));
         $columns = $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
         $validatedFields = 0;
@@ -380,18 +375,17 @@ class ImportType
             return;
         }
 
-        try {
-            $data = array('module' => $this->access['module'], 'action' => $this->access['action'] );
-            $sql = "SELECT gibbonAction.category, gibbonAction.entryURL
-                    FROM gibbonAction
-                    JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                    WHERE gibbonModule.name=:module
-                    AND gibbonAction.name=:action
-                    ORDER BY gibbonAction.precedence ASC
-                    LIMIT 1";
-            $result = $pdo->executeQuery($data, $sql);
-        } catch (\PDOException $e) {
-        }
+        $sql = 'SELECT gibbonAction.category, gibbonAction.entryURL
+                FROM gibbonAction
+                JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                WHERE gibbonModule.name=:module
+                AND gibbonAction.name=:action
+                ORDER BY gibbonAction.precedence ASC
+                LIMIT 1';
+        $result = $pdo->select($sql, [
+            'module' => $this->access['module'],
+            'action' => $this->access['action'],
+        ]);
 
         if ($result->rowCount() > 0) {
             $action = $result->fetch();
@@ -414,12 +408,7 @@ class ImportType
     {
         // Grab the year groups so we can translate Year Group Lists without a million queries
         if ($this->useYearGroups) {
-            try {
-                $sql="SELECT gibbonYearGroupID, nameShort FROM gibbonYearGroup ORDER BY sequenceNumber";
-                $resultYearGroups = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultYearGroups = $pdo->select('SELECT gibbonYearGroupID, nameShort FROM gibbonYearGroup ORDER BY sequenceNumber');
             if ($resultYearGroups->rowCount() > 0) {
                 while ($yearGroup = $resultYearGroups->fetch()) {
                     $this->yearGroups[ $yearGroup['nameShort'] ] = $yearGroup['gibbonYearGroupID'];
@@ -429,12 +418,7 @@ class ImportType
 
         // Grab the Languages for system-wide relational data (filters)
         if ($this->useLanguages) {
-            try {
-                $sql="SELECT name FROM gibbonLanguage";
-                $resultLanguages = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultLanguages = $pdo->select('SELECT name FROM gibbonLanguage');
             if ($resultLanguages->rowCount() > 0) {
                 while ($languages = $resultLanguages->fetch()) {
                     $this->languages[ $languages['name'] ] = $languages['name'];
@@ -444,12 +428,7 @@ class ImportType
 
         // Grab the Countries for system-wide relational data (filters)
         if ($this->useCountries || $this->usePhoneCodes) {
-            try {
-                $sql="SELECT printable_name, iddCountryCode FROM gibbonCountry";
-                $resultCountries = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultCountries = $pdo->select('SELECT printable_name, iddCountryCode FROM gibbonCountry');
             if ($resultCountries->rowCount() > 0) {
                 while ($countries = $resultCountries->fetch()) {
                     if ($this->useCountries) {
@@ -464,12 +443,7 @@ class ImportType
 
         // Grab the user-defined Custom Fields
         if ($this->useCustomFields) {
-            try {
-                $sql="SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = 'Y'";
-                $resultCustomFields = $pdo->executeQuery([], $sql);
-            } catch (\PDOException $e) {
-            }
-
+            $resultCustomFields = $pdo->select('SELECT gibbonCustomFieldID, name, type, options, required FROM gibbonCustomField where active = "Y"');
             if ($resultCustomFields->rowCount() > 0) {
                 while ($fields = $resultCustomFields->fetch()) {
                     $this->customFields[ $fields['name'] ] = $fields;
@@ -747,7 +721,7 @@ class ImportType
     {
         $value = trim($value);
         $defaultValue = $this->getField($fieldName, 'null') == 'YES' ? null : '';
-        
+
         $filter = $this->getField($fieldName, 'filter');
         $strvalue = mb_strtoupper($value);
 
@@ -1029,7 +1003,7 @@ class ImportType
 
             case 'integer': $value = intval($value);
                             $length = $this->getField($fieldName, 'length');
-                            if (mb_strlen($value) > $length) {
+                            if (!empty($length) && mb_strlen($value) > $length) {
                                 return false;
                             }
                             break;
@@ -1039,11 +1013,11 @@ class ImportType
 
                             if (mb_strpos($value, '.') !== false) {
                                 $number = mb_strstr($value, '.', true);
-                                if (mb_strlen($number) > $length) {
+                                if (!empty($length) && mb_strlen($number) > $length) {
                                     return false;
                                 }
                             } else {
-                                if (mb_strlen($value) > $length) {
+                                if (!empty($length) && mb_strlen($value) > $length) {
                                     return false;
                                 }
                             }
@@ -1230,7 +1204,7 @@ class ImportType
             default:
                 return __(ucfirst($kind));
         }
-        
+
         return '';
     }
 

@@ -17,15 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-$enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
-$enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+$settingGateway = $container->get(SettingGateway::class);
+$enableEffort = $settingGateway->getSettingByScope('Markbook', 'enableEffort');
+$enableRubrics = $settingGateway->getSettingByScope('Markbook', 'enableRubrics');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID";
+$address = $_GET['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_addMulti.php') == false) {
     $URL .= '&return=error0';

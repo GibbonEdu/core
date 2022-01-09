@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -26,8 +27,10 @@ include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
 
-if ($gibbon->session->exists('username') == false) {
-    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+$settingGateway = $container->get(SettingGateway::class);
+
+if ($session->exists('username') == false) {
+    $enablePublicRegistration = $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');
     if ($enablePublicRegistration == 'Y') {
         $proceed = true;
     }
@@ -38,10 +41,10 @@ if ($proceed == false) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $page->breadcrumbs->add($gibbon->session->get('organisationNameShort').' '.__('Public Registration'));
+    $page->breadcrumbs->add($session->get('organisationNameShort').' '.__('Public Registration'));
 
-    $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
-    $allowedDomains = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAllowedDomains');
+    $publicRegistrationMinimumAge = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationMinimumAge');
+    $allowedDomains = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAllowedDomains');
     $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomains)));
 
     $page->return->addReturns([
@@ -53,7 +56,7 @@ if ($proceed == false) {
     ]);
 
     //Get intro
-    $intro = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro');
+    $intro = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationIntro');
     if ($intro != '') {
         echo '<h3>';
         echo __('Introduction');
@@ -63,9 +66,9 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('publicRegistration', $gibbon->session->get('absoluteURL').'/publicRegistrationProcess.php');
+    $form = Form::create('publicRegistration', $session->get('absoluteURL').'/publicRegistrationProcess.php');
 
-    $form->addHiddenValue('address', $gibbon->session->get('address'));
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Account Details'));
 
@@ -81,14 +84,14 @@ if ($proceed == false) {
         $emailLabel = $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email')->required();
 
-    $publicRegistrationAlternateEmail = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAlternateEmail');
+    $publicRegistrationAlternateEmail = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAlternateEmail');
     if ($publicRegistrationAlternateEmail == "Y") {
         $row = $form->addRow();
             $row->addLabel('emailAlternate', __('Alternate Email'));
             $row->addEmail('emailAlternate');
     }
 
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    $uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
         $email->uniqueField('./publicRegistrationCheck.php');
     }
@@ -105,7 +108,7 @@ if ($proceed == false) {
         $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
-        $row->addLabel('dob', __('Date of Birth'))->description($gibbon->session->get('i18n')['dateFormat'])->prepend(__('Format:'));
+        $row->addLabel('dob', __('Date of Birth'));
         $row->addDate('dob')->required();
 
     $row = $form->addRow();
@@ -136,13 +139,13 @@ if ($proceed == false) {
     // CUSTOM FIELDS
     $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'User', ['publicRegistration' => 1]);
 
-    $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
+    $privacyStatement = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {
         $form->addRow()->addHeading(__('Privacy Statement'));
         $form->addRow()->addContent($privacyStatement);
     }
 
-    $agreement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationAgreement');
+    $agreement = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAgreement');
     if ($agreement != '') {
         $form->addRow()->addHeading(__('Agreement'));
         $form->addRow()->addContent($agreement);
@@ -159,7 +162,7 @@ if ($proceed == false) {
     echo $form->getOutput();
 
     //Get postscrript
-    $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');
+    $postscript = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationPostscript');
     if ($postscript != '') {
         echo '<h2>';
         echo __('Further Information');

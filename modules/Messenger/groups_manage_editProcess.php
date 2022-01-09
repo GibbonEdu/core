@@ -22,7 +22,8 @@ use Gibbon\Domain\Messenger\GroupGateway;
 include '../../gibbon.php';
 
 $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
+$address = $_POST['address'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     $URL .= '&return=error0';
@@ -35,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         header("Location: {$URL}");
         exit;
     } else {
-        $name = isset($_POST['name'])? $_POST['name'] : '';
-        $choices = isset($_POST['members'])? $_POST['members'] : array();
+        $name = $_POST['name'] ?? '';
+        $choices = $_POST['members'] ?? array();
 
         if (empty($name)) {
             $URL .= '&return=error1';

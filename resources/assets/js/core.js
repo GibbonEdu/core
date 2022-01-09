@@ -177,6 +177,13 @@ jQuery(function($){
         $(this).toggleClass('expanded');
         $(this).parents('tr').next('tr').toggle();
     });
+    
+    /**
+    * Forms: Expandable Rows
+    */
+    $(document).on('change', '.auto-submit', function () {
+        $(this).parents('form').submit();
+    });
 });
 
 var DraggableDataTable = function () {
@@ -713,6 +720,136 @@ DataTable.prototype.refresh = function() {
 
 $.prototype.gibbonDataTable = function(basePath, filters, identifier) {
     this.gibbonDataTable = new DataTable(this, basePath, filters, identifier);
+};
+
+/**
+ * Multi Selects
+ */
+// Define the MultiSelect behaviour
+var MultiSelect = window.MultiSelect || {};
+
+MultiSelect = (function(element, name) {
+    var _ = this;
+
+    _.container = $(element);
+    _.selectSource = $('#' + name + 'Source', element);
+    _.selectDestination = $('#' + name, element);
+    _.name = name;
+    _.sortBy = $('#' + name + 'Sort', element);
+
+    _.init();
+});
+
+MultiSelect.prototype.init = function() {
+    var _ = this;
+
+    $('#' + _.name + 'Add').click(function() {
+        _.transferOption(true);
+    });
+
+    $('#' + _.name + 'Remove', _.container).click(function() {
+        _.transferOption(false);
+    });
+
+    var form = _.container.parents('form');
+
+    // Select all options on submit so we can validate this select input.
+    $("input[type='Submit']", form).click(function() {
+        $('option', _.selectDestination).each(function() {
+            $(this).prop('selected', true);
+        });
+    });
+
+    _.sortBy.change(function() {
+        _.sortSelects();
+    });
+
+    $('#' + _.name + 'Search', _.container).keyup(function(){
+        var search = $(this).val().toLowerCase();
+        $('option', _.selectSource).each(function(){
+            var option = $(this);
+            if (option.text().toLowerCase().includes(search)) {
+                option.show();
+            } else {
+                option.hide();
+            }
+        });
+    });
+
+};
+
+MultiSelect.prototype.transferOption = function(add) {
+    var _ = this;
+
+    var selectFrom = add ? _.selectSource : _.selectDestination;
+    var selectTo = add ? _.selectDestination : _.selectSource;
+
+    selectFrom.find('option:selected').each(function() {
+        var opt = $(this).clone();
+        if ($(this).parent().is('optgroup')) {
+            var optgroupnew = $("optgroup[label=\'"+ $(this).parent().attr('label') + "\']", selectTo);
+            if (optgroupnew.length == 0) {
+                optgroupnew = $(this).parent().clone().html("");
+                selectTo.append(optgroupnew);
+            }
+            opt.data("parent", optgroupnew);
+            optgroupnew.append(opt);
+        } else {
+            selectTo.append(opt);
+        }
+        $(this).detach().remove();
+    });
+
+    _.sortSelects();
+    
+    selectTo.change().focus();
+};
+
+MultiSelect.prototype.sortSelects = function() {
+    var _ = this;
+
+    var values = null;
+
+    var sortBy = null;
+    if (_.sortBy.length !== 0) {
+        sortBy = _.sortBy.val();
+    }
+
+    if (sortBy != null && sortBy != 'Sort by Name') {
+        values = _.container.data('sortable')[sortBy];
+    }
+
+    _.sortSelect(_.selectSource, values);
+    _.sortSelect(_.selectDestination, values);
+};
+
+MultiSelect.prototype.sortSelect = function(list, sortValues) {
+    var _ = this;
+
+    $('optgroup', list).each(function(){
+        _.sortSelect($(this), sortValues);
+    });
+
+    var options = $('option', list);
+    if (list.is("select")) {
+        options = options.not('optgroup option');
+    }
+
+    if(sortValues == null) {
+        sortValues = {};
+    }
+
+    var arr = options.map(function(_, o) { return { tSort: sortValues[o.value] + $(o).text(), t: $(o).text(), v: o.value }; }).get();
+    arr.sort(function(o1, o2) { return o1.tSort > o2.tSort ? 1 : o1.tSort < o2.tSort ? -1 : 0; });
+    options.each(function(i, o) {
+        o.value = arr[i].v;
+        $(o).text(arr[i].t);
+    });
+};
+
+// Add the prototype method to jQuery
+$.prototype.gibbonMultiSelect = function(name) {
+    this.gibbonMultiSelect = new MultiSelect(this, name);
 };
 
 /**
