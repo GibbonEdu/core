@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Validate Inputs
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $expenseApprovalType = $contaainer->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
+            $expenseApprovalType = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
                 $sequenceNumber = abs($_POST['sequenceNumber']);
