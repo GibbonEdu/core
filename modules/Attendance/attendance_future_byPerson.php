@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
-                $row->addDate('dateEnd')->minimum(date('Y-m-d', strtotime('today +2 day')));;
+                $row->addDate('dateEnd')->minimum(date('Y-m-d', strtotime('today +1 day')));
         } else {
             $form->addHiddenValue('dateStart', $date);
             $form->addHiddenValue('dateEnd', $date);
