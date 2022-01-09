@@ -388,7 +388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 });
 
                         $table->addColumn('headOfYear', __('Head of Year'))
-                                ->format(function($row) use ($container) {
+                                ->format(function($row) use ($container, $guid, $connection2) {
                                     $yearGroupGateway = $container->get(YearGroupGateway::class);
                                     $yearGroup = $yearGroupGateway->getByID($row['gibbonYearGroupID']);
                                     if (!empty($yearGroup) && !empty($yearGroup['gibbonPersonIDHOY'])) {
