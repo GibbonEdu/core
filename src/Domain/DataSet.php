@@ -304,6 +304,21 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Prepare data to be displayed in a table.
+     *
+     * @param callable $callable
+     */
+    public function htmlEncode()
+    {
+        array_walk($this->data, function (&$item)  {
+            if (is_string($item)) $item = htmlentities($item);
+            if (is_array($item)) array_walk($item, function (&$innerItem) {
+                if (is_string($innerItem)) $innerItem = htmlentities($innerItem);
+            });
+        });
+    }
+
+    /**
      * Merge another data set into this data set by row index.
      *
      * @param DataSet $data
