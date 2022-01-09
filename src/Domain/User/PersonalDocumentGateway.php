@@ -73,7 +73,7 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
     {
         if (is_array($gibbonPersonIDList)) {
             $gibbonPersonIDList = array_map(function($item) {
-                return str_pad($item, 10, 0, STR_PAD_LEFT);
+                return str_pad($item, 12, 0, STR_PAD_LEFT);
             }, $gibbonPersonIDList);
             $gibbonPersonIDList = implode(',', $gibbonPersonIDList);
         }
@@ -89,11 +89,12 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonPersonalDocument.foreignTable="gibbonPerson"')
-            ->where('FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)')
+            ->where('FIND_IN_SET(gibbonPersonalDocument.foreignTableID, :gibbonPersonIDList)')
             ->bindValue('gibbonPersonIDList', $gibbonPersonIDList);
 
         $criteria->addFilterRules([
             'documents' => function ($query, $documents) {
+                if (empty($documents)) return $query;
                 return $query
                     ->where('FIND_IN_SET(gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID, :documents)')
                     ->bindValue('documents', $documents);
