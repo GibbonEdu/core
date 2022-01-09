@@ -32,6 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     header("Location: {$URL}");
 } else {
     //Proceed!
+    $partialFail = false;
     $name = $_POST['name'] ?? '';
     $provider = $_POST['provider'] ?? '';
     $active = $_POST['active'] ?? '';
