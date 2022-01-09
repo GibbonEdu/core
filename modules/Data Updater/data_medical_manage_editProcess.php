@@ -185,6 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 }
 
                 //Scan through new conditions
+                $gibbonAlertLevelID = 001;
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'];
                 }
@@ -205,6 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                     if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
+                                        $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
                                         $conditions[] = $_POST["name$i"] ?? '';
                                     }
                                 }
@@ -356,6 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
                                     if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
+                                        $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
                                         $conditions[] = $_POST["name$i"];
                                     }
                                 }
