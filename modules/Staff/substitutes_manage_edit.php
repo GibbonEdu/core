@@ -71,15 +71,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         $form->addHeaderAction('edit', __('Edit User'))
             ->setURL('/modules/User Admin/user_manage_edit.php')
             ->addParam('gibbonPersonID', $values['gibbonPersonID'])
-            ->displayLabel()
-            ->append(($canEdit) ? ' | ' : '')
-            ->getOutput();
+            ->displayLabel();
     }
     if ($search != '') {
         $form->addHeaderAction('back', __('Back to Search Results'))
             ->setURL('/modules/Staff/substitutes_manage.php')
             ->setIcon('search')
             ->displayLabel()
+            ->prepend(($canEdit) ? ' | ' : '')
             ->addParam('search', $search);
     }
 
