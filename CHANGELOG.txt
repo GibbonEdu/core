@@ -92,6 +92,7 @@ v23.0.00
         System: fixed comma key clearing fast finder inputs
         System: fixed internal urls opening new tab in the nameLinked function
         Activities: fixed duplicate entries in Activity Choices by Student
+        Activities: fixed modal view in Activity Choices by Student
         Attendance: fixed table header nomenclature in Classes Not Registered report
         Messenger: fixed duplicate student names when using Individual Naming
         Planner: fixed school closure checks when bumping lessons forward and backward
