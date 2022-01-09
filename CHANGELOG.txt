@@ -99,6 +99,7 @@ v23.0.00
         Planner: fixed school closure checks when bumping lessons forward and backward
         Planner: fixed smart block deletion not working in Edit Lesson Plan
         Planner: fixed planner deadlines page not filtering by class
+        Planner: fixed outcomes dropdown in Lesson Planner when an outcome has no category
         Reports: fixed Student Info template borders when no image is present
         Reports: fixed bug when viewing uploaded reports from past years
         Rubrics: fixed rubric data before the go live date visible in Historical Data
