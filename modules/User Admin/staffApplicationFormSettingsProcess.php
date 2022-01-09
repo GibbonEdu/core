@@ -20,7 +20,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['staffApplicationFormIntroduction' => 'HTML', 'staffApplicationFormQuestions' => 'HTML', 'staffApplicationFormPostscript' => 'HTML', 'staffApplicationFormAgreement' => 'HTML', 'staffApplicationFormRequiredDocumentsText' => 'HTML', 'staffApplicationFormNotificationMessage' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffApplicationFormSettings.php';
 

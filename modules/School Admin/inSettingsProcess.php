@@ -20,7 +20,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['targetsTemplate' => 'HTML', 'teachingStrategiesTemplate' => 'HTML', 'notesReviewTemplate' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 

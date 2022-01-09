@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['absenceCommentTemplate' => 'HTML', 'substituteInfo' => 'HTML', 'jobOpeningDescriptionTemplate' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffSettings.php';
 
