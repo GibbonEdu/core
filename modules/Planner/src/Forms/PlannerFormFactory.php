@@ -159,8 +159,8 @@ class PlannerFormFactory extends DatabaseFormFactory
     public function createSelectOutcome($name, $gibbonYearGroupIDList, $gibbonDepartmentID) : OutputableInterface
     {
         // Get School Outcomes
-        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql = "SELECT category AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']'];
+        $sql = "SELECT (CASE WHEN category='' THEN :noCategory ELSE category END) AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND scope='School'
@@ -191,8 +191,8 @@ class PlannerFormFactory extends DatabaseFormFactory
             ->fromQueryChained($this->pdo, $sql2, $data2, $name.'Filter', 'groupBy');
 
         // Get Categories by Year Group
-        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-        $sql3 = "SELECT category as value, category as name
+        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'noCategory' => '['.__('No Category').']'];
+        $sql3 = "SELECT category as value, (CASE WHEN category='' THEN :noCategory ELSE category END) as name
                 FROM gibbonOutcome
                 JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
                 WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
