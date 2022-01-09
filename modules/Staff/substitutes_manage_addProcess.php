@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $search = $_GET['search'] ?? '';
 

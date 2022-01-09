@@ -51,7 +51,7 @@ class Validator
      * @param  bool   $utf8_encode
      * @return array
      */
-    public function sanitize($input, $allowableTags = [], $utf8_encode = true)
+    public function sanitize($input, $allowableTags = [], $utf8_encode = false)
     {
         $output = [];
 
@@ -196,7 +196,7 @@ class Validator
             }
 
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)
-            $value = str_replace(array('<body>', '</body>'), '', $dom->saveHTML());
+            $value = str_replace(['<body>', '</body>', '<!--?xml encoding="utf-8" ?-->', '<?xml encoding="utf-8" ?>'], '', $dom->saveHTML());
         }
         libxml_clear_errors();
 

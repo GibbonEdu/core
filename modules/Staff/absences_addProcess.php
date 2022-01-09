@@ -24,8 +24,11 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Module\Staff\AbsenceNotificationProcess;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';

@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['introduction' => 'HTML', 'postscript' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/applicationFormSettings.php';
 
