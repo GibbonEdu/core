@@ -108,6 +108,7 @@ v23.0.00
         Staff: fixed Print action in Edit Application Form not opening in new tab
         Staff: fixed Edit User link on Manage Substitutes > Edit Substitute page
         Students: fixed missing Official Name fields for parents in Student Application import
+        Students: fixed pagination in student view of View Student Profiles page
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
