@@ -79,6 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 ->setURL('/report.php')
                 ->addParam('q', '/modules/Staff/applicationForm_manage_edit_print.php')
                 ->addParam('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID)
+                ->setTarget('_blank')
                 ->directLink()
                 ->displayLabel();
 
