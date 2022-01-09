@@ -22,8 +22,11 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
