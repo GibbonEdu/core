@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     // Build the category/collection arrays
     $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-    $result = $pdo->executeQuery(array(), $sql);
+    $result = $pdo->select($sql);
 
     $categoryList = ($result->rowCount() > 0) ? $result->fetchAll() : array();
     $collections = $collectionsChained = array();
