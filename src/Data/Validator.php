@@ -69,6 +69,11 @@ class Validator
 
                 // Sanitize HTML
                 if (!empty($allowableTags[$field])) {
+                    if (strtoupper($allowableTags[$field]) == 'RAW') {
+                        $output[$field] = $value;
+                        continue;
+                    }
+
                     if (strtoupper($allowableTags[$field]) == 'HTML') {
                         $allowableTags[$field] = $this->allowableHTML;
                     }
