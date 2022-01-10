@@ -1,6 +1,6 @@
 # Security Policy
 
-We greatly appreciate the time and effort that goes into the investigation of security issues. Thank you for helping to keep out platform safe and secure. The following is important information regarding how to report and handle any suspected vulnerabilities. 
+We greatly appreciate the time and effort that goes into the investigation of security issues. Thank you for helping to keep our platform safe and secure. The following is important information regarding how to report and handle any suspected vulnerabilities. 
 
 ## Reporting a Vulnerability
 If you find a security vulnerability, please do not open a GitHub issue or post it publicly. Please email support@gibbonedu.org instead.
@@ -11,7 +11,7 @@ We take all reports of vulnerabilities seriously, and will aim to reply to any s
 
 ## Supported Versions
 
-The current stable version of Gibbon is always supported, and will be updated in the case of a security issue. The stable version can be found on the [Gibbon Website](https://gibbonedu.org/download/), as well as the latest release on GitHub. The cutting edge version, which can be found as the default branch here on GitHub, is supported and will be patched, however please be aware that this version often contains changes and experimental features. Schools are advised to use the stable version in production and to keep their systems up-to-date with the latest stable version. 
+The current stable version of Gibbon is always supported, and will be updated in the case of a security issue. The stable version can be found on the [Gibbon Website](https://gibbonedu.org/download/), as well as the latest release on GitHub. The cutting edge version, which can be found as the default branch [here on GitHub](https://github.com/GibbonEdu/core), is supported and will be patched, however please be aware that this version often contains changes and experimental features. Schools are advised to use the stable version in production and to keep their systems up-to-date with the latest stable version. 
 
 ## Release Cycle
 Gibbon runs on a 6 month release cycle, with stable versions available every January 20th and June 20th. If any security vulnerability is of high severity we will issue a mid-version patch, which will be released through GitHub and publicized through our mailing list. Gibbon also includes a version detection tool in the System Admin overview and will display a notification to administrators if an update is available.
