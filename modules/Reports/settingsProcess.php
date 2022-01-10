@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['archiveInformation' => 'HTML']);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/settings.php';
 

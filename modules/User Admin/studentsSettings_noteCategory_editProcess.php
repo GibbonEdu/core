@@ -20,7 +20,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['template' => 'HTML']);
 
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID";

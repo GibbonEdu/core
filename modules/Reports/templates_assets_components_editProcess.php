@@ -23,7 +23,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW']);
 require_once __DIR__.'/moduleFunctions.php';
 
 $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? '';
