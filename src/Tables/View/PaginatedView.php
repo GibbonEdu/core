@@ -56,7 +56,7 @@ class PaginatedView extends DataTableView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $dataSet->htmlEncode();
+        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
         $this->preparePageData($table, $dataSet);
 
         return $this->render('components/paginatedTable.twig.html');
