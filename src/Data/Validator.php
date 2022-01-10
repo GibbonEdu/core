@@ -51,7 +51,7 @@ class Validator
      * @param  bool   $utf8_encode
      * @return array
      */
-    public function sanitize($input, $allowableTags = [], $utf8_encode = false)
+    public function sanitize($input, $allowableTags = [], $utf8_encode = true)
     {
         $output = [];
 
@@ -79,6 +79,14 @@ class Validator
                     }
 
                     $value = $this->sanitizeHTML($value, $allowableTags[$field]);
+
+                    // Handle encoding if enabled
+                    if ($utf8_encode && function_exists('iconv') && function_exists('mb_detect_encoding')) {
+                        $current_encoding = mb_detect_encoding($value);
+                        if ($current_encoding != 'UTF-8' && $current_encoding != 'UTF-16') {
+                            $value = iconv($current_encoding, 'UTF-8', $value);
+                        }
+                    }
                 } else {
                     $value = strip_tags($value);
                 }
@@ -88,13 +96,7 @@ class Validator
                     $value = trim($value);
                 }
 
-                // Handle encoding if enabled
-                if ($utf8_encode && function_exists('iconv') && function_exists('mb_detect_encoding')) {
-                    $current_encoding = mb_detect_encoding($value);
-                    if ($current_encoding != 'UTF-8' && $current_encoding != 'UTF-16') {
-                        $value = iconv($current_encoding, 'UTF-8', $value);
-                    }
-                }
+                
             }
 
             $output[$field] = $value;
