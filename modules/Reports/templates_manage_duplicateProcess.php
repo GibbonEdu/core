@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 

@@ -18,8 +18,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, [
+    'invoiceText' => 'HTML',
+    'invoiceNotes' => 'HTML',
+    'receiptText' => 'HTML',
+    'receiptNotes' => 'HTML',
+    'reminder1Text' => 'HTML',
+    'reminder2Text' => 'HTML',
+    'reminder3Text' => 'HTML',
+    'expenseRequestTemplate' => 'HTML',
+]);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/financeSettings.php';
 

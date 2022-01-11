@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Database\Updater;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Domain\System\SessionGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

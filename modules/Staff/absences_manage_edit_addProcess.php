@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 

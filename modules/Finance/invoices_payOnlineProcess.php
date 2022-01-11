@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 include './moduleFunctions.php';
 

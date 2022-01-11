@@ -22,7 +22,9 @@ use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_post.php";
@@ -33,9 +35,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     exit;
 } else {
     $messengerGateway = $container->get(MessengerGateway::class);
-
-    $validator = $container->get(Validator::class);
-    $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
     $from = $_POST['from'] ?? '';
     $data = [

@@ -24,8 +24,11 @@ use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonIDStudent = $_POST['gibbonPersonIDStudent'] ?? '';
 $urlParams = [

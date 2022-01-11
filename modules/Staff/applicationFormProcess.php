@@ -25,7 +25,9 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
@@ -54,17 +56,11 @@ if (!$session->has('username')) {
     }
 }
 
-
-
 if ($proceed == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-
-    // Sanitize the whole $_POST array
-    $validator = $container->get(Validator::class);
-    $_POST = $validator->sanitize($_POST);
 
     $gibbonStaffJobOpeningIDs = $_POST['gibbonStaffJobOpeningID'] ?? '';
     $questions = $_POST['questions'] ?? '';

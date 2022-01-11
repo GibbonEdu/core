@@ -20,8 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonStudentEnrolmentID = $_POST['gibbonStudentEnrolmentID'] ?? '';

@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\FileUploader;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['text' => 'HTML']);
 
 $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 

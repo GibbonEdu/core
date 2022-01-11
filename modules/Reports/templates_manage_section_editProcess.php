@@ -17,11 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\FileUploader;
+use Gibbon\Data\Validator;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
-use Gibbon\FileUploader;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateContent' => 'RAW']);
 
 $gibbonReportTemplateID = $_POST['gibbonReportTemplateID'] ?? '';
 $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';

@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\ThemeGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Get URL from calling page, and set returning URL
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/theme_manage.php';

@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonStaffAbsenceTypeID = $_POST['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;

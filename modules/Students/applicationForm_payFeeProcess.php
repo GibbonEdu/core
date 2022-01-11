@@ -22,8 +22,11 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Payment;
 use Gibbon\Domain\Students\ApplicationFormGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 include '../../modules/Finance/moduleFunctions.php';
 
