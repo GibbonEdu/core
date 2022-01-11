@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
 
 $gibbonMessengerID=$_POST["gibbonMessengerID"] ?? '';
 $search=$_GET["search"] ?? '';

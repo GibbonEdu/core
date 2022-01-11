@@ -69,11 +69,24 @@ class Validator
 
                 // Sanitize HTML
                 if (!empty($allowableTags[$field])) {
+                    if (strtoupper($allowableTags[$field]) == 'RAW') {
+                        $output[$field] = $value;
+                        continue;
+                    }
+
                     if (strtoupper($allowableTags[$field]) == 'HTML') {
                         $allowableTags[$field] = $this->allowableHTML;
                     }
 
                     $value = $this->sanitizeHTML($value, $allowableTags[$field]);
+
+                    // Handle encoding if enabled
+                    if ($utf8_encode && function_exists('iconv') && function_exists('mb_detect_encoding')) {
+                        $current_encoding = mb_detect_encoding($value);
+                        if ($current_encoding != 'UTF-8' && $current_encoding != 'UTF-16') {
+                            $value = iconv($current_encoding, 'UTF-8', $value);
+                        }
+                    }
                 } else {
                     $value = strip_tags($value);
                 }
@@ -83,13 +96,7 @@ class Validator
                     $value = trim($value);
                 }
 
-                // Handle encoding if enabled
-                if ($utf8_encode && function_exists('iconv') && function_exists('mb_detect_encoding')) {
-                    $current_encoding = mb_detect_encoding($value);
-                    if ($current_encoding != 'UTF-8' && $current_encoding != 'UTF-16') {
-                        $value = iconv($current_encoding, 'UTF-8', $value);
-                    }
-                }
+                
             }
 
             $output[$field] = $value;
@@ -196,7 +203,7 @@ class Validator
             }
 
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)
-            $value = str_replace(array('<body>', '</body>'), '', $dom->saveHTML());
+            $value = str_replace(['<body>', '</body>', '<!--?xml encoding="utf-8" ?-->', '<?xml encoding="utf-8" ?>'], '', $dom->saveHTML());
         }
         libxml_clear_errors();
 

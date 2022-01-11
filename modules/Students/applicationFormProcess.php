@@ -26,7 +26,9 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\PersonalDocumentHandler;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
@@ -69,10 +71,6 @@ if ($proceed == false) {
     //IF ID IS NOT SET IT IS A NEW APPLICATION, SO PROCESS AND SAVE.
     if (is_null($applicationFormHash)) {
         //Proceed!
-
-        // Sanitize the whole $_POST array
-        $validator = $container->get(Validator::class);
-        $_POST = $validator->sanitize($_POST);
 
         //GET STUDENT FIELDS
         $surname = $_POST['surname'] ?? '';

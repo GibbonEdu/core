@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $urlParams = [
     'gibbonReportingScopeID' => $_POST['gibbonReportingScopeID'] ?? '',

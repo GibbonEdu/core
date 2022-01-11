@@ -44,7 +44,7 @@ class DataTableView extends View implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
-        $dataSet->htmlEncode();
+        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
         
         $this->addData('table', $table);
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));

@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\ActionGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Get URL from calling page, and set returning URL
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';

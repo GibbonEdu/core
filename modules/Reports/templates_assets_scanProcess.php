@@ -24,8 +24,11 @@ use Symfony\Component\Yaml\Yaml;
 use TCPDF_FONTS;
 
 $_POST['address'] = '/modules/Reports/templates_assets.php';
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 require_once __DIR__.'/moduleFunctions.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';

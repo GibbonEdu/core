@@ -660,6 +660,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             }
 
             $table = DataTable::create('messages');
+            $table->addMetaData('allowHTML', ['details']);
             $table->modifyRows(function($message, $row) {
                 if ($message['messageWallPin'] == "Y") {
                     $row->addClass('selected');

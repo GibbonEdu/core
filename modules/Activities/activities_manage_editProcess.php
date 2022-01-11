@@ -22,8 +22,11 @@ use Gibbon\Domain\Activities\ActivitySlotGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
 
 $gibbonActivityID = $_POST['gibbonActivityID'] ?? '';
 $search = $_POST['search'] ?? '';

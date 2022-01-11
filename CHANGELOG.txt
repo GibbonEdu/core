@@ -19,11 +19,14 @@ CHANGELOG
 v23.0.00
 --------
     Headlines
+        Added support for Microsoft SSO and OAuth2-standard SSO
         Added support for database-driven sessions encrypted session data
         Improved session timeout when using multiple tabs or windows
+        Improved payment gateway including Stripe payment support
 
     Significant Changes
         System: added ability to run CLI scripts remotely, with secure key
+        System: improved sanitization and encoding of user-provided data
         System: removed deprecated functions no longer used in core and additional modules
             - addressFormat
             - dateConvert
@@ -47,6 +50,7 @@ v23.0.00
 
     Changes With Important Notices
         Running the database updater will log out all users except the current admin user
+        The allowableHTML setting has been updated, schools who have changed this value will want to check it
 
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths

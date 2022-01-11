@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
 
     // QUERY
     $criteria = $sessionGateway->newQueryCriteria()
-        ->sortBy('timestampModified', 'DESC')
+        ->sortBy(['sessionStatus', 'timestampModified'], 'DESC')
         ->pageSize(100)
         ->fromPOST();
 

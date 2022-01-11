@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['note' => 'HTML']);
 
 $logGateway = $container->get(LogGateway::class);
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';

@@ -17,11 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\Validator;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Comms\EmailTemplate;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['templateBody' => 'RAW']);
 
 $gibbonEmailTemplateID = $_POST['gibbonEmailTemplateID'] ?? '';
 $sendTest = $_POST['sendTest'] ?? 'N';

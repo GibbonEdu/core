@@ -21,7 +21,9 @@ use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['comment' => 'HTML']);
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -83,10 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                     } else {
                         //INSERT
                         $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
-
-                        //Attempt to prevent XSS attack
-                        $validator = $container->get(Validator::class);
-                        $comment = $validator->sanitizeRichText($_POST['comment'] ?? '');
 
                         try {
                             $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);

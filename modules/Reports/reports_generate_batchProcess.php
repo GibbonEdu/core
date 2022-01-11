@@ -22,8 +22,11 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\GenerateReportProcess;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 $contextData = $_POST['contextData'] ?? '';

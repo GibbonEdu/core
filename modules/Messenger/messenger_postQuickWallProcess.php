@@ -20,7 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
 //Module includes
 include './moduleFunctions.php';
@@ -39,9 +41,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     } else {
         //Proceed!
         //Setup return variables
-
-        $validator = $container->get(Validator::class);
-        $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
         $messageWall = $_POST['messageWall'] ?? '';
         if ($messageWall != 'Y') {

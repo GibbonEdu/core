@@ -21,8 +21,11 @@ use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonMedicalID = $_POST['gibbonPersonMedicalID'] ?? '';
 $search = $_GET['search'] ?? '';
