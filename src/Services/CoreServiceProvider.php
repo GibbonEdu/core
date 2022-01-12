@@ -25,6 +25,7 @@ use Gibbon\Comms\SMS;
 use Gibbon\View\Page;
 use Gibbon\View\View;
 use Gibbon\Comms\Mailer;
+use Gibbon\Data\Validator;
 use Gibbon\Session\Session;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
@@ -74,6 +75,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         SMSInterface::class,
         'gibbon_logger',
         'mysql_logger',
+        Validator::class,
     ];
 
     /**
@@ -269,6 +271,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add(PaymentInterface::class, function () use ($container) {
            return $container->get(Payment::class);
+        });
+
+        $container->add(Validator::class, function () {
+            return new Validator($this->getLeagueContainer()->get('session')->get('allowableHTML'));
         });
     }
 }
