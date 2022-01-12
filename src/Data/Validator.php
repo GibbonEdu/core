@@ -32,9 +32,9 @@ class Validator
     protected $allowableHTML;
     protected $allowableHTMLString;
 
-    public function __construct(Session $session)
+    public function __construct(string $allowableHTMLString)
     {
-        $this->allowableHTMLString = $session->get('allowableHTML');
+        $this->allowableHTMLString = $allowableHTMLString;
         $this->allowableHTML = $this->parseTagsFromString($this->allowableHTMLString);
     }
 
@@ -205,6 +205,9 @@ class Validator
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)
             $value = str_replace(['<body>', '</body>', '<!--?xml encoding="utf-8" ?-->', '<?xml encoding="utf-8" ?>'], '', $dom->saveHTML());
         }
+
+        $value = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
+
         libxml_clear_errors();
 
         return $value;
