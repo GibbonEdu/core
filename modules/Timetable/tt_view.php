@@ -130,6 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->addParams($params)
                     ->setIcon('download')
                     ->displayLabel();
+                ?> 
+                    <script>
+                        if ($('#TB_window').is(':visible')==true && $('input').prop('disabled')) {
+                            tb_remove();
+                        }
+                    </script>
+                <?php
             }
 
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
