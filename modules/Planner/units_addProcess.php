@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML']);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
@@ -162,10 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                     //Insert outcomes
                     $count = 0;
-                    $outcomeorder = null;
-                    if (isset($_POST['outcomeorder'])) {
-                        $outcomeorder = $_POST['outcomeorder'];
-                    }
+                    $outcomeorder = $_POST['outcomeorder'] ?? [];
                     if (count($outcomeorder) > 0) {
                         foreach ($outcomeorder as $outcome) {
                             if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {

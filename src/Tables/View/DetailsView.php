@@ -41,6 +41,7 @@ class DetailsView extends View implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
+        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
         $this->addData('table', $table);
 
         if ($dataSet->count() > 0) {

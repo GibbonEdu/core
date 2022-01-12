@@ -73,6 +73,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
+            $page->navigator->addHeaderAction('view', __('View Status Log'))
+                ->displayLabel()
+                ->addParam('gibbonPersonID', $gibbonPersonID)
+                ->setURL('/modules/User Admin/user_manage_view_status_log.php')
+                ->modalWindow(750, 500);
+
             $scrubbed = $container->get(DataRetentionGateway::class)->selectBy(['gibbonPersonID' => $gibbonPersonID])->fetch();
             if (!empty($scrubbed)) {
                 echo Format::alert(__("This user's personal data was cleared on {date} as part of a data retention action. The following database tables were cleared: {tables}", ['date' => Format::date($scrubbed['timestamp']), 'tables' => Format::list(json_decode($scrubbed['tables']), 'ul', 'text-xs mb-0')] ), 'warning');
@@ -84,13 +90,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
-            $form->addHiddenValue('address', $session->get('address'));
-
-            $form->addHeaderAction('view', __('View Status Log'))
-                    ->displayLabel()
-                    ->addParam('gibbonPersonID', $gibbonPersonID)
-                    ->setURL('/modules/User Admin/user_manage_view_status_log.php')
-                    ->modalWindow();
 
             // BASIC INFORMATION
             $form->addRow()->addHeading(__('Basic Information'));

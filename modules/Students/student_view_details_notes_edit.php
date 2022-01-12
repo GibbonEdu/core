@@ -35,6 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         $allStudents = $_GET['allStudents'] ?? '';
         $search = $_GET['search'] ?? '';
         $sort = $_GET['sort'] ?? '';
+        $category = $_GET['category'] ?? '';
 
         $enableStudentNotes = $container->get(SettingGateway::class)->getSettingByScope('Students', 'enableStudentNotes');
         if ($enableStudentNotes != 'Y') {

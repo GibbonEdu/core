@@ -21,8 +21,12 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -51,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
         $settingGateway = $container->get(SettingGateway::class);
+        $activityGateway = $container->get(ActivityGateway::class);
 
         //Check access controls
         $access = $settingGateway->getSettingByScope('Activities', 'access');
@@ -133,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $backupChoice = !empty($row['backupChoice'])? $row['backupChoice'] : $backupChoice;
 
                             $gibbonActivityIDBackup = ($backupChoice == 'Y')? $_POST['gibbonActivityIDBackup'] : '';
-                            $activityCountByType = getStudentActivityCountByType($pdo, $row['type'], $gibbonPersonID);
+                            $activityCountByType = $activityGateway->getStudentActivityCountByType($row['type'], $gibbonPersonID);
                             
                             if (!empty($row['access']) && $row['access'] != 'Register') {
                                 $URL .= '&return=error0';

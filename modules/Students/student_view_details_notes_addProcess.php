@@ -22,8 +22,11 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\YearGroupGateway;
+use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['note' => 'HTML']);
 
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $subpage = $_GET['subpage'] ?? '';

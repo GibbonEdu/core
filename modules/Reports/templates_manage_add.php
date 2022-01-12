@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$_GET['search'];
+        $editLink = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&sidebar=false&gibbonReportTemplateID='.$_GET['editID'].'&search='.$search;
     }
     $page->return->setEditLink($editLink);
 

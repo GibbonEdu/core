@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
-                $row->addDate('dateEnd');
+                $row->addDate('dateEnd')->minimum(date('Y-m-d', strtotime('today +1 day')));
         } else {
             $form->addHiddenValue('dateStart', $date);
             $form->addHiddenValue('dateEnd', $date);
@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         // Filter only attendance types with future = 'Y'
         $attendanceTypes = array_reduce($attendance->getAttendanceTypes(), function ($group, $item) {
-            if ($item['future'] == 'Y') $group[] = $item['name'];
+            if ($item['future'] == 'Y') $group[$item['name']] = __($item['name']);
             return $group;
         }, array());
 

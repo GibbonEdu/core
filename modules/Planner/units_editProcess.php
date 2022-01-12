@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML']);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
@@ -230,22 +233,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         }
                         //Insert outcomes
                         $count = 0;
-                        if (isset($_POST['outcomeorder'])) {
-                            if (count($_POST['outcomeorder']) > 0) {
-                                foreach ($_POST['outcomeorder'] as $outcome) {
-                                    if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {
-                                        try {
-                                            $dataInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"], 'content' => $_POST["outcomecontents$outcome"], 'count' => $count);
-                                            $sqlInsert = 'INSERT INTO gibbonUnitOutcome SET gibbonUnitID=:gibbonUnitID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count';
-                                            $resultInsert = $connection2->prepare($sqlInsert);
-                                            $resultInsert->execute($dataInsert);
-                                        } catch (PDOException $e) {
-                                            echo $e;
-                                            $partialFail = true;
-                                        }
+                        $outcomeorder = $_POST['outcomeorder'] ?? [];
+                        if (count($_POST['outcomeorder']) > 0) {
+                            foreach ($_POST['outcomeorder'] as $outcome) {
+                                if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {
+                                    try {
+                                        $dataInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"], 'content' => $_POST["outcomecontents$outcome"], 'count' => $count);
+                                        $sqlInsert = 'INSERT INTO gibbonUnitOutcome SET gibbonUnitID=:gibbonUnitID, gibbonOutcomeID=:gibbonOutcomeID, content=:content, sequenceNumber=:count';
+                                        $resultInsert = $connection2->prepare($sqlInsert);
+                                        $resultInsert->execute($dataInsert);
+                                    } catch (PDOException $e) {
+                                        echo $e;
+                                        $partialFail = true;
                                     }
-                                    ++$count;
                                 }
+                                ++$count;
                             }
                         }
 

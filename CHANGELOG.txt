@@ -19,11 +19,14 @@ CHANGELOG
 v23.0.00
 --------
     Headlines
+        Added support for Microsoft SSO and OAuth2-standard SSO
         Added support for database-driven sessions encrypted session data
         Improved session timeout when using multiple tabs or windows
+        Improved payment gateway including Stripe payment support
 
     Significant Changes
         System: added ability to run CLI scripts remotely, with secure key
+        System: improved sanitization and encoding of user-provided data
         System: removed deprecated functions no longer used in core and additional modules
             - addressFormat
             - dateConvert
@@ -47,6 +50,7 @@ v23.0.00
 
     Changes With Important Notices
         Running the database updater will log out all users except the current admin user
+        The allowableHTML setting has been updated, schools who have changed this value will want to check it
 
     Tweaks & Additions
         System: updated table actions to enable additional modules to use their own icon paths
@@ -92,18 +96,24 @@ v23.0.00
         System: fixed comma key clearing fast finder inputs
         System: fixed internal urls opening new tab in the nameLinked function
         Activities: fixed duplicate entries in Activity Choices by Student
+        Activities: fixed modal view in Activity Choices by Student
         Attendance: fixed table header nomenclature in Classes Not Registered report
+        Finance: fixed incorrect column placement in Export Invoices
         Messenger: fixed duplicate student names when using Individual Naming
         Planner: fixed school closure checks when bumping lessons forward and backward
         Planner: fixed smart block deletion not working in Edit Lesson Plan
         Planner: fixed planner deadlines page not filtering by class
+        Planner: fixed outcomes dropdown in Lesson Planner when an outcome has no category
         Reports: fixed Student Info template borders when no image is present
         Reports: fixed bug when viewing uploaded reports from past years
         Rubrics: fixed rubric data before the go live date visible in Historical Data
         School Admin: fixed phone numbers not formatting in Manage Facilities
         Staff: fixed substitute unavailability showing previous school years
         Staff: fixed manually adding/editing absences on non-school days
+        Staff: fixed Print action in Edit Application Form not opening in new tab
+        Staff: fixed Edit User link on Manage Substitutes > Edit Substitute page
         Students: fixed missing Official Name fields for parents in Student Application import
+        Students: fixed pagination in student view of View Student Profiles page
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
         Timetable: fixed timetable misalignment of times below transparent timetable blocks

@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
 $address = $_POST['address'] ?? '';
@@ -52,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
         } else {
             //Validate Inputs
             $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-            $expenseApprovalType = $contaainer->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
+            $expenseApprovalType = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'expenseApprovalType');
             $sequenceNumber = null;
             if ($expenseApprovalType == 'Chain Of All') {
                 $sequenceNumber = abs($_POST['sequenceNumber']);

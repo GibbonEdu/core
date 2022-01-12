@@ -40,6 +40,7 @@ class GridView extends PaginatedView implements RendererInterface
      */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
+        $dataSet->htmlEncode($table->getMetaData('allowHTML', []));
         parent::preparePageData($table, $dataSet);
 
         return $this->render('components/gridTable.twig.html');

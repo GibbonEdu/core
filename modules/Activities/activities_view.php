@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                         if ($activitiesWithLimits->rowCount() > 0) {
                             while ($activity = $activitiesWithLimits->fetch()) {
-                                $activityCountByType = getStudentActivityCountByType($pdo, $activity['name'], $gibbonPersonID);
+                                $activityCountByType = $activityGateway->getStudentActivityCountByType($activity['name'], $gibbonPersonID);
                                 $activityCountRemaining = max(0, $activity['maxPerStudent'] - $activityCountByType);
 
                                 if ($activityCountRemaining > 0) { 
@@ -384,7 +384,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $table->addActionColumn()
                     ->addParam('gibbonActivityID')
                     ->addParam('search', $criteria->getSearchText(true))
-                    ->format(function ($activity, $actions) use ($pdo, $gibbonPersonID, $allActivityAccess, $canAccessRegistration, $disableExternalProviderSignup) {
+                    ->format(function ($activity, $actions) use ($activityGateway, $gibbonPersonID, $allActivityAccess, $canAccessRegistration, $disableExternalProviderSignup) {
                         $actions->addAction('view', __('View Details'))
                             ->isModal(1000, 550)
                             ->setURL('/modules/Activities/activities_view_full.php');
@@ -409,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 ->setURL('/modules/Activities/activities_view_register.php')
                                 ->setIcon('garbage');
                         } else {
-                            $activityCountByType = getStudentActivityCountByType($pdo, $activity['type'], $gibbonPersonID);
+                            $activityCountByType = $activityGateway->getStudentActivityCountByType($activity['type'], $gibbonPersonID);
 
                             if (!$activity['enrolmentFull'] && ($activity['maxPerStudent'] == 0 || $activityCountByType < $activity['maxPerStudent'])) {
                                 $actions->addAction('enrolment', __('Register'))

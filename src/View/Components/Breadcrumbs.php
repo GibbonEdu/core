@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View\Components;
 
+use Gibbon\Http\Url;
 use Psr\Http\Message\UriInterface;
 
 /**
@@ -37,7 +38,7 @@ class Breadcrumbs
      */
     public function __construct()
     {
-        $this->add(__('Home'));
+        $this->add(__('Home'), Url::fromRoute());
         $this->setBaseURL('index.php?q=');
     }
 
