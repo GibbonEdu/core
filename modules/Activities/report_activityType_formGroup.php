@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,14 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
-    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
-    $status = isset($_GET['status'])? $_GET['status'] : null;
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
+    $status = $_GET['status'] ?? null;
 
     $settingGateway = $container->get(SettingGateway::class);
 
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
-    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+    $viewMode = $_REQUEST['format'] ?? '';
 
     if (empty($viewMode)) {
         $page->breadcrumbs->add(__('Activity Type by Form Group'));
@@ -95,8 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
     });
 
-    $activityTypeSetting = $settingGateway->getSettingByScope('Activities', 'activityTypes');
-    $activityTypes = array_map('trim', explode(',', $activityTypeSetting));
+    $activityTypes = $container->get(ActivityGateway::class)->selectActivityTypeOptions()->fetchKeyPair();
 
     // DATA TABLE
     $table = ReportTable::createPaginated('activityType_formGroup', $criteria)->setViewMode($viewMode, $session);

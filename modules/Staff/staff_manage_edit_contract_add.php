@@ -46,27 +46,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
     if ($gibbonStaffID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
-            $data = array('gibbonStaffID' => $gibbonStaffID);
-            $sql = 'SELECT * FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonStaffID' => $gibbonStaffID);
+        $sql = 'SELECT * FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffID=:gibbonStaffID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
             $values = $result->fetch();
 
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/staff_manage_edit_contract_addProcess.php?gibbonStaffID=$gibbonStaffID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
+            
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "gibbonStaffID" => $gibbonStaffID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Staff/staff_manage_edit.php')
+                    ->addParams($params);
+            }
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));

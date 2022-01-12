@@ -91,7 +91,7 @@ class ReportGateway extends QueryableGateway
             ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonReportArchiveEntry.gibbonFormGroupID')
             ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonReportArchiveEntry.gibbonYearGroupID')
             ->where("gibbonReportArchiveEntry.type='Single'")
-            ->where('gibbonReport.gibbonReportID=:gibbonReportID')
+            ->where('(gibbonReport.gibbonReportID=:gibbonReportID OR gibbonReportArchiveEntry.reportIdentifier=:gibbonReportID)')
             ->bindValue('gibbonReportID', $gibbonReportID)
             ->where('gibbonYearGroup.gibbonYearGroupID=:gibbonYearGroupID')
             ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)

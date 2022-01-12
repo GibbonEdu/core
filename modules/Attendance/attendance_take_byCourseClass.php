@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
     $attendance = new AttendanceView($gibbon, $pdo, $settingGateway);
 
-    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID']) ? $_GET['gibbonCourseClassID'] : '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
     if (empty($gibbonCourseClassID)) {
         try {
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));

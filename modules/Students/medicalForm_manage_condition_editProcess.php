@@ -22,8 +22,11 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
 $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
@@ -98,7 +101,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
                     $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
 
                     // Has the medical condition risk changed?
-                    if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                    if ($values['gibbonAlertLevelID'] != $gibbonAlertLevelID && ($alert['gibbonAlertLevelID'] == '001' || $alert['gibbonAlertLevelID'] == '002')) {
                         $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
 
                         // Raise a new notification event

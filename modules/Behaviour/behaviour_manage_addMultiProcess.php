@@ -25,8 +25,11 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');

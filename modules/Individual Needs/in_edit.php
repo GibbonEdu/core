@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -70,21 +71,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         } else {
             $student = $result->fetch();
 
-            $search = isset($_GET['search'])? $_GET['search'] : null;
-            $source = isset($_GET['source'])? $_GET['source'] : null;
-            $gibbonINDescriptorID = isset($_GET['gibbonINDescriptorID'])? $_GET['gibbonINDescriptorID'] : null;
-            $gibbonAlertLevelID = isset($_GET['gibbonAlertLevelID'])? $_GET['gibbonAlertLevelID'] : null;
-            $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : null;
-            $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
+            $search = $_GET['search'] ?? null;
+            $allStudents = $_GET['allStudents'] ?? null;
+            $source = $_GET['source'] ?? null;
+            $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? null;
+            $gibbonAlertLevelID = $_GET['gibbonAlertLevelID'] ?? null;
+            $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
+            $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? null;
 
+            
             if ($search != '' and $source == '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/in_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                $params = [
+                    "search" => $search,
+                    "allStudents" => $allStudents
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'in_view.php')->withQueryParams($params));
             } elseif (($gibbonINDescriptorID != '' or $gibbonAlertLevelID != '' or $gibbonFormGroupID != '' or $gibbonYearGroupID != '') and $source == 'summary') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID='.$gibbonINDescriptorID.'&gibbonAlertLevelID='.$gibbonAlertLevelID.'&=gibbonFormGroupID'.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID."'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                 $params = [
+                    "gibbonINDescriptorID" => $gibbonINDescriptorID,
+                    "gibbonAlertLevelID" => $gibbonAlertLevelID,
+                    "gibbonFormGroupID" => $gibbonFormGroupID,
+                    "gibbonYearGroupID" => $gibbonYearGroupID
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Individual Needs', 'in_summary.php')->withQueryParams($params));
             }
 
             // Grab educational assistant data

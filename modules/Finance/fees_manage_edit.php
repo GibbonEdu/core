@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.php') == false) {
@@ -55,9 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
             $values = $result->fetch();
 
             if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
-                echo '</div>';
+                 $params = [
+                    "search" => $search,
+                    "gibbonSchoolYearID" => $gibbonSchoolYearID
+                ];
+                $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Finance', 'fees_manage.php')->withQueryParams($params));
             }
 
             $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/fees_manage_editProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");

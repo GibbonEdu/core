@@ -22,8 +22,11 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
@@ -114,9 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                 $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                 $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
-                                $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
-                                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-                                if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                if (!empty($_POST["gibbonPersonMedicalConditionID$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
                                     $condition = $medicalGateway->getMedicalConditionByID($_POST["gibbonPersonMedicalConditionID$i"]);
                                     $conditions[] = $condition['name'] ?? '';
                                 }
@@ -187,6 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 }
 
                 //Scan through new conditions
+                $gibbonAlertLevelID = 001;
                 if (isset($_POST['count2'])) {
                     $count2 = $_POST['count2'];
                 }
@@ -206,9 +208,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                     $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
-                                    $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
-                                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                    if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
+                                        $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
                                         $conditions[] = $_POST["name$i"] ?? '';
                                     }
                                 }
@@ -359,9 +360,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                                     $dataCond['gibbonAlertLevelID'] = $_POST["gibbonAlertLevelID$i"];
                                     $sqlSetCond .= 'gibbonAlertLevelID=:gibbonAlertLevelID, ';
 
-                                    $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
-                                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
-                                    if (!empty($_POST["name$i"]) && ($alert['name'] == 'High' || $alert['name'] == 'Medium')) {
+                                    if (!empty($_POST["name$i"]) && ($dataCond['gibbonAlertLevelID'] == '001' || $dataCond['gibbonAlertLevelID'] == '002')) {
+                                        $gibbonAlertLevelID = $dataCond['gibbonAlertLevelID'];
                                         $conditions[] = $_POST["name$i"];
                                     }
                                 }

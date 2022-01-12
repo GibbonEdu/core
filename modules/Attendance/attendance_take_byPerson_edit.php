@@ -37,8 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $page->addError(__('You do not have access to this action.'));
 } else {
 
-	$gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
-	$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
+	$gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
+	$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 	if ( empty($gibbonAttendanceLogPersonID) || empty($gibbonPersonID) ) {
 		$page->addError(__('You have not specified one or more required parameters.'));

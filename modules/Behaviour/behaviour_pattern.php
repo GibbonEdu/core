@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,69 +37,71 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $page->breadcrumbs->add(__('Find Behaviour Patterns'));
+    $viewMode = $_REQUEST['format'] ?? '';
 
-    $descriptor = isset($_GET['descriptor'])? $_GET['descriptor'] : '';
-    $level = isset($_GET['level'])? $_GET['level'] : '';
-    $fromDate = isset($_GET['fromDate'])? $_GET['fromDate'] : '';
-    $gibbonFormGroupID = isset($_GET['gibbonFormGroupID'])? $_GET['gibbonFormGroupID'] : '';
-    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '';
-    $minimumCount = isset($_GET['minimumCount'])? $_GET['minimumCount'] : 1;
+    $type = $_GET['type'] ?? 'Negative';
+    $descriptor = $_GET['descriptor'] ?? '';
+    $level = $_GET['level'] ?? '';
+    $fromDate = $_GET['fromDate'] ?? '';
+    $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $minimumCount = $_GET['minimumCount'] ?? 1;
 
-    $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setTitle(__('Filter'));
-    $form->setClass('noIntBorder fullWidth');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Find Behaviour Patterns'));
 
-    $form->addHiddenValue('q', "/modules/Behaviour/behaviour_pattern.php");
+        $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
+        $form->setTitle(__('Filter'));
+        $form->setClass('noIntBorder fullWidth');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    if ($enableDescriptors == 'Y') {
-        $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
-        $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
+        $form->addHiddenValue('q', "/modules/Behaviour/behaviour_pattern.php");
 
         $row = $form->addRow();
-            $row->addLabel('descriptor', __('Descriptor'));
-            $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
-    }
+            $row->addLabel('type', __('Type'));
+            $row->addSelect('type')->fromArray(['Negative' => __('Negative'), 'Positive' => __('Positive') ])->placeholder()->selected($type);
 
-    if ($enableLevels == 'Y') {
-        $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
-        if ($optionsLevels != '') {
-            $optionsLevels = explode(',', $optionsLevels);
+        if ($enableDescriptors == 'Y') {
+            $negativeDescriptors = $settingGateway->getSettingByScope('Behaviour', 'negativeDescriptors');
+            $negativeDescriptors = array_map('trim', explode(',', $negativeDescriptors));
+
+            $row = $form->addRow();
+                $row->addLabel('descriptor', __('Descriptor'));
+                $row->addSelect('descriptor')->fromArray($negativeDescriptors)->placeholder()->selected($descriptor);
         }
+
+        if ($enableLevels == 'Y') {
+            $optionsLevels = $settingGateway->getSettingByScope('Behaviour', 'levels');
+            if ($optionsLevels != '') {
+                $optionsLevels = explode(',', $optionsLevels);
+            }
+            $row = $form->addRow();
+                $row->addLabel('level', __('Level'));
+                $row->addSelect('level')->fromArray($optionsLevels)->placeholder()->selected($level);
+        }
+
         $row = $form->addRow();
-            $row->addLabel('level', __('Level'));
-            $row->addSelect('level')->fromArray($optionsLevels)->placeholder()->selected($level);
+            $row->addLabel('date', __('Date'));
+            $row->addDate('fromDate')->setValue($fromDate);
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonFormGroupID', __('Form Group'));
+            $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonYearGroupID', __('Year Group'));
+            $row->addLabel('gibbonYearGroupID',__('Year Group'));
+            $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
+
+        $row = $form->addRow();
+            $row->addLabel('minimumCount', __('Minimum Count'));
+            $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($minimumCount);
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+        echo $form->getOutput();
     }
-
-    $row = $form->addRow();
-        $row->addLabel('date', __('Date'));
-        $row->addDate('fromDate')->setValue($fromDate);
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonFormGroupID', __('Form Group'));
-        $row->addSelectFormGroup('gibbonFormGroupID', $session->get('gibbonSchoolYearID'))->selected($gibbonFormGroupID)->placeholder();
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonYearGroupID', __('Year Group'));
-        $row->addLabel('gibbonYearGroupID',__('Year Group'));
-        $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
-
-    $row = $form->addRow();
-        $row->addLabel('minimumCount', __('Minimum Count'));
-        $row->addSelect('minimumCount')->fromArray(array(0,1,2,3,4,5,10,25,50))->selected($minimumCount);
-
-    $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
-
-    echo $form->getOutput();
-
-    echo '<h3>';
-    echo __('Behaviour Records');
-    echo '</h3>';
-    echo '<p>';
-    echo __('The students listed below match the criteria above, for negative behaviour records in the current school year. The count is updated according to the criteria above.');
-    echo '</p>';
 
     $behaviourGateway = $container->get(BehaviourGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -108,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->sortBy('count', 'DESC')
         ->sortBy('formGroup')
         ->sortBy(['surname', 'preferredName'])
+        ->filterBy('type', $type)
         ->filterBy('descriptor', $descriptor)
         ->filterBy('level', $level)
         ->filterBy('fromDate', Format::dateConvert($fromDate))
@@ -119,8 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $records = $behaviourGateway->queryBehaviourPatternsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
 
     // DATA TABLE
-    $table = DataTable::createPaginated('behaviourPatterns', $criteria);
-
+    $table = ReportTable::createPaginated('behaviourPatterns', $criteria);
+    $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $gibbon->session);
+    $table->setDescription(__('The students listed below match the criteria above, for negative behaviour records in the current school year. The count is updated according to the criteria above.'));
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
     // COLUMNS
@@ -131,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true))
                 . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });
-    $table->addColumn('count', __('Negative Count'))->description(__('(Current Year Only)'));
+    $table->addColumn('count', $type == 'Positive' ? __('Positive Count') : __('Negative Count'))->description(__('(Current Year Only)'));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
 

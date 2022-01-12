@@ -22,8 +22,12 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
+use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_add.php&search='.$_GET['search'];
 
@@ -201,6 +205,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     //Last insert ID
                     $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
 
+                    // Create the status log
+                    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $AI, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Created')]);
+
                     // Create a staff record for this new user
                     $staffRecord = $_POST['staffRecord'] ?? 'N';
                     if ($staffRecord == 'Y' && !empty($AI)) {
@@ -240,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                                 $inserted = $container->get(CourseEnrolmentGateway::class)->insertAutomaticCourseEnrolments($studentData['gibbonFormGroupID'], $AI);
 
                                 if (!$inserted) {
-                                    $URL .= "&return=warning2&editID=$AI";
+                                    $URL .= "&return=warning1&editID=$AI";
                                     header("Location: {$URL}");
                                     exit;
                                 }
@@ -249,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     }
 
                     if ($imageFail) {
-                        $URL .= "&return=warning1&editID=$AI";
+                        $URL .= "&return=warning3&editID=$AI";
                         header("Location: {$URL}");
                     } else {
                         $URL .= "&return=success0&editID=$AI";

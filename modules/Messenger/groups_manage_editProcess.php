@@ -18,8 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Messenger\GroupGateway;
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 $address = $_POST['address'] ?? '';
@@ -36,8 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         header("Location: {$URL}");
         exit;
     } else {
-        $name = isset($_POST['name'])? $_POST['name'] : '';
-        $choices = isset($_POST['members'])? $_POST['members'] : array();
+        $name = $_POST['name'] ?? '';
+        $choices = $_POST['members'] ?? array();
 
         if (empty($name)) {
             $URL .= '&return=error1';

@@ -50,24 +50,25 @@ class SessionFactory
 
         $config = $container->get('config')->getConfig();
 
-        // Check if the database exists, if not, use the built-in PHP session handler class
-        if (\SESSION_TABLE_AVAILABLE && $container->has(Connection::class)) {
-            $sessionGateway = $container->get(SessionGateway::class);
-
-            if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
-                $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
-            } else {
-                $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
-            }
-        } else {
-            $handler = new SessionHandler();
-        }
-
-        // Set the handler for the session, enabling non-default
-        session_set_save_handler($handler, true);
-
         // Start the session (this should be the first time called)
         if (session_status() !== PHP_SESSION_ACTIVE) {
+            
+            // Check if the database exists, if not, use the built-in PHP session handler class
+            if (\SESSION_TABLE_AVAILABLE && $container->has(Connection::class)) {
+                $sessionGateway = $container->get(SessionGateway::class);
+
+                if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
+                    $handler = new DatabaseSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+                } else {
+                    $handler = new NativeSessionHandler($sessionGateway, $config['sessionEncryptionKey'] ?? null);
+                }
+            } else {
+                $handler = new SessionHandler();
+            }
+        
+            // Set the handler for the session, enabling non-default
+            session_set_save_handler($handler, true);
+
             //Prevent breakage of back button on POST pages
             ini_set('session.cache_limiter', 'private');
             session_cache_limiter(false);
@@ -76,9 +77,10 @@ class SessionFactory
                 'cookie_httponly'  => true,
                 'cookie_secure'    => isset($_SERVER['HTTPS']),
             ]);
-
-            header('X-Frame-Options: SAMEORIGIN');
         }
+
+        header('X-Frame-Options: SAMEORIGIN');
+        header_remove('X-Powered-By');
 
         // If session guid is not set, fallback to global $guid.
         $_guid = $config['guid'] ?? $guid ?? '';

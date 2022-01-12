@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
     $today = date('Y-m-d');
     $currentDate = isset($_GET['currentDate'])? Format::dateConvert($_GET['currentDate']) : $today;
-    $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));

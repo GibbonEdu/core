@@ -19,8 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Reports\Domain\ReportingCriteriaTypeGateway;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonReportingCriteriaTypeID = $_POST['gibbonReportingCriteriaTypeID'] ?? '';
 
@@ -37,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/criteriaTypes_mana
     $data = [
         'name'           => $_POST['name'] ?? '',
         'active'         => $_POST['active'] ?? '',
+        'defaultValue'   => $_POST['defaultValue'] ?? null,
         'characterLimit' => $_POST['characterLimit'] ?? '',
     ];
 

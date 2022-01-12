@@ -16,8 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Data\Validator;
 
-include '../../gibbon.php';
+require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? null;
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
@@ -68,7 +71,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                         SELECT gibbonCourseClassMap.gibbonCourseClassID, :gibbonPersonID, :role, :dateEnrolled, 'Y'
                         FROM gibbonCourseClassMap
                         LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role=:role)
+                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID)
                         WHERE gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupID
+                        AND (:role='Teacher' OR gibbonCourseClassMap.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
                         AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL";
                 $pdo->executeQuery($data, $sql);
 

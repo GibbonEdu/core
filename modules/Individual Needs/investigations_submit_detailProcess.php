@@ -24,8 +24,11 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonINInvestigationID = $_POST['gibbonINInvestigationID'] ?? '';
 $gibbonINInvestigationContributionID = $_POST['gibbonINInvestigationContributionID'] ?? '';

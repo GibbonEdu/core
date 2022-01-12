@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     } else {
 
             $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
+            $sql = 'SELECT gibbonActivity.*, gibbonActivityStudent.*, surname, preferredName, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID) JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityStudent.gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.gibbonPersonID=:gibbonPersonID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -77,14 +77,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $settingGateway = $container->get(SettingGateway::class);
             $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
 
-            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__('Back').'</a>';
-                echo '</div>';
-            }
-
             $form = Form::create('activityEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
 
+            if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
+                $params = [
+                    "search" => $_GET['search'] ?? '',
+                    "gibbonSchoolYearTermID" => $_GET['gibbonSchoolYearTermID'] ?? null,
+                    "gibbonActivityID" => $gibbonActivityID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Activities/activities_manage_enrolment.php')
+                    ->addParams($params);
+			}
+			
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
@@ -117,8 +122,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $row->addLabel('student', __('Student'));
             $row->addTextField('student')->readOnly()->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
 
-            $statuses = array('Accepted' => __('Accepted'));
+            // Load the enrolmentType system setting, optionally override with the Activity Type setting
             $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
+            $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
+
+            $statuses = array('Accepted' => __('Accepted'));
             if ($enrolment == 'Competitive') {
                 $statuses['Waiting List'] = __('Waiting List');
             } else {
