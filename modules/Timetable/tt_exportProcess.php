@@ -31,11 +31,11 @@ if ($result0->rowCount() < 1) {
         } else {
             while ($values1 = $result1->fetch()) {
               $vEvent = new \Eluceo\iCal\Component\Event();
-              if ((int)$_POST['id']!=(int)('0')) {
+              if ((int)$_POST['options']!=(int)('options')) {
                 // Alarm Creation
                 $vAlarm = new \Eluceo\iCal\Component\Alarm();
                 $vAlarm->setAction('DISPLAY');
-                $vAlarm->setTrigger('-PT'.(int)$_POST['id'].'M'); // Set alert time
+                $vAlarm->setTrigger('-PT'.(int)$_POST['options'].'M'); // Set alert time
                 $vAlarm->setDescription('Event description');
                 $vEvent->addComponent($vAlarm);
               } else {}
@@ -52,3 +52,7 @@ if ($result0->rowCount() < 1) {
     header('Content-Disposition: attachment; filename="cal.ics"');
     echo $vCalendar->render();
 }
+//RETURN ERROR IF SOMETHING GOES WRONG: This will also need to be adjusted in the above if count < 1 to return as an error too, but we can deal with that later
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/' . $session->get('module') . '/tt_view.php&gibbonPersonID=' . $session->get('gibbonPersonID');
+header("Location: {$URL}");
+exit();
