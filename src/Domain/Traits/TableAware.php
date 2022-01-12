@@ -131,30 +131,6 @@ trait TableAware
 
         return $this->runSelect($query);
     }
-    
-    /**
-     * Selects a number of rows matching a key => value select where the key includes the comparison operator.
-     *
-     * @param string $keysAndValues  The key-value pairs to select data with.
-     *
-     * @return \Gibbon\Database\Result  The select query result.
-     */
-    public function selectWhere(array $keysAndValues, $cols = [])
-    {
-        $query = $this
-            ->newSelect()
-            ->cols(!empty($cols) ? $cols : ['*'])
-            ->from($this->getTableName());
-
-        $count = 0;
-        foreach ($keysAndValues as $key => $value) {
-            $query->where($key.":key{$count}")
-                  ->bindValue("key{$count}", $value);
-            $count++;
-        }
-
-        return $this->runSelect($query);
-    }
 
     /**
      * Inserts a row into the table and returns the primary key.
