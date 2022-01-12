@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_edit.php');
-                        
+
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_delete.php');
 
