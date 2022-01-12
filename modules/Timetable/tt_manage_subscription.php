@@ -26,9 +26,10 @@ $row = $form->addRow();
     $row->addLabel('value', __('Export to Calendar'))->description(__('Please configure your export settings below.'));
 // Select
 $row = $form->addRow();
-    $row->addLabel('value', __('Reminders'));
-    $options = array('No Reminder', '5 minutes', '10 minutes', '15 minutes');
-    $row->addSelect('id')->fromArray($options);
+    $row->addLabel('value', __('Reminders'))->description(__('When to send an alert reminding you of each event'));
+    $form->addHiddenValue('address', $session->get('address'));
+    $options = array('No Reminder', '5 minutes before', '10 minutes before', '15 minutes before'); //TODO: Turn this into key => value pairs, and modify the select to use them, so that you can have the values be the relevant time specifier to go directly into your $vAlarm, so you require less logic when exporting
+    $row->addSelect('options')->fromArray($options);
 
 $row = $form->addRow();
     $row->addSubmit();

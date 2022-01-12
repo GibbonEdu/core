@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 ];
                 $table->addHeaderAction('export', __('Export'))
                     ->modalWindow()
-                    ->setURL('/modules/Timetable/spaceChange_manage_subscription.php')
+                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
                     ->addParams($params)
                     ->setIcon('download')
                     ->displayLabel();
