@@ -2,17 +2,14 @@
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
-
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
-
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
-
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
@@ -286,9 +283,56 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                 $width1 = $size1[0];
                                 $height1 = $size1[1];
                                 $aspect1 = $height1 / $width1;
+
                                 if ($width1 > 360 || $height1 > 480 || $aspect1 < 1.2 || $aspect1 > 1.4) {
-                                    $attachment1 = '';
-                                    $imageFail = true;
+                                    $src_x = 0;
+                                    $src_y = 0;
+                                    $src_w = $width1;
+                                    $src_h = $height1;
+                                    $maxWidth = 360;
+                                    $maxHeight = 480;
+
+                                    // New crop if needed
+                                    if ($aspect1 < 1.2) {
+                                        $src_w = $height1 / 1.2;
+                                        $src_x = ($width1 - $src_w) / 2;
+                                    }
+                                    else if ($aspect1 > 1.4) {
+                                        $src_h = $width1 * 1.4;
+                                        $src_y = ($height1 - $src_h) / 2;
+                                    }
+
+                                    $dst_x = 0;
+                                    $dst_y = 0;
+                                    $dst_w = $src_w;
+                                    $dst_h = $src_h;
+
+                                    // New compressed image if needed
+                                    if ($src_w > $maxWidth) {
+                                        $new_ratio = $maxWidth / $src_w;
+                                        $dst_w = $maxWidth;
+                                        $dst_h = $src_h * $new_ratio;
+                                    }
+                                    if ($src_h > $maxHeight) {
+                                        $new_ratio = $maxHeight / $src_h;
+                                        $dst_h = $maxHeight;
+                                        $dst_w = $src_w * $new_ratio;
+                                    }
+
+                                    $image_name =  $path.'/'.$attachment1;
+ 
+                                    // Resampling the image
+                                    $image_p = imagecreatetruecolor($dst_w, $dst_h);
+                                    $image = imagecreatefromjpeg($image_name);
+
+                                    imagecopyresampled($image_p, $image,
+                                                       $dst_x, $dst_y,
+                                                       $src_x, $src_y,
+                                                       $dst_w, $dst_h,
+                                                       $src_w, $src_h);
+
+                                    imagedestroy($image);
+                                    imagejpeg($image_p, $image_name, 100);
                                 }
                             }
                         }
@@ -426,7 +470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             $URL .= '&return=success0';
                             header("Location: {$URL}");
                         }
-                        
+
                     }
                 }
             }
