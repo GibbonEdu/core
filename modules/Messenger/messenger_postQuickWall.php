@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
     }
     $page->return->setEditLink($editLink);
 
-    echo "<div class='warning'>";
-    echo __('This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.');
-	echo '</div>';
+    $page->addMessage(__('This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.'));
 
 	$form = Form::create('postQuickWall', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messenger_postQuickWallProcess.php?address='.$_GET['q']);
 

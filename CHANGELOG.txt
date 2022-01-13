@@ -100,6 +100,7 @@ v23.0.00
         Attendance: fixed table header nomenclature in Classes Not Registered report
         Finance: fixed incorrect column placement in Export Invoices
         Messenger: fixed duplicate student names when using Individual Naming
+        Messenger: changed New Quick Wall Message information from warning to message
         Planner: fixed school closure checks when bumping lessons forward and backward
         Planner: fixed smart block deletion not working in Edit Lesson Plan
         Planner: fixed planner deadlines page not filtering by class
