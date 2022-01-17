@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'teacherNotes' => 'HTML', 'homeworkDetails' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'homeworkDetails' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'] ?? '';
 $viewBy = $_GET['viewBy'] ?? '';
