@@ -55,6 +55,9 @@ class Validator
     {
         $output = [];
 
+        // Default allowable tags
+        $allowableTags['*CustomEditor'] = 'HTML';
+        
         // Match wildcard * in allowable tags and add these fields to the list
         foreach ($allowableTags as $field => $value) {
             if (stripos($field, '*') === false) continue;

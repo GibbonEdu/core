@@ -165,7 +165,9 @@ class CustomFieldHandler
         $fields = [];
 
         foreach ($customFields as $field) {
-            $fieldValue = $_POST[$prefix.$field['gibbonCustomFieldID']] ?? null;
+            $fieldValue = $field['type'] == 'editor'
+                ? $_POST[$prefix.$field['gibbonCustomFieldID'].'CustomEditor'] ?? null
+                : $_POST[$prefix.$field['gibbonCustomFieldID']] ?? null;
 
             if ($field['type'] == 'file' || $field['type'] == 'image') {
                 if ($field['type'] == 'image') {
@@ -254,6 +256,7 @@ class CustomFieldHandler
                 $row = $table->addRow()->addClass($params['class'] ?? '')->setHeading($heading);
 
                 if ($field['type'] == 'editor') {
+                    $name = $name.'CustomEditor';
                     $row = $row->addColumn();
                 }
 
@@ -377,7 +380,9 @@ class CustomFieldHandler
             if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID'].'On'])) continue;
             if (!isset($_POST['newcustom'.$field['gibbonCustomFieldID']])) continue;
 
-            $value = $_POST['newcustom'.$field['gibbonCustomFieldID']] ?? '';
+            $value = $field['type'] == 'editor'
+                ? $_POST['newcustom'.$field['gibbonCustomFieldID'].'CustomEditor'] ?? ''
+                : $_POST['newcustom'.$field['gibbonCustomFieldID']] ?? '';
 
             if ($field['type'] == 'date' && !empty($value)) {
                 $value = Format::dateConvert($value);
