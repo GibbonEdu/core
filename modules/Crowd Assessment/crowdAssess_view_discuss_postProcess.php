@@ -61,9 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
         } else {
             $row = $result->fetch();
 
+            $comment = $_POST['comment'] ?? '';
             $role = getCARole($guid, $connection2, $row['gibbonCourseClassID']);
 
-            if ($role == '') {
+            if ($role == '' or empty($comment)) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
@@ -85,6 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                     } else {
                         //INSERT
                         $replyTo = !empty($_GET['replyTo']) ? $_GET['replyTo'] : null;
+
 
                         try {
                             $data = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
