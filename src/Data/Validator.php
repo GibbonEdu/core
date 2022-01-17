@@ -55,6 +55,17 @@ class Validator
     {
         $output = [];
 
+        // Match wildcard * in allowable tags and add these fields to the list
+        foreach ($allowableTags as $field => $value) {
+            if (stripos($field, '*') === false) continue;
+            if ($keys = $this->getWildcardArrayKeyMatches($input, $field)) {
+                foreach ($keys as $key) {
+                    $allowableTags[$key] = $value;
+                }
+            }
+        }
+
+        // Process the input
         foreach (array_keys($input) as $field) {
             $value = $input[$field];
 
@@ -236,5 +247,11 @@ class Validator
         }, []);
 
         return $tags;
+    }
+
+    protected function getWildcardArrayKeyMatches(array $haystack, string $needle )
+    {
+        $needle = str_replace( '\\*', '.*?', preg_quote($needle, '/' ));
+        return preg_grep( '/^' . $needle . '$/i', array_keys($haystack));
     }
 }
