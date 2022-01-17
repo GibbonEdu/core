@@ -24,7 +24,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'teacherNotes' => 'HTML', 'homeworkDetails' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML', 'teacherNotes' => 'HTML', 'homeworkDetails' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/planner_add.php';
 
