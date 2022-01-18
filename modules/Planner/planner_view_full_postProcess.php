@@ -64,10 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $row = $result->fetch();
 
                 //INSERT
-                $replyTo = $_POST['replyTo'];
-                if ($_POST['replyTo'] == '') {
-                    $replyTo = null;
-                }
+                $replyTo = $_POST['replyTo'] ?? '';
+                $comment = $_POST['comment'] ?? '';
                 
                 try {
                     $dataInsert = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $session->get('gibbonPersonID'), 'comment' => $comment, 'replyTo' => $replyTo);
