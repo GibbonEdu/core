@@ -35,21 +35,21 @@ html, body {
             <div style="font-size: 12vw">
                 {{ __('General Alarm!') }}
             </div>
-            <audio loop autoplay volume=3>
+            <audio loop autoplay volume=3 onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.pause(); }, 10000)">
                 <source src="{{ absoluteURL }}/resources/assets/audio/alarm_general.mp3" type="audio/mpeg">
             </audio>
         {% elseif alarm.type == 'Lockdown' %}
             <div style="font-size: 15vw">
                 {{ __('Lockdown!') }}
             </div>
-            <audio loop autoplay volume=3>
+            <audio loop autoplay volume=3 onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.pause(); }, 10000)">
                 <source src="{{ absoluteURL }}/resources/assets/audio/alarm_lockdown.mp3" type="audio/mpeg">
             </audio>
         {% elseif alarm.type == 'Custom' %}
             <div style="font-size: 15vw">
                 {{ __('Alarm!') }}
             </div>
-            <audio loop autoplay volume=3>
+            <audio loop autoplay volume=3 onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.pause(); }, 10000)">
                 <source src="{{ customAlarmSound }}" type="audio/mpeg">
             </audio>
         {% endif %}
