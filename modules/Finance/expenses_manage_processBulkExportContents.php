@@ -79,30 +79,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         for($col = 'A'; $col !== 'I'; $col++)
             $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('Expense Number'));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __('Budget'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __('Expense Number'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __('Budget Cycle'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __('Budget'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Title'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Budget Cycle'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Status'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Title'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Cost')." (".$session->get('currency').')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Status'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __('Staff'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __('Cost')." (".$session->get('currency').')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __('Timestamp'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __('Staff'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __('Timestamp'));
+        $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_border);
+        $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
 
 
@@ -110,29 +110,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         while ($row = $result->fetch()) {
             ++$count;
  			//Column A
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $count, $row['gibbonFinanceExpenseID']);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(0, $count)->applyFromArray($style_border);
-            //Column B
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $count, $row['budget']);
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $count, $row['gibbonFinanceExpenseID']);
             $excel->getActiveSheet()->getStyleByColumnAndRow(1, $count)->applyFromArray($style_border);
- 			//Column C
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $count, $row['budgetCycle']);
+            //Column B
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $count, $row['budget']);
             $excel->getActiveSheet()->getStyleByColumnAndRow(2, $count)->applyFromArray($style_border);
- 			//Column D
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $count, $row['title']);
+ 			//Column C
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $count, $row['budgetCycle']);
             $excel->getActiveSheet()->getStyleByColumnAndRow(3, $count)->applyFromArray($style_border);
- 			//Column E
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $count, $row['status']);
+ 			//Column D
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $count, $row['title']);
             $excel->getActiveSheet()->getStyleByColumnAndRow(4, $count)->applyFromArray($style_border);
- 			//Column F
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $count, number_format($row['cost'], 2, '.', ','));
+ 			//Column E
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $count, $row['status']);
             $excel->getActiveSheet()->getStyleByColumnAndRow(5, $count)->applyFromArray($style_border);
- 			//Column G
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $count, Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true));
+ 			//Column F
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $count, number_format($row['cost'], 2, '.', ','));
             $excel->getActiveSheet()->getStyleByColumnAndRow(6, $count)->applyFromArray($style_border);
- 			//Column H
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $count, $row['timestampCreator']);
+ 			//Column G
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $count, Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true));
             $excel->getActiveSheet()->getStyleByColumnAndRow(7, $count)->applyFromArray($style_border);
+ 			//Column H
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $count, $row['timestampCreator']);
+            $excel->getActiveSheet()->getStyleByColumnAndRow(8, $count)->applyFromArray($style_border);
         }
         if ($count == 0) {
  			//Column A
