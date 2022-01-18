@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 $logGateway->addLog($gibbon->session->get('gibbonSchoolYearID'), $gibbonModuleID, $gibbon->session->get('gibbonPersonID'), 'Uploaded Response Failed', [
                                     'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID,
                                     'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
-                                    'name' => $row['name'],
+                                    'name' => $name,
                                     'attachment' => $attachment,
                                     'errorMessage' => $errorMessage,
                                     'fileType' => $file['type'] ?? '',
