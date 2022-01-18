@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
 
     // QUERY
     $criteria = $formGroupGateway->newQueryCriteria(true)
-        ->sortBy(['sequenceNumber', 'gibbonFormGroup.name'])
+        ->sortBy(['sortOrder', 'gibbonFormGroup.name'])
         ->fromPOST();
 
     $formGroups = $formGroupGateway->queryFormGroups($criteria, $gibbonSchoolYearID);

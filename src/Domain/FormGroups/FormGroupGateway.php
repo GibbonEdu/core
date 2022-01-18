@@ -53,7 +53,8 @@ class FormGroupGateway extends QueryableGateway
                 'gibbonFormGroup.gibbonPersonIDTutor2',
                 'gibbonFormGroup.gibbonPersonIDTutor3',
                 'gibbonSpace.name AS space',
-                'gibbonFormGroup.website'
+                'gibbonFormGroup.website',
+                "LENGTH(gibbonFormGroup.name) as sortOrder"
 
             ])
             ->innerJoin('gibbonSchoolYear', 'gibbonFormGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID')
