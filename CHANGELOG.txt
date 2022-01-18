@@ -117,6 +117,7 @@ v23.0.00
         Students: fixed pagination in student view of View Student Profiles page
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
+        System Admin: fixed alarm system to indicate if staff have been marked absent
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
         Timetable: fixed calendar options not persisting when using timetable switcher

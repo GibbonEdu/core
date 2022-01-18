@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Staff\StaffAbsenceGateway;
 
 // Gibbon system-wide includes
 include './gibbon.php';
@@ -37,6 +38,16 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
     $canViewReport = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
     $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
+
+    // Check for staff absent today
+    $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+    $criteria = $staffAbsenceGateway->newQueryCriteria()->filterBy('date', 'Today')->filterBy('status', 'Approved');
+    $absences = $staffAbsenceGateway->queryAbsencesBySchoolYear($criteria, $session->get('gibbonSchoolYearID'));
+    $absences = array_reduce($absences->toArray(), function ($group, $item) {
+        if ($item['allDay'] != 'Y' && ($item['timeStart'] > date('H:i:s') || $item['timeEnd'] < date('H:i:s'))) return $group;
+        $group[] = $item['gibbonPersonID'];
+        return $group;
+    }, []);
     
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
         'alarm'              => $alarm,
@@ -45,5 +56,6 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         'customAlarmSound'   => $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'customAlarmSound'),
         'canViewReport'      => $canViewReport,
         'confirmationReport' => $canViewReport ? $confirmationReport : [],
+        'staffAbsences'      => $absences,
     ]);
 }
