@@ -43,17 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         header("Location: {$URL}");
         exit;
     } else {
-        //LOCK TABLES
-        try {
-            $data = array();
-            $sql = 'LOCK TABLES gibbonFinanceBillingSchedule WRITE, gibbonFinanceInvoicee WRITE, gibbonFinanceInvoice WRITE, gibbonFinanceInvoiceFee WRITE, gibbonActivity WRITE, gibbonActivityStudent WRITE, gibbonActivity AS gibbonActivity2 WRITE, gibbonActivityStudent AS gibbonActivityStudent2 WRITE, gibbonActivity AS gibbonActivity3 WRITE, gibbonActivityStudent AS gibbonActivityStudent3 WRITE';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&error=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+
 
         $partialFail = false;
         if ($action == 'Generate Invoice - Simulate') {
@@ -227,11 +217,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
                 }
             }
         }
-
-        //Unlock module table
-
-            $sql = 'UNLOCK TABLES';
-            $result = $connection2->query($sql);
 
         if ($partialFail == true) {
             $URL .= '&return=warning1';
