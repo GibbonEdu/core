@@ -91,7 +91,7 @@ class ExpandableColumn extends Column
      * @param int $columnCount
      * @return string
      */
-    public function getExpandedContent(&$data = array(), $columnCount)
+    public function getExpandedContent(&$data = array(), $columnCount = 1)
     {
         $output = '';
 
