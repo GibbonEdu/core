@@ -234,8 +234,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         //Insert outcomes
                         $count = 0;
                         $outcomeorder = $_POST['outcomeorder'] ?? [];
-                        if (count($_POST['outcomeorder']) > 0) {
-                            foreach ($_POST['outcomeorder'] as $outcome) {
+                        if (count($outcomeorder) > 0) {
+                            foreach ($outcomeorder as $outcome) {
                                 if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {
                                     try {
                                         $dataInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"], 'content' => $_POST["outcomecontents$outcome"], 'count' => $count);
