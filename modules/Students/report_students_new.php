@@ -57,11 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         $form->toggleVisibilityByClass('dateRange')->onSelect('type')->when('Date Range');
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('startDateFrom', __('From Date'))->description('Earliest student start date to include.')->append('<br/>');
+            $row->addLabel('startDateFrom', __('From Date'))->description(__('Earliest student start date to include.'))->append('<br/>');
             $row->addDate('startDateFrom')->setValue($startDateFrom)->required();
 
         $row = $form->addRow()->addClass('dateRange');
-            $row->addLabel('startDateTo', __('To Date'))->description('Latest student start date to include.')->append('<br/>');
+            $row->addLabel('startDateTo', __('To Date'))->description(__('Latest student start date to include.'))->append('<br/>');
             $row->addDate('startDateTo')->setValue($startDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
