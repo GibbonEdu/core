@@ -675,11 +675,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $activitiesOutput .= '<td>';
                             $activitiesOutput .= $row['name'];
                             $activitiesOutput .= '</td>';
-                            if ($options != '') {
-                                $activitiesOutput .= '<td>';
-                                $activitiesOutput .= trim($row['type']);
-                                $activitiesOutput .= '</td>';
-                            }
+                            $activitiesOutput .= '<td>';
+                            $activitiesOutput .= trim($row['type']);
+                            $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
                             if ($dateType != 'Date') {
                                 $terms = getTerms($connection2, $this->session->get('gibbonSchoolYearID'), true);
