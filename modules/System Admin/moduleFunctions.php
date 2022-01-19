@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use GuzzleHttp\Client;
 use Gibbon\Domain\System\I18nGateway;
 use Psr\Container\ContainerInterface;
 
@@ -440,4 +441,28 @@ function camelToWords($name)
     ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
     return $label;
+}
+
+/**
+ * Performs a HTTP GET request on the uploads folder 
+ *
+ * @param string $absoluteURL
+ * @return string
+ */
+function checkUploadsFolderStatusCode($absoluteURL)
+{
+    $statusCode = null;
+    try {
+        $client = new Client();
+        $response = $client->request('GET', $absoluteURL.'/uploads', [
+            'headers' => ['Referer' => $absoluteURL.'/index.php'],
+        ]);
+        $statusCode = $response->getStatusCode();
+    } catch (GuzzleHttp\Exception\ClientException $e) {
+        $statusCode = stripos($e->getMessage(), '403') !== false ? '403' : null;
+    } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+        $statusCode = null;
+    }
+
+    return $statusCode;
 }
