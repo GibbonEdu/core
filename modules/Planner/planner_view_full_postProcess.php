@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $row = $result->fetch();
 
                 //INSERT
-                $replyTo = $_POST['replyTo'] ?? null;
+                $replyTo = !empty($_POST['replyTo']) ? $_POST['replyTo'] : null;
                 $comment = $_POST['comment'] ?? '';
                 
                 try {
