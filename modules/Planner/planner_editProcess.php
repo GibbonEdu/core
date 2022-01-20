@@ -271,11 +271,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
 
                             //Remove orphaned blocks
-                            if (!empty($idList)) {
-                                $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => implode(',', $idList)];
-                                $sqlRemove = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
-                                $pdo->delete($sqlRemove, $dataRemove);
-                            }
+
+                            $dataRemove = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonUnitClassBlockIDList' => implode(',', $idList)];
+                            $sqlRemove = "DELETE FROM gibbonUnitClassBlock WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND NOT FIND_IN_SET(gibbonUnitClassBlockID, :gibbonUnitClassBlockIDList)";
+                            $pdo->delete($sqlRemove, $dataRemove);
                         }
 
                         //Delete all outcomes
