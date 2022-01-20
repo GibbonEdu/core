@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -38,6 +39,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
     if ($step != 1 and $step != 2 and $step != 3) {
         $step = 1;
     }
+
+    $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
 
     //Step 1
     if ($step == 1) {
@@ -504,7 +507,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             }
         }
     } elseif ($step == 3) {
-        $nextYear = $_POST['nextYear'];
+        $nextYear = $_POST['nextYear'] ?? '';
         if ($nextYear == '' or $nextYear != getNextSchoolYearID($session->get('gibbonSchoolYearID'), $connection2)) {
             echo "<div class='error'>";
             echo __('The next school year cannot be determined, so this action cannot be performed.');
@@ -518,8 +521,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             if ($resultNext->rowCount() == 1) {
                 $rowNext = $resultNext->fetch();
             }
-            $nameNext = $rowNext['name'];
-            $sequenceNext = $rowNext['sequenceNumber'];
+            $nameNext = $rowNext['name'] ?? '';
+            $sequenceNext = $rowNext['sequenceNumber'] ?? '';
             if ($nameNext == '' or $sequenceNext == '') {
                 echo "<div class='error'>";
                 echo __('The next school year cannot be determined, so this action cannot be performed.');
@@ -536,11 +539,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                     echo sprintf(__('Add Year Following %1$s'), $nameNext);
                     echo '</h4>';
 
-                    $name = $_POST['nextname'];
-                    $status = $_POST['nextstatus'];
-                    $sequenceNumber = $_POST['nextsequenceNumber'];
-                    $firstDay = Format::dateConvert($_POST['nextfirstDay']);
-                    $lastDay = Format::dateConvert($_POST['nextlastDay']);
+                    $name = $_POST['nextname'] ?? '';
+                    $status = $_POST['nextstatus'] ?? '';
+                    $sequenceNumber = $_POST['nextsequenceNumber'] ?? '';
+                    $firstDay = Format::dateConvert($_POST['nextfirstDay'] ?? '');
+                    $lastDay = Format::dateConvert($_POST['nextlastDay'] ?? '');
 
                     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
                         echo "<div class='error'>";
@@ -628,19 +631,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo __('Set Expected Users To Full');
                         echo '</h4>';
 
-                        $count = null;
-                        if (isset($_POST['expect-count'])) {
-                            $count = $_POST['expect-count'];
-                        }
-                        if ($count == '') {
+                        $count = $_POST['expect-count'] ?? 0;
+                        if (empty($count)) {
                             echo "<div class='warning'>";
                             echo __('No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-expect-gibbonPersonID"];
-                                $status = $_POST["$i-expect-status"];
+                                $gibbonPersonID = $_POST["$i-expect-gibbonPersonID"] ?? '';
+                                $status = $_POST["$i-expect-status"] ?? 'Expected';
 
                                 //Write to database
                                 $expected = true;
@@ -683,21 +683,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo __('Enrol New Students (Status Expected)');
                         echo '</h4>';
 
-                        $count = null;
-                        if (isset($_POST['enrol-count'])) {
-                            $count = $_POST['enrol-count'];
-                        }
-                        if ($count == '') {
+                        $count = $_POST['enrol-count'] ?? 0;
+                        if (empty($count)) {
                             echo "<div class='warning'>";
                             echo __('No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-enrol-gibbonPersonID"];
-                                $enrol = $_POST["$i-enrol-enrol"];
-                                $gibbonYearGroupID = $_POST["$i-enrol-gibbonYearGroupID"];
-                                $gibbonFormGroupID = $_POST["$i-enrol-gibbonFormGroupID"];
+                                $gibbonPersonID = $_POST["$i-enrol-gibbonPersonID"] ?? '';
+                                $enrol = $_POST["$i-enrol-enrol"] ?? 'N';
+                                $gibbonYearGroupID = $_POST["$i-enrol-gibbonYearGroupID"] ?? '';
+                                $gibbonFormGroupID = $_POST["$i-enrol-gibbonFormGroupID"] ?? '';
 
                                 //Write to database
                                 if ($enrol == 'Y') {
@@ -721,7 +718,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         while ($rowFamily = $resultFamily->fetch()) {
                                             
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                                $sqlFamily2 = 'SELECT gibbonPersonID FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID';
+                                                $sqlFamily2 = 'SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
@@ -730,6 +727,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
                                                     $resultFamily3->execute($dataFamily3);
+
+                                                    if ($rowFamily2['status'] != 'Full') {
+                                                        $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover')]);
+                                                    }
                                             }
                                         }
                                     }
@@ -745,6 +746,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     }
                                     if ($ok = true) {
                                         ++$success;
+
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
                                     }
                                 }
                             }
@@ -781,10 +784,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-enrolFull-gibbonPersonID"].'<br/>';
-                                $enrol = $_POST["$i-enrolFull-enrol"];
-                                $gibbonYearGroupID = $_POST["$i-enrolFull-gibbonYearGroupID"];
-                                $gibbonFormGroupID = $_POST["$i-enrolFull-gibbonFormGroupID"];
+                                $gibbonPersonID = $_POST["$i-enrolFull-gibbonPersonID"] ?? '';
+                                $enrol = $_POST["$i-enrolFull-enrol"] ?? 'N';
+                                $gibbonYearGroupID = $_POST["$i-enrolFull-gibbonYearGroupID"] ?? '';
+                                $gibbonFormGroupID = $_POST["$i-enrolFull-gibbonFormGroupID"] ?? '';
 
                                 //Write to database
                                 if ($enrol == 'Y') {
@@ -833,7 +836,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                         while ($rowFamily = $resultFamily->fetch()) {
                                             
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                                                $sqlFamily2 = 'SELECT gibbonPersonID FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID';
+                                                $sqlFamily2 = 'SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
@@ -842,6 +845,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
                                                     $resultFamily3->execute($dataFamily3);
+
+                                                    if ($rowFamily2['status'] != 'Full') {
+                                                    $userStatusLogGateway->insert(['gibbonPersonID' => $rowFamily2['gibbonPersonID'], 'statusOld' => $rowFamily2['status'], 'statusNew' => 'Full', 'reason' => __('Rollover')]);
+                                                    }
                                             }
                                         }
                                     }
@@ -857,6 +864,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     }
                                     if ($ok = true) {
                                         ++$success;
+
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
                                     }
                                 }
                             }
@@ -894,10 +903,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             $success = 0;
 
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-reenrol-gibbonPersonID"];
-                                $enrol = $_POST["$i-reenrol-enrol"];
-                                $gibbonYearGroupID = $_POST["$i-reenrol-gibbonYearGroupID"];
-                                $gibbonFormGroupID = $_POST["$i-reenrol-gibbonFormGroupID"];
+                                $gibbonPersonID = $_POST["$i-reenrol-gibbonPersonID"] ?? '';
+                                $enrol = $_POST["$i-reenrol-enrol"] ?? 'N';
+                                $gibbonYearGroupID = $_POST["$i-reenrol-gibbonYearGroupID"] ?? '';
+                                $gibbonFormGroupID = $_POST["$i-reenrol-gibbonFormGroupID"] ?? '';
 
                                 //Write to database
                                 if ($enrol == 'Y') {
@@ -957,6 +966,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     }
                                     if ($reenrolled) {
                                         ++$success;
+
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => 'Left', 'reason' => __('Rollover')]);
                                     }
                                 }
                             }
@@ -982,20 +993,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo __('Set Final Year Students To Left');
                         echo '</h4>';
 
-                        $count = null;
-                        if (isset($_POST['final-count'])) {
-                            $count = $_POST['final-count'];
-                        }
-                        if ($count == '') {
+                        $count = $_POST['final-count'] ?? 0;
+
+                        if (empty($count)) {
                             echo "<div class='warning'>";
                             echo __('No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-final-gibbonPersonID"];
-                                $status = $_POST["$i-final-status"];
-                                $departureReason = $_POST["$i-departureReason"];
+                                $gibbonPersonID = $_POST["$i-final-gibbonPersonID"] ?? '';
+                                $status = $_POST["$i-final-status"] ?? 'Left';
+                                $departureReason = $_POST["$i-departureReason"] ?? '';
 
                                 //Write to database
                                 $left = true;
@@ -1010,6 +1019,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 }
                                 if ($left) {
                                     ++$success;
+
+                                    $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Full', 'statusNew' => $status, 'reason' => __('Rollover').': '.__('Set Final Year Students To Left')]);
                                 }
                             }
 
@@ -1034,21 +1045,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo __('Register New Staff');
                         echo '</h4>';
 
-                        $count = null;
-                        if (isset($_POST['register-count'])) {
-                            $count = $_POST['register-count'];
-                        }
-                        if ($count == '') {
+                        $count = $_POST['register-count'] ?? 0;
+                        if (empty($count)) {
                             echo "<div class='warning'>";
                             echo __('No actions were selected in Step 2, and so no changes have been made.');
                             echo '</div>';
                         } else {
                             $success = 0;
                             for ($i = 1; $i <= $count; ++$i) {
-                                $gibbonPersonID = $_POST["$i-register-gibbonPersonID"];
-                                $enrol = $_POST["$i-register-enrol"];
-                                $type = $_POST["$i-register-type"];
-                                $jobTitle = $_POST["$i-register-jobTitle"];
+                                $gibbonPersonID = $_POST["$i-register-gibbonPersonID"] ?? '';
+                                $enrol = $_POST["$i-register-enrol"] ?? 'N';
+                                $type = $_POST["$i-register-type"] ?? '';
+                                $jobTitle = $_POST["$i-register-jobTitle"] ?? '';
 
                                 //Write to database
                                 if ($enrol == 'Y') {
@@ -1093,8 +1101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 } else {
                                     $left = true;
                                     try {
-                                        $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $type, 'jobTitle' => $jobTitle, 'dateEnd' => $dateEnd);
-                                        $sql = "UPDATE gibbonPerson SET status='Left', dateEnd=:dateEnd WHERE gibbonPersonID=$gibbonPersonID";
+                                        $data = array('gibbonPersonID' => $gibbonPersonID, 'dateEnd' => $dateEnd);
+                                        $sql = "UPDATE gibbonPerson SET status='Left', dateEnd=:dateEnd WHERE gibbonPersonID=:gibbonPersonID";
                                         $result = $connection2->prepare($sql);
                                         $result->execute($data);
                                     } catch (PDOException $e) {
@@ -1103,6 +1111,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     }
                                     if ($left) {
                                         ++$success;
+
+                                        $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => 'Expected', 'statusNew' => 'Left', 'reason' => __('Rollover').': '.__('Register New Staff')]);
                                     }
                                 }
                             }
