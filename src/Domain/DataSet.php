@@ -311,9 +311,10 @@ class DataSet implements \Countable, \IteratorAggregate
     public function htmlEncode(array $ignore = [])
     {
         array_walk($this->data, function (&$item, $key) use (&$ignore)  {
-            if (isset($ignore[$key])) return;
+            if (isset($ignore[$key]) || in_array($key, $ignore)) return;
             if (is_string($item)) $item = strip_tags($item, '<br>');
-            if (is_array($item)) array_walk($item, function (&$innerItem) {
+            if (is_array($item)) array_walk($item, function (&$innerItem, $innerKey) use (&$ignore) {
+                if (isset($ignore[$innerKey]) || in_array($innerKey, $ignore)) return;
                 if (is_string($innerItem)) $innerItem = strip_tags($innerItem, '<br>');
             });
         });
