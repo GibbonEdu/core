@@ -42,7 +42,7 @@ $page->addData([
 
 if (empty($address)) {
     $page->addWarning(__('There is no content to display'));
-} elseif ($page->isAddressValid($address) == false) {
+} elseif ($page->isAddressValid($address, true) == false) {
     $page->addError(__('Illegal address detected: access denied.'));
 } else {
     // Pass these globals into the script of the included file, for backwards compatibility.
