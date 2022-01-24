@@ -32,10 +32,7 @@ if (empty($_POST) or empty($_FILES)) {
 } else {
     //Proceed!
     $id = $_POST['id'] ?? '';
-    $imagesAsLinks = false;
-    if ($_POST['imagesAsLinks'] == 'Y') {
-        $imagesAsLinks = true;
-    }
+    $imagesAsLinks = !empty($_POST['imagesAsLinks']) && $_POST['imagesAsLinks'] == 'Y';
 
     if ($id == '') {
         echo "<span style='font-weight: bold; color: #ff0000'>";
