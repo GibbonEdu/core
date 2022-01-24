@@ -40,7 +40,7 @@ $address = $page->getAddress();
 
 if (empty($address)) {
     $page->addWarning(__('There is no content to display'));
-} elseif ($page->isAddressValid($address) == false) {
+} elseif ($page->isAddressValid($address, true) == false || stripos($address, 'modules') === false) {
     $page->addError(__('Illegal address detected: access denied.'));
 } else {
     // Pass these globals into the script of the included file, for backwards compatibility.
@@ -59,6 +59,21 @@ if (empty($address)) {
 
     if (is_file('./'.$address)) {
         $page->writeFromFile('./'.$address, $globals);
+
+        $page->addData([
+            'isLoggedIn'                     => $session->has('username') && $session->has('gibbonRoleIDCurrent'),
+            'username'                       => $session->get('username'),
+            'gibbonThemeName'                => $session->get('gibbonThemeName'),
+            'organisationName'               => $session->get('organisationName'),
+            'organisationNameShort'          => $session->get('organisationNameShort'),
+            'organisationAdministratorName'  => $session->get('organisationAdministratorName'),
+            'organisationAdministratorEmail' => $session->get('organisationAdministratorEmail'),
+            'organisationLogo'               => $session->get('organisationLogo'),
+            'time'                           => Format::time(date('H:i:s')),
+            'date'                           => Format::date(date('Y-m-d')),
+            'rightToLeft'                    => $session->get('i18n')['rtl'] == 'Y',
+            'orientation'                    => $_GET['orientation'] ?? 'P',
+        ]);
     } else {
         $page->writeFromTemplate('error.twig.html');
     }
@@ -67,20 +82,5 @@ if (empty($address)) {
 $page->addHeadExtra($session->get('analytics'));
 $page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
 $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
-
-$page->addData([
-    'isLoggedIn'                     => $session->has('username') && $session->has('gibbonRoleIDCurrent'),
-    'username'                       => $session->get('username'),
-    'gibbonThemeName'                => $session->get('gibbonThemeName'),
-    'organisationName'               => $session->get('organisationName'),
-    'organisationNameShort'          => $session->get('organisationNameShort'),
-    'organisationAdministratorName'  => $session->get('organisationAdministratorName'),
-    'organisationAdministratorEmail' => $session->get('organisationAdministratorEmail'),
-    'organisationLogo'               => $session->get('organisationLogo'),
-    'time'                           => Format::time(date('H:i:s')),
-    'date'                           => Format::date(date('Y-m-d')),
-    'rightToLeft'                    => $session->get('i18n')['rtl'] == 'Y',
-    'orientation'                    => $_GET['orientation'] ?? 'P',
-]);
 
 echo $page->render('report.twig.html');

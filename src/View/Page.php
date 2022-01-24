@@ -174,7 +174,7 @@ class Page extends View
      */
     public function getAddress(): string
     {
-        return $this->address;
+        return preg_replace('/[^a-zA-Z0-9_\-\.\/\s&=%]/', '', $this->address);
     }
 
     /**
@@ -424,14 +424,19 @@ class Page extends View
      * @param string $address
      * @return bool
      */
-    public function isAddressValid($address) : bool
+    public function isAddressValid($address, bool $strictPHP = false) : bool
     {
+        if ($strictPHP && stripos($address, '.php') === false) {
+            return false;
+        }
+
         return !(stripos($address, '..') !== false
-            || strstr($address, 'installer')
-            || strstr($address, 'uploads')
-            || in_array($address, array('index.php', '/index.php', './index.php'))
-            || substr($address, -11) == '// index.php'
-            || substr($address, -11) == './index.php');
+            || stristr($address, 'installer')
+            || stristr($address, 'uploads')
+            || stristr($address, 'config.php')
+            || in_array(strtolower($address), array('index.php', '/index.php', './index.php'))
+            || strtolower(substr($address, -11)) == '// index.php'
+            || strtolower(substr($address, -11)) == './index.php');
     }
 
     /**

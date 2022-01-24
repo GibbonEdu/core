@@ -102,8 +102,8 @@ if (!defined('SESSION_TABLE_AVAILABLE')) {
 }
 
 // Globals for backwards compatibility
-$gibbon->session = $container->get('session');
 $session = $container->get('session');
+$gibbon->session = $session;
 $container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
 // Setup global absoluteURL for all urls.
@@ -126,11 +126,11 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
 }
 
 // Autoload the current module namespace
-if (!empty($gibbon->session->get('module'))) {
-    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $gibbon->session->get('module'));
-    $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module').'/src');
+if (!empty($session->get('module'))) {
+    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $session->get('module'));
+    $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module').'/src');
 
     // Temporary backwards-compatibility for external modules (Query Builder)
-    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module'));
+    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module'));
     $autoloader->register(true);
 }
