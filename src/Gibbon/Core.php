@@ -103,7 +103,7 @@ class Core
 
         // Update the information for this session (except in ajax scripts)
         if (\SESSION_TABLE_AVAILABLE && stripos($this->session->get('action'), 'ajax') === false) {
-            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('gibbonPersonID'));
+            $container->get(SessionGateway::class)->updateSessionAction(session_id(), $this->session->get('action'), $this->session->get('module'), $this->session->get('gibbonPersonID'));
         }
 
         $this->initialized = true;
