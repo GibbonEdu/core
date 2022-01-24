@@ -27,6 +27,7 @@ use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
+use Gibbon\Data\Validator;
 
 /**
  * Staff Dashboard View Composer
@@ -247,6 +248,7 @@ class StaffDashboard implements OutputableInterface
         $timetable = false;
         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
+            $_POST = (new Validator(''))->sanitize($_POST);
             $jsonQuery = [
                 'gibbonTTID' => $_GET['gibbonTTID'] ?? '',
                 'ttDate' => $_POST['ttDate'] ?? '',
@@ -558,11 +560,9 @@ class StaffDashboard implements OutputableInterface
             $return .= '</div>';
         }
 
-        $defaultTab = 0;
-        if (isset($_GET['tab'])) {
-            $defaultTab = $_GET['tab'];
-        }
-        else if (!empty($staffDashboardDefaultTabCount)) {
+        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
+        
+        if (!isset($_GET['tab']) && !empty($staffDashboardDefaultTabCount)) {
             $defaultTab = $staffDashboardDefaultTabCount-1;
         }
 
