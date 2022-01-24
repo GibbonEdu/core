@@ -65,11 +65,11 @@ jobs:
           if [ ! -d ./dist ]; then mkdir dist; fi
 
           echo "::group::Create Bundle (tar.gz)"
-          tar -cz --exclude="./dist" --exclude="./.git" -f "./dist/GibbonEduCore-InstallBundle.tar.gz" .
+          tar -cz --exclude-from="./.github/workflows/exclude.txt" -f "./dist/GibbonEduCore-InstallBundle.tar.gz" .
           echo "::endgroup::"
 
           echo "::group::Create Bundle (zip)"
-          zip -9 --quiet -r "./dist/GibbonEduCore-InstallBundle.zip" . -x "*.tar.gz*" -x "./dist/*" -x "*/.git/*"
+          zip -9 --quiet -r "./dist/GibbonEduCore-InstallBundle.zip" . -x@"./.github/workflows/exclude.txt"
           echo "::endgroup::"
 
           echo "::group::Examine Bundle"
