@@ -118,9 +118,14 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
      * 
      * @throws Aura\Auth\Exception\UsernameNotFound
      * @throws Aura\Auth\Exception\MultipleMatches
+     * @throws Gibbon\Auth\Exception\DatabaseLoginError
      */
     protected function getUserData(array $input)
     {
+        if (empty($this->userGateway)) {
+            throw new Exception\DatabaseLoginError;
+        }
+
         $userResult = $this->userGateway->selectLoginDetailsByUsername($input['username'] ?? '');
 
         if ($userResult->rowCount() < 1) {
@@ -178,12 +183,12 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         $maintenanceMode = $this->getContainer()->get(SettingGateway::class)->getSettingByScope('System Admin', 'maintenanceMode');
 
         // Missing role ID information
-        if (empty($userData['gibbonRoleIDPrimary']) || empty($userData['gibbonRoleIDAll'])) {
+        if (empty($primaryRole) || empty($userData['gibbonRoleIDPrimary']) || empty($userData['gibbonRoleIDAll'])) {
             throw new Exception\DatabaseLoginError;
         }
 
         // Insufficient privileges for this user
-        if ($userData['canLogin'] != 'Y') {
+        if (empty($userData['canLogin']) || $userData['canLogin'] != 'Y') {
             throw new Exception\InsufficientPrivileges;
         }
 
