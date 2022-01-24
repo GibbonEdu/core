@@ -126,12 +126,12 @@ class Payment implements PaymentInterface
 
     public function setReturnURL($url)
     {
-        $this->returnURL = $url;
+        $this->returnURL = str_replace(' ', '%20', $url);
     }
 
     public function setCancelURL($url)
     {
-        $this->cancelURL = $url;
+        $this->cancelURL = str_replace(' ', '%20', $url);
     }
 
     public function setForeignTable($foreignTable, $foreignTableID)
