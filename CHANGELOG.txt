@@ -20,13 +20,16 @@ v23.0.00
 --------
     Headlines
         Added support for Microsoft SSO and OAuth2-standard SSO
-        Added support for database-driven sessions encrypted session data
-        Improved session timeout when using multiple tabs or windows
+        Added support for database-driven sessions and encrypted session data
         Improved payment gateway including Stripe payment support
+        Refactored the installer and improved install error handling
+
+    Security
+        System: important improvements to sanitization and encoding of input data
 
     Significant Changes
+        System: improved session timeout when using multiple tabs or windows
         System: added ability to run CLI scripts remotely, with secure key
-        System: improved sanitization and encoding of user-provided data
         System: removed deprecated functions no longer used in core and additional modules
             - addressFormat
             - dateConvert
@@ -45,6 +48,8 @@ v23.0.00
             - setNotification
             - tinymceStyleStripTags
             - ynExpander
+        Activities: added the ability to configure activity types individually
+        User Admin: added a user status log to track dates and reasons for status changes
         System Admin: added a Maintenance Mode which restricts login access to admin only
         System Admin: added an Active Sessions page to see who is currently logged in
 
