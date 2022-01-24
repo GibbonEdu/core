@@ -83,8 +83,10 @@ if ($gibbon->isInstalled()) {
 
         // Add a feature flag here to prevent errors before updating
         // TODO: this can likely be removed in v24+
-        $hasSessionTable = $pdo->selectOne("SHOW TABLES LIKE 'gibbonSession'");
-        define('SESSION_TABLE_AVAILABLE', !empty($hasSessionTable));
+        if (!defined('SESSION_TABLE_AVAILABLE')) {
+            $hasSessionTable = $pdo->selectOne("SHOW TABLES LIKE 'gibbonSession'");
+            define('SESSION_TABLE_AVAILABLE', !empty($hasSessionTable));
+        }
 
         // Initialize core
         $gibbon->initializeCore($container);
