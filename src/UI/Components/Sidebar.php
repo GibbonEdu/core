@@ -84,9 +84,9 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail6': $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".Url::fromRoute('passwordReset') . "'>", '</a>');
                     break;
-                case 'fail7': $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+                case 'fail7': $loginReturnMessage = sprintf(__('Error with SSO Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
                     break;
-                case 'fail8': $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
+                case 'fail8': $loginReturnMessage = sprintf(__('Email account does not match the email stored in %1$s. If you have logged in with your school email account please contact %2$s if you have any questions.'), $this->session->get('systemName'), "<a href='mailto:".$this->session->get('organisationDBAEmail')."'>".$this->session->get('organisationDBAName').'</a>');
                     break;
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
