@@ -16,6 +16,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+
+v23.0.01
+--------
+
+    Tweaks & Additions
+
+    Bug Fixes
+        
+
 v23.0.00
 --------
     Headlines

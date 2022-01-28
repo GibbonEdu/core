@@ -1076,5 +1076,10 @@ CREATE TABLE `gibbonActivityType` ( `gibbonActivityTypeID` INT(6) UNSIGNED ZEROF
 UPDATE `gibbonAction` SET `URLList` = 'activitySettings.php,activitySettings_type_add.php,activitySettings_type_edit.php,activitySettings_type_delete.php' WHERE `name`='Activity Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
 UPDATE gibbonSetting SET value='br[style],strong[style],b[style],em[style],span[style],p[style],address[style],pre[style|class],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style],code[style|class],details[style|class],summary[style|class]' WHERE name='allowableHTML' AND scope='System';end
 SELECT 'Hello, this blank line is important, nothing to see here.';end
+";
 
+//v23.0.01
+++$count;
+$sql[$count][0] = '23.0.01';
+$sql[$count][1] = "
 ";
