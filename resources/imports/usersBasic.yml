@@ -59,7 +59,7 @@ table:
         name: "Username"
         desc: "Must be unique."
         args: {filter: nospaces, required: true}
-    password:
+    passwordStrong:
         name: "Password"
         desc: ""
         args: {filter: nospaces, required: true, custom: true, function: generatePassword}
