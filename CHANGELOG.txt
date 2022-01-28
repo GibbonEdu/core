@@ -23,7 +23,8 @@ v23.0.01
     Tweaks & Additions
 
     Bug Fixes
-        
+        System Admin: fixed password field in user imports in Import From File
+
 
 v23.0.00
 --------
