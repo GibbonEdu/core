@@ -62,6 +62,11 @@ try {
 
     $I->see('Congratulations, your installation is complete.', '.success');
 
+    // Follow the go to homepage link to the front page.
+    $I->see('go to your Gibbon homepage', '.success');
+    $I->click('go to your Gibbon homepage');
+    $I->canSeeCurrentUrlMatches('/^\/$/');
+
 } catch (Exception $e) {
     codecept_debug($I->grabTextFrom('body'));
     throw $e;
