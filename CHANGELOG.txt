@@ -21,6 +21,7 @@ v23.0.01
 --------
 
     Tweaks & Additions
+        System Admin: improved the reliability of the uploads folder check
         System Admin: added an import for School Year Terms
 
     Bug Fixes
