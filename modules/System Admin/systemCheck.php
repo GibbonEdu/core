@@ -65,11 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     }
 
     // Uploads folder check, make a request using a Guzzle HTTP get request
-    $statusCode = checkUploadsFolderStatusCode($session->get('absoluteURL'));
-
-    if (!($statusCode == '403' || $statusCode == '404')) {
-        echo Format::alert(__('The system check has detected that your uploads folder is returning a {code} status code, which indicates that it is publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'code' => $statusCode,
+    $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
+    if (!$statusCheck) {
+        echo Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
             'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
         ]), 'error');
     }
@@ -168,8 +166,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('Uploads folder not publicly accessible'));
-        $row->addTextArea('systemWrite')->setValue(__('Status code {code}', ['code' => $statusCode]))->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
-        $row->addContent(($statusCode == '403' || $statusCode == '404')? $trueIcon : $falseIcon);
+        $row->addTextArea('systemWrite')->setValue($session->get('absoluteURL').'/uploads')->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
+        $row->addContent($statusCheck? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('uploadsFolderLabel', __('Uploads folder server writeable'));
