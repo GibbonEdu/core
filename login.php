@@ -46,12 +46,16 @@ $URL = Url::fromRoute();
 // Sanitize the whole $_POST array
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
+// Determine the login method to use (use session data for OAuth2 redirects)
+$method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
+
 // Setup system log gateway
 $logGateway = $container->get(LogGateway::class);
-$logLoginAttempt = function ($type, $reason = '') use ($logGateway, $session){
+$logLoginAttempt = function ($type, $reason = '') use ($logGateway, $session, $method){
     $gibbonPersonID = $_POST['gibbonPersonIDLoginAttempt'] ?? $session->get('gibbonPersonID') ?? null;
     $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $gibbonPersonID, $type, [
         'username' => $_POST['username'] ?? $_POST['usernameOAuth'] ?? $session->get('username') ?? '',
+        'method'   => ucwords($method),
         'reason'   => $reason,
     ],$_SERVER['REMOTE_ADDR']);
 };
@@ -62,7 +66,6 @@ $auth = $authFactory->newInstance();
 
 // Determine the authentication adapter to use
 try {
-    $method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
     switch (strtolower($method)) {
         case 'google':
             $authAdapter = $container->get(OAuthGoogleAdapter::class);
@@ -122,7 +125,7 @@ try {
         exit;
     }
 
-    $logLoginAttempt('Login - Success', ucwords($method));
+    $logLoginAttempt('Login - Success');
     header("Location: {$URL}");
     exit;
 } catch (AuraException\UsernameMissing $e) {
