@@ -27,7 +27,7 @@ v23.0.01
     Bug Fixes
         System Admin: fixed password field in user imports in Import From File
         System Admin: fixed custom field headings not working for non-english locales
-        System Admin: fixed blank User column for logins listed in in View Logs
+        System Admin: fixed blank User column for logins listed in View Logs
 
 
 v23.0.00
