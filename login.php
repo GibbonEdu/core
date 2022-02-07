@@ -28,6 +28,7 @@ use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
 use Gibbon\Auth\Adapter\OAuthGenericAdapter;
 use Gibbon\Domain\System\LogGateway;
+use League\Container\Exception\NotFoundException;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -59,26 +60,43 @@ $authFactory = $container->get(AuthFactory::class);
 $auth = $authFactory->newInstance();
 
 // Determine the authentication adapter to use
-$method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
-switch (strtolower($method)) {
-    case 'google':
-        $authAdapter = $container->get(OAuthGoogleAdapter::class);
-        break;
-    case 'microsoft':
-        $authAdapter = $container->get(OAuthMicrosoftAdapter::class);
-        break;
-    case 'oauth':
-        $authAdapter = $container->get(OAuthGenericAdapter::class);
-        break;
-    default:
-        $authAdapter = $container->get(DefaultAdapter::class);
+try {
+    $method = $_GET['method'] ?? $_POST['method'] ?? $session->get('oAuthMethod') ?? '';
+    switch (strtolower($method)) {
+        case 'google':
+            $authAdapter = $container->get(OAuthGoogleAdapter::class);
+            break;
+        case 'microsoft':
+            $authAdapter = $container->get(OAuthMicrosoftAdapter::class);
+            break;
+        case 'oauth':
+            $authAdapter = $container->get(OAuthGenericAdapter::class);
+            break;
+        default:
+            $authAdapter = $container->get(DefaultAdapter::class);
+    }
+
+    // Handle OAuth2 redirect when obtaining authorization code
+    if ($authAdapter instanceof OAuthAdapterInterface && !$authAdapter->hasOAuthCode()) {
+        $session->set('oAuthMethod', $method);
+        $session->set('oAuthOptions', $_GET['options'] ?? '');
+        header("Location: {$authAdapter->getAuthorizationUrl()}");
+        exit;
+    }
+} catch (Exception\OAuthLoginError $e) {
+    $logLoginAttempt('OAuth Login - Failed', $e->getMessage());
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail7')}");
+    exit;
+} catch (InvalidArgumentException | NotFoundException $e) {
+    $logLoginAttempt('Login - Failed', 'Container error: '.$e->getMessage());
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail5')}");
+    exit;
 }
 
-// Handle OAuth2 redirect when obtaining authorization code
-if ($authAdapter instanceof OAuthAdapterInterface && !$authAdapter->hasOAuthCode()) {
-    $session->set('oAuthMethod', $method);
-    $session->set('oAuthOptions', $_GET['options'] ?? '');
-    header("Location: {$authAdapter->getAuthorizationUrl()}");
+// Double check to ensure we have all the required auth ingredients
+if (empty($authFactory) || empty($auth) || empty($authAdapter)) {
+    $logLoginAttempt('Login - Failed', 'Initialization error');
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail5')}");
     exit;
 }
 
@@ -154,5 +172,9 @@ try {
     exit;
 } catch (Exception\MaintenanceMode $e) {
     header("Location: {$URL->withQueryParam('loginReturn', 'fail10')}");
+    exit;
+} catch (NotFoundException $e) {
+    $logLoginAttempt('Login - Failed', 'Container error: '.$e->getMessage());
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail5')}");
     exit;
 }

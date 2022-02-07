@@ -27,7 +27,7 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/thirdPartySettings.php';
-$URLPayment = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/thirdPartySettings_paymentProcess.php';
+$URLPayment = $session->get('absoluteURL').'/modules/System Admin/thirdPartySettings_paymentProcess.php?test=true';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySettings.php') == false) {
     // Access denied

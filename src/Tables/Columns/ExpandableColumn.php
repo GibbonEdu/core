@@ -41,6 +41,8 @@ class ExpandableColumn extends Column
         $this->sortable(false)->width('5%');
         $this->context('action');
 
+        $table->addMetaData('allowHTML', [$id]);
+
         $table->modifyRows(function ($data, $row, $columnCount) {
             return $row->append($this->getExpandedContent($data, $columnCount));
         });
@@ -91,7 +93,7 @@ class ExpandableColumn extends Column
      * @param int $columnCount
      * @return string
      */
-    public function getExpandedContent(&$data = array(), $columnCount)
+    public function getExpandedContent(&$data = array(), $columnCount = 1)
     {
         $output = '';
 

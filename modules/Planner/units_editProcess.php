@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['details' => 'HTML', 'contents*' => 'HTML', 'teachersNotes*' => 'HTML']);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
@@ -234,8 +234,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         //Insert outcomes
                         $count = 0;
                         $outcomeorder = $_POST['outcomeorder'] ?? [];
-                        if (count($_POST['outcomeorder']) > 0) {
-                            foreach ($_POST['outcomeorder'] as $outcome) {
+                        if (is_array($outcomeorder) && count($outcomeorder) > 0) {
+                            foreach ($outcomeorder as $outcome) {
                                 if ($_POST["outcomegibbonOutcomeID$outcome"] != '') {
                                     try {
                                         $dataInsert = array('gibbonUnitID' => $gibbonUnitID, 'gibbonOutcomeID' => $_POST["outcomegibbonOutcomeID$outcome"], 'content' => $_POST["outcomecontents$outcome"], 'count' => $count);

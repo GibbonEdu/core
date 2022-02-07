@@ -16,17 +16,31 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+
+v23.0.01
+--------
+
+    Tweaks & Additions
+        System Admin: added an import for School Year Terms
+
+    Bug Fixes
+        System Admin: fixed password field in user imports in Import From File
+
+
 v23.0.00
 --------
     Headlines
         Added support for Microsoft SSO and OAuth2-standard SSO
-        Added support for database-driven sessions encrypted session data
-        Improved session timeout when using multiple tabs or windows
+        Added support for database-driven sessions and encrypted session data
         Improved payment gateway including Stripe payment support
+        Refactored the installer and improved install error handling
+
+    Security
+        System: important improvements to sanitization and encoding of input data
 
     Significant Changes
+        System: improved session timeout when using multiple tabs or windows
         System: added ability to run CLI scripts remotely, with secure key
-        System: improved sanitization and encoding of user-provided data
         System: removed deprecated functions no longer used in core and additional modules
             - addressFormat
             - dateConvert
@@ -45,6 +59,8 @@ v23.0.00
             - setNotification
             - tinymceStyleStripTags
             - ynExpander
+        Activities: added the ability to configure activity types individually
+        User Admin: added a user status log to track dates and reasons for status changes
         System Admin: added a Maintenance Mode which restricts login access to admin only
         System Admin: added an Active Sessions page to see who is currently logged in
 
@@ -82,6 +98,8 @@ v23.0.00
         Students: updated student enrolment dropdown to include students with Expected status
         System Admin: enabled creating multiple different email templates per type
         System Admin: added link to Import History at the top of Import from File
+        System Admin: updated the alarm to mute after 10 continuous seconds of sound
+        System Admin: added an uploads folder status check to system overview
         Timetable: added an option to click for more information in View Available Facilities/Teachers reports
         Timetable: added timetable day heading colours to View Timetable by Facility
         Timetable: added an ajax check for availability when making a facility change
@@ -117,6 +135,7 @@ v23.0.00
         Students: fixed pagination in student view of View Student Profiles page
         System Admin: fixed PHP notice in importer when skipping serialized fields
         System Admin: fixed numeric field imports failing in MySQL 8.0.17 and above
+        System Admin: fixed alarm system to indicate if staff have been marked absent
         Timetable: fixed timetable misalignment of times below transparent timetable blocks
         Timetable: fixed bug in View Available Facilities filter causing some spaces to appear available
         Timetable: fixed calendar options not persisting when using timetable switcher

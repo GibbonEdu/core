@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
 //Module includes
 include './moduleFunctions.php';

@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     // DATA TABLE
     $table = ReportTable::createPaginated('behaviourPatterns', $criteria);
     $table->setTitle(__('Behaviour Records'))->setViewMode($viewMode, $gibbon->session);
-    $table->setDescription(__('The students listed below match the criteria above, for negative behaviour records in the current school year. The count is updated according to the criteria above.'));
+    $table->setDescription(__('The students listed below match the criteria above, for {type} behaviour records in the current school year. The count is updated according to the criteria above.', ['type' => __($type)]));
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
     // COLUMNS

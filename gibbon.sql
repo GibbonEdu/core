@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Jun 18, 2021 at 02:43 AM
+-- Generation Time: Jan 24, 2022 at 11:21 AM
 -- Server version: 5.7.32
 -- PHP Version: 7.3.24
 
@@ -100,7 +100,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000051, 0014, 'View Timetable by Person', 2, 'View Timetables', 'Allows users to view timetables', NULL, 'tt.php, tt_view.php', 'tt.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000052, 0015, 'View Activities_view', 0, 'Activities', 'Allows users to view activities', NULL, 'activities_view.php, activities_view_full.php', 'activities_view.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000053, 0015, 'View Activities_studentRegister', 1, 'Activities', 'Allows students to view activities and register', NULL, 'activities_view.php, activities_view_full.php, activities_view_register.php', 'activities_view.php', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N'),
-(0000054, 0001, 'Activity Settings', 0, 'Learn', 'Control activity settings', NULL, 'activitySettings.php', 'activitySettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000054, 0001, 'Activity Settings', 0, 'Learn', 'Control activity settings', NULL, 'activitySettings.php,activitySettings_type_add.php,activitySettings_type_edit.php,activitySettings_type_delete.php', 'activitySettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000055, 0015, 'Manage Activities', 0, 'Administration', 'Allows managers to build activity program', NULL, 'activities_manage.php, activities_manage_add.php, activities_manage_edit.php, activities_manage_delete.php,activities_manage_enrolment.php,activities_manage_enrolment_add.php,activities_manage_enrolment_edit.php,activities_manage_enrolment_delete.php', 'activities_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000056, 0015, 'My Activities', 0, 'Activities', 'Allows a user to view the activities they are involved in', NULL, 'activities_my.php, activities_my_full.php', 'activities_my.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000057, 0015, 'Participants by Activity', 0, 'Reports', 'Print participant lists', NULL, 'report_participants.php, report_participants_print.php', 'report_participants.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
@@ -220,9 +220,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000779, 0136, 'Staff Directory_brief', 1, 'Profiles', 'View brief profile of any staff member in the school.', NULL, 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000780, 0136, 'Staff Directory_full', 2, 'Profiles', 'View full profile of any staff member in the school.', NULL, 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000781, 0137, 'View Form Groups_all', 1, 'Form Groups', 'View a brief profile of form groups in school.', NULL, 'formGroups.php,formGroups_details.php', 'formGroups.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
-(0000796, 0001, 'Manage External Assessments', 1, 'Assess', 'Add, edit and delete external assessments.', NULL, 'externalAssessments_manage.php,externalAssessments_manage_edit.php,externalAssessments_manage_edit_field_add.php,externalAssessments_manage_edit_field_edit.php,externalAssessments_manage_edit_field_delete.php, externalAssessments_manage_add.php, externalAssessments_manage_delete.php', 'externalAssessments_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000803, 0007, 'Edit Markbook_everything', 4, 'Markbook', 'Allows editing of any column in any class.', 'teachers/assess/markbook/', 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php', 'markbook_edit.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000796, 0001, 'Manage External Assessments', 1, 'Assess', 'Add, edit and delete external assessments.', NULL, 'externalAssessments_manage.php,externalAssessments_manage_edit.php,externalAssessments_manage_edit_field_add.php,externalAssessments_manage_edit_field_edit.php,externalAssessments_manage_edit_field_delete.php, externalAssessments_manage_add.php, externalAssessments_manage_delete.php', 'externalAssessments_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `helpURL`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES
+(0000803, 0007, 'Edit Markbook_everything', 4, 'Markbook', 'Allows editing of any column in any class.', 'teachers/assess/markbook/', 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php', 'markbook_edit.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000804, 0002, 'Manage Districts', 0, 'User Management', 'Manage a list of districts for address autocomplete.', NULL, 'district_manage.php, district_manage_add.php, district_manage_edit.php, district_manage_delete.php', 'district_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000805, 0005, 'Letters Home by Form Group', 0, 'Reports', 'Show students in form group, less those with an older sibling, so that letters can be carried home by oldest in family.', NULL, 'report_lettersHome_byFormGroup.php', 'report_lettersHome_byFormGroup.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000806, 0003, 'Manage Languages', 0, 'Extend & Update', 'Allows administrators to control system-wide language and localisation settings.', NULL, 'i18n_manage.php', 'i18n_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -380,7 +380,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000966, 0003, 'Manage Services', 0, 'Extend & Update', '', NULL, 'services_manage.php', 'services_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000967, 0001, 'Email Summary Settings', 0, 'Other', '', NULL, 'emailSummarySettings.php', 'emailSummarySettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000968, 0001, 'Manage Medical Conditions', 0, 'People', 'Manage the list of medical conditions that can be attached to student medical records.', NULL, 'medicalConditions_manage.php,medicalConditions_manage_add.php,medicalConditions_manage_edit.php,medicalConditions_manage_delete.php', 'medicalConditions_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000969, 0003, 'Email Templates', 0, 'Customise', '', NULL, 'emailTemplates_manage.php,emailTemplates_manage_edit.php', 'emailTemplates_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000969, 0003, 'Email Templates', 0, 'Customise', '', NULL, 'emailTemplates_manage.php,emailTemplates_manage_duplicate.php,emailTemplates_manage_edit.php,emailTemplates_manage_delete.php', 'emailTemplates_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000970, 0144, 'Send Reports', 0, 'Publish', '', NULL, 'reports_send.php,reports_send_batch.php', 'reports_send.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000971, 0005, 'My Student History', 0, 'Visualise', '', NULL, 'report_myStudentHistory.php', 'report_myStudentHistory.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000972, 0003, 'Server Info', 0, 'System', '', NULL, 'serverInfo.php', 'serverInfo.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -392,7 +392,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000978, 0008, 'Staff Data Updates', 0, 'Manage Updates', 'Manage requests for updates to staff data.', NULL, 'data_staff_manage.php,data_staff_manage_edit.php,data_staff_manage_delete.php', 'data_staff_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000979, 0002, 'Personal Document Settings', 0, 'User Settings', 'Manage types of personal documents users can upload.', NULL, 'personalDocumentSettings.php,personalDocumentSettings_manage_add.php,personalDocumentSettings_manage_edit.php,personalDocumentSettings_manage_delete.php', 'personalDocumentSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000980, 0005, 'Personal Document Summary', 0, 'Reports', 'Allows users to view a summary of student personal documents.', NULL, 'report_student_personalDocumentSummary.php', 'report_student_personalDocumentSummary.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000981, 0144, 'Student Name Conflicts', 0, 'Progress', 'Allows users to check report comments for mismatched names.', NULL, 'progress_studentNameConflicts.php', 'progress_studentNameConflicts.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000981, 0144, 'Student Name Conflicts', 0, 'Progress', 'Allows users to check report comments for mismatched names.', NULL, 'progress_studentNameConflicts.php', 'progress_studentNameConflicts.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000982, 0006, 'Ad Hoc Attendance', 0, 'Take Attendance', 'Allows users to take school-wide attendance for ad hoc groups of students.', NULL, 'attendance_take_adHoc.php', 'attendance_take_adHoc.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000983, 0003, 'Active Sessions', 0, 'Utilities', '', NULL, 'activeSessions.php', 'activeSessions.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -480,6 +482,23 @@ CREATE TABLE `gibbonActivityStudent` (
   `gibbonActivityIDBackup` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `invoiceGenerated` enum('N','Y') NOT NULL DEFAULT 'N',
   `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonActivityType`
+--
+
+CREATE TABLE `gibbonActivityType` (
+  `gibbonActivityTypeID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `name` varchar(60) DEFAULT NULL,
+  `description` text,
+  `access` enum('None','View','Register') DEFAULT 'Register',
+  `enrolmentType` enum('Competitive','Selection') DEFAULT 'Competitive',
+  `maxPerStudent` int(3) NOT NULL DEFAULT '0',
+  `waitingList` enum('Y','N') DEFAULT 'Y',
+  `backupChoice` enum('Y','N') DEFAULT 'Y'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -827,6 +846,7 @@ CREATE TABLE `gibbonBehaviourLetter` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `letterLevel` enum('1','2','3') NOT NULL,
   `status` enum('Warning','Issued') NOT NULL,
+  `type` enum('Negative','Positive') NOT NULL DEFAULT 'Negative',
   `recordCountAtCreation` int(3) NOT NULL,
   `body` text NOT NULL,
   `recipientList` text NOT NULL,
@@ -969,7 +989,7 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Lebanon', '961'),
 ('Lesotho', '266'),
 ('Liberia', '231'),
-('Libyan Arab Jamahiriya', ''),
+('Libya', '00218'),
 ('Liechtenstein', '423'),
 ('Lithuania', '370'),
 ('Luxembourg', '352'),
@@ -1328,8 +1348,10 @@ CREATE TABLE `gibbonDistrict` (
 
 CREATE TABLE `gibbonEmailTemplate` (
   `gibbonEmailTemplateID` int(6) UNSIGNED ZEROFILL NOT NULL,
-  `templateName` varchar(120) NOT NULL,
+  `type` enum('Core','Additional','Custom') NOT NULL DEFAULT 'Core',
+  `templateType` varchar(120) NOT NULL,
   `moduleName` varchar(30) NOT NULL,
+  `templateName` varchar(120) NOT NULL,
   `templateSubject` varchar(255) DEFAULT NULL,
   `templateBody` text,
   `variables` text,
@@ -1340,9 +1362,15 @@ CREATE TABLE `gibbonEmailTemplate` (
 -- Dumping data for table `gibbonEmailTemplate`
 --
 
-INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `templateName`, `moduleName`, `templateSubject`, `templateBody`, `variables`, `timestamp`) VALUES
-(000001, 'Send Reports to Parents', 'Reports', '{{reportName|title}} for {{studentPreferredName}} {{studentSurname}}', '<p>Dear {{parentPreferredName}} {{parentSurname}},</p>\r\n<p>This email includes a link to {{studentPreferredName}}\'s {{reportName|title}} created on {{date}}.</p>\r\n<p>Click the button below to download this report. To protect your student\'s security and privacy, this download link will expire after 1 week.</p>\r\n<p>Thank you,<br />{{organisationAdministratorName}}</p>', '{\"reportName\": \"Test Report\", \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"parentPreferredName\": [\"firstName\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"date\": [\"date\"]\r\n}', '2020-09-02 08:58:10'),
-(000002, 'Send Reports to Students', 'Reports', 'Your {{reportName|title}}', '<p>Dear {{studentPreferredName}} {{studentSurname}},</p>\r\n<p>This email includes a link to your {{reportName|title}} created on {{date}}.</p>\r\n<p>Click the button below to download this report. To protect your security and privacy, this download link will expire after 1 week.</p>\r\n<p>Thank you,<br />{{organisationAdministratorName}}</p>', '{\"reportName\": \"Test Report\", \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"date\": [\"date\"]\r\n}', '2020-09-02 08:58:10');
+INSERT INTO `gibbonEmailTemplate` (`gibbonEmailTemplateID`, `type`, `templateType`, `moduleName`, `templateName`, `templateSubject`, `templateBody`, `variables`, `timestamp`) VALUES
+(000001, 'Core', 'Send Reports to Parents', 'Reports', 'Send Reports to Parents', '{{reportName|title}} for {{studentPreferredName}} {{studentSurname}}', '<p>Dear {{parentPreferredName}} {{parentSurname}},</p>\r\n<p>This email includes a link to {{studentPreferredName}}\'s {{reportName|title}} created on {{date}}.</p>\r\n<p>Click the button below to download this report. To protect your student\'s security and privacy, this download link will expire after 1 week.</p>\r\n<p>Thank you,<br />{{organisationAdministratorName}}</p>', '{\"reportName\": \"Test Report\", \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"parentPreferredName\": [\"firstName\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"date\": [\"date\"]\r\n}', '2022-01-24 11:20:30'),
+(000002, 'Core', 'Send Reports to Students', 'Reports', 'Send Reports to Students', 'Your {{reportName|title}}', '<p>Dear {{studentPreferredName}} {{studentSurname}},</p>\r\n<p>This email includes a link to your {{reportName|title}} created on {{date}}.</p>\r\n<p>Click the button below to download this report. To protect your security and privacy, this download link will expire after 1 week.</p>\r\n<p>Thank you,<br />{{organisationAdministratorName}}</p>', '{\"reportName\": \"Test Report\", \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"date\": [\"date\"]\r\n}', '2022-01-24 11:20:30'),
+(000003, 'Core', 'Negative Behaviour Letter 1', 'Behaviour', 'Negative Behaviour Letter 1', 'Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, {{studentPreferredName}}, has reached {{behaviourCount}} negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>{{behaviourRecord|raw}}<br/>This letter represents the first communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10'),
+(000004, 'Core', 'Negative Behaviour Letter 2', 'Behaviour', 'Negative Behaviour Letter 2', 'Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, {{studentPreferredName}}, has reached {{behaviourCount}} negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>{{behaviourRecord|raw}}<br/>This letter represents the second communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10'),
+(000005, 'Core', 'Negative Behaviour Letter 3', 'Behaviour', 'Negative Behaviour Letter 3', 'Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, {{studentPreferredName}}, has reached {{behaviourCount}} negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>{{behaviourRecord|raw}}<br/>This letter represents the final communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10'),
+(000006, 'Core', 'Positive Behaviour Letter 1', 'Behaviour', 'Positive Behaviour Letter 1', 'Positive Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', '', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10'),
+(000007, 'Core', 'Positive Behaviour Letter 2', 'Behaviour', 'Positive Behaviour Letter 2', 'Positive Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', '', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10'),
+(000008, 'Core', 'Positive Behaviour Letter 3', 'Behaviour', 'Positive Behaviour Letter 3', 'Positive Behaviour Letter for {{studentSurname}}, {{studentPreferredName}} ({{studentFormGroup}}) via {{systemName}} at {{organisationName}}', '', '{\"behaviourCount\": [\"randomDigit\"], \r\n\"behaviourRecord\": [\"paragraph\"], \r\n\"studentPreferredName\": [\"firstName\"],\r\n\"studentSurname\": [\"lastName\"],\r\n\"studentFormGroup\": \"Y07\",\r\n\"parentPreferredName\": [\"firstNameFemale\"],\r\n\"parentSurname\": [\"lastName\"],\r\n\"parentTitle\": [\"titleFemale\"],\r\n\"formTutorPreferredName\": [\"firstNameMale\"],\r\n\"formTutorSurname\": [\"lastName\"],\r\n\"formTutorTitle\": [\"titleMale\"],\r\n\"formTutorEmail\": [\"safeEmail\"],\r\n\"date\": [\"date\"]\r\n}', '2021-10-20 05:58:10');
 
 -- --------------------------------------------------------
 
@@ -2429,7 +2457,8 @@ INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES
 (0079, 'Malagasy'),
 (0080, 'Maldivian'),
 (0081, 'Somali'),
-(0082, 'Zulu');
+(0082, 'Zulu'),
+(0083, 'Tamazight');
 
 -- --------------------------------------------------------
 
@@ -2447,6 +2476,7 @@ CREATE TABLE `gibbonLibraryItem` (
   `vendor` varchar(100) NOT NULL,
   `purchaseDate` date DEFAULT NULL,
   `invoiceNumber` varchar(50) NOT NULL,
+  `cost` decimal(10,2) DEFAULT NULL,
   `imageType` enum('','Link','File') NOT NULL DEFAULT '' COMMENT 'Type of image. Image should be 240px x 240px, or smaller.',
   `imageLocation` varchar(255) NOT NULL COMMENT 'URL or local FS path of image.',
   `comment` text NOT NULL,
@@ -2932,7 +2962,7 @@ CREATE TABLE `gibbonPayment` (
   `type` varchar(60) NOT NULL DEFAULT 'Online',
   `status` enum('Complete','Partial','Final','Failure') NOT NULL DEFAULT 'Complete' COMMENT 'Complete means paid in one go, partial is part of a set of payments, and final is last in a set of payments.',
   `amount` decimal(13,2) NOT NULL,
-  `gateway` enum('Paypal') DEFAULT NULL,
+  `gateway` varchar(30) DEFAULT NULL,
   `onlineTransactionStatus` enum('Success','Failure') DEFAULT NULL,
   `paymentToken` varchar(50) DEFAULT NULL,
   `paymentPayerID` varchar(50) DEFAULT NULL,
@@ -3431,7 +3461,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000054046, 001, 0000980),
 (0000054047, 002, 0000980),
 (0000054048, 001, 0000981),
-(0000054049, 006, 0000977);
+(0000054049, 006, 0000977),
+(0000054050, 001, 0000982),
+(0000054051, 001, 0000983);
 
 -- --------------------------------------------------------
 
@@ -3449,7 +3481,6 @@ CREATE TABLE `gibbonPerson` (
   `nameInCharacters` varchar(60) NOT NULL,
   `gender` enum('M','F','Other','Unspecified') NOT NULL DEFAULT 'Unspecified',
   `username` varchar(20) NOT NULL,
-  `password` varchar(255) NOT NULL DEFAULT '',
   `passwordStrong` varchar(255) NOT NULL,
   `passwordStrongSalt` varchar(255) NOT NULL,
   `passwordForceReset` enum('N','Y') NOT NULL DEFAULT 'N' COMMENT 'Force user to reset password on next login.',
@@ -3527,7 +3558,9 @@ CREATE TABLE `gibbonPerson` (
   `gibbonThemeIDPersonal` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibboni18nIDPersonal` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `studentAgreements` text,
-  `googleAPIRefreshToken` varchar(255) NOT NULL,
+  `googleAPIRefreshToken` text NOT NULL,
+  `microsoftAPIRefreshToken` text NOT NULL,
+  `genericAPIRefreshToken` text NOT NULL,
   `receiveNotificationEmails` enum('Y','N') NOT NULL DEFAULT 'Y',
   `cookieConsent` enum('Y','N') DEFAULT NULL,
   `fields` text NOT NULL COMMENT 'JSON object of custom field values'
@@ -3688,6 +3721,21 @@ CREATE TABLE `gibbonPersonReset` (
   `key` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonPersonStatusLog`
+--
+
+CREATE TABLE `gibbonPersonStatusLog` (
+  `gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `statusOld` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
+  `statusNew` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
+  `reason` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4020,6 +4068,7 @@ CREATE TABLE `gibbonReportingCriteriaType` (
   `gibbonReportingCriteriaTypeID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(90) DEFAULT NULL,
   `valueType` varchar(30) DEFAULT NULL,
+  `defaultValue` varchar(255) DEFAULT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `characterLimit` int(6) DEFAULT NULL,
   `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL
@@ -4029,9 +4078,9 @@ CREATE TABLE `gibbonReportingCriteriaType` (
 -- Dumping data for table `gibbonReportingCriteriaType`
 --
 
-INSERT INTO `gibbonReportingCriteriaType` (`gibbonReportingCriteriaTypeID`, `name`, `valueType`, `active`, `characterLimit`, `gibbonScaleID`) VALUES
-(0000000001, 'Comment, Short', 'Comment', 'Y', 500, NULL),
-(0000000002, 'Comment, Long', 'Comment', 'Y', 1000, NULL);
+INSERT INTO `gibbonReportingCriteriaType` (`gibbonReportingCriteriaTypeID`, `name`, `valueType`, `defaultValue`, `active`, `characterLimit`, `gibbonScaleID`) VALUES
+(0000000001, 'Comment, Short', 'Comment', NULL, 'Y', 500, NULL),
+(0000000002, 'Comment, Long', 'Comment', NULL, 'Y', 1000, NULL);
 
 -- --------------------------------------------------------
 
@@ -4800,6 +4849,22 @@ INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearI
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonSession`
+--
+
+CREATE TABLE `gibbonSession` (
+  `gibbonSessionID` varchar(40) NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonActionID` int(7) UNSIGNED ZEROFILL DEFAULT NULL,
+  `sessionData` mediumtext,
+  `sessionStatus` varchar(20) DEFAULT NULL,
+  `timestampCreated` timestamp NULL DEFAULT NULL,
+  `timestampModified` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonSetting`
 --
 
@@ -4847,7 +4912,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00036, 'Behaviour', 'levels', 'Levels', 'Allowable choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '23.0.00'),
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '23.0.01'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with \"Manage All Resources\" rights', ''),
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),
@@ -4873,7 +4938,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00063, 'User Admin', 'personalDataUpdaterRequiredFields', 'Personal Data Updater Required Fields', 'Serialized array listed personal fields in data updater, and whether or not they are required.', 'a:47:{s:5:\"title\";s:1:\"N\";s:7:\"surname\";s:1:\"Y\";s:9:\"firstName\";s:1:\"N\";s:10:\"otherNames\";s:1:\"N\";s:13:\"preferredName\";s:1:\"Y\";s:12:\"officialName\";s:1:\"Y\";s:16:\"nameInCharacters\";s:1:\"N\";s:3:\"dob\";s:1:\"N\";s:5:\"email\";s:1:\"N\";s:14:\"emailAlternate\";s:1:\"N\";s:8:\"address1\";s:1:\"Y\";s:16:\"address1District\";s:1:\"N\";s:15:\"address1Country\";s:1:\"N\";s:8:\"address2\";s:1:\"N\";s:16:\"address2District\";s:1:\"N\";s:15:\"address2Country\";s:1:\"N\";s:10:\"phone1Type\";s:1:\"N\";s:17:\"phone1CountryCode\";s:1:\"N\";s:6:\"phone1\";s:1:\"N\";s:6:\"phone2\";s:1:\"N\";s:6:\"phone3\";s:1:\"N\";s:6:\"phone4\";s:1:\"N\";s:13:\"languageFirst\";s:1:\"N\";s:14:\"languageSecond\";s:1:\"N\";s:13:\"languageThird\";s:1:\"N\";s:14:\"countryOfBirth\";s:1:\"N\";s:9:\"ethnicity\";s:1:\"N\";s:12:\"citizenship1\";s:1:\"N\";s:20:\"citizenship1Passport\";s:1:\"N\";s:12:\"citizenship2\";s:1:\"N\";s:20:\"citizenship2Passport\";s:1:\"N\";s:8:\"religion\";s:1:\"N\";s:20:\"nationalIDCardNumber\";s:1:\"N\";s:15:\"residencyStatus\";s:1:\"N\";s:14:\"visaExpiryDate\";s:1:\"N\";s:10:\"profession\";s:1:\"N\";s:8:\"employer\";s:1:\"N\";s:8:\"jobTitle\";s:1:\"N\";s:14:\"emergency1Name\";s:1:\"N\";s:17:\"emergency1Number1\";s:1:\"N\";s:17:\"emergency1Number2\";s:1:\"N\";s:22:\"emergency1Relationship\";s:1:\"N\";s:14:\"emergency2Name\";s:1:\"N\";s:17:\"emergency2Number1\";s:1:\"N\";s:17:\"emergency2Number2\";s:1:\"N\";s:22:\"emergency2Relationship\";s:1:\"N\";s:19:\"vehicleRegistration\";s:1:\"N\";}'),
 (00065, 'School Admin', 'primaryExternalAssessmentByYearGroup', 'Primary External Assessment By Year Group', 'Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.', 'a:7:{s:3:\"001\";s:1:\"-\";s:3:\"002\";s:1:\"-\";s:3:\"003\";s:1:\"-\";s:3:\"004\";s:1:\"-\";s:3:\"005\";s:1:\"-\";s:3:\"006\";s:1:\"-\";s:3:\"007\";s:1:\"-\";}'),
 (00066, 'Markbook', 'markbookType', 'Markbook Type', 'Comma-separated list of types to make available in the Markbook.', 'Essay,Exam,Homework,Reflection,Test,Unit,End of Year,Other'),
-(00067, 'System', 'allowableHTML', 'Allowable HTML', 'TinyMCE-style list of acceptable HTML tags and options.', 'br[style],strong[style],em[style],span[style],p[style],address[style],pre[style|class],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style],code[style|class],details[style|class],summary[style|class]'),
+(00067, 'System', 'allowableHTML', 'Allowable HTML', 'TinyMCE-style list of acceptable HTML tags and options.', 'br[style],strong[style],b[style],em[style],span[style],p[style],address[style],pre[style|class],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style],code[style|class],details[style|class],summary[style|class]'),
 (00068, 'Application Form', 'howDidYouHear', 'How Did Your Hear?', 'Comma-separated list', 'Advertisement,Personal Recommendation,World Wide Web,Others'),
 (00070, 'Messenger', 'smsUsername', 'SMS Username', 'SMS gateway username.', ''),
 (00071, 'Messenger', 'smsPassword', 'SMS Password', 'SMS gateway password.', ''),
@@ -4881,9 +4946,9 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00073, 'Messenger', 'smsURLCredit', 'SMS URL Credit', 'SMS gateway URL for checking credit.', ''),
 (00074, 'System', 'currency', 'Currency', 'System-wde currency for financial transactions. Support for online payment in this currency depends on your credit card gateway: please consult their support documentation.', 'USD $'),
 (00075, 'System', 'enablePayments', 'Enable Payments', 'Should payments be enabled across the system?', 'N'),
-(00076, 'System', 'paypalAPIUsername', 'PayPal API Username', 'API Username provided by PayPal.', ''),
-(00077, 'System', 'paypalAPIPassword', 'PayPal API Password', 'API Password provided by PayPal.', ''),
-(00078, 'System', 'paypalAPISignature', 'PayPal API Signature', 'API Signature provided by PayPal.', ''),
+(00076, 'System', 'paymentAPIUsername', 'API Username', 'API details are provided by the payment gateway provider', ''),
+(00077, 'System', 'paymentAPIPassword', 'API Password', 'API details are provided by the payment gateway provider', ''),
+(00078, 'System', 'paymentAPISignature', 'API Signature', 'API details are provided by the payment gateway provider', ''),
 (00079, 'Application Form', 'applicationFee', 'Application Submission Fee', 'The cost of applying to the school. Paid when submitting the application form.', '0'),
 (00080, 'Application Form', 'requiredDocuments', 'Required Documents', 'Comma-separated list of documents which must be submitted electronically with the application form.', ''),
 (00081, 'Application Form', 'requiredDocumentsCompulsory', 'Required Documents Compulsory?', 'Are the required documents compulsory?', 'N'),
@@ -4974,12 +5039,12 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00178, 'Application Form', 'autoHouseAssign', 'Auto House Assign', 'Attempt to automatically place student in a house?', 'N'),
 (00179, 'Tracking', 'externalAssessmentDataPoints', 'External Assessment Data Points', 'Stores the external assessment choices for data points output in tracking.', ''),
 (00180, 'Tracking', 'internalAssessmentDataPoints', 'Internal Assessment Data Points', 'Stores the internal assessment choices for data points output in tracking.', ''),
-(00181, 'Behaviour', 'enableBehaviourLetters', 'Enable Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
-(00182, 'Behaviour', 'behaviourLettersLetter1Count', 'Letter 1 Count', 'After how many negative records should letter 1 be sent?', '3'),
+(00181, 'Behaviour', 'enableNegativeBehaviourLetters', 'Enable Negative Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
+(00182, 'Behaviour', 'behaviourLettersNegativeLetter1Count', 'Negative Letter 1 Count', 'After how many negative records should letter 1 be sent?', '3'),
 (00183, 'Behaviour', 'behaviourLettersLetter1Text', 'Letter 1 Text', 'The contents of letter 1, as HTML.', 'Dear Parent/Guardian,<br><br>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br><br>[behaviourRecord]<br><br>This letter represents the first communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br><br>If you would like more information on this matter, please contact your child\'s tutor.'),
-(00184, 'Behaviour', 'behaviourLettersLetter2Count', 'Letter 2 Count', 'After how many negative records should letter 2 be sent?', '6'),
+(00184, 'Behaviour', 'behaviourLettersNegativeLetter2Count', 'Negative Letter 2 Count', 'After how many negative records should letter 2 be sent?', '6'),
 (00185, 'Behaviour', 'behaviourLettersLetter2Text', 'Letter 2 Text', 'The contents of letter 2, as HTML.', 'Dear Parent/Guardian,<br><br>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br><br>[behaviourRecord]<br><br>This letter represents the second communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br><br>If you would like more information on this matter, please contact your child\'s tutor.'),
-(00186, 'Behaviour', 'behaviourLettersLetter3Count', 'Letter 3 Count', 'After how many negative records should letter 3 be sent?', '9'),
+(00186, 'Behaviour', 'behaviourLettersNegativeLetter3Count', 'Negative Letter 3 Count', 'After how many negative records should letter 3 be sent?', '9'),
 (00187, 'Behaviour', 'behaviourLettersLetter3Text', 'Letter 3 Text', 'The contents of letter 3, as HTML.', 'Dear Parent/Guardian,<br><br>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br><br>[behaviourRecord]<br><br>This letter represents the final communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br><br>If you would like more information on this matter, please contact your child\'s tutor.'),
 (00188, 'Markbook', 'enableColumnWeighting', 'Enable Column Weighting', 'Should column weighting and total scores be enabled in the Markbook?', 'N'),
 (00189, 'System', 'firstDayOfTheWeek', 'First Day Of The Week', 'On which day should the week begin?', 'Monday'),
@@ -5092,7 +5157,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00305, 'System', 'backgroundProcessing', 'Background Processing', 'Should the system start an external process for long-running commands?', 'Y'),
 (00306, 'Students', 'applicationFormRefereeRequired', 'Application Form Referee Required', 'Should the referee email address field be required?', 'Y'),
 (00307, 'Application Form', 'applicationProcessFee', 'Application Processing Fee', 'An optional fee that is paid before processing the application form. Sent by staff via the Manage Applications page.', '0'),
-(00308, 'Application Form', 'applicationProcessFeeText', 'Application Processing Fee Text', 'A custom message sent to applicants by email when a processing fee needs to be paid.', 'Thank you for your application submission. Please pay the following processing fee before your application is complete. Payment can be made by credit card, using our secure PayPal payment gateway. Click the button below to pay now.'),
+(00308, 'Application Form', 'applicationProcessFeeText', 'Application Processing Fee Text', 'A custom message sent to applicants by email when a processing fee needs to be paid.', 'Thank you for your application submission. Please pay the following processing fee before your application is complete. Payment can be made by credit card, using our secure online payment gateway. Click the button below to pay now.'),
 (00309, 'School Admin', 'parentDailyEmailSummaryIntroduction', 'Parent Daily Email Summary Introduction', 'Information to display at the beginning of the email', ''),
 (00310, 'School Admin', 'parentDailyEmailSummaryPostScript', 'Parent Daily Email Summary PostScript', 'Information to display at the end of the email', ''),
 (00311, 'Finance', 'paymentTypeOptions', 'Payment Type Options', 'Which payment types are available for invoicing, as a csv list.', 'Online,Bank Transfer,Cash,Cheque,Credit Card,Other'),
@@ -5107,12 +5172,26 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00320, 'System', 'cacheString', 'Front End Cache', '', '1611200873'),
 (00321, 'User Admin', 'publicRegistrationAllowedDomains', 'Public Registration Allowed Domains', 'Comma-separated list of email address domains allowed when registering. Leave blank for no restriction.', ''),
 (00322, 'System Admin', 'composerLockHash', 'Composer Update Required', '', 'fe4abccf405facac24e05de854d764a6'),
-(00323, 'System', 'themeColour', 'Theme Colour', '', 'purple'),
-(00324, 'User Admin', 'publicRegistrationAlternateEmail', 'Include Alternate Email?', 'Should the alternate email field be visible in the Public Registration form?', 'N');
+(00323, 'System', 'themeColour', 'Theme Colour', '', 'purple');
 INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`) VALUES
+(00324, 'User Admin', 'publicRegistrationAlternateEmail', 'Include Alternate Email?', 'Should the alternate email field be visible in the Public Registration form?', 'N'),
 (00325, 'School Admin', 'staffDashboardEnable', 'Enable Staff Dashboard?', 'Should the Staff Dashboard be visible to users?', 'Y'),
 (00326, 'School Admin', 'parentDashboardEnable', 'Enable Parent Dashboard?', 'Should the Parent Dashboard be visible to users?', 'Y'),
-(00327, 'School Admin', 'studentDashboardEnable', 'Enable Student Dashboard?', 'Should the Student Dashboard be visible to users?', 'Y');
+(00327, 'School Admin', 'studentDashboardEnable', 'Enable Student Dashboard?', 'Should the Student Dashboard be visible to users?', 'Y'),
+(00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', ''),
+(00329, 'System Admin', 'importCustomFolderLocation', 'Custom Imports Folder', 'Path to custom import types folder, relative to uploads.', '/imports'),
+(00330, 'System', 'paymentAPIKey', 'API Key', 'API details are provided by the payment gateway provider', ''),
+(00331, 'System', 'paymentGateway', 'Payment Gateway', 'Choose a payment gateway. You must create and configure an account with the selected service to get the required API details.', 'PayPal'),
+(00332, 'System Admin', 'remoteCLIKey', 'Remote CLI Key', 'Allow command line scripts to be run remotely using a secure key. The key can be passed as a URL parameter called remoteCLIKey.', ''),
+(00333, 'System Admin', 'maintenanceMode', 'Maintenance Mode', 'Only users with the Administrator role can login during maintenance mode. Enabling this will logout all other users.', 'N'),
+(00334, 'System Admin', 'maintenanceModeMessage', 'Maintenance Mode Message', 'A message to display on all pages when maintenance mode is active.', 'The system is currently in maintenance mode. Only system administrators will be able to login at this time.'),
+(00335, 'System Admin', 'ssoGoogle', 'Google Integration', '', '{\"enabled\":\"N\"}'),
+(00336, 'System Admin', 'ssoMicrosoft', 'Microsoft Integration', '', '{\"enabled\":\"N\"}'),
+(00337, 'System Admin', 'ssoOther', 'Generic OAuth2 Provider', '', '{\"enabled\":\"N\"}'),
+(00338, 'Behaviour', 'enablePositiveBehaviourLetters', 'Enable Positive Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
+(00339, 'Behaviour', 'behaviourLettersPositiveLetter1Count', 'Positive Letter 1 Count', 'After how many positive records should letter 1 be sent?', '3'),
+(00340, 'Behaviour', 'behaviourLettersPositiveLetter2Count', 'Positive Letter 2 Count', 'After how many positive records should letter 2 be sent?', '6'),
+(00341, 'Behaviour', 'behaviourLettersPositiveLetter3Count', 'Positive Letter 3 Count', 'After how many positive records should letter 3 be sent?', '9');
 
 -- --------------------------------------------------------
 
@@ -5853,6 +5932,13 @@ ALTER TABLE `gibbonActivityStudent`
   ADD KEY `gibbonActivityID` (`gibbonActivityID`,`status`);
 
 --
+-- Indexes for table `gibbonActivityType`
+--
+ALTER TABLE `gibbonActivityType`
+  ADD PRIMARY KEY (`gibbonActivityTypeID`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
 -- Indexes for table `gibbonAlarm`
 --
 ALTER TABLE `gibbonAlarm`
@@ -6037,7 +6123,7 @@ ALTER TABLE `gibbonDistrict`
 --
 ALTER TABLE `gibbonEmailTemplate`
   ADD PRIMARY KEY (`gibbonEmailTemplateID`),
-  ADD UNIQUE KEY `templateName` (`templateName`);
+  ADD UNIQUE KEY `moduleTemplate` (`templateName`,`moduleName`) USING BTREE;
 
 --
 -- Indexes for table `gibbonExternalAssessment`
@@ -6504,6 +6590,13 @@ ALTER TABLE `gibbonPersonReset`
   ADD PRIMARY KEY (`gibbonPersonResetID`);
 
 --
+-- Indexes for table `gibbonPersonStatusLog`
+--
+ALTER TABLE `gibbonPersonStatusLog`
+  ADD PRIMARY KEY (`gibbonPersonStatusLogID`),
+  ADD KEY `gibbonPersonID` (`gibbonPersonID`);
+
+--
 -- Indexes for table `gibbonPersonUpdate`
 --
 ALTER TABLE `gibbonPersonUpdate`
@@ -6755,6 +6848,12 @@ ALTER TABLE `gibbonSchoolYearTerm`
   ADD UNIQUE KEY `sequenceNumber` (`sequenceNumber`,`gibbonSchoolYearID`);
 
 --
+-- Indexes for table `gibbonSession`
+--
+ALTER TABLE `gibbonSession`
+  ADD PRIMARY KEY (`gibbonSessionID`);
+
+--
 -- Indexes for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
@@ -7002,7 +7101,7 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=982;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=984;
 
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
@@ -7033,6 +7132,12 @@ ALTER TABLE `gibbonActivityStaff`
 --
 ALTER TABLE `gibbonActivityStudent`
   MODIFY `gibbonActivityStudentID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonActivityType`
+--
+ALTER TABLE `gibbonActivityType`
+  MODIFY `gibbonActivityTypeID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonAlarm`
@@ -7194,7 +7299,7 @@ ALTER TABLE `gibbonDistrict`
 -- AUTO_INCREMENT for table `gibbonEmailTemplate`
 --
 ALTER TABLE `gibbonEmailTemplate`
-  MODIFY `gibbonEmailTemplateID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `gibbonEmailTemplateID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessment`
@@ -7446,7 +7551,7 @@ ALTER TABLE `gibbonInternalAssessmentEntry`
 -- AUTO_INCREMENT for table `gibbonLanguage`
 --
 ALTER TABLE `gibbonLanguage`
-  MODIFY `gibbonLanguageID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
+  MODIFY `gibbonLanguageID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `gibbonLibraryItem`
@@ -7572,7 +7677,7 @@ ALTER TABLE `gibbonPayment`
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54050;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54052;
 
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
@@ -7621,6 +7726,12 @@ ALTER TABLE `gibbonPersonMedicalUpdate`
 --
 ALTER TABLE `gibbonPersonReset`
   MODIFY `gibbonPersonResetID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `gibbonPersonStatusLog`
+--
+ALTER TABLE `gibbonPersonStatusLog`
+  MODIFY `gibbonPersonStatusLogID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `gibbonPersonUpdate`
@@ -7848,7 +7959,7 @@ ALTER TABLE `gibbonSchoolYearTerm`
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=328;
+  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=342;
 
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
@@ -8065,10 +8176,4 @@ ALTER TABLE `gibbonUsernameFormat`
 --
 ALTER TABLE `gibbonYearGroup`
   MODIFY `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- Add setting 'registerGibbonSupport' to `gibbonSetting`
---
-INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, `description`, `value`)
-VALUES (00328, 'System', 'registerGibbonSupport', 'Receive Support?', 'Join our mailing list and recieve a welcome email from the team.', '');
 

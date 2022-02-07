@@ -113,6 +113,10 @@ class DefaultAdapter extends AuthenticationAdapter
             throw new Exception\DatabaseLoginError;
         }
 
+        if (empty($this->verifier)) {
+            throw new Exception\DatabaseLoginError;
+        }
+
         // Use the provided verifier to hash and compare passwords
         $verified = $this->verifier->verify(
             $userData['passwordStrongSalt'].$input['password'],

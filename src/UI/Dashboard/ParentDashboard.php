@@ -675,11 +675,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $activitiesOutput .= '<td>';
                             $activitiesOutput .= $row['name'];
                             $activitiesOutput .= '</td>';
-                            if ($options != '') {
-                                $activitiesOutput .= '<td>';
-                                $activitiesOutput .= trim($row['type']);
-                                $activitiesOutput .= '</td>';
-                            }
+                            $activitiesOutput .= '<td>';
+                            $activitiesOutput .= trim($row['type']);
+                            $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
                             if ($dateType != 'Date') {
                                 $terms = getTerms($connection2, $this->session->get('gibbonSchoolYearID'), true);
@@ -847,12 +845,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             $return .= '</div>';
         }
 
+        $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
 
-        $defaultTab = 0;
-        if (isset($_GET['tab'])) {
-            $defaultTab = $_GET['tab'];
-        }
-        else if (!is_null($parentDashboardDefaultTabCount)) {
+        if (!isset($_GET['tab']) && !is_null($parentDashboardDefaultTabCount)) {
             $defaultTab = $parentDashboardDefaultTabCount-1;
         }
         $return .= "<script type='text/javascript'>";
