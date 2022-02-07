@@ -49,8 +49,9 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 // Setup system log gateway
 $logGateway = $container->get(LogGateway::class);
 $logLoginAttempt = function ($type, $reason = '') use ($logGateway, $session){
-    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, null, $type, [
-        'username' => $_POST['username'] ?? $session->get('username') ?? '',
+    $gibbonPersonID = $_POST['gibbonPersonIDLoginAttempt'] ?? $session->get('gibbonPersonID') ?? null;
+    $logGateway->addLog($session->get('gibbonSchoolYearIDCurrent'), null, $gibbonPersonID, $type, [
+        'username' => $_POST['username'] ?? $_POST['usernameOAuth'] ?? $session->get('username') ?? '',
         'reason'   => $reason,
     ],$_SERVER['REMOTE_ADDR']);
 };
@@ -121,7 +122,7 @@ try {
         exit;
     }
 
-    $logLoginAttempt('Login - Success');
+    $logLoginAttempt('Login - Success', ucwords($method));
     header("Location: {$URL}");
     exit;
 } catch (AuraException\UsernameMissing $e) {

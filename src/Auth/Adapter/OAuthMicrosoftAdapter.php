@@ -104,6 +104,7 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
         // Get basic user data needed to verify login access
         $this->userGateway = $this->getContainer()->get(UserGateway::class);
         $userData = $this->getUserData(['username' => $user->getUserPrincipalName()]);
+        $_POST['usernameOAuth'] = $user->getUserPrincipalName();
 
         if (empty($userData)) {
             $session->forget('microsoftAPIAccessToken');
