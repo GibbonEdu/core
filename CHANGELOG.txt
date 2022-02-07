@@ -25,6 +25,7 @@ v23.0.01
 
     Bug Fixes
         System Admin: fixed password field in user imports in Import From File
+        System Admin: fixed custom field headings not working for non-english locales
 
 
 v23.0.00
