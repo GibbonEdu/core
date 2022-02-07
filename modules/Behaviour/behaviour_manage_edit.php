@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 }
             
                 $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
-                $form->addRow()->addClass('hidden')->addHeading(__('Step 1'));
+                $form->addRow()->addClass('hidden')->addHeading('Step 1', __('Step 1'));
 
                 //Student
                 $row = $form->addRow();
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     	$row->addSelect('level')->fromArray($optionsLevels)->selected($values['level'])->placeholder();
                 }
 
-                $form->addRow()->addHeading(__('Details'));
+                $form->addRow()->addHeading('Details', __('Details'));
 
                 //Incident
                 $row = $form->addRow();

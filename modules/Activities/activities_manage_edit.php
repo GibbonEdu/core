@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
 
 
-            $form->addRow()->addHeading(__('Basic Information'));
+            $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
             $payment = $settingGateway->getSettingByScope('Activities', 'payment');
             if ($payment != 'None' && $payment != 'Single') {
-                $form->addRow()->addHeading(__('Cost'));
+                $form->addRow()->addHeading('Cost', __('Cost'));
 
                 $row = $form->addRow();
                     $row->addLabel('payment', __('Cost'));
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         ]);
             }
 
-            $form->addRow()->addHeading(__('Time Slots'));
+            $form->addRow()->addHeading('Time Slots', __('Time Slots'));
 
             //Block template
             $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 $slotBlocks->addBlock($slot['gibbonActivitySlotID'], $slot);
             }
 
-            $form->addRow()->addHeading(__('Current Staff'));
+            $form->addRow()->addHeading('Current Staff', __('Current Staff'));
 
             $form->addRow()->addContent('<b>'.__('Warning').'</b>: '.__('If you delete a member of staff, any unsaved changes to this record will be lost!'))->wrap('<i>', '</i>');
 
@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $activityStaffGateway = $container->get(ActivityStaffGateway::class);
             $staffTable->withData($activityStaffGateway->selectActivityStaff($gibbonActivityID)->toDataSet());
 
-            $form->addRow()->addHeading(__('New Staff'));
+            $form->addRow()->addHeading('New Staff', __('New Staff'));
 
             $row = $form->addRow();
                 $row->addLabel('staff', __('Staff'));

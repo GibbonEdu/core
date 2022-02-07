@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availabilit
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-    $form->addRow()->addHeading(__('Add'));
+    $form->addRow()->addHeading('Add', __('Add'));
 
     $row = $form->addRow();
     $row->addLabel('allDay', __('All Day'));

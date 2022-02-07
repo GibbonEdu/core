@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 							$form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
 							$form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
-							$form->addRow()->addHeading(__('Basic Information'));
+							$form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
 							$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 							$row = $form->addRow();
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 								$col->addLabel('purchaseDetails', __('Purchase Details'));
 								$col->addContent($values['purchaseDetails']);
 
-                            $form->addRow()->addHeading(__('Budget Tracking'));
+                            $form->addRow()->addHeading('Budget Tracking', __('Budget Tracking'));
 
                             $row = $form->addRow();
                                 $row->addLabel('costLabel', __('Total Cost'));
@@ -233,12 +233,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                         ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
                             }
 
-                            $form->addRow()->addHeading(__('Log'));
+                            $form->addRow()->addHeading('Log', __('Log'));
 
                             $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
                             $form->addRow()->addContent($expenseLog->getOutput());
 
-                            $form->addRow()->addHeading(__('Action'));
+                            $form->addRow()->addHeading('Action', __('Action'));
 
                             $approvalRequired = approvalRequired($guid, $session->get('gibbonPersonID'), $values['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2);
                             if ($approvalRequired != true) {

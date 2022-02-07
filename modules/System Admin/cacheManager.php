@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     // FORM
     $form = Form::create('cacheSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cacheManager_settingsProcess.php');
 
-    $form->addRow()->addHeading(__('Settings'));
+    $form->addRow()->addHeading('Settings', __('Settings'));
 
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/cacheManager.
     $form = Form::create('clearCache', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cacheManager_clearCacheProcess.php');
     $form->addClass('mt-10');
 
-    $form->addRow()->addHeading(__('System Data'));
+    $form->addRow()->addHeading('System Data', __('System Data'));
 
     $row = $form->addRow();
         $row->addLabel('templateCache', __('Template Cache'));

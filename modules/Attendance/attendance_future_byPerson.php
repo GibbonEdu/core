@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->addHiddenValue('absenceType', $absenceType);
         $form->addHiddenValue('gibbonPersonID', implode(",", $gibbonPersonID));
 
-        $form->addRow()->addHeading(__('Set Future Attendance'));
+        $form->addRow()->addHeading('Set Future Attendance', __('Set Future Attendance'));
 
         if ($absenceType == 'full') {
             $row = $form->addRow();

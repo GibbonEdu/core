@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $form = Form::createTable('systemCheck', "")->setClass('smallIntBorder w-full');
 
-    $form->addRow()->addHeading(__('System Requirements'));
+    $form->addRow()->addHeading('System Requirements', __('System Requirements'));
 
     $row = $form->addRow();
         $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     // APACHE MODULES
     if ($apacheVersion !== false) {
-        $form->addRow()->addHeading(__('Apache Modules'));
+        $form->addRow()->addHeading('Apache Modules', __('Apache Modules'));
 
         $apacheModules = @apache_get_modules();
         foreach ($apacheRequirement as $moduleName) {
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     // PHP EXTENSIONS
     if (!empty($extensions) && is_array($extensions)) {
         $form->addRow()
-            ->addHeading(__('PHP Extensions'))
+            ->addHeading('PHP Extensions', __('PHP Extensions'))
             ->append(__('Gibbon requires you to enable the PHP extensions in the following list. The process to do so depends on your server setup.'));
 
         foreach ($extensions as $extension) {
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     // PHP SETTINGS
     if (!empty($settings) && is_array($settings)) {
         $form->addRow()
-            ->addHeading(__('PHP Settings'))
+            ->addHeading('PHP Settings', __('PHP Settings'))
             ->append(sprintf(__('Configuration values can be set in your system %s file. On shared host, use %s to set php settings.'), '<code>php.ini</code>', '.htaccess'));
 
         foreach ($settings as $settingDetails) {
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     }
 
     // FILE PERMS
-    $form->addRow()->addHeading(__('File Permissions'));
+    $form->addRow()->addHeading('File Permissions', __('File Permissions'));
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('System not publicly writeable'));

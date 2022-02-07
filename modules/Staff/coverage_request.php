@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
-    $form->addRow()->addHeading(__('Coverage Request'));
+    $form->addRow()->addHeading('Coverage Request', __('Coverage Request'));
 
     $requestTypes = ['Broadcast'  => __('Any available substitute')];
 

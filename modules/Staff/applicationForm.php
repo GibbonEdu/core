@@ -113,7 +113,7 @@ if ($proceed == false) {
             ->setURL('/modules/Staff/applicationForm_jobOpenings_view.php')
             ->displayLabel();
 
-        $form->addRow()->addHeading(__('Job Related Information'));
+        $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
 
         $jobOpeningsProcessed = array();
         foreach ($jobOpenings as $jobOpening) {
@@ -131,7 +131,7 @@ if ($proceed == false) {
                 $column->addEditor('questions', $guid)->setRows(10)->setValue($staffApplicationFormQuestions)->required();
         }
 
-        $form->addRow()->addHeading(__('Personal Data'));
+        $form->addRow()->addHeading('Personal Data', __('Personal Data'));
 
         if ($gibbonPersonID != null) { //Logged in
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -172,7 +172,7 @@ if ($proceed == false) {
                 $row->addLabel('dob', __('Date of Birth'));
                 $row->addDate('dob')->required();
 
-            $form->addRow()->addHeading(__('Background Data'));
+            $form->addRow()->addHeading('Background Data', __('Background Data'));
 
             $row = $form->addRow();
                 $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
@@ -197,7 +197,7 @@ if ($proceed == false) {
             $params = ['staff' => true, 'applicationForm' => true];
             $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToForm($form, null, null, $params);
 
-            $form->addRow()->addHeading(__('Contacts'));
+            $form->addRow()->addHeading('Contacts', __('Contacts'));
 
             $row = $form->addRow();
                 $row->addLabel('email', __('Email'));
@@ -231,7 +231,7 @@ if ($proceed == false) {
             $staffApplicationFormRequiredDocumentsText = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsText');
             $staffApplicationFormRequiredDocumentsCompulsory = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
 
-            $heading = $form->addRow()->addHeading(__('Supporting Documents'));
+            $heading = $form->addRow()->addHeading('Supporting Documents', __('Supporting Documents'));
 
             if (!empty($staffApplicationFormRequiredDocumentsText)) {
                 $heading->append($staffApplicationFormRequiredDocumentsText);
@@ -266,7 +266,7 @@ if ($proceed == false) {
         //REFERENCES
         $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
         if ($applicationFormRefereeLink != '') {
-            $heading = $form->addRow()->addHeading(__('References'));
+            $heading = $form->addRow()->addHeading('References', __('References'));
                 $heading->append(__('Your nominated referees will be emailed a confidential form to complete on your behalf.'));
 
             $row = $form->addRow();
@@ -285,7 +285,7 @@ if ($proceed == false) {
         //AGREEMENT
         $agreement = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormAgreement');
         if (!empty($agreement)) {
-            $form->addRow()->addHeading(__('Agreement'))->append($agreement)->wrap('<p>', '</p>');
+            $form->addRow()->addHeading('Agreement', __('Agreement'))->append($agreement)->wrap('<p>', '</p>');
 
             $row = $form->addRow();
                 $row->addLabel('agreement', '<b>'.__('Do you agree to the above?').'</b>');

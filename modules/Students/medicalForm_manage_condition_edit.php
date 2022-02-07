@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonMedicalID', $gibbonPersonMedicalID);
 
-            $form->addRow()->addHeading(__('General Information'));
+            $form->addRow()->addHeading('General Information', __('General Information'));
 
             $row = $form->addRow();
                 $row->addLabel('personName', __('Student'));

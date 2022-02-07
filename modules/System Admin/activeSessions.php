@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
     if (!empty($primaryRole['name']) && $primaryRole['name'] == 'Administrator') {
         $form = Form::create('sessionSettings', $session->get('absoluteURL').'/modules/System Admin/activeSessions_settingsProcess.php');
 
-        $form->addRow()->addHeading(__('Settings'));
+        $form->addRow()->addHeading('Settings', __('Settings'));
 
         $setting = $settingGateway->getSettingByScope('System Admin', 'maintenanceMode', true);
         $row = $form->addRow();

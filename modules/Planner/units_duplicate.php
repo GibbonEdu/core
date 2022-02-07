@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                                 $form->addHiddenValue('address', $session->get('address'));
 
-                                $form->addRow()->addHeading(__('Source'));
+                                $form->addRow()->addHeading('Source', __('Source'));
 
                                 $row = $form->addRow();
                                     $row->addLabel('yearName', __('School Year'));
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                     $row->addLabel('unitName', __('Unit'));
                                     $row->addTextField('unitName')->readonly()->setValue($values['name']);
 
-                                $form->addRow()->addHeading(__('Target'));
+                                $form->addRow()->addHeading('Target', __('Target'));
 
                                 $row = $form->addRow();
                                     $row->addLabel('gibbonSchoolYearIDCopyTo', __('School Year'));
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                                     $form->toggleVisibilityByClass('targetClass')->onRadio('copyLessons')->when('Y');
 
-                                    $form->addRow()->addHeading(__('Source'));
+                                    $form->addRow()->addHeading('Source', __('Source'));
 
                                     $row = $form->addRow();
                                         $row->addLabel('yearName', __('School Year'));
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                         $row->addLabel('gibbonCourseClassIDSource', __('Source Class'));
                                         $row->addSelect('gibbonCourseClassIDSource')->fromQuery($pdo, $sqlSelectClassSource, $dataSelectClassSource)->required()->placeholder();
 
-                                    $form->addRow()->addHeading(__('Target'));
+                                    $form->addRow()->addHeading('Target', __('Target'));
 
                                     $row = $form->addRow();
                                         $row->addLabel('year', __('School Year'));

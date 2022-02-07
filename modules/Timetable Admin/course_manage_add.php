@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 			
-            $row = $form->addRow()->addHeading(__('Basic Details'));
+            $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(3);
 			
-            $row = $form->addRow()->addHeading(__('Display Information'));
+            $row = $form->addRow()->addHeading('Display Information', __('Display Information'));
 
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addLabel('map', __('Include In Curriculum Map'));
 				$row->addYesNo('map')->required();
 			
-            $row = $form->addRow()->addHeading(__('Configure'));
+            $row = $form->addRow()->addHeading('Configure', __('Configure'));
 
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));

@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 }
 
                 //SET EXPECTED USERS TO FULL
-                $form->addRow()->addHeading(__('Set Expected Users To Full'));
+                $form->addRow()->addHeading('Set Expected Users To Full', __('Set Expected Users To Full'));
                 $form->addRow()->addContent(__('This step primes newcomers who have status set to "Expected" to be enrolled as students or added as staff (below).'));
 
                 try {
@@ -351,7 +351,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 }
 
                 //RE-ENROL OTHER STUDENTS
-                $form->addRow()->addHeading(__('Re-Enrol Other Students'));
+                $form->addRow()->addHeading('Re-Enrol Other Students', __('Re-Enrol Other Students'));
                 $form->addRow()->addContent(__('Any students who are not re-enrolled will have their status set to "Left".').' '.__('Students who are already enrolled will have their enrolment updated.'));
 
                 $lastYearGroup = getLastYearGroupID($connection2);
@@ -424,7 +424,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 }
 
                 //SET FINAL YEAR USERS TO LEFT
-                $form->addRow()->addHeading(__('Set Final Year Students To Left'));
+                $form->addRow()->addHeading('Set Final Year Students To Left', __('Set Final Year Students To Left'));
                 $form->addRow()->addContent(__('This step finds students in the last year of school and sets their status.'));
 
                 try {
@@ -460,7 +460,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 }
 
                 //REGISTER NEW STAFF
-                $form->addRow()->addHeading(__('Register New Staff'));
+                $form->addRow()->addHeading('Register New Staff', __('Register New Staff'));
                 $form->addRow()->addContent(__('Any staff who are not registered will have their status set to "Left".'));
 
                 try {

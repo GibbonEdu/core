@@ -68,7 +68,7 @@ $form->addHiddenValue('address', $session->get('address'));
 $form->addHiddenValue('key', $gibbonApplicationFormHash);
 $form->addHiddenValue('gibbonApplicationFormID', $application['gibbonApplicationFormID']);
 
-$form->addRow()->addHeading(__('Application Fee'));
+$form->addRow()->addHeading('Application Fee', __('Application Fee'));
 
 $row = $form->addRow()->addContent(sprintf(__('Payment can be made by credit card, using our secure {gateway} payment gateway. When you press Pay Online Now, you will be directed to {gateway} in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.', ['gateway' => $paymentGateway]), $session->get('systemName')))->wrap('<p class="my-2">', '</p>');
 

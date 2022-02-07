@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonEmailTemplateID', $gibbonEmailTemplateID);
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
     $row = $form->addRow();
         $row->addLabel('moduleName', __('Module'));
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
         $row->addLabel('templateName', __('Name'));
         $row->addTextField('templateName')->maxLength(120);
 
-    $form->addRow()->addHeading(__('Template'))
+    $form->addRow()->addHeading('Template', __('Template'))
         ->prepend(Format::link('https://twig.symfony.com/doc/2.x/', '<img class="float-right w-5 h-5" title="'.__('Twig Documentation').'"  src="./themes/Default/img/help.png" >'));
 
     $variables = json_decode($values['variables'] ?? '', true);

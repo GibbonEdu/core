@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                     $form->addHiddenValue('address', $session->get('address'));
 					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
 
-					$form->addRow()->addHeading(__('Invoice To'));
+					$form->addRow()->addHeading('Invoice To', __('Invoice To'));
 
 					$form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>', '</p>');
 

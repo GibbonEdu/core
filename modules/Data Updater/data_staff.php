@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $form->addHiddenValue('gibbonStaffID', $gibbonStaffID);
         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 
-        $form->addRow()->addHeading(__('Basic Information'));
+        $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
         $row = $form->addRow();
             $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
             $row->addLabel('jobTitle', __('Job Title'));
             $row->addTextField('jobTitle')->maxlength(100);
 
-        $form->addRow()->addHeading(__('First Aid'));
+        $form->addRow()->addHeading('First Aid', __('First Aid'));
 
         $row = $form->addRow();
             $row->addLabel('firstAidQualified', __('First Aid Qualified?'));
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
             $row->addLabel('firstAidExpiry', __('First Aid Expiry'));
             $row->addDate('firstAidExpiry');
 
-        $form->addRow()->addHeading(__('Biography'));
+        $form->addRow()->addHeading('Biography', __('Biography'));
 
         $row = $form->addRow();
             $row->addLabel('countryOfOrigin', __('Country Of Origin'));

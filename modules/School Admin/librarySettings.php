@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Descriptors'));
+    $row = $form->addRow()->addHeading('Descriptors', __('Descriptors'));
 
     $settingGateway = $container->get(SettingGateway::class);
 

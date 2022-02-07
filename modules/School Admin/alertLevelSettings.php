@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
 
     $count = 0;
     while ($rowSQL = $result->fetch()) {
-        $row = $form->addRow()->addHeading(__($rowSQL['name']));
+        $row = $form->addRow()->addHeading($rowSQL['name'], __($rowSQL['name']));
 
         $form->addHiddenValue('gibbonAlertLevelID'.$count, $rowSQL['gibbonAlertLevelID']);
 

@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 }
             }
 
-            $form->addRow()->addHeading(__('Multi Add'));
+            $form->addRow()->addHeading('Multi Add', __('Multi Add'));
 
             $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name

@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Field Values'));
+    $row = $form->addRow()->addHeading('Field Values', __('Field Values'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Privacy Options'));
+    $row = $form->addRow()->addHeading('Privacy Options', __('Privacy Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'privacy', true);
     $row = $form->addRow();
@@ -115,14 +115,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('User Data Options'));
+    $row = $form->addRow()->addHeading('User Data Options', __('User Data Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('User Interface Options'));
+    $row = $form->addRow()->addHeading('User Interface Options', __('User Interface Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'personalBackground', true);
     $row = $form->addRow();

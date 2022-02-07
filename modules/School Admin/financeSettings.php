@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('General Settings'));
+    $row = $form->addRow()->addHeading('General Settings', __('General Settings'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('Finance', 'email', true);
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
             ->setValue($setting['value'])
             ->decimalPlaces(2);
 
-    $row = $form->addRow()->addHeading(__('Invoices'));
+    $row = $form->addRow()->addHeading('Invoices', __('Invoices'));
 
     $setting = $settingGateway->getSettingByScope('Finance', 'invoiceText', true);
     $row = $form->addRow();
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Receipts'));
+    $row = $form->addRow()->addHeading('Receipts', __('Receipts'));
 
     $setting = $settingGateway->getSettingByScope('Finance', 'receiptText', true);
     $row = $form->addRow();
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Reminders'));
+    $row = $form->addRow()->addHeading('Reminders', __('Reminders'));
 
     $setting = $settingGateway->getSettingByScope('Finance', 'reminder1Text', true);
     $row = $form->addRow();
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Expenses'));
+    $row = $form->addRow()->addHeading('Expenses', __('Expenses'));
 
     $setting = $settingGateway->getSettingByScope('Finance', 'budgetCategories', true);
     $row = $form->addRow();

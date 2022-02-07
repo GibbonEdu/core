@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 ->directLink()
                 ->displayLabel();
 
-            $form->addRow()->addHeading(__('For Office Use'));
+            $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonStaffApplicationFormID', __('Application ID'));
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $column->addLabel('notes', __('Notes'));
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
-            $form->addRow()->addHeading(__('Job Related Information'));
+            $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
             
             $form->addHiddenValue('type', $values['type']);
 
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $column->addContent($values['questions']);
             }
 
-            $form->addRow()->addHeading(__('Personal Data'));
+            $form->addRow()->addHeading('Personal Data', __('Personal Data'));
 
             if ($values['gibbonPersonID'] != null) { //Logged in
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $row->addLabel('dob', __('Date of Birth'));
                     $row->addDate('dob')->required();
 
-                $form->addRow()->addHeading(__('Background Data'));
+                $form->addRow()->addHeading('Background Data', __('Background Data'));
 
                 $row = $form->addRow();
                     $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $params = ['staff' => true, 'applicationForm' => true];
                 $container->get(PersonalDocumentHandler::class)->addPersonalDocumentsToForm($form, 'gibbonStaffApplicationForm', $gibbonStaffApplicationFormID, $params);
 
-                $form->addRow()->addHeading(__('Contacts'));
+                $form->addRow()->addHeading('Contacts', __('Contacts'));
 
                 $row = $form->addRow();
                     $row->addLabel('email', __('Email'));
@@ -273,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $staffApplicationFormRequiredDocumentsText = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsText');
                 $staffApplicationFormRequiredDocumentsCompulsory = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocumentsCompulsory');
 
-                $heading = $form->addRow()->addHeading(__('Supporting Documents'));
+                $heading = $form->addRow()->addHeading('Supporting Documents', __('Supporting Documents'));
 
                 $fileUploader = new Gibbon\FileUploader($pdo, $gibbon->session);
 
@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             //REFERENCES
             $applicationFormRefereeLink = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink');
             if ($applicationFormRefereeLink != '') {
-                $heading = $form->addRow()->addHeading(__('References'));
+                $heading = $form->addRow()->addHeading('References', __('References'));
 
                 $row = $form->addRow();
                     $row->addLabel('referenceEmail1', __('Referee 1'))->description(__('An email address for a referee at the applicant\'s current school.'));

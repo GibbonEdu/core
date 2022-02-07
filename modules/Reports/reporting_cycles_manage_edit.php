@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_m
         $column->addTextArea('notes')->setRows(5)->setClass('w-full');
 
     // MILESTONES
-    $form->addRow()->addHeading(__('Milestones'));
+    $form->addRow()->addHeading('Milestones', __('Milestones'));
 
     // Custom Block Template
     $addBlockButton = $form->getFactory()->createButton(__('Add Milestone'))->addClass('addBlock');

@@ -70,13 +70,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $form->addHiddenValue('type', $values['type']);
             $form->addHiddenValue('statusBorrowable', 'Available');
 
-            $form->addRow()->addHeading(__('Catalog Type'));
+            $form->addRow()->addHeading('Catalog Type', __('Catalog Type'));
 
             $row = $form->addRow();
                 $row->addLabel('typeText', __('Type'));
                 $row->addTextField('typeText')->required()->readOnly()->setValue(__($values['type']));
 
-            $form->addRow()->addHeading(__('General Details'));
+            $form->addRow()->addHeading('General Details', __('General Details'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Volume or product name.'));
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 $row->addLabel('comment', __('Comments/Notes'));
                 $row->addTextArea('comment')->setRows(10);
 
-            $form->addRow()->addHeading(__('Type-Specific Details'));
+            $form->addRow()->addHeading('Type-Specific Details', __('Type-Specific Details'));
 
             // Type-specific form fields loaded via ajax
             $row = $form->addRow('detailsRow')->addContent('');

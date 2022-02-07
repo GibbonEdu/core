@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                     $form->addHiddenValue('address', $session->get('address'));
 
-                    $form->addRow()->addHeading(__('Rubric Basics'));
+                    $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
                     $row = $form->addRow();
                         $row->addLabel('scope', 'Scope');
