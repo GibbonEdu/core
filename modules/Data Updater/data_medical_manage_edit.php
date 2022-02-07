@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             };
 
             // Basic Medical Form
-            $form->addRow()->addHeading(__('Basic Information'));
+            $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             foreach ($compare as $fieldName => $label) {
                 $comparisonFields($form, $oldValues, $newValues, $fieldName, $label);

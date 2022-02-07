@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('General Settings'));
+    $row = $form->addRow()->addHeading('General Settings', __('General Settings'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Interface Options'));
+    $row = $form->addRow()->addHeading('Interface Options', __('Interface Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationIntro', true);
     $row = $form->addRow();

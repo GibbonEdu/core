@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 			$form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
 
-			$form->addRow()->addHeading(__('Basic Information'));
+			$form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
 			$row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
                 $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
 				$row->addTextArea('notes')->setRows(5);
 
-			$form->addRow()->addHeading(__('Fees'));
+			$form->addRow()->addHeading('Fees', __('Fees'));
 
 			$totalFee = getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $values['status']);
 			$row = $form->addRow();
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 				$row->addLabel('invoiceToText', __('Invoice To'));
 				$row->addTextField('invoiceToText')->required()->readonly()->setValue(__($values['invoiceTo']));
 
-			$form->addRow()->addHeading(__('Email Invoice'));
+			$form->addRow()->addHeading('Email Invoice', __('Email Invoice'));
 
 			$email = $container->get(SettingGateway::class)->getSettingByScope('Finance', 'email');
 			$form->addHiddenValue('email', $email);

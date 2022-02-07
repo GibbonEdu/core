@@ -226,7 +226,7 @@ class InstallController
         $form->setMultiPartForm(static::getSteps(), 1);
 
         $form->addHiddenValue('nonce', $nonce);
-        $form->addRow()->addHeading(__('System Requirements'));
+        $form->addRow()->addHeading('System Requirements', __('System Requirements'));
 
         $readyToInstall = $readyToInstall && version_compare($phpVersion, $phpRequirement, '>=');
         $row = $form->addRow();
@@ -287,7 +287,7 @@ class InstallController
             $form->setDescription(Format::alert(__('Not ready to install.'), 'error'));
         }
 
-        $form->addRow()->addHeading(__('Language Settings'));
+        $form->addRow()->addHeading('Language Settings', __('Language Settings'));
 
         // Use default language, or language submitted by previous attempt.
         $row = $form->addRow();
@@ -360,7 +360,7 @@ class InstallController
 
         $form->addHiddenValue('nonce', $nonce);
 
-        $form->addRow()->addHeading(__('Database Settings'));
+        $form->addRow()->addHeading('Database Settings', __('Database Settings'));
 
         $row = $form->addRow();
             $row->addLabel('type', __('Database Type'));
@@ -485,7 +485,7 @@ class InstallController
         $form->addHiddenValue('nonce', $nonce);
         $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
 
-        $form->addRow()->addHeading(__('User Account'));
+        $form->addRow()->addHeading('User Account', __('User Account'));
 
         $row = $form->addRow();
             $row->addLabel('title', __('Title'));
@@ -553,7 +553,7 @@ class InstallController
                 ->maxLength(30)
                 ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
-        $form->addRow()->addHeading(__('System Settings'));
+        $form->addRow()->addHeading('System Settings', __('System Settings'));
 
         $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
         $port = '';
@@ -620,7 +620,7 @@ class InstallController
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addYesNo($setting['name'])->selected(($data[$setting['name']] ?? 'N') == 'Y')->required();
 
-        $form->addRow()->addHeading(__('Organisation Settings'));
+        $form->addRow()->addHeading('Organisation Settings', __('Organisation Settings'));
 
         $setting = $installer->getSetting('organisationName', 'System', true);
         $row = $form->addRow();
@@ -632,7 +632,7 @@ class InstallController
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '')->maxLength(50)->required();
 
-        $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
+        $form->addRow()->addHeading('gibbonedu.com Value Added Services', __('gibbonedu.com Value Added Services'));
 
         $setting = $installer->getSetting('gibboneduComOrganisationName', 'System', true);
         $row = $form->addRow();
@@ -644,7 +644,7 @@ class InstallController
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
             $row->addTextField($setting['name'])->setValue($data[$setting['name']] ?? '');
 
-        $form->addRow()->addHeading(__('Miscellaneous'));
+        $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
         $setting = $installer->getSetting('country', 'System', true);
         $row = $form->addRow();

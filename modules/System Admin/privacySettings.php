@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
     $form->addHiddenValue('address', $session->get('address'));
 
     // SECURITY SETTINGS
-    $form->addRow()->addHeading(__('Security Settings'));
+    $form->addRow()->addHeading('Security Settings', __('Security Settings'));
     $form->addRow()->addSubheading(__('Password Policy'));
 
     $settingGateway = $container->get(SettingGateway::class);
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/privacySettin
         $row->addTextField($setting['name'])->maxLength(60)->setValue($setting['value']);
 
     // PRIVACY
-    $form->addRow()->addHeading(__('Privacy Settings'));
+    $form->addRow()->addHeading('Privacy Settings', __('Privacy Settings'));
 
     $setting = $settingGateway->getSettingByScope('System Admin', 'cookieConsentEnabled', true);
     $row = $form->addRow();

@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
 
             $form->addHiddenValue('address', $session->get('address'));
             
-            $form->addRow()->addHeading(__('Rubric Basics'));
+            $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
             $row = $form->addRow();
                 $row->addLabel('scope', 'Scope');
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
                 $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Link columns to grades on a scale?'));
                 $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->placeholder();
 
-            $form->addRow()->addHeading(__('Rubric Design'));
+            $form->addRow()->addHeading('Rubric Design', __('Rubric Design'));
 
             $row = $form->addRow();
                 $row->addLabel('rows', __('Initial Rows'))->description(__('Rows store assessment strands.'));

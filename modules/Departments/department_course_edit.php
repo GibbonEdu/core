@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
                 $form->addHiddenValue('address', $session->get('address'));
 
-                $form->addRow()->addHeading(__('Overview'));
+                $form->addRow()->addHeading('Overview', __('Overview'));
                 $form->addRow()->addEditor('description', $guid)->setRows(20)->setValue($values['description']);
 
                 $row = $form->addRow();

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
 
-            $row = $form->addRow()->addHeading(__('Basic Information'));
+            $row = $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             $row = $form->addRow();
                 $row->addLabel('patient', __('Patient'));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
                 $column->addLabel('actionTaken', __('Action Taken'));
                 $column->addTextArea('actionTaken')->setValue($values['actionTaken'])->setRows(8)->setClass('fullWidth')->readonly();
 
-            $row = $form->addRow()->addHeading(__('Follow Up'));
+            $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
 
             //Print old-style followup as first log entry
             if (!empty($values['followUp'])) {

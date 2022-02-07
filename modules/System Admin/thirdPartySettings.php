@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->addHiddenValue('address', $session->get('address'));
 
     // SINGLE SIGN-ON
-    $form->addRow()->addHeading(__('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon.'));
+    $form->addRow()->addHeading('Single Sign-On Integration', __('Single Sign-On Integration'))->append(__('If your school uses a service that offers OAuth2 authorization, you can enable single sign on integration with Gibbon. This process makes use of industry-standard OAuth2 protocols, and allows a user to access Gibbon without a username and password, provided that their listed email address is part of the chosen service and is unique in Gibbon.'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $ssoGoogle = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $form->addRow()->addContent($table->render($ssoList));
 
     // PAYMENTS
-    $form->addRow()->addHeading(__('Payment Gateway'))->append(__('Gibbon can handle payments using a payment gateway API. These are external services, not affiliated with Gibbon, and you must create your own account with them before being able to accept payments. Gibbon does not store or process any credit card details.'));
+    $form->addRow()->addHeading('Payment Gateway', __('Payment Gateway'))->append(__('Gibbon can handle payments using a payment gateway API. These are external services, not affiliated with Gibbon, and you must create your own account with them before being able to accept payments. Gibbon does not store or process any credit card details.'));
 
     $setting = $settingGateway->getSettingByScope('System', 'enablePayments', true);
     $row = $form->addRow();
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     }
 
     // SMS
-    $form->addRow()->addHeading(__('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));
+    $form->addRow()->addHeading('SMS Settings', __('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));
 
     // SMS Gateway Options - these are not translated, as they represent company names
     $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     }
 
     // SMTP MAIL
-    $form->addRow()->addHeading(__('SMTP Mail'));
+    $form->addRow()->addHeading('SMTP Mail', __('SMTP Mail'));
 
     $setting = $settingGateway->getSettingByScope('System', 'enableMailerSMTP', true);
     $row = $form->addRow();

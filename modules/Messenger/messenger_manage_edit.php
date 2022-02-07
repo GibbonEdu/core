@@ -113,7 +113,7 @@ else {
 				$form->addHiddenValue('address', $session->get('address'));
 				$form->addHiddenValue('gibbonMessengerID', $values['gibbonMessengerID']);
 
-				$form->addRow()->addHeading(__('Delivery Mode'));
+				$form->addRow()->addHeading('Delivery Mode', __('Delivery Mode'));
 				//Delivery by email
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 					$row = $form->addRow();
@@ -173,7 +173,7 @@ else {
 				}
 
 				//MESSAGE DETAILS
-				$form->addRow()->addHeading(__('Message Details'));
+				$form->addRow()->addHeading('Message Details', __('Message Details'));
 
 				$row = $form->addRow();
 					$row->addLabel('subject', __('Subject'));
@@ -189,7 +189,7 @@ else {
 					$form->addHiddenValue('emailReceipt', 'N');
 				}
 				else {
-					$form->addRow()->addHeading(__('Email Read Receipts'));
+					$form->addRow()->addHeading('Email Read Receipts', __('Email Read Receipts'));
 
 					$row = $form->addRow();
 						$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
@@ -206,7 +206,7 @@ else {
 				}
 
 				//TARGETS
-				$form->addRow()->addHeading(__('Targets'));
+				$form->addRow()->addHeading('Targets', __('Targets'));
 				$roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
 				//Get existing TARGETS

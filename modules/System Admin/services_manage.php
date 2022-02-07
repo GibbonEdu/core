@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/services_mana
     $form->addHiddenValue('address', $session->get('address'));
 
     // VALUE ADDED
-    $form->addRow()->addHeading(__('gibbonedu.com Services'));
+    $form->addRow()->addHeading('gibbonedu.com Services', __('gibbonedu.com Services'));
 
     $settingGateway = $container->get(SettingGateway::class);
 

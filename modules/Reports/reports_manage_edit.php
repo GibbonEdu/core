@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
     $form->addHiddenValue('gibbonReportID', $gibbonReportID);
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
-    $form->addRow()->addHeading(__('Report Details'));
+    $form->addRow()->addHeading('Report Details', __('Report Details'));
 
     $schoolYear = $container->get(SchoolYearGateway::class)->getSchoolYearByID($values['gibbonSchoolYearID']);
     $row = $form->addRow();
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_manage_edi
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
         $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFromCSV($values);
 
-    $form->addRow()->addHeading(__('Access'));
+    $form->addRow()->addHeading('Access', __('Access'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();
     $row = $form->addRow();

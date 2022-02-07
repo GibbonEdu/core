@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('Basic Information'));
+            $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sql = "SELECT gibbonYearGroup.name as groupBy, gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonYearGroup ON (gibbonCourse.gibbonYearGroupIDList LIKE concat( '%', gibbonYearGroup.gibbonYearGroupID, '%' )) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.reportable='Y' ORDER BY gibbonYearGroup.sequenceNumber, name";
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $row->addLabel('file', __('Attachment'));
                 $row->addFileUpload('file');
 
-            $form->addRow()->addHeading(__('Assessment'));
+            $form->addRow()->addHeading('Assessment', __('Assessment'));
 
             $attainmentLabel = !empty($attainmentAlternativeName)? sprintf(__('Assess %1$s?'), $attainmentAlternativeName) : __('Assess Attainment?');
             $row = $form->addRow();
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
                 $row->addYesNoRadio('uploadedResponse')->required();
 
-            $form->addRow()->addHeading(__('Access'));
+            $form->addRow()->addHeading('Access', __('Access'));
 
             $row = $form->addRow();
                 $row->addLabel('viewableStudents', __('Viewable to Students'));

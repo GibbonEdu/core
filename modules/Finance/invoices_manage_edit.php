@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
             $form->addHiddenValue('billingScheduleType', $values['billingScheduleType']);
 
-            $form->addRow()->addHeading(__('Basic Information'));
+            $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             $row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 $row->addTextArea('notes')->setRows(5);
 
             // FEES
-            $form->addRow()->addHeading(__('Fees'));
+            $form->addRow()->addHeading('Fees', __('Fees'));
 
             // Ad Hoc OR Issued (Fixed Fees)
             $dataFees = array('gibbonFinanceInvoiceID' => $values['gibbonFinanceInvoiceID']);
@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 }
             }
 
-            $form->addRow()->addHeading(__('Payment Log'));
+            $form->addRow()->addHeading('Payment Log', __('Payment Log'));
 
             $form->addRow()->addContent(getPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID));
 
@@ -266,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
             // EMAIL RECEIPTS
             if ($values['status'] == 'Issued' || $values['status'] == 'Paid - Partial') {
                 $form->toggleVisibilityByClass('emailReceipts')->onSelect('status')->when(array('Paid', 'Paid - Partial', 'Paid - Complete'));
-                $form->addRow()->addHeading(__('Email Receipt'))->addClass('emailReceipts');
+                $form->addRow()->addHeading('Email Receipt', __('Email Receipt'))->addClass('emailReceipts');
 
                 $row = $form->addRow()->addClass('emailReceipts');
                     $row->addYesNoRadio('emailReceipt')->checked('Y');

@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', "/modules/Individual Needs/investigations_manage_edit.php");
                     $form->addHiddenValue('gibbonINInvestigationID', $gibbonINInvestigationID);
-                    $form->addRow()->addHeading(__('Basic Information'));
+                    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                     //Student
                     $row = $form->addRow();
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
 
                     //Form Tutor Resolution
                     if ($investigation['status'] == 'Resolved' || ($investigation['status'] == 'Referral' && $isTutor)) {
-                        $form->addRow()->addHeading(__('Form Tutor Resolution'));
+                        $form->addRow()->addHeading('Form Tutor Resolution', __('Form Tutor Resolution'));
                         if ($isTutor && $investigation['status'] == 'Referral') {
                             $row = $form->addRow();
                                 $row->addLabel('resolvable', __('Resolvable?'))->description(__('Is form tutor able to resolve without further input? If no, further investigation will be launched.'));
@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
                     }
 
                     if ($investigation['status'] == 'Investigation' || $investigation['status'] == 'Investigation Complete') {
-                        $form->addRow()->addHeading(__('Investigation Details'));
+                        $form->addRow()->addHeading('Investigation Details', __('Investigation Details'));
 
                         $contributionsGateway = $container->get(INInvestigationContributionGateway::class);
                         $criteria2 = $contributionsGateway->newQueryCriteria()

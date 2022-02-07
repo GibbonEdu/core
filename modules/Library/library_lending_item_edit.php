@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('Item Details'));
+            $form->addRow()->addHeading('Item Details', __('Item Details'));
 
             $row = $form->addRow();
                 $row->addLabel('id', __('ID'));
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('statusCurrent', __('Current Status'));
                 $row->addTextField('statusCurrent')->setValue(__($values['status']))->readonly()->required();
 
-            $form->addRow()->addHeading(__('This Event'));
+            $form->addRow()->addHeading('This Event', __('This Event'));
 
             $statuses = array(
                 'On Loan' => __('On Loan'),
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addDate('returnExpected')->setValue(Format::date($values['returnExpected']))->required();
 
 
-            $row = $form->addRow()->addHeading(__('On Return'));
+            $row = $form->addRow()->addHeading('On Return', __('On Return'));
 
             $actions = array(
                 'Reserve' => __('Reserve'),

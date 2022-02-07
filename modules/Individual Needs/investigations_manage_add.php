@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
         $form = Form::create('addform', $session->get('absoluteURL')."/modules/Individual Needs/investigations_manage_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID");
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addHiddenValue('address', "/modules/Individual Needs/investigations_manage_add.php");
-        $form->addRow()->addHeading(__('Basic Information'));
+        $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
         //Student
         $row = $form->addRow();

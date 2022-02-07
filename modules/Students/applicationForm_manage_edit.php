@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $form->addHiddenValue('gibbonApplicationFormID', $application['gibbonApplicationFormID']);
 
     $row = $form->addRow();
-        $row->addHeading(__('For Office Use'));
+        $row->addHeading('For Office Use', __('For Office Use'));
         $row->addContent(__('Fix Block Caps'))->wrap('<small class="emphasis small" style="float:right;margin-top:16px;"><a id="fixCaps">', '</a></small>');
 
     $row = $form->addRow();
@@ -322,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // STUDENT PERSONAL DATA
-    $form->addRow()->addHeading(__('Student'));
+    $form->addRow()->addHeading('Student', __('Student'));
     $form->addRow()->addSubheading(__('Student Personal Data'));
 
     $row = $form->addRow();
@@ -480,7 +480,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $form->addHiddenValue('gibbonFamily', 'FALSE');
 
         // HOME ADDRESS
-        $form->addRow()->addHeading(__('Home Address'))->append(__('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.'));
+        $form->addRow()->addHeading('Home Address', __('Home Address'))->append(__('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.'));
 
         $row = $form->addRow();
             $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
@@ -634,7 +634,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $form->addHiddenValue('gibbonFamilyID', $application['gibbonFamilyID']);
 
         $row = $form->addRow();
-            $row->addHeading(__('Family'))->append(sprintf(__('The applying family is already a member of %1$s.'), $session->get('organisationName')));
+            $row->addHeading('Family', __('Family'))->append(sprintf(__('The applying family is already a member of %1$s.'), $session->get('organisationName')));
 
         $dataFamily = array('gibbonFamilyID' => $application['gibbonFamilyID']);
         $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
@@ -670,7 +670,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     }
 
     // SIBLINGS
-    $form->addRow()->addHeading(__('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
+    $form->addRow()->addHeading('Siblings', __('Siblings'))->append(__('Please give information on the applicants\'s siblings.'));
 
     $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
@@ -696,7 +696,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     if ($languageOptionsActive == 'Y' && ($languageOptionsBlurb != '' OR $languageOptionsLanguageList != '')) {
 
-        $heading = $form->addRow()->addHeading(__('Language Selection'));
+        $heading = $form->addRow()->addHeading('Language Selection', __('Language Selection'));
 
         if (!empty($languageOptionsBlurb)) {
             $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
@@ -722,7 +722,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $scholarshipOptionsActive = $settingGateway->getSettingByScope('Application Form', 'scholarshipOptionsActive');
 
     if ($scholarshipOptionsActive == 'Y') {
-        $heading = $form->addRow()->addHeading(__('Scholarships'));
+        $heading = $form->addRow()->addHeading('Scholarships', __('Scholarships'));
 
         $scholarship = $settingGateway->getSettingByScope('Application Form', 'scholarships');
         if (!empty($scholarship)) {
@@ -743,7 +743,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $paymentOptionsActive = $settingGateway->getSettingByScope('Application Form', 'paymentOptionsActive');
 
     if ($paymentOptionsActive == 'Y') {
-        $form->addRow()->addHeading(__('Payment'));
+        $form->addRow()->addHeading('Payment', __('Payment'));
 
         $form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>','</p>');
 
@@ -820,7 +820,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $requiredDocumentsText = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsText');
         $requiredDocumentsCompulsory = $settingGateway->getSettingByScope('Application Form', 'requiredDocumentsCompulsory');
 
-        $heading = $form->addRow()->addHeading(__('Supporting Documents'));
+        $heading = $form->addRow()->addHeading('Supporting Documents', __('Supporting Documents'));
 
         if (!empty($requiredDocumentsText)) {
             $heading->append($requiredDocumentsText);
@@ -862,7 +862,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
 
     // MISCELLANEOUS
-    $form->addRow()->addHeading(__('Miscellaneous'));
+    $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
     $howDidYouHear = $settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
     $howDidYouHearList = explode(',', $howDidYouHear);

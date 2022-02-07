@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Features'));
+    $row = $form->addRow()->addHeading('Features', __('Features'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('Markbook', 'enableEffort', true);
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Interface'));
+    $row = $form->addRow()->addHeading('Interface', __('Interface'));
 
     $setting = $settingGateway->getSettingByScope('Markbook', 'markbookType', true);
     $row = $form->addRow();
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Warnings'));
+    $row = $form->addRow()->addHeading('Warnings', __('Warnings'));
 
     $setting = $settingGateway->getSettingByScope('Markbook', 'showStudentAttainmentWarning', true);
     $row = $form->addRow();

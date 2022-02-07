@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
 
         while ($rowModules = $resultModules->fetch()) {
-            $form->addRow()->addHeading(__($rowModules['name']));
+            $form->addRow()->addHeading($rowModules['name'], __($rowModules['name']));
             $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
             

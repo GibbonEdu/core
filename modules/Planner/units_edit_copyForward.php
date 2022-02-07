@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                         $form->addHiddenValue('gibbonUnitID', $gibbonUnitID);
                         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
-                        $form->addRow()->addHeading(__('Source'));
+                        $form->addRow()->addHeading('Source', __('Source'));
                             $row = $form->addRow();
                             $row->addLabel('yearName', __('School Year'));
                             $row->addTextField('yearName')->readonly()->setValue($year)->required();
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
 
                             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                             $sql = "SELECT gibbonSchoolYearID as value,name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber";
-                            $form->addRow()->addHeading(__('Target'));
+                            $form->addRow()->addHeading('Target', __('Target'));
                             $row = $form->addRow();
                                 $row->addLabel('gibbonSchoolYearIDCopyTo', __('Year'));
                                 $row->addSelect('gibbonSchoolYearIDCopyTo')->fromQuery($pdo, $sql)->placeholder()->isRequired();

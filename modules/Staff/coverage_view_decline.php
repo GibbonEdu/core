@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_declin
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
-    $form->addRow()->addHeading(__('Decline Coverage Request'));
+    $form->addRow()->addHeading('Decline Coverage Request', __('Decline Coverage Request'));
     
     // Staff Card
     $staffCard = $container->get(StaffCard::class);

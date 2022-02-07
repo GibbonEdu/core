@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
-    $form->addRow()->addHeading(__('Coverage Request'));
+    $form->addRow()->addHeading('Coverage Request', __('Coverage Request'));
 
     if (!empty($coverage['gibbonPersonID'])) {
         $staffCard = $container->get(StaffCard::class);
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_edit
         $row->addTextArea('notesStatus')->setRows(3)->setValue($coverage['notesStatus']);
     
     
-    $form->addRow()->addHeading(__('Substitute'));
+    $form->addRow()->addHeading('Substitute', __('Substitute'));
 
     if ($coverage['requestType'] == 'Individual') {
         $row = $form->addRow();

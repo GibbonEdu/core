@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth mt-2');
 
-            $table->addRow()->addHeading(__('Individual Education Plan'))->setClass('mt-4 mb-2');
+            $table->addRow()->addHeading('Individual Education Plan', __('Individual Education Plan'))->setClass('mt-4 mb-2');
 
             if (!empty($gibbonINArchiveID)) {
                 // ARCHIVED IEP
