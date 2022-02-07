@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $contextChained = array_reduce(array_keys($headings), function($group, $context) use (&$headings, &$contextHeadings, &$contextCustom) {
         foreach ($headings[$context] as $key => $value) {
             $contextHeadings[$key.'_'.$context] = $value;
-            $group[$value.'_'.$context] = $context;
+            $group[$key.'_'.$context] = $context;
         }
         $contextHeadings['Custom_'.$context] = '['.__('Custom').']';
         $contextCustom[] = 'Custom_'.$context;

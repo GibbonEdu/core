@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $headings = $customFieldHandler->getHeadings();
     $headings = $headings[$values['context']] ?? [];
-    $isHeadingCustom = !empty($values['heading']) && !in_array($values['heading'], $headings);
+    $isHeadingCustom = !empty($values['heading']) && !array_key_exists($values['heading'], $headings);
     $row = $form->addRow();
         $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
         $row->addSelect('heading')
