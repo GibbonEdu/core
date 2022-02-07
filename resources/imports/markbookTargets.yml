@@ -2,7 +2,7 @@ details:
     type: markbookTargets
     name: Targets
     table: gibbonMarkbookTarget
-    modes: { update: true, insert: true, export: false }
+    modes: { update: true, insert: true, export: true }
 access:
     module: Markbook
     action: Edit Markbook_everything
