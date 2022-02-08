@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     }
 
     if (copy($sourcePath, $destinationPath)) {
+        chmod($destinationPath, 0755);
         $data['type'] = 'Additional';
         $data['templateFile'] = $templateFileDestination;
         $duplicated = $prototypeGateway->insert($data);
