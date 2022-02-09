@@ -1083,3 +1083,9 @@ SELECT 'Hello, this blank line is important, nothing to see here.';end
 $sql[$count][0] = '23.0.01';
 $sql[$count][1] = "
 ";
+
+//v24.0.00
+++$count;
+$sql[$count][0] = '24.0.00';
+$sql[$count][1] = "
+";
