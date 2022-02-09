@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $form->addHiddenValue('search', $search);
                 $form->addHiddenValue('allStudents', $allStudents);
 
-                $form->addRow()->addHeading(__('Assessment Type'));
+                $form->addRow()->addHeading('Assessment Type', __('Assessment Type'));
 
                 $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
                 $row = $form->addRow();

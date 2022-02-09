@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', $session->get('address'));
 
-                $form->addRow()->addHeading(__('Basic Information'));
+                $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                 if ($highestAction == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction == 'Edit Markbook_everything') {
                     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     $result = $pdo->executeQuery($data, $sql);
                     $currentTerm = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
 
-                    $form->addRow()->addHeading(__('Term Date'));
+                    $form->addRow()->addHeading('Term Date', __('Term Date'));
 
                     $row = $form->addRow();
                         $row->addLabel('gibbonSchoolYearTermID', __('Term'));
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     $form->addHiddenValue('date', Format::date($date));
                 }
 
-                $form->addRow()->addHeading(__('Assessment'));
+                $form->addRow()->addHeading('Assessment', __('Assessment'));
 
                 // ATTAINMENT
                 $attainmentLabel = !empty($attainmentAltName)? sprintf(__('Assess %1$s?'), $attainmentAltName) : __('Assess Attainment?');
@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
                     $row->addYesNoRadio('uploadedResponse')->required();
 
-                $form->addRow()->addHeading(__('Access'));
+                $form->addRow()->addHeading('Access', __('Access'));
 
                 $row = $form->addRow();
                     $row->addLabel('viewableStudents', __('Viewable to Students'));

@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $form->addHiddenValue('fileSection', $fileSection);
     $form->addHiddenValue('file', $file);
 
-    $form->addRow()->addHeading(__('Report Info'));
+    $form->addRow()->addHeading('Report Info', __('Report Info'));
 
     $row = $form->addRow();
         $row->addLabel('archiveName', __('Archive'));

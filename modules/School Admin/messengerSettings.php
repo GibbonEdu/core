@@ -32,11 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('SMS Settings'));
+    $row = $form->addRow()->addHeading('SMS Settings', __('SMS Settings'));
 
     $row = $form->addRow()->addAlert(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.').' '.sprintf(__('%1$sClick here%2$s to configure SMS settings.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/System Admin/thirdPartySettings.php'>", "</a>"));
 
-	$row = $form->addRow()->addHeading(__('Message Wall Settings'));
+	$row = $form->addRow()->addHeading('Message Wall Settings', __('Message Wall Settings'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Miscellaneous'));
+    $row = $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
 	$setting = $settingGateway->getSettingByScope('Messenger', 'messageBcc', true);
 	$row = $form->addRow();

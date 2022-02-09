@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $form->addHiddenValue('currentDate', $currentDate);
     $form->addHiddenValue('count', count($students));
 
-    $form->addRow()->addHeading(__('Take Attendance'));
+    $form->addRow()->addHeading('Take Attendance', __('Take Attendance'));
 
     $grid = $form->addRow()->addGrid('attendance')->setBreakpoints('w-1/2 sm:w-1/4 md:w-1/5 lg:w-1/4');
 

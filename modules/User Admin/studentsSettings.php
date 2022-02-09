@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Student Notes'));
+    $form->addRow()->addHeading('Student Notes', __('Student Notes'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('Students', 'enableStudentNotes', true);
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromArray($noteCreationNotificationRoles)->selected($setting['value'])->required();
 
-    $form->addRow()->addHeading(__('Alerts'));
+    $form->addRow()->addHeading('Alerts', __('Alerts'));
 
     $setting = $settingGateway->getSettingByScope('Students', 'academicAlertLowThreshold', true);
     $row = $form->addRow();
@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
                 ->maximum(50)
                 ->required();
 
-    $row = $form->addRow()->addHeading(__('Day-Type Options'));
+    $row = $form->addRow()->addHeading('Day-Type Options', __('Day-Type Options'));
 
     $setting = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions', true);
     $row = $form->addRow();
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/studentsSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
         
-    $form->addRow()->addHeading(__('Miscellaneous'));
+    $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
     $setting = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions', true);
     $row = $form->addRow();

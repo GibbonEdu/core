@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('Item Details'));
+            $form->addRow()->addHeading('Item Details', __('Item Details'));
 
             $row = $form->addRow();
                 $row->addLabel('id', __('ID'));
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('statusCurrent', __('Current Status'));
                 $row->addTextField('statusCurrent')->setValue(__($values['status']))->readonly()->required();
 
-            $row = $form->addRow()->addHeading(__('On Return'));
+            $row = $form->addRow()->addHeading('On Return', __('On Return'));
                 $row->append(__('The new status will be set to "Returned" unless the fields below are completed:'));
 
             $form->addHiddenValue('gibbonPersonIDStatusResponsible', $values['gibbonPersonIDStatusResponsible']);

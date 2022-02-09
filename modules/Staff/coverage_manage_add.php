@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Add Coverage'));
+    $form->addRow()->addHeading('Add Coverage', __('Add Coverage'));
 
     $row = $form->addRow();
         $row->addAlert(__("This option lets you add general coverage for a substitute that is not associated with a staff absence. This can be useful if they are covering an activity or event rather than a particular absence."), 'message');

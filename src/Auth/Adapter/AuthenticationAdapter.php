@@ -136,7 +136,10 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
             throw new AuraException\MultipleMatches;
         }
 
-        return $userResult->fetch();
+        $userData = $userResult->fetch();
+        $_POST['gibbonPersonIDLoginAttempt'] = $userData['gibbonPersonID'] ?? null;
+
+        return $userData;
     }
 
     /**

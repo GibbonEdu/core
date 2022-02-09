@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
     $form->addHiddenValue('address', $session->get('address'));
 
     // Staff dashboard
-    $form->addRow()->addHeading(__('Staff Dashboard'));
+    $form->addRow()->addHeading('Staff Dashboard', __('Staff Dashboard'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
 
     // Student dashboard
-    $form->addRow()->addHeading(__('Student Dashboard'));
+    $form->addRow()->addHeading('Student Dashboard', __('Student Dashboard'));
 
     $setting = $settingGateway->getSettingByScope('School Admin', 'studentDashboardEnable', true);
     $row = $form->addRow();
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
             ->selected($setting['value']);
 
     // Parent dashboard
-    $form->addRow()->addHeading(__('Parent Dashboard'));
+    $form->addRow()->addHeading('Parent Dashboard', __('Parent Dashboard'));
     $setting = $settingGateway->getSettingByScope('School Admin', 'parentDashboardEnable', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));

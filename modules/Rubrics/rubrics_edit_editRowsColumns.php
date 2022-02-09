@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 
                     $form->addHiddenValue('address', $session->get('address'));
                     
-                    $form->addRow()->addHeading(__('Rubric Basics'));
+                    $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
                     $row = $form->addRow();
                         $row->addLabel('scope', 'Scope');
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                         $row->addLabel('name', __('Name'));
 						$row->addTextField('name')->maxLength(50)->required()->readOnly();
 						
-					$form->addRow()->addHeading(__('Rows'));
+					$form->addRow()->addHeading('Rows', __('Rows'));
 
 					// Get outcomes by year group
 					$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList']);
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					}
 
                     $row = $form->addRow();
-                        $row->addHeading(__('Columns'));
+                        $row->addHeading('Columns', __('Columns'));
                         $row->addContent(__('Visualise?'))->setClass('font-bold text-center');
                         $row->addContent()->setClass('w-full sm:max-w-sm');
 

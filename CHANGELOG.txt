@@ -17,14 +17,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v24.0.00
+--------
+
+    Headlines
+    Significant Changes
+    Tweaks & Additions
+    Bug Fixes
+
 v23.0.01
 --------
 
     Tweaks & Additions
+        System Admin: improved the reliability of the uploads folder check
         System Admin: added an import for School Year Terms
+        System Admin: improved login logs to include login method and user id
 
     Bug Fixes
         System Admin: fixed password field in user imports in Import From File
+        System Admin: fixed custom field headings not working for non-english locales
+        System Admin: fixed blank User column for logins listed in View Logs
 
 
 v23.0.00

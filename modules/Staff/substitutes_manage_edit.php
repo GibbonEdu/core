@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
             ->addParam('search', $search);
     }
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'));
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
         $row->addLabel('details', __('Details'))->description(__('Additional information such as year group preference, language preference, etc.'));
         $row->addTextArea('details')->setRows(2)->maxlength(255);
 
-    $form->addRow()->addHeading(__('Contact Information'));
+    $form->addRow()->addHeading('Contact Information', __('Contact Information'));
 
     $row = $form->addRow();
         $row->addLabel('phone1Label', __('Phone').' 1');

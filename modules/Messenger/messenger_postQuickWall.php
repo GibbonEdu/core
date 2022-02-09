@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 		$form->addHiddenValue("roleCategories[$key]", $category);
 	}
 
-	$form->addRow()->addHeading(__('Delivery Mode'));
+	$form->addRow()->addHeading('Delivery Mode', __('Delivery Mode'));
 
 	$row = $form->addRow();
 		$row->addLabel('messageWallLabel', __('Message Wall'))->description(__('Place this message on user\'s message wall?'));
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 		$col->addDate('date2');
 		$col->addDate('date3');
 
-	$form->addRow()->addHeading(__('Message Details'));
+	$form->addRow()->addHeading('Message Details', __('Message Details'));
 
     $row = $form->addRow();
         $row->addLabel('subject', __('Subject'));

@@ -90,7 +90,7 @@ else {
         $form->setClass('smallIntBorder fullWidth');
         $form->addHiddenValue('address', $session->get('address'));
 
-        $form->addRow()->addHeading(__('Reset Password'));
+        $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
         $policy = getPasswordPolicy($guid, $connection2);
         if ($policy != false) {

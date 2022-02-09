@@ -65,10 +65,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
 
 				$form->addHiddenValue('address', $session->get('address'));
 
-				$form->addRow()->addHeading(__('Overview'));
+				$form->addRow()->addHeading('Overview', __('Overview'));
 				$form->addRow()->addEditor('blurb', $guid)->setRows(20)->setValue($values['blurb']);
 
-				$form->addRow()->addHeading(__('Current Resources'));
+				$form->addRow()->addHeading('Current Resources', __('Current Resources'));
 
 				$data = array('gibbonDepartmentID' => $gibbonDepartmentID);
 				$sql = 'SELECT * FROM gibbonDepartmentResource WHERE gibbonDepartmentID=:gibbonDepartmentID ORDER BY name';

@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addMultiProcess.php?gibbonPersonID='.$_GET['gibbonPersonID'].'&gibbonFormGroupID='.$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'].'&type='.$_GET['type']);
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', '/modules/Behaviour/behaviour_manage_addMulti.php');
-    $form->addRow()->addHeading(__('Step 1'));
+    $form->addRow()->addHeading('Step 1', __('Step 1'));
 
     $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
     if (!empty($policyLink)) {
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 ->placeholder();
     }
 
-    $form->addRow()->addHeading(__('Details'));
+    $form->addRow()->addHeading('Details', __('Details'));
 
     //Incident
     $row = $form->addRow();

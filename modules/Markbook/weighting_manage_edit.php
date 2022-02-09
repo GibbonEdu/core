@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $form->addHiddenValue('address', $session->get('address'));
                     $form->addHiddenValue('type', $values['type']);
 
-                    $form->addRow()->addHeading(__('Add Markbook Weighting'));
+                    $form->addRow()->addHeading('Add Markbook Weighting', __('Add Markbook Weighting'));
 
                     $row = $form->addRow();
                         $row->addLabel('type', __('Type'));

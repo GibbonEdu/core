@@ -105,14 +105,16 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Label($for, $label);
     }
 
-    public function createHeading($content = '', $tag = null)
+    public function createHeading($id = '', $content = null, $tag = null)
     {
-        return new Layout\Heading($content, $tag);
+        $content = is_null($content) || $content == 'h3' ? $id : $content;
+        return new Layout\Heading($id, $content, $tag);
     }
 
-    public function createSubheading($content, $tag = 'h4')
+    public function createSubheading($id = '', $content = null, $tag = 'h4')
     {
-        return new Layout\Heading($content, $tag = 'h4');
+        $content = is_null($content) || $content == 'h4' ? $id : $content;
+        return new Layout\Heading($id, $content, $tag = 'h4');
     }
 
     /**

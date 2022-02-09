@@ -65,18 +65,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     }
 
     // Uploads folder check, make a request using a Guzzle HTTP get request
-    $statusCode = checkUploadsFolderStatusCode($session->get('absoluteURL'));
-
-    if (!($statusCode == '403' || $statusCode == '404')) {
-        echo Format::alert(__('The system check has detected that your uploads folder is returning a {code} status code, which indicates that it is publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
-            'code' => $statusCode,
+    $statusCheck = checkUploadsFolderStatus($session->get('absoluteURL'));
+    if (!$statusCheck) {
+        echo Format::alert(__('The system check has detected that your uploads folder may be publicly accessible. This suggests a serious issue in your server configuration that should be addressed immediately. Please visit our {documentation} page for instructions to fix this issue.', [
             'documentation' => Format::link('https://docs.gibbonedu.org/administrators/getting-started/installing-gibbon/#post-install-server-config', __('Post-Install and Server Config')),
         ]), 'error');
     }
 
     $form = Form::createTable('systemCheck', "")->setClass('smallIntBorder w-full');
 
-    $form->addRow()->addHeading(__('System Requirements'));
+    $form->addRow()->addHeading('System Requirements', __('System Requirements'));
 
     $row = $form->addRow();
         $row->addLabel('phpVersionLabel', sprintf($versionTitle, 'PHP'))->description(sprintf($versionMessage, __('Gibbon').' v'.$version, 'PHP', $phpRequirement));
@@ -105,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     // APACHE MODULES
     if ($apacheVersion !== false) {
-        $form->addRow()->addHeading(__('Apache Modules'));
+        $form->addRow()->addHeading('Apache Modules', __('Apache Modules'));
 
         $apacheModules = @apache_get_modules();
         foreach ($apacheRequirement as $moduleName) {
@@ -120,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     // PHP EXTENSIONS
     if (!empty($extensions) && is_array($extensions)) {
         $form->addRow()
-            ->addHeading(__('PHP Extensions'))
+            ->addHeading('PHP Extensions', __('PHP Extensions'))
             ->append(__('Gibbon requires you to enable the PHP extensions in the following list. The process to do so depends on your server setup.'));
 
         foreach ($extensions as $extension) {
@@ -135,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     // PHP SETTINGS
     if (!empty($settings) && is_array($settings)) {
         $form->addRow()
-            ->addHeading(__('PHP Settings'))
+            ->addHeading('PHP Settings', __('PHP Settings'))
             ->append(sprintf(__('Configuration values can be set in your system %s file. On shared host, use %s to set php settings.'), '<code>php.ini</code>', '.htaccess'));
 
         foreach ($settings as $settingDetails) {
@@ -159,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     }
 
     // FILE PERMS
-    $form->addRow()->addHeading(__('File Permissions'));
+    $form->addRow()->addHeading('File Permissions', __('File Permissions'));
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('System not publicly writeable'));
@@ -168,8 +166,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
 
     $row = $form->addRow();
         $row->addLabel('systemWriteLabel', __('Uploads folder not publicly accessible'));
-        $row->addTextArea('systemWrite')->setValue(__('Status code {code}', ['code' => $statusCode]))->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
-        $row->addContent(($statusCode == '403' || $statusCode == '404')? $trueIcon : $falseIcon);
+        $row->addTextArea('systemWrite')->setValue($session->get('absoluteURL').'/uploads')->setRows(1)->addClass('w-64 max-w-1/2 text-left')->readonly();
+        $row->addContent($statusCheck? $trueIcon : $falseIcon);
 
     $row = $form->addRow();
         $row->addLabel('uploadsFolderLabel', __('Uploads folder server writeable'));

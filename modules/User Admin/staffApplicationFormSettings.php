@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('General Options'));
+    $row = $form->addRow()->addHeading('General Options', __('General Options'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = $settingGateway->getSettingByScope('Staff', 'applicationFormRefereeLink', true);
-    $row = $form->addRow()->addHeading(__($setting['nameDisplay']))->append(__($setting['description']));
+    $row = $form->addRow()->addHeading($setting['nameDisplay'], __($setting['nameDisplay']))->append(__($setting['description']));
 
     $applicationFormRefereeLink = unserialize($setting['value']);
 
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
         $typeCount++;
     }
 
-    $row = $form->addRow()->addHeading(__('Required Documents Options'));
+    $row = $form->addRow()->addHeading('Required Documents Options', __('Required Documents Options'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormRequiredDocuments', true);
     $row = $form->addRow();
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Acceptance Options'));
+    $row = $form->addRow()->addHeading('Acceptance Options', __('Acceptance Options'));
 
     $setting = $settingGateway->getSettingByScope('Staff', 'staffApplicationFormUsernameFormat', true);
     $row = $form->addRow();

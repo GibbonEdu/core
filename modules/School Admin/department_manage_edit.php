@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                     ->accepts('.jpg,.jpeg,.gif,.png')
                     ->setAttachment('logo', $session->get('absoluteURL'), $values['logo']);
 
-            $form->addRow()->addHeading(__('Current Staff'));
+            $form->addRow()->addHeading('Current Staff', __('Current Staff'));
 
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
             $sql = "SELECT preferredName, surname, gibbonDepartmentStaff.* FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
                 }
             }
 
-            $form->addRow()->addHeading(__('New Staff'));
+            $form->addRow()->addHeading('New Staff', __('New Staff'));
 
             $row = $form->addRow();
                 $row->addLabel('staff', __('Staff'));

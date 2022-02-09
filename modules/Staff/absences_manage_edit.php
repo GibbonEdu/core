@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'));
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffAbsenceID', $gibbonStaffAbsenceID);
 
-    $form->addRow()->addHeading(__('Add'));
+    $form->addRow()->addHeading('Add', __('Add'));
 
     $row = $form->addRow();
         $row->addLabel('allDay', __('All Day'));

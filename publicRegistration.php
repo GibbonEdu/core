@@ -70,7 +70,7 @@ if ($proceed == false) {
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Account Details'));
+    $form->addRow()->addHeading('Account Details', __('Account Details'));
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'));
@@ -141,13 +141,13 @@ if ($proceed == false) {
 
     $privacyStatement = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {
-        $form->addRow()->addHeading(__('Privacy Statement'));
+        $form->addRow()->addHeading('Privacy Statement', __('Privacy Statement'));
         $form->addRow()->addContent($privacyStatement);
     }
 
     $agreement = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAgreement');
     if ($agreement != '') {
-        $form->addRow()->addHeading(__('Agreement'));
+        $form->addRow()->addHeading('Agreement', __('Agreement'));
         $form->addRow()->addContent($agreement);
 
         $row = $form->addRow();

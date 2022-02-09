@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
@@ -162,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $payment = $settingGateway->getSettingByScope('Activities', 'payment');
     if ($payment != 'None' && $payment != 'Single') {
-        $form->addRow()->addHeading(__('Cost'));
+        $form->addRow()->addHeading('Cost', __('Cost'));
 
         $row = $form->addRow();
             $row->addLabel('payment', __('Cost'));
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 ]);
     }
 
-    $form->addRow()->addHeading(__('Time Slots'));
+    $form->addRow()->addHeading('Time Slots', __('Time Slots'));
 
     //Block template
     $sqlWeekdays = "SELECT gibbonDaysOfWeekID as value, name FROM gibbonDaysOfWeek ORDER BY sequenceNumber";
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $slotBlocks->addPredefinedBlock("Add Time Slot", ['location' => 'Internal']);
 
-    $form->addRow()->addHeading(__('Staff'));
+    $form->addRow()->addHeading('Staff', __('Staff'));
 
     $row = $form->addRow();
         $row->addLabel('staff', __('Staff'));

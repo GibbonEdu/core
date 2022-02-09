@@ -97,6 +97,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
         // Get basic user data needed to verify login access
         $this->userGateway = $this->getContainer()->get(UserGateway::class);
         $userData = $this->getUserData(['username' => $user->email]);
+        $_POST['usernameOAuth'] = $user->email;
 
         if (empty($userData)) {
             $session->forget('googleAPIAccessToken');

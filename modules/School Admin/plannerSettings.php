@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Planner Templates'));
+    $form->addRow()->addHeading('Planner Templates', __('Planner Templates'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setRows(10)->setValue($setting['value']);
 
-    $form->addRow()->addHeading(__('Interface'));
+    $form->addRow()->addHeading('Interface', __('Interface'));
     
     $setting = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular', true);
     $row = $form->addRow();
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/plannerSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->required()->setValue($setting['value']);
 
-    $form->addRow()->addHeading(__('Access Settings'));
+    $form->addRow()->addHeading('Access Settings', __('Access Settings'));
 
     $setting = $settingGateway->getSettingByScope('Planner', 'makeUnitsPublic', true);
     $row = $form->addRow();

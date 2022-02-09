@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
             $form->addHiddenValue('statusCurrent', $values['status']);
 
-            $form->addRow()->addHeading(__('Item Details'));
+            $form->addRow()->addHeading('Item Details', __('Item Details'));
 
             $row = $form->addRow();
                 $row->addLabel('idLabel', __('ID'));
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('statusCurrentText', __('Current Status'));
                 $row->addTextField('statusCurrentText')->setValue(__($values['status']))->readonly()->required();
 
-            $form->addRow()->addHeading(__('This Event'));
+            $form->addRow()->addHeading('This Event', __('This Event'));
 
             $statuses = array(
                 'On Loan' => __('On Loan'),
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('returnExpected', __('Expected Return Date'))->description(sprintf(__('Default renew length is today plus %1$s day(s)'), $loanLength));
                 $row->addDate('returnExpected')->setValue(date($session->get('i18n')['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required();
 
-            $row = $form->addRow()->addHeading(__('On Return'));
+            $row = $form->addRow()->addHeading('On Return', __('On Return'));
 
             $actions = array(
                 'Reserve' => __('Reserve'),

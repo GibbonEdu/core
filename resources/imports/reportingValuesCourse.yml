@@ -3,7 +3,7 @@ details:
     category: Reports
     name: Reporting Values by Course
     table: gibbonReportingValue
-    modes: { update: true, insert: true, export: false }
+    modes: { update: true, insert: true, export: true }
 access:
     module: Reports
     action: Manage Reporting Cycles

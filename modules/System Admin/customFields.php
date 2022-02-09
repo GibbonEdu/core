@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         $table->addColumn('name', __('Name'))
             ->description(__('Heading'))
             ->format(function($values) {
-                return $values['name'].'<br/>'.Format::small($values['heading']);
+                return $values['name'].'<br/>'.Format::small(__($values['heading']));
             });
 
         $table->addColumn('type', __('Type'))

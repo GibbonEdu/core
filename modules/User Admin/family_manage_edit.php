@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('General Information'));
+            $form->addRow()->addHeading('General Information', __('General Information'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Family Name'));
@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('Add Child'));
+            $form->addRow()->addHeading('Add Child', __('Add Child'));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('Add Adult'));
+            $form->addRow()->addHeading('Add Adult', __('Add Adult'));
 
             $adults = array();
 

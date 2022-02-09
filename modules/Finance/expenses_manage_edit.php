@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 							$form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
 							$form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
-							$form->addRow()->addHeading(__('Basic Information'));
+							$form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
 							$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 							$row = $form->addRow();
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 								$col->addLabel('purchaseDetails', __('Purchase Details'));
 								$col->addContent($values['purchaseDetails']);
 
-                            $form->addRow()->addHeading(__('Budget Tracking'));
+                            $form->addRow()->addHeading('Budget Tracking', __('Budget Tracking'));
 
                             $row = $form->addRow();
                                 $row->addLabel('cost', __('Total Cost'));
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                     ->setValue($budgetRemainingLabel)
                                     ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
 
-                            $form->addRow()->addHeading(__('Log'));
+                            $form->addRow()->addHeading('Log', __('Log'));
 
                             $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
                             $form->addRow()->addContent($expenseLog->getOutput());
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 								$form->toggleVisibilityByClass('paymentInfo')->onSelect('status')->when('Paid');
 							}
 
-							$form->addRow()->addHeading(__('Payment Information'))->addClass('paymentInfo');
+							$form->addRow()->addHeading('Payment Information', __('Payment Information'))->addClass('paymentInfo');
 
 							$row = $form->addRow()->addClass('paymentInfo');
 								$row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));

@@ -35,14 +35,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/settings.php') == 
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
-    $form->addRow()->addHeading(__('General Options'));
+    $form->addRow()->addHeading('General Options', __('General Options'));
 
     $setting = $settingGateway->getSettingByScope('Reports', 'archiveInformation', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $form->addRow()->addHeading(__('System Settings'));
+    $form->addRow()->addHeading('System Settings', __('System Settings'));
 
     $setting = $settingGateway->getSettingByScope('Reports', 'customAssetPath', true);
     $row = $form->addRow();

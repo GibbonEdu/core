@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
 
-                    $form->addRow()->addHeading(__('Assessment Details'));
+                    $form->addRow()->addHeading('Assessment Details', __('Assessment Details'));
 
                     $row = $form->addRow();
                         $row->addLabel('description', __('Description'));
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 
                     if (count($students) == 0) {
-                        $form->addRow()->addHeading(__('Students'));
+                        $form->addRow()->addHeading('Students', __('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                     } else {
                         $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     $form->addHiddenValue('count', $count);
 
-                    $form->addRow()->addHeading(__('Assessment Complete?'));
+                    $form->addRow()->addHeading('Assessment Complete?', __('Assessment Complete?'));
 
                     $row = $form->addRow();
                         $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));

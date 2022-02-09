@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
 			
-            $row = $form->addRow()->addHeading(__('Basic Details'));
+            $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));

@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummaryS
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Weekly Summary'));
+    $form->addRow()->addHeading('Weekly Summary', __('Weekly Summary'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/emailSummaryS
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
-    $form->addRow()->addHeading(__('Daily Summary'));
+    $form->addRow()->addHeading('Daily Summary', __('Daily Summary'));
 
     $setting = $settingGateway->getSettingByScope('School Admin', 'parentDailyEmailSummaryIntroduction', true);
     $row = $form->addRow();

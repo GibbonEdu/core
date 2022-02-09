@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('currentDate', $currentDate);
 
-                $form->addRow()->addHeading(__('Take Attendance'));
+                $form->addRow()->addHeading('Take Attendance', __('Take Attendance'));
 
                 $row = $form->addRow();
                     $row->addLabel('summary', __('Recent Attendance Summary'));
