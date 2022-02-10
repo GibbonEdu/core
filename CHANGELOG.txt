@@ -20,6 +20,9 @@ CHANGELOG
 v23.0.01
 --------
 
+    Significant Changes
+        System: activated the es_DO Español - República Dominicana locale
+
     Tweaks & Additions
         System Admin: improved the reliability of the uploads folder check
         System Admin: added an import for School Year Terms
@@ -27,7 +30,7 @@ v23.0.01
 
     Bug Fixes
         Students: fixed student ID not working on main page of student profile
-        System Admin: fixed password field in user imports in Import From File
+        System Admin: fixed invalid password field in user imports in Import From File
         System Admin: fixed custom field headings not working for non-english locales
         System Admin: fixed blank User column for logins listed in View Logs
 
