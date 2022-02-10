@@ -29,6 +29,7 @@ v23.0.01
         System Admin: improved login logs to include login method and user id
 
     Bug Fixes
+        System: fixed string replacements with {} placeholders not working
         Students: fixed student ID not working on main page of student profile
         System Admin: fixed invalid password field in user imports in Import From File
         System Admin: fixed custom field headings not working for non-english locales
