@@ -207,6 +207,7 @@ class FileUploader
             $destinationFolder = $this->getUploadsFolderByDate();
         }
 
+        $allowedExtensions = !empty($allowedExtensions) ? $allowedExtensions : $this->getFileExtensions();
         $destinationFolder = trim($destinationFolder, '/');
         $absolutePath = $this->session->get('absolutePath');
 
@@ -233,17 +234,17 @@ class FileUploader
                 $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
                 // Filter allowed files by extension
-                if (!empty($allowedExtensions) && !in_array($extension, $allowedExtensions)) {
+                if (empty($filename) || !in_array($extension, $allowedExtensions)) {
                     continue;
                 }
 
-                $destinationName = $this->getRandomizedFilename($filename, $absolutePath.'/'.$destinationFolder);
+                $destinationName = $this->getRandomizedFilename(basename($filename), $absolutePath.'/'.$destinationFolder);
 
                 if (@copy('zip://'.$path.'#'.$filename, $absolutePath.'/'.$destinationFolder.'/'.$destinationName)) {
                     $files[] = [
                         'filename' => $destinationName,
                         'extension' => $extension,
-                        'originalName' => $filename,
+                        'originalName' => basename($filename),
                         'relativePath' => $destinationFolder.'/'.$destinationName,
                         'absolutePath' => $absolutePath.'/'.$destinationFolder.'/'.$destinationName,
                     ];
@@ -284,17 +285,61 @@ class FileUploader
      * @param int $quality
      * @return string
      */
-    public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80)
+    public function resizeImage($sourcePath, $destPath, $maxSize = 1024, $quality = 80, $zoom = 100, $focalX = 50, $focalY = 50)
     {
         $extension = mb_substr(mb_strrchr(strtolower($sourcePath), '.'), 1);
+        if (!in_array($extension, $this->getFileExtensions('Graphics/Design'))) {
+            return $sourcePath;
+        }
+
         $size = getimagesize($sourcePath);
-        $ratio = $size[0]/$size[1]; // width/height
-        $width = $ratio > 1 ? $maxSize : $maxSize*$ratio;
-        $height = $ratio > 1 ? $maxSize/$ratio : $maxSize;
+        $width = $srcWidth = $size[0];
+        $height = $srcHeight = $size[1];
+        $ratio = $height / $width; 
+        $maxWidth = $maxHeight = $maxSize;
+        $srcX = $srcY = $destX = $destY = 0;
+
+        // New crop if needed
+        if ($maxSize == 480) {
+            if ($ratio < 1.2) {
+                $srcWidth = $height / 1.2;
+                $srcX = ($width - $srcWidth) / 2;
+            }
+            else if ($ratio > 1.4) {
+                $srcHeight = $width * 1.4;
+                $srcY = ($height - $srcHeight) / 2;
+            }
+
+            $destWidth = $srcWidth;
+            $destHeight = $srcHeight;
+        } else {
+            $destWidth = $ratio < 1 ? $maxSize : $maxSize*$ratio;
+            $destHeight = $ratio < 1 ? $maxSize/$ratio : $maxSize;
+        }
+
+        // New compressed image if needed
+        if ($srcWidth > $maxWidth) {
+            $newRatio = $maxWidth / $srcWidth;
+            $destWidth = $maxWidth;
+            $destWidth = $srcHeight * $newRatio;
+        }
+        if ($srcHeight > $maxHeight) {
+            $newRatio = $maxHeight / $srcHeight;
+            $destHeight = $maxHeight;
+            $destWidth = $srcWidth * $newRatio;
+        }
+
+        if ($zoom != 100) {
+            $srcWidth = $destWidth / ($zoom / 100.0);
+            $srcX = ($width - $srcWidth) * ($focalX / 100.0);
+
+            $srcHeight = $destHeight / ($zoom / 100.0);
+            $srcY = ($height - $srcHeight) * ($focalY / 100.0);
+        }
 
         if ($src = imagecreatefromstring(file_get_contents($sourcePath))) {
-            $dst = imagecreatetruecolor($width, $height);
-            imagecopyresampled($dst, $src, 0, 0, 0, 0, $width, $height, $size[0], $size[1]);
+            $dst = imagecreatetruecolor($destWidth, $destHeight);
+            imagecopyresampled($dst, $src, $destX, $destY, $srcX, $srcY, $destWidth, $destHeight, $srcWidth, $srcHeight);
 
             if ($extension == 'png') {
                 imagepng($dst, $destPath);

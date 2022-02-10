@@ -19,39 +19,42 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 use Gibbon\FileUploader;
-use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\DataSet;
-use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $step = $_REQUEST['step'] ?? 1;
+    $steps = [
+        1 => __('Select File'),
+        2 => __('Confirm Data'),
+        3 => __('Upload Complete'),
+    ];
+
     $page->breadcrumbs
         ->add(__('Upload Photos & Files'), 'file_upload.php')
-        ->add(__('Step {number}', ['number' => 2]));
+        ->add(__('Step {number}', ['number' => $step]));
 
-    $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
-    $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-    $reportIdentifier = $_POST['reportIdentifier'] ?? '';
-    $reportDate = $_POST['reportDate'] ?? '';
+    $type = $_POST['type'] ?? '';
+    $identifier = $_POST['identifier'] ?? '';
     $tempFile = $_FILES['file'] ?? '';
     $fileSeparator = $_POST['fileSeparator'] ?? '';
     $fileSection = $_POST['fileSection'] ?? '';
+    $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
+    $gibbonCustomFieldID = $_POST['gibbonCustomFieldID'] ?? '';
 
-    if (empty($gibbonReportArchiveID) || empty($gibbonSchoolYearID) || empty($reportIdentifier) || empty($tempFile)) {
+    if (empty($identifier) || empty($type) || empty($tempFile)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
-    $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
-    $archive = $reportArchiveGateway->getByID($gibbonReportArchiveID);
-    if (empty($archive)) {
-        $page->addError(__('The specified record cannot be found.'));
+    if ($identifier != 'username' && $identifier != 'studentID') {
+        $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
 
@@ -62,116 +65,133 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         return;
     }
 
-    // Grab any existing reports so we can check if they will be overwritten
-    $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    $existingReports = $reportArchiveEntryGateway->selectArchiveEntriesByReportIdentifier($gibbonSchoolYearID, $reportIdentifier)->fetchGroupedUnique();
+    $tempDirectoryPath = $gibbon->session->get('absolutePath').'/uploads/temp';
+    if (!is_dir($tempDirectoryPath)) {
+        mkdir($tempDirectoryPath, 0755);
+    }
+
+    $userGateway = $container->get(UserGateway::class);
+    $fileUploader = $container->get(FileUploader::class);
+    $allowedExtensions = $fileUploader->getFileExtensions();
 
     // Peek into the zip file and check the contents
-    $studentGateway = $container->get(StudentGateway::class);
-    $reports = [];
+    $files = [];
+    $existingFiles = [];
     for ($i = 0; $i < $zip->numFiles; ++$i) {
         if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') continue;
         
-        $filename = $zip->getNameIndex($i);
+        $filename = basename($zip->getNameIndex($i));
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
         
-        if ($extension != 'pdf') continue;
+        if (!in_array($extension, $allowedExtensions)) continue;
 
         // Optionally split the filenames by a separator character
         if (!empty($fileSeparator) && !empty($fileSection)) {
-            $fileParts = explode($fileSeparator, mb_strstr($filename, '.', true));
-            $username = $fileParts[$fileSection-1] ?? '';
+            $fileParts = explode($fileSeparator, mb_strrchr($filename, '.', true));
+            $identifierValue = $fileParts[$fileSection-1] ?? '';
         } else {
-            $username = mb_strstr($filename, '.', true);
+            $identifierValue = mb_strrchr($filename, '.', true);
         }
 
-        // Ensure the file info matches a student enrolment in the selected year
-        $studentEnrolment = $studentGateway->getStudentByUsername($gibbonSchoolYearID, $username);
-        if (!empty($username) && !empty($studentEnrolment)) {
-            $studentEnrolment['report'] = $existingReports[$studentEnrolment['gibbonPersonID']] ?? [];
-            $studentEnrolment['filename'] = $filename;
-            $reports[] = $studentEnrolment;
-        }
-    }
+        // Ensure the file info matches an existing user
+        $userData = $userGateway->selectBy([$identifier => $identifierValue], [
+            'gibbonPersonID',
+            'username',
+            'image_240',
+            'title',
+            'preferredName',
+            'surname',
+            'status',
+        ])->fetch();
+        if (!empty($identifierValue) && !empty($userData)) {
+            $userData['filename'] = $filename;
+            $files[] = $userData;
 
-    // Cancel out if there's nothing to do
-    if (empty($reports)) {
-        $page->addError(__('Import cannot proceed. The uploaded ZIP archive did not contain any valid {filetype} files.', ['filetype' => 'pdf']));
-        return;
+            if (!empty($userData['image_240'])) {
+                $existingFiles[] = $filename;
+            }
+        }
     }
 
     // Upload the temporary file to the archive
-    if (!empty($tempFile['tmp_name'])) {
-        $fileUploader = new FileUploader($pdo, $gibbon->session);
-        $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], $archive['path'].'/temp');
-    } else {
+    if (!empty($files) && !empty($tempFile['tmp_name'])) {
+        $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], '/uploads/temp');
+    } elseif (empty($tempFile['tmp_name'])) {
         $page->addError(__('Failed to write file to disk.'));
         return;
     }
 
     $form = Form::create('fileUpload', $gibbon->session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
+    $form->setMultiPartForm($steps, $step);
     
     $form->addHiddenValue('address', $gibbon->session->get('address'));
-    $form->addHiddenValue('gibbonReportArchiveID', $gibbonReportArchiveID);
-    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-    $form->addHiddenValue('reportIdentifier', $reportIdentifier);
-    $form->addHiddenValue('reportDate', Format::dateConvert($reportDate));
+    $form->addHiddenValue('type', $type);
+    $form->addHiddenValue('gibbonPersonalDocumentTypeID', $gibbonPersonalDocumentTypeID);
+    $form->addHiddenValue('gibbonCustomFieldID', $gibbonCustomFieldID);
+    $form->addHiddenValue('identifier', $identifier);
     $form->addHiddenValue('fileSeparator', $fileSeparator);
     $form->addHiddenValue('fileSection', $fileSection);
-    $form->addHiddenValue('file', $file);
+    $form->addHiddenValue('file', $file ?? '');
+    $form->addHiddenValue('zoom', $_POST['zoom'] ?? '');
+    $form->addHiddenValue('focalX', $_POST['focalX'] ?? '');
+    $form->addHiddenValue('focalY', $_POST['focalY'] ?? '');
 
-    $form->addRow()->addHeading('Report Info', __('Report Info'));
-
+    $types = [
+        'userPhotos'        => __('User Photos'),
+        'personalDocuments' => __('Personal Documents'),
+        'customFields'      => __('Custom Fields'),
+    ];
     $row = $form->addRow();
-        $row->addLabel('archiveName', __('Archive'));
-        $row->addTextField('archiveName')->readonly()->setValue($archive['name']);
+        $row->addLabel('type', __('Type'));
+        $row->addTextField('type')->readonly()->setValue($types[$type] ?? '');
 
-    $schoolYear = $container->get(SchoolYearGateway::class)->getSchoolYearByID($gibbonSchoolYearID);
-    $row = $form->addRow();
-        $row->addLabel('schoolYearName', __('School Year'));
-        $row->addTextField('schoolYearName')->readonly()->setValue($schoolYear['name']);
+    if ($type == 'personalDocuments') {
+        $row = $form->addRow();
+        $row->addLabel('personalDocuments', __('Personal Document'));
+        $row->addTextField('personalDocuments')->readonly()->setValue($gibbonPersonalDocumentTypeID);
+    } elseif ($type == 'customFields') {
+        $row = $form->addRow();
+        $row->addLabel('customFields', __('Custom Fields'));
+        $row->addTextField('customFields')->readonly()->setValue($gibbonCustomFieldID);
+    }
 
-    $row = $form->addRow();
-        $row->addLabel('reportName', __('Report Name'));
-        $row->addTextField('reportName')->readonly()->setValue($reportIdentifier);
-
-    $row = $form->addRow();
-        $row->addLabel('reportDateName', __('Report Date'));
-        $row->addTextField('reportDateName')->readonly()->setValue($reportDate);
-
-    if (!empty($existingReports)) {
+    if (!empty($existingFiles)) {
         $row = $form->addRow();
             $row->addLabel('overwrite', __('Overwrite'))->description(__('Should uploaded files overwrite any existing files?'));
-            $row->addYesNo('overwrite')->selected('N');
+            $row->addYesNo('overwrite')->selected('Y');
     }
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('reportFiles')->withData(new DataSet($reports));
+    if (empty($files)) {
+        $form->addRow()->addContent(Format::alert(__('Import cannot proceed. The uploaded ZIP archive did not contain any valid {filetype} files.', ['filetype' => $type])));
+    } else {
+        $table = $form->addRow()->addDataTable('fileUploadPreview')->withData(new DataSet($files));
 
-    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+        $table->modifyRows($userGateway->getSharedUserRowHighlighter());
 
-    $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
-        ->width('25%')
-        ->format(function ($person) {
-            return Format::name('', $person['preferredName'], $person['surname'], 'Student', true)
-                   .'<br/>'.Format::small(Format::userStatusInfo($person));
-        });
-    $table->addColumn('formGroup', __('Form Group'));
-    $table->addColumn('username', __('Username'));
-    $table->addColumn('filename', __('File Name'));
-    $table->addColumn('status', __('Status'))
-        ->format(function ($values) {
-            return !empty($values['report'])
-                ? '<span class="tag warning">'.__('Exists').'</span>'
-                : '<span class="tag success">'.__('New').'</span>';
-        });
+        $table->addColumn('user', __('User'))
+            ->width('25%')
+            ->format(function ($person) {
+                return Format::name('', $person['preferredName'], $person['surname'], 'Student', true)
+                    .'<br/>'.Format::small(Format::userStatusInfo($person));
+            });
+        $table->addColumn('username', __('Username'));
+        if ($identifier == 'studentID') {
+            $table->addColumn('studentID', __('Student ID'));
+        }
+        $table->addColumn('filename', __('File Name'));
+        $table->addColumn('status', __('Status'))
+            ->format(function ($values) {
+                return !empty($values['image_240'])
+                    ? '<span class="tag warning">'.__('Exists').'</span>'
+                    : '<span class="tag success">'.__('New').'</span>';
+            });
 
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+    }
 
     echo $form->getOutput();
 }

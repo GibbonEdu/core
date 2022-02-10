@@ -131,4 +131,11 @@ class CustomFieldGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function selectCustomFieldsWithFileUpload()
+    {
+        $sql = "SELECT gibbonCustomFieldID as value, name FROM gibbonCustomField WHERE type = 'file' OR type = 'image' ORDER BY sequenceNumber, name";
+
+        return $this->db()->select($sql);
+    }
 }
