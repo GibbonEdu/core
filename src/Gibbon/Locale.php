@@ -186,6 +186,8 @@ class Locale implements LocaleInterface
      */
     protected static function formatString(string $text, array $params = [])
     {
+        if (empty($params)) return $text;
+        
         return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
             $placeholder = stripos($key, '$s') !== false ? $key : '{'.$key.'}';
             $carry[$placeholder] = $params[$key]; // apply quote to the keys for replacement
@@ -275,11 +277,11 @@ class Locale implements LocaleInterface
                 dgettext($domain, $text);
         }
 
-        // apply named replacement parameters, if presents.
-        $text = static::formatString($text, $params);
-
         // apply custom string replacement logics and return.
-        return $this->doStringReplacement($text);
+        $text = $this->doStringReplacement($text);
+
+        // apply named replacement parameters, if presents.
+        return static::formatString($text, $params);
     }
 
     /**

@@ -2187,7 +2187,8 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `version`, `active`, `
 (0043, 'my_MM', 'မြန်မာ - မြန်မာ', NULL, 'N', 'N', 'N', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
 (0044, 'es_MX', 'Español - Mexico', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0045, 'af_ZA', 'Afrikaans - Suid-Afrika', '21.0.00', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0046, 'uk_UA', 'українська мова - Україна', '21.0.00', 'Y', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd.m.Y', 'N');
+(0046, 'uk_UA', 'українська мова - Україна', '21.0.00', 'Y', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd.m.Y', 'N'),
+(0047, 'es_DO', 'Español - República Dominicana', NULL, 'Y', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -4901,7 +4902,6 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00025, 'Activities', 'payment', 'Payment', 'Payment system', 'Per Activity'),
 (00026, 'Activities', 'enrolmentType', 'Enrolment Type', 'Enrolment process type', 'Competitive'),
 (00027, 'Activities', 'backupChoice', 'Backup Choice', 'Allow students to choose a backup, in case enroled activity is full.', 'Y'),
-(00028, 'Activities', 'activityTypes', 'Activity Types', 'Comma-seperated list of the different activity types available in school. Leave blank to disalbe this feature.', 'Creativity,Action,Service'),
 (00029, 'Application Form', 'introduction', 'Introduction', 'Information to display before the form', ''),
 (00030, 'Application Form', 'postscript', 'Postscript', 'Information to display at the end of the form', ''),
 (00031, 'Application Form', 'scholarships', 'Scholarships', 'Information to display before the scholarship options', ''),
@@ -4983,12 +4983,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00117, 'Application Form', 'notificationStudentMessage', 'Student Notification Message', 'A custom message to add to the standard email to students on acceptance.', ''),
 (00118, 'Finance', 'invoiceNumber', 'Invoice Number Style', 'How should invoice numbers be constructed?', 'Invoice ID'),
 (00119, 'User Admin', 'departureReasons', 'Departure Reasons', 'Comma-separated list of reasons for departure from school. If blank, user can enter any text.', ''),
-(00120, 'System', 'googleOAuth', 'Google Integration', 'Enable Gibbon-wide integration with the Google APIs?', 'N'),
-(00122, 'System', 'googleClientName', 'Google Developers Client Name', 'Name of Google Project in Developers Console.', ''),
-(00123, 'System', 'googleClientID', 'Google Developers Client ID', 'Client ID for Google Project In Developers Console.', ''),
-(00124, 'System', 'googleClientSecret', 'Google Developers Client Secret', 'Client Secret for Google Project In Developers Console.', ''),
-(00125, 'System', 'googleRedirectUri', 'Google Developers Redirect Url', 'Google Redirect on sucessful auth.', ''),
-(00126, 'System', 'googleDeveloperKey', 'Google Developers Developer Key', 'Google project Developer Key.', ''),
+(00120, 'System', 'googleOAuth', 'Google Integration', '', 'Migrated'),
 (00127, 'Markbook', 'personalisedWarnings', 'Personalised Warnings', 'Should markbook warnings be based on personal targets, if they are available?', 'Y'),
 (00128, 'Activities', 'disableExternalProviderSignup', 'Disable External Provider Signup', 'Should we turn off the option to sign up for activities provided by an outside agency?', 'N'),
 (00129, 'Activities', 'hideExternalProviderCost', 'Hide External Provider Cost', 'Should we hide the cost of activities provided by an outside agency from the Activities View?', 'N'),

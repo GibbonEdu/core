@@ -1082,6 +1082,7 @@ SELECT 'Hello, this blank line is important, nothing to see here.';end
 ++$count;
 $sql[$count][0] = '23.0.01';
 $sql[$count][1] = "
+INSERT INTO `gibboni18n` (`code`, `name`, `version`, `active`, `installed`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`, `rtl`) VALUES ('es_DO', 'Español - República Dominicana', '23.0.01', 'Y', 'Y', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');end
 ";
 
 //v24.0.00

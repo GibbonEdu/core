@@ -28,16 +28,20 @@ v24.0.00
 v23.0.01
 --------
 
+    Significant Changes
+        System: activated the es_DO Español - República Dominicana locale
+
     Tweaks & Additions
-        System Admin: improved the reliability of the uploads folder check
         System Admin: added an import for School Year Terms
+        System Admin: improved the reliability of the uploads folder check
         System Admin: improved login logs to include login method and user id
 
     Bug Fixes
-        System Admin: fixed password field in user imports in Import From File
+        System: fixed string replacements with {} placeholders not working
+        System Admin: fixed invalid password field in user imports in Import From File
         System Admin: fixed custom field headings not working for non-english locales
         System Admin: fixed blank User column for logins listed in View Logs
-
+        Students: fixed student ID not working on main page of student profile
 
 v23.0.00
 --------
