@@ -166,7 +166,7 @@ class EnrolmentTable implements OutputableInterface
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Left', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), true);
 
         // LEFT TABLE
-        $table = DataTable::createPaginated('studentsLeft', $criteria);
+        $table = DataTable::create('studentsLeft');
         $table->setTitle(__('Left Students'));
         $table->setDescription(__('In the past 60 days or upcoming 60 days'));
 
