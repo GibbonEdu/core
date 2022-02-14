@@ -24,6 +24,7 @@ v24.0.00
     Significant Changes
     Tweaks & Additions
     Bug Fixes
+        System Admin: fixed HTML being stripped out of the privacy policy
 
 v23.0.01
 --------
