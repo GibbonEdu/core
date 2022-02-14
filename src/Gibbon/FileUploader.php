@@ -309,13 +309,13 @@ class FileUploader
                 $srcHeight = $width * 1.4;
                 $srcY = ($height - $srcHeight) / 2;
             }
-
-            $destWidth = $srcWidth;
-            $destHeight = $srcHeight;
         } else {
-            $destWidth = $ratio < 1 ? $maxSize : $maxSize*$ratio;
-            $destHeight = $ratio < 1 ? $maxSize/$ratio : $maxSize;
+            $maxWidth = $ratio < 1 ? $maxSize : $maxSize/$ratio;
+            $maxHeight = $ratio < 1 ? $maxSize*$ratio : $maxSize;
         }
+
+        $destWidth = $srcWidth;
+        $destHeight = $srcHeight;
 
         // New compressed image if needed
         if ($srcWidth > $maxWidth) {
