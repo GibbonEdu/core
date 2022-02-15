@@ -107,7 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
             $row = $form->addRow();
                 $row->addLabel('restriction', __('Restriction'))->description(__('Determines who can grant or remove this role in Manage Users.'));
             if ($role['name'] == 'Administrator') {
-                $row->addTextField('restriction')->required()->readonly()->setValue('Admin Only');
+                $row->addTextField('restrictionText')->required()->readonly()->setValue(__('Administrators only'));
+                $form->addHiddenValue('restriction', 'Admin Only');
             } else {
                 $row->addSelect('restriction')->fromArray($restrictions)->required()->selected($role['restriction']);
             }
