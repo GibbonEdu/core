@@ -291,8 +291,11 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
             );
         }
 
-        // Update user language
-        $languageSelected = $_POST['gibboni18nID'] ?? $this->session->get('gibboni18nIDPersonal') ?? null;
+        // Update user language, using login option, then personal language, then system default
+        $languageSelected = !empty($_POST['gibboni18nID'] && $_POST['gibboni18nID'] != $this->session->get('i18n')['gibboni18nID']) 
+            ? $_POST['gibboni18nID'] : 
+            $userData['gibboni18nIDPersonal'] ?? null;
+
         if (!empty($languageSelected)) {
             if ($i18n = $this->getContainer()->get(I18nGateway::class)->getByID($languageSelected)) {
                 $this->session->set('i18n', $i18n);

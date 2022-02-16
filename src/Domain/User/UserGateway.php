@@ -93,7 +93,9 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     gibbonRole.futureYearsLogin,
                     gibbonRole.pastYearsLogin,
                     gibbonRole.name as roleName,
-                    gibbonRole.category as roleCategory
+                    gibbonRole.category as roleCategory,
+                    gibbonPerson.gibboni18nIDPersonal,
+                    gibbonPerson.gibbonThemeIDPersonal
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
                 WHERE (

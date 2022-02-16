@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['cookieConsentText' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['cookieConsentText' => 'HTML', 'privacyPolicy' => 'HTML']);
 
 // Module includes
 include './moduleFunctions.php';
