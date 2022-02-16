@@ -111,12 +111,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             'surname',
             'status',
         ])->fetch();
-        
+
         if (!empty($identifierValue) && !empty($userData)) {
             $userData['filename'] = $filename;
-            $validFiles++;
             
-            if (!empty($userData['image_240'])) {
+            if ($type == 'customFields') {
+                $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
+                $userData['exists'] = !empty($fields[$gibbonCustomFieldID]);
+            } elseif ($type == 'personalDocuments') {
+                $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);
+                $userData['exists'] = !empty($document['filePath']);
+            } else {
+                $userData['exists'] = !empty($userData['image_240']);
+            }
+
+            if ($type == 'userPhotos' && ($extension != 'jpg' && $extension != 'png')) {
+                $userData['statusText'] = __('Invalid File Type');
+            } else {
+                $validFiles++;
+            }
+            
+            if ($userData['exists']) {
                 $existingFiles[] = $filename;
             }
         } else {
@@ -204,22 +219,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         }
         $table->addColumn('filename', __('File Name'));
         $table->addColumn('status', __('Status'))
-            ->format(function ($values) use ($type, $gibbonCustomFieldID, $customFieldGateway, $gibbonPersonalDocumentTypeID, $personalDocumentGateway) {
-                if (empty($values['surname'])) {
-                    return Format::tag(__('Unknown'), 'dull');
+            ->format(function ($values)  {
+                if (empty($values['surname']) || !empty($values['statusText'])) {
+                    return !empty($values['statusText']) 
+                        ? Format::tag($values['statusText'], 'error')
+                        : Format::tag(__('Unknown'), 'dull');
                 }
 
-                if ($type == 'customFields') {
-                    $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $values['gibbonPersonID']);
-                    $exists = !empty($fields[$gibbonCustomFieldID]);
-                } elseif ($type == 'personalDocuments') {
-                    $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $values['gibbonPersonID']);
-                    $exists = !empty($document['filePath']);
-                } else {
-                    $exists = !empty($values['image_240']);
-                }
-
-                return $exists
+                return $values['exists']
                     ? Format::tag(__('Exists'), 'warning')
                     : Format::tag(__('New'), 'success');
             });

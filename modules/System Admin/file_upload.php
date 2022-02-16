@@ -104,6 +104,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             $row->addSelect('gibbonCustomFieldID')->fromResults($customFields, 'groupBy')->required();
 
         $form->toggleVisibilityByClass('userPhotos')->onSelect('type')->when('userPhotos');
+
+        $form->addRow()->addClass('userPhotos')->addContent(Format::alert(__('User photos will automatically be scaled down to a maximum of 360px by 480px and cropped to an aspect ratio of 1.2. You can optionally adjust the zoom and focal point of the cropped images below.'), 'message'));
+
         $row = $form->addRow()->addClass('userPhotos');
             $row->addLabel('zoom', __('Zoom Rate'));
             $row->addRange('zoom', 100, 150, 1)->setValue(100);
@@ -125,8 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             $form->addRow()->addContent(Format::alert(__('Import successful. {count} records were imported.', ['count' => '<b>'.($_GET['imported'] ?? '0').'</b>']), 'success'));
         }
     }
-    
-    
 
     echo $form->getOutput();
 }
