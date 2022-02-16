@@ -98,10 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             $row->addSelect('gibbonPersonalDocumentTypeID')->fromArray($personalDocumentTypes)->required();
 
         $form->toggleVisibilityByClass('customFields')->onSelect('type')->when('customFields');
-        $customFields = $container->get(CustomFieldGateway::class)->selectCustomFieldsWithFileUpload()->fetchKeyPair();
+        $customFields = $container->get(CustomFieldGateway::class)->selectCustomFieldsWithFileUpload();
         $row = $form->addRow()->addClass('customFields');
             $row->addLabel('gibbonCustomFieldID', __('Personal Document'));
-            $row->addSelect('gibbonCustomFieldID')->fromArray($customFields)->required();
+            $row->addSelect('gibbonCustomFieldID')->fromResults($customFields, 'groupBy')->required();
 
         $form->toggleVisibilityByClass('userPhotos')->onSelect('type')->when('userPhotos');
         $row = $form->addRow()->addClass('userPhotos');

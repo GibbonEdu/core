@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\System\CustomFieldGateway;
 
 require_once '../../gibbon.php';
 
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     // Proceed!
     $type = $_POST['type'] ?? '';
     $identifier = $_POST['identifier'] ?? '';
-    $file = $_POST['file'] ?? '';
+    $zipFile = $_POST['file'] ?? '';
     $fileSeparator = $_POST['fileSeparator'] ?? '';
     $fileSection = $_POST['fileSection'] ?? '';
     $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
@@ -45,7 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     $focalX = $_POST['focalX'] ?? '50';
     $focalY = $_POST['focalY'] ?? '50';
 
-    if (empty($identifier) || empty($type) || empty($file)) {
+    if (empty($identifier) || empty($type) || empty($zipFile)) {
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    if (($type == 'customFields' && empty($gibbonCustomFieldID)) || ($type == 'personalDocuments' && empty($gibbonPersonalDocumentTypeID))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -58,15 +66,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     }
 
     $absolutePath = $gibbon->session->get('absolutePath');
-    if (!is_file($absolutePath.'/'.$file)) {
+    if (!is_file($absolutePath.'/'.$zipFile)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
     }
 
     $userGateway = $container->get(UserGateway::class);
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
+    $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
+    
     $fileUploader = $container->get(FileUploader::class);
-    $files = $fileUploader->uploadFromZIP($absolutePath.'/'.$file);
+    $files = $fileUploader->uploadFromZIP($absolutePath.'/'.$zipFile);
 
     $partialFail = false;
     $count = 0;
@@ -86,36 +97,62 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             'username',
             'image_240',
         ])->fetch();
-        if (empty($identifierValue) || empty($userData)) {
+
+        if (empty($identifierValue) || empty($userData) || empty($file['relativePath'])) {
             $partialFail = true;
             continue;
         }
 
+        // Check if there is an existing value for this upload
+        if ($type == 'customFields') {
+            $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
+            $existingFile = $fields[$gibbonCustomFieldID] ?? '';
+        } elseif ($type == 'personalDocuments') {
+            $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);;
+            $existingFile = $document['filePath'] ?? '';
+        } else {
+            $existingFile = $userData['image_240'];
+        }
+
         // Optionally overwrite exiting files or skip them
-        if (!empty($userData) && $overwrite == 'Y') {
-            unlink($absolutePath.'/'.$userData['image_240']);
-        } elseif (!empty($userData) && is_file($absolutePath.'/'.$userData['image_240']) && $overwrite == 'N') {
+        if (!empty($existingFile) && $overwrite == 'Y') {
+            unlink($absolutePath.'/'.$existingFile);
+        } elseif (!empty($existingFile) && is_file($absolutePath.'/'.$existingFile) && $overwrite == 'N') {
             unlink($file['absolutePath']);
             continue;
         }
 
-        // Rename the file to match the identifier for this user, then resize & crop
-        $renameFilename = $userData['username'].'.'.$file['extension'];
-        $renameFilePath = str_replace($file['filename'], $renameFilename, $file['absolutePath']);
-
-        $file['absolutePath'] = $fileUploader->resizeImage($file['absolutePath'], $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
-        $file['relativePath'] = str_replace($file['filename'], $userData['username'].'.'.$file['extension'], $file['relativePath']);
-
         // Update the files for this user
-        $updated = $userGateway->update($userData['gibbonPersonID'], [
-            'image_240' => $file['relativePath'],
-        ]);
+        if ($type == 'customFields') {
+            $fields[$gibbonCustomFieldID] = $file['relativePath'];
+            $updated = $customFieldGateway->updateCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID'], $fields);
+
+        } elseif ($type == 'personalDocuments') {
+            $documentData = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $userData['gibbonPersonID']);
+            $updated = $personalDocumentGateway->update($documentData['gibbonPersonalDocumentID'], [
+                'filePath'              => $file['relativePath'],
+                'gibbonPersonIDUpdater' => $session->get('gibbonPersonID'),
+                'timestamp'             => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            // Rename the file to match the identifier for this user, then resize & crop, and upload
+            $renameFilename = $userData['username'].'.'.$file['extension'];
+            $renameFilePath = str_replace($file['filename'], $renameFilename, $file['absolutePath']);
+
+            $file['absolutePath'] = $fileUploader->resizeImage($file['absolutePath'], $renameFilePath, 480, 100, $zoom, $focalX, $focalY);
+            $file['relativePath'] = str_replace($file['filename'], $renameFilename, $file['relativePath']);
+            
+            $updated = $userGateway->update($userData['gibbonPersonID'], [
+                'image_240' => $file['relativePath'],
+            ]);
+        }
+
         if ($updated) {
             $count++;
         }
     }
 
-    unlink($absolutePath.'/'.$file);
+    unlink($absolutePath.'/'.$zipFile);
 
     $URL .= $partialFail
         ? "&return=warning1"

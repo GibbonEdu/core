@@ -329,6 +329,7 @@ class FileUploader
             $destWidth = $srcWidth * $newRatio;
         }
 
+        // Zoom and focal adjustments 
         if ($zoom != 100) {
             $srcWidth = $destWidth / ($zoom / 100.0);
             $srcX = ($width - $srcWidth) * ($focalX / 100.0);

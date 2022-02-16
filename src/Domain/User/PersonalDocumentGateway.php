@@ -170,4 +170,12 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $gibbonPersonID)
+    {
+        $data = ['gibbonPersonalDocumentTypeID' => $gibbonPersonalDocumentTypeID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonPersonalDocumentID, filePath FROM gibbonPersonalDocument WHERE gibbonPersonalDocumentTypeID=:gibbonPersonalDocumentTypeID AND  foreignTable='gibbonPerson' AND foreignTableID=:gibbonPersonID";
+
+        return $this->db()->select($sql, $data)->fetch();
+    }
 }

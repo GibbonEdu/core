@@ -23,6 +23,9 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
     // Access denied
@@ -71,12 +74,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     }
 
     $userGateway = $container->get(UserGateway::class);
+    $customFieldGateway = $container->get(CustomFieldGateway::class);
+    $personalDocumentGateway = $container->get(PersonalDocumentGateway::class);
+    $personalDocumentTypeGateway = $container->get(PersonalDocumentTypeGateway::class);
+
     $fileUploader = $container->get(FileUploader::class);
     $allowedExtensions = $fileUploader->getFileExtensions();
 
     // Peek into the zip file and check the contents
-    $files = [];
-    $existingFiles = [];
+    $files = $existingFiles = [];
+    $validFiles = 0;
+
     for ($i = 0; $i < $zip->numFiles; ++$i) {
         if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') continue;
         
@@ -103,18 +111,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
             'surname',
             'status',
         ])->fetch();
+        
         if (!empty($identifierValue) && !empty($userData)) {
             $userData['filename'] = $filename;
-            $files[] = $userData;
-
+            $validFiles++;
+            
             if (!empty($userData['image_240'])) {
                 $existingFiles[] = $filename;
             }
+        } else {
+            $userData = [
+                'filename' => $filename,
+                'status' => 'Left',
+            ];
         }
+
+        $files[] = $userData;
     }
 
     // Upload the temporary file to the archive
-    if (!empty($files) && !empty($tempFile['tmp_name'])) {
+    if ($validFiles > 0 && !empty($tempFile['tmp_name'])) {
         $file = $fileUploader->upload($tempFile['name'], $tempFile['tmp_name'], '/uploads/temp');
     } elseif (empty($tempFile['tmp_name'])) {
         $page->addError(__('Failed to write file to disk.'));
@@ -143,17 +159,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         'customFields'      => __('Custom Fields'),
     ];
     $row = $form->addRow();
-        $row->addLabel('type', __('Type'));
-        $row->addTextField('type')->readonly()->setValue($types[$type] ?? '');
+        $row->addLabel('typeLabel', __('Type'));
+        $row->addTextField('typeLabel')->readonly()->setValue($types[$type] ?? '');
 
     if ($type == 'personalDocuments') {
+        $personalDocument = $personalDocumentTypeGateway->getByID($gibbonPersonalDocumentTypeID);
         $row = $form->addRow();
         $row->addLabel('personalDocuments', __('Personal Document'));
-        $row->addTextField('personalDocuments')->readonly()->setValue($gibbonPersonalDocumentTypeID);
+        $row->addTextField('personalDocuments')->readonly()->setValue($personalDocument['name'] ?? $gibbonPersonalDocumentTypeID);
     } elseif ($type == 'customFields') {
+        $customField = $customFieldGateway->getByID($gibbonCustomFieldID);
         $row = $form->addRow();
         $row->addLabel('customFields', __('Custom Fields'));
-        $row->addTextField('customFields')->readonly()->setValue($gibbonCustomFieldID);
+        $row->addTextField('customFields')->readonly()->setValue($customField['name'] ?? $gibbonCustomFieldID);
     }
 
     if (!empty($existingFiles)) {
@@ -163,9 +181,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
     }
 
     // DATA TABLE
-    if (empty($files)) {
+    if ($validFiles == 0) {
         $form->addRow()->addContent(Format::alert(__('Import cannot proceed. The uploaded ZIP archive did not contain any valid {filetype} files.', ['filetype' => $type])));
-    } else {
+    }
+
         $table = $form->addRow()->addDataTable('fileUploadPreview')->withData(new DataSet($files));
 
         $table->modifyRows($userGateway->getSharedUserRowHighlighter());
@@ -173,6 +192,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         $table->addColumn('user', __('User'))
             ->width('25%')
             ->format(function ($person) {
+                if (empty($person['surname']) || empty($person['username'])) {
+                    return __('No match found');
+                }
                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true)
                     .'<br/>'.Format::small(Format::userStatusInfo($person));
             });
@@ -182,12 +204,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage
         }
         $table->addColumn('filename', __('File Name'));
         $table->addColumn('status', __('Status'))
-            ->format(function ($values) {
-                return !empty($values['image_240'])
-                    ? '<span class="tag warning">'.__('Exists').'</span>'
-                    : '<span class="tag success">'.__('New').'</span>';
+            ->format(function ($values) use ($type, $gibbonCustomFieldID, $customFieldGateway, $gibbonPersonalDocumentTypeID, $personalDocumentGateway) {
+                if (empty($values['surname'])) {
+                    return Format::tag(__('Unknown'), 'dull');
+                }
+
+                if ($type == 'customFields') {
+                    $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $values['gibbonPersonID']);
+                    $exists = !empty($fields[$gibbonCustomFieldID]);
+                } elseif ($type == 'personalDocuments') {
+                    $document = $personalDocumentGateway->getPersonalDocumentDataByUser($gibbonPersonalDocumentTypeID, $values['gibbonPersonID']);
+                    $exists = !empty($document['filePath']);
+                } else {
+                    $exists = !empty($values['image_240']);
+                }
+
+                return $exists
+                    ? Format::tag(__('Exists'), 'warning')
+                    : Format::tag(__('New'), 'success');
             });
 
+    if ($validFiles > 0) {
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
