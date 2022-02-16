@@ -48,7 +48,14 @@ class Range extends Input
      */
     protected function getElement()
     {
-        $output = '<input type="range" '.$this->getAttributeString().'>';
+        $output = '';
+
+        $output .= '<div class="flex justify-between items-center">';
+        $output .= '<span class="inline-block w-8 text-left">'.$this->getAttribute('min').'</span>';
+        $output .= '<input type="range" '.$this->getAttributeString().' oninput="this.nextElementSibling.nextElementSibling.value = this.value">';
+        $output .= '<span class="inline-block w-8 text-right">'.$this->getAttribute('max').'</span>';
+        $output .= '<output class="block w-10 p-1 ml-2 border rounded-sm bg-gray-200">'.$this->getValue().'</output>';
+        $output .= '</div>';
 
         return $output;
     }

@@ -131,4 +131,81 @@ class CustomFieldGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function selectCustomFieldsWithFileUpload()
+    {
+        $sql = "SELECT context as groupBy, gibbonCustomFieldID as value, name FROM gibbonCustomField WHERE (context='User' OR context='Staff' OR context='Individual Needs' OR context='Medical Form') AND (type = 'file' OR type = 'image') ORDER BY context = 'User' DESC, context, sequenceNumber, name";
+
+        return $this->db()->select($sql);
+    }
+
+    public function getCustomFieldDataByUser($gibbonCustomFieldID, $gibbonPersonID)
+    {
+        $customField = $this->getByID($gibbonCustomFieldID, ['context']);
+
+        if (empty($customField)) {
+            return '';
+        }
+        
+        switch ($customField['context']) {
+            case 'Staff':
+                $sql = "SELECT gibbonStaff.fields FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                break;
+
+            case 'Individual Needs':
+                $sql = "SELECT gibbonIN.fields FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                break;
+
+            case 'Medical Form':
+                $sql = "SELECT gibbonPersonMedical.fields FROM gibbonPerson JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                break;
+
+            default:
+            case 'User':
+                $sql = "SELECT gibbonPerson.fields FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                break;
+        }
+        
+        $record = $this->db()->select($sql, ['gibbonPersonID' => $gibbonPersonID])->fetch();
+        $fields = json_decode($record['fields'] ?? '', true);
+
+        return !empty($fields) ? $fields : [];
+    }
+
+    public function updateCustomFieldDataByUser($gibbonCustomFieldID, $gibbonPersonID, $value)
+    {
+        $customField = $this->getByID($gibbonCustomFieldID, ['context']);
+
+        if (empty($customField)) {
+            return '';
+        }
+        
+        switch ($customField['context']) {
+            case 'Staff':
+                $sql = "INSERT INTO gibbonStaff (`gibbonPersonID`, `fields`) VALUES (:gibbonPersonID, :fields) ON DUPLICATE KEY UPDATE fields=:fields";
+                break;
+
+            case 'Individual Needs':
+                $sql = "INSERT INTO gibbonIN (`gibbonPersonID`, `fields`) VALUES (:gibbonPersonID, :fields) ON DUPLICATE KEY UPDATE fields=:fields";
+                break;
+
+            case 'Medical Form':
+                $gibbonPersonMedicalID = $this->db()->selectOne("SELECT gibbonPersonMedicalID FROM gibbonPersonMedical WHERE gibbonPersonID=:gibbonPersonID", ['gibbonPersonID' => $gibbonPersonID]);
+
+                if (!empty($gibbonPersonMedicalID)) {
+                    $sql = "UPDATE gibbonPersonMedical SET gibbonPersonMedical.fields=:fields WHERE gibbonPersonMedical.gibbonPersonID=:gibbonPersonID";
+                } else {
+                    $sql = "INSERT INTO gibbonPersonMedical (`gibbonPersonID`, `fields`) VALUES (:gibbonPersonID, :fields)";
+                }
+                
+                break;
+
+            default:
+            case 'User':
+                $sql = "UPDATE gibbonPerson SET gibbonPerson.fields=:fields WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                break;
+        }
+        
+        return $this->db()->statement($sql, ['gibbonPersonID' => $gibbonPersonID, 'fields' => json_encode($value)]);
+    }
 }

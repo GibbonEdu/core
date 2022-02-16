@@ -66,4 +66,11 @@ class PersonalDocumentTypeGateway extends QueryableGateway
 
         return $this->db()->select($sql);
     }
+
+    public function selectDocumentTypesWithFileUpload()
+    {
+        $sql = "SELECT gibbonPersonalDocumentTypeID as value, name FROM gibbonPersonalDocumentType WHERE fields LIKE '%filePath%' ORDER BY sequenceNumber, name";
+
+        return $this->db()->select($sql);
+    }
 }

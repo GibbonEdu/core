@@ -39,6 +39,7 @@ tr.warning td {
 	padding: 0;
 	overflow: hidden;
 	counter-reset: step;
+    display: flex;
 }
 
 /* step labels */
@@ -47,8 +48,7 @@ tr.warning td {
 	color: #222222;
 	text-transform: uppercase;
 	font-size: 12px;
-	width: 25%;
-	float: left;
+	flex: 1 1 0%;
 	position: relative;
 	z-index: 0;
 	margin: 0;
@@ -65,7 +65,7 @@ tr.warning td {
 	display: block;
 	font-size: 16px;
 	color: #333;
-	background: white;
+	background: #f4f4f4;
 	border-radius: 3px;
 	margin: 0 auto 5px auto;
 	z-index: 0;
@@ -76,7 +76,7 @@ tr.warning td {
 	content: '';
 	width: 100%;
 	height: 2px;
-	background: white;
+	background: #f4f4f4;
 	position: absolute;
 	left: -50%;
 	top: 14px;
@@ -92,7 +92,7 @@ tr.warning td {
 .multiPartForm .step.active:before,
 .multiPartForm .step.active:after{
 	background-color: #A88EDB;
-	color: white;
+	color: #f4f4f4;
 }
 
 /* database tool classes */
