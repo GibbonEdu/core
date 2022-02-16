@@ -17,7 +17,7 @@ table:
         args: { filter: schoolyear, required: true, custom: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name }
     gibbonYearGroupIDEntry:
-        name: "Year Group of Entry"
+        name: "Year Group at Entry"
         desc: "Year group short name, as set in School Admin. Must already exist."
         args: { filter: string, required: true }
         relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort }
