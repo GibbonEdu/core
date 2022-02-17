@@ -493,13 +493,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                                 $form->addHeaderAction('unit', __m('Edit Unit'))
                                     ->setURL('/modules/Planner/units_edit_working.php')
-                                    ->addParam('viewBy', $viewBy)
-                                    ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
-                                    ->addParam('gibbonCourseID', $values['gibbonCourseID'])
-                                    ->addParam('gibbonUnitID', $values['gibbonUnitID'])
-                                    ->addParam('gibbonUnitClassID', $gibbonUnitClassID)
+                                    ->addParam('viewBy', $viewBy ?? '')
+                                    ->addParam('gibbonCourseClassID', $gibbonCourseClassID ?? '')
+                                    ->addParam('gibbonCourseID', $values['gibbonCourseID'] ?? '')
+                                    ->addParam('gibbonUnitID', $values['gibbonUnitID'] ?? '')
+                                    ->addParam('gibbonUnitClassID', $gibbonUnitClassID ?? '')
                                     ->addParam('gibbonSchoolYearID', $gibbon->session->get('gibbonSchoolYearID'))
-                                    ->addParam('subView', $subView)
+                                    ->addParam('subView', $subView ?? '')
                                     ->displayLabel();
                             }
 
