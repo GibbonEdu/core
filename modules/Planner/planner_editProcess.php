@@ -332,8 +332,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $URL .= "&return=warning1$params";
                             header("Location: {$URL}");
                         } else {
-                            $URL .= "&return=success0$params";
-                            header("Location: {$URL}");
+                            //Jump to Markbook?
+                            $markbook = $_POST['markbook'] ?? '';
+                            if ($markbook == 'Y') {
+                                $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=".$_POST['gibbonUnitID']."&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
+                                header("Location: {$URL}");
+                                exit();
+                            } else {
+                                $URL .= "&return=success0&editID=".$gibbonPlannerEntryID.$params;
+                                header("Location: {$URL}");
+                                exit();
+                            }
                         }
                         //Notify participants
                         if (isset($_POST['notify'])) {
