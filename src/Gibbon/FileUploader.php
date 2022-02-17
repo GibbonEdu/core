@@ -179,7 +179,7 @@ class FileUploader
         $sourcePath = (isset($file['tmp_name']))? $file['tmp_name'] : '';
 
         // Optionally replace the filename, keeping the previous extension
-        if (!empty($filenameChange)) {
+        if (!empty($filenameChange) && is_string($filenameChange)) {
             $filenameChange =  preg_replace('/[^a-zA-Z0-9]/', '', $filenameChange);
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
