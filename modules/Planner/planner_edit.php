@@ -323,6 +323,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->setValue('Y')->description(__('Other Parents'));
                 }
 
+                // MARKBOOK
+                $form->addRow()->addHeading(__('Markbook'));
+                // Check database for a linked markbook column
+                $data = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);
+                $sql = 'SELECT mb.gibbonMarkbookColumnID FROM gibbonMarkbookColumn AS mb WHERE :gibbonPlannerEntryID=mb.gibbonPlannerEntryID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+                if ($result->rowCount() != 0) {
+                    $row = $form->addRow();
+                    $row->addLabel('markbook', __('Markbook Column Already Created'))->description(__('A Markbook column has already been created for this assignment.'));
+                } else {
+                    $row = $form->addRow();
+                    $row->addLabel('markbook', __('Create Markbook Column?'))->description(__('Linked to this lesson by default.'));
+                    $row->addRadio('markbook')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+                }
+
                 // OUTCOMES
                 if ($viewBy == 'date') {
                     $form->addRow()->addHeading('Outcomes', __('Outcomes'));

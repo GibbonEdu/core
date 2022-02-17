@@ -24,6 +24,7 @@ v24.0.00
     Significant Changes
     Tweaks & Additions
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
+        Planner: added Create Markbook Column option when editing a lesson plan
 
     Bug Fixes
         System: fixed user's personal language and theme not set after login
