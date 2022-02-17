@@ -59,11 +59,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
             $row = $form->addRow();
                 $row->addLabel('original', __('Original String'));
-                $row->addTextField('original')->required()->maxLength(100)->setValue($values['original']);
+                $row->addTextField('original')->required()->maxLength(255)->setValue($values['original']);
 
             $row = $form->addRow();
                 $row->addLabel('replacement', __('Replacement String'));
-                $row->addTextField('replacement')->required()->maxLength(100)->setValue($values['replacement']);
+                $row->addTextField('replacement')->required()->maxLength(255)->setValue($values['replacement']);
 
             $row = $form->addRow();
                 $row->addLabel('mode', __('Mode'));
