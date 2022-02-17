@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                     echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Cost (%1$s)'), __($row['paymentType'])).'</span><br/>';
                 }
                 else {
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('%1$s Cost (%2$s)'), __(row['paymentFirmness']), __($row['paymentType'])).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('%1$s Cost (%2$s)'), __($row['paymentFirmness']), __($row['paymentType'])).'</span><br/>';
                 }
                 if ($row['payment'] == 0) {
                     echo '<i>'.__('None').'</i>';
