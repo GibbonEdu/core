@@ -24,6 +24,7 @@ v24.0.00
     Significant Changes
     Tweaks & Additions
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
+        System Admin: increased the length of string translations to 255 characters
 
     Bug Fixes
         System: fixed user's personal language and theme not set after login
