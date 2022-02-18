@@ -107,16 +107,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addClass('draggableRow')
             ->addData('drag-id', $field['gibbonFormFieldID']);
 
-        $element = $row->getElement($field['fieldName']);
-        if (!empty($element)) {
-            $element->addClass('flex-1')->setTitle($field['fieldName']);
+        if ($element = $row->getElement($field['fieldName'])) {
+            $element->addClass('flex-1');
         }
 
         $row->addContent((new Action('edit', __('Edit')))
             ->setURL('/modules/System Admin/formBuilder_page_edit_field_edit.php')
             ->addParam('gibbonFormFieldID', $field['gibbonFormFieldID'])
             ->addParams($urlParams)
-            ->modalWindow(900, 500)
+            ->modalWindow(900, 520)
             ->getOutput().
             (new Action('delete', __('Delete')))
             ->setURL('/modules/System Admin/formBuilder_page_edit_field_delete.php')

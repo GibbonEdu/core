@@ -43,6 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         'required'    => $_POST['required'] ?? 'N',
     ];
 
+    if (!empty($_POST['options'])) {
+        $data['options'] = $_POST['options'];
+    }
+
     // Validate the required values are present
     if (empty($data['label']) && empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID']) || empty($urlParams['gibbonFormFieldID'])) {
         $URL .= '&return=error1';

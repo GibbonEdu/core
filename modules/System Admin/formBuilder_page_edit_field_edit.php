@@ -72,14 +72,42 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('description', __('Description'));
         $row->addTextArea('description')->maxLength(255)->setRows(2);
 
-    $row = $form->addRow();
-        $row->addLabel('required', __('Required'));
+    if ($values['fieldType'] != 'heading' && $values['fieldType'] != 'subheading') {
+        $row = $form->addRow();
+            $row->addLabel('required', __('Required'));
 
-    if ($values['required'] == 'X') {
-        $values['required'] = 'Y';
-        $row->addYesNo('required')->required()->readonly();
-    } else {
-        $row->addYesNo('required')->required();
+        if ($values['required'] == 'X') {
+            $form->addHiddenValue('required', 'X');
+            $row->addTextField('required')->readonly()->setValue('Yes');
+        } else {
+            $row->addYesNo('required')->required();
+        }
+    }
+
+    if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['varchar', 'number'])) {
+        $row = $form->addRow();
+            $row->addLabel('options', __('Max Length'))->description(__('Number of characters, up to 255.'));
+            $row->addNumber('options')->setName('options')->minimum(1)->maximum(255)->onlyInteger(true);
+    }
+
+    if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['text', 'editor'])) {
+        $row = $form->addRow();
+            $row->addLabel('options', __('Rows'))->description(__('Number of rows for field.'));
+            $row->addNumber('options')->setName('options')->minimum(1)->maximum(20)->onlyInteger(true);
+    }
+
+    if (in_array($values['fieldType'], ['select', 'checkboxes', 'radio'])) {
+        $row = $form->addRow();
+            $row->addLabel('options', __('Options'))
+                ->description(__('Comma separated list of options.'))
+                ->description(__('Dropdown: use [] to create option groups.'));
+            $row->addTextArea('options')->setName('options')->required()->setRows(3);
+    }
+
+    if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['file'])) {
+        $row = $form->addRow();
+            $row->addLabel('options', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
+            $row->addTextField('options')->setName('options');
     }
 
     $row = $form->addRow();
