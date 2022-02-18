@@ -44,7 +44,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return array_reduce(array_keys($this->fields), function ($group, $key) use (&$heading) {
             $field = $this->fields[$key];
 
-            if (!empty($field['type']) && $field['type'] == 'optgroup') {
+            if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
                 $heading = $field['label'];
             } else if (!empty($heading)) {
                 $group[$heading][$key] = $field['label'];

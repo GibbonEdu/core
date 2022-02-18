@@ -37,6 +37,7 @@ class Checkbox extends Input
     protected $inline = false;
     protected $align = 'right';
     protected $labelClass = '';
+    protected $selectableGroups = false;
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -124,6 +125,16 @@ class Checkbox extends Input
         if (empty($label)) $label = __('All').' / '.__('None');
 
         $this->checkall = $label;
+        return $this;
+    }
+
+    /**
+     * Aligns the list options to the right edge.
+     * @return  self
+     */
+    public function selectableGroups($value = true)
+    {
+        $this->selectableGroups = $value;
         return $this;
     }
 
@@ -228,7 +239,12 @@ class Checkbox extends Input
             foreach ($optionGroups as $group => $options) {
             
                 if (!empty($group)) {
-                    $output .= '<label class="flex font-bold pb-1 border-b border-gray-400">'.$group.'</label>';
+                    $output .= '<label class="flex justify-between font-bold pb-1 border-b border-gray-400 '.($this->selectableGroups ? 'mt-4' : '').'"><span class="flex-1">'.$group.'</span>';
+                    if ($this->selectableGroups) {
+                        $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $group);
+                        $output .= '<input type="checkbox" name="'.$name.'" value="'.$groupName.'" class="text-right"><br/>';
+                    }
+                    $output .= '</label>';
                 }
                 foreach ($options as $value => $label) {
                     if ($hasMultiple) {
