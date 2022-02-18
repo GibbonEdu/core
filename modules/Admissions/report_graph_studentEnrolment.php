@@ -22,7 +22,6 @@ use Gibbon\Services\Format;
 use Gibbon\UI\Chart\Chart;
 
 //Module includes
-require_once __DIR__ . '/moduleFunctions.php';
 include './modules/Attendance/moduleFunctions.php';
 
 function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 'Y-m-d' ) {
@@ -53,7 +52,7 @@ function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 
     return $dates;
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_studentEnrolment.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_graph_studentEnrolment.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -89,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
         '+1 year' => __('Year')
     );
 
-    $form = Form::create('attendanceTrends', $session->get('absoluteURL').'/index.php?q=/modules/Students/report_graph_studentEnrolment.php');
+    $form = Form::create('attendanceTrends', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/report_graph_studentEnrolment.php');
 
     $form->addHiddenValue('address', $session->get('address'));
 

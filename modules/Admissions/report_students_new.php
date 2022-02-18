@@ -25,10 +25,7 @@ use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Students\StudentReportGateway;
 
-//Module includes
-require_once __DIR__ . '/moduleFunctions.php';
-
-if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -22,7 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $table = DataTable::createPaginated('students', $criteria);
 
         $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Students/studentEnrolment_manage_add.php')
+            ->setURL('/modules/Admissions/studentEnrolment_manage_add.php')
             ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->addParam('search', $criteria->getSearchText(true))
             ->displayLabel();
@@ -108,10 +108,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($row, $actions) {
                 $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Students/studentEnrolment_manage_edit.php');
+                    ->setURL('/modules/Admissions/studentEnrolment_manage_edit.php');
 
                 $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Students/studentEnrolment_manage_delete.php');
+                    ->setURL('/modules/Admissions/studentEnrolment_manage_delete.php');
             });
 
         echo $table->render($students);
