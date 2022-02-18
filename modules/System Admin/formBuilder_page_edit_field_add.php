@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $fields = $fieldGroupClass->getFieldOptions();
 
         $col->addLabel('fields', __('Fields to add').':')->setClass('text-xs');
-        $col->addCheckbox('fields')->fromArray($fields);
+        $col->addCheckbox('fields')->fromArray($fields)->selectableGroups();
     }
 
     $heading = '';

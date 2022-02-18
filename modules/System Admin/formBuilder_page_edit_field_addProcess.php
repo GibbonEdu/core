@@ -82,13 +82,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 $partialFail = true;
                 continue;
             }
+
+            if ($field['type'] == 'heading' || $field['type'] == 'subheading') {
+                $fieldGroup = 'LayoutHeadings';
+            }
         }
 
         $data = [
             'gibbonFormPageID' => $urlParams['gibbonFormPageID'],
             'fieldName'        => $fieldName,
             'fieldType'        => $_POST['type'] ?? $field['type'] ?? 'varchar',
-            'fieldGroup'       => $urlParams['fieldGroup'],
+            'fieldGroup'       => $fieldGroup ?? $urlParams['fieldGroup'],
             'required'         => $_POST['required'] ?? $field['required'] ?? 'N',
             'options'          => $_POST['options'] ?? $field['options'] ?? null,
             'label'            => $_POST['label'] ?? $field['label'] ?? '',
@@ -100,6 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $partialFail = !$gibbonFormFieldID;
 
         $sequenceNumber++;
+        $fieldGroup = null;
     }
 
     $URL .= $partialFail
