@@ -28,11 +28,15 @@ class AgreementFields extends AbstractFieldGroup
     public function __construct()
     {
         $this->fields = [
-            'agreement' => [
+            'headingAgreement' => [
                 'label'       => __('Agreement'),
                 'description' => __('This is example text. Edit it to suit your school context.'),
+                'type'        => 'heading',
+            ],
+            'agreement' => [
+                'label'       => __('Do you agree to the above?'),
                 'type'        => 'checkbox',
-                'required'    => 'Y',
+                'required'    => 'X',
             ],
         ];
     }
@@ -47,11 +51,13 @@ class AgreementFields extends AbstractFieldGroup
         $required = $field['required'] != 'N';
         
         $row = $form->addRow();
-            $row->addHeading($field['label'], __($field['label']))->append(__($field['description']));
 
-        $row = $form->addRow();
-            $row->addLabel($field['fieldName'], __('Do you agree to the above?'));
-            $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required);
+        switch ($field['fieldName']) {
+            case 'agreement':
+                $row->addLabel($field['fieldName'], __($field['label']))->description(__($field['description']));
+                $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required);
+                break;
+        }
 
         return $row;
     }

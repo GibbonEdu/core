@@ -126,7 +126,7 @@ class StudentFields extends AbstractFieldGroup
 
             case 'nameInCharacters':
                 $row->addLabel('nameInCharacters', __($field['label']))->description(__($field['description']));
-                $row->addTextField('nameInCharacters')->maxLength(60);
+                $row->addTextField('nameInCharacters')->required($required)->maxLength(60);
 
             case 'gender':
                 $row->addLabel('gender', __($field['label']))->description(__($field['description']));
@@ -134,24 +134,16 @@ class StudentFields extends AbstractFieldGroup
                 break;
 
             case 'dob':
-                $row->addLabel('dob', __('Date of Birth'));
+                $row->addLabel('dob', __($field['label']))->description(__($field['description']));
                 $row->addDate('dob')->required($required);
                 break;
 
             // STUDENT BACKGROUND
-            case 'languageHomePrimary':
-                $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
-                $row->addSelectLanguage('languageHomePrimary')->required($required)->placeholder();
-                break;
-        
-            case 'languageHomeSecondary':
-                $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
-                $row->addSelectLanguage('languageHomeSecondary')->required($required)->placeholder();
-                break;
+
 
             // STUDENT CONTACT
             case 'email':
-                $row->addLabel('email', __('Email'));
+                $row->addLabel('email', __($field['label']))->description(__($field['description']));
                 $email = $row->addEmail('email')->required($required);
                 break;
         }

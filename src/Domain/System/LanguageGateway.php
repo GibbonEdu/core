@@ -1,3 +1,4 @@
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -14,40 +15,30 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-.columnText[readonly] {
-	font-style: italic;
-	color: #666666;
-}
+namespace Gibbon\Domain\System;
 
-tr.error td {
-	border-top: 1px solid #F8E4E2;
-	border-bottom: 1px solid #E7B7B2;
-}
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
-tr.warning td {
-	border-top: 1px solid #FEEAD9;
-	border-bottom: 1px solid #EFB98C;
-}
+/**
+ * @version v24
+ * @since   v24
+ */
+class LanguageGateway extends QueryableGateway
+{
+    use TableAware;
 
-/* database tool classes */
-.sticky {
-	position: sticky;
-	top: -1px;
-}
+    private static $tableName = 'gibbonLanguage';
+    private static $primaryKey = 'gibbonLanguageID';
 
-.checkboxList label {
-	font-size: 12px;
-	line-height: 1.8;
-	padding-right: 5px;
-}
+    private static $searchableColumns = ['name'];
+    
+    public function selectLanguages()
+    {
+        return $this->db()->select("SELECT name FROM gibbonLanguage ORDER BY name");
+    }
 
-.checkboxList input[type="checkbox"] {
-	margin-right: 5px;
-}
-
-#formFields .formRow div.w-full.justify-end {
-    width: auto !important;
 }
