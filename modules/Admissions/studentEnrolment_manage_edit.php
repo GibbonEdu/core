@@ -26,7 +26,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolment_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -21,14 +21,14 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdraw.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('Withdraw Student'));
 
-    $form = Form::create('studentWithdraw', $session->get('absoluteURL').'/modules/Students/student_withdrawProcess.php');
+    $form = Form::create('studentWithdraw', $session->get('absoluteURL').'/modules/Admissions/student_withdrawProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));

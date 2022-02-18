@@ -34,9 +34,9 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_withdraw.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/student_withdraw.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/student_withdraw.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_withdraw.
             $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
             $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
             $event->setNotificationText($notificationString);
-            $event->setActionLink('/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
+            $event->setActionLink('/index.php?q=/modules/Admissions/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&search=&sort=&allStudents=on');
 
             // Notify Additional People
             foreach ($notificationList as $gibbonPersonIDNotify) {
