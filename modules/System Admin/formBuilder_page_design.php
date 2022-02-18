@@ -147,6 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             'ParentFields' => __('Parent'),
             'FamilyFields' => __('Family'),
             'MedicalFields' => __('Medical'),
+            'INFields' => __('Individual Needs'),
             'DocumentsFields' => __('Documents'),
             'FinanceFields' => __('Finance'),
             'LanguageFields' => __('Language'),

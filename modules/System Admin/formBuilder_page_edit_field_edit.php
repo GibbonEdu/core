@@ -61,24 +61,36 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     // $form->addRow()->addHeading(__('Basic Information'));
 
     $row = $form->addRow();
-    $row->addLabel('fieldName', __('Field'));
-    $row->addTextField('fieldName')->readonly();
+            $row->addLabel('fieldName', __('Field'));
+            $row->addTextField('fieldName')->readonly();
+
+    if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading') {
+        $row = $form->addRow();
+            $row->addLabel('fieldType', __('Type'));
+            $row->addSelect('fieldType')->fromArray(['heading' => __('Heading'), 'subheading' => __('Subheading')]);
+    } else {
+        $form->addHiddenValue('fieldType', $values['fieldType']);
+    }
 
     $row = $form->addRow();
         $row->addLabel('label', __('Label'));
         $row->addTextField('label')->maxLength(90)->required();
 
-    $row = $form->addRow();
-        $row->addLabel('description', __('Description'));
-        $row->addTextArea('description')->maxLength(255)->setRows(2);
+    if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading') {
+        $col = $form->addRow()->addColumn();
+        $col->addLabel('description', __('Description'));
+        $col->addTextArea('description')->maxLength(255)->setRows(4);
+    } else {
+        $row = $form->addRow();
+            $row->addLabel('description', __('Description'));
+            $row->addTextArea('description')->maxLength(255)->setRows(2);
 
-    if ($values['fieldType'] != 'heading' && $values['fieldType'] != 'subheading') {
         $row = $form->addRow();
             $row->addLabel('required', __('Required'));
 
         if ($values['required'] == 'X') {
             $form->addHiddenValue('required', 'X');
-            $row->addTextField('required')->readonly()->setValue('Yes');
+            $row->addTextField('requiredLabel')->readonly()->setValue(__('Yes'));
         } else {
             $row->addYesNo('required')->required();
         }

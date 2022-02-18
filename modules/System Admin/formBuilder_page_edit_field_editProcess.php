@@ -38,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $formFieldGateway = $container->get(FormFieldGateway::class);
 
     $data = [
+        'fieldType'   => $_POST['fieldType'] ?? 'varchar',
         'label'       => $_POST['label'] ?? '',
         'description' => $_POST['description'] ?? null,
         'required'    => $_POST['required'] ?? 'N',
