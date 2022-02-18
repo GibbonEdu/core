@@ -95,7 +95,7 @@ class Checkbox extends Input
                 $this->checked[trim($key)] = (!is_array($value))? trim($value) : $value;
             }
         } else {
-            $this->checked = array(trim($values));
+            $this->checked = [trim($values ?? '')];
         }
 
         return $this;
