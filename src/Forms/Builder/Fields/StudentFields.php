@@ -28,9 +28,9 @@ class StudentFields extends AbstractFieldGroup
     public function __construct()
     {
         $this->fields = [
-            'heading1' => [
+            'headingStudentPersonalData' => [
                 'label' => __('Student Personal Data'),
-                'type' => 'optgroup',
+                'type' => 'subheading',
             ],
             'surname' => [
                 'label' => __('Surname'),
@@ -64,9 +64,9 @@ class StudentFields extends AbstractFieldGroup
                 'label' => __('Date of Birth'),
                 'required' => 'Y',
             ],
-            'heading2' => [
+            'headingStudentBackground' => [
                 'label' => __('Student Background'),
-                'type' => 'optgroup',
+                'type' => 'subheading',
             ],
             'languageHomePrimary' => [
                 'label' => __('Home Language - Primary'),
@@ -76,9 +76,9 @@ class StudentFields extends AbstractFieldGroup
             'languageHomeSecondary' => [
                 'label' => __('Home Language - Secondary'),
             ],
-            'heading3' => [
+            'headingStudentContact' => [
                 'label' => __('Student Contact'),
-                'type' => 'optgroup',
+                'type' => 'subheading',
             ],
             'email' => [
                 'label' => __('Email'),
