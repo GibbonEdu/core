@@ -622,15 +622,23 @@ class DatabaseFormFactory extends FormFactory
         $countryCodes = $this->getCachedQuery('phoneNumber');
 
         if (empty($countryCodes)) {
-            $sql = "SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY (SELECT value FROM gibbonSetting WHERE scope='System' AND name='country' LIMIT 1)=printable_name DESC, printable_name";
+            $sql = "SELECT iddCountryCode, printable_name FROM gibbonCountry ORDER BY (SELECT value FROM gibbonSetting WHERE scope='System' AND name='country' LIMIT 1)=printable_name DESC, iddCountryCode, printable_name";
             $results = $this->pdo->select($sql);
             if ($results && $results->rowCount() > 0) {
                 $countryCodes = $results->fetchAll();
 
                 // Transform the row data into value => name pairs
                 $countryCodes = array_reduce($countryCodes, function($codes, $item) {
-                    $codes[$item['iddCountryCode']] = $item['iddCountryCode'].' - '.__($item['printable_name']);
+                    if (!empty($item['iddCountryCode'])) {
+                        if (array_key_exists($item['iddCountryCode'], $codes)) {
+                            $codes[$item['iddCountryCode']] = $codes[$item['iddCountryCode']].', '.__($item['printable_name']);
+                        }
+                        else {
+                            $codes[$item['iddCountryCode']] = $item['iddCountryCode'].' - '.__($item['printable_name']);
+                        }
+                    }
                     return $codes;
+
                 }, array());
             }
             $this->setCachedQuery('phoneNumber', $countryCodes);
