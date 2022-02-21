@@ -22,7 +22,7 @@ use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST);
+$_POST = $container->get(Validator::class)->sanitize($_POST, ['notes' => 'HTML']);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $status = $_GET['status'] ?? '';

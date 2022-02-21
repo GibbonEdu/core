@@ -35,6 +35,7 @@ v24.0.00
     Bug Fixes
         System: fixed user's personal language and theme not set after login
         System: improved display of IDD country codes in phone number entry field
+        Finance: fixed HTML being removed from notes on invoices
         System Admin: fixed HTML being stripped out of the privacy policy
 
 v23.0.01
