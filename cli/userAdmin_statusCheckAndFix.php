@@ -48,38 +48,33 @@ if (!(isCommandLineInterface() || ($remoteCLIKey != '' && $remoteCLIKey == $remo
     $userGateway = $container->get(UserGateway::class);
     $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
 
-        $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-        $sql = 'SELECT gibbonPersonID, status, dateEnd, dateStart, gibbonRoleIDAll FROM gibbonPerson ORDER BY gibbonPersonID';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $sql = 'SELECT gibbonPersonID, status, dateEnd, dateStart, gibbonRoleIDAll FROM gibbonPerson ORDER BY gibbonPersonID';
+    $result = $pdo->select($sql);
 
     while ($row = $result->fetch()) {
         //Check for status=='Expected' when met or exceeded start date and set to 'Full'
         if ($row['dateStart'] != '' && date('Y-m-d') >= $row['dateStart'] && $row['status'] == 'Expected') {
-            $userGateway->update($gibbonPersonID, ['status' => 'Full']);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => 'Full', 'reason' => 'CLI Status Check and Fix']);
+            $userGateway->update($row['gibbonPersonID'], ['status' => 'Full']);
+            $userStatusLogGateway->insert(['gibbonPersonID' => $row['gibbonPersonID'], 'statusOld' => $row['status'], 'statusNew' => 'Full', 'reason' => 'CLI Status Check and Fix']);
         }
 
         //Check for status=='Full' when end date exceeded, and set to 'Left'
         if ($row['dateEnd'] != '' && date('Y-m-d') > $row['dateEnd'] && $row['status'] == 'Full') {
-            $userGateway->update($gibbonPersonID, ['status' => 'Left']);
-            $userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $row['status'], 'statusNew' => 'Left', 'reason' => 'CLI Status Check and Fix']);
+            $userGateway->update($row['gibbonPersonID'], ['status' => 'Left']);
+            $userStatusLogGateway->insert(['gibbonPersonID' => $row['gibbonPersonID'], 'statusOld' => $row['status'], 'statusNew' => 'Left', 'reason' => 'CLI Status Check and Fix']);
         }
     }
 
     // Look for parents who are set to Full and counts the active children (also catches parents with no children)
-
-        $data = array();
-        $sql = "SELECT adult.gibbonPersonID,
-                COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
-                FROM gibbonPerson as adult
-                JOIN gibbonFamilyAdult ON (adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID)
-                LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
-                LEFT JOIN gibbonPerson as child ON (child.gibbonPersonID=gibbonFamilyChild.gibbonPersonID)
-                WHERE adult.status='Full'
-                GROUP BY adult.gibbonPersonID";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+    $sql = "SELECT adult.gibbonPersonID,
+            COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
+            FROM gibbonPerson as adult
+            JOIN gibbonFamilyAdult ON (adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID)
+            LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+            LEFT JOIN gibbonPerson as child ON (child.gibbonPersonID=gibbonFamilyChild.gibbonPersonID)
+            WHERE adult.status='Full'
+            GROUP BY adult.gibbonPersonID";
+    $result = $pdo->select($sql);
 
     while ($row = $result->fetch()) {
         // Skip parents who have any active children
