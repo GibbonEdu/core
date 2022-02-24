@@ -187,7 +187,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
         if (empty($oauthProvider)) return;
-        
+
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
@@ -1621,7 +1621,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
     global $session;
-    
+
     $output = '';
 
     $blank = true;
