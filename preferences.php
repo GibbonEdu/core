@@ -122,6 +122,10 @@ if (!$session->exists("username")) {
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
             $row->addYesNo('receiveNotificationEmails');
+            
+        $row = $form->addRow();
+            $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
+            $row->addYesNo('mfaEnable'); //TODO: more work :(
 
         $row = $form->addRow();
             $row->addFooter();
