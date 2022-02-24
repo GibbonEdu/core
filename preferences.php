@@ -137,7 +137,9 @@ if (!$session->exists("username")) {
         $row = $form->addRow()->addClass('toggle');
             $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
             $row->addNumber('mfaCode'); //TODO: Validate that it's a 6 digit number, because there's the possibility of leading 0s this can't be done with max/min values...
-            
+        
+        //TODO: If disabling MFA require user to put in their code.
+        
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
