@@ -127,11 +127,12 @@ if (!$session->exists("username")) {
             
         $row = $form->addRow();
             $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
-            $row->addYesNo('mfaEnable');
+            $row->addYesNo('mfaEnable'); //TODO: Change to an array, allow for No/Yes (Use existing mfa), Yes (use new mfa), and only Yes (use new mfa) toggles the below row.
         
         $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
-        $secret = $tfa->createSecret(); //TODO: show the existing secret for those who have already enabled 2FA
+        $secret = $tfa->createSecret(); //TODO: use the existing secret for those who have already enabled 2FA
         $form->addHiddenValue('mfaSecret', $secret);
+        
         $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
         $row = $form->addRow()->addClass('toggle');
             $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
