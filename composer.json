@@ -62,7 +62,8 @@
         "parsecsv/php-parsecsv": "^1.3",
         "league/oauth2-client": "^2.6",
         "microsoft/microsoft-graph": "^1.35",
-        "aura/auth": "^4.0"
+        "aura/auth": "^4.0",
+        "robthree/twofactorauth": "^1.8"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.3",
