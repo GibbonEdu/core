@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
             // DISPLAY PERSON DATA
             $table = DataTable::createDetails('personal');
-
+            
             if ($search != '') {
                 $params = [
                     "search" => $search,

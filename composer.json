@@ -29,7 +29,7 @@
             "vendor/bin/phpstan analyse --ansi --no-progress --no-interaction -c phpstan.neon"
         ],
         "test:codesniffer": [
-          "vendor/bin/phpcs --standard=PSR2 modules/Library/"
+          "vendor/bin/phpcs --standard=PSR2 modules/Library/" 
         ]
     },
     "scripts-descriptions": {

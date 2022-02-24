@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "204fb15ed8c445933bf49a36bed640e8",
+    "content-hash": "a758cbc5f5b230f52b16bca66c36487c",
     "packages": [
         {
             "name": "aura/auth",
-            "version": "4.0.3",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.Auth.git",
-                "reference": "c88b713960c3a9f4449d264bd3de440719c086e9"
+                "reference": "d9fff638573574f1c1f45784d50761b7bbbdf8b2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/c88b713960c3a9f4449d264bd3de440719c086e9",
-                "reference": "c88b713960c3a9f4449d264bd3de440719c086e9",
+                "url": "https://api.github.com/repos/auraphp/Aura.Auth/zipball/d9fff638573574f1c1f45784d50761b7bbbdf8b2",
+                "reference": "d9fff638573574f1c1f45784d50761b7bbbdf8b2",
                 "shasum": ""
             },
             "require": {
