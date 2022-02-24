@@ -41,6 +41,7 @@ if (!$session->exists("username")) {
     $returns['error3'] = __('Your request failed due to incorrect current password.');
     $returns['error6'] = __('Your request failed because your password does not meet the minimum requirements for strength.');
     $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
+    $returns['error8'] = __('Your request failed because your MFA code was not valid, this may have occured if your code timed-out before the form was finished processing.');
     $page->return->addReturns($returns);
 
     $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
@@ -50,7 +51,8 @@ if (!$session->exists("username")) {
     if ($result->rowCount() == 1) {
         $values = $result->fetch();
     }
-
+    
+    //TODO: If MFA is enabled, require MFA code to change password
     $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading('Reset Password', __('Reset Password'));
@@ -59,7 +61,7 @@ if (!$session->exists("username")) {
     if ($policy != false) {
         $form->addRow()->addAlert($policy, 'warning');
     }
-
+    
     $row = $form->addRow();
         $row->addLabel('password', __('Current Password'));
         $row->addPassword('password')
@@ -125,8 +127,16 @@ if (!$session->exists("username")) {
             
         $row = $form->addRow();
             $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
-            $row->addYesNo('mfaEnable'); //TODO: more work :(
-
+            $row->addYesNo('mfaEnable');
+        
+        $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
+        $secret = $tfa->createSecret(); //TODO: show the existing secret for those who have already enabled 2FA
+        $form->addHiddenValue('mfaSecret', $secret);
+        $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
+        $row = $form->addRow()->addClass('toggle');
+            $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
+            $row->addNumber('mfaCode'); //TODO: Validate that it's a 6 digit number, because there's the possibility of leading 0s this can't be done with max/min values...
+            
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();
