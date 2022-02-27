@@ -47,7 +47,7 @@ class ActivityStaffGateway extends QueryableGateway
     		->where('gibbonActivityStaff.gibbonActivityID = :gibbonActivityID')
     		->bindValue('gibbonActivityID', $gibbonActivityID)
     		->where('gibbonPerson.status="Full"')
-    		->orderBy(['surname', 'preferredName']);
+    		->orderBy(['preferredName', 'surname']);
 
     	return $this->runSelect($select);
     }

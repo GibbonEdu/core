@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     // Look for available subs
     $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
-        ->sortBy(['surname', 'preferredName']);
+        ->sortBy(['preferredName', 'surname']);
 
     $availableSubs = array_reduce($absenceDates, function ($group, $date) use ($substituteGateway, &$criteria) {
         if (!empty($date['gibbonStaffCoverageID'])) return $group;

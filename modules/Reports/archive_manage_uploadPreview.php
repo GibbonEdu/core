@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->width('25%')
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true)

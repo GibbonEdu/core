@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff.ph
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? null;
 
         $criteria = $staffGateway->newQueryCriteria()
-            ->sortBy(['surname', 'preferredName'])
+            ->sortBy(['preferredName', 'surname'])
             ->filterBy('status', 'Full');
         $allStaff = $staffGateway->queryAllStaff($criteria)->toArray();
         $allStaff = Format::nameListArray($allStaff, 'Staff', true, true);

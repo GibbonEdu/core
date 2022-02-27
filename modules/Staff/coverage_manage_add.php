@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.
 
     $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->filterBy('active', 'Y')
         ->filterBy('status', 'Full');
 

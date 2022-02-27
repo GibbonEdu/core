@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
-                ->sortBy(['surname', 'preferredName'])
+                ->sortBy(['preferredName', 'surname'])
                 ->fromPOST();
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $session->get('gibbonSchoolYearID'), false);
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
         // COLUMNS
         $table->addColumn('student', __('Student'))
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function ($person) use ($session) {
                 $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true));

@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('priority', 'DESC')
-        ->sortBy(['type', 'surname', 'preferredName'])
+        ->sortBy(['type', 'preferredName', 'surname'])
         ->filterBy('active', 'Y')
         ->fromPOST();
 
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->context('primary')
         ->description(__('Type'))
         ->width('10%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) use ($canManageCoverage) {
             $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
             if ($canManageCoverage) {

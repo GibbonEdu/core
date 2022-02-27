@@ -219,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $table->addColumn('requested', __('Person'))
             ->context('primary')
             ->width('30%')
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format([AbsenceFormats::class, 'personDetails']);
             
         $table->addColumn('notesStatus', __('Comment'))

@@ -137,7 +137,7 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
             WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList) 
             AND gibbonPerson.status='Full'
             GROUP BY gibbonFamilyAdult.gibbonPersonID 
-            ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+            ORDER BY gibbonPerson.preferredName, gibbonPerson.surname";
 
         return $this->db()->select($sql, $data);
     }
@@ -158,7 +158,7 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
             AND gibbonPerson.status='Full'
             AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             GROUP BY gibbonFamilyChild.gibbonPersonID 
-            ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonPerson.surname, gibbonPerson.preferredName";
+            ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonPerson.preferredName, gibbonPerson.surname";
 
         return $this->db()->select($sql, $data);
     }

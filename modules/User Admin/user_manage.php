@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $userGateway = $container->get(UserGateway::class);
     $criteria = $userGateway->newQueryCriteria(true)
         ->searchBy($userGateway->getSearchableColumns(), $search)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->width('30%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
     $table->addColumn('status', __('Status'))

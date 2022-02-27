@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     $table->addColumn('name', __('Name'))->sortable();
 
     $table->addColumn('owner', __('Group Owner'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', true, true]));
 
     $table->addColumn('count', __('Group Members'))->sortable();

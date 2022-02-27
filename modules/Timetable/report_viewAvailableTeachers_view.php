@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->width('30%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', 'title', 'preferredName', 'surname', 'Staff', true, true]));
 
     $table->addColumn('jobTitle', __('Job Title'));

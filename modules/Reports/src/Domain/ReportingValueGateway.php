@@ -63,7 +63,7 @@ class ReportingValueGateway extends QueryableGateway
                 AND gibbonReportingCriteriaType.valueType='Comment'
                 AND gibbonReportingCriteria.target = 'Per Student'
                 AND (gibbonReportingValue.comment IS NOT NULL AND gibbonReportingValue.comment <> '')
-                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName, gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
+                ORDER BY gibbonPerson.preferredName, gibbonPerson.surname, gibbonReportingScope.sequenceNumber, gibbonReportingCriteria.sequenceNumber";
 
         return $this->db()->select($sql, $data);
     }

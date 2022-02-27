@@ -138,7 +138,7 @@ else {
 							AND gibbonPerson.status='Full'
 							AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
 							GROUP BY gibbonPerson.gibbonPersonID
-							ORDER BY formGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
+							ORDER BY formGroup, gibbonPerson.preferredName, gibbonPerson.surname, gibbonFamilyChild.gibbonFamilyID";
 						$result = $connection2->prepare($sql);
 						$result->execute($data);
 

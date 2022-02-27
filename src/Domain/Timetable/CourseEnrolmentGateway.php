@@ -161,7 +161,7 @@ class CourseEnrolmentGateway extends QueryableGateway
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
                 AND gibbonPerson.status='Full'
-                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                ORDER BY gibbonPerson.preferredName, gibbonPerson.surname";
 
         return $this->db()->select($sql, $data);
     }

@@ -407,7 +407,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                         AND gibbonPerson.status='Full' 
                         AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
                         AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
-                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.preferredName, gibbonPerson.surname";
                     break;
             case 'Messenger':
                 $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonGroupID' => $targetID, 'date' => $currentDate];
@@ -421,7 +421,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                         AND gibbonPerson.status='Full' 
                         AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
                         AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
-                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.preferredName, gibbonPerson.surname";
                     break;
             case 'Select':
                 $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonIDList' => implode(',', $targetID), 'date' => $currentDate];
@@ -434,7 +434,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
                         AND gibbonPerson.status='Full' 
                         AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date) 
                         AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date) 
-                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                        ORDER BY gibbonStudentEnrolment.rollOrder, gibbonPerson.preferredName, gibbonPerson.surname";
                 break;
         }
 

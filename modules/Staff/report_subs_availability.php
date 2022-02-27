@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     // CRITERIA
     $criteria = $subGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->filterBy('showUnavailable', 'true')
         ->filterBy('allStaff', $allStaff)
         ->fromPOST();
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Priority'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) use ($canManageCoverage) {
             $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
             if ($canManageCoverage) {

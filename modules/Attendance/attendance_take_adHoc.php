@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     // Select Students
     $studentGateway = $container->get(StudentGateway::class);
     $studentCriteria = $studentGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName']);
+        ->sortBy(['preferredName', 'surname']);
 
     $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
     $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {

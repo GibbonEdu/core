@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byFamily.p
     $table->setTitle(__('My Children'));
 
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));

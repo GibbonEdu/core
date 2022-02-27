@@ -138,7 +138,7 @@ class NotificationGateway extends QueryableGateway
     public function selectAllNotificationListeners($gibbonNotificationEventID, $groupByPerson = true)
     {
         $data = array('gibbonNotificationEventID' => $gibbonNotificationEventID);
-        $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.title, gibbonPerson.receiveNotificationEmails, gibbonPerson.status
+        $sql = "SELECT gibbonNotificationListener.*, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title, gibbonPerson.receiveNotificationEmails, gibbonPerson.status
                 FROM gibbonNotificationListener
                 JOIN gibbonNotificationEvent ON (gibbonNotificationListener.gibbonNotificationEventID=gibbonNotificationEvent.gibbonNotificationEventID)
                 JOIN gibbonPerson ON (gibbonNotificationListener.gibbonPersonID=gibbonPerson.gibbonPersonID)

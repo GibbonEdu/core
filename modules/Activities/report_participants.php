@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria(true)
         ->searchBy($activityGateway->getSearchableColumns(), $_GET['search'] ?? '')
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
     $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($student) use ($session) {
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
             return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);

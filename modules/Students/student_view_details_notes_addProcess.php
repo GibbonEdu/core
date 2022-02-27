@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             //Check for existence of student
             try {
                 $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sql = 'SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.status, gibbonStudentEnrolment.gibbonYearGroupID
+                $sql = 'SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, gibbonStudentEnrolment.gibbonYearGroupID
                     FROM gibbonPerson
                     LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
                     WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';

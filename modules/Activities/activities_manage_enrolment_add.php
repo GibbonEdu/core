@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 					AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
 					AND gibbonPerson.status='FULL' 
 					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
-					ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+					ORDER BY formGroupName, gibbonPerson.preferredName, gibbonPerson.surname";
 			$result = $pdo->executeQuery($data, $sql);
 
 			if ($result->rowCount() > 0) {

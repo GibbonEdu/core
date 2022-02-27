@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
 
     // QUERY
     $criteria = $reportingProgressGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     $progress = $reportingProgressGateway->queryReportingProgressByPerson($criteria, $gibbonSchoolYearID, $gibbonReportingCycleID, $gibbonReportingScopeID)->toArray();

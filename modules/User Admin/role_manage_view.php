@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_vie
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->width('30%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Staff', true, true)
                 .'<br/>'.Format::small(Format::userStatusInfo($person));

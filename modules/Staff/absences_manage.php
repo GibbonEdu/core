@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
 
     // COLUMNS
     $table->addColumn('fullName', __('Name'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($absence) {
             $text = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
             $url = './index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$absence['gibbonPersonID'];

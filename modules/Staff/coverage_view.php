@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view.php') 
 
     $table->addColumn('requested', __('Person'))
         ->context('primary')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format([AbsenceFormats::class, 'personDetails']);
 
     // Only display the Accept / Decline options for people who are substitutes

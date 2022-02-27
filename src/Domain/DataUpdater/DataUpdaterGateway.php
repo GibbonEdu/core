@@ -40,7 +40,7 @@ class DataUpdaterGateway extends Gateway
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "
-        (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, 0 as sequenceNumber
+        (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, 0 as sequenceNumber
             FROM gibbonPerson
             LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)

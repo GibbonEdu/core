@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
     if ($highestAction == 'Staff Directory_brief') {
         // BASIC STAFF LIST
-        $criteria->sortBy(['surname', 'preferredName']);
+        $criteria->sortBy(['preferredName', 'surname']);
         $staff = $staffGateway->queryAllStaff($criteria);
 
         $table = DataTable::createPaginated('staffView', $criteria);
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $table->addColumn('fullName', __('Name'))
             ->description(__('Initials'))
             ->width('35%')
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function ($person) {
                 return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true)
                     .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
@@ -143,9 +143,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         if ($urlParams['sortBy'] == 'biographicalGrouping') {
             $criteria->sortBy(['biographicalGroupingOrder', 'biographicalGrouping'])
                 ->sortBy(['biographicalGroupingPriority'], 'DESC')
-                ->sortBy(['surname', 'preferredName']);
+                ->sortBy(['preferredName', 'surname']);
         } else {
-            $criteria->sortBy(['surname', 'preferredName']);
+            $criteria->sortBy(['preferredName', 'surname']);
         }
 
         $staff = $staffGateway->queryAllStaff($criteria, $gibbon->session->get('gibbonSchoolYearID'));
@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $table->addColumn('fullName', __('Name'))
                 ->context('primary')
                 ->description(__('Initials'))
-                ->sortable(['surname', 'preferredName'])
+                ->sortable(['preferredName', 'surname'])
                 ->width('20%')
                 ->format(function ($person) use ($urlParams) {
                     $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', $urlParams['view'] != 'grid', true);

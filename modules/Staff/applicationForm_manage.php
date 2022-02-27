@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     $table->addColumn('person', __('Applicant'))
         ->description(__('Application Date'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function($row) {
             if (!empty($row['gibbonPersonID'])) {
                 $output = Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true);

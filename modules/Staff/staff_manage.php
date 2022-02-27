@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $criteria = $staffGateway->newQueryCriteria(true)
         ->searchBy($staffGateway->getSearchableColumns(), $search)
         ->filterBy('all', $allStaff)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     echo '<h2>';
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $table->addColumn('fullName', __('Name'))
         ->description(__('Initials'))
         ->width('35%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function($person) {
             return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true)
                 .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";

@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             });
             
             $table->addColumn('name', __('Name'))
-                ->sortable(['surname', 'preferredName'])
+                ->sortable(['preferredName', 'surname'])
                 ->format(function ($person) {
                     $isStudent = stripos($person['role'], 'Student') !== false;
                     $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);

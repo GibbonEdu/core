@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $table->addColumn('student', __('Student'))
         ->description(__('Application Date'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($application) use ($applicationGateway, $session) {
             $output = '';
 

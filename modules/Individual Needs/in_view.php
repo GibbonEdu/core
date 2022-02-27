@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         // CRITERIA
         $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
-            ->sortBy(['surname', 'preferredName'])
+            ->sortBy(['preferredName', 'surname'])
             ->filterBy('all', $allStudents)
             ->fromPOST();
 
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         // COLUMNS
         $table->addColumn('student', __('Student'))
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function ($person) use ($allStudents) {
                 return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, true, ['subpage' => 'Individual Needs', 'allStudents' => $allStudents]) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });

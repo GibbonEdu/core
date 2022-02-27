@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
     // QUERY
     $criteria = $studentGateway->newQueryCriteria(true)
-        ->sortBy(['formGroup', 'surname', 'preferredName'])
+        ->sortBy(['formGroup', 'preferredName', 'surname'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->filterBy('view', $view)
         ->fromArray($_POST);
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
     $table->addColumn('formGroup', __('Form Group'))->width('5%');
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });

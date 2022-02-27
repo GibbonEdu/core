@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
             ->width('30%')
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function ($absence) use ($session, $canView) {
                 $output = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
                 if ($canView) {

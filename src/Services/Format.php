@@ -616,6 +616,8 @@ class Format
         if (empty($preferredName) && empty($surname)) {
             return '';
         }
+        
+        $reverse = false;
 
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');

@@ -235,7 +235,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->where("gibbonPerson.status='Full'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID);
 
-        $query->orderBy(['surname', 'preferredName']);
+        $query->orderBy(['preferredName', 'surname']);
 
         return $this->runSelect($query);
     }

@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     $individualNeedsGateway = $container->get(INGateway::class);
 
     $criteria = $individualNeedsGateway->newQueryCriteria(true)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->filterBy('descriptor', $gibbonINDescriptorID)
         ->filterBy('alert', $gibbonAlertLevelID)
         ->filterBy('formGroup', $gibbonFormGroupID)
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
 
     // COLUMNS
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('nameLinked', ['gibbonPersonID', '', 'preferredName', 'surname', 'Student', true, false, ['subpage' => 'Individual Needs']]));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));

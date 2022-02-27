@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/activeSession
 
     $table->addColumn('name', __('Name'))
         ->context('primary')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($values) {
             return !empty($values['gibbonPersonID'])
                 ? Format::name($values['title'], $values['preferredName'], $values['surname'], 'Student', true, true)

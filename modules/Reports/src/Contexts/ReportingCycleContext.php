@@ -59,7 +59,7 @@ class ReportingCycleContext implements DataContext
             ? "AND (gibbonPerson.status='Full' OR gibbonPerson.status='Left') "
             : "AND gibbonPerson.status='Full'";
 
-        $sql .= "ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+        $sql .= "ORDER BY gibbonYearGroup.sequenceNumber, gibbonFormGroup.nameShort, gibbonStudentEnrolment.rollOrder, gibbonPerson.preferredName, gibbonPerson.surname";
 
         return $db->select($sql, $data)->fetchAll();
     }

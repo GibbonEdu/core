@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $criteria = $behaviourGateway->newQueryCriteria(true)
         ->sortBy('count', 'DESC')
         ->sortBy('formGroup')
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->filterBy('type', $type)
         ->filterBy('descriptor', $descriptor)
         ->filterBy('level', $level)
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
     // COLUMNS
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) use ($session) {
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents=&sort=surname,preferredName';
             return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true))

@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     $table->setTitle(__('View Overdue Items'));
 
     $table->addColumn('preferredName', __('Borrowing User'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true);
         });

@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             echo '</h2>';
 
             $criteria = $groupGateway->newQueryCriteria(true)
-                ->sortBy(['surname', 'preferredName'])
+                ->sortBy(['preferredName', 'surname'])
                 ->fromPOST();
 
             $members = $groupGateway->queryGroupMembers($criteria, $gibbonGroupID);
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $table = DataTable::createPaginated('groupsManage', $criteria);
 
             $table->addColumn('name', __('Name'))
-                ->sortable(['surname', 'preferredName'])
+                ->sortable(['preferredName', 'surname'])
                 ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
 
             $table->addColumn('email', __('Email'))->sortable();

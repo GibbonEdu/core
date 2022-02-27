@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
     $criteria = $subGateway->newQueryCriteria(true)
         ->searchBy($subGateway->getSearchableColumns(), $search)
         ->sortBy('active')
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     // SEARCH FORM
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.p
 
     $table->addColumn('fullName', __('Name'))
         ->width('35%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) {
             $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
             $url = !empty($person['gibbonStaffID'])

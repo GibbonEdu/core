@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             });
 
             $table->addColumn('name', __('Name'))
-                ->sortable(['surname', 'preferredName'])
+                ->sortable(['preferredName', 'surname'])
                 ->format(function ($person) {
                     return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', false, true)
                         .'<br/>'.Format::small(Format::userStatusInfo($person));

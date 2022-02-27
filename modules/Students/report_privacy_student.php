@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     $table->addColumn('image_240', __('Student'))
         ->context('primary')
         ->width('10%')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($student) use ($session) {
             $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'];

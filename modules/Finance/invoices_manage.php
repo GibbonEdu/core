@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $invoiceGateway = $container->get(InvoiceGateway::class);
 
         $criteria = $invoiceGateway->newQueryCriteria(true)
-            ->sortBy(['defaultSortOrder', 'invoiceIssueDate', 'surname', 'preferredName'])
+            ->sortBy(['defaultSortOrder', 'invoiceIssueDate', 'preferredName', 'surname'])
             ->filterBy('status', $request['status'])
             ->filterBy('invoicee', $request['gibbonFinanceInvoiceeID'])
             ->filterBy('month', $request['monthOfIssue'])
@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $table->addColumn('student', __('Student'))
             ->description(__('Invoice To'))
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function($invoice) {
                 $output = '<b>'.Format::name('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
                 $output .= '<br/><span class="small emphasis">'.__($invoice['invoiceTo']).'</span>';

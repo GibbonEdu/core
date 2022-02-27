@@ -43,7 +43,7 @@ class StudentEnrolmentContext implements DataContext
                 JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID 
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupID)
-                ORDER BY gibbonYearGroup.sequenceNumber, gibbonStudentEnrolment.rollOrder, gibbonPerson.surname, gibbonPerson.preferredName";
+                ORDER BY gibbonYearGroup.sequenceNumber, gibbonStudentEnrolment.rollOrder, gibbonPerson.preferredName, gibbonPerson.surname";
 
         return $db->select($sql, $data)->fetchAll();
     }

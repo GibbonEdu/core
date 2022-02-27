@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
             $studentGateway = $container->get(StudentGateway::class);
             $studentCriteria = $studentGateway->newQueryCriteria()
-                ->sortBy(['surname', 'preferredName']);
+                ->sortBy(['preferredName', 'surname']);
 
             $students = array_reduce($studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'))->toArray(), function ($array, $student) {
                 $array['students'][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];

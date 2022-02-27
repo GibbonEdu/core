@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
     $criteria = $reportArchiveEntryGateway->newQueryCriteria(true)
         ->searchBy($reportArchiveEntryGateway->getSearchableColumns(), $search)
         ->filterBy('all', $allStudents)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     // FORM
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
     $table->modifyRows($container->get(StudentGateway::class)->getSharedUserRowHighlighter());
 
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->width('25%')
         ->format(function ($person) use ($session, $allStudents) {
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&search=&allStudents='.$allStudents.'&sort=surname,preferredName';

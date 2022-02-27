@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         $criteria = $studentGateway->newQueryCriteria(true)
             ->searchBy($studentGateway->getSearchableColumns(), $search)
-            ->sortBy(['surname', 'preferredName'])
+            ->sortBy(['preferredName', 'surname'])
             ->fromPOST();
 
         echo '<h3>';
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         // COLUMNS
         $table->addColumn('student', __('Student'))
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(function ($person) {
                 return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });

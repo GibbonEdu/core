@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
                         AND gibbonCourseClassPerson.reportable='Y' AND gibbonCourseClassPerson.role='Student'
                         AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
-                        ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                        ORDER BY gibbonPerson.preferredName, gibbonPerson.surname";
                     $result = $pdo->executeQuery($data, $sql);
                     $students = ($result->rowCount() > 0)? $result->fetchAll() : array();
 

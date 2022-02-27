@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
     // DATA TABLE
     $staffGateway = $container->get(StaffGateway::class);
     $criteria = $staffGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     $absenceTypes = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
 
     // COLUMNS
     $table->addColumn('fullName', __('Name'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($person) use ($session) {
             $text = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
             $url = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_byPerson.php&gibbonPersonID='.$person['gibbonPersonID'];

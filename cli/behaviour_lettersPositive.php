@@ -88,7 +88,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
                     AND (gibbonYearGroup.nameShort = 'G7' OR gibbonYearGroup.nameShort = 'G8' OR gibbonYearGroup.nameShort = 'G9' 
                         OR gibbonYearGroup.nameShort = 'G10' OR gibbonYearGroup.nameShort = 'G11' OR gibbonYearGroup.nameShort = 'G12')
-                    ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    ORDER BY gibbonPerson.preferredName, gibbonPerson.surname";
                     $result = $pdo->select($sql, $data);
 
             if ($result->rowCount() > 0) {

@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     if ($highestAction == 'Manage Messages_all') {
         $table->addColumn('author', __('Author'))
             ->context('primary')
-            ->sortable(['surname', 'preferredName'])
+            ->sortable(['preferredName', 'surname'])
             ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false]));
     }
 

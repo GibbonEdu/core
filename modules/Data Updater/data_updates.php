@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
     foreach ($updatableDataTypes as $type) {

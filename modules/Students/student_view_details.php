@@ -518,7 +518,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $table->addColumn('fullName', __('Name'))
                                     ->context('primary')
-                                    ->sortable(['surname', 'preferredName'])
+                                    ->sortable(['preferredName', 'surname'])
                                     ->width('20%')
                                     ->format(function ($person) {
                                         $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);

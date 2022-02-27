@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     $criteria = $invoiceeGateway->newQueryCriteria(true)
         ->searchBy($invoiceeGateway->getSearchableColumns(), $search)
         ->filterBy('allUsers', $allUsers)
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
     $invoicees = $invoiceeGateway->queryInvoicees($criteria);
 
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
         return $row;
     });
     $table->addColumn('name', __('Name'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->format(function ($invoicee) {
             return Format::name('', $invoicee['preferredName'], $invoicee['surname'], 'Student', true);
         });

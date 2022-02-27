@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     }
 
     $criteria = $reportGateway->newQueryCriteria()
-        ->sortBy(['surname', 'preferredName'])
+        ->sortBy(['preferredName', 'surname'])
         ->fromPOST();
 
     $reports = $reportArchiveEntryGateway->queryArchiveByReport($criteria, $gibbonReportID, $gibbonYearGroupID, 'All', $roleCategory, false, true);
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
     $table->addMetaData('bulkActions', $col);
 
     $table->addColumn('student', __('Student'))
-        ->sortable(['surname', 'preferredName'])
+        ->sortable(['preferredName', 'surname'])
         ->width('25%')
         ->format(function ($person) {
             return Format::nameLinked($person['gibbonPersonID'], '', $person['preferredName'], $person['surname'], 'Student', true, false, ['subpage' => 'Reports']);

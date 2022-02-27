@@ -93,7 +93,7 @@ class StaffGateway extends QueryableGateway
             },
 
             'biographicalGroupingSort' => function ($query, $group) {
-                return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'surname', 'preferredName']);
+                return $query->orderBy(['(biographicalGrouping="Leadership Team") DESC',  'biographicalGrouping', 'biographicalGroupingPriority DESC', 'preferredName', 'surname']);
             },
 
             'status' => function ($query, $status) {

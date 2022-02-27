@@ -377,7 +377,7 @@ class DatabaseFormFactory extends FormFactory
                     FROM gibbonPerson
                     JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                     WHERE gibbonPerson.status='Full'
-                    ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    ORDER BY gibbonPerson.preferredName, gibbonPerson.surname";
             $result = $this->pdo->select($sql);
             if ($result->rowCount() > 0) {
                 $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
@@ -396,7 +396,7 @@ class DatabaseFormFactory extends FormFactory
                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonPerson.status='FULL'
                     AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
-                    ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+                    ORDER BY formGroupName, gibbonPerson.preferredName, gibbonPerson.surname";
             $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
 
             if ($result->rowCount() > 0) {
