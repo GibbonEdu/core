@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
 
     $headings = $customFieldHandler->getHeadings();
     $headings = $headings[$values['context']] ?? [];
-    $isHeadingCustom = !empty($values['heading']) && !in_array($values['heading'], $headings);
+    $isHeadingCustom = !empty($values['heading']) && !array_key_exists($values['heading'], $headings);
     $row = $form->addRow();
         $row->addLabel('heading', __('Heading'))->description(__('Optionally list this field under a heading.'));
         $row->addSelect('heading')
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $form->addRow()->addHeading(__('Configure'));
+    $form->addRow()->addHeading('Configure', __('Configure'));
 
     $types = $customFieldHandler->getTypes();
     $row = $form->addRow();
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addYesNo('hidden')->required();
 
     if ($values['context'] == 'User') {
-        $form->addRow()->addHeading(__('Visibility'));
+        $form->addRow()->addHeading('Visibility', __('Visibility'));
 
         $activePersonOptions = array(
             'activePersonStudent' => __('Student'),

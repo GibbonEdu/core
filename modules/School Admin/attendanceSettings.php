@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Reasons'));
+    $row = $form->addRow()->addHeading('Reasons', __('Reasons'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Context & Defaults'));
+    $row = $form->addRow()->addHeading('Context & Defaults', __('Context & Defaults'));
 
     $setting = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool', true);
     $row = $form->addRow();
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
             ->required();
 
 
-    $row = $form->addRow()->addHeading(__('Student Self Registration'));
+    $row = $form->addRow()->addHeading('Student Self Registration', __('Student Self Registration'));
 
     $setting = $settingGateway->getSettingByScope('Attendance', 'studentSelfRegistrationIPAddresses', true);
     $row = $form->addRow();
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
-    $row = $form->addRow()->addHeading(__('Attendance CLI'));
+    $row = $form->addRow()->addHeading('Attendance CLI', __('Attendance CLI'));
 
     $setting = $settingGateway->getSettingByScope('Attendance', 'attendanceCLINotifyByFormGroup', true);
     $row = $form->addRow();

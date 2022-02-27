@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
-    $form->addRow()->addHeading(__('Attachment'));
+    $form->addRow()->addHeading('Attachment', __('Attachment'));
     
     $types = array('File' => __('File'),  'Link' => __('Link'), 'Text' => __('Text'));
     $row = $form->addRow();
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.p
             ->required()
             ->setValue($coverage['attachmentContent'] ?? '');
 
-    $form->addRow()->addHeading(__('Details'));
+    $form->addRow()->addHeading('Details', __('Details'));
 
     $row = $form->addRow();
         $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));

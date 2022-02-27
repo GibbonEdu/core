@@ -479,17 +479,16 @@ class Importer
             }
 
             // Salt & hash passwords
-            if (isset($fields['password'])) {
+            if (isset($fields['passwordStrong'])) {
                 if (!isset($this->outputData['passwords'])) {
                     $this->outputData['passwords'] = [];
                 }
-                $this->outputData['passwords'][] = ['username' => $fields['username'], 'password' => $fields['password']];
+                $this->outputData['passwords'][] = ['username' => $fields['username'], 'password' => $fields['passwordStrong']];
 
                 $salt = getSalt() ;
-                $value = $fields['password'];
+                $value = $fields['passwordStrong'];
                 $fields['passwordStrong'] = hash("sha256", $salt.$value);
                 $fields['passwordStrongSalt'] = $salt;
-                $fields['password'] = '';
             }
 
             if (!empty($fields) && $partialFail == false) {

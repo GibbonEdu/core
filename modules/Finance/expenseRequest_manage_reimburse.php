@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
-                    $form->addRow()->addHeading(__('Basic Information'));
+                    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                     $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
                     $row = $form->addRow();
@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $column->addLabel('purchaseDetails', __('Purchase Details'));
                         $column->addContent($values['purchaseDetails'])->setClass('fullWidth');
 
-                    $form->addRow()->addHeading(__('Log'));
+                    $form->addRow()->addHeading('Log', __('Log'));
 
                     $expenseLog = $container->get(ExpenseLog::class)->create($gibbonFinanceExpenseID);
                     $form->addRow()->addContent($expenseLog->getOutput());
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     $form->toggleVisibilityByClass('payment')->onSelect('status')->when('Paid');
 
-                    $form->addRow()->addHeading(__('Payment Information'))->addClass('payment');
+                    $form->addRow()->addHeading('Payment Information', __('Payment Information'))->addClass('payment');
 
                     $row = $form->addRow()->addClass('payment');
                         $row->addLabel('paymentDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));

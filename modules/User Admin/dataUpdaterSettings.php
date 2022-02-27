@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     $form = Form::create('dataUpdaterSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataUpdaterSettingsProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Settings'));
+    $row = $form->addRow()->addHeading('Settings', __('Settings'));
 
     $settingGateway = $container->get(SettingGateway::class);
     $setting = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates', true);

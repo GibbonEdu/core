@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('Descriptors'));
+    $row = $form->addRow()->addHeading('Descriptors', __('Descriptors'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors', true);
     $row = $form->addRow();
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Levels'));
+    $row = $form->addRow()->addHeading('Levels', __('Levels'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableLevels', true);
     $row = $form->addRow();
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Notifications'));
+    $row = $form->addRow()->addHeading('Notifications', __('Notifications'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'notifyTutors', true);
     $row = $form->addRow();
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $row->addYesNo($setting['name'])->selected($setting['value']);
 
     
-    $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
+    $row = $form->addRow()->addHeading('Behaviour Letters', __('Behaviour Letters'))->append(__('By using a {linkCLIScript}, {systemName} can be configured to automatically generate and email behaviour letters to parents and tutors, once certain behaviour threshold levels have been reached. Visit the {linkEmailTemplates} page to customise the templates for each behaviour letter email.', ['systemName' => $session->get('systemName'), 'linkCLIScript' => Format::link('https://gibbonedu.org/support/administrators/command-line-tools/', __('CLI script')),'linkEmailTemplates' => Format::link('./index.php?q=/modules/System Admin/emailTemplates_manage.php', __('Email Templates'))]));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'enableNegativeBehaviourLetters', true);
     $row = $form->addRow();
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
             $row->addSelect($setting['name'])->fromArray(range(1,20))->selected($setting['value'])->required();
     }
 
-    $row = $form->addRow()->addHeading(__('Miscellaneous'));
+    $row = $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
     $setting = $settingGateway->getSettingByScope('Behaviour', 'policyLink', true);
     $row = $form->addRow();

@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     $form->addHiddenValue('existing', isset($values['gibbonPersonUpdateID'])? $values['gibbonPersonUpdateID'] : 'N');
 
                     // BASIC INFORMATION
-                    $form->addRow()->addHeading(__('Basic Information'));
+                    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                     $row = $form->addRow()->onlyIf($isVisible('title'));
                         $row->addLabel('title', __('Title'));
@@ -343,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if ($student || $staff) {
                         $form->addRow()
                             ->onlyIf($anyVisible(['emergency1Name', 'emergency1Relationship', 'emergency1Number1', 'emergency1Number2', 'emergency2Name', 'emergency2Relationship', 'emergency2Number1', 'emergency2Number2']))
-                            ->addHeading(__('Emergency Contacts'));
+                            ->addHeading('Emergency Contacts', __('Emergency Contacts'));
 
                         $form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
@@ -381,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // CONTACT INFORMATION
-                    $form->addRow()->addHeading(__('Contact Information'));
+                    $form->addRow()->addHeading('Contact Information', __('Contact Information'));
 
                     $row = $form->addRow()->onlyIf($isVisible('email'));
                         $row->addLabel('email', __('Email'));
@@ -482,7 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // BACKGROUND INFORMATION
-                    $form->addRow()->addHeading(__('Background Information'));
+                    $form->addRow()->addHeading('Background Information', __('Background Information'));
 
                     $row = $form->addRow()->onlyIf($isVisible('languageFirst'));
                         $row->addLabel('languageFirst', __('First Language'));
@@ -539,7 +539,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     if ($parent) {
                         $form->addRow()
                             ->onlyIf($anyVisible(['profession', 'employer', 'jobTitle']))
-                            ->addHeading(__('Employment'));
+                            ->addHeading('Employment', __('Employment'));
 
                         $row = $form->addRow()->onlyIf($isVisible('profession'));
                             $row->addLabel('profession', __('Profession'));
@@ -557,7 +557,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     // MISCELLANEOUS
                     $form->addRow()
                         ->onlyIf($anyVisible(['vehicleRegistration']))
-                        ->addHeading(__('Miscellaneous'));
+                        ->addHeading('Miscellaneous', __('Miscellaneous'));
 
                     $row = $form->addRow()->onlyIf($isVisible('vehicleRegistration'));
                         $row->addLabel('vehicleRegistration', __('Vehicle Registration'));

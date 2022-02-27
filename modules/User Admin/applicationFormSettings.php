@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
 
     $form->addHiddenValue('address', $session->get('address'));
 
-    $row = $form->addRow()->addHeading(__('General Options'));
+    $row = $form->addRow()->addHeading('General Options', __('General Options'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
             $years->selectAll();
         }
 
-    $row = $form->addRow()->addHeading(__('Application Fee'));
+    $row = $form->addRow()->addHeading('Application Fee', __('Application Fee'));
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'applicationFee', true);
     $row = $form->addRow();
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('References'));
+    $row = $form->addRow()->addHeading('References', __('References'));
 
     $setting = $settingGateway->getSettingByScope('Students', 'applicationFormRefereeRequired', true);
     $row = $form->addRow();
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addURL($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Required Documents Options'));
+    $row = $form->addRow()->addHeading('Required Documents Options', __('Required Documents Options'));
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'requiredDocuments', true);
     $row = $form->addRow();
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Language Learning Options'))->append(__('Set values for applicants to specify which language they wish to learn.'));
+    $row = $form->addRow()->addHeading('Language Learning Options', __('Language Learning Options'))->append(__('Set values for applicants to specify which language they wish to learn.'));
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'languageOptionsActive', true);
     $row = $form->addRow();
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Sections'));
+    $row = $form->addRow()->addHeading('Sections', __('Sections'));
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'senOptionsActive', true);
     $row = $form->addRow();
@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
-    $row = $form->addRow()->addHeading(__('Acceptance Options'));
+    $row = $form->addRow()->addHeading('Acceptance Options', __('Acceptance Options'));
 
     $setting = $settingGateway->getSettingByScope('Application Form', 'usernameFormat', true);
 	$row = $form->addRow();

@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('General Information'));
+    $form->addRow()->addHeading('General Information', __('General Information'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Family Name'));

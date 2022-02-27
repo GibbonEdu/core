@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						}
 
 						// ADD NEW CONDITION
-						$form->addRow()->addHeading(__('Add Medical Condition'));
+						$form->addRow()->addHeading('Add Medical Condition', __('Add Medical Condition'));
 
 						$form->toggleVisibilityByClass('addConditionRow')->onCheckbox('addCondition')->when('Yes');
 

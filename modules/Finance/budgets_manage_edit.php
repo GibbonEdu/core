@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
 
             $form->addHiddenValue('address', $session->get('address'));
 
-            $form->addRow()->addHeading(__('General Settings'));
+            $form->addRow()->addHeading('General Settings', __('General Settings'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                 $row->addLabel('category', __('Category'));
                 $row->addSelect('category')->fromString($categories)->placeholder()->required();
 
-            $form->addRow()->addHeading(__('Current Staff'));
+            $form->addRow()->addHeading('Current Staff', __('Current Staff'));
 
             $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
             $sql = "SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), preferredName, surname";
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
                 }
             }
 
-            $form->addRow()->addHeading(__('New Staff'));
+            $form->addRow()->addHeading('New Staff', __('New Staff'));
 
             $row = $form->addRow();
                 $row->addLabel('staff', __('Staff'));

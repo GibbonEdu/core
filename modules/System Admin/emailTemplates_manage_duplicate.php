@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonEmailTemplateID', $gibbonEmailTemplateID);
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
     $row = $form->addRow();
         $row->addLabel('moduleName', __('Module'));

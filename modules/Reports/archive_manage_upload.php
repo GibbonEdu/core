@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
     
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
-    $form->addRow()->addHeading(__('File Import'));
+    $form->addRow()->addHeading('File Import', __('File Import'));
 
     $row = $form->addRow();
         $row->addLabel('file', __('ZIP File'));
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_manage_upl
         $row->addLabel('fileSection', __('Section Number'))->description(__('Once split, which section contains the username? Counting from 1.'));
         $row->addNumber('fileSection')->required()->maxLength(1);
 
-    $form->addRow()->addHeading(__('Report Info'));
+    $form->addRow()->addHeading('Report Info', __('Report Info'));
 
     $archives = $container->get(ReportArchiveGateway::class)->selectWriteableArchives()->fetchKeyPair();
     $row = $form->addRow();

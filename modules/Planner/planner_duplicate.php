@@ -298,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                             $row->addTime('timeEnd')->setValue(substr($next['end'], 0, 5))->required();
 
                         if ($values['homework'] == 'Y') {
-                            $form->addRow()->addHeading(__($homeworkNamePlural));
+                            $form->addRow()->addHeading($homeworkNamePlural, __($homeworkNamePlural));
 
                             $row = $form->addRow();
                                 $row->addLabel('homeworkDueDate', __('{homeworkName} Due Date', ['homeworkName' => __($homeworkNameSingular)]));

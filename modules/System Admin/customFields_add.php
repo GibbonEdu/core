@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/customFields_addProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
     $row = $form->addRow();
         $row->addLabel('context', __('Context'));
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
     $contextChained = array_reduce(array_keys($headings), function($group, $context) use (&$headings, &$contextHeadings, &$contextCustom) {
         foreach ($headings[$context] as $key => $value) {
             $contextHeadings[$key.'_'.$context] = $value;
-            $group[$value.'_'.$context] = $context;
+            $group[$key.'_'.$context] = $context;
         }
         $contextHeadings['Custom_'.$context] = '['.__('Custom').']';
         $contextCustom[] = 'Custom_'.$context;
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
-    $form->addRow()->addHeading(__('Configure'));
+    $form->addRow()->addHeading('Configure', __('Configure'));
 
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('hidden', __('Hidden'))->description(__('Is this field hidden from profiles and user-facing pages?'));
         $row->addYesNo('hidden')->required()->selected('N');
 
-    $form->addRow()->addClass('contextPerson')->addHeading(__('Visibility'));
+    $form->addRow()->addClass('contextPerson')->addHeading('Visibility', __('Visibility'));
 
     $form->toggleVisibilityByClass('contextPerson')->onSelect('context')->when('User');
     $form->toggleVisibilityByClass('contextDataUpdate')->onSelect('context')->when(['User', 'Medical Form', 'Staff']);

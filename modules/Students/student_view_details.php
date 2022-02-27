@@ -440,7 +440,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         $table->addColumn('lockerNumber', __('Locker Number'));
 
-                        $table->addColumn('studnetID', __('Student ID'));
+                        $table->addColumn('studentID', __('Student ID'));
 
                         $table->addColumn('house', __('House'))
                                 ->format(function($row) use ($container) {

@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     if ($sso == 'Google') {
         // GOOGLE
-        $form->addRow()->addHeading(__('Google Integration'))->append(sprintf(__('If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>'));
+        $form->addRow()->addHeading('Google Integration', __('Google Integration'))->append(sprintf(__('If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-google-oauth/' target='_blank'>", '</a>'));
 
         $row = $form->addRow();
             $row->addLabel('enabled', __('API Enabled'))->description(__('Enable Gibbon-wide integration with the Google APIs?'));
@@ -90,14 +90,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
 
     } else if ($sso == 'Microsoft') {
         // MICROSOFT
-        $form->addRow()->addHeading(__('Microsoft Integration'))->append(sprintf(__('If your school uses Microsoft Azure or Office 365, you can enable single sign on and calendar integration with Gibbon. This process makes use of Microsoft\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Microsoft account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-microsoft-oauth/' target='_blank'>", '</a>'));
+        $form->addRow()->addHeading('Microsoft Integration', __('Microsoft Integration'))->append(sprintf(__('If your school uses Microsoft Azure or Office 365, you can enable single sign on and calendar integration with Gibbon. This process makes use of Microsoft\'s APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Microsoft account to which they have access. For configuration instructions, %1$sclick here%2$s.'), "<a href='https://gibbonedu.org/support/administrators/installing-gibbon/authenticating-with-microsoft-oauth/' target='_blank'>", '</a>'));
 
         $row = $form->addRow();
             $row->addLabel('enabled', __('API Enabled'))->description(__('Enable Gibbon-wide integration with the Microsoft APIs?'));
             $row->addYesNo('enabled')->required();
 
     } else if ($sso == 'Other') {
-        $form->addRow()->addHeading(__('Generic OAuth2 Provider'))->append(__('This setting offers a generic implementation of industry-standard OAuth2 protocols. It uses standard Client ID and Client Secret parameters to connect to an OAuth2 API server. You will need to specify the API endpoints of your chosen service, which can often be found in that service\'s documentation. If your OAuth2 service requires specific API parameters, this feature is unlikely to work.'));
+        $form->addRow()->addHeading('Generic OAuth2 Provider', __('Generic OAuth2 Provider'))->append(__('This setting offers a generic implementation of industry-standard OAuth2 protocols. It uses standard Client ID and Client Secret parameters to connect to an OAuth2 API server. You will need to specify the API endpoints of your chosen service, which can often be found in that service\'s documentation. If your OAuth2 service requires specific API parameters, this feature is unlikely to work.'));
 
         $row = $form->addRow();
             $row->addLabel('enabled', __('API Enabled'));

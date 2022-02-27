@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
                 $form->addHiddenValue('address', $session->get('address'));
 
-                $form->addRow()->addHeading(__('Step 1 - Quantity'));
+                $form->addRow()->addHeading('Step 1 - Quantity', __('Step 1 - Quantity'));
 
                 $form->addHiddenValue('gibbonLibraryTypeID', $values['gibbonLibraryTypeID']);
                 $row = $form->addRow();
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 $form->addHiddenValue('gibbonLibraryTypeID', $_POST['gibbonLibraryTypeID']);
                 $form->addHiddenValue('gibbonLibraryItemID', $values['gibbonLibraryItemID']);
 
-                $form->addRow()->addHeading(__('Step 2 - Details'));
+                $form->addRow()->addHeading('Step 2 - Details', __('Step 2 - Details'));
 
                 for ($i = 1; $i <= $number; ++$i) {
                     $row = $form->addRow();

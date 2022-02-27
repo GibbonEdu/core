@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         $form->addHiddenValue('address', $session->get('address'));
 
-        $form->addRow()->addHeading(__('Basic Information'));
+        $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
         $row = $form->addRow();
             $row->addLabel('schoolYear', __('School Year'));
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
             $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
             $row->addTextArea('notes')->setRows(5);
 
-        $form->addRow()->addHeading(__('Fees'));
+        $form->addRow()->addHeading('Fees', __('Fees'));
 
         // CUSTOM BLOCKS
 

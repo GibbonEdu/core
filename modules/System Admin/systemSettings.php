@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $form->addHiddenValue('address', $session->get('address'));
 
     // SYSTEM SETTINGS
-    $form->addRow()->addHeading(__('System Settings'));
+    $form->addRow()->addHeading('System Settings', __('System Settings'));
 
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     // ORGANISATION
-    $form->addRow()->addHeading(__('Organisation Settings'));
+    $form->addRow()->addHeading('Organisation Settings', __('Organisation Settings'));
 
     $setting = $settingGateway->getSettingByScope('System', 'organisationName', true);
     $row = $form->addRow();
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addSelectStaff($setting['name'])->selected($setting['value'])->placeholder()->required();
 
     // LOCALISATION
-    $form->addRow()->addHeading(__('Localisation'));
+    $form->addRow()->addHeading('Localisation', __('Localisation'));
 
     $setting = $settingGateway->getSettingByScope('System', 'country', true);
     $row = $form->addRow();
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addSelectCurrency($setting['name'])->selected($setting['value'])->required();
 
     // MISCELLANEOUS
-    $form->addRow()->addHeading(__('Miscellaneous'));
+    $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
     $setting = $settingGateway->getSettingByScope('System', 'emailLink', true);
     $row = $form->addRow();

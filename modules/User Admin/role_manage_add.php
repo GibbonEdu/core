@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
         $row->addYesNo('futureYearsLogin')->required();
 
     $row = $form->addRow();
-        $row->addLabel('restriction', __('Restriction'))->description('Determines who can grant or remove this role in Manage Users.');
+        $row->addLabel('restriction', __('Restriction'))->description(__('Determines who can grant or remove this role in Manage Users.'));
         $row->addSelect('restriction')->fromArray($restrictions)->required();
 
     $row = $form->addRow();

@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addHiddenValue('address', $session->get('address'));
 
                         //OVERVIEW
-                        $form->addRow()->addHeading(__('Overview'));
+                        $form->addRow()->addHeading('Overview', __('Overview'));
 
                         $row = $form->addRow();
                             $row->addLabel('yearName', __('School Year'));
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                 ->setParameter('allowFreeTagging', true);
 
                         //CLASSES
-                        $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
+                        $form->addRow()->addHeading('Classes', __('Classes'))->append(__('Select classes which will have access to this unit.'));
 
 
                             $dataClass = array();
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addHiddenValue('classCount', $classCount);
 
                         //UNIT OUTLINE
-                        $form->addRow()->addHeading(__('Unit Outline'));
+                        $form->addRow()->addHeading('Unit Outline', __('Unit Outline'));
 
                         $settingGateway = $container->get(SettingGateway::class);
                         $unitOutline = $settingGateway->getSettingByScope('Planner', 'unitOutlineTemplate');
@@ -203,20 +203,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                 ->accepts(substr($ext, 0, -2));
 
                         //ADVANCED
-                        $form->addRow()->addHeading(__('Advanced Options'));
+                        $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
 
                         $form->toggleVisibilityByClass('advanced')->onCheckbox('advanced')->when('Y');
                         $row = $form->addRow();
                             $row->addCheckbox('advanced')->setValue('Y')->description(__('Show Advanced Options'));
 
                         //OUTCOMES
-                        $form->addRow()->addHeading(__('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
+                        $form->addRow()->addHeading('Outcomes', __('Outcomes'))->append(__('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.'))->addClass('advanced');
                         $allowOutcomeEditing = $settingGateway->getSettingByScope('Planner', 'allowOutcomeEditing');
                         $row = $form->addRow()->addClass('advanced');
                             $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
 
                         //SMART BLOCKS
-                        $form->addRow()->addHeading(__('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'))->addClass('advanced');
+                        $form->addRow()->addHeading('Smart Blocks', __('Smart Blocks'))->append(__('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.'))->addClass('advanced');
                         $blockCreator = $form->getFactory()
                             ->createButton('addNewFee')
                             ->setValue(__('Click to create a new block'))
@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addHiddenValue('blockCount', "5");
 
                         //MISCELLANEOUS SETTINGS
-                        $form->addRow()->addHeading(__('Miscellaneous Settings'))->addClass('advanced');
+                        $form->addRow()->addHeading('Miscellaneous Settings', __('Miscellaneous Settings'))->addClass('advanced');
 
                         $licences = array(
                             "Copyright" => __("Copyright"),

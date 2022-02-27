@@ -308,7 +308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $form->addHiddenValue('address', $session->get('address'));
 
                     if (count($students) == 0) {
-                        $form->addRow()->addHeading(__('Students'));
+                        $form->addRow()->addHeading('Students', __('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                     } else {
                         $attainmentScale = '';
@@ -487,7 +487,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                     $form->addHiddenValue('count', $count);
 
-                    $form->addRow()->addHeading(__('Assessment Complete?'));
+                    $form->addRow()->addHeading('Assessment Complete?', __('Assessment Complete?'));
 
                     $row = $form->addRow();
                         $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));

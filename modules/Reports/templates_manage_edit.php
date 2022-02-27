@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique'));
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_e
         $row->addLabel('flags', __('Renderer'));
         $row->addSelect('flags')->fromArray($flags)->required();
 
-    $form->addRow()->addHeading(__('Document Setup'));
+    $form->addRow()->addHeading('Document Setup', __('Document Setup'));
 
     $orientations = ['P' => __('Portrait'), 'L' => __('Landscape')];
     $row = $form->addRow();

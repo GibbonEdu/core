@@ -16,6 +16,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+
+v23.0.01
+--------
+
+    Significant Changes
+        System: activated the es_DO Español - República Dominicana locale
+
+    Tweaks & Additions
+        System Admin: added an import for School Year Terms
+        System Admin: improved the reliability of the uploads folder check
+        System Admin: improved login logs to include login method and user id
+
+    Bug Fixes
+        System: fixed user's personal language and theme not set after login
+        System: fixed string replacements with {} placeholders not working
+        System Admin: fixed HTML being stripped out of the privacy policy
+        System Admin: fixed invalid password field in user imports in Import From File
+        System Admin: fixed custom field headings not working for non-english locales
+        System Admin: fixed blank User column for logins listed in View Logs
+        Students: fixed student ID not working on main page of student profile
+
+
 v23.0.00
 --------
     Headlines

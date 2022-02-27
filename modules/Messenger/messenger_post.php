@@ -76,7 +76,7 @@ else {
         $form->addHiddenValue('address', $session->get('address'));
 
         //DELIVERY MODE
-        $form->addRow()->addHeading(__('Delivery Mode'));
+        $form->addRow()->addHeading('Delivery Mode', __('Delivery Mode'));
 
         $deliverByEmail = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail");
         $deliverByWall = isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall");
@@ -169,7 +169,7 @@ else {
 
 
         //MESSAGE DETAILS
-        $form->addRow()->addHeading(__('Message Details'));
+        $form->addRow()->addHeading('Message Details', __('Message Details'));
 
         $signature = getSignature($guid, $connection2, $session->get('gibbonPersonID')) ;
 
@@ -241,7 +241,7 @@ else {
         if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
             $form->addHiddenValue('emailReceipt', 'N');
         } else {
-            $form->addRow()->addHeading(__('Customisation'));
+            $form->addRow()->addHeading('Customisation', __('Customisation'));
 
             $row = $form->addRow();
                 $row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
@@ -269,7 +269,7 @@ else {
         }
 
         //TARGETS
-        $form->addRow()->addHeading(__('Targets'));
+        $form->addRow()->addHeading('Targets', __('Targets'));
 
         $defaultSendStaff = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';
         $defaultSendStudents = ($roleCategory == 'Staff' || $roleCategory == 'Student')? 'Y' : 'N';

@@ -47,7 +47,7 @@
         "league/container": "^3.3.3",
         "aura/sqlquery": "3.*-dev",
         "tecnickcom/tcpdf": "^6.4",
-        "twig/twig": "^3.0",
+        "twig/twig": "^3.3",
         "slim/slim": "^4.0",
         "phpmailer/phpmailer": "^6.5.0",
         "matthewbdaly/sms-client": "^1.0",

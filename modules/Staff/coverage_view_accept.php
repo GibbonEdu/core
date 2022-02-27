@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_accept
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
-    $form->addRow()->addHeading(__('Accept Coverage Request'));
+    $form->addRow()->addHeading('Accept Coverage Request', __('Accept Coverage Request'));
 
     $row = $form->addRow()->addContent($table->getOutput());
 

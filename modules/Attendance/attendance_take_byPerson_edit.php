@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
 			$form->addHiddenValue('currentDate', $currentDate);
 
-			$form->addRow()->addHeading(__('Edit Attendance'));
+			$form->addRow()->addHeading('Edit Attendance', __('Edit Attendance'));
 
 			$row = $form->addRow();
 				$row->addLabel('student', __('Student'));

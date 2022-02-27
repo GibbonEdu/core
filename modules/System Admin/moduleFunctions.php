@@ -449,20 +449,38 @@ function camelToWords($name)
  * @param string $absoluteURL
  * @return string
  */
-function checkUploadsFolderStatusCode($absoluteURL)
+function checkUploadsFolderStatus($absoluteURL) : bool
 {
-    $statusCode = null;
+    $statusCode = '';
+    $responseBody = '';
     try {
         $client = new Client();
         $response = $client->request('GET', $absoluteURL.'/uploads', [
             'headers' => ['Referer' => $absoluteURL.'/index.php'],
         ]);
         $statusCode = $response->getStatusCode();
+        $responseBody = $response->getBody();
     } catch (GuzzleHttp\Exception\ClientException $e) {
-        $statusCode = stripos($e->getMessage(), '403') !== false ? '403' : null;
+        $responseBody = $e->getMessage();
     } catch (\GuzzleHttp\Exception\GuzzleException $e) {
-        $statusCode = null;
+        $responseBody = $e->getMessage();
     }
 
-    return $statusCode;
+    if (stripos($responseBody, 'Index of') !== false || stripos($responseBody, 'Parent Directory') !== false) {
+        return false;
+    }
+
+    if (substr($statusCode, 0, 1) == '4') {
+        return true;
+    }
+
+    if (stripos($responseBody, '403') !== false || stripos($responseBody, '404') !== false) {
+        return true;
+    }
+
+    if (stripos($responseBody, 'Forbidden') !== false || stripos($responseBody, 'Not Found') !== false) {
+        return true;
+    }
+
+    return false;
 }

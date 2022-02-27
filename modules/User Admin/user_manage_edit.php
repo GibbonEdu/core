@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $form->addHiddenValue('address', $session->get('address'));
 
             // BASIC INFORMATION
-            $form->addRow()->addHeading(__('Basic Information'));
+            $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
             $row = $form->addRow();
                 $row->addLabel('title', __('Title'));
@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                     ->setMaxUpload(false);
 
             // SYSTEM ACCESS
-            $form->addRow()->addHeading(__('System Access'));
+            $form->addRow()->addHeading('System Access', __('System Access'));
 
             $data = array();
             $sql = "SELECT gibbonRoleID, gibbonRoleID, name, restriction FROM gibbonRole ORDER BY name";
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addYesNo('passwordForceReset')->required();
 
             // CONTACT INFORMATION
-            $form->addRow()->addHeading(__('Contact Information'));
+            $form->addRow()->addHeading('Contact Information', __('Contact Information'));
 
             $row = $form->addRow();
                 $emailLabel = $row->addLabel('email', __('Email'));
@@ -325,7 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                 $row->addURL('website');
 
             // SCHOOL INFORMATION
-            $form->addRow()->addHeading(__('School Information'));
+            $form->addRow()->addHeading('School Information', __('School Information'));
 
             if ($student) {
                 $dayTypeOptions = $settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
@@ -380,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
 
             // BACKGROUND INFORMATION
-            $form->addRow()->addHeading(__('Background Information'));
+            $form->addRow()->addHeading('Background Information', __('Background Information'));
 
             $row = $form->addRow();
                 $row->addLabel('languageFirst', __('First Language'));
@@ -430,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             // EMPLOYMENT
             if ($parent) {
-                $form->addRow()->addHeading(__('Employment'));
+                $form->addRow()->addHeading('Employment', __('Employment'));
 
                 $row = $form->addRow();
                     $row->addLabel('profession', __('Profession'));
@@ -447,7 +447,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             // EMERGENCY CONTACTS
             if ($student || $staff) {
-                $form->addRow()->addHeading(__('Emergency Contacts'));
+                $form->addRow()->addHeading('Emergency Contacts', __('Emergency Contacts'));
 
                 $form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
@@ -485,7 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
 
             // MISCELLANEOUS
-            $form->addRow()->addHeading(__('Miscellaneous'));
+            $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
             $sql = "SELECT gibbonHouseID as value, name FROM gibbonHouse ORDER BY name";
             $row = $form->addRow();

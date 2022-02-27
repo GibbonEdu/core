@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     ->addParam('allStaff', $allStaff)
                     ->displayLabel();
 
-                $form->addRow()->addHeading(__('Basic Information'));
+                $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonName', __('Person'))->description(__('Must be unique.'));
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addLabel('dateEnd', __('End Date'))->description(__("Users's last day at school."));
                     $row->addDate('dateEnd');
 
-                $form->addRow()->addHeading(__('First Aid'));
+                $form->addRow()->addHeading('First Aid', __('First Aid'));
 
                 $row = $form->addRow();
                     $row->addLabel('firstAidQualified', __('First Aid Qualified?'));
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addLabel('firstAidExpiry', __('First Aid Expiry'));
                     $row->addDate('firstAidExpiry');
 
-                $form->addRow()->addHeading(__('Biography'));
+                $form->addRow()->addHeading('Biography', __('Biography'));
 
                 $row = $form->addRow();
                     $row->addLabel('countryOfOrigin', __('Country Of Origin'));

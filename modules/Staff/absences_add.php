@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));
 
-    $form->addRow()->addHeading(__('Basic Information'));
+    $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
     if ($highestAction == 'New Absence_any') {
         $gibbonPersonID = $_GET['gibbonPersonID'] ?? $session->get('gibbonPersonID');
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
         // Pre-fill the last approver from the one most recently used
         $gibbonPersonIDApproval = $staffAbsenceGateway->getMostRecentApproverByPerson($gibbonPersonID);
 
-        $form->addRow()->addHeading(__('Requires Approval'))->addClass('approvalRequired');
+        $form->addRow()->addHeading('Requires Approval', __('Requires Approval'))->addClass('approvalRequired');
 
         $row = $form->addRow()->addClass('approvalRequired');
         $row->addLabel('gibbonPersonIDApproval', __('Approver'));
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
     }
 
     // NOTIFICATIONS
-    $form->addRow()->addHeading(__('Notifications'));
+    $form->addRow()->addHeading('Notifications', __('Notifications'));
 
     $row = $form->addRow()->addClass('approvalRequired hidden');
         $row->addAlert(__('The following people will only be notified if this absence is approved.'), 'message');
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
 
     // COVERAGE
     if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php')) {
-        $form->addRow()->addHeading(__('Coverage'))->addClass('approvalNotRequired');
+        $form->addRow()->addHeading('Coverage', __('Coverage'))->addClass('approvalNotRequired');
 
         $row = $form->addRow()->addClass('approvalNotRequired');
             $row->addLabel('coverageRequired', __('Substitute Required'));

@@ -91,6 +91,7 @@ class OAuthGenericAdapter extends AuthenticationAdapter implements OAuthAdapterI
 
         $user = $resourceOwner->toArray();
         $email = $user['email'] ?? $user['emailAddress'] ?? $user['email-address'] ?? $user['email_address'];
+        $_POST['usernameOAuth'] = $email;
 
         if (empty($email)) {
             $session->forget('genericAPIAccessToken');

@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
         $form->addHiddenValue('address', $session->get('address'));
 
-        $row = $form->addRow()->addHeading(__('Basic Information'));
+        $row = $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonID', __('Patient'));
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             $column->addLabel('actionTaken', __('Action Taken'));
             $column->addTextArea('actionTaken')->setRows(8)->setClass('fullWidth');
 
-        $row = $form->addRow()->addHeading(__('Follow Up'));
+        $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
         
         $row = $form->addRow();
             $column = $row->addColumn();

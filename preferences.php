@@ -53,7 +53,7 @@ if (!$session->exists("username")) {
 
     $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
-    $form->addRow()->addHeading(__('Reset Password'));
+    $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -97,7 +97,7 @@ if (!$session->exists("username")) {
         $form = Form::create('preferences', $session->get('absoluteURL').'/preferencesProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        $form->addRow()->addHeading(__('Settings'));
+        $form->addRow()->addHeading('Settings', __('Settings'));
 
         $row = $form->addRow();
             $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__('Only enables timetable integration when logging in via Google.'));

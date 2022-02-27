@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
     $form->addHiddenValue('gibbonReportTemplateID', $gibbonReportTemplateID);
     $form->addHiddenValue('gibbonReportTemplateSectionID', $gibbonReportTemplateSectionID);
 
-    $form->addRow()->addHeading(__('Basic Details'));
+    $form->addRow()->addHeading('Basic Details', __('Basic Details'));
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->maxLength(90)->required();
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
 
     // CONFIGURE
     if ($config = json_decode($prototype['config'] ?? '', true)) {
-        $form->addRow()->addHeading(__('Configure'));
+        $form->addRow()->addHeading('Configure', __('Configure'));
         $configValues = json_decode($values['config'] ?? '', true);
 
         foreach ($config as $configName => $configOptions) {
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_manage_s
     }
     
     // TEMPLATE
-    $form->addRow()->addHeading(__('Template'));
+    $form->addRow()->addHeading('Template', __('Template'));
     $params = json_decode($values['templateParams'] ?? '', true);
 
     $row = $form->addRow();

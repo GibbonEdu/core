@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addHiddenValue('address', $session->get('address'));
 
-        $form->addRow()->addHeading(__('Resource Contents'));
+        $form->addRow()->addHeading('Resource Contents', __('Resource Contents'));
 
         $types = array('File' => __('File'), 'HTML' => __('HTML'), 'Link' => __('Link'));
         $row = $form->addRow();
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addLabel('link', __('Link'));
             $row->addURL('link')->maxLength(255)->required();
 
-        $form->addRow()->addHeading(__('Resource Details'));
+        $form->addRow()->addHeading('Resource Details', __('Resource Details'));
 
         $row = $form->addRow();
             $row->addLabel('name', __('Name'));

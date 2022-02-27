@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
         $form->addHiddenValue('address', $gibbon->session->get('address'));
         $form->addHiddenValue('step', 2);
 
-        $form->addRow()->addHeading(__('Step 1'));
+        $form->addRow()->addHeading('Step 1', __('Step 1'));
         $types = [
             __('Staff') => [
                 'proofReadingEdits' => __('Proof Reading Edits'),
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
         $form->addHiddenValue('type', $type);
         $form->addHiddenValue('gibbonReportingCycleIDList', implode(',', $gibbonReportingCycleIDList));
 
-        $form->addRow()->addHeading(__('Step 2'));
+        $form->addRow()->addHeading('Step 2', __('Step 2'));
 
         $form->addRow()->addAlert(__('This action will send the following notification to {count} users.', ['count' => '<b>'.$notificationCount.'</b>']).$notificationList, 'message');
 
