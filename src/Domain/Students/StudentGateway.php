@@ -191,7 +191,7 @@ class StudentGateway extends QueryableGateway
                     (status='Full' OR status='Expected')
                     AND gibbonFormGroup.name IS NULL
                     AND gibbonRole.category='Student'
-                ORDER BY name, surname, preferredName";
+                ORDER BY name, preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }
@@ -206,7 +206,7 @@ class StudentGateway extends QueryableGateway
                 WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
                 AND gibbonFamilyAdult.childDataAccess='Y'
                 GROUP BY gibbonPerson.gibbonPersonID
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }
@@ -228,7 +228,7 @@ class StudentGateway extends QueryableGateway
                 AND (dateStart IS NULL OR dateStart<=:today)
                 AND (dateEnd IS NULL  OR dateEnd>=:today)
                 GROUP BY gibbonPerson.gibbonPersonID
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
                 WHERE status='Full'
                 AND (gibbonAction.URLList LIKE :action1 OR gibbonAction.URLList LIKE :action2)
                 GROUP BY gibbonPerson.gibbonPersonID
-                ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
+                ORDER BY gibbonRole.gibbonRoleID, preferredName, surname" ;
         $resultSelect=$connection2->prepare($sql);
         $resultSelect->execute($data);
 

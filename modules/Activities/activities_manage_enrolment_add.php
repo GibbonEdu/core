@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				}, array());
 			}
 
-            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY preferredName, surname";
 			$result = $pdo->executeQuery(array(), $sql);
 
             if ($result->rowCount() > 0) {

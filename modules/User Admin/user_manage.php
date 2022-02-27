@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->format(function($person) use ($gibbon) {
             $output = '';
             foreach ($person['families'] as $family) {
-                $output .= '<a href="'.$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
+                $output .= '<a href="'.$gibbon->session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=preferredName, surname&subpage=Family">'.$family['name'].'</a><br/>';
             }
             return $output;
         });

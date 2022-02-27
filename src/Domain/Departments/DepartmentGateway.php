@@ -64,7 +64,7 @@ class DepartmentGateway extends QueryableGateway
                 FROM gibbonDepartmentStaff 
                 JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
                 WHERE gibbonPerson.status='Full' AND gibbonDepartmentID=:gibbonDepartmentID 
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

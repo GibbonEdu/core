@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_edi
             $form->addRow()->addHeading(__('Current Staff'));
 
             $data = array('gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
-            $sql = "SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), surname, preferredName";
+            $sql = "SELECT preferredName, surname, gibbonFinanceBudgetPerson.* FROM gibbonFinanceBudgetPerson JOIN gibbonPerson ON (gibbonFinanceBudgetPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND gibbonPerson.status='Full' ORDER BY FIELD(access,'Full','Write','Read'), preferredName, surname";
 
             $results = $pdo->executeQuery($data, $sql);
 

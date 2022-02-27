@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 try {
                     $dataExpect = array();
-                    $sqlExpect = "SELECT gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' ORDER BY name, surname, preferredName";
+                    $sqlExpect = "SELECT gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' ORDER BY name, preferredName, surname";
                     $resultExpect = $connection2->prepare($sqlExpect);
                     $resultExpect->execute($dataExpect);
                 } catch (PDOException $e) {
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 } else {
                     try {
                         $dataEnrol = array();
-                        $sqlEnrol = "SELECT gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' AND category='Student' ORDER BY surname, preferredName";
+                        $sqlEnrol = "SELECT gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' AND category='Student' ORDER BY preferredName, surname";
                         $resultEnrol = $connection2->prepare($sqlEnrol);
                         $resultEnrol->execute($dataEnrol);
                     } catch (PDOException $e) {
@@ -276,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                             WHERE gibbonPerson.status='Full'
                                 AND category='Student'
                                 AND (gibbonStudentEnrolment.gibbonPersonID IS NULL OR gibbonSchoolYear.status='Upcoming')
-                            ORDER BY surname, preferredName";
+                            ORDER BY preferredName, surname";
                         $resultEnrol = $connection2->prepare($sqlEnrol);
                         $resultEnrol->execute($dataEnrol);
                     } catch (PDOException $e) {
@@ -289,7 +289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         while ($rowEnrol = $resultEnrol->fetch()) {
                             try {
                                 $dataEnrolled = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $rowEnrol['gibbonPersonID']);
-                                $sqlEnrolled = "SELECT gibbonStudentEnrolment.* FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+                                $sqlEnrolled = "SELECT gibbonStudentEnrolment.* FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID ORDER BY preferredName, surname";
                                 $resultEnrolled = $connection2->prepare($sqlEnrolled);
                                 $resultEnrolled->execute($dataEnrolled);
                             } catch (PDOException $e) {
@@ -366,7 +366,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
                                 JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
-                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND NOT gibbonYearGroupID=:gibbonYearGroupID ORDER BY surname, preferredName";
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND NOT gibbonYearGroupID=:gibbonYearGroupID ORDER BY preferredName, surname";
                         $resultReenrol = $connection2->prepare($sqlReenrol);
                         $resultReenrol->execute($dataReenrol);
                     } catch (PDOException $e) {
@@ -429,7 +429,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 try {
                     $dataFinal = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonYearGroupID' => $lastYearGroup);
-                    $sqlFinal = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND gibbonYearGroupID=:gibbonYearGroupID ORDER BY surname, preferredName";
+                    $sqlFinal = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND category='Student' AND gibbonYearGroupID=:gibbonYearGroupID ORDER BY preferredName, surname";
                     $resultFinal = $connection2->prepare($sqlFinal);
                     $resultFinal->execute($dataFinal);
                 } catch (PDOException $e) {
@@ -465,7 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 try {
                     $dataRegister = array();
-                    $sqlRegister = "SELECT gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' AND category='Staff' ORDER BY surname, preferredName";
+                    $sqlRegister = "SELECT gibbonPersonID, surname, preferredName, name, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Expected' AND category='Staff' ORDER BY preferredName, surname";
                     $resultRegister = $connection2->prepare($sqlRegister);
                     $resultRegister->execute($dataRegister);
                 } catch (PDOException $e) {

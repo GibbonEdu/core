@@ -286,7 +286,7 @@ class StaffDashboard implements OutputableInterface
             $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
             //Form group table
-            $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, preferredName, surname');
             $this->formGroupTable->setTitle('');
 
             if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {

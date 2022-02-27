@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
                 GROUP BY gibbonPerson.gibbonPersonID
-            ) ORDER BY role DESC, surname, preferredName";
+            ) ORDER BY role DESC, preferredName, surname";
 
         $enrolmentResult = $pdo->executeQuery($data, $sql);
 

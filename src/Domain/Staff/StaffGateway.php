@@ -119,7 +119,7 @@ class StaffGateway extends QueryableGateway
 
         if (!empty($type)) $sql .= " AND gibbonStaff.type='Teaching'";
 
-        $sql .= " ORDER BY surname, preferredName";
+        $sql .= " ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

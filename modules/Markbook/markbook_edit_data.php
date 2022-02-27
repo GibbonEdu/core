@@ -245,11 +245,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
 
                     if ($studentOrderBy == 'rollOrder') {
-                        $sql .= " ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
+                        $sql .= " ORDER BY ISNULL(rollOrder), rollOrder, preferredName, surname";
                     } else if ($studentOrderBy == 'preferredName') {
                         $sql .= " ORDER BY preferredName, surname";
                     } else {
-                        $sql .= " ORDER BY surname, preferredName";
+                        $sql .= " ORDER BY preferredName, surname";
                     }
                     $result = $pdo->executeQuery($data, $sql);
                     $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();

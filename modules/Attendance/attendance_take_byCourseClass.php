@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL OR dateEnd>=:date)
                             GROUP BY gibbonCourseClassPerson.gibbonPersonID
                             HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
-                            ORDER BY surname, preferredName";
+                            ORDER BY preferredName, surname";
                         $resultCourseClass = $connection2->prepare($sqlCourseClass);
                         $resultCourseClass->execute($dataCourseClass);
                     } catch (PDOException $e) {

@@ -107,7 +107,7 @@ class RoleGateway extends QueryableGateway
                 WHERE
                     (gibbonAction.name=:name OR (gibbonAction.name LIKE CONCAT(:name,'\_%')))
                     AND gibbonPerson.status='Full'
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

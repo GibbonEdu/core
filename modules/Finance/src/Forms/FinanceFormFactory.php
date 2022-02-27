@@ -71,7 +71,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full'
                     AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, preferredName, surname";
         }
         else {
             $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonFormGroup.nameShort AS formGroupName, dayType
@@ -80,7 +80,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY gibbonFormGroup.nameShort, surname, preferredName";
+                ORDER BY gibbonFormGroup.nameShort, preferredName, surname";
         }
 
         $results = $this->pdo->executeQuery($data, $sql);
@@ -110,7 +110,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                     AND gibbonCourseClassPerson.role='Student'
-                ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort, surname, preferredName";
+                ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort, preferredName, surname";
 
             $results = $this->pdo->executeQuery($data, $sql);
             $studentsByClass = ($results->rowCount() > 0)? $results->fetchAll() : array();
@@ -272,7 +272,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y'))
                     AND parent.status='Full'
                     GROUP BY parent.gibbonPersonID
-                    ORDER BY contactPriority, surname, preferredName";
+                    ORDER BY contactPriority, preferredName, surname";
 
             $result = $this->pdo->executeQuery($data, $sql);
 

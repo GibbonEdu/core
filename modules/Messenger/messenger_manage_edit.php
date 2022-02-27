@@ -714,7 +714,7 @@ else {
 
 					$form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
 
-					$sql = "SELECT gibbonRole.category, gibbonPersonID, preferredName, surname, username FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE status='Full' ORDER BY surname, preferredName";
+					$sql = "SELECT gibbonRole.category, gibbonPersonID, preferredName, surname, username FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE status='Full' ORDER BY preferredName, surname";
 					$result = $pdo->executeQuery(array(), $sql);
 
 					// Build a set of individuals by ID => formatted name

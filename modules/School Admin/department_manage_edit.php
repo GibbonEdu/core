@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             $form->addRow()->addHeading(__('Current Staff'));
 
             $data = array('gibbonDepartmentID' => $gibbonDepartmentID);
-            $sql = "SELECT preferredName, surname, gibbonDepartmentStaff.* FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
+            $sql = "SELECT preferredName, surname, gibbonDepartmentStaff.* FROM gibbonDepartmentStaff JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonPerson.status='Full' ORDER BY preferredName, surname";
 
             $results = $pdo->executeQuery($data, $sql);
 

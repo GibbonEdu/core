@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     WHERE gibbonPerson.status='Full'
                     AND (gibbonAction.name=:action OR gibbonAction.name LIKE CONCAT(:action, '_%'))
                     GROUP BY gibbonPerson.gibbonPersonID
-                    ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
+                    ORDER BY gibbonRole.gibbonRoleID, preferredName, surname" ;
             $resultSelect=$pdo->executeQuery($data, $sql);
 
             if ($resultSelect && $resultSelect->rowCount() > 0) {

@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
         if ($highestAction == 'Update Personal Data_any') {
             $data = array();
-            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
+            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY preferredName, surname";
         } else {
             $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
                     JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID)
                     WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
         }
         $result = $pdo->executeQuery($data, $sql);
         $resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             if ($highestAction == 'Update Personal Data_any') {
 
                     $dataSelect = array();
-                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
+                    $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY preferredName, surname";
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 $checkCount = $resultSelect->rowCount();
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 //Get categories
 
                     $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-                    $sqlSelect = 'SELECT gibbonRoleIDAll, gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                    $sqlSelect = 'SELECT gibbonRoleIDAll, gibbonRoleIDPrimary FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID ORDER BY preferredName, surname';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 if ($resultSelect->rowCount() == 1) {
@@ -438,7 +438,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
                                 WHERE status='Full' AND address1 LIKE :addressMatch
                                 AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID
-                                ORDER BY surname, preferredName";
+                                ORDER BY preferredName, surname";
                             $resultAddress = $connection2->prepare($sqlAddress);
                             $resultAddress->execute($dataAddress);
 

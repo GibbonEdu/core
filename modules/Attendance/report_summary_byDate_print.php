@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $dateStart = (isset($_GET['dateStart']))? Format::dateConvert($_GET['dateStart']) : date('Y-m-d', strtotime( $dateEnd.' -1 month') );
 
     $group = !empty($_GET['group'])? $_GET['group'] : '';
-    $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
+    $sort = !empty($_GET['sort'])? $_GET['sort'] : 'preferredName, surname';
 
     $gibbonCourseClassID = (isset($_GET["gibbonCourseClassID"]))? $_GET["gibbonCourseClassID"] : 0;
     $gibbonFormGroupID = (isset($_GET["gibbonFormGroupID"]))? $_GET["gibbonFormGroupID"] : 0;
@@ -114,11 +114,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 
             $groupBy = 'GROUP BY gibbonAttendanceLogPerson.gibbonPersonID';
-            $orderBy = 'ORDER BY surname, preferredName';
+            $orderBy = 'ORDER BY preferredName, surname';
             if ($sort == 'preferredName')
                 $orderBy = 'ORDER BY preferredName, surname';
             if ($sort == 'formGroup')
-                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, surname, preferredName';
+                $orderBy = ' ORDER BY LENGTH(formGroup), formGroup, preferredName, surname';
 
             if ($group == 'all') {
                 $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFormGroup.nameShort AS formGroup, surname, preferredName, $sqlSelect FROM gibbonAttendanceLogPerson JOIN gibbonAttendanceCode ON (gibbonAttendanceLogPerson.type=gibbonAttendanceCode.name) JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE date>=:dateStart AND date<=:dateEnd AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";

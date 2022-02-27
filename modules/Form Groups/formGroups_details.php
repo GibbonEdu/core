@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
                 echo $table->render([$row]);
 
                 //Create Form
-                $sortBy = $_GET['sortBy'] ?? 'rollOrder, surname, preferredName';
+                $sortBy = $_GET['sortBy'] ?? 'rollOrder, preferredName, surname';
 
                 $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_det
 
                 $row = $form->addRow();
                     $row->addLabel('sortBy', __('Sort By'));
-                    $row->addSelect('sortBy')->fromArray(array('rollOrder, surname, preferredName' => __('Roll Order'), 'surname, preferredName' => __('Surname'), 'preferredName, surname' => __('Preferred Name')))->selected($sortBy)->required();
+                    $row->addSelect('sortBy')->fromArray(array('rollOrder, preferredName, surname' => __('Roll Order'), 'preferredName, surname' => __('Surname'), 'preferredName, surname' => __('Preferred Name')))->selected($sortBy)->required();
 
                 $row = $form->addRow();
                     $row->addFooter();

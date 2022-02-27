@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
             JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
             WHERE status='Full' AND gibbonDepartmentID=:gibbonDepartmentID 
-            ORDER BY roleOrder DESC, surname, preferredName";
+            ORDER BY roleOrder DESC, preferredName, surname";
 
             $staff = $pdo->select($sqlStaff, $dataStaff)->toDataSet();
 

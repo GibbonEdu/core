@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 			AND status='Full'
 			AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."')
 			AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
-		ORDER BY surname, preferredName";
+		ORDER BY preferredName, surname";
 	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
     if ($resultStudents->rowCount() < 1) {
         echo "<div class='error'>";

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                     AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
-                    ORDER BY formGroupName, surname, preferredName";
+                    ORDER BY formGroupName, preferredName, surname";
             $result = $pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() > 0) {
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                 }, array());
             }
 
-            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE status='Full' OR status='Expected' ORDER BY preferredName, surname";
             $result = $pdo->executeQuery(array(), $sql);
 
             if ($result->rowCount() > 0) {

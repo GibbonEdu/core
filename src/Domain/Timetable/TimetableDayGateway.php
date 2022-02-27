@@ -107,7 +107,7 @@ class TimetableDayGateway extends QueryableGateway
                 WHERE gibbonCourseClassPerson.role='Teacher'
                 AND gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID
                 AND gibbonTTDayRowClassExceptionID IS NULL
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }
@@ -118,7 +118,7 @@ class TimetableDayGateway extends QueryableGateway
                 FROM gibbonTTDayRowClassException
                 JOIN gibbonPerson ON (gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

@@ -60,7 +60,7 @@ class DataUpdaterGateway extends Gateway
             JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND familyAdult.gibbonPersonID<>:gibbonPersonID)
             JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID)
             WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
-        ORDER BY sequenceNumber, surname, preferredName
+        ORDER BY sequenceNumber, preferredName, surname
         ";
 
         return $this->db()->select($sql, $data);

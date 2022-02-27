@@ -376,7 +376,7 @@ class PlannerEntryGateway extends QueryableGateway
                 JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
                 WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID 
                 AND status='Full' 
-                ORDER BY role DESC, surname, preferredName";
+                ORDER BY role DESC, preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }

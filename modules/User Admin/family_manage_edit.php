@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             //Get children and prep array
             $dataChildren = array('gibbonFamilyID' => $gibbonFamilyID);
-            $sqlChildren = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName';
+            $sqlChildren = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY preferredName, surname';
             $resultChildren = $pdo->select($sqlChildren, $dataChildren);
 
             $children = array();
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
             //Get adults and prep array
             $dataAdults = array('gibbonFamilyID' => $gibbonFamilyID);
-            $sqlAdults = 'SELECT * FROM gibbonFamilyAdult, gibbonPerson WHERE (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) AND gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
+            $sqlAdults = 'SELECT * FROM gibbonFamilyAdult, gibbonPerson WHERE (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) AND gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, preferredName, surname';
             $resultAdults = $pdo->select($sqlAdults, $dataAdults);
 
             $adults = array();
@@ -345,7 +345,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $adults = array();
 
-            $sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $sqlSelect = "SELECT status, gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY preferredName, surname";
             $resultSelect = $pdo->select($sqlSelect);
 
             while ($rowSelect = $resultSelect->fetch()) {

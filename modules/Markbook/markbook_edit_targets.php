@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                             AND gibbonMarkbookTarget.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
                         WHERE role='Student' AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
                         AND status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)
-                        ORDER BY surname, preferredName";
+                        ORDER BY preferredName, surname";
                 $result = $pdo->executeQuery($data, $sql);
 
                 if ($result->rowCount() > 0) {

@@ -49,7 +49,7 @@ class FormGroupTable extends DataTable
         $this->studentGateway = $studentGateway;
     }
 
-    public function build($gibbonFormGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, surname, preferredName')
+    public function build($gibbonFormGroupID, $canViewConfidential, $canPrint, $sortBy = 'rollOrder, preferredName, surname')
     {
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();

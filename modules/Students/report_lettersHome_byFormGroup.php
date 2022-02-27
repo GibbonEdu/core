@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_lettersHom
                 LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonPerson.status='Full'
-            ORDER BY formGroup, surname, preferredName";
+            ORDER BY formGroup, preferredName, surname";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     if ($result->rowCount() < 1) {

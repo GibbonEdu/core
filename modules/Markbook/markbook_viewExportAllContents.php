@@ -219,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         $rowNum = 'odd';
 
 		$dataStudents = array('gibbonCourseClassID' => $gibbonCourseClassID);
-		$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+		$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY preferredName, surname";
 		$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents);
         if ($resultStudents->rowCount() < 1) {
 			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 3, __('There are no records to display.'));

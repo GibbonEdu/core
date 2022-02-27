@@ -89,7 +89,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     AND gibbonPerson.status='Full'
                     AND (dateStart IS NULL OR dateStart<=:today)
                     AND (dateEnd IS NULL OR dateEnd>=:today)
-                    ORDER BY surname, preferredName ";
+                    ORDER BY preferredName, surname ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
 

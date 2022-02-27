@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     AND (dateStart IS NULL OR dateStart<=:date)
                     AND (dateEnd IS NULL  OR dateEnd>=:date)
                     AND gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY name, surname, preferredName";
+                ORDER BY name, preferredName, surname";
             $result = $pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() > 0) {
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 }, array());
             }
 
-            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY preferredName, surname";
             $result = $pdo->executeQuery(array(), $sql);
 
             if ($result->rowCount() > 0) {

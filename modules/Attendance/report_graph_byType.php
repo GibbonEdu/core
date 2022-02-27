@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $dateEnd = $session->get('gibbonSchoolYearLastDay');
     }
 
-    $sort = !empty($_POST['sort'])? $_POST['sort'] : 'surname, preferredName';
+    $sort = !empty($_POST['sort'])? $_POST['sort'] : 'preferredName, surname';
 
     // Get the form groups - revert to All if it's selected
     $formGroups = $_POST['gibbonFormGroupID'] ?? array('all');

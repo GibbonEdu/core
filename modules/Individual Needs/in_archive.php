@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
             JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
             JOIN gibbonFormGroup ON (gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
-            WHERE status='Full' ORDER BY surname, preferredName";
+            WHERE status='Full' ORDER BY preferredName, surname";
     $result = $pdo->executeQuery($data, $sql);
 
     $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();

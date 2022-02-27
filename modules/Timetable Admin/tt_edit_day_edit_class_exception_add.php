@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         AND NOT role='Teacher - Left'
                         AND NOT gibbonPerson.status='Left'
                         AND gibbonTTDayRowClassExceptionID IS NULL
-                    ORDER BY surname, preferredName";
+                    ORDER BY preferredName, surname";
                 $resultSelect = $connection2->prepare($sqlSelect);
                 $resultSelect->execute($dataSelect);
             } catch (PDOException $e) { echo $e->getMessage();}

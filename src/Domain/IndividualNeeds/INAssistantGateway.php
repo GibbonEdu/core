@@ -43,7 +43,7 @@ class INAssistantGateway extends QueryableGateway
                 FROM gibbonINAssistant 
                 JOIN gibbonPerson ON (gibbonINAssistant.gibbonPersonIDAssistant=gibbonPerson.gibbonPersonID) 
                 WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonPerson.status='Full' 
-                ORDER BY surname, preferredName";
+                ORDER BY preferredName, surname";
 
         return $this->db()->select($sql, $data);
     }
