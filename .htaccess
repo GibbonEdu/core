@@ -1,4 +1,27 @@
 <FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak|sql|neon|DS_Store)$">
-Order Allow,Deny
-Deny from all
+  Order Allow,Deny
+  Deny from all
 </FilesMatch>
+
+<FilesMatch "\.(html|htm|php)$">
+  <IfModule mod_headers.c>
+    FileETag None
+    Header unset ETag
+    Header unset Pragma
+    Header unset Cache-Control
+    Header unset Last-Modified
+    Header set Pragma "no-cache"
+    Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+    Header set Expires "Thu, 1 Jan 1970 00:00:00 GMT"
+  </IfModule>
+</FilesMatch>
+
+<IfModule mod_negotiation.c>
+    Options -MultiViews -Indexes
+</IfModule>
+
+<ifModule mod_gzip.c>
+  mod_gzip_on Yes
+  mod_gzip_dechunk Yes
+  mod_gzip_item_include file .(html?|txt|css|js|php)$
+</ifModule>
