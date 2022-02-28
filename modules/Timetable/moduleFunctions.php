@@ -1449,7 +1449,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                             } elseif ($resultPlan->rowCount() == 0) {
                                                 $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_add.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."' title='".__('Add lesson plan')."'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' alt='".__('Add lesson plan')."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
                                             } else {
-                                                $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Error').'</div></a>';
+                                                $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Multiple').'</div></a>';
                                             }
                                             $output .= '</div>';
                                             ++$zCount;
@@ -1473,7 +1473,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                                             $rowPlan = $resultPlan->fetch();
                                             $output .= "<a style='pointer-events: auto' href='".$session->get('absoluteURL').'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowPlan['gibbonPlannerEntryID']."&search=$gibbonPersonID'><img style='float: right; margin: ".(substr($height, 0, -2) - 27)."px 2px 0 0' title='".__('View lesson:').' '.htmlPrep($rowPlan['name'])."' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/plus.png'/></a>";
                                         } elseif ($resultPlan->rowCount() > 1) {
-                                            $output .= "<div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Error').'</div>';
+                                            $output .= "<div style='float: right; margin: ".(substr($height, 0, -2) - 17)."px 5px 0 0'>".__('Multiple').'</div>';
                                         }
                                         $output .= '</div>';
                                         ++$zCount;
