@@ -28,6 +28,7 @@ v24.0.00
         System: removed upgrade path for v19.0.00 and earlier
     
     Tweaks & Additions
+        System: added pagebreak and columnbreak tags to the allowableHTML list
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
         Planner: added Create Markbook Column option when editing a lesson plan
