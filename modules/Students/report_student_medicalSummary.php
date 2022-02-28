@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 
     $table->addColumn('student', __('Student'))
         ->description(__('Last Update'))
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(function ($student) use ($cutoffDate) {
             $output = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true).'<br/><br/>';
 

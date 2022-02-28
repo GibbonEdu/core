@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         if ($canViewAllTimetables) {
             $criteria = $studentGateway->newQueryCriteria(true)
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
-                ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
                 ->filterBy('all', $allUsers)
                 ->fromPOST();
 
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         // COLUMNS
         $table->addColumn('name', __('Name'))
-            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->format(function ($person) {
                 $roleCategory = ($person['roleCategory'] == 'Student' || !empty($person['yearGroup']))? 'Student' : 'Staff';
                 return Format::name('', $person['preferredName'], $person['surname'], $roleCategory, true, true);

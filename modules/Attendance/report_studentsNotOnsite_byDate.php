@@ -96,10 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         case 'preferredName':
             $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.nameShort']); break;
         case 'formGroup':
-            $criteria->sortBy(['gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']); break;
+            $criteria->sortBy(['gibbonFormGroup.nameShort', 'gibbonPerson.preferredName', 'gibbonPerson.surname']); break;
         default:
         case 'surname':
-            $criteria->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.nameShort']); break;
+            $criteria->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonFormGroup.nameShort']); break;
     }
     $criteria->fromPOST();
 
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('name', __('Name'))
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(function ($student) {
             return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Attendance']);
         });

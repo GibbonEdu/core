@@ -115,7 +115,7 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'))
-            ->orderBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort', 'gibbonPerson.preferredName', 'gibbonPerson.surname']);
 
         return $this->runSelect($query);
     }
@@ -128,12 +128,12 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->newSelect()
             ->cols($allFields
                 ? ['gibbonFamilyAdult.gibbonFamilyID', 'gibbonFamilyAdult.*', 'gibbonPerson.*']
-                : ['gibbonFamilyAdult.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
+                : ['gibbonFamilyAdult.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
             ->from('gibbonFamilyAdult')
             ->innerJoin('gibbonPerson', 'gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList)')
             ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
-            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonPerson.preferredName', 'gibbonPerson.surname']);
 
         return $this->runSelect($query);
     }
@@ -146,12 +146,12 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
             ->newSelect()
             ->cols($allFields
                 ? ['gibbonFamilyChild.gibbonFamilyID', 'gibbonFamilyChild.*', 'gibbonPerson.*']
-                : ['gibbonFamilyChild.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
+                : ['gibbonFamilyChild.gibbonFamilyID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.status', 'gibbonPerson.email'])
             ->from('gibbonFamilyChild')
             ->innerJoin('gibbonPerson', 'gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('FIND_IN_SET(gibbonFamilyChild.gibbonFamilyID, :gibbonFamilyIDList)')
             ->bindValue('gibbonFamilyIDList', $gibbonFamilyIDList)
-            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonPerson.preferredName', 'gibbonPerson.surname']);
 
         return $this->runSelect($query);
     }

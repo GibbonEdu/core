@@ -88,9 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     switch ($sort) {
         case 'surname':         $defaultSort = ['gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
         case 'preferredName':   $defaultSort = ['gibbonPerson.preferredName', 'gibbonPerson.surname']; break;
-        case 'formGroup':       $defaultSort = ['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
+        case 'formGroup':       $defaultSort = ['formGroup', 'gibbonPerson.preferredName', 'gibbonPerson.surname']; break;
         case 'absent':
-        default:                $defaultSort = ['attendance', 'gibbonPerson.surname', 'gibbonPerson.preferredName']; break;
+        default:                $defaultSort = ['attendance', 'gibbonPerson.preferredName', 'gibbonPerson.surname']; break;
     }
 
     // CRITERIA
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $table->addColumn('formGroup', __('Form Group'))->width('10%');
     $table->addColumn('student', __('Student'))
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
     $table->addColumn('attendance', __('Attendance'))->translatable();
     $table->addColumn('activity', __('Activity'));

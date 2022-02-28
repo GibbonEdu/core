@@ -118,7 +118,7 @@ class EnrolmentTable implements OutputableInterface
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
             ->sortBy('dateStart', 'DESC')
-            ->sortBy(['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['formGroup', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->fromPOST();
 
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Full', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), false);
@@ -137,7 +137,7 @@ class EnrolmentTable implements OutputableInterface
 
         $table->addColumn('student', __('Student'))
             ->context('primary')
-            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->format(function ($student) {
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';
@@ -160,7 +160,7 @@ class EnrolmentTable implements OutputableInterface
 
         // CRITERIA
         $criteria = $this->studentReportGateway->newQueryCriteria()
-            ->sortBy(['dateEnd', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['dateEnd', 'formGroup', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->fromPOST();
 
         $students = $this->studentReportGateway->queryStudentStatusBySchoolYear($criteria, $gibbonSchoolYearID, 'Left', date('Y-m-d', strtotime('today - 60 days')), date('Y-m-d', strtotime('today + 60 days')), true);
@@ -180,7 +180,7 @@ class EnrolmentTable implements OutputableInterface
 
         $table->addColumn('student', __('Student'))
             ->context('primary')
-            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->format(function ($student) {
                 return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['allStudents' => 'on'])
                     . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';

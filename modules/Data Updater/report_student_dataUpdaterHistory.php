@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 
         // QUERY
         $criteria = $gateway->newQueryCriteria(true)
-            ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();
 
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
             });
 
         $table->addColumn('student', __('Student'))
-            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->format(function ($row) use ($session) {
                 $name = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 return Format::link($session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);

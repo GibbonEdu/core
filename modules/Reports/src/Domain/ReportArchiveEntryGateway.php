@@ -29,7 +29,7 @@ class ReportArchiveEntryGateway extends QueryableGateway
 
     private static $tableName = 'gibbonReportArchiveEntry';
     private static $primaryKey = 'gibbonReportArchiveEntryID';
-    private static $searchableColumns = ['gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username'];
+    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username'];
     
     /**
      * @param QueryCriteria $criteria

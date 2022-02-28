@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy(['gibbonPerson.transport', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['gibbonPerson.transport', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         ->width('10%');
     $table->addColumn('student', __('Student'))
         ->context('primary')
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
     
     $view = new View($container->get('twig'));

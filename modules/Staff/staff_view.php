@@ -239,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $table->addColumn('jobTitle', __('Job Title'))
                 ->context('primary')
                 ->description(__('Form Group'))
-                ->sortable(['jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->sortable(['jobTitle', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
                 ->format(function ($person) {
                     return (!empty($person['jobTitle']) ? $person['jobTitle'] : '').'<br/>'.
                         (!empty($person['formGroupName']) ? Format::small($person['formGroupName']) : '');

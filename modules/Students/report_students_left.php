@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 
     // CRITERIA
     $criteria = $reportGateway->newQueryCriteria(true)
-        ->sortBy(['formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['formGroup', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
 
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 
     $table->addRowCountColumn($students->getPageFrom());
     $table->addColumn('student', __('Student'))
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(function ($student) {
             return Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true)
                  . '<br/><small><i>'.Format::userStatusInfo($student).'</i></small>';

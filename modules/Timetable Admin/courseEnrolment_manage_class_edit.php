@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             // QUERY
             $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
                 ->sortBy('roleSortOrder')
-                ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
                 ->fromPOST();
 
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, false, true);
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $table->addMetaData('bulkActions', $col);
 
             $table->addColumn('name', __('Name'))
-                  ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                  ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
                   ->format($linkedName);
             $table->addColumn('email', __('Email'));
             $table->addColumn('role', __('Class Role'))->translatable();

@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         // CRITERIA
         $criteria = $attendanceLogGateway->newQueryCriteria(true)
-            ->sortBy(['sequenceNumber', 'formGroup', 'gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortBy(['sequenceNumber', 'formGroup', 'gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->filterBy('yearGroup', implode(',', $gibbonYearGroupIDList ?? []))
             ->filterBy('types', implode(',', $types ?? []))
             ->pageSize(!empty($viewMode) ? 0 : 50)
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         $table->addColumn('student', __('Student'))
             ->context('primary')
-            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
             ->format(function ($student) use ($currentDate) {
                 $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true, true);
                 $url = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$student['gibbonPersonID'].'&currentDate='.$currentDate;

@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byPerson.
 
     $table->addColumn('name', __('Name'))
         ->width('30%')
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Staff', true, true);
         });

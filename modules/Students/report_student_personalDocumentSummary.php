@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_pe
 
     // CRITERIA
     $criteria = $personalDocumentGateway->newQueryCriteria(true)
-        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->filterBy('documents', is_array($documents) ? implode(',', $documents) : $documents)
         ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromPOST();
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_pe
     $table->addColumn('formGroup', __('Form Group'));
     
     $table->addColumn('student', __('Student'))
-        ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->format(function ($student) {
             $output = Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Personal']);
             return $output;

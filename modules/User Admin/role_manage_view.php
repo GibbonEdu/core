@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_vie
 
     // CRITERIA
     $criteria = $roleGateway->newQueryCriteria(true)
-        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->filterBy('status:full')
         ->fromPOST();
 

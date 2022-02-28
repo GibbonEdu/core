@@ -41,7 +41,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonStaffAbsence';
     private static $primaryKey = 'gibbonStaffAbsenceID';
 
-    private static $searchableColumns = ['gibbonStaffAbsence.reason', 'gibbonStaffAbsence.comment', 'gibbonStaffAbsence.status', 'gibbonStaffAbsenceType.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname'];
+    private static $searchableColumns = ['gibbonStaffAbsence.reason', 'gibbonStaffAbsence.comment', 'gibbonStaffAbsence.status', 'gibbonStaffAbsenceType.name','gibbonPerson.preferredName', 'gibbonPerson.surname'];
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['commentConfidential' => ''];
@@ -56,7 +56,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffAbsence.*', 'gibbonStaffAbsenceDate.*', 'gibbonStaffAbsenceType.name as type', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'MIN(gibbonStaffCoverage.status) as coverage',
+                'gibbonStaffAbsence.*', 'gibbonStaffAbsenceDate.*', 'gibbonStaffAbsenceType.name as type', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'MIN(gibbonStaffCoverage.status) as coverage',
             ])
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
@@ -127,7 +127,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'comment', 'gibbonStaffAbsenceDate.date', 'COUNT(*) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'gibbonStaffAbsenceDate.allDay', 'gibbonStaffAbsenceDate.timeStart', 'gibbonStaffAbsenceDate.timeEnd', 'SUM(gibbonStaffAbsenceDate.value) as value', 'timestampCreator', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffAbsence.gibbonPersonIDCreator', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffAbsence.status',
+                'gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'comment', 'gibbonStaffAbsenceDate.date', 'COUNT(*) as days', 'MIN(gibbonStaffAbsenceDate.date) as dateStart', 'MAX(gibbonStaffAbsenceDate.date) as dateEnd', 'gibbonStaffAbsenceDate.allDay', 'gibbonStaffAbsenceDate.timeStart', 'gibbonStaffAbsenceDate.timeEnd', 'SUM(gibbonStaffAbsenceDate.value) as value', 'timestampCreator', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffAbsence.gibbonPersonIDCreator', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'gibbonStaffCoverage.status as coverage', 'gibbonStaffAbsence.status',
             ])
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
@@ -154,7 +154,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ->cols([
                 'gibbonStaffAbsence.gibbonStaffAbsenceID', 'gibbonStaffAbsence.gibbonPersonID', 'gibbonStaffAbsenceType.name as type', 'gibbonStaffAbsence.reason', 'comment', 'gibbonStaffAbsenceDate.date',  'gibbonStaffAbsenceDate.allDay', 'gibbonStaffAbsenceDate.timeStart', 'gibbonStaffAbsenceDate.timeEnd', 'gibbonStaffAbsenceDate.value', 'timestampCreator',  'MIN(gibbonStaffCoverage.status) as coverage',
                 'gibbonStaffAbsence.status',
-                'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 
+                'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 
                 'creator.title AS titleCreator', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'gibbonStaffAbsence.gibbonPersonIDCreator',
                 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'gibbonStaffCoverage.gibbonPersonIDCoverage',
             ])

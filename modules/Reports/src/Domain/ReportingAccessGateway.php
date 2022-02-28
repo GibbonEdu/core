@@ -281,7 +281,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->where('gibbonReportingCriteria.gibbonReportingScopeID=:gibbonReportingScopeID')
             ->where("gibbonReportingCriteria.target='Per Student'")
             ->bindValue('gibbonReportingScopeID', $gibbonReportingScopeID)
-            ->orderBy(['gibbonPerson.surname', 'gibbonPerson.preferredName']);
+            ->orderBy(['gibbonPerson.preferredName', 'gibbonPerson.surname']);
 
         if (!$allStudents) {
             $query->where("gibbonPerson.status='Full'")

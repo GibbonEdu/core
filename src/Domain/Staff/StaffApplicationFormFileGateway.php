@@ -41,7 +41,7 @@ class StaffApplicationFormFileGateway extends QueryableGateway implements Scrubb
     private static $tableName = 'gibbonStaffApplicationFormFile';
     private static $primaryKey = 'gibbonStaffApplicationFormFileID';
 
-    private static $searchableColumns = ['gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.preferredName', 'gibbonStaffApplicationForm.surname', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffJobOpening.jobTitle'];
+    private static $searchableColumns = ['gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.preferredName', 'gibbonStaffApplicationForm.surname','gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonStaffJobOpening.jobTitle'];
     
     private static $scrubbableKey = ['timestamp', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormID'];
     private static $scrubbableColumns = ['path' => 'deleteFile'];

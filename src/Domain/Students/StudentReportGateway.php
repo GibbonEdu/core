@@ -155,7 +155,7 @@ class StudentReportGateway extends QueryableGateway
             ->distinct()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'officialName', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', 'gibbonPerson.lastSchool', 'gibbonPerson.departureReason', 'gibbonPerson.nextSchool', "'Student' as roleCategory"
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title','gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'officialName', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonFormGroup.nameShort AS formGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', 'gibbonPerson.lastSchool', 'gibbonPerson.departureReason', 'gibbonPerson.nextSchool', "'Student' as roleCategory"
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonSchoolYear AS currentSchoolYear', 'currentSchoolYear.gibbonSchoolYearID = gibbonStudentEnrolment.gibbonSchoolYearID')

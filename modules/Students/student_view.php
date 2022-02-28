@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
             $search = $_GET['search'] ?? '';
-            $sort = $_GET['sort'] ?? 'surname,preferredName';
+            $sort = $_GET['sort'] ?? 'preferredName,surname';
             $allStudents = $_GET['allStudents'] ?? '';
             
             $studentGateway = $container->get(StudentGateway::class);

@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             // QUERY
             $criteria = $courseEnrolmentGateway->newQueryCriteria(true)
                 ->sortBy('roleSortOrder')
-                ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
                 ->fromPOST();
 
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, false, true);
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             $table->addMetaData('bulkActions', $col);
 
             $table->addColumn('name', __('Name'))
-                ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->sortable(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
                 ->format(function ($person) {
                     $isStudent = stripos($person['role'], 'Student') !== false;
                     $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);

@@ -84,7 +84,7 @@ $classLogCriteria = $attendanceLogGateway->newQueryCriteria()
     ->sortBy(['timeStart', 'timeEnd', 'timestampTaken']);
 
 $studentCriteria = $attendanceLogGateway->newQueryCriteria()
-    ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort', 'gibbonPerson.surname', 'gibbonPerson.preferredName']);
+    ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonFormGroup.nameShort', 'gibbonPerson.preferredName', 'gibbonPerson.surname']);
 
 // Get all active students grouped by year group and form group
 $allStudents = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $gibbonSchoolYearID)->toArray();

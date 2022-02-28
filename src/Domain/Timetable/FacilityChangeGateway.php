@@ -46,7 +46,7 @@ class FacilityChangeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew', 'gibbonPerson.preferredName', 'gibbonPerson.surname'
+                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew','gibbonPerson.preferredName', 'gibbonPerson.surname'
             ])
             ->innerJoin('gibbonTTDayRowClass', 'gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID')
             ->innerJoin('gibbonCourseClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
@@ -77,7 +77,7 @@ class FacilityChangeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew', 'gibbonPerson.preferredName', 'gibbonPerson.surname'
+                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew','gibbonPerson.preferredName', 'gibbonPerson.surname'
             ])
             ->innerJoin('gibbonTTDayRowClass', 'gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID')
             ->innerJoin('gibbonCourseClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
@@ -94,7 +94,7 @@ class FacilityChangeGateway extends QueryableGateway
         $query->union()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew', 'gibbonPerson.preferredName', 'gibbonPerson.surname'
+                'gibbonTTSpaceChangeID', 'date', 'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.nameShort as courseName', 'gibbonCourseClass.nameShort as className', 'spaceOld.name as spaceOld', 'spaceNew.name as spaceNew','gibbonPerson.preferredName', 'gibbonPerson.surname'
             ])
             ->innerJoin('gibbonTTDayRowClass', 'gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID')
             ->innerJoin('gibbonCourseClass', 'gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
