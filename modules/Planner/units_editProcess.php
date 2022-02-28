@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         }
 
                         //Update blocks
-                        $order = $_POST['order'] ?? '';
+                        $order = $_POST['order'] ?? [];
                         $sequenceNumber = 0;
                         $dataRemove = array();
                         $whereRemove = '';
