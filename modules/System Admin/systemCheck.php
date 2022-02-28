@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
     $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
     $mysqlCollation = $pdo->selectOne("SELECT COLLATION('gibbon')");
-    $backgroundProcessing = @exec('echo EXEC') == 'EXEC';
+    $backgroundProcessing = function_exists('exec') && @exec('echo EXEC') == 'EXEC';
 
     $phpRequirement = $gibbon->getSystemRequirement('php');
     $mysqlRequirement = $gibbon->getSystemRequirement('mysql');
