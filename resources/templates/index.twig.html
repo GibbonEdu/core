@@ -48,7 +48,7 @@ TODO: add template variable details.
                             <ul class="list-none m-0 bg-gray-800 hidden group-hover:block absolute right-0 w-48 mt-1 p-1 z-50 cursor-pointer">
                                 {% for link in minorLinks|reverse %}
                                 <li class="hover:bg-{{ themeColour }}-700">
-                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 text-left no-underline px-1 py-2 md:py-1 leading-normal" target="{{ link.target }}">
+                                    <a href="{{ link.url }}" class="block text-sm text-white focus:text-{{ themeColour }}-200 text-left no-underline px-1 py-2 md:py-1 leading-normal" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                         {{- link.name|raw -}}
                                     </a>
                                 </li>
@@ -59,7 +59,7 @@ TODO: add template variable details.
                         {% else %}
                             {% for link in minorLinks %}
                                 {{ link.prepend }}&nbsp;
-                                <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}">
+                                <a href="{{ link.url }}" class="link-white {{ loop.count > 3 ? 'hidden sm:block' }}" target="{{ link.target }}" {{ link.target == '_blank' ? 'rel="noopener noreferrer"' : '' }}>
                                     {{- link.name|raw -}}
                                 </a>
                                 {{ link.append }}

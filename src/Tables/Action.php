@@ -317,7 +317,7 @@ class Action extends WebLink
         if ($this->url instanceof Url) {
             $this->setAttribute('href', (string)$this->url);
         } elseif ($this->external) {
-            $this->setAttribute('href', $this->url.$this->urlFragment);
+            $this->setAttribute('href', $this->url.$this->urlFragment)->setAttribute('rel', 'noopener noreferrer');
         } else if ($this->direct) {
             $this->setAttribute('href', Url::fromHandlerRoute(ltrim($this->url, '/'))
                 ->withQueryParams($queryParams)
