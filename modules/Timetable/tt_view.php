@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
             // DISPLAY PERSON DATA
             $table = DataTable::createDetails('personal');
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,
@@ -117,10 +117,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->addParams($params)
                     ->setIcon('config')
                     ->displayLabel()
-                    ->prepend((!empty($search)) ? ' | ' : '');;        
+                    ->prepend((!empty($search)) ? ' | ' : '');;
             }
+            $table->addHeaderAction('export', __('Export'))
+                ->modalWindow()
+                ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                ->addParams($params)
+                ->setIcon('download')
+                ->displayLabel();
 
-            
+
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
                         $table->addColumn('yearGroup', __('Year Group'));
                         $table->addColumn('formGroup', __('Form Group'));

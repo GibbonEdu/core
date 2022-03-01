@@ -69,6 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
                 $actions->addAction('import', __('Import'))
                     ->setIcon('upload')
                     ->setURL('/modules/Timetable Admin/tt_import.php');
+
+                $actions->addAction('notify', __('Notify students'))
+                    ->setIcon('copyforward')
+                    ->setURL('/modules/Timetable Admin/tt_update_notifier.php');
             });
 
         echo $table->render($timetables->toDataSet());
