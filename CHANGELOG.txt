@@ -42,6 +42,7 @@ v24.0.00
         Finance: fixed HTML being removed from notes on invoices
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
+        Tracking: fixed the Chart.js library on the Graphing page
 
 v23.0.01
 --------
