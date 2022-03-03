@@ -194,12 +194,12 @@ class MpdfRenderer implements ReportRendererInterface
             'format' => $this->template->getData('pageSize', 'A4') == 'letter' ? [215.9, 279.4] : [210, 297],
             'orientation' => $this->template->getData('orientation', 'P'),
             'useOddEven' => '0',
-            'mirrorMargins' => '0',
+            'mirrorMargins' => $this->hasMode(self::OUTPUT_MIRROR) ? '1' : '0',
             
             'margin_top' => $this->template->getData('marginY', '10'),
             'margin_bottom' => $this->template->getData('marginY', '10'),
-            'margin_left' => $this->template->getData('marginX', '10'),
-            'margin_right' => $this->template->getData('marginX', '10'),
+            'margin_left' => $this->template->getData('marginLeft', $this->template->getData('marginX', '10')),
+            'margin_right' => $this->template->getData('marginRight', $this->template->getData('marginX', '10')),
 
             'setAutoTopMargin' => 'stretch',
             'setAutoBottomMargin' => 'stretch',
@@ -335,6 +335,7 @@ class MpdfRenderer implements ReportRendererInterface
         $headerName = isset($this->headers[$pageNum])? 'header'.$pageNum : $defaultHeader;
 
         $this->pdf->SetHTMLHeaderByName($headerName, 'O', $this->lastPage);
+        $this->pdf->SetHTMLHeaderByName($headerName, 'E', $this->lastPage);
     }
 
     protected function setFooter($forceLast = false)
@@ -347,6 +348,7 @@ class MpdfRenderer implements ReportRendererInterface
         $footerName = isset($this->footers[$pageNum])? 'footer'.$pageNum : $defaultFooter;
 
         $this->pdf->SetHTMLFooterByName($footerName, 'O');
+        $this->pdf->SetHTMLFooterByName($footerName, 'E');
     }
 
     protected function runPreProcess(ReportData &$reportData)
