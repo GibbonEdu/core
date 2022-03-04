@@ -141,9 +141,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             } else {
                                 $homeworkSubmissionDateOpen = date('Y-m-d');
                             }
-                            if (isset($_POST['homeworkSubmissionDrafts'])) {
-                                $homeworkSubmissionDrafts = $_POST['homeworkSubmissionDrafts'];
-                            }
+                            
+                            $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
                             $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                             $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
                             if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
@@ -335,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             //Jump to Markbook?
                             $markbook = $_POST['markbook'] ?? '';
                             if ($markbook == 'Y') {
-                                $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=".$_POST['gibbonUnitID']."&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
+                                $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
                                 header("Location: {$URL}");
                                 exit();
                             } else {

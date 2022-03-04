@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     } else {
                         $homeworkSubmissionDateOpen = Format::dateConvert($_POST['date']);
                     }
-                    $homeworkSubmissionDrafts = $_POST['homeworkSubmissionDrafts'] ?? '';
+                    $homeworkSubmissionDrafts = !empty($_POST['homeworkSubmissionDrafts']) ? $_POST['homeworkSubmissionDrafts'] : null;
                     $homeworkSubmissionType = $_POST['homeworkSubmissionType'] ?? '';
                     $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'] ?? '';
                     if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
