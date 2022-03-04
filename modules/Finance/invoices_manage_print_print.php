@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 //Update reminder count
                 if ($row['reminderCount'] < 3) {
 
-                        $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-                        $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount='.($row['reminderCount'] + 1).' WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+                        $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'reminderCount' => $row['reminderCount'] + 1);
+                        $sql = 'UPDATE gibbonFinanceInvoice SET reminderCount=:reminderCount WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                 }

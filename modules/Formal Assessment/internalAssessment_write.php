@@ -157,8 +157,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $columnsThisPage = $columns - ($x * $columnsPerPage);
                         }
 
+                        $limit = intval($x * $columnsPerPage);
+
                             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.($x * $columnsPerPage).', '.$columnsPerPage;
+                            $sql = 'SELECT * FROM gibbonInternalAssessmentColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY complete, completeDate DESC LIMIT '.$limit.', '.$columnsPerPage;
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
 

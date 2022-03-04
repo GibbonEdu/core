@@ -682,24 +682,25 @@ function getHighestGroupedAction($guid, $address, $connection2)
     if (empty($session->get('gibbonRoleIDCurrent'))) return false;
 
     $output = false;
-    $moduleID = checkModuleReady($address, $connection2);
+    $module = getModuleName($address);
 
     try {
         $data = [
             'actionName' => '%'.getActionName($address).'%',
             'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
-            'moduleID' => $moduleID,
+            'moduleName' => $module,
         ];
         $sql = 'SELECT
         gibbonAction.name
         FROM
         gibbonAction
+        INNER JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
         INNER JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
         INNER JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
         WHERE
-        (gibbonAction.URLList LIKE :actionName) AND
-        (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND
-        (gibbonAction.gibbonModuleID=:moduleID)
+        gibbonAction.URLList LIKE :actionName AND
+        gibbonPermission.gibbonRoleID=:gibbonRoleID AND
+        gibbonModule.name=:moduleName
         ORDER BY gibbonAction.precedence DESC, gibbonAction.gibbonActionID';
 
         $result = $connection2->prepare($sql);
