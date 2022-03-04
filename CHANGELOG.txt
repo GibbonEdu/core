@@ -38,6 +38,7 @@ v24.0.00
         System: fixed user's personal language and theme not set after login
         System: improved display of IDD country codes in phone number entry field
         System: fixed SQL errors in the User Status Check & Fix CLI script
+        System: fixed Google OAuth not correctly handling empty refresh tokens
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
         System Admin: fixed HTML being stripped out of the privacy policy

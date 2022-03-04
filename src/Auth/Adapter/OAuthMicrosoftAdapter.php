@@ -54,7 +54,7 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
      * @return array An array of login data on success.
      * 
      * @throws \Gibbon\Auth\Exception\OAuthLoginError
-     * @throws \Aura\Auth\Exception\UsernameMissing
+     * @throws \Gibbon\Auth\Exception\OAuthUserNotFound
      *
      */
     public function login(array $input)

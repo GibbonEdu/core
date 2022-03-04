@@ -116,8 +116,6 @@ class AuthServiceProvider extends AbstractServiceProvider
                                 'googleAPIRefreshToken' => $accessToken['refresh_token'],
                             ]);
                         }
-                    } else {
-                        return null;
                     }
                 }
             } catch (\InvalidArgumentException $e) {
