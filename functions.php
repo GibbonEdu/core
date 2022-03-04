@@ -524,11 +524,11 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                     $sqlYearsOr = '';
                     for ($i = 0; $i < count($years); ++$i) {
                         if ($i == 0) {
-                            $dataYears[$years[$i]] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' WHERE gibbonYearGroupID=:'.$years[$i];
+                            $dataYears["year$i"] = $years[$i];
+                            $sqlYearsOr = $sqlYearsOr.' WHERE gibbonYearGroupID=:year'.$i;
                         } else {
-                            $dataYears[$years[$i]] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' OR gibbonYearGroupID=:'.$years[$i];
+                            $dataYears["year$i"] = $years[$i];
+                            $sqlYearsOr = $sqlYearsOr.' OR gibbonYearGroupID=:year'.$i;
                         }
                     }
 
@@ -1083,17 +1083,25 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
         //Check user has a current role set
         if ($session->get('gibbonRoleIDCurrent') != '') {
             //Check module ready
-            $moduleID = checkModuleReady($address, $connection2);
-            if ($moduleID != false) {
+            $module = getModuleName($address);
+            if (!empty($module)) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
-                    $sqlWhere = '';
+                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
+                    
+                    $sql = "SELECT gibbonAction.name FROM gibbonAction
+                    JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+                    JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+                    JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
+                    WHERE gibbonAction.URLList LIKE :actionName 
+                        AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                        AND gibbonModule.name=:moduleName ";
+
                     if ($sub != '') {
                         $data['sub'] = $sub;
-                        $sqlWhere = 'AND gibbonAction.name=:sub';
+                        $sql .= ' AND gibbonAction.name=:sub';
                     }
-                    $sql = "SELECT gibbonAction.name FROM gibbonAction, gibbonPermission, gibbonRole WHERE (gibbonAction.URLList LIKE :actionName) AND (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID) AND (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID) AND (gibbonPermission.gibbonRoleID=:gibbonRoleID) AND (gibbonAction.gibbonModuleID=$moduleID) $sqlWhere";
+
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                     if ($result->rowCount() > 0) {

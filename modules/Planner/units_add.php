@@ -144,8 +144,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $form->addRow()->addHeading('Classes', __('Classes'))->append(__('Select classes which will have access to this unit.'));
 
 
-                            $dataClass = array();
-                            $sqlClass = "SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=$gibbonCourseID ORDER BY name";
+                            $dataClass = array('gibbonCourseID' => $gibbonCourseID);
+                            $sqlClass = "SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name";
                             $resultClass = $connection2->prepare($sqlClass);
                             $resultClass->execute($dataClass);
 

@@ -70,9 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
             $sqlWhere = ' AND (';
             for ($i = 0; $i < count($choices); ++$i) {
-                $choice = preg_replace('/[^0-9]/', '', $choices[$i]);
-                $data[$choice] = $choice;
-                $sqlWhere = $sqlWhere.'gibbonPerson.gibbonPersonID=:'.$choice.' OR ';
+                $data["choice$i"] = preg_replace('/[^0-9]/', '', $choices[$i]);
+                $sqlWhere = $sqlWhere."gibbonPerson.gibbonPersonID=:choice$i OR ";
             }
             $sqlWhere = substr($sqlWhere, 0, -4);
             $sqlWhere = $sqlWhere.')';

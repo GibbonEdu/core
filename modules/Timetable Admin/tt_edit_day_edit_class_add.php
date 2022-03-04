@@ -81,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         if ($i > 0) {
                             $sqlSelectWhere = $sqlSelectWhere.' OR ';
                         }
-                        $dataSelect[$years[$i]] = '%'.$years[$i].'%';
-                        $sqlSelectWhere = $sqlSelectWhere.'(gibbonYearGroupIDList LIKE :'.$years[$i].')';
+                        $dataSelect["year$i"] = '%'.$years[$i].'%';
+                        $sqlSelectWhere = $sqlSelectWhere."(gibbonYearGroupIDList LIKE :year$i)";
                     }
                     $sqlSelectWhere = $sqlSelectWhere.')';
                 }
