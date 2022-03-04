@@ -41,6 +41,7 @@ v24.0.00
         System: fixed Google OAuth not correctly handling empty refresh tokens
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
+        Messenger: fixed PHP 8+ error when sending messages to Class target
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
         Tracking: fixed the Chart.js library on the Graphing page
