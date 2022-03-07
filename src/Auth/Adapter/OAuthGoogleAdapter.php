@@ -82,8 +82,11 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             throw new Exception\OAuthLoginError('Missing access token');
         }
 
-        $session->set('googleAPIAccessToken', $accessToken);
-        $this->client->setAccessToken($accessToken);
+        try {
+            $this->client->setAccessToken($accessToken);
+        } catch (\InvalidArgumentException | \UnexpectedValueException $e) {
+            throw new Exception\OAuthLoginError($e->getCode().': '. $e->getMessage());
+        }
 
         // Use the token to retrieve user info from the client
         $service = new Google_Service_Oauth2($this->client);
@@ -111,6 +114,8 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             $_POST['gibboni18nID'] = $gibboni18nID;
             $session->forget('oAuthOptions');
         }
+
+        $session->set('googleAPIAccessToken', $accessToken);
 
         // Update the refresh token for this user, if we received one
         if (!empty($accessToken['refresh_token'])) {

@@ -26,6 +26,7 @@ use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\AuthenticationAdapter;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\UserGateway;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 /**
  * Microsoft OAuth2 adapter for Aura/Auth 
@@ -72,14 +73,17 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
 
         // Try to get an access token (using the authorization code grant)
         $oauthProvider = $this->getProvider();
-        $accessToken = $oauthProvider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
-        $refreshToken = $accessToken->getRefreshToken();
+
+        try {
+            $accessToken = $oauthProvider->getAccessToken('authorization_code', ['code' => $_GET['code']]);
+            $refreshToken = $accessToken->getRefreshToken();
+        } catch (\InvalidArgumentException | \UnexpectedValueException | IdentityProviderException $e) {
+            throw new Exception\OAuthLoginError($e->getCode().': '. $e->getMessage());
+        }
 
         if (empty($accessToken)) {
             throw new Exception\OAuthLoginError('Missing access token');
         }
-        
-        $session->set('microsoftAPIAccessToken', $accessToken);
 
         // Check OAuth2 state with saved state, to mitigate CSRF attack
         if (empty($_GET['state']) || ($_GET['state'] !== $session->get('oAuthStateMicrosoft'))) {
@@ -110,6 +114,8 @@ class OAuthMicrosoftAdapter extends AuthenticationAdapter implements OAuthAdapte
             $session->forget('microsoftAPIAccessToken');
             throw new Exception\OAuthUserNotFound;
         }
+
+        $session->set('microsoftAPIAccessToken', $accessToken);
 
         // If available, load school year and language from state passed back from OAuth redirect
         if ($session->has('oAuthOptions')) {
