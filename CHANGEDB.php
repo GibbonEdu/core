@@ -515,4 +515,6 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 UPDATE gibbonCountry SET iddCountryCode='218' WHERE printable_name='Libya';end
 UPDATE gibbonSetting SET value=CONCAT(value, ',pagebreak,columnbreak') WHERE name='allowableHTML' AND scope='System';end
 UPDATE gibbonPlannerEntry SET homeworkSubmissionDrafts=NULL WHERE homeworkSubmissionDrafts='N';end
+ALTER TABLE `gibbonDiscussion` ADD INDEX(`foreignTable`, `foreignTableID`);end
+ALTER TABLE `gibbonDiscussion` ADD INDEX(`gibbonPersonID`);end
 ";

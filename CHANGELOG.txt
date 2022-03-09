@@ -33,6 +33,7 @@ v24.0.00
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
+        System: added indexes to the gibbonDiscussion table to improve performance
         Planner: added Create Markbook Column option when editing a lesson plan
         Timetable: improved the error message on the timetable when multiple lessons exist
 
