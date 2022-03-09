@@ -50,8 +50,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
     $importer = new Importer($pdo);
 
-
-
     if ($importType->isImportAccessible($guid, $connection2) == false) {
         echo Format::alert(__('You do not have access to this action.'));
         return;
@@ -419,7 +417,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             return;
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
             echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
-        } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncColumn < 0)) {
+        } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncField == 'Y' && $syncColumn < 0)) {
             echo Format::alert(__('Your request failed because your inputs were invalid.'));
             return;
         } elseif (empty($fieldDelimiter) or empty($stringEnclosure)) {
