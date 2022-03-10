@@ -187,4 +187,17 @@ class FamilyGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectFamiliesByAdult($gibbonPersonID)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
+        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
+        $sql = "SELECT gibbonFamilyAdult.gibbonPersonID, gibbonFamily.*
+            FROM gibbonFamilyAdult
+            JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+            WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :gibbonPersonIDList)
+            ORDER BY gibbonFamily.name";
+
+        return $this->db()->select($sql, $data);
+    }
 }
