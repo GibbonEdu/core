@@ -780,15 +780,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</td>';
                                 echo "<td style='width: 33%; vertical-align: top'>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Family Status').'</span><br/>';
-                                echo $rowFamily['status'];
+                                echo __($rowFamily['status']);
                                 echo '</td>';
                                 echo "<td style='width: 34%; vertical-align: top' colspan=2>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Languages').'</span><br/>';
                                 if ($rowFamily['languageHomePrimary'] != '') {
-                                    echo $rowFamily['languageHomePrimary'].'<br/>';
+                                    echo __($rowFamily['languageHomePrimary']).'<br/>';
                                 }
                                 if ($rowFamily['languageHomeSecondary'] != '') {
-                                    echo $rowFamily['languageHomeSecondary'].'<br/>';
+                                    echo __($rowFamily['languageHomeSecondary']).'<br/>';
                                 }
                                 echo '</td>';
                                 echo '</tr>';
@@ -814,7 +814,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</td>';
                                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Address (Country)').'</span><br/>';
-                                echo $rowFamily['homeAddressCountry'];
+                                echo __($rowFamily['homeAddressCountry']);
                                 echo '</td>';
                                 echo '</tr>';
                                 echo '</table>';
@@ -843,7 +843,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
                                     echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                     if ($rowMember['status'] != 'Full') {
-                                        echo "<span style='font-weight: normal; font-style: italic'> (".$rowMember['status'].')</span>';
+                                        echo "<span style='font-weight: normal; font-style: italic'> (".__($rowMember['status']).')</span>';
                                     }
                                     echo "<div style='font-size: 85%; font-style: italic'>";
 
@@ -853,7 +853,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         $resultRelationship->execute($dataRelationship);
                                     if ($resultRelationship->rowCount() == 1) {
                                         $rowRelationship = $resultRelationship->fetch();
-                                        echo $rowRelationship['relationship'];
+                                        echo __($rowRelationship['relationship']);
                                     } else {
                                         echo '<i>'.__('Relationship Unknown').'</i>';
                                     }
@@ -867,11 +867,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '<tr>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('First Language').'</span><br/>';
-                                    echo $rowMember['languageFirst'];
+                                    echo __($rowMember['languageFirst']);
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Second Language').'</span><br/>';
-                                    echo $rowMember['languageSecond'];
+                                    echo __($rowMember['languageSecond']);
                                     echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
@@ -999,7 +999,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                         echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=".$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
 
-                                        echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.$rowMember['status'].'</span>';
+                                        echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.__($rowMember['status']).'</span>';
                                         echo '</div>';
                                         echo '</td>';
 
@@ -1072,7 +1072,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     $resultRelationship->execute($dataRelationship);
                                     if ($resultRelationship->rowCount() == 1) {
                                         $rowRelationship = $resultRelationship->fetch();
-                                        echo $rowRelationship['relationship'];
+                                        echo __($rowRelationship['relationship']);
                                     } else {
                                         echo '<i>'.__('Unknown').'</i>';
                                     }
@@ -1108,7 +1108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 1').'</span><br/>';
                         echo $row['emergency1Name'];
                         if ($row['emergency1Relationship'] != '') {
-                            echo ' ('.$row['emergency1Relationship'].')';
+                            echo ' ('.__($row['emergency1Relationship']).')';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
@@ -1127,7 +1127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 2').'</span><br/>';
                         echo $row['emergency2Name'];
                         if ($row['emergency2Relationship'] != '') {
-                            echo ' ('.$row['emergency2Relationship'].')';
+                            echo ' ('.__($row['emergency2Relationship']).')';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";

@@ -45,7 +45,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </td>
             <td style='width: 33%; padding-top: 15px; vertical-align: top'>
                 <span style='font-size: 115%; font-weight: bold'>{{ __('Home Address (Country)') }}</span><br />
-                {{ family.homeAddressCountry }}
+                {{ __(family.homeAddressCountry) }}
             </td>
         </tr>
     </table>
@@ -70,12 +70,12 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ formatUsing('name', person.title, person.preferredName, person.surname, 'Parent') }}
 
                 {% if person.status != 'Full' %}
-                <span style='font-weight: normal; font-style: italic'> ({{ person.status }})</span>
+                <span style='font-weight: normal; font-style: italic'> ({{ __(person.status) }})</span>
                 {% endif %}
 
                 <div style='font-size: 85%; font-style: italic'>
                 {% if person.relationship %}
-                    {{ person.relationship }}
+                    {{ __(person.relationship) }}
                 {% elseif gibbonPersonIDStudent %}
                     <i>{{ __('Relationship Unknown') }}</i>
                 {% endif %}
