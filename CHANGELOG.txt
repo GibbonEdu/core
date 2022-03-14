@@ -51,6 +51,7 @@ v24.0.00
         Markbook: fixed rubrics not displaying for large classes in Enter Data page 
         Messenger: fixed PHP 8+ error when sending messages to Class target
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
+        Reports: fixed error loading PDF previews of report templates
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option
