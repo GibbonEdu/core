@@ -53,6 +53,7 @@ v24.0.00
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed error loading PDF previews of report templates
         Reports: fixed issue in Report creation when no reporting cycles exist
+        Reports: fixed reports with only one page not displaying first page header
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option
