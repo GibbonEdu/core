@@ -51,7 +51,7 @@ class Excel extends Spreadsheet
             if ($rNum === 1)
             {
                 // Row 1 is the headers.
-                $cNum = -1;
+                $cNum = 0;
                 foreach($row as $name=>$value )
                 {
                     $cNum++ ;
@@ -60,10 +60,10 @@ class Excel extends Spreadsheet
                 $this->getActiveSheet()->getStyle('1:1')->getFont()->setBold(true);
                 $rNum++;
             }
-            $cNum = -1 ;
+            $cNum = 0;
             foreach($row as $value )
             {
-                $cNum++ ;
+                $cNum++;
                 $this->getActiveSheet()->setCellValueByColumnAndRow($cNum, $rNum, $value);
             }
         }
