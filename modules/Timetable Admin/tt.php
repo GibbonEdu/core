@@ -70,9 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
                     ->setIcon('upload')
                     ->setURL('/modules/Timetable Admin/tt_import.php');
 
-                $actions->addAction('notify', __('Notify students'))
+                $actions->addAction('notify', __('Notify Subscribers'))
                     ->setIcon('copyforward')
-                    ->setURL('/modules/Timetable Admin/tt_update_notifier.php');
+                    ->setURL('/modules/Timetable Admin/tt_notifyProcess.php')->directLink()
+                    ->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
             });
 
         echo $table->render($timetables->toDataSet());
