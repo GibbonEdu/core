@@ -21,7 +21,7 @@ config:
 {% set totalArray = [] %}
 
 {% if config.limitByReportingCycle == 'Y' %}
-    {% set allAssessments = internalAssessmentByCourse.assessments|filter(a => a.completeDate > reportingCycle.dateStart|date("Y/m/d")) %}
+    {% set allAssessments = internalAssessmentByCourse.assessments|filter(a => a.completeDate >= reportingCycle.dateStart|date("Y/m/d") and a.completeDate <= reportingCycle.dateEnd|date("Y/m/d")) %}
 {% else %}
     {% set allAssessments = internalAssessmentByCourse.assessments %}
 {% endif %}
