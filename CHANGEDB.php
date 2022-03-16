@@ -517,4 +517,6 @@ UPDATE gibbonSetting SET value=CONCAT(value, ',pagebreak,columnbreak') WHERE nam
 UPDATE gibbonPlannerEntry SET homeworkSubmissionDrafts=NULL WHERE homeworkSubmissionDrafts='N';end
 ALTER TABLE `gibbonDiscussion` ADD INDEX(`foreignTable`, `foreignTableID`);end
 ALTER TABLE `gibbonDiscussion` ADD INDEX(`gibbonPersonID`);end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y');end
+
 ";
