@@ -61,9 +61,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
         $rowKeyRead = $resultKeyRead->fetch();
 
         if ($rowKeyRead['confirmed'] == 'Y') { //If already confirmed, report success
-            echo "<div class='success'>";
-            echo __('Thank you for confirming receipt and reading of this email.');
-            echo '</div>';
+            $page->addSuccess(__('Thank you for confirming receipt and reading of this email.'));
         } else { //If not confirmed, confirm
             $keyWriteFail = false;
             try {
@@ -80,9 +78,7 @@ if ($gibbonSchoolYearID == '' or $key == '' or $gibbonPersonIDStudent == '' or $
                 echo __('Your request failed due to a database error.');
                 echo '</div>';
             } else { //Report success
-                echo "<div class='success'>";
-                echo __('Thank you for confirming receipt and reading of this email.');
-                echo '</div>';
+                $page->addSuccess(__('Thank you for confirming receipt and reading of this email.'));
             }
         }
     }

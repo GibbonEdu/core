@@ -721,8 +721,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                     } else {
                         while ($rowDays = $resultDays->fetch()) {
                             try {
-                                $dataRemove = array();
-                                $sqlRemove = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID='.$rowDays['gibbonTTDayID'];
+                                $dataRemove = array('gibbonTTDayID' => $rowDays['gibbonTTDayID']);
+                                $sqlRemove = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID';
                                 $resultRemove = $connection2->prepare($sqlRemove);
                                 $resultRemove->execute($dataRemove);
                             } catch (PDOException $e) {
@@ -732,8 +732,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                             while ($rowRemove = $resultRemove->fetch()) {
                                 try {
-                                    $dataRemove2 = array();
-                                    $sqlRemove2 = 'DELETE FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID='.$rowRemove['gibbonTTDayRowClassID'];
+                                    $dataRemove2 = array('gibbonTTDayRowClassID'=> $rowRemove['gibbonTTDayRowClassID']);
+                                    $sqlRemove2 = 'DELETE FROM gibbonTTDayRowClassException WHERE gibbonTTDayRowClassID=:gibbonTTDayRowClassID';
                                     $resultRemove2 = $connection2->prepare($sqlRemove2);
                                     $resultRemove2->execute($dataRemove2);
                                 } catch (PDOException $e) {
@@ -743,8 +743,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                             }
 
                             try {
-                                $dataRemove3 = array();
-                                $sqlRemove3 = 'DELETE FROM gibbonTTDayRowClass WHERE gibbonTTDayID='.$rowDays['gibbonTTDayID'];
+                                $dataRemove3 = array('gibbonTTDayID' => $rowDays['gibbonTTDayID']);
+                                $sqlRemove3 = 'DELETE FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID';
                                 $resultRemove3 = $connection2->prepare($sqlRemove3);
                                 $resultRemove3->execute($dataRemove3);
                             } catch (PDOException $e) {
@@ -850,8 +850,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                     $rowSpace = $resultSpace->fetch();
 
                                     try {
-                                        $sqlInsert = 'INSERT INTO gibbonTTDayRowClass SET gibbonTTColumnRowID='.$rowRow['gibbonTTColumnRowID'].', gibbonTTDayID='.$rowDay['gibbonTTDayID'].', gibbonCourseClassID='.$rowClass['gibbonCourseClassID'].', gibbonSpaceID='.$rowSpace['gibbonSpaceID'];
-                                        $resultInsert = $connection2->query($sqlInsert);
+                                        $dataInsert = ['gibbonTTColumnRowID' => $rowRow['gibbonTTColumnRowID'],
+                                        'gibbonTTDayID' => $rowDay['gibbonTTDayID'],
+                                        'gibbonCourseClassID' => $rowClass['gibbonCourseClassID'],
+                                        'gibbonSpaceID' => $rowSpace['gibbonSpaceID']];
+                                        $sqlInsert = 'INSERT INTO gibbonTTDayRowClass SET gibbonTTColumnRowID=:gibbonTTColumnRowID, gibbonTTDayID=:gibbonTTDayID, gibbonCourseClassID=:gibbonCourseClassID, gibbonSpaceID=:gibbonSpaceID';
+                                        $resultInsert = $connection2->prepare($sqlInsert);
+                                        $resultInsert->execute($dataInsert);
+
                                         $gibbonTTDayRowClassID = $connection2->lastInsertId();
                                     } catch (PDOException $e) {
                                         $ttSyncFail = true;
@@ -863,8 +869,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                     $teachersFail = false;
                                     if ($addFail == false) {
                                         try {
-                                            $dataTeachers = array();
-                                            $sqlTeachers = "SELECT gibbonPerson.username, gibbonPerson.gibbonPersonID FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND role='Teacher' AND gibbonCourseClassID=".$rowClass['gibbonCourseClassID'];
+                                            $dataTeachers = array('gibbonCourseClassID' => $rowClass['gibbonCourseClassID']);
+                                            $sqlTeachers = "SELECT gibbonPerson.username, gibbonPerson.gibbonPersonID FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' AND role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID";
                                             $resultTeachers = $connection2->prepare($sqlTeachers);
                                             $resultTeachers->execute($dataTeachers);
                                         } catch (PDOException $e) {

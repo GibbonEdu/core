@@ -39,6 +39,11 @@ ini_set('memory_limit', '2048M');
 ini_set('max_execution_time', 1800);
 set_time_limit(1800);
 
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+ini_set('error_reporting', E_ALL & ~E_DEPRECATED);
+ini_set('error_log', '/var/log/php-error.log');
+
 // Incoming variables from command line
 $processID = $argv[1] ?? '';
 $processKey = $argv[2] ?? '';

@@ -59,7 +59,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
      * @return array An array of login data on success.
      * 
      * @throws \Gibbon\Auth\Exception\OAuthLoginError
-     * @throws \Aura\Auth\Exception\UsernameMissing
+     * @throws \Gibbon\Auth\Exception\OAuthUserNotFound
      *
      */
     public function login(array $input)
@@ -82,8 +82,11 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             throw new Exception\OAuthLoginError('Missing access token');
         }
 
-        $session->set('googleAPIAccessToken', $accessToken);
-        $this->client->setAccessToken($accessToken);
+        try {
+            $this->client->setAccessToken($accessToken);
+        } catch (\InvalidArgumentException | \UnexpectedValueException $e) {
+            throw new Exception\OAuthLoginError($e->getCode().': '. $e->getMessage());
+        }
 
         // Use the token to retrieve user info from the client
         $service = new Google_Service_Oauth2($this->client);
@@ -112,6 +115,8 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             $session->forget('oAuthOptions');
         }
 
+        $session->set('googleAPIAccessToken', $accessToken);
+
         // Update the refresh token for this user, if we received one
         if (!empty($accessToken['refresh_token'])) {
             $session->set('googleAPIRefreshToken', $accessToken['refresh_token']);
@@ -123,6 +128,7 @@ class OAuthGoogleAdapter extends AuthenticationAdapter implements OAuthAdapterIn
             
             // No refresh token and none saved in gibbonPerson: force a re-authorization of this account
             if (empty($userToken['googleAPIRefreshToken'])) {
+                $session->set('oAuthMethod', 'google');
                 $this->client->setApprovalPrompt('force');
                 $authUrl = $this->client->createAuthUrl();
                 header('Location: ' . $authUrl);

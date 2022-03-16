@@ -74,17 +74,17 @@ function getActivityTimespan($connection2, $gibbonActivityID, $gibbonSchoolYearT
     $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
     if ($dateType != 'Date') {
         if (empty($gibbonSchoolYearTermIDList)) {
-            return array();
+            return [];
         }
 
-        $data = array();
-        $sql = 'SELECT MIN(UNIX_TIMESTAMP(firstDay)) as start, MAX(UNIX_TIMESTAMP(lastDay)) as end FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID IN ('.$gibbonSchoolYearTermIDList.')';
+        $data = ['gibbonSchoolYearTermIDList' => $gibbonSchoolYearTermIDList];
+        $sql = "SELECT MIN(UNIX_TIMESTAMP(firstDay)) as start, MAX(UNIX_TIMESTAMP(lastDay)) as end FROM gibbonSchoolYearTerm WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList)";
         $result = $connection2->prepare($sql);
-        $result->execute();
+        $result->execute($data);
 
         $timespan = $result->fetch();
     } else {
-        $data = array('gibbonActivityID' => $gibbonActivityID);
+        $data = ['gibbonActivityID' => $gibbonActivityID];
         $sql = 'SELECT UNIX_TIMESTAMP(programStart) as start, UNIX_TIMESTAMP(programEnd) as end FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID';
         $result = $connection2->prepare($sql);
         $result->execute($data);

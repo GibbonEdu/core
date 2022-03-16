@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
-                    $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('0' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')))->required();
+                    $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')));
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionType', __('Submission Type'));

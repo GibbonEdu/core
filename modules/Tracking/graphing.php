@@ -136,27 +136,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                     }
 
                     $sqlDepartments = '(SELECT DISTINCT gibbonDepartment.name AS department
-						FROM gibbonMarkbookEntry
-						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
-						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
-						UNION
-						(SELECT DISTINCT gibbonDepartment.name AS department
-						FROM gibbonInternalAssessmentEntry
-						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
-						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID".ucfirst($dataType)."=gibbonScale.gibbonScaleID)
-						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
-						ORDER BY department";
+                        FROM gibbonMarkbookEntry
+                        JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                        JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                        JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                        JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
+                        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+                        JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
+                        UNION
+                        (SELECT DISTINCT gibbonDepartment.name AS department
+                        FROM gibbonInternalAssessmentEntry
+                        JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
+                        JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                        JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                        JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID".ucfirst($dataType)."=gibbonScale.gibbonScaleID)
+                        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+                        JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
+                        ORDER BY department";
                     $resultDepartments = $connection2->prepare($sqlDepartments);
                     $resultDepartments->execute($dataDepartments);
                 } catch (PDOException $e) {
@@ -200,27 +200,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         $personExtra_IA = 'AND ('.substr($personExtra_IA, 0, -4).')';
                     }
                     $sqlGrades = '(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonMarkbookColumn.name AS markbook, completeDate, '.$dataType.', gibbonScaleID'.ucfirst($dataType).', '.$dataType.'Value, '.$dataType.'Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonMarkbookEntry.'.$dataType.'Value) ORDER BY sequenceNumber DESC) AS gradePosition
-						FROM gibbonMarkbookEntry
-						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
-						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
-						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
-						UNION
-						(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonInternalAssessmentColumn.name AS markbook, completeDate, ".$dataType.', gibbonScaleID'.ucfirst($dataType).', '.$dataType.'Value, '.$dataType.'Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonInternalAssessmentEntry.'.$dataType.'Value) ORDER BY sequenceNumber DESC) AS gradePosition
-						FROM gibbonInternalAssessmentEntry
-						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
-						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
-						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
-						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
-						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
-						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
-						ORDER BY yearSequence, termSequence, completeDate, markbook";
+                        FROM gibbonMarkbookEntry
+                        JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                        JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                        JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                        JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
+                        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+                        JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
+                        UNION
+                        (SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonInternalAssessmentColumn.name AS markbook, completeDate, ".$dataType.', gibbonScaleID'.ucfirst($dataType).', '.$dataType.'Value, '.$dataType.'Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonInternalAssessmentEntry.'.$dataType.'Value) ORDER BY sequenceNumber DESC) AS gradePosition
+                        FROM gibbonInternalAssessmentEntry
+                        JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
+                        JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                        JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+                        JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
+                        JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
+                        JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
+                        WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
+                        ORDER BY yearSequence, termSequence, completeDate, markbook";
                     $resultGrades = $connection2->prepare($sqlGrades);
                     $resultGrades->execute($dataGrades);
                 } catch (PDOException $e) {
@@ -304,42 +304,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         echo __('The are less than 4 data points, so no graph can be produced.');
                         echo '</div>';
                     } else {
-                        //CREATE LEGEND
-                        echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__('Legend').'</b></p>';
-                        echo "<table class='noIntBorder' style='width: 100%;  border-spacing: 0; border-collapse: collapse;'>";
-                        $columns = 8;
-                        $columnCount = 0;
-                        foreach ($departments as $department) {
-                            if ($columnCount % $columns == 0) {
-                                echo '<tr>';
-                            }
-                            echo "<td style='vertical-align: middle!important; height: 35px; width: 25px; border-right-width: 0px!important'>";
-                            echo "<div style='width: 25px; height: 25px; border: 2px solid rgb(".$department['colour'].'); background-color: rgba('.$department['colour'].", 0.8) '></div>";
-                            echo '</td>';
-                            echo "<td style='vertical-align: middle!important; height: 35px; width: ".(100 / $columns)."%'>";
-                            echo '<b>'.$department['department'].'</b>';
-                            echo '</td>';
-
-                            if ($columnCount % $columns == 7) {
-                                echo '</tr>';
-                            }
-
-                            ++$columnCount;
-                        }
-                        if ($columnCount % $columns != 0) {
-                            for ($i = ($columnCount % $columns); $i < $columns; ++$i) {
-                                echo "<td colspan=2 style='width: ".(100 / $columns)."%'>";
-
-                                echo '</td>';
-                            }
-                        }
-                        if ($columnCount % $columns != 7) {
-                            echo '</tr>';
-                        }
-                        echo '</table>';
-
                         //PLOT DATA
-                        echo '<script type="text/javascript" src="'.$session->get('absoluteURL').'/lib/Chart.js/Chart.min.js"></script>';
+                        echo '<script type="text/javascript" src="'.$session->get('absoluteURL').'/lib/Chart.js/3.0/chart.min.js"></script>';
 
                         echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__('Data').'</b></p>';
                         echo '<div style="width:100%">';
@@ -349,57 +315,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         echo '</div>';
 
                         ?>
-						<script>
-							var lineChartData = {
-								labels : [
-									<?php
+                        <script>
+                            var lineChartData = {
+                                labels : [
+                                    <?php
                                         foreach ($terms as $term) {
                                             echo "'".$term['termFullName']."',";
                                         }
-                        			?>								],
-								datasets : [
-									<?php
+                                    ?>								],
+                                datasets : [
+                                    <?php
                                         foreach ($departments as $department) {
-										?>
-										{
-											fillColor : "rgba(<?php echo $department['colour'] ?>,0)",
-											strokeColor : "rgba(<?php echo $department['colour'] ?>,1)",
-											pointColor : "rgba(<?php echo $department['colour'] ?>,1)",
-											pointStrokeColor : "rgba(<?php echo $department['colour'] ?>,0.4)",
-											pointHighlightFill : "rgba(<?php echo $department['colour'] ?>,4)",
-											pointHighlightStroke : "rgba(<?php echo $department['colour'] ?>,0.1)",
-											data : [
-												<?php
-													foreach ($terms as $term) {
-														if ($finalData[$term['termID']][$department['department']]['termID'] == $term['termID']) {
-															if ($finalData[$term['termID']][$department['department']]['department'] == $department['department']) {
-																echo $finalData[$term['termID']][$department['department']]['gradeWeightedMean'].',';
-															}
-														}
-													}
-										?>
-											]
-										},
-									<?php
+                                        ?>
+                                        {
+                                            label: "<?php echo $department['department']; ?>",
+                                            backgroundColor : "rgba(<?php echo $department['colour'] ?>,0.6)",
+                                            borderColor : "rgba(<?php echo $department['colour'] ?>,1)",
+                                            hoverBorderColor : "rgba(<?php echo $department['colour'] ?>,0)",
+                                            pointColor : "rgba(<?php echo $department['colour'] ?>,1)",
+                                            pointBorderColor : "rgba(<?php echo $department['colour'] ?>,0.4)",
+                                            pointBackgroundColor : "rgba(<?php echo $department['colour'] ?>,4)",
+                                            lineTension: 0.3,
+                                            data : [
+                                                <?php
+                                                    foreach ($terms as $term) {
+                                                        if ($finalData[$term['termID']][$department['department']]['termID'] == $term['termID']) {
+                                                            if ($finalData[$term['termID']][$department['department']]['department'] == $department['department']) {
+                                                                echo $finalData[$term['termID']][$department['department']]['gradeWeightedMean'].',';
+                                                            }
+                                                        }
+                                                    }
+                                        ?>
+                                            ]
+                                        },
+                                    <?php
 
-									}
-								?>
-							]
-							}
+                                    }
+                                ?>
+                            ]
+                            }
 
-							window.onload = function(){
-								var ctx = document.getElementById("canvas").getContext("2d");
-								window.myLine = new Chart(ctx).Line(lineChartData, {
-									responsive: true,
-									showTooltips: false,
-									scaleOverride : true,
-									scaleSteps : 10,
-									scaleStepWidth : 0.1,
-									scaleStartValue : 0
-								});
-							}
-						</script>
-						<?php
+                            window.onload = function(){
+                                var ctx = document.getElementById("canvas").getContext("2d");
+                                window.myLine = new Chart(ctx, {
+                                    type: 'line',
+                                    data: lineChartData,
+                                    options: {
+                                        responsive: true,
+                                        spanGaps: true,
+                                        showTooltips: false,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                min: 0,
+                                                max: 1.0,
+                                                stepSize: 0.1,
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        </script>
+                        <?php
 
                     }
                 }

@@ -642,6 +642,7 @@ function getResourcesTagCloud($guid, $connection2, $tagCount = 50) {
     $count = 0;
     $max_count = 0;
     $min_count = 0;
+    $tagCount = intval($tagCount);
 
     $sql = "SELECT * FROM gibbonResourceTag ORDER BY count DESC LIMIT $tagCount";
     $data = array();

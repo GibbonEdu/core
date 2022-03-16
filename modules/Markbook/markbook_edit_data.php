@@ -335,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
 
                         // Create a rubric link object (for reusabilty)
-                        $rubricLink = $form->getFactory()
+                        $rubricLinkSource = $form->getFactory()
                             ->createWebLink('<img title="'.__('Mark Rubric').'" src="./themes/'.$session->get('gibbonThemeName').'/img/rubric.png" style="margin-left:4px;"/>')
                             ->setURL($session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php')
                             ->setClass('thickbox')
@@ -457,6 +457,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->selected($student['attainmentValue']);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
+                            $rubricLink = clone $rubricLinkSource;
                             $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
                             $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDAttainment']);
                             $rubricLink->addParam('type', 'attainment');
@@ -469,6 +470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->selected($student['effortValue']);
 
                         if ($hasEffort && $hasEffortRubric) {
+                            $rubricLink = clone $rubricLinkSource;
                             $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
                             $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDEffort']);
                             $rubricLink->addParam('type', 'effort');

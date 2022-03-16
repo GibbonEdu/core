@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $resultStudent->execute($dataStudent);
                         if ($resultStudent->rowCount() == 1) {
                             $rowStudent = $resultStudent->fetch();
-                            $gibbonYearGroupID = $rowStudent['gibbonYearGroupID'];
+                            $gibbonYearGroupID = intval($rowStudent['gibbonYearGroupID']);
                             if ($gibbonYearGroupID != '') {
                                 $continue = true;
                                 $and = " AND gibbonYearGroupIDList LIKE '%$gibbonYearGroupID%'";
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     $resultChild->execute($dataChild);
                                 while ($rowChild = $resultChild->fetch()) {
                                     ++$countChild;
-                                    $gibbonYearGroupID = $rowChild['gibbonYearGroupID'];
+                                    $gibbonYearGroupID = intval($rowChild['gibbonYearGroupID']);
                                 }
                             }
 

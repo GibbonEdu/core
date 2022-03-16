@@ -131,8 +131,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
                     if ($countWhere > 0) {
                         $sqlWhere .= ' AND ';
                     }
-                    $dataData2['data2'.$rowData['gibbonPlannerEntryID']] = $rowData['gibbonPlannerEntryID'];
-                    $sqlWhere .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data2'.$rowData['gibbonPlannerEntryID'];
+                    $dataData2['data2'.$countWhere] = $rowData['gibbonPlannerEntryID'];
+                    $sqlWhere .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data2'.$countWhere;
                     ++$countWhere;
                 }
             }
@@ -194,13 +194,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             $sqlWhere2 = ' AND (';
             $countWhere = 0;
             while ($rowData = $resultData->fetch()) {
-                $dataData2['data2'.$rowData['gibbonCourseClassID']] = $rowData['gibbonCourseClassID'];
-                $sqlWhere .= ' AND NOT gibbonPlannerEntry.gibbonCourseClassID=:data2'.$rowData['gibbonCourseClassID'];
+                $dataData2['data2i'.$countWhere] = $rowData['gibbonCourseClassID'];
+                $sqlWhere .= ' AND NOT gibbonPlannerEntry.gibbonCourseClassID=:data2i'.$countWhere;
                 if ($rowData['gibbonPlannerEntryID'] != '') {
                     if ($countWhere > 0) {
                         $sqlWhere2 .= ' AND ';
                     }
-                    $sqlWhere2 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID='.$rowData['gibbonPlannerEntryID'];
+                    $dataData2['data2pl'.$countWhere] = $rowData['gibbonPlannerEntryID'];
+                    $sqlWhere2 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data2pl'.$countWhere;
                     ++$countWhere;
                 }
             }
@@ -227,8 +228,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
                     if ($countWhere > 0) {
                         $sqlWhere3 .= ' AND ';
                     }
-                    $dataData3['data3'.$rowData2['gibbonPlannerEntryID']] = $rowData2['gibbonPlannerEntryID'];
-                    $sqlWhere3 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data3'.$rowData2['gibbonPlannerEntryID'];
+                    $dataData3['data3i'.$countWhere] = $rowData2['gibbonPlannerEntryID'];
+                    $sqlWhere3 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data3i'.$countWhere;
                     ++$countWhere;
                 }
             }
@@ -269,14 +270,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
             $sqlWhere2 = ' AND (';
             $countWhere = 0;
             while ($rowData = $resultData->fetch()) {
-                $dataData2['data2'.$rowData['gibbonCourseClassID']] = $rowData['gibbonCourseClassID'];
-                $sqlWhere .= ' AND NOT gibbonPlannerEntry.gibbonCourseClassID=:data2'.$rowData['gibbonCourseClassID'];
+                $dataData2['data2i'.$countWhere] = $rowData['gibbonCourseClassID'];
+                $sqlWhere .= ' AND NOT gibbonPlannerEntry.gibbonCourseClassID=:data2i'.$countWhere;
                 if ($rowData['gibbonPlannerEntryID'] != '') {
                     if ($countWhere > 0) {
                         $sqlWhere2 .= ' AND ';
                     }
-                    $dataData4['data4'.$rowData['gibbonPlannerEntryID']] = $rowData['gibbonPlannerEntryID'];
-                    $sqlWhere2 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data4'.$rowData['gibbonPlannerEntryID'];
+                    $dataData4['data4pl'.$countWhere] = $rowData['gibbonPlannerEntryID'];
+                    $sqlWhere2 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data4pl'.$countWhere;
                     ++$countWhere;
                 }
             }
@@ -316,8 +317,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
                     if ($countWhere > 0) {
                         $sqlWhere3 .= ' AND ';
                     }
-                    $dataData4['data4'.$rowData2['gibbonPlannerEntryID']] = $rowData2['gibbonPlannerEntryID'];
-                    $sqlWhere3 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data4'.$rowData2['gibbonPlannerEntryID'];
+                    $dataData4['data4i'.$countWhere] = $rowData2['gibbonPlannerEntryID'];
+                    $sqlWhere3 .= ' NOT gibbonBehaviour.gibbonPlannerEntryID=:data4i'.$countWhere;
                     ++$countWhere;
                 }
             }

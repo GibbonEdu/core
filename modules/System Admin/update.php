@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $form->addHiddenValue('type', 'regularRelease');
 
         if ($return == 'success0') {
-            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
+            $form->addRow()->addContent(__('Your Gibbon core is up to date.'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif ($updateRequired === -1) {
             // Error
             $form->setDescription(Format::alert(__('An error has occurred determining the version of the system you are using.'), 'error'));
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         }
 
         if ($return == 'success0') {
-            $form->addRow()->addContent(__('You seem to be all up to date, good work buddy!'))->addClass('py-16 text-center text-gray-600 text-lg');
+            $form->addRow()->addContent(__('Your Gibbon core is up to date.'))->addClass('py-16 text-center text-gray-600 text-lg');
         } elseif (!$updateRequired) {
             // Instructions on how to update
             $form->setTitle(__('Update Instructions'));
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                     ->append('<br/><span class="text-xs">'.__('Line').': '.$updater->cuttingEdgeMaxLine.'</span>');
 
             $form->addRow()->addSubmit();
-            
+
         }
         echo $form->getOutput();
     }
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
             if ($updateRequired) {
                 $output .= Format::alert(__('Please run the database update, above, before proceeding with the Database Engine Migration.'), 'warning');
-            } else { 
+            } else {
                 $currentEngine = $engineUpdate->checkEngine();
 
                 if ($currentEngine == 'InnoDB') {

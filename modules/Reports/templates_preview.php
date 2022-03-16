@@ -30,7 +30,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    if (isset($page)) {
+    $mode = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
+    
+    if (isset($page) && $mode != 'export') {
         $page->breadcrumbs->add(__('Template Preview'));
 
         $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
@@ -52,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
     }
 
     // Set reports to cache in a separate location
-    $cachePath = $gibbon->session->has('cachePath') ? $gibbon->session->get('cachePath').'/reports' : '/uploads/cache';
-    $container->get('twig')->setCache($gibbon->session->get('absolutePath').$cachePath);
+    $cachePath = $session->has('cachePath') ? $session->get('cachePath').'/reports' : '/uploads/cache';
+    $twig->setCache($session->get('absolutePath').$cachePath);
 
     $reportBuilder = $container->get(ReportBuilder::class);
 
@@ -62,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_preview.
     $reports = $reportBuilder->buildReportMock($template);
 
     // Render
-    if (isset($page)) {
+    if (isset($page) && $mode != 'export') {
         $renderer = $container->get(HtmlRenderer::class);
 
         echo $twig->render('preview.twig.html', $values + [
