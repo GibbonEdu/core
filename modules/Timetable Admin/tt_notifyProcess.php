@@ -1,14 +1,27 @@
 <?php
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\Format;
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\NotificationGateway;
-use Gibbon\Domain\Students\StudentNoteGateway;
-use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
-use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\TimetableGateway;
+
 include '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
@@ -17,16 +30,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt.php';
 
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     $gibbonPersonID = $gibbon->session->get('gibbonPersonID');
 
-    $notificationGateway = new NotificationGateway($pdo);
-    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    $tt = $container->get(TimetableGateway::class)->getTTByID($gibbonTTID);
+
+    if (empty($gibbonTTID) || empty($tt)) {
+        $page->addError(__('You have not specified one or more required parameters.'));
+        return;
+    }
+
+    $notificationGateway = $container->get(NotificationGateway::class);
+    $notificationSender = $container->get(NotificationSender::class);
 
     // Raise a new notification event
     $event = new NotificationEvent('Timetable', 'Updated Timetable Subscriber');
     $actionLink = "/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=".$gibbonPersonID;
 
-    $notificationText = sprintf(('The timetable has been updated, to update your downloaded calendar please export it again.').'<br/><br/>');
+    $notificationText = __('The timetable {name} has been updated, please visit your timetable and export again to ensure it remains up to date.', ['name' => $tt['name']]);
 
     $event->setNotificationText($notificationText);
     $event->setActionLink($actionLink);
@@ -35,10 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
     $event->pushNotifications($notificationGateway, $notificationSender);
 
     // Send all notifications
-    $notificationSender->sendNotifications();
+    $sendReport = $notificationSender->sendNotifications();
 
-
-    $URL .= "&return=success0"; //TODO: IF THE NOTIFICATION ERRORS, WE MIGHT NOT WANT TO THROW A SUCCESS MESSAGE
+    $URL .= $sendReport['emailFailed']  > 0
+        ? "&return=warning1"
+        : "&return=success0"; 
     header("Location: {$URL}");
   }
 ?>
