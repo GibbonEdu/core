@@ -23,6 +23,7 @@ v24.0.00
     Headlines
 
     Significant Changes
+        Timetable: added an option to export timetables to iCal format
 
     Changes With Important Notices
         System: removed upgrade path for v19.0.00 and earlier
