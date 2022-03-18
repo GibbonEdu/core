@@ -48,7 +48,6 @@ class AuthSession implements SessionInterface, SegmentInterface
      */
     public function start()
     {
-        // return session_start();
         return true;
     }
 
@@ -63,7 +62,7 @@ class AuthSession implements SessionInterface, SegmentInterface
             return true;
         }
 
-        if (isset($this->cookie[session_name()])) {
+        if (isset($_COOKIE[session_name()])) {
             return $this->start();
         }
 
@@ -107,7 +106,8 @@ class AuthSession implements SessionInterface, SegmentInterface
      */
     public function regenerateId()
     {
-        // return session_regenerate_id();
-        return true;
+        return session_status() === PHP_SESSION_ACTIVE 
+            ? session_regenerate_id()
+            : false;
     }
 }

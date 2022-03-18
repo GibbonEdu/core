@@ -66,6 +66,14 @@ class SessionGateway extends QueryableGateway
         return $this->db()->update($sql, $data);
     }
 
+    public function updateSessionStatus($gibbonSessionID, $gibbonPersonID, $sessionStatus)
+    {
+        $data = ['gibbonSessionID' => $gibbonSessionID, 'gibbonPersonID' => $gibbonPersonID, 'sessionStatus' => $sessionStatus, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];
+        $sql = "INSERT INTO gibbonSession (gibbonSessionID, gibbonPersonID, sessionStatus, timestampCreated, timestampModified) VALUES (:gibbonSessionID, :gibbonPersonID, :sessionStatus, :timestampCreated, :timestampModified) ON DUPLICATE KEY UPDATE sessionStatus=:sessionStatus, timestampModified=:timestampModified";
+
+        return $this->db()->update($sql, $data);
+    }
+
     public function updateSessionData($gibbonSessionID, $sessionData)
     {
         $data = ['gibbonSessionID' => $gibbonSessionID, 'sessionData' => $sessionData, 'timestampCreated' => date('Y-m-d H:i:s'), 'timestampModified' => date('Y-m-d H:i:s')];

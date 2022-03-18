@@ -69,7 +69,7 @@ class AuthServiceProvider extends AbstractServiceProvider
         $container = $this->getLeagueContainer();
 
         $container->share(AuthFactory::class, function () {
-            $authSession = new AuthSession($this->container->get(Session::class), $this->container->get(Session::class));
+            $authSession = new AuthSession($this->container->get(Session::class));
             return new AuthFactory($_COOKIE, $authSession, $authSession);
         });
 
