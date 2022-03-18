@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask Question
+    url: https://ask.gibbonedu.org/
+    about: Need help installing or administrating a Gibbon system for your school? Please use our support forum.
+  - name: Student, Parent or Teacher Support
+    url: https://ask.gibbonedu.org/
+    about: Have problem using Gibbon? Please ask in our support forum.
+  - name: Feature Request
+    url: https://ask.gibbonedu.org/categories/feature-requests
+    about: To request new features, please use the Feature Requests category in our support forums.

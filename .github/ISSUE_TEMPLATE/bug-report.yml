@@ -1,0 +1,115 @@
+name: Bug Report
+description: Create a report to help us improve the codebase
+title: 'Bug: '
+labels:
+  - bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Be sure to check out the How to report a bug section in our contributor docs if you haven't already.
+        https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-report-a-bug
+        Then, edit this template to tell us about the issue. Thanks!
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      placeholder: Please share a description of what the bug appears to be.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected behavior
+      placeholder: What you expected to happen when the bug occurred?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual behavior
+      placeholder: What happend instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      placeholder: If applicable, add screenshots to help explain your problem.
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Your System
+        Include as many relevant details about the environment you encountered the bug in:
+
+  - type: input
+    id: gibbon-version
+    attributes:
+      label: Gibbon version
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: What browser are you using?
+      options:
+        - Chrome
+        - Firefox
+        - Microsoft Edge
+        - Internet Explorer
+        - Safari
+        - Other (specify below)
+
+  - type: input
+    id: browser-version
+    attributes:
+      label: Browser Version
+      description: What version of the browser are you using? What operating system?
+      placeholder: "e.g. Chrome 99.0.4844.51 on Windows 10, Firefox 98.1 on macOS 11.6"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+
+#  - type: dropdown
+#    attributes:
+#      label: Operating System
+#      description: What operating system are you using?
+#      options:
+#        - Windows
+#        - macOS
+#        - Ubuntu
+#        - Other Linux
+#        - Other (specify below)
+#    validations:
+#      required: true
+#
+#  - type: input
+#    attributes:
+#      label: Operating System Version
+#      description: What operating system version are you using? On Windows, click Start button > Settings > System > About. On macOS, click the Apple Menu > About This Mac. On Linux, use lsb_release or uname -a.
+#      placeholder: "e.g. Windows 10 version 1909, macOS Catalina 10.15.7, or Ubuntu 20.04"
+#    validations:
+#      required: true
+
