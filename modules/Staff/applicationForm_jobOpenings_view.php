@@ -65,11 +65,11 @@ if ($proceed == false) {
     } else {
         $jobOpenings = $result->fetchAll();
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/applicationForm.php'>".__('Submit Application Form')."<img style='margin-left: 5px' title='".__('Submit Application Form')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
-        echo '</div>';
-
-
+        $page->navigator->addHeaderAction('submit', __('Submit Application Form'))
+            ->setURL('/modules/Staff/applicationForm.php')
+            ->setIcon('plus')
+            ->displayLabel();
+    
         echo $page->fetchFromTemplate('jobOpenings.twig.html', [
             'jobOpenings' => $jobOpenings,
         ]);

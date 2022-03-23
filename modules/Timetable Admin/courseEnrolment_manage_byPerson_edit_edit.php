@@ -54,16 +54,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(Format::name('', $values['preferredName'], $values['surname'], 'Student'), 'courseEnrolment_manage_byPerson_edit.php', $urlParams)
                 ->add(__('Edit Participant'));
 
-            echo "<div class='linkTop'>";
-            if ($search != '') {
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type'>".__('Back').'</a>';
-            }
-			echo '</div>'; 
-			
 			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_byPerson_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
                 
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+			
+			if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "gibbonCourseClassID" => $gibbonCourseClassID,
+                    "gibbonPersonID" => $gibbonPersonID,
+                    "allUsers" => $allUsers,
+                    "gibbonSchoolYearID" => $gibbonSchoolYearID,
+                    "type" => $type
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php')
+                    ->addParams($params);
+            }
 
 			$row = $form->addRow();
 				$row->addLabel('yearName', __('School Year'));

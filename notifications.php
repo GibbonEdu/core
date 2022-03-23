@@ -28,9 +28,9 @@ if (!$session->exists('username')) {
 } else {
     $page->breadcrumbs->add(__('Notifications'));
 
-    echo "<div class='linkTop'>";
+    echo "<p class='text-right mb-2 text-xs'>";
     echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$session->get('absoluteURL')."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName')."/img/garbage.png'></a>";
-    echo '</div>';
+    echo '</p>';
 
     // Notifications
     $notificationGateway = $container->get(NotificationGateway::class);

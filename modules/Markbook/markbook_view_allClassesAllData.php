@@ -80,9 +80,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         //Add multiple columns
         if ($multiAdd) {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add Multiple Records')."<img title='".__('Add Multiple Records')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new_multi.png'/></a>";
-            echo '</div>';
+            $params = [
+                "gibbonCourseClassID" => $gibbonCourseClassID
+            ];
+            $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
+                ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
+                ->addParams($params)
+                ->setIcon('page_new_multi')
+                ->displayLabel();
         }
         //Get class chooser
         echo classChooser($guid, $pdo, $gibbonCourseClassID);
@@ -121,9 +126,14 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     //Add multiple columns
     if ($multiAdd) {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add Multiple Columns')."<img title='".__('Add Multiple Columns')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new_multi.png'/></a>";
-        echo '</div>';
+        $params = [
+            "gibbonCourseClassID" => $gibbonCourseClassID
+        ];
+        $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
+            ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
+            ->addParams($params)
+            ->setIcon('page_new_multi')
+            ->displayLabel();
     }
 
     //Get class chooser

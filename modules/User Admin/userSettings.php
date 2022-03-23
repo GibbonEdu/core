@@ -32,18 +32,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     //Proceed!
     $page->breadcrumbs->add(__('User Settings'));
 
-    echo '<h3>';
-    echo __('Username Formats');
-    echo '</h3>';
-
-    echo "<div class='linkTop'>";
-    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/userSettings_usernameFormat_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-    echo '</div>';
-
     $gateway = $container->get(UsernameFormatGateway::class);
     $usernameFormats = $gateway->selectUsernameFormats();
 
     $table = DataTable::create('usernameFormats');
+    
+    $table->setTitle(__('Username Formats'));
+    
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/User Admin/userSettings_usernameFormat_add.php')
+        ->setIcon('page_new')
+        ->displayLabel();
 
     $table->addColumn('roles', __('Roles'));
     $table->addColumn('format', __('Format'));
@@ -62,14 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     echo $table->render($usernameFormats->toDataSet());
 
-    echo '<br/>';
-
-    echo '<h3>';
-    echo __('Settings');
-    echo '</h3>';
-
     $form = Form::create('userSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/userSettingsProcess.php');
 
+    $form->setTitle(__('Settings'));
+     
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading('Field Values', __('Field Values'));

@@ -49,29 +49,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
             echo '</div>';
         } else {
             //Proceed!
+            $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
+            
+            $params = [
+                "gibbonRubricID" => $gibbonRubricID,
+                "search" => $search,
+                "filter2" => $filter2,
+                "sidebar" => false
+            ];     
+                
             $page->breadcrumbs
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
-                ->add(__('Edit Rubric'), 'rubrics_edit.php', ['gibbonRubricID' => $_GET['gibbonRubricID'], 'search' => $search, 'filter2' => $filter2, 'sidebar' => 'false'])
+                ->add(__('Edit Rubric'), 'rubrics_edit.php', $params)
                 ->add(__('Edit Rubric Rows & Columns'));
 
             if ($search != '' or $filter2 != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Rubrics/rubrics_edit.php&gibbonRubricID='.$_GET['gibbonRubricID']."&search=$search&filter2=$filter2&sidebar=false'>".__('Back').'</a>';
-                echo '</div>';
+                $page->navigator->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Rubrics/rubrics_edit.php')
+                    ->addParams($params);
             }
 
             //Check if gibbonRubricID specified
-            $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
                 echo "<div class='error'>";
                 echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 
-                    $data = array('gibbonRubricID' => $gibbonRubricID);
-                    $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonRubricID' => $gibbonRubricID);
+                $sql = 'SELECT * FROM gibbonRubric WHERE gibbonRubricID=:gibbonRubricID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
