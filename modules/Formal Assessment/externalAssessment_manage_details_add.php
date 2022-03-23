@@ -65,9 +65,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '</div>';
         } else {
             if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/externalAssessment_details.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Back').'</a>';
-                echo '</div>';
+                $params = [
+                    "gibbonPersonID" => $gibbonPersonID,
+                    "search" => $search,
+                    "allStudents" => $allStudents
+                ];
+                $page->navigator->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Formal Assessment/externalAssessment_details.php')
+                    ->addParams($params);
             }
             $row = $result->fetch();
 

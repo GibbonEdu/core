@@ -29,6 +29,11 @@ $page->breadcrumbs
     ->add(__('View Item'), 'library_lending_item.php', ['gibbonLibraryItemID' => $gibbonLibraryItemID])
     ->add(__('Sign Out'));
 
+$name = $_GET['name'] ?? '';
+$gibbonLibraryTypeID = $_GET['gibbonLibraryTypeID'] ?? '';
+$gibbonSpaceID = $_GET['gibbonSpaceID'] ?? '';
+$status = $_GET['status'] ?? '';
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_signOut.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
@@ -81,18 +86,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 echo '</div>';
             }
 
-            if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Library/library_lending_item.php&name='.$_GET['name']."&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryTypeID=".$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']."'>".__('Back').'</a>';
-                echo '</div>';
-            }
-
-            $form = Form::create('libraryLendingSignout', $session->get('absoluteURL').'/modules/'.$session->get('module')."/library_lending_item_signoutProcess.php?name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']);
+            $form = Form::create('libraryLendingSignout', $session->get('absoluteURL').'/modules/'.$session->get('module')."/library_lending_item_signoutProcess.php?&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonLibraryItemID', $gibbonLibraryItemID);
             $form->addHiddenValue('statusCurrent', $values['status']);
+            
+            if (!empty($name) or !empty($gibbonLibraryTypeID) or !empty($gibbonSpaceID) or !empty($status)) {
+                $params = [
+                    "gibbonLibraryItemEventID" => $gibbonLibraryItemEventID,
+                    "gibbonLibraryItemID" => $gibbonLibraryItemID,
+                    "name" => $name,
+                    "gibbonLibraryTypeID" => $gibbonLibraryTypeID,
+                    "gibbonSpaceID" => $gibbonSpaceID,
+                    "status" => $status
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Library/library_lending_item.php')
+                    ->addParams($params);
+            }
 
             $form->addRow()->addHeading('Item Details', __('Item Details'));
 

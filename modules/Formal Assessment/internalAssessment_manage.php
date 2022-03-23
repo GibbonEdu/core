@@ -71,9 +71,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             //Add multiple columns
-            echo "<div class='linkTop'>";
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/internalAssessment_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add Multiple Columns')."<img style='margin-left: 5px' title='".__('Add Multiple Columns')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new_multi.png'/></a>";
-            echo '</div>';
+            $params = [
+                "gibbonCourseClassID" => $gibbonCourseClassID
+            ];
+            $page->navigator->addHeaderAction('addMultiple', __('Add Multiple Columns'))
+                ->setURL('/modules/Formal Assessment/internalAssessment_manage_add.php')
+                ->addParams($params)
+                ->setIcon('page_new_multi')
+                ->displayLabel();
 
             //Get teacher list
             $teaching = false;

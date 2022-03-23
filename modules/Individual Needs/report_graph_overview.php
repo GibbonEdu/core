@@ -47,9 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/report_gr
         $page->scripts->add('chart');
 
         if (!empty($gibbonYearGroupID)) {
-            echo "<div class='linkTop'>";
-            echo '<a href="'.$session->get('absoluteURL').'/index.php?q=/modules/Individual Needs/report_graph_overview.php">'.__('Clear Filters').'</a>';
-            echo '</div>';
+            $page->navigator->addHeaderAction('clear', __('Clear Filters'))
+                ->setURL('/modules/Individual Needs/report_graph_overview.php');
         }
 
         // SETUP CHART

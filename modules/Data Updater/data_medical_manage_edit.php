@@ -67,9 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == true && !empty($oldValues['gibbonPersonMedicalID'])) {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=".$oldValues['gibbonPersonMedicalID']."&search='>".__('Edit Medical Form')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Medical Form')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                echo '</div>';
+                $params = [ 
+                    'gibbonPersonMedicalID' => $oldValues['gibbonPersonMedicalID']
+                ];
+                $page->navigator->addHeaderAction('edit', __('Edit Medical Form'))
+                    ->setURL('/modules/Students/medicalForm_manage_edit.php')
+                    ->addParams($params)
+                    ->setIcon('config')
+                    ->displayLabel();
             }
 
             $compare = array(
