@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
-use Gibbon\Data\Validator;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 
 include './gibbon.php';
 
@@ -141,6 +142,9 @@ if ($proceed == false) {
         header("Location: {$URL->withReturn('error2')}");
         exit;
     }
+
+    // Create the status log
+    $container->get(UserStatusLogGateway::class)->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => $status, 'statusNew' => $status, 'reason' => __('Public Registration')]);
 
     if ($status == 'Pending Approval') {
         // Raise a new notification event
