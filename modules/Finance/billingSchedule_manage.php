@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\BillingScheduleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage.php') == false) {
     // Access denied
@@ -27,18 +29,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
     //Proceed!
     $page->breadcrumbs->add(__('Manage Billing Schedule'));
 
+    $search = $_GET['search'] ?? '' ;
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+
     echo '<p>';
     echo __('The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specify due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.');
     echo '</p>';
-
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 
     if ($gibbonSchoolYearID != '') {
        $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
         echo '<h3>';
         echo __('Search');
-        echo '</h3>'; 
+        echo '</h3>';
 
         $form = Form::create("searchBox", $gibbon->session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
 
@@ -46,138 +49,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
         $row = $form->addRow();
             $row->addLabel("search", __("Search For"))->description(__("Billing schedule name."));
-            $row->addTextField("search")->maxLength(20)->setValue(isset($_GET['search']) ? $_GET['search'] : "");
+            $row->addTextField("search")->maxLength(20)->setValue($search);
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __("Clear Search"));
 
         echo $form->getOutput();
 
-        echo '<h3>';
-        echo __('View');
-        echo '</h3>';
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $billingScheduleGateway = $container->get(BillingScheduleGateway::class);
 
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY invoiceIssueDate, name';
-            if ($search != '') {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => "%$search%");
-                $sql = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND name LIKE :search ORDER BY invoiceIssueDate, name';
-            }
-            $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        // QUERY
+        $criteria = $billingScheduleGateway->newQueryCriteria(true)
+            ->sortBy(['invoiceIssueDate', 'name'])
+            ->fromPOST();
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/billingSchedule_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-        echo '</div>';
+        $billingSchedules = $billingScheduleGateway->queryBillingSchedules($criteria, $gibbonSchoolYearID, $search);
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
+        // TABLE
+        $table = DataTable::createPaginated('billingSchedule', $criteria);
+        $table->setTitle(__('View'));
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __('Name');
-            echo '</th>';
-            echo '<th>';
-            echo __('Invoice Issue Date').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__('Intended Date').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __('Invoice Due Date').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__('Final Payment Date').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __('Actions');
-            echo '</th>';
-            echo '</tr>';
+        $table->modifyRows(function ($value, $row) {
+            if ($value['invoiceIssueDate'] < date('Y-m-d')) $row->addClass('warning');
+            if ($value['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
+            return $row;
+        });
 
-            $count = 0;
-            $rowNum = 'odd';
-            
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
+        $table->addHeaderAction('add', __('Add'))
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $search)
+            ->setURL('/modules/Finance/billingSchedule_manage_add.php')
+            ->displayLabel();
 
-				//Color rows based on start and end date
-				if ($row['active'] != 'Y') {
-					$rowNum = 'error';
-				} else {
-					if ($row['invoiceIssueDate'] < date('Y-m-d')) {
-						$rowNum = 'warning';
-					}
-					if ($row['invoiceDueDate'] < date('Y-m-d')) {
-						$rowNum = 'error';
-					}
-				}
+        $table->addExpandableColumn('comment')
+            ->format(function($value) {
+                return $value['description'];
+            });
 
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo '<b>'.$row['name'].'</b><br/>';
-                echo '</td>';
-                echo '<td>';
-                echo Format::date($row['invoiceIssueDate']);
-                echo '</td>';
-                echo '<td>';
-                echo Format::date($row['invoiceDueDate']);
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo "\$(\".comment-$count-$count\").hide();";
-                echo "\$(\".show_hide-$count-$count\").fadeIn(1000);";
-                echo "\$(\".show_hide-$count-$count\").click(function(){";
-                echo "\$(\".comment-$count-$count\").fadeToggle(1000);";
-                echo '});';
-                echo '});';
-                echo '</script>';
-                if ($row['description'] != '') {
-                    echo "<a title='".__('View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
-                }
-                echo '</td>';
-                echo '</tr>';
-                if ($row['description'] != '') {
-                    echo "<tr class='comment-$count-$count' id='comment-$count-$count'>";
-                    echo '<td colspan=6>';
-                    echo $row['description'];
-                    echo '</td>';
-                    echo '</tr>';
-                }
-            }
-            echo '</table>';
+        $table->addColumn('name', __('Name'));
 
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
-        }
+        $table->addColumn('invoiceIssueDate', __('Invoice Issue Date'))->format(Format::using('date', 'invoiceIssueDate'));
+
+        $table->addColumn('invoiceDueDate', __('Invoice Due Date'))->format(Format::using('date', 'invoiceDueDate'));
+
+        $actions = $table->addActionColumn()
+            ->addParam('gibbonFinanceBillingScheduleID')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $search)
+            ->format(function ($resource, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Finance/billingSchedule_manage_edit.php');
+            });
+
+        echo $table->render($billingSchedules);
     }
 }

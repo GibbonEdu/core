@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         if ($highestAction == 'Manage Outcomes_viewEditAll' or $highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
             $table->addHeaderAction('add', __('Add'))
                 ->addParam('filter2', $filter2)
-                ->setURL('/modules/' .$gibbon->session->get('module') . '/outcomes_add.php')
+                ->setURL('/modules/Planner/outcomes_add.php')
                 ->displayLabel();
         }
 
