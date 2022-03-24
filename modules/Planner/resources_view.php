@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $resources = $resourceGateway->queryResources($criteria);
     // TABLE
     $table = DataTable::createPaginated('resources', $criteria);
-    $table->setTitle('View');
+    $table->setTitle(__('View'));
         $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
         ->displayLabel();

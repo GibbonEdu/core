@@ -34,11 +34,13 @@ v24.0.00
         System: updated the robots.txt to enable index access, for noindex meta tag
         System: improved display of IDD country codes in phone number entry field
         System: further refactoring of linkTop divs
+        System: added indexes to the gibbonDiscussion table to improve performance
+        Finance: refactored Manage Billing Schedules table
+        Planner: added Create Markbook Column option when editing a lesson plan
+        Planner: refactored Manage Outcomes table
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
-        System: added indexes to the gibbonDiscussion table to improve performance
-        Planner: added Create Markbook Column option when editing a lesson plan
         Timetable: improved the error message on the timetable when multiple lessons exist
         User Admin: added selectFamiliesByAdult method to FamilyGateway
 
