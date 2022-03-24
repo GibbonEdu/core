@@ -26,8 +26,8 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * OutcomeGateway
  *
- * @version v21
- * @since   v21
+ * @version v24
+ * @since   v24
  */
 class OutcomeGateway extends QueryableGateway
 {
