@@ -31,7 +31,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['note' => 'HTML'])
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $subpage = $_GET['subpage'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents";
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
     $URL .= '&return=error0';
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 if ($gibbonStudentNoteCategoryID == '') {
                     $gibbonStudentNoteCategoryID = null;
                 }
-                $note = $_POST['note'];
+                $note = $_POST['note'] ?? '';
 
                 if ($note == '' or $title == '') {
                     $URL .= '&return=error1';

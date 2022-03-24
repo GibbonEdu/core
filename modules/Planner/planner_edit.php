@@ -151,10 +151,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $gibbonUnitID = $values['gibbonUnitID'];
                 $gibbonUnitClassID = null;
 
-                    $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
-                    $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
-                    $resultUnitClass = $connection2->prepare($sqlUnitClass);
-                    $resultUnitClass->execute($dataUnitClass);
+                $dataUnitClass = array('gibbonCourseClassID' => $values['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
+                $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
+                $resultUnitClass = $connection2->prepare($sqlUnitClass);
+                $resultUnitClass->execute($dataUnitClass);
                 if ($resultUnitClass->rowCount() == 1) {
                     $rowUnitClass = $resultUnitClass->fetch();
                     $gibbonUnitClassID = $rowUnitClass['gibbonUnitClassID'];
@@ -164,14 +164,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $returns['success1'] = __('Your request was completed successfully.').__('You can now edit more details of your newly duplicated entry.');
                 $page->return->addReturns($returns);
 
-                echo "<div class='linkTop' style='margin-bottom: 7px'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$paramsVar'>".__('View')."<img style='margin: 0 0 -4px 3px' title='".__('View')."' src='./themes/".$session->get('gibbonThemeName')."/img/plus.png'/></a>";
-                echo '</div>';
-
                 $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/planner_editProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&address=".$session->get('address'));
                 $form->setFactory(PlannerFormFactory::create($pdo));
 
                 $form->addHiddenValue('address', $session->get('address'));
+                
+                $params["gibbonPlannerEntryID"] = $gibbonPlannerEntryID;
+                $form->addHeaderAction('view', __('View'))
+                    ->setURL('/modules/Planner/planner_view_full.php')
+                    ->addParams($params)
+                    ->setIcon('plus')
+                    ->displayLabel();
 
                 //BASIC INFORMATION
                 $form->addRow()->addHeading('Basic Information', __('Basic Information'));
@@ -294,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
-                    $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('0' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')))->required();
+                    $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')));
 
                 $row = $form->addRow()->setClass('homeworkSubmission');
                     $row->addLabel('homeworkSubmissionType', __('Submission Type'));

@@ -207,13 +207,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         echo '</p>';
                     }
 
-                    echo "<div class='linkTop'>";
-                    if (!empty($values['gibbonPlannerEntryID'])) {
-                        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$values['gibbonPlannerEntryID']."'>".__('View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__('View Linked Lesson')."' src='./themes/".$session->get('gibbonThemeName')."/img/planner.png'/></a> | ";
-                    }
-                    echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                    echo '</div>';
-
                     $columns = 1;
 
                     $hasTarget = !empty($course['targetGradeScale']);
@@ -256,11 +249,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                     // WORK OUT IF THERE IS SUBMISSION
                     if (is_null($values['gibbonPlannerEntryID']) == false) {
-
-                            $dataSub = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
-                            $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
-                            $resultSub = $connection2->prepare($sqlSub);
-                            $resultSub->execute($dataSub);
+                        $dataSub = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
+                        $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
+                        $resultSub = $connection2->prepare($sqlSub);
+                        $resultSub->execute($dataSub);
 
                         if ($resultSub->rowCount() == 1) {
                             $hasSubmission = true;
@@ -306,7 +298,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
-
+                    
+                    // Add header actions
+                    if (!empty($values['gibbonPlannerEntryID'])) {
+                        $params = [
+                            "viewBy" => 'class',
+                            "gibbonCourseClassID" => $gibbonCourseClassID,
+                            "gibbonPlannerEntryID" => $values['gibbonPlannerEntryID'],
+                            
+                        ];
+                        $form->addHeaderAction('view', __('View Linked Lesson'))
+                            ->setURL('/modules/Planner/planner_view_full.php')
+                            ->addParams($params)
+                            ->setIcon('planner')
+                            ->displayLabel();
+                    }
+                    $params = [
+                        "gibbonCourseClassID" => $gibbonCourseClassID,
+                        "gibbonMarkbookColumnID" => $gibbonMarkbookColumnID,
+                        
+                    ];
+                    $form->addHeaderAction('edit', __('Edit'))
+                        ->setURL('/modules/Markbook/markbook_edit_edit.php')
+                        ->addParams($params)
+                        ->setIcon('config')
+                        ->displayLabel()
+                        ->prepend((!empty($values['gibbonPlannerEntryID'])) ? ' | ' : '');
+                        
                     if (count($students) == 0) {
                         $form->addRow()->addHeading('Students', __('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
@@ -335,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         }
 
                         // Create a rubric link object (for reusabilty)
-                        $rubricLink = $form->getFactory()
+                        $rubricLinkSource = $form->getFactory()
                             ->createWebLink('<img title="'.__('Mark Rubric').'" src="./themes/'.$session->get('gibbonThemeName').'/img/rubric.png" style="margin-left:4px;"/>')
                             ->setURL($session->get('absoluteURL').'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php')
                             ->setClass('thickbox')
@@ -457,6 +475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->selected($student['attainmentValue']);
 
                         if ($hasAttainment && $hasAttainmentRubric) {
+                            $rubricLink = clone $rubricLinkSource;
                             $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
                             $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDAttainment']);
                             $rubricLink->addParam('type', 'attainment');
@@ -469,6 +488,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->selected($student['effortValue']);
 
                         if ($hasEffort && $hasEffortRubric) {
+                            $rubricLink = clone $rubricLinkSource;
                             $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
                             $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDEffort']);
                             $rubricLink->addParam('type', 'effort');

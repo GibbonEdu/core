@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                     }
                 } else {
-                    $order = $_POST['order'] ?? '';
+                    $order = $_POST['order'] ?? [];
                     $seq = $_POST['minSeq'] ?? '';
 
                     $summaryBlocks = '';

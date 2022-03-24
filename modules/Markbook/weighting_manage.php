@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -104,16 +105,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo __('Markbook Weightings');
                 echo '</h3>';
 
-                
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, weighting DESC';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = 'SELECT * FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, weighting DESC';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($teaching || $highestAction == 'Manage Weightings_everything') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-                    echo '</div>';
+                    $params = [
+                        "gibbonCourseClassID" => $gibbonCourseClassID
+                    ];
+                    $page->navigator->addHeaderAction('add', __('Add'))
+                        ->setURL('/modules/Markbook/weighting_manage_add.php')
+                        ->addParams($params)
+                        ->setIcon('page_new')
+                        ->displayLabel();
                 }
 
                 if ($result->rowCount() < 1) {

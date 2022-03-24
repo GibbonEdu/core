@@ -73,6 +73,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             }
 
             $row = $result->fetch();
+            
+            if ($highestAction == 'External Assessment Data_manage') {
+                $params = [
+                    "gibbonPersonID" => $gibbonPersonID,
+                    "search" => $search,
+                    "allStudents" => $allStudents
+                ];
+                $page->navigator->addHeaderAction('add', __('Add'))
+                    ->setURL('/modules/Formal Assessment/externalAssessment_manage_details_add.php')
+                    ->addParams($params)
+                    ->setIcon('page_new')
+                    ->displayLabel();
+            }
 
             // DISPLAY STUDENT DATA
             $table = DataTable::createDetails('personal');
@@ -82,11 +95,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
             echo $table->render([$row]);
 
-            if ($highestAction == 'External Assessment Data_manage') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/externalAssessment_manage_details_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-                echo '</div>';
-            }
 
             //Print assessments
             $manage = false;

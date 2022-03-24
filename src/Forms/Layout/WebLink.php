@@ -69,7 +69,7 @@ class WebLink extends Element
      */
     public function setTarget($target)
     {
-        return $this->setAttribute('target', $target);
+        return $this->setAttribute('target', $target)->setRel('noopener noreferrer');
     }
 
     /**

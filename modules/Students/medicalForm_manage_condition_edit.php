@@ -46,19 +46,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         if (empty($values)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            //Let's go!
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Students/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>".__('Back').'</a>';
-                echo '</div>';
-            }
-
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID");
+           $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/medicalForm_manage_condition_editProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID");
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonPersonMedicalID', $gibbonPersonMedicalID);
+            
+            if ($search != '') {
+                $params = [
+                    "search" => $search,
+                    "gibbonPersonMedicalID" => $gibbonPersonMedicalID
+                ];
+                $form->addHeaderAction('back', __('Back'))
+                    ->setURL('/modules/Students/medicalForm_manage_edit.php')
+                    ->addParams($params);
+            }
 
             $form->addRow()->addHeading('General Information', __('General Information'));
 

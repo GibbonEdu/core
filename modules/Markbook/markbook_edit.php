@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\SettingGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -95,15 +95,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 //Add multiple columns
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-
                     if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
-
                         //Check highest role in any department
                         $isCoordinator = isDepartmentCoordinator( $pdo, $gibbon->session->get('gibbonPersonID') );
                         if ($isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
-                            echo "<div class='linkTop'>";
-                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add Multiple Columns')."<img style='margin-left: 5px' title='".__('Add Multiple Columns')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new_multi.png'/></a>";
-                            echo '</div>';
+                            $params = [
+                                "gibbonCourseClassID" => $gibbonCourseClassID
+                            ];
+                            $page->navigator->addHeaderAction('addMulti', __('Add Multiple Columns'))
+                                ->setURL('/modules/Markbook/markbook_edit_addMulti.php')
+                                ->addParams($params)
+                                ->setIcon('page_new_multi')
+                                ->displayLabel();
                         }
                     }
                 }
@@ -139,11 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     $page = 1;
                 }
 
-
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY completeDate DESC, name';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
 
                 if ($canEditThisClass) {
                     echo "<div class='linkTop'>";

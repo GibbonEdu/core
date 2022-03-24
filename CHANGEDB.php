@@ -513,7 +513,11 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Admissions'), 'Manage Other Forms', 0, 'Prospective Students', '', 'forms_manage.php', 'forms_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Other Forms'));end
 UPDATE gibbonCountry SET iddCountryCode='218' WHERE printable_name='Libya';end
+UPDATE gibbonSetting SET value=CONCAT(value, ',pagebreak,columnbreak') WHERE name='allowableHTML' AND scope='System';end
+UPDATE gibbonPlannerEntry SET homeworkSubmissionDrafts=NULL WHERE homeworkSubmissionDrafts='N';end
+ALTER TABLE `gibbonDiscussion` ADD INDEX(`foreignTable`, `foreignTableID`);end
+ALTER TABLE `gibbonDiscussion` ADD INDEX(`gibbonPersonID`);end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Updated Timetable Subscriber', 'Timetable', 'View Timetable by Person', 'Core', 'All', 'Y');end
 ALTER TABLE gibbonPerson ADD `mfaSecret` VARCHAR(16) DEFAULT NULL AFTER `receiveNotificationEmails`;end
 ALTER TABLE gibbonPerson ADD `mfaToken` TEXT DEFAULT NULL AFTER `mfaSecret`;end
-
 ";

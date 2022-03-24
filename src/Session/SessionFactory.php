@@ -32,7 +32,7 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
 /**
  * SessionFactory Class
  *
- * @version	v23
+ * @version	v24
  * @since	v23
  */
 class SessionFactory
@@ -49,6 +49,9 @@ class SessionFactory
         global $guid;
 
         $config = $container->get('config')->getConfig();
+
+        // If session guid is not set, fallback to global $guid.
+        $_guid = $config['guid'] ?? $guid ?? '';
 
         // Start the session (this should be the first time called)
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -74,6 +77,8 @@ class SessionFactory
             session_cache_limiter(false);
 
             session_start([
+                'name'             => substr(hash('sha256', $_guid), 0, 16),
+                'cookie_samesite'  => 'Lax',
                 'cookie_httponly'  => true,
                 'cookie_secure'    => isset($_SERVER['HTTPS']),
             ]);
@@ -81,9 +86,6 @@ class SessionFactory
 
         header('X-Frame-Options: SAMEORIGIN');
         header_remove('X-Powered-By');
-
-        // If session guid is not set, fallback to global $guid.
-        $_guid = $config['guid'] ?? $guid ?? '';
 
         // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
         // which is currently used in many Process pages.

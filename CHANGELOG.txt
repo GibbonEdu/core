@@ -23,22 +23,43 @@ v24.0.00
     Headlines
 
     Significant Changes
+        Timetable: added an option to export timetables to iCal format
 
     Changes With Important Notices
         System: removed upgrade path for v19.0.00 and earlier
-    
+
     Tweaks & Additions
+        System: added pagebreak and columnbreak tags to the allowableHTML list
+        System: ensure PayPal payments default to the system locale
+        System: updated the robots.txt to enable index access, for noindex meta tag
+        System: improved display of IDD country codes in phone number entry field
+        System: further refactoring of linkTop divs
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
+        System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
+        System: added indexes to the gibbonDiscussion table to improve performance
         Planner: added Create Markbook Column option when editing a lesson plan
+        Timetable: improved the error message on the timetable when multiple lessons exist
+        User Admin: added selectFamiliesByAdult method to FamilyGateway
 
     Bug Fixes
         System: fixed user's personal language and theme not set after login
-        System: improved display of IDD country codes in phone number entry field
         System: fixed SQL errors in the User Status Check & Fix CLI script
+        System: fixed Google OAuth not correctly handling empty refresh tokens
+        System: fixed column order of Export to Excel option on Staff Dashboard
+        System: fixed text field autocomplete issue caused by use of " in existing values
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
+        Markbook: fixed rubrics not displaying for large classes in Enter Data page
+        Messenger: fixed PHP 8+ error when sending messages to Class target
+        Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
+        Reports: fixed error loading PDF previews of report templates
+        Reports: fixed issue in Report creation when no reporting cycles exist
+        Reports: fixed reports with only one page not displaying first page header
         System Admin: fixed HTML being stripped out of the privacy policy
+        System Admin: fixed error message when exec function does not exist
+        System Admin: fixed import error on Step 4 when using Update & Insert option
+        Tracking: fixed the Chart.js library on the Graphing page
 
 v23.0.01
 --------

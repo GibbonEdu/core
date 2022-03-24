@@ -57,12 +57,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             //Let's go!
 			$oldValues = $result->fetch();
 			$newValues = $newResult->fetch();
-
-            // Provide a link back to edit the associated record
-            if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == true) {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=".$oldValues['gibbonFamilyID']."'>".__('Edit Family')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Family')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                echo '</div>';
+			
+			// Provide a link back to edit the associated record
+            if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php')) {
+                $params = [ 
+                    'gibbonFamilyID' => $oldValues['gibbonFamilyID']
+                ];
+                $page->navigator->addHeaderAction('edit', __('Edit Family'))
+                    ->setURL('/modules/User Admin/family_manage_edit.php')
+                    ->addParams($params)
+                    ->setIcon('config')
+                    ->displayLabel();
             }
 
 			$compare = array(

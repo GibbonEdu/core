@@ -462,7 +462,7 @@ class Format
         }
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
-            return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
+            return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
         }
@@ -477,7 +477,7 @@ class Format
     public static function hyperlinkAll(string $value)
     {
         $pattern = '/([^">]|^)(https?:\/\/[^"<>\s]+)/';
-        return preg_replace($pattern, '$1<a target="_blank" href="$2">$2</a>', $value);
+        return preg_replace($pattern, '$1<a target="_blank" rel="noopener noreferrer" href="$2">$2</a>', $value);
     }
 
     /**

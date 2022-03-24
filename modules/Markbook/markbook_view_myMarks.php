@@ -163,9 +163,9 @@ if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $session->get('gibbonPersonID'
                 echo $teachers;
 
                 if ($rowList['target'] != '') {
-                    echo "<div style='font-weight: bold' class='linkTop'>";
-                    echo __('Target').': '.$rowList['target'];
-                    echo '</div>';
+                    echo "<p class='text-right mb-2 text-xs font-bold'>";
+                        echo __('Target').': '.$rowList['target'];
+                    echo '</p>';
                 }
 
                 echo "<table cellspacing='0' style='width: 100%'>";

@@ -128,7 +128,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
     //If parent get a list of student IDs
     if ($parent) {
-        $children = '(';
+        $children = [];
 
         $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
@@ -136,19 +136,15 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $result->execute($data);
         while ($row = $result->fetch()) {
 
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
+                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'today' => date('Y-m-d'));
+                $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                 $resultChild = $connection2->prepare($sqlChild);
                 $resultChild->execute($dataChild);
             while ($rowChild = $resultChild->fetch()) {
-                $children .= 'gibbonPersonID='.$rowChild['gibbonPersonID'].' OR ';
+                $children[] = $rowChild['gibbonPersonID'];
             }
         }
-        if ($children != '(') {
-            $children = substr($children, 0, -4).')';
-        } else {
-            $children = false;
-        }
+
     }
 
     //My roles
@@ -156,8 +152,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     $sqlWhere = '(';
     if (count($roles) > 0) {
         for ($i = 0; $i < count($roles); ++$i) {
-            $dataPosts['role'.$roles[$i][0]] = $roles[$i][0];
-            $sqlWhere .= 'id=:role'.$roles[$i][0].' OR ';
+            $dataPosts['role'.$i] = $roles[$i][0];
+            $sqlWhere .= 'id=:role'.$i.' OR ';
         }
         $sqlWhere = substr($sqlWhere, 0, -3).')';
     }
@@ -181,8 +177,8 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($resultRoleCategory->rowCount() > 0) {
         $i = 0;
         while ($rowRoleCategory = $resultRoleCategory->fetch()) {
-            $dataPosts['role'.$rowRoleCategory['category']] = $rowRoleCategory['category'];
-            $sqlWhere .= 'id=:role'.$rowRoleCategory['category'].' OR ';
+            $dataPosts['roleCategory'.$i] = $rowRoleCategory['category'];
+            $sqlWhere .= 'id=:roleCategory'.$i.' OR ';
             ++$i;
         }
         $sqlWhere = substr($sqlWhere, 0, -3).')';
@@ -240,12 +236,13 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['gibbonPersonID1'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID1 AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date7 OR messageWall_date2=:date8 OR messageWall_date3=:date9) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID1 AND students='Y')";
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
         $dataPosts['date10'] = $date;
         $dataPosts['date11'] = $date;
         $dataPosts['date12'] = $date;
         $dataPosts['gibbonSchoolYearID2'] = $session->get('gibbonSchoolYearID');
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date10 OR messageWall_date2=:date11 OR messageWall_date3=:date12) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
+        $dataPosts['children'] = implode(',', $children);
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', gibbonYearGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonYearGroupID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date10 OR messageWall_date2=:date11 OR messageWall_date3=:date12) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND parents='Y')";
     }
 
     //My form groups
@@ -262,9 +259,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
 
         if ($resultFormGroup->rowCount() > 0) {
+            $i = 0;
             while ($rowFormGroup = $resultFormGroup->fetch()) {
-                $dataPosts['form'.$rowFormGroup['gibbonFormGroupID']] = $rowFormGroup['gibbonFormGroupID'];
-                $sqlWhere .= 'id=:form'.$rowFormGroup['gibbonFormGroupID'].' OR ';
+                $dataPosts['form'.$i] = $rowFormGroup['gibbonFormGroupID'];
+                $sqlWhere .= 'id=:form'.$i.' OR ';
+                $i++;
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -283,12 +282,13 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['gibbonPersonID2'] = $session->get('gibbonPersonID');
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID2 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID3 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date16 OR messageWall_date2=:date17 OR messageWall_date3=:date18) AND students='Y')";
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
         $dataPosts['date19'] = $date;
         $dataPosts['date20'] = $date;
         $dataPosts['date21'] = $date;
         $dataPosts['gibbonSchoolYearID4'] = $session->get('gibbonSchoolYearID');
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE ".preg_replace('/gibbonPersonID/', 'gibbonStudentEnrolment.gibbonPersonID', $children)." AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
+        $dataPosts['children'] = implode(',', $children);
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat('Form Group: ', gibbonFormGroup.nameShort) AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) JOIN gibbonStudentEnrolment ON (gibbonMessengerTarget.id=gibbonStudentEnrolment.gibbonFormGroupID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE FIND_IN_SET(gibbonStudentEnrolment.gibbonPersonID, :children) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID4 AND gibbonMessengerTarget.type='Form Group' AND (messageWall_date1=:date19 OR messageWall_date2=:date20 OR messageWall_date3=:date21) AND parents='Y')";
     }
 
     //My courses
@@ -300,9 +300,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $resultClasses->execute($dataClasses);
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
+        $i = 0;
         while ($rowClasses = $resultClasses->fetch()) {
-            $dataPosts['course'.$rowClasses['gibbonCourseID']] = $rowClasses['gibbonCourseID'];
-            $sqlWhere .= 'id=:course'.$rowClasses['gibbonCourseID'].' OR ';
+            $dataPosts['course'.$i] = $rowClasses['gibbonCourseID'];
+            $sqlWhere .= 'id=:course'.$i.' OR ';
+            $i++;
         }
         $sqlWhere = substr($sqlWhere, 0, -3).')';
         if ($sqlWhere != '(') {
@@ -320,17 +322,18 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             }
         }
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
 
-            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlClasses = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            $sqlClasses = "SELECT DISTINCT gibbonCourseClass.gibbonCourseID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
+            $i = 0;
             while ($rowClasses = $resultClasses->fetch()) {
-                $dataPosts['course'.$rowClasses['gibbonCourseID']] = $rowClasses['gibbonCourseID'];
-                $sqlWhere .= 'id=:course'.$rowClasses['gibbonCourseID'].' OR ';
+                $dataPosts['courseParent'.$i] = $rowClasses['gibbonCourseID'];
+                $sqlWhere .= 'id=:courseParent'.$i.' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -351,9 +354,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $resultClasses->execute($dataClasses);
     $sqlWhere = '(';
     if ($resultClasses->rowCount() > 0) {
+        $i = 0;
         while ($rowClasses = $resultClasses->fetch()) {
-            $dataPosts['class'.$rowClasses['gibbonCourseClassID']] = $rowClasses['gibbonCourseClassID'];
-            $sqlWhere .= 'id=:class'.$rowClasses['gibbonCourseClassID'].' OR ';
+            $dataPosts['class'.$i] = $rowClasses['gibbonCourseClassID'];
+            $sqlWhere .= 'id=:class'.$i.' OR ';
+            $i++;
         }
         $sqlWhere = substr($sqlWhere, 0, -3).')';
         if ($sqlWhere != '(') {
@@ -371,17 +376,20 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             }
         }
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
 
-            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlClasses = 'SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonCourseClassPerson.gibbonPersonID', $children)." AND NOT role LIKE '%- Left'";
+            $dataClasses = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            
+            $sqlClasses = "SELECT gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonCourseClassPerson.gibbonPersonID, :children) AND NOT role LIKE '%- Left'";
             $resultClasses = $connection2->prepare($sqlClasses);
             $resultClasses->execute($dataClasses);
         $sqlWhere = '(';
         if ($resultClasses->rowCount() > 0) {
+            $i = 0;
             while ($rowClasses = $resultClasses->fetch()) {
-                $dataPosts['class'.$rowClasses['gibbonCourseClassID']] = $rowClasses['gibbonCourseClassID'];
-                $sqlWhere .= 'id=:class'.$rowClasses['gibbonCourseClassID'].' OR ';
+                $dataPosts['classParent'.$i] = $rowClasses['gibbonCourseClassID'];
+                $sqlWhere .= 'id=:classParent'.$i.' OR ';
+                $i++;
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -402,9 +410,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             $resultActivities->execute($dataActivities);
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
+            $i = 0;
             while ($rowActivities = $resultActivities->fetch()) {
-                $dataPosts['activity'.$rowActivities['gibbonActivityID']] = $rowActivities['gibbonActivityID'];
-                $sqlWhere .= 'id=:activity'.$rowActivities['gibbonActivityID'].' OR ';
+                $dataPosts['activityStaff'.$i] = $rowActivities['gibbonActivityID'];
+                $sqlWhere .= 'id=:activityStaff'.$i.' OR ';
+                $i++;
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -423,9 +433,11 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             $resultActivities->execute($dataActivities);
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
+            $i = 0;
             while ($rowActivities = $resultActivities->fetch()) {
-                $dataPosts['activity'.$rowActivities['gibbonActivityID']] = $rowActivities['gibbonActivityID'];
-                $sqlWhere .= 'id=:activity'.$rowActivities['gibbonActivityID'].' OR ';
+                $dataPosts['activity'.$i] = $rowActivities['gibbonActivityID'];
+                $sqlWhere .= 'id=:activity'.$i.' OR ';
+                $i++;
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -436,17 +448,19 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
             }
         }
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
 
-            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
-            $sqlActivities = 'SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '.preg_replace('/gibbonPersonID/', 'gibbonActivityStudent.gibbonPersonID', $children)." AND status='Accepted'";
+            $dataActivities = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'children' => implode(',', $children));
+            $sqlActivities = "SELECT gibbonActivity.gibbonActivityID FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND FIND_IN_SET(gibbonActivityStudent.gibbonPersonID, :children) AND status='Accepted'";
             $resultActivities = $connection2->prepare($sqlActivities);
             $resultActivities->execute($dataActivities);
         $sqlWhere = '(';
         if ($resultActivities->rowCount() > 0) {
+            $i = 0;
             while ($rowActivities = $resultActivities->fetch()) {
-                $dataPosts['activity'.$rowActivities['gibbonActivityID']] = $rowActivities['gibbonActivityID'];
-                $sqlWhere .= 'id=:activity'.$rowActivities['gibbonActivityID'].' OR ';
+                $dataPosts['activityParent'.$i] = $rowActivities['gibbonActivityID'];
+                $sqlWhere .= 'id=:activityParent'.$i.' OR ';
+                $i++;
             }
             $sqlWhere = substr($sqlWhere, 0, -3).')';
             if ($sqlWhere != '(') {
@@ -493,10 +507,10 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
 
         }
     }
-    if ($parent and $children != false) {
+    if ($parent and !empty($children)) {
         try {
-          $dataAttendance=array( "gibbonPersonID" => $session->get('gibbonPersonID'), "selectedDate"=>$date, "gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"), "nowDate"=>date("Y-m-d") );
-          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, gp.firstName FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND ".preg_replace('/gibbonPersonID/', 'galp.gibbonPersonID', $children)." ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
+          $dataAttendance=array( "gibbonPersonID" => $session->get('gibbonPersonID'), "selectedDate"=>$date, "gibbonSchoolYearID"=>$session->get("gibbonSchoolYearID"), "nowDate"=>date("Y-m-d"), 'children' => implode(',', $children) );
+          $sqlAttendance="SELECT galp.gibbonAttendanceLogPersonID, galp.type, gp.firstName FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate AND FIND_IN_SET(galp.gibbonPersonID, :children) ORDER BY galp.gibbonAttendanceLogPersonID DESC LIMIT 1" ;
           $resultAttendance=$connection2->prepare($sqlAttendance);
           $resultAttendance->execute($dataAttendance);
         }
@@ -542,10 +556,10 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.students='Y'
         AND (messageWall_date1=:date61 OR messageWall_date2=:date61 OR messageWall_date3=:date61) )";
     }
-    if ($parent and $children != false) {
-        $childrenQuery = str_replace('gibbonPersonID', 'gibbonGroupPerson.gibbonPersonID', $children);
+    if ($parent and !empty($children)) {
         $dataPosts['date62'] = $date;
         $dataPosts['gibbonPersonID7'] = $session->get('gibbonPersonID');
+        $dataPosts['children'] = implode(',', $children);
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source
         FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
@@ -553,7 +567,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
         JOIN gibbonGroup ON (gibbonMessengerTarget.id=gibbonGroup.gibbonGroupID)
         JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID)
-        WHERE (gibbonGroupPerson.gibbonPersonID=:gibbonPersonID7 OR $childrenQuery)
+        WHERE (gibbonGroupPerson.gibbonPersonID=:gibbonPersonID7 OR FIND_IN_SET(gibbonGroupPerson.gibbonPersonID, :children))
         AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.parents='Y'
         AND (messageWall_date1=:date62 OR messageWall_date2=:date62 OR messageWall_date3=:date62) )";
     }
@@ -583,16 +597,16 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.students='Y'
         AND (messageWall_date1=:date64 OR messageWall_date2=:date64 OR messageWall_date3=:date64) )";
     }
-    if ($parent and $children != false) {
-        $childrenQuery = str_replace('gibbonPersonID', 'transportee.gibbonPersonID', $children);
+    if ($parent and !empty($children)) {
         $dataPosts['date65'] = $date;
         $dataPosts['gibbonPersonID10'] = $session->get('gibbonPersonID');
+        $dataPosts['children'] = implode(',', $children);
         $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
         JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport)
-        WHERE (transportee.gibbonPersonID=:gibbonPersonID10 OR $childrenQuery)
+        WHERE (transportee.gibbonPersonID=:gibbonPersonID10 OR FIND_IN_SET(transportee.gibbonPersonID, :children))
         AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.parents='Y'
         AND (messageWall_date1=:date65 OR messageWall_date2=:date65 OR messageWall_date3=:date65) )";
     }

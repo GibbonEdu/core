@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                         ->selected($gibbonINArchiveID);
                     $col->addSubmit(__('Go'));
 
-                echo "<div class='linkTop'>";
+                echo "<div class='mb-2'>";
                 echo $form->getOutput();
                 echo '</div>';
             }

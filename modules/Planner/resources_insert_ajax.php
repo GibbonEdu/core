@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= "<table cellspacing='0' style='width: 100%'>";
     $output .= "<tr id='".$id."resourceInsert'>";
     $output .= "<td colspan=2 style='padding-top: 0px'>";
-    $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__('Close')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/></a></div>";
+    $output .= "<div class='text-right pt-2'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'>".__('Close')."<img style='margin-left: 5px' title='".__('Close')."' src='./themes/".$session->get('gibbonThemeName')."/img/iconCross.png'/></a></div>";
     $output .= "<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>";
     $output .= '<p>'.sprintf(__('The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
     

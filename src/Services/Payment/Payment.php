@@ -253,6 +253,7 @@ class Payment implements PaymentInterface
                 $this->omnipay->setUsername($this->settingGateway->getSettingByScope('System', 'paymentAPIUsername'));
                 $this->omnipay->setPassword($this->settingGateway->getSettingByScope('System', 'paymentAPIPassword'));
                 $this->omnipay->setSignature($this->settingGateway->getSettingByScope('System', 'paymentAPISignature'));
+                $this->omnipay->setParameter('locale_code', $this->session->get('i18n')['code'] ?? 'en_GB');
                 break;
 
             case 'Stripe':

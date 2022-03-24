@@ -175,17 +175,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-        if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
-            echo '</div>';
-        }
-
         $form = Form::create('attendance', $session->get('absoluteURL').'/modules/'.$session->get('module').'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
         $form->setClass('blank block max-w-full');
 
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
+        
+        if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
+            $form->addHeaderAction('download', __('Export to Excel'))
+                ->setURL('/modules/Activities/report_attendanceExport.php')
+                ->addParams(['gibbonActivityID' => $gibbonActivityID])
+                ->setIcon('download')
+                ->displayLabel()
+                ->directLink();
+        }
 
         $row = $form->addRow('doublescroll-wrapper')->setClass('block doublescroll-wrapper smallIntBorder w-full max-w-full')->addColumn();
 

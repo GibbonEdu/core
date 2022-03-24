@@ -61,9 +61,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
 
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Finance/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=".$oldValues['gibbonFinanceInvoiceeID']."&search=&allUsers='>".__('Edit Invoicee')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Invoicee')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                echo '</div>';
+                $params = [
+                    'gibbonFinanceInvoiceeID' => $oldValues['gibbonFinanceInvoiceeID'], 
+                    'search' => '', 
+                    'allUsers' => ''
+                ];
+                $page->navigator->addHeaderAction('edit', __('Edit Invoicee'))
+                    ->setURL('/modules/Finance/invoicees_manage_edit.php')
+                    ->addParams($params)
+                    ->setIcon('config')
+                    ->displayLabel();
             }
 
             // An array of common fields to compare in each data set, and the field label
