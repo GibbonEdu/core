@@ -514,5 +514,6 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Other Forms'));end
 UPDATE gibbonCountry SET iddCountryCode='218' WHERE printable_name='Libya';end
 ALTER TABLE gibbonPerson ADD `mfaSecret` VARCHAR(16) DEFAULT NULL AFTER `receiveNotificationEmails`;end
+ALTER TABLE gibbonPerson ADD `mfaToken` TEXT DEFAULT NULL AFTER `mfaSecret`;end
 
 ";

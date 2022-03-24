@@ -43,6 +43,8 @@ $session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonScho
 $session->forget('pageLoads');
 $URL = Url::fromRoute();
 
+
+
 // Sanitize the whole $_POST array
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -176,6 +178,9 @@ try {
     exit;
 } catch (Exception\MaintenanceMode $e) {
     header("Location: {$URL->withQueryParam('loginReturn', 'fail10')}");
+    exit;
+} catch (Exception\MFATokenRequired $e) {
+    header("Location: {$URL->withQueryParam('method', 'mfa')}");
     exit;
 } catch (NotFoundException $e) {
     $logLoginAttempt('Login - Failed', 'Container error: '.$e->getMessage());

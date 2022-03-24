@@ -90,10 +90,29 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
+                case 'mfaRequired':
+                    
+                    exit();
+                    // $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
+//                     $form->setAutocomplete(false);
+//                     $form->setClass('noIntBorder fullWidth');
+//                     $form->addHiddenValue('address', $this->session->get('address'));
+//                     $form->addHiddenValue('method', 'MFA');
+//                     $row = $form->addRow();
+//                         $row->addLabel('mfaCode', __('Multi Factor Authentication Code'));
+//                         $row->addNumber('mfaCode');
+//                     $row = $form->addRow();
+//                         $row->addSubmit(__('Login'));
+//                     echo $form->getOutput();
+                    break;
 
             }
-            echo Format::alert($loginReturnMessage, 'error');
+            if ( $loginReturnMessage != ''){
+                echo Format::alert($loginReturnMessage, 'error');
+            }
         }
+        
+        
 
         if ($this->session->get('sidebarExtra') != '' and $this->session->get('sidebarExtraPosition') != 'bottom') {
             echo "<div class='sidebarExtra'>";

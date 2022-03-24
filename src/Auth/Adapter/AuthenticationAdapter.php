@@ -209,6 +209,11 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         if ($userData['failCount'] >= 3) {
             $this->updateFailCount($userData, $userData['failCount'] + 1);
         }
+        
+        // Check for presence of MFA secret (TODO: and check if code hasn't been inputted)
+        if ($userData['mfaSecret'] != NULL) {
+            throw new Exception\MFATokenRequired;
+        }
     }
 
     /**
