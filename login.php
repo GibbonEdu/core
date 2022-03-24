@@ -23,6 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Auth\Exception;
 use Gibbon\Auth\Adapter\DefaultAdapter;
+use Gibbon\Auth\Adapter\MFAAdapter;
 use Gibbon\Auth\Adapter\OAuthAdapterInterface;
 use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
@@ -77,6 +78,9 @@ try {
             break;
         case 'oauth':
             $authAdapter = $container->get(OAuthGenericAdapter::class);
+            break;
+        case 'mfa':
+            $authAdapter = $container->get(MFAAdapter::class);
             break;
         default:
             $authAdapter = $container->get(DefaultAdapter::class);
@@ -180,6 +184,9 @@ try {
     exit;
 } catch (Exception\MaintenanceMode $e) {
     header("Location: {$URL->withQueryParam('loginReturn', 'fail10')}");
+    exit;
+} catch (Exception\MFATokenInvalid $e) {
+    header("Location: {$URL->withQueryParam('loginReturn', 'fail11')}");
     exit;
 } catch (Exception\MFATokenRequired $e) {
     header("Location: {$URL->withQueryParam('method', 'mfa')}");

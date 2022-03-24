@@ -90,22 +90,8 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     break;
                 case 'fail10': $loginReturnMessage = __('Cannot login during maintenance mode.');
                     break;
-                case 'mfaRequired':
-                    
-                    exit();
-                    // $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
-//                     $form->setAutocomplete(false);
-//                     $form->setClass('noIntBorder fullWidth');
-//                     $form->addHiddenValue('address', $this->session->get('address'));
-//                     $form->addHiddenValue('method', 'MFA');
-//                     $row = $form->addRow();
-//                         $row->addLabel('mfaCode', __('Multi Factor Authentication Code'));
-//                         $row->addNumber('mfaCode');
-//                     $row = $form->addRow();
-//                         $row->addSubmit(__('Login'));
-//                     echo $form->getOutput();
+                case 'fail11': $loginReturnMessage = __('Your MFA code is invalid or missing.');
                     break;
-
             }
             if ( $loginReturnMessage != ''){
                 echo Format::alert($loginReturnMessage, 'error');
@@ -208,47 +194,65 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
 
                 $loginIcon = '<img src="'.$this->session->get('absoluteURL').'/themes/'.$this->session->get('gibbonThemeName').'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
-                $row = $form->addRow();
-                    $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
-                    $row->addTextField('username')
-                        ->required()
-                        ->maxLength(50)
-                        ->setClass('fullWidth')
-                        ->setAria('label', __('Username or email'))
-                        ->placeholder(__('Username or email'))
-                        ->addValidationOption('onlyOnSubmit: true');
+                $loginMethod = $_GET['method'] ?? '';
 
-                $row = $form->addRow();
-                    $row->addContent(sprintf($loginIcon, 'key', __('Password')));
-                    $row->addPassword('password')
-                        ->required()
-                        ->maxLength(30)
-                        ->setClass('fullWidth')
-                        ->setAria('label', __('Password'))
-                        ->placeholder(__('Password'))
-                        ->addValidationOption('onlyOnSubmit: true');
+                if ($loginMethod == 'mfa') {
+                    $nonce = hash('sha256', $guid.time());
+                    $this->session->set('mfaFormNonce', $nonce);
 
-                $row = $form->addRow()->setClass('loginOptions');
-                    $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
-                    $row->addSelectSchoolYear('gibbonSchoolYearID')
-                        ->setClass('fullWidth')
-                        ->setAria('label', __('School Year'))
-                        ->placeholder(null)
-                        ->selected($this->session->get('gibbonSchoolYearID'));
+                    $form = Form::create('mfa',  $this->session->get('absoluteURL').'/login.php?'.http_build_query($_GET));
+                    $form->setAutocomplete(false);
+                    $form->setClass('noIntBorder fullWidth');
+                    $form->addHiddenValue('address', $this->session->get('address'));
+                    $form->addHiddenValue('method', 'mfa');
+                    $form->addHiddenValue('mfaFormNonce', $nonce);
+                    
+                    $col = $form->addRow()->addColumn();
+                        $col->addLabel('mfaCode', __('Multi Factor Authentication Code'));
+                        $col->addNumber('mfaCode');
+                } else {
+                    $row = $form->addRow();
+                        $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
+                        $row->addTextField('username')
+                            ->required()
+                            ->maxLength(50)
+                            ->setClass('fullWidth')
+                            ->setAria('label', __('Username or email'))
+                            ->placeholder(__('Username or email'))
+                            ->addValidationOption('onlyOnSubmit: true');
 
-                $row = $form->addRow()->setClass('loginOptions');
-                    $row->addContent(sprintf($loginIcon, 'language', __('Language')));
-                    $row->addSelectI18n('gibboni18nID')
-                        ->setClass('fullWidth')
-                        ->setAria('label', __('Language'))
-                        ->placeholder(null)
-                        ->selected($this->session->get('i18n')['gibboni18nID']);
+                    $row = $form->addRow();
+                        $row->addContent(sprintf($loginIcon, 'key', __('Password')));
+                        $row->addPassword('password')
+                            ->required()
+                            ->maxLength(30)
+                            ->setClass('fullWidth')
+                            ->setAria('label', __('Password'))
+                            ->placeholder(__('Password'))
+                            ->addValidationOption('onlyOnSubmit: true');
 
-                $row = $form->addRow();
-                    $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
-                        ->append(' . <a href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
-                        ->wrap('<span class="small">', '</span>')
-                        ->setClass('right');
+                    $row = $form->addRow()->setClass('loginOptions');
+                        $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
+                        $row->addSelectSchoolYear('gibbonSchoolYearID')
+                            ->setClass('fullWidth')
+                            ->setAria('label', __('School Year'))
+                            ->placeholder(null)
+                            ->selected($this->session->get('gibbonSchoolYearID'));
+
+                    $row = $form->addRow()->setClass('loginOptions');
+                        $row->addContent(sprintf($loginIcon, 'language', __('Language')));
+                        $row->addSelectI18n('gibboni18nID')
+                            ->setClass('fullWidth')
+                            ->setAria('label', __('Language'))
+                            ->placeholder(null)
+                            ->selected($this->session->get('i18n')['gibboni18nID']);
+
+                    $row = $form->addRow();
+                        $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
+                            ->append(' . <a href="'.Url::fromRoute('passwordReset').'">'.__('Forgot Password?').'</a>')
+                            ->wrap('<span class="small">', '</span>')
+                            ->setClass('right');
+                }
 
                 $row = $form->addRow();
                     $row->onlyIf($enablePublicRegistration == 'Y')->addButton('Register')->addClass('rounded-sm w-24 bg-blue-100')->onClick('window.location="'.Url::fromRoute('publicRegistration').'"');
