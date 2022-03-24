@@ -39,6 +39,7 @@ v24.0.00
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
         System: added indexes to the gibbonDiscussion table to improve performance
         Planner: added Create Markbook Column option when editing a lesson plan
+        Planner: refactored Manage Outcomes table
         Timetable: improved the error message on the timetable when multiple lessons exist
         User Admin: added selectFamiliesByAdult method to FamilyGateway
 
