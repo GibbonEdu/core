@@ -61,6 +61,8 @@ v24.0.00
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option
+        Timetable: fixed bookings not displaying on timetable when calendars not in use
+        Timetable: fixed TT opacity for short periods causing visual misalignment
         Tracking: fixed the Chart.js library on the Graphing page
 
 v23.0.01
