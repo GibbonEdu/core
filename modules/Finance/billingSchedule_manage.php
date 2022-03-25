@@ -61,6 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         // QUERY
         $criteria = $billingScheduleGateway->newQueryCriteria(true)
             ->sortBy(['invoiceIssueDate', 'name'])
+            ->pageSize(50)
             ->fromPOST();
 
         $billingSchedules = $billingScheduleGateway->queryBillingSchedules($criteria, $gibbonSchoolYearID, $search);

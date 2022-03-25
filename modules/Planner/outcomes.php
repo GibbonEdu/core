@@ -69,6 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         // QUERY
         $criteria = $outcomeGateway->newQueryCriteria(true)
             ->sortBy(['scope', 'department', 'category', 'nameShort'])
+            ->pageSize(50)
             ->fromPOST();
 
         $outcomes = $outcomeGateway->queryOutcomes($criteria, $filter2);
