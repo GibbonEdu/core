@@ -23,8 +23,6 @@ v23.0.02
     Security
         System: fixed a session-related vulnerability and improved session defaults
 
-    Tweaks & Additions
-
     Bug Fixes
         System: fixed SQL errors in the User Status Check & Fix CLI script
         System: fixed Google OAuth not correctly handling empty refresh tokens
