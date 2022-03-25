@@ -30,6 +30,7 @@ v23.0.02
         System: fixed SQL errors in the User Status Check & Fix CLI script
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
+        Planner: fixed PHP 8 related error messages when editing units
 
 v23.0.01
 --------
