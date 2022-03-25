@@ -32,6 +32,7 @@ v23.0.02
         Finance: fixed HTML being removed from notes on invoices
         Planner: fixed PHP 8 related error messages when editing units
         System Admin: fixed error message when exec function does not exist
+        Tracking: fixed the Chart.js library on the Graphing page
 
 v23.0.01
 --------
