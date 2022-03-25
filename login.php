@@ -125,7 +125,9 @@ try {
         exit;
     }
 
+    $authAdapter->updateSession($auth);
     $logLoginAttempt('Login - Success');
+
     header("Location: {$URL}");
     exit;
 } catch (AuraException\UsernameMissing $e) {

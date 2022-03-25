@@ -21,13 +21,13 @@ v23.0.02
 --------
 
     Security
-        System: fixed a session-related vulnerability and improved session names
+        System: fixed a session-related vulnerability and improved session defaults
 
     Tweaks & Additions
 
 
     Bug Fixes
-        
+
 
 v23.0.01
 --------

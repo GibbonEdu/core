@@ -109,6 +109,13 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         // Satisfy the interface, but do nothing at this time
     }
 
+    public function updateSession(Auth $auth)
+    {
+        // Update current session record to attach it to this user
+        $userData = $auth->getUserData();
+        $this->sessionGateway->updateSessionStatus(session_id(), $userData['gibbonPersonID'], 'Logged In');
+    }
+
     /**
      * Gets an array of basic user data from the database.
      *
@@ -272,12 +279,8 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
             'username' => $userData['username'],
         ]);
 
-        // Update current session record to attach it to this user
-        $this->sessionGateway->update(session_id(), [
-            'gibbonPersonID' => $userData['gibbonPersonID'],
-            'sessionStatus' => 'Logged In',
-            'timestampModified' => date('Y-m-d H:i:s'),
-        ]);
+        // Remove all other session records attached to the previous session
+        $this->sessionGateway->delete(session_id());
 
         // Force a garbage collection of inactive sessions older than 1 day
         $this->sessionGateway->deleteExpiredSessions(86400);
