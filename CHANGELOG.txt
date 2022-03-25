@@ -24,8 +24,8 @@ v23.0.02
         System: fixed a session-related vulnerability and improved session defaults
 
     Bug Fixes
-        System: fixed SQL errors in the User Status Check & Fix CLI script
         System: fixed Google OAuth not correctly handling empty refresh tokens
+        System: fixed SQL errors in the User Status Check & Fix CLI script
         System: fixed text field autocomplete issue caused by use of " in existing values 
         System: fixed column order of Export to Excel option on Staff Dashboard
         Attendance: fixed non-attendance classes showing up in Set Future Absence
