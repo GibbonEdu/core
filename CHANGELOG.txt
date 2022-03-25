@@ -27,7 +27,7 @@ v23.0.02
 
 
     Bug Fixes
-
+        Finance: fixed HTML being removed from notes on invoices
 
 v23.0.01
 --------
