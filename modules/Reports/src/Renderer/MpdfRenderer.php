@@ -289,10 +289,12 @@ class MpdfRenderer implements ReportRendererInterface
     {
         $this->template->addData(['lastPage' => true]);
         $this->lastPage = true;
-        
-        $this->setHeader();
-        $this->setFooter();
 
+        if ($this->getPageNumber() > 1) {
+            $this->setHeader();
+        }
+
+        $this->setFooter();
         $this->pdf->writeHTML('<br/>');
 
         $this->runPostProcess($reportData);
