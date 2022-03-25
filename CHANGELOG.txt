@@ -41,6 +41,8 @@ v23.0.02
         Reports: fixed date handling in Internal Assessments by Course template
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option
+        Timetable: fixed bookings not displaying on timetable when calendars not in use
+        Timetable: fixed TT opacity for short periods causing visual misalignment
         Tracking: fixed the Chart.js library on the Graphing page
 
 v23.0.01
