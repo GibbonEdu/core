@@ -27,6 +27,7 @@ v23.0.02
 
 
     Bug Fixes
+        System: fixed SQL errors in the User Status Check & Fix CLI script
         Finance: fixed HTML being removed from notes on invoices
 
 v23.0.01
