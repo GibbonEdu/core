@@ -35,6 +35,7 @@ v23.0.02
         Markbook: fixed rubrics not displaying for large classes in Enter Data page 
         Messenger: fixed PHP 8+ error when sending messages to Class target
         Planner: fixed PHP 8 related error messages when editing units
+        Reports: fixed error loading PDF previews of report templates
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option
         Tracking: fixed the Chart.js library on the Graphing page

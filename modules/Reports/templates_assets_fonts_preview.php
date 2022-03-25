@@ -28,7 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    if (isset($page)) {
+    $mode = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
+
+    if (isset($page) && $mode != 'export') {
         $page->breadcrumbs->add(__('Template Preview'));
 
         $page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
@@ -64,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_c
     // Render
     $renderer = $container->get(HtmlRenderer::class);
 
-    if (isset($page)) {
+    if (isset($page) && $mode != 'export') {
         echo $twig->render('preview.twig.html', [
             'pages'     => $renderer->render($template, $reports),
             'prototype' => true,
