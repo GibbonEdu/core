@@ -49,6 +49,21 @@ $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 $settingGateway = $container->get(SettingGateway::class);
 
 /**
+ * USER ROLES
+ * Force the Gibbon role information to be reloaded every page
+ */
+if ($isLoggedIn) {
+    $userDetails = $container->get(UserGateway::class)->getByID($session->get('gibbonPersonID'), ['gibbonRoleIDPrimary', 'gibbonRoleIDAll']);
+
+    $session->set('gibbonRoleIDPrimary', $userDetails['gibbonRoleIDPrimary']);
+    $allRoles = explode(',', $userDetails['gibbonRoleIDAll']);
+    
+    if (in_array($session->get('gibbonRoleIDCurrent'), $allRoles) === false) {
+        $session->set('gibbonRoleIDCurrent', $userDetails['gibbonRoleIDPrimary']);
+    }
+}
+
+/**
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
