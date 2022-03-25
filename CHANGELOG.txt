@@ -17,6 +17,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 CHANGELOG
 =========
 
+v23.0.02
+--------
+
+    Security
+        System: fixed a session-related vulnerability and improved session names
+
+    Tweaks & Additions
+
+
+    Bug Fixes
+        
+
 v23.0.01
 --------
 
