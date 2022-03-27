@@ -1088,13 +1088,13 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
                 //Check current role has access rights to the current action.
                 try {
                     $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
-                    
+
                     $sql = "SELECT gibbonAction.name FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
                     JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
                     JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
-                    WHERE gibbonAction.URLList LIKE :actionName 
-                        AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                    WHERE gibbonAction.URLList LIKE :actionName
+                        AND gibbonPermission.gibbonRoleID=:gibbonRoleID
                         AND gibbonModule.name=:moduleName ";
 
                     if ($sub != '') {
@@ -1148,65 +1148,6 @@ function isModuleAccessible($guid, $connection2, $address = '')
     }
 
     return $output;
-}
-
-/**
- * @deprecated in v16. Use DataTables::createdPaginated()
- */
-function printPagination($guid, $total, $page, $pagination, $position, $get = '')
-{
-    global $session;
-
-    if ($position == 'bottom') {
-        $class = 'paginationBottom';
-    } else {
-        $class = 'paginationTop';
-    }
-
-    echo "<div class='$class'>";
-    $totalPages = ceil($total / $pagination);
-    $i = 0;
-    echo __('Records').' '.(($page - 1) * $session->get('pagination') + 1).'-';
-    if (($page * $session->get('pagination')) > $total) {
-        echo $total;
-    } else {
-        echo $page * $session->get('pagination');
-    }
-    echo ' '.__('of').' '.$total.' : ';
-
-    if ($totalPages <= 10) {
-        for ($i = 0;$i <= ($total / $pagination);++$i) {
-            if ($i == ($page - 1)) {
-                echo "$page ";
-            } else {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
-            }
-        }
-    } else {
-        if ($page > 1) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address')."&page=1&$get'>".__('First').'</a> ';
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
-        } else {
-            echo __('First').' '.__('Previous').' ';
-        }
-
-        $spread = 10;
-        for ($i = 0;$i <= ($total / $pagination);++$i) {
-            if ($i == ($page - 1)) {
-                echo "$page ";
-            } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
-                echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
-            }
-        }
-
-        if ($page != $totalPages) {
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
-            echo "<a href='".$session->get('absoluteURL').'/index.php?q='.$session->get('address').'&page='.$totalPages."&$get'>".__('Last').'</a> ';
-        } else {
-            echo __('Next').' '.__('Last');
-        }
-    }
-    echo '</div>';
 }
 
 //Get the module name from the address
