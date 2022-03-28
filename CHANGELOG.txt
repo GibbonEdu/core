@@ -61,6 +61,7 @@ v24.0.00
         Reports: fixed error loading PDF previews of report templates
         Reports: fixed issue in Report creation when no reporting cycles exist
         Reports: fixed reports with only one page not displaying first page header
+        Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
         System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed error message when exec function does not exist
         System Admin: fixed import error on Step 4 when using Update & Insert option

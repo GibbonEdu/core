@@ -66,6 +66,7 @@ class AttendanceByCycle extends DataSource
                 WHERE gibbonReport.gibbonReportID=:gibbonReportID
                 AND gibbonReportingCycle.dateStart<=CURDATE()
                 AND gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReportingCycle.gibbonYearGroupIDList)
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList)
                 AND gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay
                 AND gibbonAttendanceLogPerson.date<=CURDATE()
