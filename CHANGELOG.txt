@@ -50,25 +50,34 @@ v24.0.00
 
     Bug Fixes
         System: fixed user's personal language and theme not set after login
-        System: fixed SQL errors in the User Status Check & Fix CLI script
+        Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
+        Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
+
+v23.0.02
+--------
+
+    Security
+        System: fixed a session-related vulnerability and improved session defaults
+
+    Bug Fixes
         System: fixed Google OAuth not correctly handling empty refresh tokens
+        System: fixed SQL errors in the User Status Check & Fix CLI script
+        System: fixed text field autocomplete issue caused by use of " in existing values 
         System: fixed column order of Export to Excel option on Staff Dashboard
-        System: fixed text field autocomplete issue caused by use of " in existing values
         Attendance: fixed non-attendance classes showing up in Set Future Absence
         Finance: fixed HTML being removed from notes on invoices
-        Markbook: fixed rubrics not displaying for large classes in Enter Data page
+        Markbook: fixed rubrics not displaying for large classes in Enter Data page 
         Messenger: fixed PHP 8+ error when sending messages to Class target
-        Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
+        Planner: fixed PHP 8 related error messages when editing units
         Reports: fixed error loading PDF previews of report templates
         Reports: fixed issue in Report creation when no reporting cycles exist
         Reports: fixed reports with only one page not displaying first page header
-        Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
-        System Admin: fixed HTML being stripped out of the privacy policy
-        System Admin: fixed error message when exec function does not exist
-        System Admin: fixed import error on Step 4 when using Update & Insert option
+        Reports: fixed date handling in Internal Assessments by Course template
         Timetable: fixed bookings not displaying on timetable when calendars not in use
         Timetable: fixed TT opacity for short periods causing visual misalignment
         Tracking: fixed the Chart.js library on the Graphing page
+        System Admin: fixed error message when exec function does not exist
+        System Admin: fixed import error on Step 4 when using Update & Insert option
 
 v23.0.01
 --------
@@ -82,7 +91,9 @@ v23.0.01
         System Admin: improved login logs to include login method and user id
 
     Bug Fixes
+        System: fixed user's personal language and theme not set after login
         System: fixed string replacements with {} placeholders not working
+        System Admin: fixed HTML being stripped out of the privacy policy
         System Admin: fixed invalid password field in user imports in Import From File
         System Admin: fixed custom field headings not working for non-english locales
         System Admin: fixed blank User column for logins listed in View Logs
