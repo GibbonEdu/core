@@ -57,7 +57,7 @@ if ($isLoggedIn) {
 
     $session->set('gibbonRoleIDPrimary', $userDetails['gibbonRoleIDPrimary']);
     $allRoles = explode(',', $userDetails['gibbonRoleIDAll']);
-    
+
     if (in_array($session->get('gibbonRoleIDCurrent'), $allRoles) === false) {
         $session->set('gibbonRoleIDCurrent', $userDetails['gibbonRoleIDPrimary']);
     }
@@ -636,15 +636,13 @@ if (!$session->has('address')) {
         }
 
         // Custom content loader
-        if (!$session->exists('index_custom.php')) {
-            $globals = [
-                'guid'        => $guid,
-                'connection2' => $connection2,
-                'session'     => $session,
-            ];
+        $globals = [
+            'guid'        => $guid,
+            'connection2' => $connection2,
+            'session'     => $session,
+        ];
 
-            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
-        }
+        $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
 
         if ($session->has('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
