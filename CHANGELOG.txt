@@ -45,6 +45,7 @@ v24.0.00
         Planner: made time cap obvious to teachers in Lesson Planner view
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
+        System Admin: enabled using custom fields with additional modules
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
         Timetable: improved the error message on the timetable when multiple lessons exist
         User Admin: added selectFamiliesByAdult method to FamilyGateway

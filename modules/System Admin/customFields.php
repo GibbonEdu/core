@@ -42,6 +42,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
         $contexts += $groupContexts;
     }
 
+    $additionalContexts = $customFieldGateway->selectCustomFieldsContexts()->fetchAll(\PDO::FETCH_COLUMN);
+    foreach ($additionalContexts as $index => $context) {
+        if (!empty($contexts[$context])) {
+            unset($additionalContexts[$index]);
+            continue;
+        }
+        $contexts[$context] = __($context);
+    }
+
     foreach ($contexts as $context => $contextName) {
         // QUERY
         $criteria = $customFieldGateway->newQueryCriteria()
@@ -63,10 +72,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields.
             return $row;
         });
 
-        $table->addHeaderAction('add', __('Add'))
+        $action = $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/System Admin/customFields_add.php')
             ->addParam('context', $context != 'User' ? $context : '')
             ->displayLabel();
+
+        if (in_array($context, $additionalContexts)) {
+            $action->addParam('context', 'Custom')
+                   ->addParam('contextName', $context);
+        }
 
         $table->addDraggableColumn('gibbonCustomFieldID', $gibbon->session->get('absoluteURL').'/modules/System Admin/customFields_editOrderAjax.php');
 
