@@ -78,7 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $applicationProcessFee = $settingGateway->getSettingByScope('Application Form', 'applicationProcessFee');
     if ($application['paymentMade2'] == 'N' && !empty($applicationProcessFee) && is_numeric($applicationProcessFee)) {
         $page->navigator->addHeaderAction('payment', __('Send Payment Request'))
-            ->setUrl('/index.php?q=/modules/Students/applicationForm_manage_edit_fee.php')
+            ->setUrl('/index.php')
+            ->addParam('q', '/modules/Students/applicationForm_manage_edit_fee.php')
             ->setIcon('page_right')
             ->addParams($urlParams)
             ->displayLabel(true);
