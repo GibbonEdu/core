@@ -29,6 +29,7 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
+use Gibbon\Tables\DataTable;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -170,6 +171,38 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         }
 
         return $form;
+    }
+
+    public function display()
+    {
+        $table = DataTable::createDetails('formBuilder');
+
+        $table->setTitle(__($this->getDetail('name')));
+        $table->setDescription(__('Preview your submitted data below.'));
+
+        foreach ($this->pages as $formPage) {
+            foreach ($this->fields as $field) {
+                if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+
+                if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
+                    $col = $table->addColumn($field['label'], __($field['label']));
+                    continue;
+                }
+                
+                if (empty($col)) {
+                    $col = $table->addColumn($formPage['name']);
+                }
+
+                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+                $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
+
+                $col->addColumn($field['fieldName'], __($field['label']))
+                    ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '');
+            }
+
+        }
+        
+        return $table;
     }
 
     public function acquire()

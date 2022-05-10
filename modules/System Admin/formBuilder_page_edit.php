@@ -69,6 +69,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('gibbonFormPageID', $gibbonFormPageID);
 
+    $form->addHeaderAction('design', __('Design'))
+        ->setURL('/modules/System Admin/formBuilder_page_design.php')
+        ->addParam('gibbonFormID', $gibbonFormID)
+        ->addParam('gibbonFormPageID', $gibbonFormPageID)
+        ->addParam('sidebar', 'false')
+        ->setIcon('markbook')
+        ->displayLabel();
+
     $row = $form->addRow();
         $row->addLabel('formName', __('Form Name'));
         $row->addTextField('formName')->readonly()->required()->setValue($formValues['name']);

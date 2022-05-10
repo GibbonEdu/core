@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
+use Gibbon\Forms\Builder\Fields\LayoutHeadings;
 
 abstract class AbstractFieldGroup implements FieldGroupInterface
 {
@@ -44,7 +45,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return array_reduce(array_keys($this->fields), function ($group, $key) use (&$heading) {
             $field = $this->fields[$key];
 
-            if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
+            if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading') && !($this instanceof LayoutHeadings)) {
                 $heading = $field['label'];
             } else if (!empty($heading)) {
                 $group[$heading][$key] = $field['label'];

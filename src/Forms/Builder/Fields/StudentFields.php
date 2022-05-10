@@ -36,6 +36,7 @@ class StudentFields extends AbstractFieldGroup
                 'label' => __('Surname'),
                 'description' => __('Family name as shown in ID documents.'),
                 'required' => 'X',
+                'columns' => 3,
             ],
             'firstName' => [
                 'label' => __('First Name'),
@@ -123,10 +124,12 @@ class StudentFields extends AbstractFieldGroup
             case 'officialName':
                 $row->addLabel('officialName', __($field['label']))->description(__($field['description']));
                 $row->addTextField('officialName')->required($required)->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+                break;
 
             case 'nameInCharacters':
                 $row->addLabel('nameInCharacters', __($field['label']))->description(__($field['description']));
                 $row->addTextField('nameInCharacters')->required($required)->maxLength(60);
+                break;
 
             case 'gender':
                 $row->addLabel('gender', __($field['label']))->description(__($field['description']));

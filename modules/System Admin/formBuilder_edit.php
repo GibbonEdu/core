@@ -187,9 +187,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $form->setTitle(__('Inactive Features'));
         $form->setDescription(__('The following functionality is inactive because it depends on one or more fields that are not present in your form. You can add the required fields to your form to enable this functionality.'));
 
-        foreach ($inactiveProcesses as $processName => $processDetails) {
-            $process = $container->get($processDetails['process'] ?? '');
-            $view = $container->get($processDetails['view']);
+        foreach ($inactiveProcesses as $processName => $process) {
+            $viewClass = $process->getViewClass();
+            if (empty($viewClass)) continue;
+
+            $view = $container->get($viewClass);
 
             $missingRequiredFields = array_filter($process->getRequiredFields(), function ($fieldName) use ($formBuilder) {
                 return !$formBuilder->hasField($fieldName);

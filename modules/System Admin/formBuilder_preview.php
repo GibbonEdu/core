@@ -71,6 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Display results?
     if ($formBuilder->getPageNumber() > $formBuilder->getFinalPageNumber()) {
+
+        $table = $formBuilder->display();
+
+        $form->setClass('blank');
+        $form->addRow()->addContent($table->render([$values]));
+                        
         $processes = $formProcessor->getViewableProcesses();
         foreach ($processes as $process) {
             $viewClass = $process->getViewClass();

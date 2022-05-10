@@ -33,14 +33,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
     // QUERY
     $criteria = $formGateway->newQueryCriteria(true)
         ->sortBy('name', 'ASC')
-        ->filterBy('active', 'Y')
         ->fromPOST();
 
     $forms = $formGateway->queryForms($criteria);
 
     // GRID TABLE
     $table = $container->get(DataTable::class);
-    $table->setTitle(__('Forms'));
+    $table->setTitle(__('Form Builder'));
+    $table->setDescription(__('The form builder enables you to design application forms as well as other custom forms for collecting user data. The features available in each form depend on the fields added to them.'));
+
+    $table->modifyRows(function ($module, $row) {
+        $row->addClass($module['active'] == 'N' ? 'error' : '');
+        return $row;
+    });
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/System Admin/formBuilder_add.php')
