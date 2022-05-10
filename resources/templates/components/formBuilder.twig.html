@@ -8,16 +8,15 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <section class="lg:flex items-stretch">
     <div class="flex-1 pr-6">
+
+        {{ fields.getOutput|raw }}
+
         {% if fieldCount <= 0 %}
-        <h2>{{ fields.getTitle }}</h2>
-        
         <div class="h-48 rounded-sm border bg-gray-100 shadow-inner overflow-hidden">
             {% block blankslate %}
-            {% include 'components/blankSlate.twig.html' with {blankSlate: __('This form is empty. Select and add fields to your form using the sidebar.')} %}
+            {% include 'components/blankSlate.twig.html' with {blankSlate: __('This page is empty. Add fields to your form using the sidebar.')} %}
             {% endblock blankslate %}
         </div>
-        {% else %}
-        {{ fields.getOutput|raw }}
         {% endif %}
     </div>
 
