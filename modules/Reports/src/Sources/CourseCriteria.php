@@ -93,7 +93,7 @@ class CourseCriteria extends DataSource
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonReportingCriteria.gibbonReportingCycleID=:gibbonReportingCycleID
                 AND gibbonCourse.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID
-                AND gibbonCourseClassPerson.role='Student'
+                AND (gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Student - Left')
                 AND gibbonReportingScope.scopeType='Course'
                 AND ((gibbonReportingProgress.status='Complete' AND gibbonReportingCriteria.target = 'Per Student') 
                     OR gibbonReportingCriteria.target = 'Per Group') 
