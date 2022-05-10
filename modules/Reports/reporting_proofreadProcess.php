@@ -29,8 +29,9 @@ $mode = $_POST['mode'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_POST['gibbonFormGroupID'] ?? '';
 $page = $_POST['page'] ?? '';
+$filter = $_POST['filter'] ?? '';
 
-$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page;
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&mode='.$mode.'&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&page='.$page.'&filter='.$filter;
 
 if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];
