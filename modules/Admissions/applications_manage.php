@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -49,6 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     echo $form->getOutput();
 
+    // QUERY
+    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
+    $criteria = $formSubmissionGateway->newQueryCriteria(true)
+        ->sortBy('timestampCreated', 'ASC');
+
+    $submissions = $formSubmissionGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
+
     // DATA TABLE
     $table = DataTable::create('admissions');
     $table->setTitle(__('Applications'));
@@ -56,6 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table->addColumn('student', __('Student'));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
+    $table->addColumn('formName', __('Application Form'));
+    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
         ->format(function ($values, $actions) {
@@ -66,5 +77,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                 ->setURL('/modules/Admissions/applications_manage_delete.php');
         });
 
-    echo $table->render([]);
+    echo $table->render($submissions);
 }

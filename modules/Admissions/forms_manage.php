@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.php') == false) {
     // Access denied
@@ -49,22 +51,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
 
     echo $form->getOutput();
 
+    // QUERY
+    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
+    $criteria = $formSubmissionGateway->newQueryCriteria(true)
+        ->sortBy('timestampCreated', 'ASC');
+
+    $submissions = $formSubmissionGateway->queryOtherFormsBySchoolYear($criteria, $gibbonSchoolYearID);
+
     // DATA TABLE
     $table = DataTable::create('admissions');
-    $table->setTitle(__('Forms'));
+    $table->setTitle(__('Applications'));
 
     $table->addColumn('student', __('Student'));
-    $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('formGroup', __('Form Group'));
+    $table->addColumn('formName', __('Form Name'));
+    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Admissions/forms_manage_edit.php');
+                ->setURL('/modules/Admissions/applications_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Admissions/forms_manage_delete.php');
+                ->setURL('/modules/Admissions/applications_manage_delete.php');
         });
 
-    echo $table->render([]);
+    echo $table->render($submissions);
 }

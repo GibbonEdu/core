@@ -35,6 +35,60 @@ class FormSubmissionGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
+    public function queryApplicationsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $type = 'Application')
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->cols([
+                'gibbonFormSubmission.gibbonFormSubmissionID',
+                'gibbonFormSubmission.gibbonFormID',
+                'gibbonFormSubmission.identifier',
+                'gibbonFormSubmission.status',
+                'gibbonFormSubmission.timestampCreated',
+                'gibbonForm.gibbonFormID',
+                'gibbonForm.name as formName',
+             ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->innerJoin('gibbonSchoolYear', 'gibbonFormSubmission.timestampCreated BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
+            ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonForm.type=:type')
+            ->bindValue('type', $type);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryOtherFormsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $type = null)
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->cols([
+                'gibbonFormSubmission.gibbonFormSubmissionID',
+                'gibbonFormSubmission.gibbonFormID',
+                'gibbonFormSubmission.identifier',
+                'gibbonFormSubmission.status',
+                'gibbonFormSubmission.timestampCreated',
+                'gibbonForm.gibbonFormID',
+                'gibbonForm.name as formName',
+             ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->innerJoin('gibbonSchoolYear', 'gibbonFormSubmission.timestampCreated BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
+            ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonForm.type<>'Application'");
+        
+            if (!empty($type)) {
+                $query->where('gibbonForm.type=:type')
+                      ->bindValue('type', $type);
+            }
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function querySubmissionsByForm(QueryCriteria $criteria, $gibbonFormID)
     {
         $query = $this
