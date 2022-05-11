@@ -44,8 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     
     // Setup the form data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
-    // $formData = $container->get(FormSessionStorage::class);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
+    $formData = $container->get(FormSessionStorage::class);
     $formData->load($identifier);
 
     // Acquire data and handle file uploads - on error, return to the current page

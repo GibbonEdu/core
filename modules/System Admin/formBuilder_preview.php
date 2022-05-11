@@ -23,6 +23,8 @@ use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
     // Access denied
@@ -48,8 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
-    // $formData = $container->get(FormSessionStorage::class);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'preview', 1);
+    $formData = $container->get(FormSessionStorage::class);
     $formData->load($identifier);
 
     // Verify the form
@@ -61,31 +62,39 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         echo Format::alert($errorMessage);
     }
 
-    // Build the form
-    $form = $formBuilder->build($session->get('absoluteURL').'/modules/System Admin/formBuilder_previewProcess.php');
-    $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
-    
     // Load values from the form data storage
     $values = $formData->getData();
-    $form->loadAllValuesFrom($values);
 
-    // Display results?
-    if ($formBuilder->getPageNumber() > $formBuilder->getFinalPageNumber()) {
+    // Has the form been completed?
+    if ($formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
 
-        $table = $formBuilder->display();
+        $action = Url::fromHandlerRoute('modules/System Admin/formBuilder_previewProcess.php');
+        $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview');
 
-        $form->setClass('blank');
-        $form->addRow()->addContent($table->render([$values]));
+        // Build the form
+        $form = $formBuilder->build($action, $pageUrl);
+        $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
+        $form->loadAllValuesFrom($values);
+
+        echo $form->getOutput();
+
+    } else {
+        // Display the results
+        $form = Form::create('formBuilder', '');
+        $form->setTitle(__('Results'));
                         
         $processes = $formProcessor->getViewableProcesses();
         foreach ($processes as $process) {
-            $viewClass = $process->getViewClass();
-            if (empty($viewClass)) continue;
-
-            $view = $container->get($viewClass);
-            $view->display($form, $formData);
+            if ($viewClass = $process->getViewClass()) {
+                $view = $container->get($viewClass);
+                $view->display($form, $formData);
+            }
         }
-    }
 
-    echo $form->getOutput();
+        echo $form->getOutput();
+
+        // Display the submitted data
+        $table = $formBuilder->display();
+        echo $table->render([$values]);
+    }
 }
