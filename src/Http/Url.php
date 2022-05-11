@@ -232,7 +232,7 @@ class Url extends Uri implements UriInterface
      */
     public function withQueryParams(array $params): self
     {
-        return $this->withQuery(http_build_query(array_merge($this->getQueryParams(), $params)));
+        return $this->withQuery(http_build_query($params));
     }
 
     /**
