@@ -48,6 +48,30 @@ class FormSubmissionGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryFormSubmissionsByContext(QueryCriteria $criteria, $foreignTable, $foreignTableID) 
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->cols([
+                'gibbonFormSubmission.gibbonFormSubmissionID',
+                'gibbonFormSubmission.gibbonFormID',
+                'gibbonFormSubmission.identifier',
+                'gibbonFormSubmission.status',
+                'gibbonFormSubmission.timestampCreated',
+                'gibbonForm.gibbonFormID',
+                'gibbonForm.name as formName',
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->where('gibbonFormSubmission.foreignTable=:foreignTable')
+            ->bindValue('foreignTable', $foreignTable)
+            ->where('gibbonFormSubmission.foreignTableID=:foreignTableID')
+            ->bindValue('foreignTableID', $foreignTableID);
+
+    return $this->runQuery($query, $criteria);
+    }
+
     public function getFormSubmissionByIdentifier($gibbonFormID, $identifier)
     {
         return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier])->fetch();

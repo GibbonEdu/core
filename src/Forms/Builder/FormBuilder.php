@@ -111,11 +111,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         }
     }
     
-    public function populate(string $gibbonFormID, int $pageNumber = 1, string $identifier = null)
+    public function populate(string $gibbonFormID, int $pageNumber = 1, array $urlParams = [])
     {
         $this->gibbonFormID = $gibbonFormID;
         $this->pageNumber = $pageNumber;
-        $this->identifier = $identifier;        
+        $this->urlParams = $urlParams;        
         
         // Load form details
         $this->details = $this->formGateway->getByID($this->gibbonFormID);
@@ -176,15 +176,15 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
         $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
-        $form->addHiddenValue('identifier', $this->identifier);
         $form->addHiddenValue('page', $this->pageNumber);
+        $form->addHiddenValues($this->urlParams);
         
         // Add pages to the multi-part form
         if (count($this->pages) > 1) {
             $form->setCurrentPage($this->pageNumber);
 
             foreach ($this->pages as $formPage) {
-                $form->addPage($formPage['sequenceNumber'], $formPage['name'], (string)$pageUrl->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber'], 'identifier' => $this->identifier]));
+                $form->addPage($formPage['sequenceNumber'], $formPage['name'], (string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber']]));
             }
         }
 

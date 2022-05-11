@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     }
 
     // Setup the form builder & data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier]);
     $formData = $container->get(FormSessionStorage::class);
     $formData->load($identifier);
 
@@ -67,7 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Has the form been completed?
     if ($formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
-
         $action = Url::fromHandlerRoute('modules/System Admin/formBuilder_previewProcess.php');
         $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview');
 

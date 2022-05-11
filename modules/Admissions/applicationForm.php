@@ -53,11 +53,20 @@ if ($proceed == false) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $page->breadcrumbs
-        ->add(__('Admissions Welcome'), '/modules/Admissions/applicationSelect.php')
-        ->add(__('Application Form'));
-
     $accessID = $_REQUEST['accessID'] ?? '';
+    $accessToken = $session->get('admissionsAccessToken') ?? '';
+
+    if (!empty($accessID) && !empty($accessToken)) {
+        $page->breadcrumbs
+            ->add(__('My Admissions Account'), '/modules/Admissions/applicationView.php', ['accessID' => $accessID])
+            ->add(__('Application Form'));
+    } else {
+        $page->breadcrumbs
+            ->add(__('Admissions Welcome'), '/modules/Admissions/applicationSelect.php')
+            ->add(__('Application Form'));
+    }
+    
+    $accountType = $_REQUEST['accountType'] ?? '';
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
     $identifier = $_REQUEST['identifier'] ?? null;
     $pageNumber = $_REQUEST['page'] ?? 1;
@@ -77,8 +86,14 @@ if ($proceed == false) {
         $identifier = $container->get(FormSubmissionGateway::class)->getNewUniqueIdentifier($gibbonFormID);
     }
 
+    if ($accountType == 'new') {
+        echo Format::alert(__('A new admissions account has been created for {email}. You can access any application forms in progress by.', ['email' => $account['email']]), 'success');
+    } else if ($accountType == 'existing') {
+        echo Format::alert(__('This application form will be attached to the existing admissions account for {email}.', ['email' => $account['email']]), 'message');
+    }
+
     // Setup the form builder & data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
     $formData->load($identifier);
 
@@ -93,16 +108,16 @@ if ($proceed == false) {
 
     // Load values from the form data storage
     $values = $formData->getData();
+    $incomplete = empty($values['status']) || $values['status'] == 'Incomplete';
 
     // Has the form been completed?
-    if ($formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
+    if ($incomplete && $formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
         $action = Url::fromHandlerRoute('modules/Admissions/applicationFormProcess.php');
-        $pageUrl = Url::fromModuleRoute('Admissions', 'applicationForm')->withQueryParam('accessID', $accessID);
+        $pageUrl = Url::fromModuleRoute('Admissions', 'applicationForm');
 
         // Build the form
         $form = $formBuilder->build($action, $pageUrl);
         $form->setMaxPage($formData->get('maxPage') ?? $formBuilder->getPageNumber());
-        $form->addHiddenValue('accessID', $accessID);
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();

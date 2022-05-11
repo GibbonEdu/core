@@ -51,7 +51,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     }
     
     // Setup the form data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
     $formData->load($identifier);
 
@@ -84,6 +84,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
         $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
         $formProcessor->submitForm($formBuilder, $formData);
 
+        $formData->set('status', 'Submitted');
         $formData->save($identifier);
 
         $URL = $URL->withQueryParam('return', 'success0')->withQueryParam('page', $pageNumber+1);

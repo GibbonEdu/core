@@ -57,6 +57,7 @@ class FormDatabaseStorage extends AbstractFormStorage
 
             $saved = $this->formSubmissionGateway->update($values['gibbonFormSubmissionID'], [
                 'data'              => json_encode($data),
+                'status'            => $data['status'] ?? 'Incomplete',
                 'timestampModified' => date('Y-m-d H:i:s'),
             ]);
         } else {

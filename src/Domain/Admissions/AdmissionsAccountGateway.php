@@ -54,6 +54,14 @@ class AdmissionsAccountGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getAccountByAccessToken($accessID, $accessToken)
+    {
+        $data = ['accessID' => $accessID, 'accessToken' => $accessToken];
+        $sql = "SELECT * FROM gibbonAdmissionsAccount WHERE accessID=:accessID AND accessToken=:accessToken AND CURRENT_TIMESTAMP() <= timestampTokenExpire";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getUniqueAccessID($salt)
     {
         do {
@@ -62,5 +70,15 @@ class AdmissionsAccountGateway extends QueryableGateway
         } while (!empty($checkID));
 
         return $accessID;
+    }
+
+    public function getUniqueAccessToken($salt)
+    {
+        do {
+            $accessToken = hash('sha256', microtime().$salt);
+            $checkToken = $this->selectBy(['accessToken' => $accessToken])->fetch();
+        } while (!empty($checkToken));
+
+        return substr($accessToken, 0, 32);
     }
 }

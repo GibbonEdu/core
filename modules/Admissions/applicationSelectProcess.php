@@ -18,7 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Comms\EmailTemplate;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -58,15 +61,54 @@ if (empty($email)) {
         exit;
     }
 
-    if ($gibbonFormID == 'existing' && $accountType == 'existing') {
-        // Handle loading existing forms
-    } else {
+    // Redirect if a new application form was selected
+    if ($gibbonFormID != 'existing') {
         $URL = Url::fromModuleRoute('Admissions', 'applicationForm')->withQueryParams([
             'gibbonFormID' => $gibbonFormID,
             'accessID'     => $accessID,
             'accountType'  => $accountType,
         ]);
+        header("Location: {$URL}");
+        exit;
     }
 
-    header("Location: {$URL}");
+    // Cannot continue if this is a new account - no existing forms
+    if ($accountType != 'existing') {
+        header("Location: {$URL->withReturn('error4')}");
+        exit;
+    }
+
+    // Generate a unique access token and update the admissions account
+    $accessToken = $admissionsAccountGateway->getUniqueAccessToken($guid.$accessID);
+    $accessExpiry = date('Y-m-d H:i:s', strtotime("+2 days"));
+    $admissionsAccountGateway->update($gibbonAdmissionsAccountID, ['accessToken' => $accessToken, 'timestampTokenExpire' => $accessExpiry]);
+    
+    // Handle sending email link to existing admissions account
+    $template = $container->get(EmailTemplate::class)->setTemplate('Admissions Account Access');
+    $data = ['email' => $email, 'date' => Format::date(date('Y-m-d')) ];
+
+    $mail = $container->get(Mailer::class);
+
+    $mail->AddAddress($email);
+    $mail->setDefaultSender($template->renderSubject($data));
+
+    $mail->renderBody('mail/email.twig.html', [
+        'title'  => $template->renderSubject($data),
+        'body'   => $template->renderBody($data),
+        'button' => [
+            'url'  => Url::fromModuleRoute('Admissions', 'applicationView')
+                ->withQueryParams(['acc' => $accessID, 'tok' => $accessToken])
+                ->withAbsoluteUrl(),
+            'text' => __('Access your Account'),
+            'external' => true,
+        ],
+    ]);
+
+    if ($mail->Send()) {
+        header("Location: {$URL->withReturn('success1')}");
+    } else {
+        header("Location: {$URL->withQueryParam('email', $email)->withReturn('error5')}");
+    }
+
+    
 }
