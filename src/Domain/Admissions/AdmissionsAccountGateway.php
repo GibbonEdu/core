@@ -38,6 +38,26 @@ class AdmissionsAccountGateway extends QueryableGateway
 
     private static $searchableColumns = ['email'];
 
+    public function queryAdmissionsAccounts(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->cols([
+                'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
+                'gibbonAdmissionsAccount.email',
+                'gibbonAdmissionsAccount.timestampCreated',
+                "(COUNT(CASE WHEN gibbonForm.type='Application' THEN gibbonFormSubmissionID END)) as applicationCount",
+                "(COUNT(CASE WHEN gibbonForm.type<>'Application' THEN gibbonFormSubmissionID END)) as formCount"
+            ])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonFormSubmission', 'gibbonFormSubmission.foreignTable="gibbonAdmissionsAccount" AND gibbonFormSubmission.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
+            ->leftJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->groupBy(['gibbonAdmissionsAccount.gibbonAdmissionsAccountID']);
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function getAccountByEmail($email)
     {
         $data = ['email' => $email];

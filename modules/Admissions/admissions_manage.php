@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_manage.php') == false) {
     // Access denied
@@ -45,15 +47,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
 
     echo $form->getOutput();
 
+    // QUERY
+    $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
+    $criteria = $admissionsAccountGateway->newQueryCriteria(true)
+        ->searchBy($admissionsAccountGateway->getSearchableColumns(), $search)
+        ->sortBy('timestampCreated', 'DESC')
+        ->fromPOST();
+
+    $accounts = $admissionsAccountGateway->queryAdmissionsAccounts($criteria);
+
     // DATA TABLE
-    $table = DataTable::create('admissions');
+    $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Admissions Accounts'));
 
-    $table->addColumn('name', __('Name'));
+    // $table->addColumn('name', __('Name'));
     $table->addColumn('email', __('Email'));
-    $table->addColumn('date', __('Created On'));
-    $table->addColumn('applications', __('Applications'));
-    $table->addColumn('otherForms', __('Other Forms'));
+    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
+    $table->addColumn('applicationCount', __('Applications'));
+    $table->addColumn('formCount', __('Other Forms'));
 
     $table->addActionColumn()
         ->format(function ($values, $actions) {
@@ -64,5 +75,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
                 ->setURL('/modules/Admissions/admissions_manage_delete.php');
         });
 
-    echo $table->render([]);
+    echo $table->render($accounts);
 }

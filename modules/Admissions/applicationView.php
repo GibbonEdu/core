@@ -42,12 +42,11 @@ if (empty($accessID) || empty($accessToken)) {
 
     if (empty($account)) {
         $page->addError(__('Could not fetch account information. The URL is either invalid or has expired. Please visit the {application} page to try again.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
+        $session->forget('admissionsAccessToken');
         return;
     }
 
-    if (!$session->has('admissionsAccessToken')) {
-        $session->set('admissionsAccessToken', $accessToken);
-    }
+    $session->set('admissionsAccessToken', $accessToken);
 
     $criteria = $formSubmissionGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
