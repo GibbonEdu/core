@@ -28,7 +28,6 @@ use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 
-
 $proceed = false;
 $public = false;
 
@@ -94,7 +93,7 @@ if ($proceed == false) {
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
+    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
     // Verify the form

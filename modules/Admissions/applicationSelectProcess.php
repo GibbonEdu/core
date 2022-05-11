@@ -47,7 +47,11 @@ if (empty($email)) {
     if (empty($account)) {
         // New account
         $accessID = $admissionsAccountGateway->getUniqueAccessID($guid.$email);
-        $gibbonAdmissionsAccountID = $admissionsAccountGateway->insert(['email' => $email, 'accessID' => $accessID]);
+        $gibbonAdmissionsAccountID = $admissionsAccountGateway->insert([
+            'email'     => $email,
+            'accessID'  => $accessID,
+            'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '',
+        ]);
         $accountType = 'new';
     } else {   
         // Existing account
@@ -60,6 +64,8 @@ if (empty($email)) {
         header("Location: {$URL->withReturn('error2')}");
         exit;
     }
+
+    // TODO: Check for existing gibbonPerson account with the same email address, prompt to login
 
     // Redirect if a new application form was selected
     if ($gibbonFormID != 'existing') {
@@ -81,7 +87,13 @@ if (empty($email)) {
     // Generate a unique access token and update the admissions account
     $accessToken = $admissionsAccountGateway->getUniqueAccessToken($guid.$accessID);
     $accessExpiry = date('Y-m-d H:i:s', strtotime("+2 days"));
-    $admissionsAccountGateway->update($gibbonAdmissionsAccountID, ['accessToken' => $accessToken, 'timestampTokenExpire' => $accessExpiry]);
+
+    $admissionsAccountGateway->update($gibbonAdmissionsAccountID, [
+        'accessToken'          => $accessToken,
+        'timestampTokenExpire' => $accessExpiry,
+        'timestampActive'      => date('Y-m-d H:i:s'),
+        'ipAddress'            => $_SERVER['REMOTE_ADDR'] ?? '',
+    ]);
     
     // Handle sending email link to existing admissions account
     $template = $container->get(EmailTemplate::class)->setTemplate('Admissions Account Access');
@@ -109,6 +121,4 @@ if (empty($email)) {
     } else {
         header("Location: {$URL->withQueryParam('email', $email)->withReturn('error5')}");
     }
-
-    
 }

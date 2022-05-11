@@ -48,14 +48,25 @@ class FormSubmissionGateway extends QueryableGateway
                 'gibbonFormSubmission.timestampCreated',
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
+                'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
+                'gibbonAdmissionsAccount.email',
              ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
             ->innerJoin('gibbonSchoolYear', 'gibbonFormSubmission.timestampCreated BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
+            ->leftJoin('gibbonAdmissionsAccount', "gibbonFormSubmission.foreignTable='gibbonAdmissionsAccount' AND gibbonFormSubmission.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID")
             ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonForm.type=:type')
             ->bindValue('type', $type);
+
+        $criteria->addFilterRules([
+            'admissionsAccount' => function ($query, $admissionsAccount) {
+                return $query
+                    ->where('gibbonAdmissionsAccount.gibbonAdmissionsAccountID = :admissionsAccount')
+                    ->bindValue('admissionsAccount', $admissionsAccount);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
@@ -73,10 +84,13 @@ class FormSubmissionGateway extends QueryableGateway
                 'gibbonFormSubmission.timestampCreated',
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
+                'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
+                'gibbonAdmissionsAccount.email',
              ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
             ->innerJoin('gibbonSchoolYear', 'gibbonFormSubmission.timestampCreated BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
+            ->leftJoin('gibbonAdmissionsAccount', "gibbonFormSubmission.foreignTable='gibbonAdmissionsAccount' AND gibbonFormSubmission.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID")
             ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where("gibbonForm.type<>'Application'");

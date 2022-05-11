@@ -47,6 +47,7 @@ class AdmissionsAccountGateway extends QueryableGateway
                 'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
                 'gibbonAdmissionsAccount.email',
                 'gibbonAdmissionsAccount.timestampCreated',
+                'gibbonAdmissionsAccount.timestampActive',
                 "(COUNT(CASE WHEN gibbonForm.type='Application' THEN gibbonFormSubmissionID END)) as applicationCount",
                 "(COUNT(CASE WHEN gibbonForm.type<>'Application' THEN gibbonFormSubmissionID END)) as formCount"
             ])

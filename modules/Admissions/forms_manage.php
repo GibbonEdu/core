@@ -29,8 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     // Proceed!
     $page->breadcrumbs->add(__('Manage Other Forms'));
 
-    $search = $_GET['search'] ?? '';
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonAdmissionsAccountID = $_GET['gibbonAdmissionsAccountID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
@@ -54,12 +55,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     // QUERY
     $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
     $criteria = $formSubmissionGateway->newQueryCriteria(true)
-        ->sortBy('timestampCreated', 'ASC');
+        ->sortBy('timestampCreated', 'DESC')
+        ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
+        ->fromPOST();
 
     $submissions = $formSubmissionGateway->queryOtherFormsBySchoolYear($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
-    $table = DataTable::create('admissions');
+    $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Applications'));
 
     $table->addColumn('student', __('Student'));

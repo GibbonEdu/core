@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Services\Format;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_manage.php') == false) {
     // Access denied
@@ -60,11 +61,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Admissions Accounts'));
 
-    // $table->addColumn('name', __('Name'));
     $table->addColumn('email', __('Email'));
-    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
-    $table->addColumn('applicationCount', __('Applications'));
-    $table->addColumn('formCount', __('Other Forms'));
+    $table->addColumn('timestampCreated', __('Created'))
+        ->format(Format::using('relativeTime', 'timestampCreated'));
+    $table->addColumn('timestampActive', __('Last Active'))
+        ->format(Format::using('relativeTime', 'timestampActive'));
+    $table->addColumn('applicationCount', __('Applications'))
+        ->format(function($values) {
+            if (empty($values['applicationCount'])) return;
+
+            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
+            return Format::link($url, $values['applicationCount']);
+        });
+    $table->addColumn('formCount', __('Other Forms'))
+        ->format(function($values) {
+            if (empty($values['formCount'])) return;
+
+            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
+            return Format::link($url, $values['formCount']);
+        });
 
     $table->addActionColumn()
         ->format(function ($values, $actions) {

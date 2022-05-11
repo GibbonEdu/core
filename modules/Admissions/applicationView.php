@@ -47,6 +47,7 @@ if (empty($accessID) || empty($accessToken)) {
     }
 
     $session->set('admissionsAccessToken', $accessToken);
+    $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);
 
     $criteria = $formSubmissionGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
