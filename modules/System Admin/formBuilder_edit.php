@@ -77,6 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->required();
 
+    $row = $form->addRow();
+        $row->addLabel('public', __('Public'))->description(__('If yes, members of the public can submit applications'));
+        $row->addYesNo('public')->required();
+
     $values['gibbonYearGroupIDList'] = explode(',', $values['gibbonYearGroupIDList']);
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
@@ -144,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $formProcessor = $formProcessorFactory->getProcessor($values['type']);
 
     // Verify the form processes
-    $errors = $formProcessor->verifyForm($formBuilder);
+    $errors = $formProcessor->verifyForm($formBuilder, true);
     $processes = $formProcessor->getProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
