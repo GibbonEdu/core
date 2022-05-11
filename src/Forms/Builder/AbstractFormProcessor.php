@@ -90,9 +90,9 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         $this->acceptProcess();
     }
 
-    public function verifyForm(FormBuilderInterface $builder)
+    public function verifyForm(FormBuilderInterface $builder, bool $preflight = false)
     {
-        $this->mode = 'verify';
+        $this->mode = $preflight ? 'preflight' : 'verify';
         $this->builder = $builder;
 
         $this->submitProcess();
@@ -129,6 +129,15 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     {
         try {
             $process = $this->getProcess($processClass);
+
+            if ($this->mode == 'preflight') {
+                $process->verify($this->builder);
+                $process->setVerified();
+            }
+            
+            if (!$process->isEnabled($this->builder)) {
+                return;
+            }
 
             if ($this->mode == 'verify') {
                 $process->verify($this->builder);

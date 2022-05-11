@@ -44,16 +44,32 @@ class SendEmail extends AbstractFormProcess implements ViewableProcess
         return SendEmailView::class;
     }
 
+    public function isEnabled(FormBuilderInterface $builder)
+    {
+        return $builder->getConfig('sendEmail') == 'Y';
+    }
+
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if ($builder->getConfig('sendEmail') != 'Y') {
-            return;
+        $output = "<ul>";
+        foreach ($formData->getData() as $fieldName => $value) {
+            $field = $builder->getField($fieldName);
+            if (empty($field)) continue;
+
+            $output .= "<li>";
+            if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
+                $output .= '<strong>'.__($field['label']).'</strong>';
+            } else {
+                $output .= __($field['label']).': '.$value;
+            }
+            $output .= "</li>";
         }
+        $output .= "</u>";
 
         $this->mail->Subject = 'Preview Test Mail';
         $this->mail->renderBody('mail/message.twig.html', [
             'title'  => 'Testing',
-            'body'   => 'Hello this is a test.',
+            'body'   => $output,
         ]);
 
         $this->mail->SetFrom($this->session->get('organisationEmail'), $this->session->get('organisationName'));

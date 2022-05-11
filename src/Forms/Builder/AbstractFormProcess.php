@@ -33,6 +33,8 @@ abstract class AbstractFormProcess
 
     abstract public function rollback(FormBuilderInterface $builder, FormDataInterface $data);
 
+    abstract public function isEnabled(FormBuilderInterface $builder);
+
     public function isVerified()
     {
         return $this->verified;
