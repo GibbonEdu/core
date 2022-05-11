@@ -136,9 +136,42 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this;
     }
 
-    public function build(string $action)
+    public function acquire()
     {
-        $form = MultiPartForm::create('formBuilder', $action);
+        $data = [];
+
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['pageNumber'] != $this->pageNumber) continue;
+
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field['fieldType']);
+
+            if (!is_null($fieldValue)) {
+                $data[$fieldName] = $fieldValue;
+            }
+        }
+
+        return $data;
+    }
+
+    public function validate(array $data)
+    {
+        $invalid = [];
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['pageNumber'] != $this->pageNumber) continue;
+
+            $fieldValue = &$data[$fieldName];
+            if ($field['required'] != 'N' &&  (is_null($fieldValue) || $fieldValue == '')) {
+                $invalid[] = $fieldName;
+            }
+        }
+
+        return !empty($invalid);
+    }
+
+    public function build(Url $action, Url $pageUrl)
+    {
+        $form = MultiPartForm::create('formBuilder', (string)$action);
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
 
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
@@ -151,8 +184,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             $form->setCurrentPage($this->pageNumber);
 
             foreach ($this->pages as $formPage) {
-                $pageUrl = Url::fromModuleRoute('System Admin', 'formBuilder_preview.php')->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber'], 'identifier' => $this->identifier]);
-                $form->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
+                $form->addPage($formPage['sequenceNumber'], $formPage['name'], (string)$pageUrl->withQueryParams(['gibbonFormID' => $this->gibbonFormID, 'page' => $formPage['sequenceNumber'], 'identifier' => $this->identifier]));
             }
         }
 
@@ -204,37 +236,5 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         
         return $table;
     }
-
-    public function acquire()
-    {
-        $data = [];
-
-        foreach ($this->fields as $fieldName => $field) {
-            if ($field['pageNumber'] != $this->pageNumber) continue;
-
-            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field['fieldType']);
-
-            if (!is_null($fieldValue)) {
-                $data[$fieldName] = $fieldValue;
-            }
-        }
-
-        return $data;
-    }
-
-    public function validate(array $data)
-    {
-        $invalid = [];
-        foreach ($this->fields as $fieldName => $field) {
-            if ($field['pageNumber'] != $this->pageNumber) continue;
-
-            $fieldValue = &$data[$fieldName];
-            if ($field['required'] != 'N' &&  (is_null($fieldValue) || $fieldValue == '')) {
-                $invalid[] = $fieldName;
-            }
-        }
-
-        return !empty($invalid);
-    }
+   
 }

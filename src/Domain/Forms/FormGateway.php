@@ -40,7 +40,7 @@ class FormGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->distinct()
-            ->cols(['gibbonForm.gibbonFormID', 'gibbonForm.name', 'gibbonForm.active', 'gibbonForm.type', 'COUNT(gibbonFormPageID) as pages'])
+            ->cols(['gibbonForm.gibbonFormID', 'gibbonForm.name', 'gibbonForm.description', 'gibbonForm.active', 'gibbonForm.type', 'COUNT(gibbonFormPageID) as pages'])
             ->from($this->getTableName())
             ->leftJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormID=gibbonForm.gibbonFormID')
             ->groupBy(['gibbonForm.gibbonFormID']);
@@ -50,6 +50,16 @@ class FormGateway extends QueryableGateway
                 return $query
                     ->where('gibbonForm.active = :active')
                     ->bindValue('active', $active);
+            },
+            'public' => function ($query, $public) {
+                return $query
+                    ->where('gibbonForm.public = :public')
+                    ->bindValue('public', $public);
+            },
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('gibbonForm.type = :type')
+                    ->bindValue('type', $type);
             },
         ]);
 
