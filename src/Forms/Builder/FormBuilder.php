@@ -30,6 +30,7 @@ use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -42,6 +43,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     protected $gibbonFormPageID;
     protected $pageNumber;
     protected $finalPageNumber;
+    protected $includeHidden = false;
 
     protected $pages = [];
     protected $fields = [];
@@ -97,6 +99,13 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->finalPageNumber;
     }
 
+    public function includeHidden(bool $includeHidden = true)
+    {
+        $this->includeHidden = $includeHidden;
+
+        return $this;
+    }
+
     public function getFieldGroup($fieldGroup)
     {
         if (isset($this->fieldGroups[$fieldGroup])) {
@@ -141,6 +150,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $data = [];
 
         foreach ($this->fields as $fieldName => $field) {
+            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
             if ($field['pageNumber'] != $this->pageNumber) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -158,6 +168,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     {
         $invalid = [];
         foreach ($this->fields as $fieldName => $field) {
+            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
             if ($field['pageNumber'] != $this->pageNumber) continue;
 
             $fieldValue = &$data[$fieldName];
@@ -191,6 +202,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         // Form is not complete, add fields to current page
         if ($this->pageNumber <= $this->finalPageNumber) {
             foreach ($this->fields as $field) {
+                if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
                 if ($field['pageNumber'] != $this->pageNumber) continue;
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -205,32 +217,104 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $form;
     }
 
+    public function edit(Url $action, $application = null)
+    {
+        $form = Form::create('formBuilder', (string)$action);
+        $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
+
+        $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
+        $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
+        $form->addHiddenValue('page', -1);
+        $form->addHiddenValues($this->urlParams);
+
+        // Display the Office-Only fields first
+        if ($this->includeHidden) {
+            $form->addRow()->addHeading('For Office Use', __('For Office Use'));
+
+            if (!empty($application['gibbonAdmissionsApplicationID'])) {
+                $row = $form->addRow();
+                    $row->addLabel('gibbonAdmissionsApplicationID', __('Application ID'));
+                    $row->addTextField('gibbonAdmissionsApplicationID')->readOnly()->setValue($application['gibbonAdmissionsApplicationID']);
+            }
+
+            if (!empty($application['status'])) {
+                $row = $form->addRow();
+                    $row->addLabel('status', __('Status'));
+                    $row->addTextField('status')->readOnly()->setValue($application['status']);
+            }
+
+            foreach ($this->pages as $formPage) {
+                foreach ($this->fields as $field) {
+                    if ($field['hidden'] == 'N') continue;
+                    if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+
+                    $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+                    $row = $fieldGroup->addFieldToForm($form, $field);
+                }
+            }
+        }
+
+        // Display all non-hidden fields
+        foreach ($this->pages as $formPage) {
+            foreach ($this->fields as $field) {
+                if ($field['hidden'] == 'Y') continue;
+                if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+
+                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+                $row = $fieldGroup->addFieldToForm($form, $field);
+            }
+        }
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit(__('Submit'));
+
+        return $form;
+    }
+
     public function display()
     {
         $table = DataTable::createDetails('formBuilder');
 
         $table->setTitle(__($this->getDetail('name')));
 
-        foreach ($this->pages as $formPage) {
-            foreach ($this->fields as $field) {
-                if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+        $addFieldToTable = function ($field) use (&$col, &$formPage, &$table) {
+            if ($field['pageNumber'] != $formPage['sequenceNumber']) return;
 
-                if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
-                    $col = $table->addColumn($field['label'], __($field['label']));
-                    continue;
-                }
-                
-                if (empty($col)) {
-                    $col = $table->addColumn($formPage['name']);
-                }
-
-                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
-
-                $col->addColumn($field['fieldName'], __($field['label']))
-                    ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '');
+            if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
+                $col = $table->addColumn($field['label'], __($field['label']));
+                return;
+            }
+            
+            if (empty($col)) {
+                $col = $table->addColumn($formPage['name'], $formPage['name']);
             }
 
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
+
+            $col->addColumn($field['fieldName'], __($field['label']))
+                ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '');
+        };
+
+        // Display the Office-Only fields first
+        if ($this->includeHidden) {
+            $col = $table->addColumn('For Office Use', __('For Office Use'));
+
+            foreach ($this->pages as $formPage) {
+                foreach ($this->fields as $field) {
+                    if ($field['hidden'] == 'N') continue;
+                    $addFieldToTable($field);
+                }
+            }
+        }
+
+        // Display all non-hidden fields
+        foreach ($this->pages as $formPage) {
+            foreach ($this->fields as $field) {
+                if ($field['hidden'] == 'Y') continue;
+                $addFieldToTable($field);
+            }
         }
         
         return $table;

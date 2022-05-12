@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addTextArea('description')->maxLength(255)->setRows(2);
 
         $row = $form->addRow();
-            $row->addLabel('required', __('Required'));
+            $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
 
         if ($values['required'] == 'X') {
             $form->addHiddenValue('required', 'X');
@@ -94,6 +94,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         } else {
             $row->addYesNo('required')->required();
         }
+
+        $row = $form->addRow();
+            $row->addLabel('hidden', __('Office Only'))->description(__('Is this field for office use only?'));
+            $row->addYesNo('hidden')->required();
+
+        $row = $form->addRow();
+            $row->addLabel('prefill', __('Prefill'))->description(__('Is this field prefilled when creating multiple forms?'));
+            $row->addYesNo('prefill')->required();
     }
 
     if ($values['fieldGroup'] == 'GenericFields' && in_array($values['fieldType'], ['varchar', 'number'])) {

@@ -42,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         'label'       => $_POST['label'] ?? '',
         'description' => $_POST['description'] ?? null,
         'required'    => $_POST['required'] ?? 'N',
+        'hidden'      => $_POST['hidden'] ?? 'N',
+        'prefill'     => $_POST['prefill'] ?? 'N',
     ];
 
     if (!empty($_POST['options'])) {

@@ -107,6 +107,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addClass('draggableRow')
             ->addData('drag-id', $field['gibbonFormFieldID']);
 
+        if ($field['hidden'] == 'Y') {
+            $row->addClass('bg-purple-200');
+        }
+
         if ($element = $row->getElement($field['fieldName'])) {
             $element->addClass('flex-1');
         }

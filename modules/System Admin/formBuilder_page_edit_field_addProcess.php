@@ -94,6 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             'fieldType'        => $_POST['type'] ?? $field['type'] ?? 'varchar',
             'fieldGroup'       => $fieldGroup ?? $urlParams['fieldGroup'],
             'required'         => $_POST['required'] ?? $field['required'] ?? 'N',
+            'hidden'           => $_POST['hidden'] ?? $field['hidden'] ?? 'N',
+            'prefill'          => $_POST['prefill'] ?? $field['prefill'] ?? 'N',
             'options'          => $_POST['options'] ?? $field['options'] ?? null,
             'label'            => $_POST['label'] ?? $field['label'] ?? '',
             'description'      => $_POST['description'] ?? $field['description'] ?? null,
