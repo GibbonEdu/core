@@ -17,14 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
+use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
-use Gibbon\Tables\Renderer\PrintableRenderer;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
@@ -37,13 +34,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->add(__('View & Print Application'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $gibbonFormSubmissionID = $_GET['gibbonFormSubmissionID'] ?? '';
+    $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
     $search = $_GET['search'] ?? '';
     $viewMode = $_GET['format'] ?? '';
 
     
-    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
-    $application = $formSubmissionGateway->getByID($gibbonFormSubmissionID);
+    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
+    $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
 
     if (empty($application)) {
         $page->addError(__('You have not specified one or more required parameters.'));
@@ -59,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']]);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
 
 
@@ -76,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $table->addHeaderAction('print', __('Print'))
             ->setURL('/report.php')
             ->addParam('q', '/modules/Admissions/applications_manage_view.php')
-            ->addParam('gibbonFormSubmissionID', $gibbonFormSubmissionID)
+            ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
             ->addParam('format', 'print')
             ->setTarget('_blank')
             ->directLink()
@@ -85,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     if ($viewMode == 'export') {
         $table->setRenderer(new SpreadsheetRenderer($session->get('absolutePath')));
-        $table->addMetaData('filename', 'gibbonExport_'.$gibbonFormSubmissionID);
+        $table->addMetaData('filename', 'gibbonExport_'.$gibbonAdmissionsApplicationID);
         $table->addMetaData('creator', Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
 
     } else {
         $table->addHeaderAction('export', __('Export'))
                 ->setURL('/export.php')
                 ->addParam('q', '/modules/Admissions/applications_manage_view.php')
-                ->addParam('gibbonFormSubmissionID', $gibbonFormSubmissionID)
+                ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
                 ->addParam('format', 'export')
                 ->setTarget('_blank')
                 ->prepend(' | ')

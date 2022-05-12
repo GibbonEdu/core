@@ -41,7 +41,6 @@ if (empty($email)) {
     }
 
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
-
     $account = $admissionsAccountGateway->getAccountByEmail($email);
 
     if (empty($account)) {
@@ -51,6 +50,7 @@ if (empty($email)) {
             'email'     => $email,
             'accessID'  => $accessID,
             'ipAddress' => $_SERVER['REMOTE_ADDR'] ?? '',
+            'timestampActive' => date('Y-m-d H:i:s'),
         ]);
         $accountType = 'new';
     } else {   

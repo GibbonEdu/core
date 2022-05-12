@@ -20,9 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
-use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
+use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 
 require_once '../../gibbon.php';
@@ -43,8 +42,8 @@ if (empty($gibbonFormID) || empty($identifier)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
-
-    $account = $container->get(AdmissionsAccountGateway::class)->getAccountByAccessID($accessID);
+    $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
+    $account = $admissionsAccountGateway->getAccountByAccessID($accessID);
     if (empty($account)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
@@ -52,7 +51,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     
     // Setup the form data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
     // Acquire data and handle file uploads - on error, return to the current page
@@ -72,6 +71,12 @@ if (empty($gibbonFormID) || empty($identifier)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
+
+    // Update the admissions account activity
+    $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
+        'timestampActive' => date('Y-m-d H:i:s'),
+        'ipAddress'       => $_SERVER['REMOTE_ADDR'] ?? '',
+    ]);
 
     // Determine how to handle the next page
     $formPageGateway = $container->get(FormPageGateway::class);

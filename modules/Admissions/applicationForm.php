@@ -20,8 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\Builder\Storage\FormSessionStorage;
-use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
+use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
@@ -86,14 +85,14 @@ if ($proceed == false) {
     }
 
     if ($accountType == 'new') {
-        echo Format::alert(__('A new admissions account has been created for {email}. You can access any application forms in progress by.', ['email' => $account['email']]), 'success');
+        echo Format::alert(__('A new admissions account has been created for {email}. You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     } else if ($accountType == 'existing') {
-        echo Format::alert(__('This application form will be attached to the existing admissions account for {email}.', ['email' => $account['email']]), 'message');
+        echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
     }
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
-    $formData = $container->get(FormDatabaseStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
     // Verify the form

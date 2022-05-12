@@ -22,7 +22,6 @@ use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
-use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
 
 require_once '../../gibbon.php';
 

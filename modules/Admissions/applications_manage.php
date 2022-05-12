@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -53,13 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     echo $form->getOutput();
 
     // QUERY
-    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
-    $criteria = $formSubmissionGateway->newQueryCriteria(true)
+    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
+    $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'DESC')
         ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
         ->fromPOST();
 
-    $submissions = $formSubmissionGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
+    $submissions = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
 
     // DATA TABLE
     $table = DataTable::createPaginated('applications', $criteria);
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
-        ->addParam('gibbonFormSubmissionID')
+        ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($values, $actions) {
             $actions->addAction('view', __('View & Print Application'))
                 ->setURL('/modules/Admissions/applications_manage_view.php');

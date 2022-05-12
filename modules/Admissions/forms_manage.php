@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
         ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
         ->fromPOST();
 
-    $submissions = $formSubmissionGateway->queryOtherFormsBySchoolYear($criteria, $gibbonSchoolYearID);
+    $submissions = $formSubmissionGateway->queryFormsBySchoolYear($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
     $table = DataTable::createPaginated('admissions', $criteria);

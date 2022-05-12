@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
-use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
+use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
 $accessToken = $_GET['tok'] ?? $session->get('admissionsAccessToken') ?? '';
@@ -36,7 +36,7 @@ if (empty($accessID) || empty($accessToken)) {
     $page->breadcrumbs->add(__('My Admissions Account'));
 
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
-    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
+    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
 
     $account = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
 
@@ -49,10 +49,10 @@ if (empty($accessID) || empty($accessToken)) {
     $session->set('admissionsAccessToken', $accessToken);
     $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);
 
-    $criteria = $formSubmissionGateway->newQueryCriteria(true)
+    $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
 
-    $submissions = $formSubmissionGateway->queryFormSubmissionsByContext($criteria, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
+    $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
 
     // DATA TABLE
     $table = DataTable::create('submissions');

@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
-use Gibbon\Forms\Builder\Storage\FormDatabaseStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Forms\Form;
