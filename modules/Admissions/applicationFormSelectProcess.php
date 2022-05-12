@@ -28,7 +28,7 @@ require_once '../../gibbon.php';
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $email = $_POST['admissionsLoginEmail'] ?? '';
 
-$URL = Url::fromModuleRoute('Admissions', 'applicationSelect');
+$URL = Url::fromModuleRoute('Admissions', 'applicationFormSelect');
 
 if (empty($email)) {
     header("Location: {$URL->withReturn('error0')}");
@@ -108,7 +108,7 @@ if (empty($email)) {
         'title'  => $template->renderSubject($data),
         'body'   => $template->renderBody($data),
         'button' => [
-            'url'  => Url::fromModuleRoute('Admissions', 'applicationView')
+            'url'  => Url::fromModuleRoute('Admissions', 'applicationFormView')
                 ->withQueryParams(['acc' => $accessID, 'tok' => $accessToken])
                 ->withAbsoluteUrl(),
             'text' => __('Access your Account'),

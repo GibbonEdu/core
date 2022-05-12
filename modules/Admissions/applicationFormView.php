@@ -41,7 +41,7 @@ if (empty($accessID) || empty($accessToken)) {
     $account = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
 
     if (empty($account)) {
-        $page->addError(__('Could not fetch account information. The URL is either invalid or has expired. Please visit the {application} page to try again.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
+        $page->addError(__('Could not fetch account information. The URL is either invalid or has expired. Please visit the {application} page to try again.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationFormSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
         $session->forget('admissionsAccessToken');
         return;
     }

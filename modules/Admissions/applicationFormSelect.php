@@ -75,7 +75,7 @@ if ($proceed == false) {
     } 
     
     // FORM
-    $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationSelectProcess.php');
+    $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
 
     $form->setTitle(__('Application Process'));
     $form->setClass('w-full blank');
