@@ -75,6 +75,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
     
     $form = $formBuilder->edit($action, $application);
+
+    $form->addHeaderAction('view', __('View'))
+        ->setURL('/modules/Admissions/applications_manage_view.php')
+        ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
+        ->append(' | ')
+        ->displayLabel();
+
+    $form->addHeaderAction('print', __('Print'))
+        ->setURL('/report.php')
+        ->addParam('q', '/modules/Admissions/applications_manage_view.php')
+        ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
+        ->addParam('format', 'print')
+        ->setTarget('_blank')
+        ->directLink()
+        ->displayLabel();
+
     $form->loadAllValuesFrom($values);
 
     echo $form->getOutput();

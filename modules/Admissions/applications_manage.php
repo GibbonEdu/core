@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
         return $row;
     });
-    
+
     $table->addColumn('gibbonAdmissionsApplicationID', __('ID'))->format(function ($values) {
         return intval($values['gibbonAdmissionsApplicationID']);
     });
@@ -83,11 +83,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $table->addActionColumn()
         ->addParam('gibbonAdmissionsApplicationID')
-        ->format(function ($values, $actions) {
-            $actions->addAction('view', __('View & Print Application'))
-                ->setURL('/modules/Admissions/applications_manage_view.php');
+        ->format(function ($application, $actions) {
 
-            if ($values['status'] != 'Incomplete') {
+            if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
+                $actions->addAction('accept', __('Accept'))
+                    ->setIcon('iconTick')
+                    ->setURL('/modules/Admissions/applications_manage_accept.php');
+
+                $actions->addAction('reject', __('Reject'))
+                    ->setIcon('iconCross')
+                    ->setURL('/modules/Admissions/applications_manage_reject.php');
+            }
+
+            if ($application['status'] == 'Incomplete') {
+                $actions->addAction('view', __('View & Print Application'))
+                    ->setURL('/modules/Admissions/applications_manage_view.php');
+            } else {
                 $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Admissions/applications_manage_edit.php');
             }

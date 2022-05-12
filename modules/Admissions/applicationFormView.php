@@ -100,7 +100,9 @@ if (empty($accessID) || empty($accessToken)) {
     // FORM
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
 
-    $form->setTitle(__('New Application'));
+    $form->setTitle(__('Add Another Application'));
+    $form->setDescription(__('You may continue submitting applications with the form below and they will be linked to your account data.').' '.__('Some information has been pre-filled for you, feel free to change this information as needed.'));
+
     $form->setClass('w-full blank');
     
     $form->addHiddenValue('address', $session->get('address'));

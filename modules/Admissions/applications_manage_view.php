@@ -23,6 +23,8 @@ use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -59,7 +61,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
 
+    // Verify the form
+    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    $errors = $formProcessor->verifyForm($formBuilder);
 
+    // Display any validation errors
+    foreach ($errors as $errorMessage) {
+        echo Format::alert($errorMessage);
+    }
+
+    // Display a message for incomplete applications
+    if ($application['status'] == 'Incomplete') {
+        echo Format::alert(__('This application form was created by {email} and is still in progress. It has not been submitted yet.', ['email' => '<u>'.$account['email'].'</u>']), 'warning');
+    }
+    
     // Display the submitted data
     $table = $formBuilder->display();
 
@@ -95,8 +110,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             ->prepend(' | ')
             ->directLink()
             ->displayLabel();
-}
+    }
 
     echo $table->render([$formData->getData()]);
 
+
+    // Display the results
+    if ($application['status'] != 'Incomplete') {
+        $form = Form::create('formBuilder', '');
+        $form->setTitle(__('Results'));
+                        
+        $processes = $formProcessor->getViewableProcesses();
+        foreach ($processes as $process) {
+            if ($viewClass = $process->getViewClass()) {
+                $view = $container->get($viewClass);
+                $view->display($form, $formData);
+            }
+        }
+
+        echo $form->getOutput();
+    }
 }
