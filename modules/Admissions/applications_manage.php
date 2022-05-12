@@ -65,10 +65,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table = DataTable::createPaginated('applications', $criteria);
     $table->setTitle(__('Applications'));
 
+    $table->modifyRows(function ($values, $row) {
+        if ($values['status'] == 'Incomplete') $row->addClass('warning');
+        return $row;
+    });
+    
+    $table->addColumn('gibbonAdmissionsApplicationID', __('ID'))->format(function ($values) {
+        return intval($values['gibbonAdmissionsApplicationID']);
+    });
+
     $table->addColumn('student', __('Student'));
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
     $table->addColumn('formName', __('Application Form'));
+    $table->addColumn('status', __('Status'));
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
@@ -77,8 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             $actions->addAction('view', __('View & Print Application'))
                 ->setURL('/modules/Admissions/applications_manage_view.php');
 
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Admissions/applications_manage_edit.php');
+            if ($values['status'] != 'Incomplete') {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Admissions/applications_manage_edit.php');
+            }
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Admissions/applications_manage_delete.php');

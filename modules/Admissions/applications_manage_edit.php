@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
-use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -31,17 +32,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Proceed!
     $page->breadcrumbs
         ->add(__('Manage Applications'), 'applications_manage.php')
-        ->add(__('View & Print Application'));
+        ->add(__('Edit Application'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
     $search = $_GET['search'] ?? '';
     $viewMode = $_GET['format'] ?? '';
-
     
-    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
-    $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
-
+    // Get the application form data
+    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     if (empty($application)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
@@ -58,45 +57,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
+    
+    // Verify the form
+    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    $errors = $formProcessor->verifyForm($formBuilder);
 
-
-    // Display the submitted data
-    $table = $formBuilder->display();
-
-    if ($viewMode == 'print') {
-        $table->addHeaderAction('print', __('Print'))
-            ->onClick('javascript:window.print(); return false;')
-            ->setURL('#')
-            ->displayLabel();
-        $table->addMetaData('hidePagination', true);
-    } else {
-        $table->addHeaderAction('print', __('Print'))
-            ->setURL('/report.php')
-            ->addParam('q', '/modules/Admissions/applications_manage_view.php')
-            ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->addParam('format', 'print')
-            ->setTarget('_blank')
-            ->directLink()
-            ->displayLabel();
+    // Display any validation errors
+    foreach ($errors as $errorMessage) {
+        echo Format::alert($errorMessage);
     }
 
-    if ($viewMode == 'export') {
-        $table->setRenderer(new SpreadsheetRenderer($session->get('absolutePath')));
-        $table->addMetaData('filename', 'gibbonExport_'.$gibbonAdmissionsApplicationID);
-        $table->addMetaData('creator', Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
+    // Load values from the form data storage
+    $values = $formData->getData();
+    $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 
-    } else {
-        $table->addHeaderAction('export', __('Export'))
-            ->setURL('/export.php')
-            ->addParam('q', '/modules/Admissions/applications_manage_view.php')
-            ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-            ->addParam('format', 'export')
-            ->setTarget('_blank')
-            ->prepend(' | ')
-            ->directLink()
-            ->displayLabel();
-}
+    // Build the form
+    $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
+    
+    $form = $formBuilder->edit($action, $application);
+    $form->loadAllValuesFrom($values);
 
-    echo $table->render([$formData->getData()]);
+    echo $form->getOutput();
 
 }
