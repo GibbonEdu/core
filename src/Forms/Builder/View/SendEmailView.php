@@ -32,7 +32,7 @@ class SendEmailView implements FormViewInterface
 
     public function getDescription()
     {
-        return __('Enables this form to send an email once the form has been submitted.');
+        return __('Send an email to the user once the form has been submitted.');
     }
 
     public function configure(Form $form)

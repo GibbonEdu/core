@@ -65,8 +65,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table = DataTable::createPaginated('applications', $criteria);
     $table->setTitle(__('Applications'));
 
+    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+        $table->addHeaderAction('forms', __('Form Builder'))
+            ->setURL('/modules/System Admin/formBuilder.php')
+            ->setIcon('markbook')
+            ->displayLabel();
+    }
+
     $table->modifyRows(function ($values, $row) {
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
+        if ($values['status'] == 'Rejected') $row->addClass('error');
+        if ($values['status'] == 'Accepted') $row->addClass('success');
         return $row;
     });
 
@@ -95,10 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                     ->setURL('/modules/Admissions/applications_manage_reject.php');
             }
 
-            if ($application['status'] == 'Incomplete') {
+            if ($application['status'] == 'Accepted' || $application['status'] == 'Incomplete') {
                 $actions->addAction('view', __('View & Print Application'))
                     ->setURL('/modules/Admissions/applications_manage_view.php');
-            } else {
+            }
+
+            if ($application['status'] != 'Incomplete') {
                 $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Admissions/applications_manage_edit.php');
             }

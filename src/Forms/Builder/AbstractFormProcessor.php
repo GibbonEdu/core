@@ -102,20 +102,20 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         return $this->errors;
     }
 
-    public function getProcesses()
+    public function getProcesses(bool $submit = true, bool $edit = true, bool $accept = true)
     {
         $this->mode = 'boot';
 
-        $this->submitProcess();
-        $this->editProcess();
-        $this->acceptProcess();
+        if ($submit) $this->submitProcess();
+        if ($edit) $this->editProcess();
+        if ($accept) $this->acceptProcess();
 
         return $this->processes;
     }
 
-    public function getViewableProcesses()
+    public function getViewableProcesses(bool $submit = true, bool $edit = true, bool $accept = true)
     {
-        return array_filter($this->getProcesses(), function ($process) {
+        return array_filter($this->getProcesses($submit, $edit, $accept), function ($process) {
             return $process instanceof ViewableProcess;
         });
     }
@@ -135,7 +135,7 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
                 $process->setVerified();
             }
             
-            if (!$process->isEnabled($this->builder)) {
+            if ($this->mode != 'boot' && !$process->isEnabled($this->builder)) {
                 return;
             }
 

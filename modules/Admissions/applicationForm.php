@@ -125,7 +125,7 @@ if ($proceed == false) {
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
                         
-        $processes = $formProcessor->getViewableProcesses();
+        $processes = $formProcessor->getViewableProcesses(true, false, false);
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);

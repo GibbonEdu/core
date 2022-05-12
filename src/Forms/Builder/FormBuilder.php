@@ -239,8 +239,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
             if (!empty($application['status'])) {
                 $row = $form->addRow();
-                    $row->addLabel('status', __('Status'));
-                    $row->addTextField('status')->readOnly()->setValue($application['status']);
+                    $row->addLabel('statusField', __('Status'));
+                    $row->addTextField('statusField')->readOnly()->setValue($application['status']);
             }
 
             foreach ($this->pages as $formPage) {

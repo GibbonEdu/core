@@ -17,35 +17,38 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 require_once '../../gibbon.php';
 
-$gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
+$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$gibbonAdmissionsApplicationID = $_REQUEST['gibbonAdmissionsApplicationID'] ?? '';
+$search = $_REQUEST['search'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applications_manage.php';
+$URL = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
-} elseif (empty($gibbonAdmissionsApplicationID)) {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
-    exit;
 } else {
     // Proceed!
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
-    $values = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
 
-    if (empty($values)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+    if (empty($gibbonAdmissionsApplicationID)) {
+        header("Location: {$URL->withReturn('error1')}");
         exit;
     }
 
-    $deleted = $admissionsApplicationGateway->delete($gibbonAdmissionsApplicationID);
+    $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
+    if (empty($application)) {
+        header("Location: {$URL->withReturn('error2')}");
+        exit;
+    }
 
-    $URL .= !$deleted
+    $rejected = $admissionsApplicationGateway->update($gibbonAdmissionsApplicationID, ['status' => 'Rejected']);
+
+    $URL .= !$rejected
         ? '&return=error2'
         : '&return=success0';
 

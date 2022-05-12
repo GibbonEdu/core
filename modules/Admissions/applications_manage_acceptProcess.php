@@ -18,29 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
-use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
-use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
+use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 
 require_once '../../gibbon.php';
 
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-$gibbonAdmissionsApplicationID = $_POST['gibbonAdmissionsApplicationID'] ?? '';
-$search = $_POST['search'] ?? '';
+$gibbonAdmissionsApplicationID = $_REQUEST['gibbonAdmissionsApplicationID'] ?? '';
+$search = $_REQUEST['search'] ?? '';
 
-$URL = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
+$URL = Url::fromModuleRoute('Admissions', 'applications_manage_accept')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
-    header("Location: {$URL->withReturn('error0')}");
-    exit;
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
 } else {
     // Proceed!
-
+    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
 
     // Get the application form data
-    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
+    $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
     if (empty($gibbonAdmissionsApplicationID) || empty($application)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
@@ -59,30 +59,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Setup the form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
-
-    // Acquire data and handle file uploads - on error, return to the current page
-    $data = $formBuilder->acquire();
-    if (!$data) {
-        header("Location: {$URL->withReturn('error1')}");
-        exit;
-    }
-
-    // Save data before validation, so users don't lose data?
-    $formData->addData($data);
-    $formData->save($application['identifier']);
-
-    // Validate submitted data - on error, return to the current page
-    $validated = $formBuilder->validate($data);
-    if (!empty($validated)) {
-        header("Location: {$URL->withReturn('warning1')}");
-        exit;
-    }
-
-    // Run any edit-related processes
+    
+    // Run any accept-related processes
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
-    $formProcessor->editForm($formBuilder, $formData);
+    $formProcessor->acceptForm($formBuilder, $formData);
 
     $formData->save($application['identifier']);
 
-    header("Location: {$URL->withReturn('success0')}");
+    $accepted = $admissionsApplicationGateway->update($gibbonAdmissionsApplicationID, ['status' => 'Accepted']);
+
+    $URL .= !$accepted
+        ? '&return=error2'
+        : '&return=success0';
+
+    header("Location: {$URL}");
 }

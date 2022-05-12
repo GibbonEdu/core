@@ -69,6 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     $table->addColumn('formName', __('Form Name'));
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
+    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+        $table->addHeaderAction('forms', __('Form Builder'))
+            ->setURL('/modules/System Admin/formBuilder.php')
+            ->setIcon('markbook')
+            ->displayLabel();
+    }
+    
     $table->modifyRows(function ($values, $row) {
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
         return $row;

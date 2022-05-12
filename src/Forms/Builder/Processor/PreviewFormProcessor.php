@@ -36,6 +36,6 @@ class PreviewFormProcessor extends AbstractFormProcessor
 
     public function acceptProcess()
     {
-
+        $this->run(SendEmail::class);
     }
 }

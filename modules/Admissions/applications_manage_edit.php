@@ -76,6 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     
     $form = $formBuilder->edit($action, $application);
 
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
     $form->addHeaderAction('view', __('View'))
         ->setURL('/modules/Admissions/applications_manage_view.php')
         ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
