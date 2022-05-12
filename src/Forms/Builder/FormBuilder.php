@@ -210,7 +210,6 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $table = DataTable::createDetails('formBuilder');
 
         $table->setTitle(__($this->getDetail('name')));
-        $table->setDescription(__('Preview your submitted data below.'));
 
         foreach ($this->pages as $formPage) {
             foreach ($this->fields as $field) {

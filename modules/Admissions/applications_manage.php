@@ -72,7 +72,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
+        ->addParam('gibbonFormSubmissionID')
         ->format(function ($values, $actions) {
+            $actions->addAction('view', __('View & Print Application'))
+                ->setURL('/modules/Admissions/applications_manage_view.php');
+
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Admissions/applications_manage_edit.php');
 
