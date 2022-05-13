@@ -94,7 +94,7 @@ if (!isset($_GET['return']) || stripos($_GET['return'], 'success') === false) { 
                             $form->addHiddenValue('key', $key);
 
                             $row = $form->addRow();
-                                $row->addContent($currency.$feeTotal);
+                                $row->addContent($session->get('currency').$feeTotal);
                                 $row->addSubmit(__('Pay Online Now'));
 
                             echo $form->getOutput();

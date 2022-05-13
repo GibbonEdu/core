@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         echo '<h2>';
                         echo 'Invoice';
                         echo '</h2>';
-                        $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, true);
+                        $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), false, false);
                         if ($invoiceContents == false) {
                             echo "<div class='error'>";
                             echo __('An error occurred.');
