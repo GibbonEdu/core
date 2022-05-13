@@ -123,14 +123,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         ->addParam('gibbonFormID', $gibbonFormID)
         ->addParam('gibbonFormPageID')
         ->format(function ($form, $actions) {
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/System Admin/formBuilder_page_edit.php');
-
             $actions->addAction('design', __('Design'))
                 ->setIcon('markbook')
                 ->setClass('mx-1')
                 ->addParam('sidebar', 'false')
                 ->setURL('/modules/System Admin/formBuilder_page_design.php');
+                
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/System Admin/formBuilder_page_edit.php');
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/System Admin/formBuilder_page_delete.php');

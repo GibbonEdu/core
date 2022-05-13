@@ -23,7 +23,7 @@ use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
-use Gibbon\Domain\Forms\FormSubmissionGateway;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
 
@@ -80,8 +80,9 @@ if ($proceed == false) {
         return;
     }
 
+    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
     if (empty($identifier) && $pageNumber <= 1) {
-        $identifier = $container->get(FormSubmissionGateway::class)->getNewUniqueIdentifier($gibbonFormID);
+        $identifier = $admissionsApplicationGateway->getNewUniqueIdentifier($gibbonFormID);
     }
 
     if ($accountType == 'new') {
@@ -107,6 +108,20 @@ if ($proceed == false) {
     // Load values from the form data storage
     $values = $formData->getData();
     $incomplete = empty($values['status']) || $values['status'] == 'Incomplete';
+
+    // Prefill values? WIP
+    if (empty($values['status']) && !empty($account)) {
+        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'])->fetch();
+
+        $data = json_decode($recentApplication['data'] ?? '', true);
+        foreach ($data as $fieldName => $value) {
+            $field = $formBuilder->getField($fieldName);
+            if (empty($field['prefill']) || $field['prefill'] == 'N') continue;
+
+            $values[$fieldName] = $value;
+        }
+
+    }
 
     // Has the form been completed?
     if ($incomplete && $formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {

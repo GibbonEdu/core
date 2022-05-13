@@ -115,6 +115,28 @@ class AdmissionsApplicationGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectMostRecentApplicationByContext($gibbonFormID, $foreignTable, $foreignTableID) 
+    {
+        $query = $this
+            ->newSelect()
+            ->cols([
+                'gibbonAdmissionsApplication.gibbonAdmissionsApplicationID',
+                'gibbonAdmissionsApplication.data',
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
+            ->where('gibbonAdmissionsApplication.gibbonFormID=:gibbonFormID')
+            ->bindValue('gibbonFormID', $gibbonFormID)
+            ->where('gibbonAdmissionsApplication.foreignTable=:foreignTable')
+            ->bindValue('foreignTable', $foreignTable)
+            ->where('gibbonAdmissionsApplication.foreignTableID=:foreignTableID')
+            ->bindValue('foreignTableID', $foreignTableID)
+            ->orderBy(['gibbonAdmissionsApplication.timestampCreated DESC'])
+            ->limit(1);
+
+        return $this->runSelect($query);
+    }
+
     public function getApplicationByIdentifier($gibbonFormID, $identifier)
     {
         return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier])->fetch();
