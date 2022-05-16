@@ -33,12 +33,17 @@ class SendSubmissionEmailView implements FormViewInterface
         $this->emailTemplateGateway = $emailTemplateGateway;
     }
     
-    public function getName()
+    public function getHeading() : string
+    {
+        return 'Submission Options';
+    }
+
+    public function getName() : string
     {
         return __('Send Submission Email');
     }
 
-    public function getDescription()
+    public function getDescription() : string
     {
         return __('Send an email to the user once the form has been submitted.');
     }
@@ -47,13 +52,13 @@ class SendSubmissionEmailView implements FormViewInterface
     {
         $row = $form->addRow();
             $row->addLabel('sendSubmissionEmail', $this->getName())->description($this->getDescription());
-            $row->addYesNo('sendSubmissionEmail')->selected('N');
+            $row->addYesNo('sendSubmissionEmail')->selected('N')->required();
 
         $form->toggleVisibilityByClass('submissionEmailTemplate')->onSelect('sendSubmissionEmail')->when('Y');
 
         $templates = $this->emailTemplateGateway->selectAvailableTemplatesByType('Admissions', 'Application Form Submitted')->fetchKeyPair();
         $row = $form->addRow()->addClass('submissionEmailTemplate');
-            $row->addLabel('submissionEmailTemplate', __('Submission Email Template'))->description(__('The content of email templates can be customized in System Admin > Email Templates.'));
+            $row->addLabel('submissionEmailTemplate', __('Email Template'))->description(__('The content of email templates can be customized in System Admin > Email Templates.'));
             $row->addSelect('submissionEmailTemplate')->fromArray($templates)->required()->placeholder();
     }
 

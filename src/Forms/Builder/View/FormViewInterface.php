@@ -24,9 +24,11 @@ use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 interface FormViewInterface 
 {
-    public function getName();
+    public function getHeading() : string;
 
-    public function getDescription();
+    public function getName() : string;
+
+    public function getDescription() : string;
 
     public function configure(Form $form);
 

@@ -25,12 +25,17 @@ use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 class ApplicationRefereeView implements FormViewInterface
 {
-    public function getName()
+    public function getHeading() : string
+    {
+        return 'References';
+    }
+
+    public function getName() : string
     {
         return __('Application Form Referee');
     }
 
-    public function getDescription()
+    public function getDescription() : string
     {
         return __('Send an email to the application form referee once the form has been submitted.');
     }
@@ -39,7 +44,7 @@ class ApplicationRefereeView implements FormViewInterface
     {
         $row = $form->addRow();
             $row->addLabel('applicationReferee', $this->getName())->description($this->getDescription());
-            $row->addYesNo('applicationReferee')->selected('N');
+            $row->addYesNo('applicationReferee')->selected('N')->required();
 
         $form->toggleVisibilityByClass('referee')->onSelect('applicationReferee')->when('Y');
 

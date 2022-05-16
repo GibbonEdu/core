@@ -172,6 +172,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
             $view = $container->get($viewClass);
 
+            if (!$form->hasHeading($view->getHeading())) {
+                $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()));
+            }
             $view->configure($form);
         }
 
@@ -200,6 +203,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             $missingRequiredFields = array_filter($process->getRequiredFields(), function ($fieldName) use ($formBuilder) {
                 return !$formBuilder->hasField($fieldName);
             });
+
+            if (!$form->hasHeading($view->getHeading())) {
+                $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()));
+            }
 
             $row = $form->addRow()->addClass('bg-gray-300');
                 $row->addLabel($processName, $view->getName())->description($view->getDescription());
