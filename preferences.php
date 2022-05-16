@@ -124,21 +124,42 @@ if (!$session->exists("username")) {
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
             $row->addYesNo('receiveNotificationEmails');
-            
-        $row = $form->addRow();
-            $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
-            $row->addYesNo('mfaEnable'); //TODO: Change to an array, allow for No/Yes (Use existing mfa), Yes (use new mfa), and only Yes (use new mfa) toggles the below row.
         
         $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
-        $secret = $tfa->createSecret(); //TODO: use the existing secret for those who have already enabled 2FA
+        
+        //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
+        if ($values['mfaSecret'] == NULL) {
+            $secret = $tfa->createSecret(); 
+            $secretcheck = 'N';
+        } else {
+            $secret = $values['mfaSecret'];
+            $secretcheck = 'Y';
+        }
         $form->addHiddenValue('mfaSecret', $secret);
         
-        $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
-        $row = $form->addRow()->addClass('toggle');
-            $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
-            $row->addNumber('mfaCode'); //TODO: Validate that it's a 6 digit number, because there's the possibility of leading 0s this can't be done with max/min values...
         
-        //TODO: If disabling MFA require user to put in their code.
+        $row = $form->addRow();
+            $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
+            $row->addYesNo('mfaEnable')->setValue($secretcheck);
+        
+        
+       //If MFA wasn't previously set, show the MFA QR code. 
+        if ($secretcheck == 'N') {
+            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
+            $row = $form->addRow()->addClass('toggle');
+                $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('Scan the below QR code in your relevant authenticator app and input the code it provides, ensuring it doesn\'t expire before you submit the form.').'<br><img src='. $tfa->getQRCodeImageAsDataUri('Login', $secret) .'>');
+                $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
+        }
+        //If MFA was previously set, and is being disabled
+        if ($secretcheck == 'Y') {
+            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N'); //TODO: Also require MFA token for password changes
+            $row = $form->addRow()->addClass('toggle');
+                $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token');
+                $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
+        }
+        
+       
+        
         
         $row = $form->addRow();
             $row->addFooter();

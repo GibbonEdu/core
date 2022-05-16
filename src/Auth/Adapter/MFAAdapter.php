@@ -111,8 +111,8 @@ class MFAAdapter extends AuthenticationAdapter
             throw new Exception\DatabaseLoginError;
         }
 
-        $mfaRequest = $this->userGateway->selectBy(['mfaToken' => $this->session->get('mfaToken')], ['username']);
-
+        $mfaRequest = $this->userGateway->selectBy(['mfaToken' => $this->session->get('mfaToken')], ['username', 'gibbonPersonID']);
+        
         if ($mfaRequest->rowCount() != 1) {
             throw new Exception\DatabaseLoginError;
         }
@@ -120,9 +120,12 @@ class MFAAdapter extends AuthenticationAdapter
         // Get the user with an mfaToken that matches the one provided
         $userDataCheck = $mfaRequest->fetch();
 
-        if (empty($userDataCheck) || empty($userDataCheck['username'])) {
+        if (empty($userDataCheck) || empty($userDataCheck['username']) || empty($userDataCheck['gibbonPersonID'])) {
             throw new Exception\DatabaseLoginError;
         }
+        
+        //Unset the MFA Token Pass to prevent POST replay attacks
+        $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaTokenPass' => NULL]);
 
         // Get the user login details and verify they exist and match only one user
         $userResult = $this->userGateway->selectLoginDetailsByUsername($userDataCheck['username'] ?? '');
@@ -145,7 +148,10 @@ class MFAAdapter extends AuthenticationAdapter
 
         $mfaTokenPass = $this->session->get('mfaTokenPass');
         $mfaDatabasePass = hash('sha256', $userData['mfaSecret'].$userData['passwordStrong']);
-
+        
+        //Unset the MFA Token Pass to prevent POST replay attacks
+        $this->userGateway->update($userData['gibbonPersonID'], ['mfaTokenPass' => NULL]);
+        
         // Check that this session value matches the password in the database
         if ($mfaTokenPass != $mfaDatabasePass) {
             $this->updateFailCount($userData, $userData['failCount'] + 1);

@@ -36,8 +36,15 @@ $personalBackground = $_POST['personalBackground'] ?? '';
 $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal']) ? $_POST['gibbonThemeIDPersonal'] : null;
 $gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal']) ? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
+
+//TODO: Handle requiring MFA token one last time if disabling MFA
 $mfaEnable = $_POST['mfaEnable'] ?? 'N';
-$mfaSecret = $_POST['mfaSecret'] ?? null;
+if ($mfaEnable != 'N') {
+    $mfaSecret = $_POST['mfaSecret'] ?? null;
+} else {
+    $mfaSecret = null;
+}
+
 $mfaCode = $_POST['mfaCode'] ?? null;
 
 $URL = Url::fromRoute('preferences');
