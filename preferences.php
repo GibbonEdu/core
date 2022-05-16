@@ -152,14 +152,14 @@ if (!$session->exists("username")) {
         }
         //If MFA was previously set, and is being disabled
         if ($secretcheck == 'Y') {
-            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N'); //TODO: Also require MFA token for password changes
+            $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N');
             $row = $form->addRow()->addClass('toggle');
                 $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token');
                 $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
         }
         
        
-        
+        //TODO: Allow for easy reset of MFA secret, currently would need to disable and then re-enable MFA to do so
         
         $row = $form->addRow();
             $row->addFooter();
