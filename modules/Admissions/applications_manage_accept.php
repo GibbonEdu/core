@@ -63,9 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Use the processor to get a list of active functionality
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    $processes = $formProcessor->getViewableProcesses(false, false, true);
     $processList = [];
 
-    foreach ($formProcessor->getProcesses(false, false, true) as $process) {
+    foreach ($processes as $process) {
         if (!$process->isEnabled($formBuilder)) continue;
 
         $viewClass = $process->getViewClass();
@@ -83,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
                         
-        $processes = $formProcessor->getViewableProcesses(false, false, true);
+        
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);

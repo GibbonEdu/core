@@ -80,4 +80,24 @@ class HouseGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getAssignedHouseByGender($gibbonSchoolYearID, $gibbonYearGroupID, $gender)
+    {
+        $select = $this
+            ->newSelect()
+            ->cols(['gibbonHouse.name AS house', 'gibbonHouse.gibbonHouseID', "count(DISTINCT gibbonPerson.gibbonPersonID) AS count"])
+            ->from($this->getTableName())
+            ->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender AND status='Full'")
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                AND gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonYearGroupID=:gibbonYearGroupID')
+            ->where('gibbonHouse.gibbonHouseID IS NOT NULL')
+            ->groupBy(['house', 'gibbonHouse.gibbonHouseID'])
+            ->orderBy(['count', 'RAND()', 'gibbonHouse.gibbonHouseID'])
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
+            ->bindValue('gender', $gender);
+
+        return $this->runSelect($select);
+    }
 }
