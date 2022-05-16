@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         echo '</div>';
     } else {
         $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
-        
+
         //Set variables
         $today = date('Y-m-d');
         $settingGateway = $container->get(SettingGateway::class);
@@ -264,13 +264,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             }
                                             ++$count;
 
-                      											//Highlight class in progress
-                      											if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
-                      												$rowNum = 'current';
-                      											}
+  											//Highlight class in progress
+  											if ((date('H:i:s') > $row['timeStart']) and (date('H:i:s') < $row['timeEnd']) and ($date) == date('Y-m-d')) {
+  												$rowNum = 'current';
+  											}
 
-                      											//COLOR ROW BY STATUS!
-                      											echo "<tr class=$rowNum>";
+  											//COLOR ROW BY STATUS!
+  											echo "<tr class=$rowNum>";
                                             echo '<td>';
                                             echo $row['course'].'.'.$row['class'];
                                             echo '</td>';
@@ -334,10 +334,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 echo '</div>';
                             } else {
 
-                                    $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
-                                    $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
+                                $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                                $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
 
                                 if ($result->rowCount() != 1) {
                                     echo "<div class='error'>";
@@ -346,11 +346,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 } else {
                                     $row = $result->fetch();
 
-
-                                        $data = array('gibbonCourseClassID1' => $gibbonCourseClassID, 'gibbonPersonID1' => $gibbonPersonID, 'gibbonCourseClassID2' => $gibbonCourseClassID, 'gibbonPersonID2' => $gibbonPersonID);
-                                        $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID1 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date DESC, timeStart DESC";
-                                        $result = $connection2->prepare($sql);
-                                        $result->execute($data);
+                                    $data = array('gibbonCourseClassID1' => $gibbonCourseClassID, 'gibbonPersonID1' => $gibbonPersonID, 'gibbonCourseClassID2' => $gibbonCourseClassID, 'gibbonPersonID2' => $gibbonPersonID);
+                                    $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID1 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID1 AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, role, homeworkSubmission, homeworkCrowdAssess, date, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonPlannerEntry.gibbonCourseClassID=:gibbonCourseClassID2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date DESC, timeStart DESC";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
 
                                     //Only show add if user has edit rights
                                     if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
@@ -1036,7 +1035,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                                         //COLOR ROW BY STATUS!
                                         if ($lesson[8] != 'School Closure') {
-                                            
+
                                             $times = $plannerEntryGateway->getPlannerTTByClassTimes($gibbonCourseClassID, $lesson[1], $lesson[2], $lesson[3]);
 
                                             echo "<tr class=$rowNum>";

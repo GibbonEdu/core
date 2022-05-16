@@ -541,7 +541,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 echo Format::alert(__('Your teacher has indicated a <b><u>{timeCap} minute</u></b> time cap for this work. Aim to spend no more than {timeCap} minutes on this {homeworkName} and let your teacher know if you were unable to complete it within this time frame.', ['timeCap' => $values['homeworkTimeCap'], 'homeworkName' => mb_strtolower(__($homeworkNameSingular))]), 'message');
                             }
 
-                            echo "<span style='font-weight: bold; color: #CC0000'>".sprintf(__('Due on %1$s at %2$s.'), Format::date(substr($values['homeworkDueDateTime'], 0, 10)), substr($values['homeworkDueDateTime'], 11, 5)).'</span><br/>';
+                            echo Format::alert(__('Due on {date} at {time}.', ['date' => Format::date(substr($values['homeworkDueDateTime'], 0, 10)), 'time' => substr($values['homeworkDueDateTime'], 11, 5)]), 'warning');
+
+                            if (!empty($values['homeworkTimeCap'])) {
+                                echo Format::alert(__('A time cap of <b><u>{timeCap} minute</u></b> has been set for this work.', ['timeCap' => $values['homeworkTimeCap']]), 'message');
+                            }
+
                             echo $values['homeworkDetails'].'<br/>';
                             if ($values['homeworkSubmission'] == 'Y') {
                                 if ($values['role'] == 'Student' and ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses')) {

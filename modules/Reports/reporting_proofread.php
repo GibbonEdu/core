@@ -43,8 +43,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID');
     $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
     $override = $_GET['override'] ?? 'N';
+    $filter = $_REQUEST['filter'] ?? '';
 
-    $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override');
+    $urlParams = compact('mode', 'gibbonPersonID', 'gibbonFormGroupID', 'override', 'filter');
 
     $proofReview = $gibbonPersonID == $gibbon->session->get('gibbonPersonID') || ($override == 'Y' && $highestAction == 'Proof Read_all');
     if ($mode == 'Form Group' && !empty($gibbonFormGroupID)) $proofReview = false;
@@ -162,6 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $totalCriteria = $reportingProofGateway->newQueryCriteria()->pageSize(0);
     $criteria = $reportingProofGateway->newQueryCriteria()
         ->page($_REQUEST['page'] ?? 1)
+        ->filterBy($filter ?? '')
         ->pageSize(25);
 
     // Get criteria that needs or has proof reading
@@ -175,10 +177,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         $proofReading = $proofsPaginated->toArray();
     }
 
-    if (count($proofReading) == 0) {
-        echo Format::alert(__('There are no records to display.'), 'error');
-        return;
-    }
+    $filters = [
+        // 'status:Edited' => __('Status').': '.__('Edited'),
+        // 'status:Accepted' => __('Status').': '.__('Accepted'),
+        // 'status:Done' => __('Status').': '.__('Done'),
+        // 'status:None' => __('Status').': '.__('None'),
+        'target:Per Group' => __('Target').': '.__('Per Group'),
+        'target:Per Student' => __('Target').': '.__('Per Student'),
+    ];
+
+    $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
+        $group['scope:'.$item['scopeName']] = __('Scope').': '.$item['scopeName'];
+        return $group;
+    }, []));
+
+    // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
+    //     $group['criteria:'.$item['criteriaName']] = __('Criteria').': '.$item['criteriaName'];
+    //     return $group;
+    // }, []));
+
+    // $filters += array_unique(array_reduce($proofsTotal, function ($group, $item) {
+    //     $group['class:'.$item['nameShort']] = __('Class').': '.$item['nameShort'];
+    //     return $group;
+    // }, []));
+
+    $filterOptions = $form->getFactory()->createSelect('filter')
+        ->fromArray($filters)
+        ->setClass('auto-submit filters float-none w-48 pl-2 border leading-none h-full sm:h-8 rounded')
+        ->placeholder(__('Filters'))
+        ->selected($filter)
+        ->getOutput();
 
     $ids = array_column($proofsTotal ?? [], 'gibbonReportingValueID');
     $proofs = $reportingProofGateway->selectProofsByValueID($ids)->fetchGroupedUnique();
@@ -195,11 +223,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         'progressColour' => 'green',
     ]);
 
-    echo $page->fetchFromTemplate('ui/pagination.twig.html', [
-        'dataSet' => $proofsPaginated,
-        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
-    ]);
-
     $form = Form::createTable('reportingProof', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_proofreadProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setTitle(__('Comments'));
@@ -213,6 +236,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     $form->addClass(' blank');
 
     $differ = new TextDiff();
+
+    $form->addRow()->addContent($page->fetchFromTemplate('ui/pagination.twig.html', [
+        'dataSet' => $proofsPaginated,
+        'filterOptions' => $filterOptions,
+        'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
+    ]));
+
+    if (count($proofReading) == 0) {
+        $form->addRow()->addContent(Format::alert(__('There are no records to display.'), 'error'));
+    }
 
     foreach ($proofReading as $criteria) {
         $gibbonReportingValueID = $criteria['gibbonReportingValueID'];
@@ -343,12 +376,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
         }
     }
 
-    echo $form->getOutput();
-
-    echo $page->fetchFromTemplate('ui/pagination.twig.html', [
+    $form->addRow()->addContent($page->fetchFromTemplate('ui/pagination.twig.html', [
         'dataSet' => $proofsPaginated,
         'url' => $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_proofread.php&'.http_build_query($urlParams),
-    ]);
+    ]));
+
+    echo $form->getOutput();
 }
 ?>
 

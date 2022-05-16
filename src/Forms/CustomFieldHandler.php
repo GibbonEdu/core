@@ -72,6 +72,9 @@ class CustomFieldHandler
             __('Timetable Admin') => [
                 'Course' => __('Course'),
                 'Class' => __('Class'),
+            ],
+            __('Other') => [
+                'Custom' => __('Custom Context'),
             ]
         ];
 
@@ -139,6 +142,8 @@ class CustomFieldHandler
             ],
             'Class' => [
                 'Basic Details' => __('Basic Details'),
+            ],
+            'Custom' => [
             ],
         ];
     }

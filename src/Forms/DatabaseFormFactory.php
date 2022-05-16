@@ -372,12 +372,16 @@ class DatabaseFormFactory extends FormFactory
         $users = array();
 
         if ($params['includeStaff'] == true) {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
+            $data = array('date' => date('Y-m-d'));
             $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username
                     FROM gibbonPerson
-                    JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                    WHERE gibbonPerson.status='Full'
-                    ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+                    JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) ";
+
+            if (!empty($gibbonSchoolYearID)) {
+                $sql .= " WHERE gibbonPerson.status='Full'";
+            }
+            $sql .= " ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
             $result = $this->pdo->select($sql);
             if ($result->rowCount() > 0) {
                 $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
@@ -393,10 +397,17 @@ class DatabaseFormFactory extends FormFactory
                     JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                     JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                    AND gibbonPerson.status='FULL'
-                    AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
-                    ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+                     ";
+                    
+            if (!empty($gibbonSchoolYearID)) {
+                $sql .= "WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full'
+                        AND (dateStart IS NULL OR dateStart<=:date) 
+                        AND (dateEnd IS NULL OR dateEnd>=:date)";
+            }    
+                    
+            $sql .= " ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+
             $result = $this->pdo->select($sql, ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d')]);
 
             if ($result->rowCount() > 0) {
@@ -409,9 +420,14 @@ class DatabaseFormFactory extends FormFactory
 
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
                 FROM gibbonPerson
-                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                WHERE status='Full' OR status='Expected'
-                ORDER BY surname, preferredName";
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) ";
+          
+        if (!empty($gibbonSchoolYearID)) {
+            $sql .= " WHERE status='Full' OR status='Expected' ";
+        }
+                    
+        $sql .= " ORDER BY surname, preferredName";
+
         $result = $this->pdo->select($sql);
 
         if ($result->rowCount() > 0) {

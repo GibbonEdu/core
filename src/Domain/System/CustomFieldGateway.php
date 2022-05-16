@@ -139,6 +139,13 @@ class CustomFieldGateway extends QueryableGateway
         return $this->db()->select($sql);
     }
 
+    public function selectCustomFieldsContexts()
+    {
+        $sql = "SELECT context FROM gibbonCustomField GROUP BY context ORDER BY context";
+
+        return $this->db()->select($sql);
+    }
+
     public function getCustomFieldDataByUser($gibbonCustomFieldID, $gibbonPersonID)
     {
         $customField = $this->getByID($gibbonCustomFieldID, ['context']);

@@ -607,6 +607,7 @@ CustomBlocks.prototype.refresh = function() {
 // Add the prototype method to jQuery
 $.prototype.gibbonCustomBlocks = function(settings) {
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
+    this.data('gibbonCustomBlocks', this.gibbonCustomBlocks);
 };
 
 /**

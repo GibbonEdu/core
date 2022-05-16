@@ -50,6 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
     ];
 
+    if ($data['context'] == 'Custom') {
+        $data['context'] = $_POST['contextName'];
+    }
+
     if (!empty($data['heading'])) {
         $data['heading'] = strchr($data['heading'], '_', true);
         $data['heading'] = $data['heading'] == 'Custom' ? ($_POST['headingCustom'] ?? '') : $data['heading'];
