@@ -23,32 +23,38 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\View\FormViewInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-class SendEmailView implements FormViewInterface
+class ApplicationRefereeView implements FormViewInterface
 {
     public function getName()
     {
-        return __('Send Email');
+        return __('Application Form Referee');
     }
 
     public function getDescription()
     {
-        return __('Send an email to the user once the form has been submitted.');
+        return __('Send an email to the application form referee once the form has been submitted.');
     }
 
     public function configure(Form $form)
     {
         $row = $form->addRow();
-            $row->addLabel('sendEmail', $this->getName())->description($this->getDescription());
-            $row->addYesNo('sendEmail')->selected('N');
+            $row->addLabel('applicationReferee', $this->getName())->description($this->getDescription());
+            $row->addYesNo('applicationReferee')->selected('N');
+
+        $form->toggleVisibilityByClass('referee')->onSelect('applicationReferee')->when('Y');
+
+        $row = $form->addRow()->addClass('referee');
+            $row->addLabel('applicationRefereeLink', __('Application Form Referee Link'))->description(__("Link to an external form that will be emailed to a referee of the applicant's choosing."));
+            $row->addURL('applicationRefereeLink');
     }
 
     public function display(Form $form, FormDataInterface $data)
     {
-        if (!$data->exists('sendEmailResult')) return;
+        if (!$data->exists('applicationRefereeResult')) return;
 
         $row = $form->addRow();
 
-        if ($data->get('sendEmailResult')) {
+        if ($data->get('applicationRefereeResult')) {
             $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
         } else {
             $row->addContent(__('Email failed to send to {email}', ['email' => $data->get('email')]));

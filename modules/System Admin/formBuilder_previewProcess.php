@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     }
     
     // Setup the form data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, $identifier);
+    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier]);
     $formData = $container->get(FormSessionStorage::class);
     $formData->load($identifier);
 

@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Processor;
 use Gibbon\Forms\Builder\Processor\PreviewFormProcessor;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
+use Gibbon\Forms\Builder\Processor\ApplicationFormProcessor;
 
 
 class FormProcessorFactory implements ContainerAwareInterface
@@ -45,6 +46,9 @@ class FormProcessorFactory implements ContainerAwareInterface
         $processor = null;
 
         switch ($formType) {
+            case 'Application':
+                $processor = $this->getContainer()->get(ApplicationFormProcessor::class);
+                break;
             default:
                 $processor = $this->getContainer()->get(PreviewFormProcessor::class);
         }

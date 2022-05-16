@@ -91,7 +91,7 @@ class PersonalDocuments extends AbstractFieldGroup
         $personalDocumentFail = false;
         $params = [$fieldName => true, 'applicationForm' => true, 'class' => ''];
 
-        // $this->personalDocumentHandler->updateDocumentsFromPOST('gibbonFormSubmission', null, $params, $personalDocumentFail);
+        $this->personalDocumentHandler->updateDocumentsFromPOST('gibbonFormSubmission', null, $params, $personalDocumentFail);
 
         return $_POST['document'] ?? '';
     }

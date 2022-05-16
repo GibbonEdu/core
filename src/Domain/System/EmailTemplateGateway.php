@@ -70,4 +70,20 @@ class EmailTemplateGateway extends QueryableGateway
 
         return $this->runSelect($query);
     }
+
+    public function selectAvailableTemplatesByType($moduleName, $templateType)
+    {
+        $query = $this
+            ->newSelect()
+            ->cols([ 
+                'gibbonEmailTemplateID as value', 'templateName as name',
+            ])
+            ->from($this->getTableName())
+            ->where('gibbonEmailTemplate.moduleName=:moduleName')
+            ->bindValue('moduleName', $moduleName)
+            ->where('gibbonEmailTemplate.templateType LIKE :templateType')
+            ->bindValue('templateType', $templateType);
+
+        return $this->runSelect($query);
+    }
 }

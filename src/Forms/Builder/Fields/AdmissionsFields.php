@@ -64,6 +64,7 @@ class AdmissionsFields extends AbstractFieldGroup
             'referenceEmail' => [
                 'label'       => __('Current School Reference Email'),
                 'description' => __('An email address for a referee at the applicant\'s current school.'),
+                'required'    => 'Y',
             ],
             'previousSchools' => [
                 'label'       => __('Previous Schools'),
@@ -120,11 +121,8 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
 
             case 'referenceEmail':
-                $applicationFormRefereeLink = $this->settingGateway->getSettingByScope('Students', 'applicationFormRefereeLink');
-                if (!empty($applicationFormRefereeLink)) {
-                    $row->addLabel('referenceEmail', __($field['label']))->description(__($field['description']));
-                    $row->addEmail('referenceEmail')->required($required);
-                }
+                $row->addLabel('referenceEmail', __($field['label']))->description(__($field['description']));
+                $row->addEmail('referenceEmail')->required($required);
                 break;
 
             case 'previousSchools':

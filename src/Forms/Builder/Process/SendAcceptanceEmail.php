@@ -24,9 +24,9 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\View\SendEmailView;
+use Gibbon\Forms\Builder\View\SendAcceptanceEmailView;
 
-class SendEmail extends AbstractFormProcess implements ViewableProcess
+class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['email'];
 
@@ -41,12 +41,12 @@ class SendEmail extends AbstractFormProcess implements ViewableProcess
 
     public function getViewClass() : string
     {
-        return SendEmailView::class;
+        return SendSubmissionEmailView::class;
     }
 
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return $builder->getConfig('sendEmail') == 'Y';
+        return $builder->getConfig('SendSubmissionEmail') == 'Y';
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
@@ -77,7 +77,7 @@ class SendEmail extends AbstractFormProcess implements ViewableProcess
 
         $sent = $this->mail->Send();
 
-        $formData->set('sendEmailResult', $sent);
+        $formData->set('SendSubmissionEmailResult', $sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
