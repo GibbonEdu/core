@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
@@ -30,11 +32,15 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'gibbonFormGroupIDEntry'];
 
+    private $settingGateway;
     private $studentGateway;
+    private $courseEnrolmentGateway;
 
-    public function __construct(StudentGateway $studentGateway)
+    public function __construct(SettingGateway $settingGateway, StudentGateway $studentGateway, CourseEnrolmentGateway $courseEnrolmentGateway)
     {
+        $this->settingGateway = $settingGateway;
         $this->studentGateway = $studentGateway;
+        $this->courseEnrolmentGateway = $courseEnrolmentGateway;
     }
 
     public function getViewClass() : string
@@ -51,9 +57,11 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
     {
         $formData->setResult('enrolStudentResult', false);
 
-        if (!$formData->has('gibbonPersonIDStudent')) return;
-        if (!$formData->has('gibbonFormGroupIDEntry')) return;
+        if (!$formData->has('gibbonPersonIDStudent') || !$formData->has('gibbonFormGroupIDEntry')) {
+            throw new FormProcessException('Student enrolment failed due to missing ID values');
+        }
 
+        // Enrol the student with the following data
         $data = [
             'gibbonPersonID'     => $formData->get('gibbonPersonIDStudent'),
             'gibbonSchoolYearID' => $formData->get('gibbonSchoolYearIDEntry'),
@@ -62,9 +70,22 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
         ];
 
         $gibbonStudentEnrolmentID = $this->studentGateway->insert($data);
-       
+
+        if (empty($gibbonStudentEnrolmentID)) {
+            throw new FormProcessException('Student enrolment failed due to a database error');
+        }
+
         $formData->setResult('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
         $formData->setResult('enrolStudentResult', true);
+
+        // Attempt to auto-enrol this student in any synced courses
+        if ($this->settingGateway->getSettingByScope('Timetable Admin', 'autoEnrolCourses') == 'Y') {
+            $enrolmentDate = $this->courseEnrolmentGateway->getEnrolmentDateBySchoolYear($formData->get('gibbonSchoolYearIDEntry'));
+
+            $inserted = $this->courseEnrolmentGateway->insertAutomaticCourseEnrolments($formData->get('gibbonFormGroupIDEntry'), $formData->get('gibbonPersonIDStudent'), $enrolmentDate);
+
+            $formData->setResult('autoEnrolCoursesResult', $inserted);
+        }
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)

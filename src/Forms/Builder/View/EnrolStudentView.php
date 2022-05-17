@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\View;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\View\FormViewInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Services\Format;
 
 class EnrolStudentView implements FormViewInterface
 {
@@ -73,7 +74,14 @@ class EnrolStudentView implements FormViewInterface
         if ($data->hasResult('gibbonStudentEnrolmentID')) {
             $row->addContent(__('The student has successfully been enrolled in the specified school year, year group and form group.'));
         } else {
-            $row->addContent(__('Student could not be enrolled, so this will have to be done manually at a later date.'));
+            $row->addContent(Format::alert(__('Student could not be enrolled, so this will have to be done manually at a later date.'), 'warning'));
+        }
+
+        $row = $form->addRow();
+        if ($data->hasResult('autoEnrolCoursesResult')) {
+            $row->addContent(__('The student has automatically been enrolled in courses for their Form Group.'));
+        } else {
+            $row->addContent(Format::alert(__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.'), 'warning'));
         }
     }
 }
