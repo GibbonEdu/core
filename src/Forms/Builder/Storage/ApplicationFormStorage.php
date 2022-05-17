@@ -55,12 +55,9 @@ class ApplicationFormStorage extends AbstractFormStorage
             $existingData = json_decode($values['data'] ?? '', true) ?? [];
             $data = array_merge($existingData, $this->getData());
 
-            $existingResults = json_decode($values['result'] ?? '', true) ?? [];
-            $result = array_merge($existingResults, $this->getResults());
-
             $saved = $this->admissionsApplicationGateway->update($values['gibbonAdmissionsApplicationID'], [
                 'data'              => json_encode($data),
-                'result'            => json_encode($result),
+                'result'            => json_encode($this->getResults()),
                 'status'            => $this->getStatus(),
                 'timestampModified' => date('Y-m-d H:i:s'),
             ]);

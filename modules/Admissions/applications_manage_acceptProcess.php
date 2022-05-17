@@ -37,10 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     header("Location: {$URL}");
 } else {
     // Proceed!
-    $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
 
     // Get the application form data
-    $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
+    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     if (empty($gibbonAdmissionsApplicationID) || empty($application)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
@@ -54,23 +53,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Setup the builder class
-    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
+    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], -1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
 
     // Setup the form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
+    $formData->setResults([]);
+    $formData->setReadOnly(true);
     
     // Run any accept-related processes
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData);
 
+    if ($formProcessor->hasErrors()) {
+        $formData->setResult('errors', $formProcessor->getErrors());
+        $formData->save($application['identifier']);
+
+        header("Location: {$URL->withReturn('error3')}");
+        exit;
+    }
+
+    $formData->setStatus('Accepted');
     $formData->save($application['identifier']);
 
-    $accepted = $admissionsApplicationGateway->update($gibbonAdmissionsApplicationID, ['status' => 'Accepted']);
-
-    $URL .= !$accepted
-        ? '&return=error2'
-        : '&return=success0';
-
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn('success0')}");
 }

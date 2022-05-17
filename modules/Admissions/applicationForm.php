@@ -113,12 +113,14 @@ if ($proceed == false) {
     if (empty($values['status']) && !empty($account)) {
         $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'])->fetch();
 
-        $data = json_decode($recentApplication['data'] ?? '', true);
-        foreach ($data as $fieldName => $value) {
-            $field = $formBuilder->getField($fieldName);
-            if (empty($field['prefill']) || $field['prefill'] == 'N') continue;
+        if (!empty($recentApplication)) {
+            $data = json_decode($recentApplication['data'] ?? '', true);
+            foreach ($data as $fieldName => $value) {
+                $field = $formBuilder->getField($fieldName);
+                if (empty($field['prefill']) || $field['prefill'] == 'N') continue;
 
-            $values[$fieldName] = $value;
+                $values[$fieldName] = $value;
+            }
         }
 
     }

@@ -64,8 +64,8 @@ class CreateStudentView implements FormViewInterface
 
         $row = $form->addRow();
 
-        if ($data->get('gibbonPersonIDStudent')) {
-            $row->addContent('gibbonPersonID: '.$data->get('gibbonPersonID'));
+        if ($data->hasResult('gibbonPersonIDStudent')) {
+            $row->addContent('gibbonPersonID: '.$data->getResult('gibbonPersonIDStudent'));
         } else {
             $row->addContent(__('Student could not be created!'));
         }

@@ -24,15 +24,18 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\AssignHouseView;
 use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\User\UserGateway;
 
 class AssignHouse extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'gender'];
 
+    private $userGateway;
     private $houseGateway;
 
-    public function __construct(HouseGateway $houseGateway)
+    public function __construct(UserGateway $userGateway, HouseGateway $houseGateway)
     {
+        $this->userGateway = $userGateway;
         $this->houseGateway = $houseGateway;
     }
 
@@ -49,6 +52,8 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         if (!$formData->has('gibbonPersonIDStudent')) return;
+
+        $formData->setResult('assignHouseResult', false);
 
         // Get pseudo-randomly assigned house
         $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($formData->get('gibbonSchoolYearIDEntry'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
@@ -72,5 +77,7 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
         $this->userGateway->update($formData->has('gibbonPersonIDStudent'), [
             'gibbonHouseID' => null,
         ]);
+
+        $formData->setResult('assignHouseResult', false);
     }
 }
