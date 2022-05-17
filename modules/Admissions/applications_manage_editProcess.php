@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Setup the builder class
-    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
+    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], -1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
 
     // Setup the form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);

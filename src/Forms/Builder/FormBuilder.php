@@ -151,7 +151,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
         foreach ($this->fields as $fieldName => $field) {
             if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
-            if ($field['pageNumber'] != $this->pageNumber) continue;
+            if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field['fieldType']);
@@ -169,7 +169,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $invalid = [];
         foreach ($this->fields as $fieldName => $field) {
             if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
-            if ($field['pageNumber'] != $this->pageNumber) continue;
+            if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldValue = &$data[$fieldName];
             if ($field['required'] != 'N' &&  (is_null($fieldValue) || $fieldValue == '')) {
