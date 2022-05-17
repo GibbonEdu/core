@@ -28,6 +28,7 @@ abstract class AbstractFormProcess
 {
     protected $verified = false;
     protected $processed = false;
+    protected $result = null;
 
     abstract public function process(FormBuilderInterface $builder, FormDataInterface $data);
 
@@ -55,9 +56,29 @@ abstract class AbstractFormProcess
         $this->processed = $processed;
     }
 
+    public function setResult($result)
+    {
+        $this->result = $result;
+    }
+
+    public function getProcessName()
+    {
+        return str_replace(__NAMESPACE__ . '\\Process\\', '', get_called_class());
+    }
+
     public function getRequiredFields() : array
     {
         return $this->requiredFields ?? [];
+    }
+
+    public function boot(FormDataInterface $formData)
+    {
+        $formData->setResult($this->getProcessName().'Result', false);
+    }
+
+    public function shutdown(FormDataInterface $formData)
+    {
+        $formData->setResult($this->getProcessName().'Result', $this->result ?? true);
     }
 
     public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)

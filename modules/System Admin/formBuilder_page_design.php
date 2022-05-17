@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             continue;
         }
 
-        $row = $fieldGroupClass->addFieldToForm($formFields, $field);
+        $row = $fieldGroupClass->addFieldToForm($formBuilder, $formFields, $field);
 
         $row->addClass('draggableRow')
             ->addData('drag-id', $field['gibbonFormFieldID']);

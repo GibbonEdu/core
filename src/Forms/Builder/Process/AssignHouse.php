@@ -56,8 +56,6 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
     {
         if (!$formData->has('gibbonPersonIDStudent')) return;
 
-        $formData->setResult('assignHouseResult', false);
-
         // Get pseudo-randomly assigned house
         $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($this->session->get('gibbonSchoolYearIDCurrent'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
 
@@ -70,7 +68,7 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
             'gibbonHouseID' => $formData->get('gibbonHouseID'),
         ]);
 
-        $formData->setResult('assignHouseResult', $assignedHouse['house']);
+        $this->setResult($assignedHouse['house']);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)

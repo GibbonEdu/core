@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\View;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Builder\View\FormViewInterface;
+use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-class AssignHouseView implements FormViewInterface
+class AssignHouseView extends AbstractFormView
 {
 
     public function getHeading() : string
@@ -52,12 +52,12 @@ class AssignHouseView implements FormViewInterface
 
     public function display(Form $form, FormDataInterface $formData)
     {
-        if (!$formData->exists('assignHouseResult')) return;
+        if (!$formData->exists($this->getResultName())) return;
 
         $row = $form->addRow();
 
-        if ($formData->getResult('assignHouseResult')) {
-            $row->addContent(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->getResult('assignHouseResult')));
+        if ($formData->hasResult($this->getResultName())) {
+            $row->addContent(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->getResult($this->getResultName())));
         } else {
             $row->addContent(__('The student could not automatically be added to a house, you may wish to manually add them to a house.'));
         }

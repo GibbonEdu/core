@@ -129,9 +129,6 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         $this->builder = $builder;
         $this->data = $data;
         $this->mode = $mode;
-
-        // set_exception_handler([$this, 'error']);
-        // register_shutdown_function([$this, 'error']);
     }
 
     protected function run(string $processClass)
@@ -158,8 +155,10 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
             }
             
             if ($this->mode == 'run') {
+                $process->boot($this->data);
                 $process->verify($this->builder, $this->data);
                 $process->process($this->builder, $this->data);
+                $process->shutdown($this->data);
                 $process->setProcessed();
                 return;
             }
@@ -188,19 +187,14 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         $this->processes = array_reverse($this->processes);
 
         // Rollback each process that had previously run
-        foreach ($this->processes as $processClass => $process) {
+        foreach ($this->processes as $process) {
             if (!$process->isProcessed()) continue;
 
             $process->rollback($this->builder, $this->data);
+            $process->boot($this->data);
 
-            $this->errors[] = __('Process {className} was rolled back', ['className' => trim(strrchr($processClass, '\\'), '\\')]);
+            $this->errors[] = __('Process {className} was rolled back', ['className' => $process->getProcessName()]);
         }
-    }
-
-    public function error($e = null) 
-    {
-        $this->mode = 'rollback';
-        $this->shutdown();
     }
 
     private function getProcess(string $processClass)

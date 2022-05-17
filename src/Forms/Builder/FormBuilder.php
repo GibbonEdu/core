@@ -222,7 +222,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $form;
     }
 
-    public function edit(Url $action, $application = null)
+    public function edit(Url $action)
     {
         $form = Form::create('formBuilder', (string)$action);
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
@@ -236,16 +236,16 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         if ($this->includeHidden) {
             $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
-            if (!empty($application['gibbonAdmissionsApplicationID'])) {
+            if (!empty($this->getConfig('gibbonAdmissionsApplicationID'))) {
                 $row = $form->addRow();
                     $row->addLabel('gibbonAdmissionsApplicationID', __('Application ID'));
-                    $row->addTextField('gibbonAdmissionsApplicationID')->readOnly()->setValue($application['gibbonAdmissionsApplicationID']);
+                    $row->addTextField('gibbonAdmissionsApplicationID')->readOnly()->setValue($this->getConfig('gibbonAdmissionsApplicationID'));
             }
 
-            if (!empty($application['status'])) {
+            if (!empty($this->getConfig('status'))) {
                 $row = $form->addRow();
                     $row->addLabel('statusField', __('Status'));
-                    $row->addTextField('statusField')->readOnly()->setValue($application['status']);
+                    $row->addTextField('statusField')->readOnly()->setValue($this->getConfig('status'));
             }
 
             foreach ($this->pages as $formPage) {

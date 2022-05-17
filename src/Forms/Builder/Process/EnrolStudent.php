@@ -55,8 +55,6 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        $formData->setResult('enrolStudentResult', false);
-
         if (!$formData->has('gibbonPersonIDStudent') || !$formData->has('gibbonFormGroupIDEntry')) {
             throw new FormProcessException('Student enrolment failed due to missing ID values');
         }
@@ -76,7 +74,6 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
         }
 
         $formData->setResult('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
-        $formData->setResult('enrolStudentResult', true);
 
         // Attempt to auto-enrol this student in any synced courses
         if ($this->settingGateway->getSettingByScope('Timetable Admin', 'autoEnrolCourses') == 'Y') {
@@ -90,7 +87,13 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        $formData->setResult('enrolStudentResult', false);
+        if (!$formData->has('gibbonStudentEnrolmentID')) return;
+
+        $this->courseEnrolmentGateway->deleteAutomaticCourseEnrolments($formData->get('gibbonFormGroupIDEntry'), $formData->get('gibbonStudentEnrolmentID'));
+        $formData->setResult('autoEnrolCoursesResult', false);
+
+        $this->studentGateway->delete($formData->get('gibbonStudentEnrolmentID'));
+        $formData->set('gibbonStudentEnrolmentID', null);
     }
 
 }

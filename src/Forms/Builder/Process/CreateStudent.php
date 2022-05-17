@@ -52,8 +52,6 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        $formData->setResult('createStudentResult', false);
-
         // Generate user details
         $this->generateUsername($formData);
         $this->generatePassword($formData);
@@ -111,7 +109,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         if (empty($gibbonPersonIDStudent)) throw new FormProcessException();
 
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
-        $formData->setResult('createStudentResult', true);
+        $this->setResult($gibbonPersonIDStudent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
@@ -121,7 +119,6 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->userGateway->delete($formData->get('gibbonPersonIDStudent'));
 
         $formData->set('gibbonPersonIDStudent', null);
-        $formData->set('createStudentResult', false);
     }
 
     /**

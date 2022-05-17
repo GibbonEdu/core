@@ -20,10 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\View;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Builder\View\FormViewInterface;
+use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-class CreateStudentView implements FormViewInterface
+class CreateStudentView extends AbstractFormView
 {
 
     public function getHeading() : string
@@ -60,7 +60,7 @@ class CreateStudentView implements FormViewInterface
 
     public function display(Form $form, FormDataInterface $data)
     {
-        if (!$data->exists('createStudentResult')) return;
+        if (!$data->exists($this->getResultName())) return;
 
         $row = $form->addRow();
 

@@ -76,12 +76,11 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
         $this->mail->AddAddress($formData->get('email'));
 
         $sent = $this->mail->Send();
-
-        $formData->set('SendSubmissionEmailResult', $sent);
+        $this->setResult($sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
     {
-        
+        // Cannot unsend what has been sent...
     }
 }

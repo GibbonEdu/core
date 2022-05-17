@@ -244,7 +244,6 @@ class CourseEnrolmentGateway extends QueryableGateway
         $sql = "SELECT COUNT(gibbonCourseClassPerson.gibbonCourseClassPersonID)
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
-            
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND gibbonPerson.status='Full'
             AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
@@ -268,6 +267,19 @@ class CourseEnrolmentGateway extends QueryableGateway
                 JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                 SET role='Student - Left', dateUnenrolled=:dateUnenrolled
+                WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
+                AND gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupIDOriginal";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function deleteAutomaticCourseEnrolments($gibbonFormGroupID, $gibbonStudentEnrolmentID)
+    {
+        $data = array('gibbonFormGroupIDOriginal' => $gibbonFormGroupID, 'gibbonStudentEnrolmentID' => $gibbonStudentEnrolmentID);
+        $sql = "DELETE gibbonCourseClassPerson 
+                FROM gibbonCourseClassPerson
+                JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonCourseClassMap ON (gibbonCourseClassMap.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                 WHERE gibbonStudentEnrolment.gibbonStudentEnrolmentID=:gibbonStudentEnrolmentID
                 AND gibbonCourseClassMap.gibbonFormGroupID=:gibbonFormGroupIDOriginal";
 

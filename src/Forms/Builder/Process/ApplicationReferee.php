@@ -91,7 +91,7 @@ class ApplicationReferee extends AbstractFormProcess implements ViewableProcess
         // Send the email
         $sent = $this->mail->Send();
 
-        $formData->setResult('applicationRefereeResult', $sent);
+        $this->setResult($sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)

@@ -106,8 +106,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 
         // Send the email
         $sent = $this->mail->Send();
-
-        $formData->setResult('sendSubmissionEmailResult', $sent);
+        $this->setResult($sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
