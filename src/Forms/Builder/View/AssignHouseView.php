@@ -56,8 +56,8 @@ class AssignHouseView implements FormViewInterface
 
         $row = $form->addRow();
 
-        if ($formData->get('assignHouseResult')) {
-            $row->addContent(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->get('assignHouseResult')));
+        if ($formData->getResult('assignHouseResult')) {
+            $row->addContent(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->getResult('assignHouseResult')));
         } else {
             $row->addContent(__('The student could not automatically be added to a house, you may wish to manually add them to a house.'));
         }

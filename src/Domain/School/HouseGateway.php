@@ -81,7 +81,7 @@ class HouseGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function getAssignedHouseByGender($gibbonSchoolYearID, $gibbonYearGroupID, $gender)
+    public function selectAssignedHouseByGender($gibbonSchoolYearID, $gibbonYearGroupID, $gender)
     {
         $select = $this
             ->newSelect()

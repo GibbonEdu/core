@@ -28,28 +28,57 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
      * @var array
      */
     private $data = [];
+    private $result = [];
+    private $status = '';
+    private $readOnly = false;
 
     abstract public function load(string $identifier) : bool;
 
     abstract public function save(string $identifier) : bool;
 
+    public function isReadOnly()
+    {
+        return $this->readOnly;
+    }
+
+    public function setReadOnly($readOnly = true)
+    {
+        $this->readOnly = $readOnly;
+    }
+
+    public function getStatus() : string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status)
+    {
+        $this->status = $status;
+    }
+
     public function exists($fieldName) : bool
     {
-        return isset($this->data[$fieldName]);
+        return isset($this->result[$fieldName]) || isset($this->data[$fieldName]);
     }
     
     public function has($fieldName) : bool
     {
+        if ($this->readOnly) return !empty($this->result[$fieldName]) || !empty($this->data[$fieldName]);
+
         return !empty($this->data[$fieldName]);
     }
 
-    public function get($fieldName)
+    public function get($fieldName, $default = null)
     {
-        return $this->data[$fieldName] ?? null;
+        if ($this->readOnly) return $this->result[$fieldName] ?? $this->data[$fieldName] ?? $default;
+
+        return $this->data[$fieldName] ?? $default;
     }
 
     public function set($fieldName, $value)
     {
+        if ($this->readOnly) return $this->setResult($fieldName, $value);
+        
         $this->data[$fieldName] = $value;
     }
 
@@ -60,11 +89,45 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
 
     public function setData(array $data)
     {
+        if ($this->readOnly) return;
+
         $this->data = $data;
     }
 
     public function addData(array $data)
     {
+        if ($this->readOnly) return $this->addResults($data);
+        
         $this->data = array_merge($this->data, $data);
+    }
+
+    public function hasResult($fieldName) : bool
+    {
+        return !empty($this->result[$fieldName]);
+    }
+
+    public function getResult($fieldName, $default = null)
+    {
+        return $this->result[$fieldName] ?? $default;
+    }
+
+    public function setResult($fieldName, $value)
+    {
+        $this->result[$fieldName] = $value;
+    }
+
+    public function getResults() : array
+    {
+        return $this->result;
+    }
+
+    public function setResults(array $result)
+    {
+        $this->result = $result;
+    }
+
+    public function addResults(array $result)
+    {
+        $this->result = array_merge($this->result, $result);
     }
 }

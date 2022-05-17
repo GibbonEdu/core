@@ -25,7 +25,7 @@ interface FormDataInterface
 
     public function has(string $fieldName) : bool;
 
-    public function get(string $fieldName);
+    public function get(string $fieldName, $default = null);
 
     public function set(string $fieldName, $value);
 
@@ -33,5 +33,14 @@ interface FormDataInterface
 
     public function setData(array $data);
 
-    public function addData(array $data);
+    public function hasResult(string $fieldName) : bool;
+
+    public function getResult(string $fieldName, $default = null);
+
+    public function setResult(string $fieldName, $value);
+
+    public function getResults() : array;
+
+    public function setResults(array $results);
+
 }

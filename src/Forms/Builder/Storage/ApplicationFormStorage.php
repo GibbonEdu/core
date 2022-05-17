@@ -52,12 +52,16 @@ class ApplicationFormStorage extends AbstractFormStorage
         
         if (!empty($values)) {
             // Update the existing submission
-            $existingData = json_decode($values['data'] ?? '', true);
+            $existingData = json_decode($values['data'] ?? '', true) ?? [];
             $data = array_merge($existingData, $this->getData());
+
+            $existingResults = json_decode($values['result'] ?? '', true) ?? [];
+            $result = array_merge($existingResults, $this->getResults());
 
             $saved = $this->admissionsApplicationGateway->update($values['gibbonAdmissionsApplicationID'], [
                 'data'              => json_encode($data),
-                'status'            => $data['status'] ?? 'Incomplete',
+                'result'            => json_encode($result),
+                'status'            => $this->getStatus(),
                 'timestampModified' => date('Y-m-d H:i:s'),
             ]);
         } else {
@@ -65,6 +69,7 @@ class ApplicationFormStorage extends AbstractFormStorage
             $saved = $this->admissionsApplicationGateway->insert($this->context + [
                 'identifier'       => $identifier,
                 'data'             => json_encode($this->getData()),
+                'result'           => json_encode($this->getResults()),
                 'timestampCreated' => date('Y-m-d H:i:s'),
             ]);
         }
@@ -75,7 +80,10 @@ class ApplicationFormStorage extends AbstractFormStorage
     public function load(string $identifier) : bool
     {
         $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier);
+
+        $this->setStatus($values['status'] ?? 'Incomplete');
         $this->setData(json_decode($values['data'] ?? '', true) ?? []);
+        $this->setResults(json_decode($values['result'] ?? '', true) ?? []);
 
         return !empty($values);
     }

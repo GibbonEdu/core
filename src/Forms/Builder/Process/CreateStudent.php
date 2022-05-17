@@ -25,6 +25,7 @@ use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\CreateStudentView;
+use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
@@ -51,12 +52,14 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
+        $formData->setResult('createStudentResult', false);
+
         // Generate user details
         $this->generateUsername($formData);
         $this->generatePassword($formData);
 
         if (!$formData->has('username') || !$formData->has('passwordStrong')) {
-            $formData->set('createStudentResult', false);
+            throw new FormProcessException('Failed to generate username or password');
             return;
         }
 
@@ -68,42 +71,47 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->setStudentWebsite($builder, $formData);
 
         $data = [
-            'username'           => $formData->get('username'),
-            'passwordStrong'     => $formData->get('passwordStrong'),
-            'passwordStrongSalt' => $formData->get('passwordStrongSalt'),
-            'status'             => $formData->get('status'), 
-            'surname'            => $formData->get('surname'),
-            'firstName'          => $formData->get('firstName'),
-            'preferredName'      => $formData->get('preferredName'),
-            'officialName'       => $formData->get('officialName'),
-            'nameInCharacters'   => $formData->get('nameInCharacters'),
-            'gender'             => $formData->get('gender'),
-            'dob'                => $formData->get('dob'),
-            'languageFirst'      => $formData->get('languageFirst'),
-            'languageSecond'     => $formData->get('languageSecond'),
-            'languageThird'      => $formData->get('languageThird'),
-            'countryOfBirth'     => $formData->get('countryOfBirth'),
-            'email'              => $formData->get('email'),
-            'emailAlternate'     => $formData->get('emailAlternate'),
-            'website'            => $formData->get('website'),
-            'phone1Type'         => $formData->get('phone1Type'),
-            'phone1CountryCode'  => $formData->get('phone1CountryCode'),
-            'phone1'             => $formData->get('phone1'),
-            'phone2Type'         => $formData->get('phone2Type'),
-            'phone2CountryCode'  => $formData->get('phone2CountryCode'),
-            'phone2'             => $formData->get('phone2'),
-            'lastSchool'         => $formData->get('lastSchool'),
-            'dateStart'          => $formData->get('dateStart'),
-            'privacy'            => $formData->get('privacy'),
-            'dayType'            => $formData->get('dayType'),
-            'studentID'          => $formData->get('studentID'),
-            'fields'             => $formData->get('fields', ''),
+            'gibbonRoleIDPrimary' => '003',
+            'gibbonRoleIDAll'     => '003',
+            'username'            => $formData->get('username'),
+            'passwordStrong'      => $formData->get('passwordStrong'),
+            'passwordStrongSalt'  => $formData->get('passwordStrongSalt'),
+            'status'              => $formData->get('status'),
+            'email'               => $formData->get('email'),
+            'emailAlternate'      => $formData->get('emailAlternate'),
+            'title'               => $formData->get('title', ''),
+            'surname'             => $formData->get('surname'),
+            'firstName'           => $formData->get('firstName'),
+            'preferredName'       => $formData->get('preferredName'),
+            'officialName'        => $formData->get('officialName'),
+            'nameInCharacters'    => $formData->get('nameInCharacters', ''),
+            'gender'              => $formData->get('gender', 'Unspecified'),
+            'dob'                 => $formData->get('dob'),
+            'languageFirst'       => $formData->get('languageFirst', ''),
+            'languageSecond'      => $formData->get('languageSecond', ''),
+            'languageThird'       => $formData->get('languageThird', ''),
+            'countryOfBirth'      => $formData->get('countryOfBirth', ''),
+            'website'             => $formData->get('website', ''),
+            'phone1Type'          => $formData->get('phone1Type', ''),
+            'phone1CountryCode'   => $formData->get('phone1CountryCode', ''),
+            'phone1'              => $formData->get('phone1', ''),
+            'phone2Type'          => $formData->get('phone2Type', ''),
+            'phone2CountryCode'   => $formData->get('phone2CountryCode', ''),
+            'phone2'              => $formData->get('phone2', ''),
+            'lastSchool'          => $formData->get('lastSchool', ''),
+            'dateStart'           => $formData->get('dateStart'),
+            'privacy'             => $formData->get('privacy'),
+            'dayType'             => $formData->get('dayType'),
+            'studentID'           => $formData->get('studentID', ''),
+            'fields'              => $formData->get('fields', ''),
         ];
 
         $gibbonPersonIDStudent = $this->userGateway->insert($data);
 
-        $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent ?? '');
-        $formData->set('createStudentResult', true);
+        if (empty($gibbonPersonIDStudent)) throw new FormProcessException();
+
+        $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
+        $formData->setResult('createStudentResult', true);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
@@ -123,13 +131,13 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     private function generateUsername(FormDataInterface $formData)
     {
-        if (!empty($formData['username'])) {
+        if ($formData->has('username')) {
             return;
         }
 
-        $this->usernameGenerator->addToken('preferredName', $formData['preferredName'] ?? '');
-        $this->usernameGenerator->addToken('firstName', $formData['firstName'] ?? '');
-        $this->usernameGenerator->addToken('surname', $formData['surname'] ?? '');
+        $this->usernameGenerator->addToken('preferredName', $formData->get('preferredName'));
+        $this->usernameGenerator->addToken('firstName', $formData->get('firstName'));
+        $this->usernameGenerator->addToken('surname', $formData->get('surname'));
 
         $formData->set('username', $this->usernameGenerator->generateByRole('003'));
     }

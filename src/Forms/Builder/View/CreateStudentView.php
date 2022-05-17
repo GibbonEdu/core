@@ -60,7 +60,7 @@ class CreateStudentView implements FormViewInterface
 
     public function display(Form $form, FormDataInterface $data)
     {
-        if (!$data->exists('gibbonPersonIDStudent')) return;
+        if (!$data->exists('createStudentResult')) return;
 
         $row = $form->addRow();
 
