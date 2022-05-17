@@ -45,7 +45,7 @@ class AssignHouseView implements FormViewInterface
     {
         $form->toggleVisibilityByClass('createStudent')->onSelect('createStudent')->when('Y');
 
-        $row = $form->addRow()->setClass('createStudent');
+        $row = $form->addRow()->setClass('createStudent')->setHeading($this->getHeading());
             $row->addLabel('autoHouseAssign', $this->getName())->description($this->getDescription());
             $row->addYesNo('autoHouseAssign')->required()->selected('N');
     }

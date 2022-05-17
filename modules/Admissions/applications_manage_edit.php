@@ -55,6 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
+    $formBuilder->addConfig($application);
+    
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
     
@@ -73,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Build the form
     $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
-    
-    $form = $formBuilder->edit($action, $application);
+
+    $form = $formBuilder->edit($action);
 
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 

@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Fields;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class LayoutText extends AbstractFieldGroup
 {
@@ -40,7 +41,7 @@ class LayoutText extends AbstractFieldGroup
         return __('Add blocks of text to your form, such as additional information or instructions for users to follow.');
     }
 
-    public function addFieldToForm(Form $form, array $field): Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
         $row = $form->addRow();
         

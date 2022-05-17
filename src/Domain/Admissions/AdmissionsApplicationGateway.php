@@ -57,10 +57,16 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonForm.name as formName',
                 'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
                 'gibbonAdmissionsAccount.email',
+                'gibbonYearGroup.nameShort as yearGroup',
+                'gibbonFormGroup.nameShort as formGroup',
+                'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
+                'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
              ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
-            ->innerJoin('gibbonSchoolYear', 'gibbonAdmissionsApplication.timestampCreated BETWEEN gibbonSchoolYear.firstDay AND gibbonSchoolYear.lastDay')
+            ->leftJoin('gibbonSchoolYear', 'gibbonSchoolYear.gibbonSchoolYearID=gibbonAdmissionsApplication.gibbonSchoolYearID')
+            ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonAdmissionsApplication.gibbonYearGroupID')
+            ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonAdmissionsApplication.gibbonFormGroupID')
             ->leftJoin('gibbonAdmissionsAccount', "gibbonAdmissionsApplication.foreignTable='gibbonAdmissionsAccount' AND gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID")
             ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)

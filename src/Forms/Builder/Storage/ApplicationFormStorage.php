@@ -56,18 +56,24 @@ class ApplicationFormStorage extends AbstractFormStorage
             $data = array_merge($existingData, $this->getData());
 
             $saved = $this->admissionsApplicationGateway->update($values['gibbonAdmissionsApplicationID'], [
-                'data'              => json_encode($data),
-                'result'            => json_encode($this->getResults()),
-                'status'            => $this->getStatus(),
-                'timestampModified' => date('Y-m-d H:i:s'),
+                'data'               => json_encode($data),
+                'result'             => json_encode($this->getResults()),
+                'status'             => $this->getStatus(),
+                'gibbonSchoolYearID' => $this->get('gibbonSchoolYearIDEntry'),
+                'gibbonYearGroupID'  => $this->get('gibbonYearGroupIDEntry'),
+                'gibbonFormGroupID'  => $this->get('gibbonFormGroupIDEntry'),
+                'timestampModified'  => date('Y-m-d H:i:s'),
             ]);
         } else {
             // Create a new submission
             $saved = $this->admissionsApplicationGateway->insert($this->context + [
-                'identifier'       => $identifier,
-                'data'             => json_encode($this->getData()),
-                'result'           => json_encode($this->getResults()),
-                'timestampCreated' => date('Y-m-d H:i:s'),
+                'identifier'         => $identifier,
+                'data'               => json_encode($this->getData()),
+                'result'             => json_encode($this->getResults()),
+                'gibbonSchoolYearID' => $this->get('gibbonSchoolYearIDEntry'),
+                'gibbonYearGroupID'  => $this->get('gibbonYearGroupIDEntry'),
+                'gibbonFormGroupID'  => $this->get('gibbonFormGroupIDEntry'),
+                'timestampCreated'   => date('Y-m-d H:i:s'),
             ]);
         }
 

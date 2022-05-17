@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         exit;
     }
 
+    // Save the status and results of the acceptance
     $formData->setStatus('Accepted');
     $formData->save($application['identifier']);
 

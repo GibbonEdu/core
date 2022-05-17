@@ -159,7 +159,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     // Configure active functionality
     if (!empty($activeProcesses)) {
         $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editConfigProcess.php');
-
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        
         $form->setTitle(__('Active Features'));
         $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
         

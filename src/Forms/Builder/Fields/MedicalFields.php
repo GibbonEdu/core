@@ -25,6 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class MedicalFields extends AbstractFieldGroup
 {
@@ -84,7 +85,7 @@ class MedicalFields extends AbstractFieldGroup
         return __('');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $field['required'] != 'N';
         $customField = $this->fields[$field['fieldName']]['custom'] ?? false;

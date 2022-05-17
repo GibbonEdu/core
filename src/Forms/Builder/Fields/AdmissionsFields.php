@@ -24,18 +24,22 @@ use Gibbon\Forms\Layout\Row;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\LanguageGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class AdmissionsFields extends AbstractFieldGroup
 {
     protected $settingGateway;
     protected $schoolYearGateway;
+    protected $yearGroupGateway;
     protected $languageGateway;
 
-    public function __construct(SettingGateway $settingGateway, SchoolYearGateway $schoolYearGateway, LanguageGateway $languageGateway)
+    public function __construct(SettingGateway $settingGateway, SchoolYearGateway $schoolYearGateway, YearGroupGateway $yearGroupGateway, LanguageGateway $languageGateway)
     {
         $this->settingGateway = $settingGateway;
         $this->schoolYearGateway = $schoolYearGateway;
+        $this->yearGroupGateway = $yearGroupGateway;
         $this->languageGateway = $languageGateway;
 
         $this->fields = [
@@ -58,6 +62,11 @@ class AdmissionsFields extends AbstractFieldGroup
                 'description' => __('Which year level will student enter.'),
                 'required'    => 'X',
             ],
+            'gibbonFormGroupIDEntry' => [
+                'label'       => __('Form Group at Entry'),
+                'description' => __('If set, the student will automatically be enrolled on Accept.'),
+                'hidden'      => 'Y',
+            ],
             'dayType' => [
                 'label'       => __('Day Type'),
             ],
@@ -78,7 +87,7 @@ class AdmissionsFields extends AbstractFieldGroup
         return __('');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $field['required'] != 'N';
         
@@ -91,11 +100,8 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
 
             case 'gibbonSchoolYearIDEntry':
-                $enableLimitedYearsOfEntry = $this->settingGateway->getSettingByScope('Application Form', 'enableLimitedYearsOfEntry');
-                $availableYearsOfEntry = $this->settingGateway->getSettingByScope('Application Form', 'availableYearsOfEntry');
-
-                $years = $enableLimitedYearsOfEntry == 'Y' && !empty($availableYearsOfEntry)
-                    ? $this->schoolYearGateway->getSchoolYearsFromList($availableYearsOfEntry)
+                $years = $formBuilder->getConfig('enableLimitedYearsOfEntry') == 'Y' && !empty($formBuilder->getConfig('availableYearsOfEntry'))
+                    ? $this->schoolYearGateway->getSchoolYearsFromList($formBuilder->getConfig('availableYearsOfEntry'))
                     : $this->schoolYearGateway->getSchoolYearList(true);
 
                 $row->addLabel('gibbonSchoolYearIDEntry', __($field['label']))->description(__($field['description']));
@@ -108,8 +114,14 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
 
             case 'gibbonYearGroupIDEntry':
+                $yearGroups = $this->yearGroupGateway->selectYearGroupsByIDs($formBuilder->getDetail('gibbonYearGroupIDList'))->fetchKeyPair();
                 $row->addLabel('gibbonYearGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectYearGroup('gibbonYearGroupIDEntry')->required($required)->placeholder(__('Please select...'));
+                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder(__('Please select...'));
+                break;
+                
+            case 'gibbonFormGroupIDEntry':
+                $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
+                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $config['gibbonSchoolYearID'] ?? '')->required($required)->placeholder(__('Please select...'));
                 break;
 
             case 'dayType':

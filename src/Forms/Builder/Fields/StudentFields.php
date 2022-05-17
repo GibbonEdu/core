@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Fields;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class StudentFields extends AbstractFieldGroup
 {
@@ -98,7 +99,7 @@ class StudentFields extends AbstractFieldGroup
         return __('Student fields are attached to a student\'s user data once an application has been accepted.');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $row = $form->addRow();
 

@@ -89,6 +89,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->config[$name] ?? $default;
     }
 
+    public function addConfig($values)
+    {
+        $this->config = array_merge($this->config, $values);
+    }
+
     public function getPageNumber()
     {
         return $this->pageNumber;
@@ -206,7 +211,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 if ($field['pageNumber'] != $this->pageNumber) continue;
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                $row = $fieldGroup->addFieldToForm($form, $field);
+                $row = $fieldGroup->addFieldToForm($this, $form, $field);
             }
 
             $row = $form->addRow();
@@ -249,7 +254,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                     if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
                     $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                    $row = $fieldGroup->addFieldToForm($form, $field);
+                    $row = $fieldGroup->addFieldToForm($this, $form, $field);
                 }
             }
         }
@@ -261,7 +266,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                $row = $fieldGroup->addFieldToForm($form, $field);
+                $row = $fieldGroup->addFieldToForm($this, $form, $field);
             }
         }
 

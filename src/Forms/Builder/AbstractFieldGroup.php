@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 use Gibbon\Forms\Builder\Fields\LayoutHeadings;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 abstract class AbstractFieldGroup implements FieldGroupInterface
 {
@@ -61,7 +62,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $this->fields[$fieldName] ?? [];
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $row = $form->addRow();
 

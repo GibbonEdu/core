@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Builder\Fields;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 interface FieldGroupInterface
 {
@@ -32,7 +33,7 @@ interface FieldGroupInterface
 
     public function getFieldOptions() : array;
 
-    public function addFieldToForm(Form $form, array $field) : Row;
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row;
 
     public function getFieldDataFromPOST(string $fieldFame, string $fieldType);
 }

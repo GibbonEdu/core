@@ -24,6 +24,7 @@ use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
 use Gibbon\Forms\Builder\Process\ApplicationReferee;
 use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
+use Gibbon\Forms\Builder\Process\EnrolStudent;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
@@ -41,6 +42,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
     protected function acceptProcess()
     {
         $this->run(CreateStudent::class);
+        $this->run(EnrolStudent::class);
         $this->run(AssignHouse::class);
     }
 }

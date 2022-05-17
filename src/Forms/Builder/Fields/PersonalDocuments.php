@@ -25,6 +25,7 @@ use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class PersonalDocuments extends AbstractFieldGroup
 {
@@ -78,7 +79,7 @@ class PersonalDocuments extends AbstractFieldGroup
         return __('Personal Documents are attached to users and can be managed in {link}.', ['link' => Format::link('./index.php?q=/modules/User Admin/personalDocuments.php', __('User Admin').' > '.__('Personal Documents'))]);
     }
 
-    public function addFieldToForm(Form $form, array $field): Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
         $params = [$field['fieldName'] => true, 'applicationForm' => true, 'class' => ''];
         $this->personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);

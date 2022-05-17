@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Fields;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class LayoutHeadings extends AbstractFieldGroup
 {
@@ -44,7 +45,7 @@ class LayoutHeadings extends AbstractFieldGroup
         return __('Headings enable you to break your form up into sections as well as add additional instructions.');
     }
 
-    public function addFieldToForm(Form $form, array $field): Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
         $row = $form->addRow();
         

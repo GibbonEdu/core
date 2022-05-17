@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Fields;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class FamilyFields extends AbstractFieldGroup
 {
@@ -75,7 +76,7 @@ class FamilyFields extends AbstractFieldGroup
         return __('Family fields enable the creation of a family record in Gibbon once an application has been accepted. Students and parents will be automatically attached to the new family.');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $field['required'] != 'N';
 

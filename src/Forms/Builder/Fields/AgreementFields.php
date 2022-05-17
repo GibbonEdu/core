@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Fields;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class AgreementFields extends AbstractFieldGroup
 {
@@ -46,7 +47,7 @@ class AgreementFields extends AbstractFieldGroup
         return __('Adds a checkbox that must be checked to confirm agreement with a statement before the form can be submitted.');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $field['required'] != 'N';
         

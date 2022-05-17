@@ -23,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
+use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class LanguageFields extends AbstractFieldGroup
 {
@@ -54,7 +55,7 @@ class LanguageFields extends AbstractFieldGroup
         return __('Set values for applicants to specify which language they wish to learn.');
     }
 
-    public function addFieldToForm(Form $form, array $field) : Row
+    public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $field['required'] != 'N';
 

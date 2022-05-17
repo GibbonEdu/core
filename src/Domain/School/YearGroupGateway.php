@@ -66,4 +66,11 @@ class YearGroupGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectYearGroupsByIDs($gibbonYearGroupIDList)
+    {
+        $data = ['gibbonYearGroupIDList' => is_array($gibbonYearGroupIDList) ? implode(',', $gibbonYearGroupIDList) : $gibbonYearGroupIDList];
+        $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup WHERE FIND_IN_SET(gibbonYearGroupID, :gibbonYearGroupIDList) ORDER BY sequenceNumber";
+        return $this->db()->select($sql, $data);
+    }
 }

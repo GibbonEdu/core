@@ -83,7 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         return intval($values['gibbonAdmissionsApplicationID']);
     });
 
-    $table->addColumn('student', __('Student'));
+    $table->addColumn('student', __('Student'))->format(function ($values) {
+        return Format::name('', $values['studentSurname'], $values['studentPreferredName'], 'Student', true);
+    });
     $table->addColumn('yearGroup', __('Year Group'));
     $table->addColumn('formGroup', __('Form Group'));
     $table->addColumn('formName', __('Application Form'));
