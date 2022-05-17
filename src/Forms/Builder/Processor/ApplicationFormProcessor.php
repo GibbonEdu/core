@@ -27,18 +27,18 @@ use Gibbon\Forms\Builder\Process\AssignHouse;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
-    public function submitProcess()
+    protected function submitProcess()
     {
         $this->run(ApplicationReferee::class);
         $this->run(SendSubmissionEmail::class);
     }
 
-    public function editProcess()
+    protected function editProcess()
     {
 
     }
 
-    public function acceptProcess()
+    protected function acceptProcess()
     {
         $this->run(CreateStudent::class);
         $this->run(AssignHouse::class);

@@ -23,10 +23,11 @@ use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\Exception\NotFoundException;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Forms\Builder\Process\ViewableProcess;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\Exception\MissingFieldException;
 use Gibbon\Forms\Builder\Exception\MissingValueException;
-use Gibbon\Forms\Builder\Process\ViewableProcess;
+use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 abstract class AbstractFormProcessor implements ContainerAwareInterface
 {
@@ -48,7 +49,7 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     private $data;
 
     /**
-     * @var string[]
+     * @var AbstractFormProcess[]
      */
     private $processes = [];
 
@@ -57,43 +58,42 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
      */
     private $errors = [];
 
-    abstract public function submitProcess();
+    abstract protected function submitProcess();
 
-    abstract public function editProcess();
+    abstract protected function editProcess();
 
-    abstract public function acceptProcess();
+    abstract protected function acceptProcess();
 
-    public function submitForm(FormBuilderInterface $builder, FormDataInterface $data)
+    public function submitForm(FormBuilderInterface $builder, FormDataInterface $data, bool $dryRun = false)
     {
-        $this->mode = 'run';
-        $this->builder = $builder;
-        $this->data = $data;
+        $this->boot($builder, $data, $dryRun ? 'verify' : 'run');
         
         $this->submitProcess();
+
+        $this->shutdown();
     }
 
-    public function editForm(FormBuilderInterface $builder, FormDataInterface $data)
+    public function editForm(FormBuilderInterface $builder, FormDataInterface $data, bool $dryRun = false)
     {
-        $this->mode = 'run';
-        $this->builder = $builder;
-        $this->data = $data;
+        $this->boot($builder, $data, $dryRun ? 'verify' : 'run');
 
         $this->editProcess();
+
+        $this->shutdown();
     }
 
-    public function acceptForm(FormBuilderInterface $builder, FormDataInterface $data)
+    public function acceptForm(FormBuilderInterface $builder, FormDataInterface $data, bool $dryRun = false)
     {
-        $this->mode = 'run';
-        $this->builder = $builder;
-        $this->data = $data;
+        $this->boot($builder, $data, $dryRun ? 'verify' : 'run');
 
         $this->acceptProcess();
+
+        $this->shutdown();
     }
 
-    public function verifyForm(FormBuilderInterface $builder, bool $preflight = false)
+    public function verifyForm(FormBuilderInterface $builder, bool $dryRun = false)
     {
-        $this->mode = $preflight ? 'preflight' : 'verify';
-        $this->builder = $builder;
+        $this->boot($builder, null, $dryRun ? 'preflight' : 'verify');
 
         $this->submitProcess();
         $this->editProcess();
@@ -102,22 +102,21 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         return $this->errors;
     }
 
-    public function getProcesses(bool $submit = true, bool $edit = true, bool $accept = true)
+    public function getProcesses()
     {
-        $this->mode = 'boot';
-
-        if ($submit) $this->submitProcess();
-        if ($edit) $this->editProcess();
-        if ($accept) $this->acceptProcess();
-
         return $this->processes;
     }
 
-    public function getViewableProcesses(bool $submit = true, bool $edit = true, bool $accept = true)
+    public function getViewableProcesses()
     {
-        return array_filter($this->getProcesses($submit, $edit, $accept), function ($process) {
+        return array_filter($this->processes, function ($process) {
             return $process instanceof ViewableProcess;
         });
+    }
+
+    public function hasErrors()
+    {
+        return !empty($this->errors);
     }
 
     public function getErrors()
@@ -125,14 +124,27 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         return $this->errors;
     }
 
+    protected function boot(FormBuilderInterface $builder, ?FormDataInterface $data, string $mode)
+    {
+        $this->builder = $builder;
+        $this->data = $data;
+        $this->mode = $mode;
+
+        // set_exception_handler([$this, 'error']);
+        // register_shutdown_function([$this, 'error']);
+    }
+
     protected function run(string $processClass)
     {
+        if ($this->mode == 'rollback') return;
+
         try {
             $process = $this->getProcess($processClass);
 
             if ($this->mode == 'preflight') {
                 $process->verify($this->builder);
                 $process->setVerified();
+                return;
             }
             
             if ($this->mode != 'boot' && !$process->isEnabled($this->builder)) {
@@ -140,12 +152,16 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
             }
 
             if ($this->mode == 'verify') {
-                $process->verify($this->builder);
+                $process->verify($this->builder, $this->data);
                 $process->setVerified();
-            } elseif ($this->mode == 'run') {
+                return;
+            }
+            
+            if ($this->mode == 'run') {
                 $process->verify($this->builder, $this->data);
                 $process->process($this->builder, $this->data);
                 $process->setProcessed();
+                return;
             }
 
         } catch (NotFoundException $e) {
@@ -154,7 +170,37 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
             $this->errors[] = __('Missing required field: {fieldName}', ['fieldName' => $e->getMessage()]);
         } catch (MissingValueException $e) {
             $this->errors[] = __('Missing value for required field: {fieldName}', ['fieldName' => $e->getMessage()]);
+        } catch (FormProcessException | \Error | \Exception $e) {
+            $this->errors[] = __('Fatal error during {className}: {message}', [
+                'className' => trim(strrchr($processClass, '\\'), '\\'),
+                'message'   => $e->getMessage(),
+            ]);
+            error_log($e);
+            $this->mode = 'rollback';
         }
+    }
+
+    protected function shutdown()
+    {
+        if ($this->mode != 'rollback') return;
+
+        // Run through the processes in reverse order
+        $this->processes = array_reverse($this->processes);
+
+        // Rollback each process that had previously run
+        foreach ($this->processes as $processClass => $process) {
+            if (!$process->isProcessed()) continue;
+
+            $process->rollback($this->builder, $this->data);
+
+            $this->errors[] = __('Process {className} was rolled back', ['className' => trim(strrchr($processClass, '\\'), '\\')]);
+        }
+    }
+
+    public function error($e = null) 
+    {
+        $this->mode = 'rollback';
+        $this->shutdown();
     }
 
     private function getProcess(string $processClass)

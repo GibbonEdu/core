@@ -60,14 +60,14 @@ abstract class AbstractFormProcess
         return $this->requiredFields ?? [];
     }
 
-    public function verify(FormBuilderInterface $builder, FormDataInterface $data = null)
+    public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)
     {
         foreach ($this->getRequiredFields() as $fieldName) {
             if (!$builder->hasField($fieldName)) {
                 throw new MissingFieldException($fieldName);
             }
 
-            if (!empty($data) && !$data->has($fieldName)) {
+            if (!empty($formData) && !$formData->has($fieldName)) {
                 throw new MissingValueException($fieldName);
             }
         }

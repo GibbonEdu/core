@@ -17,25 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder\Processor;
+namespace Gibbon\Forms\Builder\Exception;
 
-use Gibbon\Forms\Builder\AbstractFormProcessor;
-use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
+use Exception;
 
-class PreviewFormProcessor extends AbstractFormProcessor 
-{
-    protected function submitProcess()
-    {
-        $this->run(SendSubmissionEmail::class);
-    }
-
-    protected function editProcess()
-    {
-
-    }
-
-    protected function acceptProcess()
-    {
-        $this->run(SendSubmissionEmail::class);
-    }
-}
+class FormProcessException extends Exception {}
