@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
@@ -30,11 +31,13 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'gender'];
 
+    private $session;
     private $userGateway;
     private $houseGateway;
 
-    public function __construct(UserGateway $userGateway, HouseGateway $houseGateway)
+    public function __construct(Session $session, UserGateway $userGateway, HouseGateway $houseGateway)
     {
+        $this->session = $session;
         $this->userGateway = $userGateway;
         $this->houseGateway = $houseGateway;
     }
@@ -56,7 +59,7 @@ class AssignHouse extends AbstractFormProcess implements ViewableProcess
         $formData->setResult('assignHouseResult', false);
 
         // Get pseudo-randomly assigned house
-        $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($formData->get('gibbonSchoolYearIDEntry'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
+        $assignedHouse = $this->houseGateway->selectAssignedHouseByGender($this->session->get('gibbonSchoolYearIDCurrent'), $formData->get('gibbonYearGroupIDEntry'), $formData->get('gender'))->fetch();
 
         if (empty($assignedHouse)) return;
 

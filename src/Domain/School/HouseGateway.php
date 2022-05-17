@@ -85,18 +85,18 @@ class HouseGateway extends QueryableGateway
     {
         $select = $this
             ->newSelect()
-            ->cols(['gibbonHouse.name AS house', 'gibbonHouse.gibbonHouseID', "count(DISTINCT gibbonPerson.gibbonPersonID) AS count"])
+            ->cols(['gibbonHouse.name AS house', 'gibbonHouse.gibbonHouseID', "count(DISTINCT gibbonStudentEnrolment.gibbonPersonID) AS count"])
             ->from($this->getTableName())
             ->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID AND gender=:gender AND status='Full'")
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-                AND gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonSchoolYearID>=:gibbonSchoolYearID
                 AND gibbonYearGroupID=:gibbonYearGroupID')
             ->where('gibbonHouse.gibbonHouseID IS NOT NULL')
-            ->groupBy(['house', 'gibbonHouse.gibbonHouseID'])
-            ->orderBy(['count', 'RAND()', 'gibbonHouse.gibbonHouseID'])
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->bindValue('gibbonYearGroupID', $gibbonYearGroupID)
-            ->bindValue('gender', $gender);
+            ->bindValue('gender', $gender)
+            ->groupBy(['house', 'gibbonHouse.gibbonHouseID'])
+            ->orderBy(['count', 'RAND()', 'gibbonHouse.gibbonHouseID']);
 
         return $this->runSelect($select);
     }
