@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Use the processor to get a list of active functionality
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData, true);
-    $processes = $formProcessor->getProcesses();
+    $processes = $formProcessor->getViewableProcesses();
     $processList = [];
 
     $errors = $formProcessor->getErrors();

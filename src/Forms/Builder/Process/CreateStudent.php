@@ -64,9 +64,6 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         // Set and assign default values
         $this->setStatus($formData);
         $this->setDefaults($formData);
-        $this->setLastSchool($formData);
-        $this->setStudentEmail($builder, $formData);
-        $this->setStudentWebsite($builder, $formData);
 
         $data = [
             'gibbonRoleIDPrimary' => '003',
@@ -101,12 +98,11 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             'privacy'             => $formData->get('privacy'),
             'dayType'             => $formData->get('dayType'),
             'studentID'           => $formData->get('studentID', ''),
-            'fields'              => $formData->get('fields', ''),
         ];
 
         $gibbonPersonIDStudent = $this->userGateway->insert($data);
 
-        if (empty($gibbonPersonIDStudent)) throw new FormProcessException();
+        if (empty($gibbonPersonIDStudent)) throw new FormProcessException('Failed to insert student into the database');
 
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $this->setResult($gibbonPersonIDStudent);
@@ -175,46 +171,5 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         if (!$formData->has('officialName')) {
             $formData->set('officialName', $formData->get('firstName').' '.$formData->get('surname'));
         }
-    }
-
-    /**
-     * Determine the last school based on dates provided
-     *
-     * @param FormDataInterface $formData
-     */
-    private function setLastSchool(FormDataInterface $formData)
-    {
-        if ($formData->get('schoolDate2', date('Y-m-d')) > $formData->get('schoolDate1', date('Y-m-d'))) {
-            $formData->set('lastSchool', $formData->get('schoolName2'));
-        } else {
-            $formData->set('lastSchool', $formData->get('schoolName1'));
-        }
-    }
-
-    /**
-     * Set default email address for student
-     *
-     * @param FormBuilderInterface $builder
-     * @param FormDataInterface $formData
-     */
-    private function setStudentEmail(FormBuilderInterface $builder, FormDataInterface $formData)
-    {
-        if (!$builder->hasConfig('studentDefaultEmail')) return;
-
-        $formData->set('emailAlternate', $formData->get('email'));
-        $formData->set('email', str_replace('[username]', $formData->get('username'), $builder->getConfig('studentDefaultEmail')));
-    }
-
-    /**
-     * Set default website address for student
-     *
-     * @param FormBuilderInterface $builder
-     * @param FormDataInterface $formData
-     */
-    private function setStudentWebsite(FormBuilderInterface $builder, FormDataInterface $formData)
-    {
-        if (!$builder->hasConfig('studentDefaultWebsite'))
-
-        $formData->set('website', str_replace('[username]', $formData->get('username'), $builder->getConfig('studentDefaultWebsite')));
     }
 }

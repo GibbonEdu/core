@@ -30,7 +30,7 @@ use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'gibbonFormGroupIDEntry'];
+    protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry'];
 
     private $settingGateway;
     private $studentGateway;
