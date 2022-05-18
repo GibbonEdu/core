@@ -56,7 +56,7 @@ if ($proceed == false) {
 
     if (!empty($accessID) && !empty($accessToken)) {
         $page->breadcrumbs
-            ->add(__('My Admissions Account'), '/modules/Admissions/applicationFormView.php', ['accessID' => $accessID])
+            ->add(__('My Application Forms'), '/modules/Admissions/applicationFormView.php', ['accessID' => $accessID])
             ->add(__('Application Form'));
     } else {
         $page->breadcrumbs

@@ -232,11 +232,11 @@ class Format
                 $minutes = floor($seconds / 60);
                 $time = __n('{count} min', '{count} mins', $minutes);
                 break;
-            case ($seconds >= 3600 && $seconds < 86400):
+            case ($seconds >= 3600 && $seconds < 172800):
                 $hours = floor($seconds / 3600);
                 $time = __n('{count} hr', '{count} hrs', $hours);
                 break;
-            case ($seconds >= 86400 && $seconds < 1209600):
+            case ($seconds >= 172800 && $seconds < 1209600):
                 $days = floor($seconds / 86400);
                 $time = __n('{count} day', '{count} days', $days);
                 break;

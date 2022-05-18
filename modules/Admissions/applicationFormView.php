@@ -33,7 +33,7 @@ if (empty($accessID) || empty($accessToken)) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $page->breadcrumbs->add(__('My Admissions Account'));
+    $page->breadcrumbs->add(__('My Application Forms'));
 
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
@@ -45,6 +45,8 @@ if (empty($accessID) || empty($accessToken)) {
         $session->forget('admissionsAccessToken');
         return;
     }
+
+    echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
 
     $session->set('admissionsAccessToken', $accessToken);
     $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);

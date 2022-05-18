@@ -32,7 +32,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
 
     public function getName() : string
     {
-        $className = str_replace(__NAMESPACE__ . '\\Fields\\', '', get_called_class());
+        $className = str_replace([__NAMESPACE__ . '\\Fields\\', 'Layout'], '', get_called_class());
         return ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $className));
     }
 

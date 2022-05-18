@@ -140,11 +140,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     } elseif ($fieldGroup == 'AllFields' || $fieldGroup == 'CustomFields') {
 
-        $fieldGroups = $fieldGroup == 'CustomFields'
-        ? [
+        $fieldGroups = $fieldGroup == 'CustomFields' ? [
             'CustomFields' => __('Custom Fields'),
-        ]
-        : [
+        ] : [
             'AdmissionsFields' => __('Admissions'),
             'StudentFields' => __('Student'),
             'ParentFields' => __('Parent'),
@@ -169,16 +167,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             foreach ($fields as $heading => $headingFields) {
                 if (empty($headingFields)) continue;
 
-                $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
-                $field = $fieldGroupClass->getField($groupName);
+                if ($fieldGroup == 'CustomFields') {
+                    $col->addSubheading($heading);
+                } else {
+                    $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
+                    $field = $fieldGroupClass->getField($groupName);
 
-                $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.$heading.'</span></div><div>'.($field['type'] ?? '').'</div>';
-                    $col->addCheckbox("fields[$fieldGroupName][{$groupName}]")
-                        ->setValue($groupName)
-                        ->description($description)
-                        ->alignLeft()
-                        ->setLabelClass('w-full p-4 flex justify-between')
-                        ->addClass('border rounded items-center pl-4 my-2');
+                    $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.__($heading).'</span></div><div>'.($field['type'] ?? '').'</div>';
+                        $col->addCheckbox("fields[$fieldGroupName][{$groupName}]")
+                            ->setValue($groupName)
+                            ->description($description)
+                            ->alignLeft()
+                            ->setLabelClass('w-full p-4 flex justify-between')
+                            ->addClass('border rounded items-center pl-4 my-2');
+                }
 
                 foreach ($headingFields as $fieldName => $label) {
                     $description = '<div class="flex-1 text-left"><span class="text-sm -ml-2">'.$label.'</span></div>';
