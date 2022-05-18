@@ -25,7 +25,7 @@ use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use League\Container\Exception\NotFoundException;
 
-require_once '../../gibbon.php';
+// require_once '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
     // Access denied
@@ -42,11 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     // Get the field group class for the selected option
     $formBuilder = $container->get(FormBuilder::class);
-    $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
-    
-    if (empty($fieldGroupClass)) {
-        echo Format::alert(__('The specified record cannot be found.'));
-        return;
+
+    if ($fieldGroup != 'AllFields' && $fieldGroup != 'CustomFields') {
+        $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
+        
+        if (empty($fieldGroupClass)) {
+            echo Format::alert(__('The specified record cannot be found.'));
+            return;
+        }
     }
 
     $formFieldGateway = $container->get(FormFieldGateway::class);
@@ -59,74 +62,140 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('gibbonFormPageID', $gibbonFormPageID);
     
-    $col = $form->addRow()->addColumn()->addClass('flex flex-col');
-
-    if ($description = $fieldGroupClass->getDescription()) {
-        $col->addContent('<p>'.$description.'</p>');
+    
+    if (!empty($fieldGroupClass) && $description = $fieldGroupClass->getDescription()) {
+        $form->addRow()->addHeading($fieldGroupClass->getName())->append($fieldGroupClass->getDescription());
     }
 
     if ($fieldGroup == 'LayoutHeadings') {
-        $col->addLabel('labelLabel', __('Heading Name'))->setClass('text-xs');
-        $col->addTextField('label')->maxLength(90)->required();
+        $row = $form->addRow();
+        $row->addLabel('labelLabel', __('Heading Name'));
+        $row->addTextField('label')->maxLength(90)->required();
 
-        $col->addLabel('typeLabel', __('Type'))->setClass('text-xs');
-        $col->addSelect('fields[0]')->fromArray($fieldGroupClass->getFieldOptions());
+        $row = $form->addRow();
+        $row->addLabel('typeLabel', __('Type'));
+        $row->addSelect('fields[LayoutHeadings][0]')->fromArray($fieldGroupClass->getFieldOptions());
 
     } elseif ($fieldGroup == 'LayoutText') {
-        $col->addLabel('labelDescription', __('Text'))->setClass('text-xs');
-        $col->addTextArea('description')->setRows(4)->maxLength(255)->required();
+        $row = $form->addRow();
+        $row->addLabel('labelDescription', __('Text'));
+        $row->addTextArea('description')->setRows(4)->maxLength(255)->required();
 
-        $form->addHiddenValue('fields[0]', 'text');
+        $form->addHiddenValue('fields[LayoutText][0]', 'text');
+
+    } elseif ($fieldGroup == 'LayoutImage') {
+        $form->addHiddenValue('fields[LayoutImage][0]', 'text');
 
     } elseif ($fieldGroup == 'PersonalDocuments') {
+        $row = $form->addRow();
+        $row->addLabel('labelLabel', __('Label'));
+        $row->addTextField('label')->maxLength(90)->required()->setValue(__('Personal Documents'));
 
-        $col->addLabel('labelLabel', __('Label'))->setClass('text-xs');
-        $col->addTextField('label')->maxLength(90)->required()->setValue(__('Personal Documents'));
-
-        $col->addLabel('typeLabel', __('Role Category'))->setClass('text-xs');
-        $col->addSelect('fields[0]')->fromArray($fieldGroupClass->getFieldOptions());
+        $row = $form->addRow();
+        $row->addLabel('typeLabel', __('Role Category'));
+        $row->addSelect('fields[PersonalDocuments][0]')->fromArray($fieldGroupClass->getFieldOptions());
     
     } elseif ($fieldGroup == 'GenericFields') {
-        $form->addHiddenValue('fields[0]', 'generic');
+        $form->addHiddenValue('fields[GenericFields][0]', 'generic');
 
-        $col->addLabel('label', __('Label'))->setClass('text-xs');
-        $col->addTextField('label')->maxLength(90)->required();
+        $row = $form->addRow();
+        $row->addLabel('label', __('Label'));
+        $row->addTextField('label')->maxLength(90)->required();
 
-        $col->addLabel('type', __('Type'))->setClass('text-xs');
-        $col->addSelect('type')->fromArray($container->get(CustomFieldHandler::class)->getTypes())->placeholder()->required();
+        $row = $form->addRow();
+        $row->addLabel('type', __('Type'));
+        $row->addSelect('type')->fromArray($container->get(CustomFieldHandler::class)->getTypes())->placeholder()->required();
 
         $form->toggleVisibilityByClass('optionsLength')->onSelect('type')->when(['varchar', 'number']);
 
-        $col->addLabel('optionsLength', __('Max Length'))->description(__('Number of characters, up to 255.'))->setClass('optionsLength text-xs');
-        $col->addNumber('optionsLength')->setName('options')->minimum(1)->maximum(255)->onlyInteger(true)->addClass('optionsLength');
+        $row = $form->addRow()->addClass('optionsLength');
+        $row->addLabel('optionsLength', __('Max Length'))->description(__('Number of characters, up to 255.'));
+        $row->addNumber('optionsLength')->setName('options')->minimum(1)->maximum(255)->onlyInteger(true);
 
         $form->toggleVisibilityByClass('optionsRows')->onSelect('type')->when(['text', 'editor']);
 
-        $col->addLabel('optionsRows', __('Rows'))->description(__('Number of rows for field.'))->setClass('optionsRows text-xs');
-        $col->addNumber('optionsRows')->setName('options')->minimum(1)->maximum(20)->onlyInteger(true)->addClass('optionsRows');
+        $row = $form->addRow()->addClass('optionsRows');
+        $row->addLabel('optionsRows', __('Rows'))->description(__('Number of rows for field.'));
+        $row->addNumber('optionsRows')->setName('options')->minimum(1)->maximum(20)->onlyInteger(true);
 
         $form->toggleVisibilityByClass('optionsOptions')->onSelect('type')->when(['select', 'checkboxes', 'radio']);
 
-        $col->addLabel('optionsOptions', __('Options'))->setClass('optionsOptions text-xs')
+        $row = $form->addRow()->addClass('optionsOptions');
+        $row->addLabel('optionsOptions', __('Options'))
             ->description(__('Comma separated list of options.'))
             ->description(__('Dropdown: use [] to create option groups.'));
-        $col->addTextArea('optionsOptions')->setName('options')->required()->setRows(3)->addClass('optionsOptions');
+        $row->addTextArea('optionsOptions')->setName('options')->required()->setRows(3);
 
         $form->toggleVisibilityByClass('optionsFile')->onSelect('type')->when(['file']);
 
-        $col->addLabel('optionsFile', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'))->setClass('optionsFile text-xs');
-        $col->addTextField('optionsFile')->setName('options')->addClass('optionsFile');
+        $row = $form->addRow()->addClass('optionsFile');
+        $row->addLabel('optionsFile', __('File Type'))->description(__('Comma separated list of acceptable file extensions (with dot). Leave blank to accept any file type.'));
+        $row->addTextField('optionsFile')->setName('options');
 
         $form->toggleVisibilityByClass('optionsRequired')->onSelect('type')->whenNot(__('Please select...'));
 
-        $col->addLabel('required', __('Required'))->description(__('Is this field compulsory?'))->setClass('optionsRequired text-xs');
-        $col->addYesNo('required')->required()->selected('N')->addClass('optionsRequired');
+        $row = $form->addRow()->addClass('optionsRequired');
+        $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
+        $row->addYesNo('required')->required()->selected('N');
 
-    } else {
-        $fields = $fieldGroupClass->getFieldOptions();
+    } elseif ($fieldGroup == 'AllFields' || $fieldGroup == 'CustomFields') {
 
-        $col->addLabel('fields', __('Fields to add').':')->setClass('text-xs');
-        $col->addCheckbox('fields')->fromArray($fields)->selectableGroups();
+        $fieldGroups = $fieldGroup == 'CustomFields'
+        ? [
+            'CustomFields' => __('Custom Fields'),
+        ]
+        : [
+            'AdmissionsFields' => __('Admissions'),
+            'StudentFields' => __('Student'),
+            'ParentFields' => __('Parent'),
+            'FamilyFields' => __('Family'),
+            'MedicalFields' => __('Medical'),
+            'INFields' => __('Individual Needs'),
+            'DocumentsFields' => __('Documents'),
+            'FinanceFields' => __('Finance'),
+            'LanguageFields' => __('Language'),
+            'PrivacyFields' => __('Privacy'),
+            'AgreementFields' => __('Agreement'),
+        ];
+
+        foreach ($fieldGroups as $fieldGroupName => $fieldGroupLabel) {
+            $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroupName);
+            $fields = $fieldGroupClass->getFieldOptions();
+
+            $form->addRow()->addHeading($fieldGroupLabel)->append($fieldGroupClass->getDescription());
+
+            $col = $form->addRow()->addColumn()->addClass('');
+
+            foreach ($fields as $heading => $headingFields) {
+                if (empty($headingFields)) continue;
+
+                $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
+                $field = $fieldGroupClass->getField($groupName);
+
+                $description = '<div class="flex-1 text-left"><span class="text-sm font-bold uppercase text-gray-800 -ml-2">'.$heading.'</span></div><div>'.($field['type'] ?? '').'</div>';
+                    $col->addCheckbox("fields[$fieldGroupName][{$groupName}]")
+                        ->setValue($groupName)
+                        ->description($description)
+                        ->alignLeft()
+                        ->setLabelClass('w-full p-4 flex justify-between')
+                        ->addClass('border rounded items-center pl-4 my-2');
+
+                foreach ($headingFields as $fieldName => $label) {
+                    $description = '<div class="flex-1 text-left"><span class="text-sm -ml-2">'.$label.'</span></div>';
+                    $col->addCheckbox("fields[$fieldGroupName][{$fieldName}]")
+                        ->setValue($fieldName)
+                        ->description($description)
+                        ->alignLeft()
+                        ->setLabelClass('w-full p-4')
+                        ->addClass('items-center border rounded pl-4 my-2 bg-blue-100');
+                }
+            }
+
+            // $col = $form->addRow()->addColumn()->addClass('flex flex-col');
+            // $col->addLabel('fields', __('Fields to add').':');
+            // $col->addCheckbox('fields')->fromArray($fields)->selectableGroups();
+        }
+
     }
 
     $heading = '';
@@ -147,10 +216,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return $group;
     }, ['0' => __('Start of form'), '-1' => __('End of form')]);
 
-    $col->addLabel('sequenceNumberLabel', __('Where').':')->setClass('text-xs');
-    $col->addSelect('sequenceNumber')->fromArray($fieldOrder)->selected(-1);
+    $row = $form->addRow();
+    $row->addLabel('sequenceNumberLabel', __('Where').':');
+    $row->addSelect('sequenceNumber')->fromArray($fieldOrder)->selected(-1);
 
-    $col->addSubmit(__('Add'))->addClass('mt-4');
+    $row = $form->addRow();
+    $row->addSubmit(__('Add'))->addClass('mt-4');
 
     echo $form->getOutput();
 }

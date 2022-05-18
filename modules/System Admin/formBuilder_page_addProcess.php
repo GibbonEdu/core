@@ -22,8 +22,14 @@ use Gibbon\Domain\Forms\FormPageGateway;
 require_once '../../gibbon.php';
 
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
+$redirect = $_POST['redirect'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_add.php&gibbonFormID='.$gibbonFormID;
+if ($redirect == 'design') {
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_design.php&sidebar=false&gibbonFormID='.$gibbonFormID;
+} else {
+    $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_add.php&gibbonFormID='.$gibbonFormID;
+}
+
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_add.php') == false) {
     $URL .= '&return=error0';
@@ -62,5 +68,5 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         ? "&return=error2"
         : "&return=success0";
 
-    header("Location: {$URL}&editID=$gibbonFormPageID");
+    header("Location: {$URL}&editID=$gibbonFormPageID&gibbonFormPageID=$gibbonFormPageID");
 }

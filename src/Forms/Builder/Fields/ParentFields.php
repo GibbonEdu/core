@@ -27,8 +27,16 @@ class ParentFields extends AbstractFieldGroup
     public function __construct()
     {
         $this->fields = [
-            'parentSurname' => [
-                'label' => __('Surname'),
+            'headingParent1PersonalData' => [
+                'label' => __('Parent 1 Personal Data'),
+                'type' => 'subheading',
+            ],
+            'parent1Surname' => [
+                'label' => __('Parent 1 Surname'),
+                'type'  => 'text',
+            ],
+            'parent1PreferredName' => [
+                'label' => __('Parent 1 Preferred Name'),
                 'type'  => 'text',
             ],
         ];

@@ -55,16 +55,16 @@ class PersonalDocuments extends AbstractFieldGroup
         // }
 
         $this->fields = [
-            'staff' => [
-                'label' => __('Staff'),
-                'type'  => 'personalDocument',
-            ],
             'student' => [
                 'label' => __('Student'),
                 'type'  => 'personalDocument',
             ],
             'parent' => [
                 'label' => __('Parent'),
+                'type'  => 'personalDocument',
+            ],
+            'staff' => [
+                'label' => __('Staff'),
                 'type'  => 'personalDocument',
             ],
             'other' => [

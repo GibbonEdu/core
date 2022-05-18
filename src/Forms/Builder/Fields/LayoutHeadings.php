@@ -51,13 +51,13 @@ class LayoutHeadings extends AbstractFieldGroup
         
         switch ($field['fieldType']) {
             case 'heading':
-                $row->addHeading(__($field['label']))->append(__($field['description']));
+                $row->addHeading($field['label'], __($field['label']))->append(__($field['description']));
                 break;
             case 'subheading':
-                $row->addSubheading(__($field['label']))->append(__($field['description']));
+                $row->addSubheading($field['label'], __($field['label']))->append(__($field['description']));
                 break;
         }
-        
+
         return $row;
     }
 }

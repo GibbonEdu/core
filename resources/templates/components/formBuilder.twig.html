@@ -25,26 +25,54 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {{ __('Add Fields') }} <span class="text-xxs font-normal"></span>
         </h3>
 
-        <div id="fieldGroups" class="">
-            {{ fieldGroups.getOutput|raw }}
-        </div>
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=AllFields&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=700" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/align-justify.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Application Fields') }}</div>
+        </a>
 
-        <div id="fieldAddContainer" class="">
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=GenericFields&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/grip-lines.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Generic Fields') }}</div>
+        </a>
 
-        </div>
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=CustomFields&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/grip-lines.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Custom Fields') }}</div>
+        </a>
+
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=PersonalDocuments&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/address-card.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Personal Documents') }}</div>
+        </a>
+
+        <h3>
+            {{ __('Layout') }} <span class="text-xxs font-normal"></span>
+        </h3>
+
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=LayoutHeadings&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/heading.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Heading') }}</div>
+        </a>
+
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=LayoutText&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/edit.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Text') }}</div>
+        </a>
+
+        <!-- <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=LayoutImage&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/image.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Image') }}</div>
+        </a> -->
+
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_add.php&redirect=design&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=700" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-400">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/file.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('New Page') }}</div>
+        </a>
+        
     </div>
 </section>
 
 <script>
-    $(document).on('change', '.auto-update', function () {
-        var data = $('#formFieldGroups').data('reload-data');
-        data.fieldGroup = $("#fieldGroup").val();
-
-        $('#fieldAddContainer').load($('#formFieldGroups').data('reload-url'), data);
-    });
-
-    $('.auto-update').trigger('change');
-
     $('#formFields .standardForm').sortable({
         placeholder: "drag-placeholder bg-gray-400 shadow-inner",
         handle: ".drag-handle",

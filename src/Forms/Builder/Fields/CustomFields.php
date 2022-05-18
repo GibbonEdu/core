@@ -38,7 +38,7 @@ class CustomFields extends AbstractFieldGroup
         $this->customFieldHandler = $customFieldHandler;
 
         $params = ['applicationForm' => 1];
-        $customFields = $this->customFieldGateway->selectCustomFields('User', $params)->fetchAll();
+        $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
 
         foreach ($customFields as $field) {
             $id = $field['gibbonCustomFieldID'];

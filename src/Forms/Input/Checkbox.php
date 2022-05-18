@@ -261,12 +261,12 @@ class Checkbox extends Input
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                         $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
                     } elseif ($this->align == 'left') {
-                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                         $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
                         $output .= '</div>';
                     } else {
-                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
                         $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                         $output .= '</div>';

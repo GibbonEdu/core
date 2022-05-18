@@ -27,6 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 } else {
     // Proceed!
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
+    $redirect = $_REQUEST['redirect'] ?? '';
 
     $page->breadcrumbs
         ->add(__('Form Builder'), 'formBuilder.php')
@@ -49,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
+    $form->addHiddenValue('redirect', $redirect);
 
     $row = $form->addRow();
         $row->addLabel('formName', __('Form Name'));

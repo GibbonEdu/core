@@ -25,7 +25,6 @@ require_once '../../gibbon.php';
 $urlParams = [
     'gibbonFormID'     => $_POST['gibbonFormID'] ?? '',
     'gibbonFormPageID' => $_POST['gibbonFormPageID'] ?? '',
-    'fieldGroup'       => $_POST['fieldGroup'] ?? '',
 ];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_design.php&sidebar=false&'.http_build_query($urlParams);
@@ -40,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $partialFail = false;
     
     // Validate the required values are present
-    if (empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID']) || empty($urlParams['fieldGroup'])) {
+    if (empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -48,13 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
 
     // Get the field group class for the selected option
     $formBuilder = $container->get(FormBuilder::class);
-    $fieldGroupClass = $formBuilder->getFieldGroup($urlParams['fieldGroup']);
-
-    if (empty($fieldGroupClass)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-        exit;
-    }
 
     $fields = $_POST['fields'] ?? [];
     $sequenceNumber = $_POST['sequenceNumber'] ?? -1;
@@ -72,41 +64,50 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     } else {
         $sequenceNumber = $formFieldGateway->getNextSequenceNumberByPage($urlParams['gibbonFormPageID']) ?? 1;
     }
+    
+    foreach ($fields as $fieldGroup => $fieldGroupFields) {
+        $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
 
-    foreach ($fields as $fieldName) {
-        if ($fieldName == 'generic') {
-            $fieldName = lcfirst(preg_replace('/[^a-zA-Z0-9]/', '', $_POST['label'] ?? $fieldName));
-        } else {
-            $field = $fieldGroupClass->getField($fieldName);
-            if (empty($field)) {
-                $partialFail = true;
-                continue;
-            }
-
-            if ($field['type'] == 'heading' || $field['type'] == 'subheading') {
-                $fieldGroup = 'LayoutHeadings';
-            }
+        if (empty($fieldGroupClass)) {
+            $partialFail = true;
         }
 
-        $data = [
-            'gibbonFormPageID' => $urlParams['gibbonFormPageID'],
-            'fieldName'        => $fieldName,
-            'fieldType'        => $_POST['type'] ?? $field['type'] ?? 'varchar',
-            'fieldGroup'       => $fieldGroup ?? $urlParams['fieldGroup'],
-            'required'         => $_POST['required'] ?? $field['required'] ?? 'N',
-            'hidden'           => $_POST['hidden'] ?? $field['hidden'] ?? 'N',
-            'prefill'          => $_POST['prefill'] ?? $field['prefill'] ?? 'N',
-            'options'          => $_POST['options'] ?? $field['options'] ?? null,
-            'label'            => $_POST['label'] ?? $field['label'] ?? '',
-            'description'      => $_POST['description'] ?? $field['description'] ?? null,
-            'sequenceNumber'   => $sequenceNumber,
-        ];
+        foreach ($fieldGroupFields as $fieldName) {
 
-        $gibbonFormFieldID = $formFieldGateway->insert($data);
-        $partialFail = !$gibbonFormFieldID;
+            if ($fieldName == 'generic') {
+                $fieldName = lcfirst(preg_replace('/[^a-zA-Z0-9]/', '', $_POST['label'] ?? $fieldName));
+            } else {
+                $field = $fieldGroupClass->getField($fieldName);
+                if (empty($field)) {
+                    $partialFail = true;
+                    continue;
+                }
 
-        $sequenceNumber++;
-        $fieldGroup = null;
+                if ($field['type'] == 'heading' || $field['type'] == 'subheading') {
+                    $fieldGroupName = 'LayoutHeadings';
+                }
+            }
+
+            $data = [
+                'gibbonFormPageID' => $urlParams['gibbonFormPageID'],
+                'fieldName'        => $fieldName,
+                'fieldType'        => $_POST['type'] ?? $field['type'] ?? 'varchar',
+                'fieldGroup'       => $fieldGroupName ?? $fieldGroup,
+                'required'         => $_POST['required'] ?? $field['required'] ?? 'N',
+                'hidden'           => $_POST['hidden'] ?? $field['hidden'] ?? 'N',
+                'prefill'          => $_POST['prefill'] ?? $field['prefill'] ?? 'N',
+                'options'          => $_POST['options'] ?? $field['options'] ?? null,
+                'label'            => $_POST['label'] ?? $field['label'] ?? '',
+                'description'      => $_POST['description'] ?? $field['description'] ?? null,
+                'sequenceNumber'   => $sequenceNumber,
+            ];
+
+            $gibbonFormFieldID = $formFieldGateway->insert($data);
+            $partialFail = !$gibbonFormFieldID;
+
+            $sequenceNumber++;
+            $fieldGroupName = null;
+        }
     }
 
     $URL .= $partialFail

@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
     // Verify the form processes
     $errors = $formProcessor->verifyForm($formBuilder, true);
-    $processes = $formProcessor->getProcesses();
+    $processes = $formProcessor->getViewableProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
         return $process->isVerified() == true;

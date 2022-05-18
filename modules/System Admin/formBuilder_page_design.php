@@ -129,50 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         );
     }
 
-
-    // FIELD GROUPS
-    $formFieldGroups = Form::create('formFieldGroups', '');
-    $formFieldGroups->addData('reload-url', $session->get('absoluteURL').'/modules/System%20Admin/formBuilder_page_edit_field_add.php');
-    $formFieldGroups->addData('reload-data', $urlParams);
-
-    $fieldGroups = [
-        __('General') => [
-            'GenericFields' => __('Generic Fields'),
-            'CustomFields' => __('Custom Fields'),
-            'PersonalDocuments' => __('Personal Documents'),
-        ], 
-        __('Layout') => [
-            'LayoutHeadings' => __('Heading'),
-            'LayoutText' => __('Text'),
-        ],
-        __('Application Form') => [
-            'AdmissionsFields' => __('Admissions'),
-            'StudentFields' => __('Student'),
-            'ParentFields' => __('Parent'),
-            'FamilyFields' => __('Family'),
-            'MedicalFields' => __('Medical'),
-            'INFields' => __('Individual Needs'),
-            'DocumentsFields' => __('Documents'),
-            'FinanceFields' => __('Finance'),
-            'LanguageFields' => __('Language'),
-            'PrivacyFields' => __('Privacy'),
-            'AgreementFields' => __('Agreement'),
-        ], 
-    ];
-    
-    $row = $formFieldGroups->addRow();
-    $row->addSelect('fieldGroup')->fromArray($fieldGroups)
-        ->addClass('auto-update')
-        ->selected($fieldGroup)
-        ->placeholder(); 
-
-
     // TEMPLATE
     echo $page->fetchFromTemplate('components/formBuilder.twig.html', [
         'gibbonFormID' => $gibbonFormID,
-        'form'         => $values,
+        'gibbonFormPageID' => $gibbonFormPageID,
+        // 'form'         => $values,
         'fieldCount'   => count($fields),
         'fields'       => $formFields,
-        'fieldGroups'  => $formFieldGroups,
+        // 'fieldGroups'  => $formFieldGroups,
     ]);
 }

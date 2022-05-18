@@ -214,8 +214,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
             }
 
+            $button = $this->pageNumber > 1 ?"<a href='".(string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl()."' class='button inline-block rounded-sm border-gray-400 text-gray-400 text-center w-24 mr-4'>".__('Back')."</a>" : '';
+            
             $row = $form->addRow();
-                $row->addFooter();
+                $row->addFooter()->prepend($button);
                 $row->addSubmit($this->pageNumber == $this->finalPageNumber ? __('Submit') : __('Next'));
         }
 

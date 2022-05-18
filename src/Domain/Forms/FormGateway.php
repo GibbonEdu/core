@@ -70,7 +70,7 @@ class FormGateway extends QueryableGateway
     {
         $select = $this
             ->newSelect()
-            ->cols(['gibbonFormField.fieldName as groupBy', 'gibbonFormField.*', 'gibbonFormPage.sequenceNumber as pageNumber'])
+            ->cols(["(CASE WHEN gibbonFormField.fieldName LIKE '%heading%' THEN CONCAT(gibbonFormField.fieldName, gibbonFormField.gibbonFormFieldID) ELSE gibbonFormField.fieldName END) as groupBy", 'gibbonFormField.*', 'gibbonFormPage.sequenceNumber as pageNumber'])
             ->from('gibbonFormField')
             ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
             ->where('gibbonFormPage.gibbonFormID=:gibbonFormID')
