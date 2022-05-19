@@ -33,8 +33,8 @@ class PreferencesCest
 
         // Grab Original Settings --------------------------------------
 
-        $originalFormValues = $I->grabAllFormValues('#preferences:not([name=mfaSecret])');
-        $I->seeInFormFields('#preferences:not([name=mfaSecret])', $originalFormValues);
+        $originalFormValues = $I->grabAllFormValues('#preferences:not([name="mfaSecret"])');
+        $I->seeInFormFields('#preferences:not([name="mfaSecret"])', $originalFormValues);
 
         // Make Changes ------------------------------------------------
 
@@ -53,13 +53,13 @@ class PreferencesCest
         // Verify Results ----------------------------------------------
 
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences:not([name=mfaSecret])', $newFormValues);
+        $I->seeInFormFields('#preferences:not([name="mfaSecret"])', $newFormValues);
 
         // Restore Original Settings -----------------------------------
 
         $I->submitForm('#preferences', $originalFormValues, 'Submit');
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences:not([name=mfaSecret])', $originalFormValues);
+        $I->seeInFormFields('#preferences:not([name="mfaSecret"])', $originalFormValues);
     }
 
     public function updatePassword(AcceptanceTester $I)
