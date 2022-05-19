@@ -75,6 +75,15 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         return $this->data[$fieldName] ?? $default;
     }
 
+    public function getOrNull($fieldName)
+    {
+        if ($this->readOnly && !empty($this->result[$fieldName])) {
+            return $this->result[$fieldName];
+        }
+
+        return !empty($this->data[$fieldName]) ? $this->data[$fieldName] : null;
+    }
+
     public function set($fieldName, $value)
     {
         if ($this->readOnly) return $this->setResult($fieldName, $value);

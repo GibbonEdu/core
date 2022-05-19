@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         return;
     }
 
-    if ($application['status'] != 'Pending') {
+    if ($application['status'] != 'Pending' && $application['status'] != 'Waiting List') {
         $page->addError(__('The selected application does not exist or has already been processed.'));
         return;
     }

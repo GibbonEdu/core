@@ -27,6 +27,8 @@ interface FormDataInterface
 
     public function get(string $fieldName, $default = null);
 
+    public function getOrNull(string $fieldName);
+
     public function set(string $fieldName, $value);
 
     public function getData() : array;

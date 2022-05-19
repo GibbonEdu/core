@@ -59,9 +59,9 @@ class ApplicationFormStorage extends AbstractFormStorage
                 'data'               => json_encode($data),
                 'result'             => json_encode($this->getResults()),
                 'status'             => $this->getStatus(),
-                'gibbonSchoolYearID' => $this->get('gibbonSchoolYearIDEntry'),
-                'gibbonYearGroupID'  => $this->get('gibbonYearGroupIDEntry'),
-                'gibbonFormGroupID'  => $this->get('gibbonFormGroupIDEntry'),
+                'gibbonSchoolYearID' => $this->getOrNull('gibbonSchoolYearIDEntry'),
+                'gibbonYearGroupID'  => $this->getOrNull('gibbonYearGroupIDEntry'),
+                'gibbonFormGroupID'  => $this->getOrNull('gibbonFormGroupIDEntry'),
                 'timestampModified'  => date('Y-m-d H:i:s'),
             ]);
         } else {
@@ -70,9 +70,9 @@ class ApplicationFormStorage extends AbstractFormStorage
                 'identifier'         => $identifier,
                 'data'               => json_encode($this->getData()),
                 'result'             => json_encode($this->getResults()),
-                'gibbonSchoolYearID' => $this->get('gibbonSchoolYearIDEntry'),
-                'gibbonYearGroupID'  => $this->get('gibbonYearGroupIDEntry'),
-                'gibbonFormGroupID'  => $this->get('gibbonFormGroupIDEntry'),
+                'gibbonSchoolYearID' => $this->getOrNull('gibbonSchoolYearIDEntry'),
+                'gibbonYearGroupID'  => $this->getOrNull('gibbonYearGroupIDEntry'),
+                'gibbonFormGroupID'  => $this->getOrNull('gibbonFormGroupIDEntry'),
                 'timestampCreated'   => date('Y-m-d H:i:s'),
             ]);
         }

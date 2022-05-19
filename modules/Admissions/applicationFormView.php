@@ -66,6 +66,7 @@ if (empty($accessID) || empty($accessToken)) {
 
     $table->modifyRows(function ($values, $row) {
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
+        if ($values['status'] == 'Accepted') $row->addClass('success');
         return $row;
     });
 
