@@ -33,7 +33,7 @@ class PreferencesCest
 
         // Grab Original Settings --------------------------------------
 
-        $originalFormValues = $I->grabAllFormValues('#preferences');
+        $originalFormValues = $I->grabAllFormValues('#preferences:not([name=mfaSecret])');
         $I->seeInFormFields('#preferences', $originalFormValues);
 
         // Make Changes ------------------------------------------------
