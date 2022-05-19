@@ -7,8 +7,8 @@ $I->amOnPage('/index.php?q=preferences.php');
 
 // Grab Original Settings --------------------------------------
 
-$originalFormValues = $I->grabAllFormValues('#preferences :not([name="mfaSecret"])');
-$I->seeInFormFields('#preferences :not([name="mfaSecret"]) input, #preferences :not([name="mfaSecret"]) textarea, #preferences :not([name="mfaSecret"]) select', $originalFormValues);
+$originalFormValues = $I->grabAllFormValues(':not([name="mfaSecret"]) #preferences');
+$I->seeInFormFields(':not([name="mfaSecret"]) #preferences', $originalFormValues);
 
 // Make Changes ------------------------------------------------
 
@@ -27,10 +27,10 @@ $I->submitForm('#preferences', $newFormValues, 'Submit');
 // Verify Results ----------------------------------------------
 
 $I->see('Your request was completed successfully.', '.success');
-$I->seeInFormFields('#preferences :not([name="mfaSecret"])', $newFormValues);
+$I->seeInFormFields(':not([name="mfaSecret"]) #preferences', $newFormValues);
 
 // Restore Original Settings -----------------------------------
 
 $I->submitForm('#preferences', $originalFormValues, 'Submit');
 $I->see('Your request was completed successfully.', '.success');
-$I->seeInFormFields('#preferences :not([name="mfaSecret"])', $originalFormValues);
+$I->seeInFormFields(':not([name="mfaSecret"]) #preferences', $originalFormValues);
