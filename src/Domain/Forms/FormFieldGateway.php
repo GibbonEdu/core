@@ -83,4 +83,16 @@ class FormFieldGateway extends QueryableGateway
         return $this->db()->update($sql, $data);
     }
 
+    public function getFieldInForm($gibbonFormID, $fieldName)
+    {
+        $data = ['gibbonFormID' => $gibbonFormID, 'fieldName' => $fieldName];
+        $sql = "SELECT gibbonFormFieldID 
+                FROM gibbonFormField 
+                JOIN gibbonFormPage ON (gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID)
+                WHERE gibbonFormPage.gibbonFormID=:gibbonFormID 
+                AND gibbonFormField.fieldName=:fieldName";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
 }

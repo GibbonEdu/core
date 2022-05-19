@@ -46,6 +46,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
+    if (!empty($_GET['duplicate'])) {
+        $page->return->addReturns([
+            'warning1' => __('Your request was successful, but some fields were not unique and could not be added to the form: {duplicate}', ['duplicate' => '<b>'.$_GET['duplicate'].'</b>']),
+        ]);
+    }
+
     $formGateway = $container->get(FormGateway::class);
     $formPageGateway = $container->get(FormPageGateway::class);
     $formFieldGateway = $container->get(FormFieldGateway::class);

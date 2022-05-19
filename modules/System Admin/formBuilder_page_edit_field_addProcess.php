@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     // Proceed!
     $formFieldGateway = $container->get(FormFieldGateway::class);
     $partialFail = false;
+    $duplicateFail = [];
     
     // Validate the required values are present
     if (empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID'])) {
@@ -83,9 +84,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                     continue;
                 }
 
-                if ($field['type'] == 'heading' || $field['type'] == 'subheading') {
+                if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
                     $fieldGroupName = 'LayoutHeadings';
                 }
+            }
+
+            $existing = $formFieldGateway->getFieldInForm($urlParams['gibbonFormID'], $fieldName);
+            if (!empty($existing)) {
+                $duplicateFail[] = $fieldName;
+                $partialFail = true;
+                continue;
             }
 
             $data = [
@@ -103,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             ];
 
             $gibbonFormFieldID = $formFieldGateway->insert($data);
-            $partialFail = !$gibbonFormFieldID;
+            $partialFail &= !$gibbonFormFieldID;
 
             $sequenceNumber++;
             $fieldGroupName = null;
@@ -111,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     $URL .= $partialFail
-        ? "&return=warning1"
+        ? "&return=warning1&duplicate=".implode(',', $duplicateFail)
         : "&return=success0";
 
     header("Location: {$URL}");
