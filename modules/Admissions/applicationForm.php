@@ -86,9 +86,9 @@ if ($proceed == false) {
     }
 
     if ($accountType == 'new') {
-        echo Format::alert(__('A new admissions account has been created for {email}. You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
+        echo Format::alert(__('A new admissions account has been created for {email}.').' '.__('You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     } else if ($accountType == 'existing') {
-        echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
+        echo Format::alert(__("We've found an existing admissions account for {email}.').' '.__(Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
     }
 
     // Setup the form builder & data

@@ -27,8 +27,19 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
 $accessToken = $_GET['tok'] ?? $session->get('admissionsAccessToken') ?? '';
+$proceed = false;
+$public = false;
 
-if (empty($accessID) || empty($accessToken)) {
+if (!$session->has('gibbonPersonID')) {
+    $public = true;
+    if (!empty($accessID) && !empty($accessToken)) {
+        $proceed = true;
+    }
+} else if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationFormView.php') != false) {
+    $proceed = true;
+}
+
+if (!$proceed) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -38,23 +49,35 @@ if (empty($accessID) || empty($accessToken)) {
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
 
-    $account = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
+    $account = $public
+        ? $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken)
+        : $admissionsAccountGateway->getAccountByPerson($session->get('gibbonPersonID'));
 
-    if (empty($account)) {
+    if ($public && empty($account)) {
         $page->addError(__('Could not fetch account information. The URL is either invalid or has expired. Please visit the {application} page to try again.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationFormSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
         $session->forget('admissionsAccessToken');
         return;
     }
 
-    echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
+    if (!empty($account)) {
+        $session->set('admissionsAccessToken', $accessToken);
+        $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);
 
-    $session->set('admissionsAccessToken', $accessToken);
-    $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);
+        $foreignTable = 'gibbonAdmissionsAccount';
+        $foreignTableID = $account['gibbonAdmissionsAccountID'];
+    } else {
+        $foreignTable = 'gibbonPerson';
+        $foreignTableID = $session->get('gibbonPersonID');
+    }
+    
+    if ($public) {
+        echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
+    }    
 
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
 
-    $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID']);
+    $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, $foreignTable, $foreignTableID);
 
     // DATA TABLE
     $table = DataTable::create('submissions');
@@ -103,7 +126,7 @@ if (empty($accessID) || empty($accessToken)) {
     // FORM
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
 
-    $form->setTitle(__('Add Another Application'));
+    $form->setTitle(__('New Application Form'));
     $form->setDescription(__('You may continue submitting applications with the form below and they will be linked to your account data.').' '.__('Some information has been pre-filled for you, feel free to change this information as needed.'));
 
     $form->setClass('w-full blank');

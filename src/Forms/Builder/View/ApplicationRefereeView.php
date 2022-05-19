@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\View;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Services\Format;
 
 class ApplicationRefereeView extends AbstractFormView
 {
@@ -57,12 +58,15 @@ class ApplicationRefereeView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
-        $row = $form->addRow();
+        if (!$data->has('applicationReferee')) return;
+
+        $col = $form->addRow()->addColumn();
+        $col->addLabel($this->getResultName(), $this->getName());
 
         if ($data->hasResult($this->getResultName())) {
-            $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
+            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->get('applicationReferee')]), 'message'));
         } else {
-            $row->addContent(__('Email failed to send to {email}', ['email' => $data->get('email')]));
+            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->get('applicationReferee')]), 'warning'));
         }
     }
 }

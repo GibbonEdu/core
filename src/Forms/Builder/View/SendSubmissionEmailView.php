@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Domain\System\EmailTemplateGateway;
+use Gibbon\Services\Format;
 
 class SendSubmissionEmailView extends AbstractFormView
 {
@@ -40,7 +41,7 @@ class SendSubmissionEmailView extends AbstractFormView
 
     public function getName() : string
     {
-        return __('Send Submission Email');
+        return __('Submission Email');
     }
 
     public function getDescription() : string
@@ -66,13 +67,15 @@ class SendSubmissionEmailView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
-        if (empty($data->get('email')));
-        
-        $row = $form->addRow();
+        if (!$data->has('email')) return;
+
+        $col = $form->addRow()->addColumn();
+        $col->addLabel($this->getResultName(), $this->getName());
+
         if ($data->hasResult($this->getResultName())) {
-            $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
+            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->get('email')]), 'success'));
         } else {
-            $row->addContent(__('Email failed to send to {email}', ['email' => $data->get('email')]));
+            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->get('email')]), 'warning'));
         }
     }
 }

@@ -114,6 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     echo $table->render([$formData->getData()]);
 
+    // Cancel out here so that the print view doesn't display results
+    if (!empty($viewMode)) return;
 
     // Display the results
     if ($application['status'] != 'Incomplete') {

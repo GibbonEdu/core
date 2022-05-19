@@ -75,6 +75,14 @@ class AdmissionsAccountGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    public function getAccountByPerson($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT * FROM gibbonAdmissionsAccount WHERE gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function getAccountByAccessToken($accessID, $accessToken)
     {
         $data = ['accessID' => $accessID, 'accessToken' => $accessToken];
