@@ -56,7 +56,7 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         if (!$formData->has('gibbonPersonIDStudent') || !$formData->has('gibbonFormGroupIDEntry')) {
-            throw new FormProcessException('Student enrolment failed due to missing ID values');
+            return;
         }
 
         // Enrol the student with the following data
@@ -70,7 +70,7 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
         $gibbonStudentEnrolmentID = $this->studentGateway->insert($data);
 
         if (empty($gibbonStudentEnrolmentID)) {
-            throw new FormProcessException('Student enrolment failed due to a database error');
+            return;
         }
 
         $formData->setResult('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);

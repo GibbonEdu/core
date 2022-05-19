@@ -32,6 +32,8 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
     private $status = '';
     private $readOnly = false;
 
+    abstract public function identify(string $identifier) : int;
+
     abstract public function load(string $identifier) : bool;
 
     abstract public function save(string $identifier) : bool;

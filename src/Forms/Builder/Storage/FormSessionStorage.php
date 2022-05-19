@@ -31,6 +31,11 @@ class FormSessionStorage extends AbstractFormStorage
         $this->session = $session;
     }
     
+    public function identify(string $identifier) : int
+    {
+        return intval($identifier);
+    }
+
     public function save(string $identifier) : bool
     {
         $existingData = $this->session->get('form'.$identifier, []);

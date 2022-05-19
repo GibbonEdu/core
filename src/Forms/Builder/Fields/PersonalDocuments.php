@@ -26,8 +26,9 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
 
-class PersonalDocuments extends AbstractFieldGroup
+class PersonalDocuments extends AbstractFieldGroup implements UploadableInterface
 {
     protected $personalDocumentGateway;
     protected $personalDocumentHandler;
@@ -55,19 +56,19 @@ class PersonalDocuments extends AbstractFieldGroup
         // }
 
         $this->fields = [
-            'student' => [
+            'studentDocuments' => [
                 'label' => __('Student'),
                 'type'  => 'personalDocument',
             ],
-            'parent' => [
+            'parentDocuments' => [
                 'label' => __('Parent'),
                 'type'  => 'personalDocument',
             ],
-            'staff' => [
+            'staffDocuments' => [
                 'label' => __('Staff'),
                 'type'  => 'personalDocument',
             ],
-            'other' => [
+            'otherDocuments' => [
                 'label' => __('Other'),
                 'type'  => 'personalDocument',
             ],
@@ -81,19 +82,47 @@ class PersonalDocuments extends AbstractFieldGroup
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
-        $params = [$field['fieldName'] => true, 'applicationForm' => true, 'class' => ''];
-        $this->personalDocumentHandler->addPersonalDocumentsToForm($form, null, null, $params);
+        $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $formBuilder->getConfig('foreignTableID');
+        $roleCategory = str_replace('Documents', '', $field['fieldName']);
+
+        $params = [$roleCategory => true, 'applicationForm' => true, 'class' => '', 'heading' => __($field['label'])];
+        $this->personalDocumentHandler->addPersonalDocumentsToForm($form, $foreignTable, $foreignTableID, $params);
 
         return $form->getRow();
     }
 
-    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
+    public function getFieldDataFromPOST(string $fieldName, string $fieldType)   
+    {
+        $roleCategory = str_replace('Documents', '', $fieldName);
+        $documents = $this->personalDocumentTypeGateway->selectBy([])->fetchAll();
+
+        $data = [];
+        foreach ($documents as $document) {
+            $id = $document['gibbonPersonalDocumentTypeID'];
+
+            if (empty($document['activePerson'.ucfirst($roleCategory)])) continue;
+            if (empty($_POST['document'][$id])) continue;
+
+            $data[$id] = $_POST['document'][$id];
+        }
+
+        return $data;
+    }
+
+    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, string $fieldType)
     {
         $personalDocumentFail = false;
-        $params = [$fieldName => true, 'applicationForm' => true, 'class' => ''];
+        
+        $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $formBuilder->getConfig('foreignTableID');
+        $roleCategory = str_replace('Documents', '', $fieldName);
 
-        $this->personalDocumentHandler->updateDocumentsFromPOST('gibbonFormSubmission', null, $params, $personalDocumentFail);
+        if (empty($foreignTableID)) return false;
 
-        return $_POST['document'] ?? '';
+        $params = [$roleCategory => true, 'applicationForm' => true, 'class' => ''];
+        $this->personalDocumentHandler->updateDocumentsFromPOST($foreignTable, $foreignTableID, $params, $personalDocumentFail);
+
+        return !$personalDocumentFail;
     }
 }

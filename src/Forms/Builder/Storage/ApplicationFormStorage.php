@@ -45,6 +45,13 @@ class ApplicationFormStorage extends AbstractFormStorage
 
         return $this;
     }
+
+    public function identify(string $identifier) : int
+    {
+        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier, ['gibbonAdmissionsApplicationID']);
+
+        return $values['gibbonAdmissionsApplicationID'] ?? 0;
+    }
     
     public function save(string $identifier) : bool
     {

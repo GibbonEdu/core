@@ -55,7 +55,7 @@ class CreateStudentFields extends AbstractFormProcess
         }
 
         // Update custom data
-        $this->transferCustomFields($builder, $formData);
+        $this->transferCustomFields($formData);
         $this->transferPersonalDocuments($builder, $formData);
 
         // Set and assign default values
@@ -80,19 +80,43 @@ class CreateStudentFields extends AbstractFormProcess
     {
         if (!$formData->has('gibbonPersonIDStudent')) return;
 
-        $this->userGateway->delete($formData->get('gibbonPersonIDStudent'));
+        $this->userGateway->update($formData->get('gibbonPersonIDStudent'), [
+            'email'               => null,
+            'emailAlternate'      => null,
+            'website'             => '',
+            'lastSchool'          => '',
+            'fields'              => '',
+        ]);
+
+        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $builder->getConfig('foreignTableID');
+
+        $this->personalDocumentGateway->updatePersonalDocumentOwnership('gibbonPerson', $formData->get('gibbonPersonIDStudent'), $foreignTable, $foreignTableID);
 
         $formData->set('gibbonPersonIDStudent', null);
     }
 
-    private function transferCustomFields(FormBuilderInterface $builder, FormDataInterface $formData)
+    private function transferCustomFields(FormDataInterface $formData)
     {
-        
+        $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
+        $fields = [];
+
+        foreach ($customFields as $field) {
+            $id = 'custom'.$field['gibbonCustomFieldID'];
+            if (!$formData->has($id)) continue;
+
+            $fields[$id] = $formData->get($id);
+        }
+
+        $formData->set('fields', json_encode($fields));
     }
 
     private function transferPersonalDocuments(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        
+        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $builder->getConfig('foreignTableID');
+
+        $this->personalDocumentGateway->updatePersonalDocumentOwnership($foreignTable, $foreignTableID, 'gibbonPerson', $formData->get('gibbonPersonIDStudent'));
     }
 
     /**

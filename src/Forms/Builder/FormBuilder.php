@@ -20,17 +20,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Http\Url;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
-use Gibbon\Forms\Builder\Fields\NullFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Forms\Builder\Fields\NullFieldGroup;
+use Gibbon\Forms\Builder\Fields\UploadableInterface;
+use Gibbon\Forms\Builder\Storage\FormStorageInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
-use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Form;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -169,6 +171,24 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $data;
     }
 
+    public function upload()
+    {
+        $partialFail = false;
+
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
+            if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
+
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            if (!$fieldGroup instanceof UploadableInterface) continue;
+
+            $success = $fieldGroup->uploadFieldData($this, $fieldName, $field['fieldType']);
+            $partialFail &= !$success;
+        }
+
+        return !$partialFail;
+    }
+
     public function validate(array $data)
     {
         $invalid = [];
@@ -293,12 +313,14 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 return;
             }
             
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
+
+            // if ($fieldGroup instanceof UploadableInterface) return;
+
             if (empty($col)) {
                 $col = $table->addColumn($formPage['name'], $formPage['name']);
             }
-
-            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-            $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
 
             $col->addColumn($field['fieldName'], __($field['label']))
                 ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '');

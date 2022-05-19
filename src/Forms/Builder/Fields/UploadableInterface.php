@@ -17,13 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Forms\Builder\Storage;
+namespace Gibbon\Forms\Builder\Fields;
 
-interface FormStorageInterface
+use Gibbon\Forms\Builder\FormBuilderInterface;
+
+interface UploadableInterface
 {
-    public function identify(string $identifier) : int;
-
-    public function load(string $identifier) : bool;
-
-    public function save(string $identifier) : bool;
+    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, string $fieldType);
 }

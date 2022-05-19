@@ -143,9 +143,9 @@ class AdmissionsApplicationGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function getApplicationByIdentifier($gibbonFormID, $identifier)
+    public function getApplicationByIdentifier($gibbonFormID, $identifier, $fields = null)
     {
-        return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier])->fetch();
+        return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier], $fields)->fetch();
     }
 
     public function getNewUniqueIdentifier(string $gibbonFormID)

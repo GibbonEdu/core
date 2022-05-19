@@ -45,6 +45,13 @@ class FormDatabaseStorage extends AbstractFormStorage
 
         return $this;
     }
+
+    public function identify(string $identifier) : int
+    {
+        $values = $this->formSubmissionGateway->getFormSubmissionByIdentifier($this->context['gibbonFormID'], $identifier, ['gibbonFormSubmissionID']);
+
+        return $values['gibbonFormSubmissionID'] ?? 0;
+    }
     
     public function save(string $identifier) : bool
     {
