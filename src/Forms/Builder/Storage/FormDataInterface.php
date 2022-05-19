@@ -45,4 +45,8 @@ interface FormDataInterface
 
     public function setResults(array $results);
 
+    public function getStatus() : string;
+
+    public function setStatus(string $status);
+
 }

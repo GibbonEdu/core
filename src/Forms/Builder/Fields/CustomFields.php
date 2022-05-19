@@ -41,7 +41,7 @@ class CustomFields extends AbstractFieldGroup
         $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
 
         foreach ($customFields as $field) {
-            $id = $field['gibbonCustomFieldID'];
+            $id = 'custom'.$field['gibbonCustomFieldID'];
             $this->fields[$id] = [
                 'type'                => $field['type'],
                 'label'               => __($field['name']),

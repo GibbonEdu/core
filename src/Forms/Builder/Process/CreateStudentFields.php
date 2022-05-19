@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
@@ -30,10 +32,14 @@ class CreateStudentFields extends AbstractFormProcess
     protected $requiredFields = ['preferredName', 'surname'];
 
     private $userGateway;
+    private $customFieldGateway;
+    private $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway)
+    public function __construct(UserGateway $userGateway, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
     {
         $this->userGateway = $userGateway;
+        $this->customFieldGateway = $customFieldGateway;
+        $this->personalDocumentGateway = $personalDocumentGateway;
     }
     
     public function isEnabled(FormBuilderInterface $builder)

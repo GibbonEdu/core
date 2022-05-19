@@ -107,10 +107,10 @@ if ($proceed == false) {
 
     // Load values from the form data storage
     $values = $formData->getData();
-    $incomplete = empty($values['status']) || $values['status'] == 'Incomplete';
+    $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
     // Prefill values? WIP
-    if (empty($values['status']) && !empty($account)) {
+    if (empty($formData->getStatus()) && !empty($account)) {
         $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'])->fetch();
 
         if (!empty($recentApplication)) {
