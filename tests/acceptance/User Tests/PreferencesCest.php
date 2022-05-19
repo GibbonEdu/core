@@ -53,13 +53,13 @@ class PreferencesCest
         // Verify Results ----------------------------------------------
 
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences', $newFormValues);
+        $I->seeInFormFields('#preferences:not([name=mfaSecret])', $newFormValues);
 
         // Restore Original Settings -----------------------------------
 
         $I->submitForm('#preferences', $originalFormValues, 'Submit');
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences', $originalFormValues);
+        $I->seeInFormFields('#preferences:not([name=mfaSecret])', $originalFormValues);
     }
 
     public function updatePassword(AcceptanceTester $I)
