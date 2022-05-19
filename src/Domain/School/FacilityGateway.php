@@ -75,8 +75,9 @@ class FacilityGateway extends QueryableGateway
                 AND foreignKeyID=:gibbonSpaceID 
                 AND date=:date 
                 AND (
-                    (gibbonTTSpaceBooking.timeStart > :timeStart AND gibbonTTSpaceBooking.timeStart < :timeEnd)
-                    OR (:timeStart > gibbonTTSpaceBooking.timeStart AND :timeStart < gibbonTTSpaceBooking.timeEnd)
+                    (gibbonTTSpaceBooking.timeStart >= :timeStart AND gibbonTTSpaceBooking.timeStart < :timeEnd)
+                    OR (:timeStart >= gibbonTTSpaceBooking.timeStart AND :timeStart < gibbonTTSpaceBooking.timeEnd)
+                    OR (:timeStart = gibbonTTSpaceBooking.timeStart AND :timeEnd = gibbonTTSpaceBooking.timeEnd)
                 )
             )
             UNION ALL
@@ -90,8 +91,9 @@ class FacilityGateway extends QueryableGateway
                 WHERE gibbonTTSpaceChange.date=:date
                 AND gibbonTTSpaceChange.gibbonSpaceID=:gibbonSpaceID
                 AND (
-                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart <= :timeEnd)
-                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart <= gibbonTTColumnRow.timeEnd)
+                    (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart < :timeEnd)
+                    OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart < gibbonTTColumnRow.timeEnd)
+                    OR (:timeStart = gibbonTTColumnRow.timeStart AND :timeEnd = gibbonTTColumnRow.timeEnd)
                 )
             )
             UNION ALL
@@ -108,6 +110,7 @@ class FacilityGateway extends QueryableGateway
                 AND (
                     (gibbonTTColumnRow.timeStart >= :timeStart AND gibbonTTColumnRow.timeStart < :timeEnd)
                     OR (:timeStart >= gibbonTTColumnRow.timeStart AND :timeStart < gibbonTTColumnRow.timeEnd)
+                    OR (:timeStart = gibbonTTColumnRow.timeStart AND :timeEnd = gibbonTTColumnRow.timeEnd)
                 )
                 AND (SELECT gibbonTTSpaceChangeID FROM gibbonTTSpaceChange AS roomReleased JOIN gibbonTTDayRowClass AS roomTT ON (roomTT.gibbonTTDayRowClassID=roomReleased.gibbonTTDayRowClassID) WHERE roomReleased.date=:date AND roomReleased.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND roomTT.gibbonSpaceID=:gibbonSpaceID LIMIT 1) IS NULL
             )";

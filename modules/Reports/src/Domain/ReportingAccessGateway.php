@@ -396,7 +396,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->leftJoin('gibbonCourseClassPerson AS teachers', "teachers.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND teachers.role='Teacher'")
             ->leftJoin('gibbonPerson as teacher', 'teachers.gibbonPersonID=teacher.gibbonPersonID')
             ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->where("gibbonCourseClassPerson.role='Student'")
+            ->where("(gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Student - Left')")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where('gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonIDStudent')
             ->bindValue('gibbonPersonIDStudent', $gibbonPersonIDStudent)
@@ -404,7 +404,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->bindValue('gibbonReportingCycleID', $gibbonReportingCycleID)
             ->where("gibbonReportingCriteriaType.valueType <> 'Remark'")
             ->where("gibbonReportingScope.scopeType = 'Course'")
-            ->groupBy(['gibbonReportingCriteria.gibbonReportingCriteriaID']);
+            ->groupBy(['gibbonReportingCriteria.gibbonReportingCriteriaID', 'gibbonCourseClass.gibbonCourseClassID']);
 
         $query->orderBy([
             'scopeSequence',
@@ -440,7 +440,7 @@ class ReportingAccessGateway extends QueryableGateway
                 ->leftJoin('gibbonCourseClassPerson', 'gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID')
                 ->where('gibbonCourseClass.gibbonCourseClassID=:scopeTypeID')
                 ->where('gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonIDStudent')
-                ->where("gibbonCourseClassPerson.role='Student'");
+                ->where("(gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Student - Left')");
         }
 
         return $this->runSelect($query);

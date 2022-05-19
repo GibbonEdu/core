@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Planner\OutcomeGateway;
 
 $page->breadcrumbs->add(__('Manage Outcomes'));
 
@@ -33,13 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        //Proceed!
-        //Set pagination variable
-        $page = isset($_GET['page'])? $_GET['page'] : 1;
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
-
         //Filter variables
         $where = '';
         $data = array();
@@ -50,16 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
             $where .= " WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID";
         }
 
-        $sql = "SELECT gibbonOutcome.*, gibbonDepartment.name AS department FROM gibbonOutcome LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) $where ORDER BY scope, gibbonDepartmentID, category, nameShort";
-        $sqlPage = $sql.' LIMIT '.$gibbon->session->get('pagination').' OFFSET '.(($page - 1) * $gibbon->session->get('pagination'));
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-
-        echo '<h3>';
-        echo __('Filter');
-        echo '</h3>';
-
         $form = Form::create('filter', $gibbon->session->get('absoluteURL').'/index.php', 'get');
+        $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$gibbon->session->get('module').'/outcomes.php');
@@ -77,130 +64,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes.php') == 
 
         echo $form->getOutput();
 
-        echo '<h3>';
-        echo __('Outcomes');
-        echo '</h3>';
+        $outcomeGateway = $container->get(OutcomeGateway::class);
+
+        // QUERY
+        $criteria = $outcomeGateway->newQueryCriteria(true)
+            ->sortBy(['scope', 'department', 'category', 'nameShort'])
+            ->pageSize(50)
+            ->fromPOST();
+
+        $outcomes = $outcomeGateway->queryOutcomes($criteria, $filter2);
+
+        // TABLE
+        $table = DataTable::createPaginated('outcomes', $criteria);
+        $table->setTitle(__('View'));
+
+        $table->modifyRows(function ($unit, $row) {
+            if ($unit['active'] != 'Y') $row->addClass('error');
+            return $row;
+        });
 
         if ($highestAction == 'Manage Outcomes_viewEditAll' or $highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-            echo "<div class='linkTop'>";
-            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/outcomes_add.php&filter2=$filter2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
-            echo '</div>';
+            $table->addHeaderAction('add', __('Add'))
+                ->addParam('filter2', $filter2)
+                ->setURL('/modules/Planner/outcomes_add.php')
+                ->displayLabel();
         }
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __('There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'top', "filter2=$filter2");
-            }
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __('Scope');
-            echo '</th>';
-            echo '<th>';
-            echo __('Category');
-            echo '</th>';
-            echo '<th>';
-            echo __('Name');
-            echo '</th>';
-            echo '<th>';
-            echo __('Year Groups');
-            echo '</th>';
-            echo '<th>';
-            echo __('Active');
-            echo '</th>';
-            echo "<th style='width: 100px'>";
-            echo __('Actions');
-            echo '</th>';
-            echo '</tr>';
+        $table->addColumn('scope', __('Scope'))
+            ->format(function ($row) {
+                return ($row['scope'] == "School") ? $row['scope'] : $row['scope']."<br/>".Format::small(__($row['department']));
+            });
 
-            $count = 0;
-            $rowNum = 'odd';
-            
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
+        $table->addColumn('category', __('Category'));
 
-                if ($row['active'] != 'Y') {
-                    $rowNum = 'error';
-                }
+        $table->addColumn('name', __('Name'))
+            ->format(function ($row) {
+                return $row['nameShort']."<br/>".Format::small(__($row['name']));
+            });
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo '<b>'.__($row['scope']).'</b><br/>';
-                if ($row['scope'] == 'Learning Area' and $row['department'] != '') {
-                    echo "<span style='font-size: 75%; font-style: italic'>".$row['department'].'</span>';
-                }
-                echo '</td>';
-                echo '<td>';
-                echo '<b>'.$row['category'].'</b><br/>';
-                echo '</td>';
-                echo '<td>';
-                echo '<b>'.$row['nameShort'].'</b><br/>';
-                echo "<span style='font-size: 75%; font-style: italic'>".$row['name'].'</span>';
-                echo '</td>';
-                echo '<td>';
-                echo getYearGroupsFromIDList($guid, $connection2, $row['gibbonYearGroupIDList']);
-                echo '</td>';
-                echo '<td>';
-                echo Format::yesNo($row['active']);
-                echo '</td>';
-                echo '<td>';
-                echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo "\$(\".description-$count\").hide();";
-                echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                echo "\$(\".show_hide-$count\").click(function(){";
-                echo "\$(\".description-$count\").fadeToggle(1000);";
-                echo '});';
-                echo '});';
-                echo '</script>';
+        $table->addColumn('yearGroupList', __('Year Groups'));
 
-                if ($highestAction == 'Manage Outcomes_viewEditAll') {
-                    echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_edit.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-                } elseif ($highestAction == 'Manage Outcomes_viewAllEditLearningArea') {
-                    if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {
-                        $dataLearningAreaStaff = array('gibbonDepartmentID' => $row['gibbonDepartmentID'], 'gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
-                        $sqlLearningAreaStaff = "SELECT * FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)')";
-                        $resultLearningAreaStaff = $connection2->prepare($sqlLearningAreaStaff);
-                        $resultLearningAreaStaff->execute($dataLearningAreaStaff);
-                        if ($resultLearningAreaStaff->rowCount() > 0) {
-                            echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_edit.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/outcomes_delete.php&gibbonOutcomeID='.$row['gibbonOutcomeID']."&filter2=$filter2&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
-                        }
-                    }
-                }
-                if ($row['description'] != '') {
-                    echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_down.png' ' onclick='return false;' /></a>";
-                }
-                echo '</td>';
-                echo '</tr>';
-                if ($row['description'] != '') {
-                    echo "<tr class='description-$count' id='description-$count'>";
-                    echo '<td colspan=6>';
-                    echo $row['description'];
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</tr>';
+        $table->addColumn('active', __('active'))
+            ->format(function ($row) {
+                return Format::yesNo(__($row['active']));
+            });
 
-                ++$count;
-            }
-            echo '</table>';
+        $actions = $table->addActionColumn()
+            ->addParam('gibbonOutcomeID')
+            ->addParam('filter2', $filter2)
+            ->format(function ($resource, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Planner/outcomes_edit.php');
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Planner/outcomes_delete.php');
+            });
 
-            if ($result->rowCount() > $gibbon->session->get('pagination')) {
-                printPagination($guid, $result->rowCount(), $page, $gibbon->session->get('pagination'), 'bottom', "filter2=$filter2");
-            }
-        }
+        echo $table->render($outcomes);
     }
 }

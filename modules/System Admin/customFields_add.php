@@ -48,6 +48,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/customFields_
         $row->addLabel('context', __('Context'));
         $row->addSelect('context')->fromArray($customFieldHandler->getContexts())->required()->placeholder()->selected($context);
 
+    $form->toggleVisibilityByClass('contextCustom')->onSelect('context')->when('Custom');
+
+    $row = $form->addRow()->addClass('contextCustom');
+        $row->addLabel('contextName', __('Custom Context Name'))->description(__('Generally the same as the module name.'));
+        $row->addTextField('contextName')->maxLength(60)->required()->setValue($_GET['contextName'] ?? '');
+
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique for this context.'));
         $row->addTextField('name')->maxLength(50)->required();

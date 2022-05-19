@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
 
     // TABLE
     $table = DataTable::createPaginated('resources', $criteria);
-    $table->setTitle('View');
+    $table->setTitle(__('View'));
     $table->addHeaderAction('add', __('Add'))
         ->addParam('search', $search)
         ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
