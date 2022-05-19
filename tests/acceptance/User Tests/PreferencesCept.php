@@ -8,7 +8,7 @@ $I->amOnPage('/index.php?q=preferences.php');
 // Grab Original Settings --------------------------------------
 
 $originalFormValues = $I->grabAllFormValues('#preferences :not([name="mfaSecret"])');
-$I->seeInFormFields('#preferences :not([name="mfaSecret"])', $originalFormValues);
+$I->seeInFormFields('#preferences :not([name="mfaSecret"]) input, #preferences :not([name="mfaSecret"]) textarea, #preferences :not([name="mfaSecret"]) select', $originalFormValues);
 
 // Make Changes ------------------------------------------------
 
