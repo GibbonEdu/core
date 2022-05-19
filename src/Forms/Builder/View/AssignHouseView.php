@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\View;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Services\Format;
 
 class AssignHouseView extends AbstractFormView
 {
@@ -54,12 +55,13 @@ class AssignHouseView extends AbstractFormView
     {
         if (!$formData->exists($this->getResultName())) return;
 
-        $row = $form->addRow();
+        $col = $form->addRow()->addColumn();
+        $col->addSubheading($this->getName(), 'h4');
 
         if ($formData->hasResult($this->getResultName())) {
-            $row->addContent(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->getResult($this->getResultName())));
+            $col->addContent(Format::alert(sprintf(__('The student has automatically been assigned to %1$s house.'), $formData->getResult($this->getResultName())), 'success'));
         } else {
-            $row->addContent(__('The student could not automatically be added to a house, you may wish to manually add them to a house.'));
+            $col->addContent(Format::alert(__('The student could not automatically be added to a house, you may wish to manually add them to a house.'), 'warning'));
         }
     }
 }

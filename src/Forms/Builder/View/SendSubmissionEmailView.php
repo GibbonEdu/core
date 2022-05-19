@@ -66,8 +66,9 @@ class SendSubmissionEmailView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
+        if (empty($data->get('email')));
+        
         $row = $form->addRow();
-
         if ($data->hasResult($this->getResultName())) {
             $row->addContent(__('An email was sent to {email}', ['email' => $data->get('email')]));
         } else {

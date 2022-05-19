@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\View;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Services\Format;
 
 class CreateStudentView extends AbstractFormView
 {
@@ -62,12 +63,13 @@ class CreateStudentView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
-        $row = $form->addRow();
+        $col = $form->addRow()->addColumn();
+        $col->addSubheading($this->getName(), 'h4');
 
         if ($data->hasResult('gibbonPersonIDStudent')) {
-            $row->addContent('gibbonPersonID: '.$data->getResult('gibbonPersonIDStudent'));
+            $col->addContent('gibbonPersonID: '.$data->getResult('gibbonPersonIDStudent'));
         } else {
-            $row->addContent(__('Student could not be created!'));
+            $col->addContent(Format::alert(__('Student could not be created!'), 'warning'));
         }
     }
 }
