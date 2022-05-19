@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     exit;
 } else {
     // Proceed!
-
+    $partialFail = false;
 
     // Get the application form data
     $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
@@ -71,6 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formData->addData($data);
     $formData->save($application['identifier']);
 
+    // Handle file uploads - on error, flag partial failures
+    $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
+    $uploaded = $formBuilder->upload();
+    $partialFail &= !$uploaded;
+
     // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
     if (!empty($validated)) {
@@ -84,5 +89,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $formData->save($application['identifier']);
 
-    header("Location: {$URL->withReturn('success0')}");
+    header("Location: {$URL->withReturn($partialFail ? 'warning1' : 'success0')}");
 }

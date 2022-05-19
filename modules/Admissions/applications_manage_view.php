@@ -31,16 +31,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $search = $_GET['search'] ?? '';
+
     $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applications_manage.php')
+        ->add(__('Manage Applications'), 'applications_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search])
         ->add(__('View & Print Application'));
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
-    $search = $_GET['search'] ?? '';
     $viewMode = $_GET['format'] ?? '';
 
-    
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
     $application = $admissionsApplicationGateway->getByID($gibbonAdmissionsApplicationID);
 

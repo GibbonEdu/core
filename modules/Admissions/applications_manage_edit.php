@@ -30,13 +30,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $search = $_GET['search'] ?? '';
+
     $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applications_manage.php')
+        ->add(__('Manage Applications'), 'applications_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search])
         ->add(__('Edit Application'));
 
-    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
-    $search = $_GET['search'] ?? '';
     $viewMode = $_GET['format'] ?? '';
     
     // Get the application form data
@@ -59,7 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
-    
+    $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
+
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $errors = $formProcessor->verifyForm($formBuilder);

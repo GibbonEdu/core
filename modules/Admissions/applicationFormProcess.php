@@ -42,6 +42,9 @@ if (empty($gibbonFormID) || empty($identifier)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
+
+    $partialFail = false;
+
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     $account = $admissionsAccountGateway->getAccountByAccessID($accessID);
     if (empty($account)) {
@@ -54,7 +57,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
-    // Acquire data and handle file uploads - on error, return to the current page
+    // Acquire data from POST - on error, return to the current page
     $data = $formBuilder->acquire();
     if (!$data) {
         header("Location: {$URL->withReturn('error1')}");
@@ -64,6 +67,11 @@ if (empty($gibbonFormID) || empty($identifier)) {
     // Save data before validation, so users don't lose data?
     $formData->addData($data);
     $formData->save($identifier);
+
+    // Handle file uploads - on error, flag partial failures
+    $formBuilder->addConfig(['foreignTableID' => $formData->identify($identifier)]);
+    $uploaded = $formBuilder->upload();
+    $partialFail &= !$uploaded;
 
     // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
@@ -92,7 +100,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
         $formData->setStatus('Pending');
         $formData->save($identifier);
 
-        $URL = $URL->withQueryParam('return', 'success0')->withQueryParam('page', $pageNumber+1);
+        $URL = $URL->withQueryParam('return', $partialFail ? 'warning1' : 'success0')->withQueryParam('page', $pageNumber+1);
 
     } elseif ($nextPage) {
         // Save data and proceed to the next page
@@ -102,5 +110,5 @@ if (empty($gibbonFormID) || empty($identifier)) {
         $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
     }
 
-    header("Location: {$URL}");
+    header("Location: {$URL->withReturn($partialFail ? 'warning1' : '')}");
 }

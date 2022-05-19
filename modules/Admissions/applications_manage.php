@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // QUERY
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
+        ->searchBy($admissionsApplicationGateway->getSearchableColumns(), $search)
         ->sortBy('timestampCreated', 'DESC')
         ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
         ->fromPOST();
@@ -93,6 +94,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
     $table->addActionColumn()
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->addParam('search', $criteria->getSearchText(true))
         ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($application, $actions) {
 

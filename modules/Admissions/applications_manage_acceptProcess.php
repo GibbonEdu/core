@@ -60,6 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formData->load($application['identifier']);
     $formData->setResults([]);
     $formData->setReadOnly(true);
+
+    $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
     
     // Run any accept-related processes
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));

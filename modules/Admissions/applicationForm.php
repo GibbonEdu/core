@@ -96,14 +96,16 @@ if ($proceed == false) {
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
+    $formBuilder->addConfig(['foreignTableID' => $formData->identify($identifier)]);
+
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
-    $errors = $formProcessor->verifyForm($formBuilder);
+    $errors = $formProcessor->submitForm($formBuilder, $formData, true);
 
     // Display any validation errors
-    foreach ($errors as $errorMessage) {
-        echo Format::alert($errorMessage);
-    }
+    // foreach ($errors as $errorMessage) {
+    //     echo Format::alert($errorMessage);
+    // }
 
     // Load values from the form data storage
     $values = $formData->getData();
@@ -142,7 +144,8 @@ if ($proceed == false) {
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
                         
-        $processes = $formProcessor->getViewableProcesses(true, false, false);
+        $processes = $formProcessor->getViewableProcesses();
+        
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);
