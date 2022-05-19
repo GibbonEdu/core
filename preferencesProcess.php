@@ -39,7 +39,7 @@ $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
 
 //TODO: Handle requiring MFA token one last time if disabling MFA
 $mfaEnable = $_POST['mfaEnable'] ?? 'N';
-if ($mfaEnable != 'N') {
+if ($mfaEnable == 'Y') {
     $mfaSecret = $_POST['mfaSecret'] ?? null;
 } else {
     $mfaSecret = null;

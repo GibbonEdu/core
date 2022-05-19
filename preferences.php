@@ -54,12 +54,12 @@ if (!$session->exists("username")) {
     $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
         
     //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
-    if ($values['mfaSecret'] == NULL) {
-        $secret = $tfa->createSecret(); 
-        $secretcheck = 'N';
-    } else {
-        $secret = $values['mfaSecret'];
+    if ($values['mfaSecret']) {
+        $secret = $values['mfaSecret']; 
         $secretcheck = 'Y';
+    } else {
+        $secret = $tfa->createSecret();
+        $secretcheck = 'N';
     }
     
     $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
@@ -149,7 +149,7 @@ if (!$session->exists("username")) {
         
         $row = $form->addRow();
             $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
-            $row->addYesNo('mfaEnable')->setValue($secretcheck);
+            $row->addYesNo('mfaEnable')->selected($secretcheck);
         
         
        //If MFA wasn't previously set, show the MFA QR code. 

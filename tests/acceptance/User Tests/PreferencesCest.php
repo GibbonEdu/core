@@ -46,6 +46,7 @@ class PreferencesCest
         $I->selectOption('gibbonThemeIDPersonal', '0013');
         $I->selectOption('gibboni18nIDPersonal', '0001');
         $I->selectOption('receiveNotificationEmails', 'N');
+        $I->selectOption('mfaEnable', 'N');
 
         $I->submitForm('#preferences', $newFormValues, 'Submit');
 
@@ -53,13 +54,13 @@ class PreferencesCest
         // Verify Results ----------------------------------------------
 
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences :not([name="mfaSecret"])', $newFormValues);
+        $I->seeInFormFields('#preferences', $newFormValues);
 
         // Restore Original Settings -----------------------------------
 
         $I->submitForm('#preferences', $originalFormValues, 'Submit');
         $I->see('Your request was completed successfully.', '.success');
-        $I->seeInFormFields('#preferences :not([name="mfaSecret"])', $originalFormValues);
+        $I->seeInFormFields('#preferences', $originalFormValues);
     }
 
     public function updatePassword(AcceptanceTester $I)
