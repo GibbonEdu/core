@@ -58,51 +58,17 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 
         if (!$formData->has('username') || !$formData->has('passwordStrong')) {
             throw new FormProcessException('Failed to generate username or password');
-            return;
         }
 
         // Set and assign default values
         $this->setStatus($formData);
         $this->setDefaults($formData);
 
-        $data = [
-            'gibbonRoleIDPrimary' => '003',
-            'gibbonRoleIDAll'     => '003',
-            'username'            => $formData->get('username'),
-            'passwordStrong'      => $formData->get('passwordStrong'),
-            'passwordStrongSalt'  => $formData->get('passwordStrongSalt'),
-            'status'              => $formData->get('status'),
-            'email'               => $formData->get('email'),
-            'emailAlternate'      => $formData->get('emailAlternate'),
-            'title'               => $formData->get('title', ''),
-            'surname'             => $formData->get('surname'),
-            'firstName'           => $formData->get('firstName'),
-            'preferredName'       => $formData->get('preferredName'),
-            'officialName'        => $formData->get('officialName'),
-            'nameInCharacters'    => $formData->get('nameInCharacters', ''),
-            'gender'              => $formData->get('gender', 'Unspecified'),
-            'dob'                 => $formData->get('dob'),
-            'languageFirst'       => $formData->get('languageFirst', ''),
-            'languageSecond'      => $formData->get('languageSecond', ''),
-            'languageThird'       => $formData->get('languageThird', ''),
-            'countryOfBirth'      => $formData->get('countryOfBirth', ''),
-            'website'             => $formData->get('website', ''),
-            'phone1Type'          => $formData->get('phone1Type', ''),
-            'phone1CountryCode'   => $formData->get('phone1CountryCode', ''),
-            'phone1'              => $formData->get('phone1', ''),
-            'phone2Type'          => $formData->get('phone2Type', ''),
-            'phone2CountryCode'   => $formData->get('phone2CountryCode', ''),
-            'phone2'              => $formData->get('phone2', ''),
-            'lastSchool'          => $formData->get('lastSchool', ''),
-            'dateStart'           => $formData->get('dateStart'),
-            'privacy'             => $formData->get('privacy'),
-            'dayType'             => $formData->get('dayType'),
-            'studentID'           => $formData->get('studentID', ''),
-        ];
+        $gibbonPersonIDStudent = $this->userGateway->insert($this->getUserData($formData, '003'));
 
-        $gibbonPersonIDStudent = $this->userGateway->insert($data);
-
-        if (empty($gibbonPersonIDStudent)) throw new FormProcessException('Failed to insert student into the database');
+        if (empty($gibbonPersonIDStudent)) {
+            throw new FormProcessException('Failed to insert student into the database');
+        }
 
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $this->setResult($gibbonPersonIDStudent);
@@ -117,14 +83,52 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $formData->set('gibbonPersonIDStudent', null);
     }
 
+    protected function getUserData(FormDataInterface $formData, $gibbonRoleID, $prefix = '')
+    {
+        return [
+            'gibbonRoleIDPrimary' => $gibbonRoleID,
+            'gibbonRoleIDAll'     => $gibbonRoleID,
+            'username'            => $formData->get($prefix.'username'),
+            'passwordStrong'      => $formData->get($prefix.'passwordStrong'),
+            'passwordStrongSalt'  => $formData->get($prefix.'passwordStrongSalt'),
+            'status'              => $formData->get($prefix.'status'),
+            'email'               => $formData->get($prefix.'email'),
+            'emailAlternate'      => $formData->get($prefix.'emailAlternate'),
+            'title'               => $formData->get($prefix.'title', ''),
+            'surname'             => $formData->get($prefix.'surname'),
+            'firstName'           => $formData->get($prefix.'firstName'),
+            'preferredName'       => $formData->get($prefix.'preferredName'),
+            'officialName'        => $formData->get($prefix.'officialName'),
+            'nameInCharacters'    => $formData->get($prefix.'nameInCharacters', ''),
+            'gender'              => $formData->get($prefix.'gender', 'Unspecified'),
+            'dob'                 => $formData->get($prefix.'dob'),
+            'languageFirst'       => $formData->get($prefix.'languageFirst', ''),
+            'languageSecond'      => $formData->get($prefix.'languageSecond', ''),
+            'languageThird'       => $formData->get($prefix.'languageThird', ''),
+            'countryOfBirth'      => $formData->get($prefix.'countryOfBirth', ''),
+            'website'             => $formData->get($prefix.'website', ''),
+            'phone1Type'          => $formData->get($prefix.'phone1Type', ''),
+            'phone1CountryCode'   => $formData->get($prefix.'phone1CountryCode', ''),
+            'phone1'              => $formData->get($prefix.'phone1', ''),
+            'phone2Type'          => $formData->get($prefix.'phone2Type', ''),
+            'phone2CountryCode'   => $formData->get($prefix.'phone2CountryCode', ''),
+            'phone2'              => $formData->get($prefix.'phone2', ''),
+            'lastSchool'          => $formData->get($prefix.'lastSchool', ''),
+            'dateStart'           => $formData->get($prefix.'dateStart'),
+            'privacy'             => $formData->get($prefix.'privacy'),
+            'dayType'             => $formData->get($prefix.'dayType'),
+            'studentID'           => $formData->get($prefix.'studentID', ''),
+        ];
+    }
+
     /**
      * Generate a unique username for the new student, or use the pre-defined one.
      *
      * @param FormDataInterface $formData
      */
-    private function generateUsername(FormDataInterface $formData)
+    protected function generateUsername(FormDataInterface $formData, $prefix = '')
     {
-        if ($formData->has('username')) {
+        if ($formData->has($prefix.'username')) {
             return;
         }
 
@@ -132,7 +136,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->usernameGenerator->addToken('firstName', $formData->get('firstName'));
         $this->usernameGenerator->addToken('surname', $formData->get('surname'));
 
-        $formData->set('username', $this->usernameGenerator->generateByRole('003'));
+        $formData->set($prefix.'username', $this->usernameGenerator->generateByRole('003'));
     }
 
     /**
@@ -140,10 +144,10 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      *
      * @param FormDataInterface $formData
      */
-    private function generatePassword(FormDataInterface $formData)
+    protected function generatePassword(FormDataInterface $formData, $prefix = '')
     {
-        $formData->set('passwordStrongSalt', getSalt());
-        $formData->set('passwordStrong', hash('sha256', $formData->get('passwordStrongSalt').randomPassword(8)));
+        $formData->set($prefix.'passwordStrongSalt', getSalt());
+        $formData->set($prefix.'passwordStrong', hash('sha256', $formData->get('passwordStrongSalt').randomPassword(8)));
     }
 
     /**
@@ -151,10 +155,10 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      *
      * @param FormDataInterface $formData
      */
-    private function setStatus(FormDataInterface $formData)
+    protected function setStatus(FormDataInterface $formData, $prefix = '')
     {
         // $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full'
-        $formData->set('status', 'Full');
+        $formData->set($prefix.'status', 'Full');
     }
 
     /**
@@ -162,14 +166,14 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      *
      * @param FormDataInterface $formData
      */
-    private function setDefaults(FormDataInterface $formData)
+    protected function setDefaults(FormDataInterface $formData, $prefix = '')
     {
-        if (!$formData->has('firstName')) {
-            $formData->set('firstName', $formData->get('preferredName'));
+        if (!$formData->has($prefix.'firstName')) {
+            $formData->set($prefix.'firstName', $formData->get($prefix.'preferredName'));
         }
 
-        if (!$formData->has('officialName')) {
-            $formData->set('officialName', $formData->get('firstName').' '.$formData->get('surname'));
+        if (!$formData->has($prefix.'officialName')) {
+            $formData->set($prefix.'officialName', $formData->get($prefix.'firstName').' '.$formData->get($prefix.'surname'));
         }
     }
 }

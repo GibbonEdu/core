@@ -26,6 +26,7 @@ use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Process\CreateStudentFields;
 use Gibbon\Forms\Builder\Process\EnrolStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
+use Gibbon\Forms\Builder\Process\CreateFamily;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
@@ -44,6 +45,8 @@ class ApplicationFormProcessor extends AbstractFormProcessor
     {
         $this->run(CreateStudent::class);
         $this->run(CreateStudentFields::class);
+        $this->run(CreateFamily::class);
+        $this->run(CreateParents::class);
         $this->run(EnrolStudent::class);
         $this->run(AssignHouse::class);
     }

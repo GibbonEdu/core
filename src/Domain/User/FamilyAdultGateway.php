@@ -43,4 +43,41 @@ class FamilyAdultGateway extends QueryableGateway implements ScrubbableGateway
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['comment' => ''];
+
+    public function insertFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult, $gibbonPersonIDStudent, $relationship)
+    {
+        $query = $this
+            ->newInsert()
+            ->into('gibbonFamilyRelationship')
+            ->cols([
+                'gibbonFamilyID'  => $gibbonFamilyID,
+                'gibbonPersonID1' => $gibbonPersonIDAdult,
+                'gibbonPersonID2' => $gibbonPersonIDStudent,
+                'relationship'    => $relationship,
+            ]);
+
+        return $this->runInsert($query);
+    }
+
+    public function deleteFamilyAdult($gibbonFamilyID, $gibbonPersonIDAdult)
+    {
+        $query = $this
+            ->newDelete()
+            ->from('gibbonFamilyAdult')
+            ->where('gibbonFamilyID=:gibbonFamilyID', ['gibbonFamilyID' => $gibbonFamilyID])
+            ->where('gibbonPersonID=:gibbonPersonIDAdult', ['gibbonPersonIDAdult' => $gibbonPersonIDAdult]);
+
+        return $this->runDelete($query);
+    }
+
+    public function deleteFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult)
+    {
+        $query = $this
+            ->newDelete()
+            ->from('gibbonFamilyRelationship')
+            ->where('gibbonFamilyID=:gibbonFamilyID', ['gibbonFamilyID' => $gibbonFamilyID])
+            ->where('gibbonPersonID1=:gibbonPersonIDAdult', ['gibbonPersonIDAdult' => $gibbonPersonIDAdult]);
+
+        return $this->runDelete($query);
+    }
 }

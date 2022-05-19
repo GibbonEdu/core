@@ -105,7 +105,7 @@ class CreateStudentFields extends AbstractFormProcess
             $id = 'custom'.$field['gibbonCustomFieldID'];
             if (!$formData->has($id)) continue;
 
-            $fields[$id] = $formData->get($id);
+            $fields[$field['gibbonCustomFieldID']] = $formData->get($id);
         }
 
         $formData->set('fields', json_encode($fields));

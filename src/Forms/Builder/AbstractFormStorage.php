@@ -43,7 +43,7 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         return $this->readOnly;
     }
 
-    public function setReadOnly($readOnly = true)
+    public function setReadOnly(bool $readOnly = true)
     {
         $this->readOnly = $readOnly;
     }
@@ -58,26 +58,35 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         $this->status = $status;
     }
 
-    public function exists($fieldName) : bool
+    public function exists(string $fieldName) : bool
     {
         return isset($this->result[$fieldName]) || isset($this->data[$fieldName]);
     }
     
-    public function has($fieldName) : bool
+    public function has(string $fieldName) : bool
     {
         if ($this->readOnly) return !empty($this->result[$fieldName]) || !empty($this->data[$fieldName]);
 
         return !empty($this->data[$fieldName]);
     }
 
-    public function get($fieldName, $default = null)
+    public function hasAll(array $fieldNames) : bool
+    {
+        foreach ($fieldNames as $fieldName) {
+            if (!$this->has($fieldName)) return false;
+        }
+
+        return true;
+    }
+
+    public function get(string $fieldName, $default = null)
     {
         if ($this->readOnly) return $this->result[$fieldName] ?? $this->data[$fieldName] ?? $default;
 
         return $this->data[$fieldName] ?? $default;
     }
 
-    public function getOrNull($fieldName)
+    public function getOrNull(string $fieldName)
     {
         if ($this->readOnly && !empty($this->result[$fieldName])) {
             return $this->result[$fieldName];
@@ -86,7 +95,7 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         return !empty($this->data[$fieldName]) ? $this->data[$fieldName] : null;
     }
 
-    public function set($fieldName, $value)
+    public function set(string $fieldName, $value)
     {
         if ($this->readOnly) return $this->setResult($fieldName, $value);
         
@@ -112,17 +121,17 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         $this->data = array_merge($this->data, $data);
     }
 
-    public function hasResult($fieldName) : bool
+    public function hasResult(string $fieldName) : bool
     {
         return !empty($this->result[$fieldName]);
     }
 
-    public function getResult($fieldName, $default = null)
+    public function getResult(string $fieldName, $default = null)
     {
         return $this->result[$fieldName] ?? $default;
     }
 
-    public function setResult($fieldName, $value)
+    public function setResult(string $fieldName, $value)
     {
         $this->result[$fieldName] = $value;
     }
