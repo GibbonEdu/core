@@ -38,7 +38,7 @@ class CreateParentsView extends AbstractFormView
 
     public function getDescription() : string
     {
-        return __('Create a new family or add students to an existing family.');
+        return __("Create a Gibbon user account for one or more parents and connect them to the student's family.");
     }
 
     public function configure(Form $form)
@@ -53,12 +53,61 @@ class CreateParentsView extends AbstractFormView
         if (!$data->exists($this->getResultName())) return;
 
         $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName(), 'h4');
+        
+        // PARENT 1
+        $col->addSubheading(__('Parent 1'));
 
-        if ($data->hasResult('gibbonPersonIDParent1')) {
-            $col->addContent(__('Family Details'));
+        if ($data->hasResult('gibbonPersonIDParent1') || $data->hasData('gibbonPersonIDParent1')) {
+            $list = [
+                'gibbonPersonID' => $data->getAny('gibbonPersonIDParent1'),
+                __('Name') => Format::name($data->get('parent1title'), $data->get('parent1preferredName'), $data->get('parent1surname'), 'Parent'),
+                __('Email') => $data->getAny('email'),
+            ];
+
+            if ($data->hasResult('parent1created')) {
+                $list += [
+                    __('Username') => $data->getResult('username'),
+                    __('Password') => $data->getResult('password'),
+                ];
+            } else {
+                $col->addContent(__('Parent 1 already exists in Gibbon, and so does not need a new account.'));
+            }
+
+            if (!$data->hasResult('parent1adultLinked')) {
+                $col->addContent(Format::alert(__('Parent 1 could not be linked to family!'), 'warning'));
+            }
+            
+            $col->addContent(Format::listDetails($list, 'ul'));
         } else {
-            $col->addContent(Format::alert(__('Family could not be created!'), 'warning'));
+            $col->addContent(Format::alert(__('Parent 1 could not be created!'), 'warning'));
+        }
+
+        if (!$data->hasAll(['parent2surname', 'parent2preferredName'])) return;
+
+        // PARENT 2
+        $col->addSubheading(__('Parent 2'));
+
+        if ($data->hasResult('gibbonPersonIDParent2')) {
+            $list = [
+                'gibbonPersonID' => $data->getAny('gibbonPersonIDParent2'),
+                __('Name') => Format::name($data->get('parent2title'), $data->get('parent2preferredName'), $data->get('parent2surname'), 'Parent'),
+                __('Email') => $data->getAny('email'),
+            ];
+
+            if ($data->hasResult('parent2created')) {
+                $list += [
+                    __('Username') => $data->getResult('username'),
+                    __('Password') => $data->getResult('password'),
+                ];
+            }
+
+            if (!$data->hasResult('parent2adultLinked')) {
+                $col->addContent(Format::alert(__('Parent 2 could not be linked to family!'), 'warning'));
+            }
+            
+            $col->addContent(Format::listDetails($list, 'ul'));
+        } else {
+            $col->addContent(Format::alert(__('Parent 2 could not be created!'), 'warning'));
         }
     }
 }

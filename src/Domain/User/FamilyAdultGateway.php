@@ -44,21 +44,6 @@ class FamilyAdultGateway extends QueryableGateway implements ScrubbableGateway
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['comment' => ''];
 
-    public function insertFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult, $gibbonPersonIDStudent, $relationship)
-    {
-        $query = $this
-            ->newInsert()
-            ->into('gibbonFamilyRelationship')
-            ->cols([
-                'gibbonFamilyID'  => $gibbonFamilyID,
-                'gibbonPersonID1' => $gibbonPersonIDAdult,
-                'gibbonPersonID2' => $gibbonPersonIDStudent,
-                'relationship'    => $relationship,
-            ]);
-
-        return $this->runInsert($query);
-    }
-
     public function deleteFamilyAdult($gibbonFamilyID, $gibbonPersonIDAdult)
     {
         $query = $this
@@ -69,14 +54,44 @@ class FamilyAdultGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->runDelete($query);
     }
+    
+    public function insertFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult, $gibbonPersonIDStudent, $relationship)
+    {
+        $existing = $this->selectBy(['gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDAdult, 'gibbonPersonID2' => $gibbonPersonIDStudent])->fetch();
 
-    public function deleteFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult)
+        if ($existing) {
+            $query = $this
+                ->newUpdate()
+                ->table('gibbonFamilyRelationship')
+                ->cols(['relationship' => $relationship])
+                ->where('gibbonFamilyID=:gibbonFamilyID', ['gibbonFamilyID' => $gibbonFamilyID])
+                ->where('gibbonPersonID1=:gibbonPersonIDAdult', ['gibbonPersonIDAdult' => $gibbonPersonIDAdult])
+                ->where('gibbonPersonID2=:gibbonPersonIDStudent', ['gibbonPersonIDStudent' => $gibbonPersonIDStudent]);
+
+            return $this->runUpdate($query);
+        } else {
+            $query = $this
+                ->newInsert()
+                ->into('gibbonFamilyRelationship')
+                ->cols([
+                    'gibbonFamilyID'  => $gibbonFamilyID,
+                    'gibbonPersonID1' => $gibbonPersonIDAdult,
+                    'gibbonPersonID2' => $gibbonPersonIDStudent,
+                    'relationship'    => $relationship,
+                ]);
+
+            return $this->runInsert($query);
+        }
+    }
+
+    public function deleteFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult, $gibbonPersonIDStudent)
     {
         $query = $this
             ->newDelete()
             ->from('gibbonFamilyRelationship')
             ->where('gibbonFamilyID=:gibbonFamilyID', ['gibbonFamilyID' => $gibbonFamilyID])
-            ->where('gibbonPersonID1=:gibbonPersonIDAdult', ['gibbonPersonIDAdult' => $gibbonPersonIDAdult]);
+            ->where('gibbonPersonID1=:gibbonPersonIDAdult', ['gibbonPersonIDAdult' => $gibbonPersonIDAdult])
+            ->where('gibbonPersonID2=:gibbonPersonIDStudent', ['gibbonPersonIDStudent' => $gibbonPersonIDStudent]);
 
         return $this->runDelete($query);
     }

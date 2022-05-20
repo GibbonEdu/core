@@ -121,7 +121,7 @@ class AdmissionsFields extends AbstractFieldGroup
                 
             case 'gibbonFormGroupIDEntry':
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $config['gibbonSchoolYearID'] ?? '')->required($required)->placeholder($required ? __('Please select...') : '');
+                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ? __('Please select...') : '');
                 break;
 
             case 'dayType':

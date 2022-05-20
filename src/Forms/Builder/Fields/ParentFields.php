@@ -31,13 +31,20 @@ class ParentFields extends AbstractFieldGroup
                 'label' => __('Parent 1 Personal Data'),
                 'type' => 'subheading',
             ],
-            'parent1Surname' => [
+            'parent1surname' => [
                 'label' => __('Parent 1 Surname'),
-                'type'  => 'text',
+                'type'  => 'varchar',
+                'required' => 'Y',
             ],
-            'parent1PreferredName' => [
+            'parent1preferredName' => [
                 'label' => __('Parent 1 Preferred Name'),
-                'type'  => 'text',
+                'type'  => 'varchar',
+                'required' => 'Y',
+            ],
+            'parent1relationship' => [
+                'label' => __('Parent 1 Relationship'),
+                'type'  => 'varchar',
+                'required' => 'Y',
             ],
         ];
     }

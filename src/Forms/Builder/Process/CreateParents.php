@@ -22,23 +22,24 @@ namespace Gibbon\Forms\Builder\Process;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\Exception\FormProcessException;
 use Gibbon\Forms\Builder\View\CreateParentsView;
 
 class CreateParents extends CreateStudent implements ViewableProcess
 {
     protected $requiredFields = ['parent1preferredName', 'parent1surname', 'parent1relationship'];
 
-    private $familyAdultGateway;
+    protected $familyAdultGateway;
 
-    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator, FamilyAdultGateway $familyAdultGateway, FamilyRe)
+    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway, FamilyAdultGateway $familyAdultGateway)
     {
         $this->familyAdultGateway = $familyAdultGateway;
 
-        parent::__construct($userGateway, $usernameGenerator);
+        parent::__construct($userGateway, $usernameGenerator, $customFieldGateway, $personalDocumentGateway);
     }
 
     public function getViewClass() : string
@@ -55,68 +56,24 @@ class CreateParents extends CreateStudent implements ViewableProcess
     {
         // Create Parent 1
         if (!$formData->has('gibbonPersonIDParent1') && $formData->hasAll(['parent1surname', 'parent1preferredName'])) {
-            // Generate user details
-            $this->generateUsername($formData, 'parent1');
-            $this->generatePassword($formData, 'parent1');
-
-            // Set and assign default values
-            $this->setStatus($formData, 'parent1');
-            $this->setDefaults($formData, 'parent1');
-
-            // Create and store the new parent account
-            $gibbonPersonIDParent1 = $this->userGateway->insert($this->getUserData($formData, '004', 'parent1'));
-            $formData->set('gibbonPersonIDParent1', $gibbonPersonIDParent1);
+            $this->createParentAccount($builder, $formData, '1');
         }
 
-        // Add Parent 1 to family
-        if ($formData->hasAll(['gibbonFamilyID', 'parent1relationship', 'gibbonPersonIDParent1', 'gibbonPersonIDStudent'])) {
-            $gibbonPersonIDParent1Adult = $this->familyAdultGateway->insert([
-                'gibbonFamilyID'  => $formData->get('gibbonFamilyID'),
-                'gibbonPersonID'  => $formData->get('gibbonPersonIDParent1'),
-                'childDataAccess' => 'Y',
-                'contactPriority' => 1,
-                'contactCall'     => 'Y',
-                'contactSMS'      => 'Y',
-                'contactEmail'    => 'Y',
-                'contactMail'     => 'Y',
-            ]);
-
-            if ($gibbonPersonIDParent1Adult) {
-                $this->familyAdultGateway->insertFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent1'),  $formData->get('gibbonPersonIDStudent'), $formData->get('parent1relationship'));
-            }
+        // Update new or existing Parent 1
+        if ($formData->has('gibbonPersonIDParent1')) {
+            $this->updateParentRole($formData, '1');
+            $this->addParentToFamily($formData, '1');
         }
 
         // Create Parent 2
         if (!$formData->has('gibbonPersonIDParent2') && $formData->hasAll(['parent2surname', 'parent2preferredName'])) {
-            // Generate user details
-            $this->generateUsername($formData, 'parent2');
-            $this->generatePassword($formData, 'parent2');
-
-            // Set and assign default values
-            $this->setStatus($formData, 'parent2');
-            $this->setDefaults($formData, 'parent2');
-
-            // Create and store the new parent account
-            $gibbonPersonIDParent2 = $this->userGateway->insert($this->getUserData($formData, '004', 'parent2'));
-            $formData->set('gibbonPersonIDParent2', $gibbonPersonIDParent2);
+            $this->createParentAccount($builder, $formData, '2');
         }
 
-        // Add Parent 2 to family
-        if ($formData->hasAll(['gibbonFamilyID', 'parent2relationship', 'gibbonPersonIDParent2', 'gibbonPersonIDStudent'])) {
-            $gibbonPersonIDParent2Adult = $this->familyAdultGateway->insert([
-                'gibbonFamilyID'  => $formData->get('gibbonFamilyID'),
-                'gibbonPersonID'  => $formData->get('gibbonPersonIDParent2'),
-                'childDataAccess' => 'Y',
-                'contactPriority' => 2,
-                'contactCall'     => 'Y',
-                'contactSMS'      => 'Y',
-                'contactEmail'    => 'Y',
-                'contactMail'     => 'Y',
-            ]);
-
-            if ($gibbonPersonIDParent2Adult) {
-                $this->familyAdultGateway->insertFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent2'),  $formData->get('gibbonPersonIDStudent'), $formData->get('parent2relationship'));
-            }
+        // Update new or existing Parent 2
+        if ($formData->has('gibbonPersonIDParent2')) {
+            $this->updateParentRole($formData, '2');
+            $this->addParentToFamily($formData, '2');
         }
 
         $this->setResult(true);
@@ -126,16 +83,92 @@ class CreateParents extends CreateStudent implements ViewableProcess
     {
         if (!$formData->has('gibbonPersonIDParent1')) return;
 
-        $this->userGateway->delete($formData->get('gibbonPersonIDParent1'));
-        $this->userGateway->delete($formData->get('gibbonPersonIDParent2'));
+        // Remove the relationships, they are always new
+        $this->familyAdultGateway->deleteFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent1'), $formData->get('gibbonPersonIDStudent'));
+        $this->familyAdultGateway->deleteFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent2'), $formData->get('gibbonPersonIDStudent'));
 
-        $this->familyAdultGateway->deleteFamilyAdult($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent1'));
-        $this->familyAdultGateway->deleteFamilyAdult($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent2'));
+        // Only disconnect family if they were connected during this process
+        if ($formData->has('parent1adultAdded')) {
+            $this->familyAdultGateway->deleteFamilyAdult($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent1'));
+        }
 
-        $this->familyAdultGateway->deleteFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent1'));
-        $this->familyAdultGateway->deleteFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent2'));
+        if ($formData->has('parent2adultAdded')) {
+            $this->familyAdultGateway->deleteFamilyAdult($formData->get('gibbonFamilyID'), $formData->get('gibbonPersonIDParent2'));
+        }
 
-        $formData->set('gibbonPersonIDParent1', null);
-        $formData->set('gibbonPersonIDParent2', null);
+        // Only remove roles if they were added during this process
+        if ($formData->has('parent1roleChanged')) {
+            $this->userGateway->removeRoleFromUser($formData->get('gibbonPersonIDParent1'), '004');
+        }
+
+        if ($formData->has('parent2roleChanged')) {
+            $this->userGateway->removeRoleFromUser($formData->get('gibbonPersonIDParent2'), '004');
+        }
+        
+        // Only remove users if they were created during this process
+        if ($formData->has('parent1created')) {
+            $this->userGateway->delete($formData->get('gibbonPersonIDParent1'));
+            $formData->set('gibbonPersonIDParent1', null);
+        }
+
+        if ($formData->has('parent2created')) {
+            $this->userGateway->delete($formData->get('gibbonPersonIDParent2'));
+            $formData->set('gibbonPersonIDParent2', null);
+        }
+    }
+
+    protected function createParentAccount(FormBuilderInterface $builder, FormDataInterface $formData, $i)
+    {
+        // Generate user details
+        $this->generateUsername($formData, "parent{$i}");
+        $this->generatePassword($formData, "parent{$i}");
+
+        // Set and assign default values
+        $this->setStatus($formData, "parent{$i}");
+        $this->setDefaults($formData, "parent{$i}");
+        $this->setCustomFields($formData, "parent{$i}");
+
+        // Create and store the new parent account
+        $gibbonPersonID = $this->userGateway->insert($this->getUserData($formData, '004', "parent{$i}"));
+        $formData->set("gibbonPersonIDParent{$i}", $gibbonPersonID);
+        $formData->set("parent{$i}created", !empty($gibbonPersonID));
+
+        // Update existing data
+        $this->transferPersonalDocuments($builder, $formData, $gibbonPersonID);
+    }
+
+    protected function updateParentRole(FormDataInterface $formData, $i)
+    {
+        $updated = $this->userGateway->addRoleToUser($formData->get("gibbonPersonIDParent{$i}"), '004');
+        $formData->set("parent{$i}roleChanged", $updated);
+    }
+
+    protected function addParentToFamily(FormDataInterface $formData, $i)
+    {
+        if (!$formData->hasAll(["gibbonFamilyID", "parent{$i}relationship", "gibbonPersonIDParent{$i}", "gibbonPersonIDStudent"])) {
+            return;
+        }
+
+        $existing = $this->familyAdultGateway->selectBy(['gibbonFamilyID' => $formData->get('gibbonFamilyID'), 'gibbonPersonID' => $formData->get("gibbonPersonIDParent{$i}")])->fetch();
+
+        if (empty($existing)) {
+            $gibbonFamilyAdultID = $this->familyAdultGateway->insert([
+                'gibbonFamilyID'  => $formData->get('gibbonFamilyID'),
+                'gibbonPersonID'  => $formData->get("gibbonPersonIDParent{$i}"),
+                'childDataAccess' => 'Y',
+                'contactPriority' => $i,
+                'contactCall'     => 'Y',
+                'contactSMS'      => 'Y',
+                'contactEmail'    => 'Y',
+                'contactMail'     => 'Y',
+            ]);
+            $formData->set("parent{$i}adultAdded", !empty($gibbonFamilyAdultID));
+        } else {
+            $gibbonFamilyAdultID = $existing['gibbonFamilyAdultID'];
+        }
+
+        $this->familyAdultGateway->insertFamilyRelationship($formData->get('gibbonFamilyID'), $formData->get("gibbonPersonIDParent{$i}"), $formData->get('gibbonPersonIDStudent'), $formData->get("parent{$i}relationship"));
+
+        $formData->set("parent{$i}adultLinked", !empty($gibbonFamilyAdultID));
     }
 }

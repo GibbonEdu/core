@@ -19,61 +19,94 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
-use Gibbon\Domain\System\CustomFieldGateway;
-use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\Exception\FormProcessException;
+use Gibbon\Forms\Builder\Process\ViewableProcess;
+use Gibbon\Forms\Builder\View\NewStudentDetailsView;
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 
-class CreateStudentFields extends AbstractFormProcess
+class NewStudentDetails extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['preferredName', 'surname'];
 
+    private $session;
+    private $mail;
     private $userGateway;
-    private $customFieldGateway;
-    private $personalDocumentGateway;
-
-    public function __construct(UserGateway $userGateway, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
+    
+    public function __construct(UserGateway $userGateway, Session $session, Mailer $mail)
     {
+        $this->session = $session;
+        $this->mail = $mail;
         $this->userGateway = $userGateway;
-        $this->customFieldGateway = $customFieldGateway;
-        $this->personalDocumentGateway = $personalDocumentGateway;
+    }
+
+    public function getViewClass() : string
+    {
+        return NewStudentDetailsView::class;
     }
     
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return $builder->getConfig('createStudent') == 'Y';
+        return $builder->getConfig('newStudentDetails') == 'Y';
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         if (!$formData->has('gibbonPersonIDStudent')) {
-            throw new FormProcessException('Failed to generate username or password');
             return;
         }
-
-        // Update custom data
-        $this->transferCustomFields($formData);
-        $this->transferPersonalDocuments($builder, $formData);
 
         // Set and assign default values
         $this->setLastSchool($formData);
         $this->setStudentEmail($builder, $formData);
         $this->setStudentWebsite($builder, $formData);
 
-        $data = [
-            'email'               => $formData->get('email'),
-            'emailAlternate'      => $formData->get('emailAlternate'),
-            'website'             => $formData->get('website', ''),
-            'lastSchool'          => $formData->get('lastSchool', ''),
-            'fields'              => $formData->get('fields', ''),
-        ];
+        $this->userGateway->update($formData->get('gibbonPersonIDStudent'), [
+            'email'          => $formData->get('email'),
+            'emailAlternate' => $formData->get('emailAlternate'),
+            'website'        => $formData->get('website', ''),
+            'lastSchool'     => $formData->get('lastSchool', ''),
+        ]);
 
-        $updated = $this->userGateway->update($formData->get('gibbonPersonIDStudent'), $data);
+        // Setup the content
+        $subject = sprintf(__('Create Student Email/Websites for %1$s at %2$s'), $this->session->get('systemName'), $this->session->get('organisationNameShort'));
+        $body = sprintf(__('Please create the following for new student %1$s.'), Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student'))."<br/><br/>";
 
-        $this->setResult($updated);
+        $body .= Format::listDetails([
+            __('Email')       => $formData->get('email'),
+            __('Website')     => $formData->get('website'),
+            __('School Year') => $formData->get('schoolYearName'),
+            __('Year Group')  => $formData->get('yearGroupName'),
+            __('Form Group')  => $formData->get('formGroupName'),
+            __('Start Date')  => Format::date($formData->get('dateStart')),
+        ]);
+
+        // Setup the email
+        $this->mail->SetFrom($this->session->get('organisationEmail'), $this->session->get('organisationName'));
+        $this->mail->AddAddress($this->session->get('organisationAdministratorEmail'));
+        $this->mail->setDefaultSender($subject);
+        
+        $this->mail->renderBody('mail/message.twig.html', [
+            'title'  => $subject,
+            'body'   => $body,
+            'button' => [
+                'url'  => Url::fromModuleRoute('User Admin', 'user_manage_edit')
+                    ->withQueryParam('gibbonPersonID', $formData->get('gibbonPersonIDStudent'))
+                    ->withAbsoluteUrl(),
+                'text' => __('View Details'),
+                'external' => true,
+            ],
+        ]);
+
+        // Send the email
+        $sent = $this->mail->Send();
+        $this->setResult($sent);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
@@ -81,42 +114,11 @@ class CreateStudentFields extends AbstractFormProcess
         if (!$formData->has('gibbonPersonIDStudent')) return;
 
         $this->userGateway->update($formData->get('gibbonPersonIDStudent'), [
-            'email'               => null,
-            'emailAlternate'      => null,
-            'website'             => '',
-            'lastSchool'          => '',
-            'fields'              => '',
+            'email'          => $formData->getData('email'),
+            'emailAlternate' => $formData->getData('emailAlternate'),
+            'website'        => $formData->getData('website', ''),
+            'lastSchool'     => $formData->getData('lastSchool', ''),
         ]);
-
-        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
-        $foreignTableID = $builder->getConfig('foreignTableID');
-
-        $this->personalDocumentGateway->updatePersonalDocumentOwnership('gibbonPerson', $formData->get('gibbonPersonIDStudent'), $foreignTable, $foreignTableID);
-
-        $formData->set('gibbonPersonIDStudent', null);
-    }
-
-    private function transferCustomFields(FormDataInterface $formData)
-    {
-        $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
-        $fields = [];
-
-        foreach ($customFields as $field) {
-            $id = 'custom'.$field['gibbonCustomFieldID'];
-            if (!$formData->has($id)) continue;
-
-            $fields[$field['gibbonCustomFieldID']] = $formData->get($id);
-        }
-
-        $formData->set('fields', json_encode($fields));
-    }
-
-    private function transferPersonalDocuments(FormBuilderInterface $builder, FormDataInterface $formData)
-    {
-        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
-        $foreignTableID = $builder->getConfig('foreignTableID');
-
-        $this->personalDocumentGateway->updatePersonalDocumentOwnership($foreignTable, $foreignTableID, 'gibbonPerson', $formData->get('gibbonPersonIDStudent'));
     }
 
     /**
@@ -155,7 +157,7 @@ class CreateStudentFields extends AbstractFormProcess
      */
     private function setStudentWebsite(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if (!$builder->hasConfig('studentDefaultWebsite'))
+        if (!$builder->hasConfig('studentDefaultWebsite')) return;
 
         $formData->set('website', str_replace('[username]', $formData->get('username'), $builder->getConfig('studentDefaultWebsite')));
     }

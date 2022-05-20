@@ -47,16 +47,6 @@ class CreateStudentView extends AbstractFormView
         $row = $form->addRow();
             $row->addLabel('createStudent', $this->getName())->description($this->getDescription());
             $row->addYesNo('createStudent')->selected('N')->required();
-
-        $form->toggleVisibilityByClass('createStudent')->onSelect('createStudent')->when('Y');
-
-        $row = $form->addRow()->setClass('createStudent');
-            $row->addLabel('studentDefaultEmail', __('Student Default Email'))->description(__('Set default email for students on acceptance, using [username] to insert username.'));
-            $row->addEmail('studentDefaultEmail');
-    
-        $row = $form->addRow()->setClass('createStudent');
-            $row->addLabel('studentDefaultWebsite', __('Student Default Website'))->description(__('Set default website for students on acceptance, using [username] to insert username.'));
-            $row->addURL('studentDefaultWebsite');
     }
 
     public function display(Form $form, FormDataInterface $data)
@@ -64,10 +54,19 @@ class CreateStudentView extends AbstractFormView
         if (!$data->exists($this->getResultName())) return;
 
         $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName(), 'h4');
+        $col->addSubheading(__('Student Details'));
 
         if ($data->hasResult('gibbonPersonIDStudent')) {
-            $col->addContent('gibbonPersonID: '.$data->getResult('gibbonPersonIDStudent'));
+            $list = [
+                'gibbonPersonID'      => $data->getResult('gibbonPersonIDStudent'),
+                __('Name')            => Format::name('', $data->get('preferredName'), $data->get('surname'), 'Student'),
+                __('Email')           => $data->getAny('email'),
+                __('Email Alternate') => $data->getAny('emailAlternate'),
+                __('Username')        => $data->getResult('username'),
+                __('Password')        => $data->getResult('password'),
+            ];
+
+            $col->addContent(Format::listDetails($list));
         } else {
             $col->addContent(Format::alert(__('Student could not be created!'), 'warning'));
         }

@@ -70,18 +70,18 @@ class EnrolStudentView extends AbstractFormView
         if (!$data->exists($this->getResultName())) return;
 
         $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName(), 'h4');
+        $col->addSubheading($this->getName());
 
         if ($data->hasResult('gibbonStudentEnrolmentID')) {
-            $col->addContent(__('The student has successfully been enrolled in the specified school year, year group and form group.'));
+            $col->addContent(Format::alert(__('The student has successfully been enrolled in the specified school year, year group and form group.'), 'success'));
+
+            if ($data->hasResult('autoEnrolCoursesResult')) {
+                $col->addContent(Format::alert(__('The student has automatically been enrolled in courses for their Form Group.'), 'success'));
+            } else {
+                $col->addContent(Format::alert(__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.'), 'warning'));
+            }
         } else {
             $col->addContent(Format::alert(__('Student could not be enrolled, so this will have to be done manually at a later date.'), 'warning'));
-        }
-
-        if ($data->hasResult('autoEnrolCoursesResult')) {
-            $col->addContent(__('The student has automatically been enrolled in courses for their Form Group.'));
-        } else {
-            $col->addContent(Format::alert(__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.'), 'warning'));
         }
     }
 }

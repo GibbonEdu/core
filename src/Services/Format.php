@@ -598,6 +598,17 @@ class Format
         return $output;
     }
 
+    public static function listDetails(array $items, $tag = 'ul', $listClass = '', $itemClass = 'leading-normal')
+    {
+        $output = "<$tag class='$listClass'>";
+        foreach ($items as $label => $value) {
+            $output .= "<li class='$itemClass'><strong>".$label.'</strong>: '.$value.'</li>';
+        }
+        $output .= "</$tag>";
+
+        return $output;
+    }
+
     /**
      * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
      *

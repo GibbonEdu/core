@@ -21,6 +21,8 @@ namespace Gibbon\Forms\Builder\Process;
 
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\CustomFieldGateway;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
@@ -31,13 +33,17 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['preferredName', 'surname'];
 
-    private $userGateway;
-    private $usernameGenerator;
+    protected $userGateway;
+    protected $usernameGenerator;
+    protected $customFieldGateway;
+    protected $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator)
+    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
     {
         $this->userGateway = $userGateway;
         $this->usernameGenerator = $usernameGenerator;
+        $this->customFieldGateway = $customFieldGateway;
+        $this->personalDocumentGateway = $personalDocumentGateway;
     }
 
     public function getViewClass() : string
@@ -63,12 +69,16 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         // Set and assign default values
         $this->setStatus($formData);
         $this->setDefaults($formData);
+        $this->setCustomFields($formData);
 
+        // Create new student account
         $gibbonPersonIDStudent = $this->userGateway->insert($this->getUserData($formData, '003'));
-
         if (empty($gibbonPersonIDStudent)) {
             throw new FormProcessException('Failed to insert student into the database');
         }
+
+        // Update existing data
+        $this->transferPersonalDocuments($builder, $formData, $gibbonPersonIDStudent);
 
         $formData->set('gibbonPersonIDStudent', $gibbonPersonIDStudent);
         $this->setResult($gibbonPersonIDStudent);
@@ -80,6 +90,11 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
 
         $this->userGateway->delete($formData->get('gibbonPersonIDStudent'));
 
+        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $builder->getConfig('foreignTableID');
+
+        $this->personalDocumentGateway->updatePersonalDocumentOwnership('gibbonPerson', $formData->get('gibbonPersonIDStudent'), $foreignTable, $foreignTableID);
+        
         $formData->set('gibbonPersonIDStudent', null);
     }
 
@@ -118,6 +133,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             'privacy'             => $formData->get($prefix.'privacy'),
             'dayType'             => $formData->get($prefix.'dayType'),
             'studentID'           => $formData->get($prefix.'studentID', ''),
+            'fields'              => $formData->get($prefix.'fields', ''),
         ];
     }
 
@@ -146,8 +162,9 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected function generatePassword(FormDataInterface $formData, $prefix = '')
     {
+        $formData->set($prefix.'password', randomPassword(8));
         $formData->set($prefix.'passwordStrongSalt', getSalt());
-        $formData->set($prefix.'passwordStrong', hash('sha256', $formData->get('passwordStrongSalt').randomPassword(8)));
+        $formData->set($prefix.'passwordStrong', hash('sha256', $formData->get('passwordStrongSalt').$formData->get('password')));
     }
 
     /**
@@ -175,5 +192,41 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         if (!$formData->has($prefix.'officialName')) {
             $formData->set($prefix.'officialName', $formData->get($prefix.'firstName').' '.$formData->get($prefix.'surname'));
         }
+    }
+
+    /**
+     * Transfer values from form data into json custom field data
+     *
+     * @param FormDataInterface $formData
+     * @param string $prefix
+     */
+    protected function setCustomFields(FormDataInterface $formData, $prefix = '')
+    {
+        $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
+        $fields = [];
+
+        foreach ($customFields as $field) {
+            $id = 'custom'.$field['gibbonCustomFieldID'];
+            if (!$formData->has($id)) continue;
+
+            $fields[$field['gibbonCustomFieldID']] = $formData->get($id);
+        }
+
+        $formData->set($prefix.'fields', json_encode($fields));
+    }
+
+    /**
+     * Transfer ownership of personal documents by updating the foreign table
+     *
+     * @param FormBuilderInterface $builder
+     * @param FormDataInterface $formData
+     * @param string $gibbonPersonID
+     */
+    protected function transferPersonalDocuments(FormBuilderInterface $builder, FormDataInterface $formData, string $gibbonPersonID)
+    {
+        $foreignTable = $builder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $builder->getConfig('foreignTableID');
+
+        $this->personalDocumentGateway->updatePersonalDocumentOwnership($foreignTable, $foreignTableID, 'gibbonPerson', $gibbonPersonID);
     }
 }

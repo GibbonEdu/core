@@ -57,44 +57,55 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
             throw new FormProcessException('Missing data to create family');
         }
 
-        $this->generateFamilyName($formData);
-        $this->generateNameAddress($formData);
+        if (!$formData->has('gibbonFamilyID')) {
+            $this->generateFamilyName($formData);
+            $this->generateNameAddress($formData);
 
-        $gibbonFamilyID = $this->familyGateway->insert([
-            'name'                  => $formData->get('familyName', ''),
-            'nameAddress'           => $formData->get('nameAddress', ''),
-            'homeAddress'           => $formData->get('homeAddress', ''),
-            'homeAddressDistrict'   => $formData->get('homeAddressDistrict', ''),
-            'homeAddressCountry'    => $formData->get('homeAddressCountry', ''),
-            'languageHomePrimary'   => $formData->get('languageHomePrimary', ''),
-            'languageHomeSecondary' => $formData->get('languageHomeSecondary'),
-            'status'                => $formData->get('familyStatus', 'Other'),
-        ]);
+            // Create the family
+            $gibbonFamilyID = $this->familyGateway->insert([
+                'name'                  => $formData->get('familyName', ''),
+                'nameAddress'           => $formData->get('nameAddress', ''),
+                'homeAddress'           => $formData->get('homeAddress', ''),
+                'homeAddressDistrict'   => $formData->get('homeAddressDistrict', ''),
+                'homeAddressCountry'    => $formData->get('homeAddressCountry', ''),
+                'languageHomePrimary'   => $formData->get('languageHomePrimary', ''),
+                'languageHomeSecondary' => $formData->get('languageHomeSecondary'),
+                'status'                => $formData->get('familyStatus', 'Other'),
+            ]);
 
-        if (empty($gibbonFamilyID)) {
-            throw new FormProcessException('Failed to insert family into the database');
+            if (empty($gibbonFamilyID)) {
+                throw new FormProcessException('Failed to insert family into the database');
+            }
+
+            $formData->set('gibbonFamilyID', $gibbonFamilyID);
+            $formData->set('familyCreated', true);
+        } else {
+            $family = $this->familyGateway->getByID($formData->get('gibbonFamilyID'));
+
+            $formData->set('familyName', $family['name'] ?? '');
+            $formData->set('nameAddress', $family['nameAddress'] ?? '');
         }
 
+        // Add the student to the family as a child
         $gibbonFamilyChildID = $this->familyChildGateway->insert([
             'gibbonFamilyID' => $gibbonFamilyID,
             'gibbonPersonID' => $formData->get('gibbonPersonIDStudent'),
         ]);
 
-        $formData->set('gibbonFamilyID', $gibbonFamilyID);
-        $formData->set('$gibbonFamilyChildID', $$gibbonFamilyChildID);
-
-        $this->setResult($gibbonFamilyID);
+        $formData->set('gibbonFamilyChildID', $gibbonFamilyChildID);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         if (!$formData->has('gibbonFamilyID')) return;
 
-        $this->familyGateway->delete($formData->get('gibbonFamilyID'));
         $this->familyChildGateway->deleteWhere(['gibbonFamilyID' => $formData->get('gibbonFamilyID')]);
-
-        $formData->set('gibbonFamilyID', null);
         $formData->set('gibbonFamilyChildID', null);
+
+        if ($formData->has('familyCreated')) {
+            $this->familyGateway->delete($formData->get('gibbonFamilyID'));
+            $formData->set('gibbonFamilyID', null);
+        }
     }
 
     protected function generateFamilyName(FormDataInterface $formData)

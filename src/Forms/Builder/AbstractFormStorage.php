@@ -79,6 +79,11 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         return true;
     }
 
+    public function hasData(string $fieldName) : bool
+    {
+        return !empty($this->data[$fieldName]);
+    }
+
     public function get(string $fieldName, $default = null)
     {
         if ($this->readOnly) return $this->result[$fieldName] ?? $this->data[$fieldName] ?? $default;
@@ -93,6 +98,11 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
         }
 
         return !empty($this->data[$fieldName]) ? $this->data[$fieldName] : null;
+    }
+
+    public function getAny(string $fieldName, $default = null)
+    {
+        return $this->result[$fieldName] ?? $this->data[$fieldName] ?? $default;
     }
 
     public function set(string $fieldName, $value)
