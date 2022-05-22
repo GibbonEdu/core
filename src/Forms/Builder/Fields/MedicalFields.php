@@ -47,6 +47,7 @@ class MedicalFields extends AbstractFieldGroup
             'medical' => [
                 'label'       => __('Medical Conditions'),
                 'description' => __('Does your child have any medical conditions or concerns?'),
+                'required'    => 'X',
             ],
             'medicalInformation' => [
                 'label'       => __('Medical Information'),
@@ -102,11 +103,11 @@ class MedicalFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'medical':
                 $row->addLabel('medical', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('medical')->required($required);
+                $row->addYesNo('medical')->required($required)->placeholder();
                 break;
 
             case 'medicalInformation':
-                //$form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
+                $form->toggleVisibilityByClass('medicalDetailsRow')->onSelect('medical')->when('Y');
                 $col = $row->setClass('medicalDetailsRow')->addColumn();
                     $col->addLabel('medicalInformation', __($field['label']))->description(__($field['description']));
                     $col->addTextArea('medicalInformation')->setRows(5)->required($required)->setClass('w-full');
@@ -118,7 +119,7 @@ class MedicalFields extends AbstractFieldGroup
                 break;
 
             case 'longTermMedicationDetails':
-                //$form->toggleVisibilityByClass('longTermMedicationDetails')->onSelect('longTermMedication')->when('Y');
+                $form->toggleVisibilityByClass('longTermMedicationDetails')->onSelect('longTermMedication')->when('Y');
 
                 $row->addClass('longTermMedicationDetails');
                 $row->addLabel('longTermMedicationDetails', __($field['label']))->description(__($field['description']));

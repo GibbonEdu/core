@@ -22,12 +22,17 @@ namespace Gibbon\Forms\Builder\Processor;
 use Gibbon\Forms\Builder\AbstractFormProcessor;
 use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
 use Gibbon\Forms\Builder\Process\ApplicationReferee;
+use Gibbon\Forms\Builder\Process\ApplicationCheck;
+use Gibbon\Forms\Builder\Process\ApplicationStatus;
 use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Process\CreateFamily;
 use Gibbon\Forms\Builder\Process\CreateParents;
 use Gibbon\Forms\Builder\Process\EnrolStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
 use Gibbon\Forms\Builder\Process\NewStudentDetails;
+use Gibbon\Forms\Builder\Process\CreateMedicalRecord;
+use Gibbon\Forms\Builder\Process\CreateINRecord;
+use Gibbon\Forms\Builder\Process\CreateInvoicee;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
@@ -44,11 +49,16 @@ class ApplicationFormProcessor extends AbstractFormProcessor
 
     protected function acceptProcess()
     {
+        $this->run(ApplicationCheck::class);
         $this->run(CreateStudent::class);
         $this->run(CreateFamily::class);
         $this->run(CreateParents::class);
         $this->run(EnrolStudent::class);
         $this->run(AssignHouse::class);
         $this->run(NewStudentDetails::class);
+        $this->run(CreateMedicalRecord::class);
+        $this->run(CreateINRecord::class);
+        $this->run(CreateInvoicee::class);
+        $this->run(ApplicationStatus::class);
     }
 }

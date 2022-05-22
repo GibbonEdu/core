@@ -30,7 +30,7 @@ use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry'];
+    protected $requiredFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'gibbonFormGroupIDEntry'];
 
     private $settingGateway;
     private $studentGateway;
@@ -55,7 +55,7 @@ class EnrolStudent extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if (!$formData->has('gibbonPersonIDStudent') || !$formData->has('gibbonFormGroupIDEntry')) {
+        if (!$formData->hasAll(['gibbonPersonIDStudent', 'gibbonFormGroupIDEntry'])) {
             return;
         }
 

@@ -38,6 +38,7 @@ class CreateParentsView extends AbstractFormView
 
     public function getDescription() : string
     {
+        // __('Create user accounts for the parents.')
         return __("Create a Gibbon user account for one or more parents and connect them to the student's family.");
     }
 

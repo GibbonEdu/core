@@ -59,7 +59,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         // Generate user details
-        $this->generateUsername($formData);
+        $this->generateUsername($formData, '003');
         $this->generatePassword($formData);
 
         if (!$formData->has('username') || !$formData->has('passwordStrong')) {
@@ -142,7 +142,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      *
      * @param FormDataInterface $formData
      */
-    protected function generateUsername(FormDataInterface $formData, $prefix = '')
+    protected function generateUsername(FormDataInterface $formData, $gibbonRoleID, $prefix = '')
     {
         if ($formData->has($prefix.'username')) {
             return;
@@ -152,7 +152,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $this->usernameGenerator->addToken('firstName', $formData->get('firstName'));
         $this->usernameGenerator->addToken('surname', $formData->get('surname'));
 
-        $formData->set($prefix.'username', $this->usernameGenerator->generateByRole('003'));
+        $formData->set($prefix.'username', $this->usernameGenerator->generateByRole($gibbonRoleID));
     }
 
     /**
@@ -175,7 +175,8 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     protected function setStatus(FormDataInterface $formData, $prefix = '')
     {
         // $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full'
-        $formData->set($prefix.'status', 'Full');
+        $status = $formData['schoolYearStatus'] == 'Upcoming' ? 'Expected' : 'Full';
+        $formData->set($prefix.'status', $status);
     }
 
     /**

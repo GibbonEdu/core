@@ -90,6 +90,8 @@ class FinanceFields extends AbstractFieldGroup
                 break;
 
             case 'payment':
+                $form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
+                
                 $row->addLabel('payment', __($field['label']))->description(__($field['description']));
                 $row->addRadio('payment')
                     ->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
@@ -97,7 +99,7 @@ class FinanceFields extends AbstractFieldGroup
                     ->inline()
                     ->required($required);
                 break;
-            //$form->toggleVisibilityByClass('paymentCompany')->onRadio('payment')->when('Company');
+            
     
             // COMPANY DETAILS
             case 'companyName':
@@ -149,7 +151,7 @@ class FinanceFields extends AbstractFieldGroup
                         $col->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
                         $col->addRadio('companyAll')->fromArray(['Y' => __('All'), 'N' => __('Selected')])->checked('Y')->inline();
         
-                    //$form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+                    $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
         
                     $existingFeeCategoryIDList = (isset($application['gibbonFinanceFeeCategoryIDList']) && is_array($application['gibbonFinanceFeeCategoryIDList']))? $application['gibbonFinanceFeeCategoryIDList'] : array();
         

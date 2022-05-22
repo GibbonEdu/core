@@ -47,6 +47,7 @@ class INFields extends AbstractFieldGroup
             'sen' => [
                 'label'       => __('Special Educational Needs (SEN)'),
                 'description' => __('Are there any known or suspected SEN concerns, or previous SEN assessments?'),
+                'required'    => 'X',
             ],
             'senDetails' => [
                 'label'       => __('SEN Details'),
@@ -99,11 +100,11 @@ class INFields extends AbstractFieldGroup
         switch ($field['fieldName']) {
             case 'sen':
                 $row->addLabel('sen', __($field['label']))->description(__($field['description']));
-                $row->addYesNo('sen')->required($required);
+                $row->addYesNo('sen')->required($required)->placeholder();
                 break;
 
             case 'senDetails':
-                //$form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
+                $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
                 $col = $row->setClass('senDetailsRow')->addColumn();
                     $col->addLabel('senDetails', __($field['label']))->description(__($field['description']));
                     $col->addTextArea('senDetails')->setRows(5)->required($required)->setClass('w-full');

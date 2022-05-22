@@ -18,11 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
-use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 require_once '../../gibbon.php';
 
@@ -37,7 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     header("Location: {$URL}");
 } else {
     // Proceed!
-
     // Get the application form data
     $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     if (empty($gibbonAdmissionsApplicationID) || empty($application)) {
@@ -67,6 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData);
 
+    // Handle fatal errors
     if ($formProcessor->hasErrors()) {
         $formData->setResult('errors', $formProcessor->getErrors());
         $formData->save($application['identifier']);
@@ -75,8 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         exit;
     }
 
-    // Save the status and results of the acceptance
-    $formData->setStatus('Accepted');
+    // Save the final results of the acceptance
     $formData->save($application['identifier']);
 
     header("Location: {$URL->withReturn('success0')}");

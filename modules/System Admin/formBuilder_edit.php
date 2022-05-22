@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         $row->addTextArea('description')->setRows(2);
 
     $row = $form->addRow();
-        $row->addLabel('active', __('Active'));
+        $row->addLabel('active', __('Active'))->description(__('If yes, this form is open for new submissions'));
         $row->addYesNo('active')->required();
 
     $row = $form->addRow();
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     // DATA TABLE
     $table = $container->get(DataTable::class);
     $table->setTitle(__('Pages'));
-    $table->setDescription(__('A form can consist of one or more pages, which are saved at each step of the form submission. Add pages here and edit them to add fields to the form.'));
+    $table->setDescription(__('A form can consist of one or more pages, which are saved at each step of the form submission. Add pages here and click design to add fields to the form.'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/System Admin/formBuilder_page_add.php')
@@ -211,7 +211,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
             $row = $form->addRow()->addClass('bg-gray-300');
                 $row->addLabel($processName, $view->getName())->description($view->getDescription());
-                $row->addContent(__('Missing required fields: '). implode(', ', $missingRequiredFields));
+                $col = $row->addColumn()->addClass('justify-start w-full sm:max-w-lg');
+                $col->addContent(__('Missing required fields: '))->addClass('w-48');
+                $col->addContent(implode(', ', $missingRequiredFields))->addClass('w-full');
         }
 
         echo $form->getOutput();

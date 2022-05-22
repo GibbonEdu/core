@@ -24,6 +24,8 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -65,42 +67,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData, true);
     $processes = $formProcessor->getViewableProcesses();
-    $processList = [];
-
-    $errors = $formProcessor->getErrors();
-
-    // Display any validation errors
-    foreach ($errors as $errorMessage) {
-        echo Format::alert($errorMessage);
-    }
-
-    foreach ($processes as $process) {
-        if (!$process->isEnabled($formBuilder)) continue;
-
-        $viewClass = $process->getViewClass();
-        if (empty($viewClass)) continue;
-
-        $view = $container->get($viewClass);
-        $processList[] = $view->getDescription();
-    }
-
-    // Load values from the form data storage
-    $values = $formData->getData();
-    $results = $formData->getResults();
 
     if ($processed) {
         // Display the results
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
 
-        // Display any validation errors
-        if (!empty($results['errors'])) {
+        // Display any processing errors
+        if ($formData->hasResult('errors')) {
             $col = $form->addRow()->addColumn();
-            foreach ($results['errors']  as $errorMessage) {
+            foreach ($formData->getResult('errors') as $errorMessage) {
                 $col->addContent(Format::alert($errorMessage));
             }
         }
-                        
+        
+        // Display the process results
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);
@@ -117,6 +98,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         return;
     }
 
+    // Gather the potential processes that this acceptance action will run
+    $processList = [];
+    $processListInvalid = [];
+
+    foreach ($processes as $process) {
+        if (!$process->isEnabled($formBuilder)) continue;
+
+        $viewClass = $process->getViewClass();
+        if (empty($viewClass)) continue;
+
+        $view = $container->get($viewClass);
+        if ($process->isVerified()) {
+            $processList[] = $view->getDescription();
+        } else {
+            $processListInvalid[] = $view->getDescription();
+        }
+    }
+
     // FORM
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_acceptProcess.php');
 
@@ -125,33 +124,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $form->addHiddenValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
     $form->addHiddenValue('search', $search);
 
-    $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
+    $settingGateway = $container->get(SettingGateway::class);
+    $applicantName = Format::name('', $formData->get('preferredName', ''), $formData->get('surname', ''), 'Student');
+    $entryYear = $container->get(SchoolYearGateway::class)->getByID($formData->get('gibbonSchoolYearIDEntry'), ['name', 'status']);
 
     $col = $form->addRow()->addColumn();
+    
+    if (!empty($entryYear) && $entryYear['status'] == 'Upcoming') {
+        $col->addContent(Format::alert(__('Students and parents accepted to an upcoming school year will have their status set to "Expected", unless you choose to send a welcome email to them, in which case their status will be "Full".'), 'message').'<br/>');
+    }
+
     $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
+
+    // Notification options
+    $informStudent = ($settingGateway->getSettingByScope('Application Form', 'notificationStudentDefault') == 'Y');
+    $col->addCheckbox('informStudent')
+        ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
+        ->inline(true)
+        ->checked($informStudent)
+        ->setClass('ml-4');
+
+    $informParents = ($settingGateway->getSettingByScope('Application Form', 'notificationParentsDefault') == 'Y');
+    $col->addCheckbox('informParents')
+        ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
+        ->inline(true)
+        ->checked($informParents)
+        ->setClass('ml-4');
 
     // List active functionality
     if (!empty($processList)) {
+        $processList[] = __('Set the status of the application to "Accepted".');
+
         $col = $form->addRow()->addColumn();
         $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
         $col->addContent(Format::list($processList, 'ol',));
     }
 
+    // List invalid functionality
+    if (!empty($processListInvalid)) {
+        $col = $form->addRow()->addColumn();
+        $col->addContent(__('The system does not have enough data to perform the following actions:'))->wrap('<i><u>', '</u></i>');
+        $col->addContent(Format::list($processListInvalid, 'ol',));
+
+        // Display any validation errors
+        foreach ($formProcessor->getErrors() as $errorMessage) {
+            $col->addContent(Format::alert($errorMessage));
+        }
+    }
+
     //  List manual actions
-    if (false) {
+    $manualActions = [];
+
+    if (!$formData->has('gibbonFormGroupID')) {
+        $manualActions[] = __('Enrol the student in the selected school year (as the student has not been assigned to a form group).');
+    }
+
+    // $manualActions[] = __('Create a note of the student\'s scholarship information outside of Gibbon.');
+    // $manualActions[] = __('Create a timetable for the student.');
+
+    if (!empty($manualActions)) {
         $col = $form->addRow()->addColumn();
         $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
-        $list = $col->addContent();
-
-        if (empty($values['gibbonFormGroupID'])) {
-            $list->append('<li>'.__('Enrol the student in the selected school year (as the student has not been assigned to a form group).').'</li>');
-        }
-
-        $list->append('<li>'.__('Create an individual needs record for the student.').'</li>')
-            ->append('<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>')
-            ->append('<li>'.__('Create a timetable for the student.').'</li>');
-
-        $list->wrap('<ol>', '</ol>');
+        $col->addContent(Format::list($manualActions, 'ol',));
     }
 
     $row = $form->addRow();

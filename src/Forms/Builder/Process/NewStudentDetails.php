@@ -78,14 +78,28 @@ class NewStudentDetails extends AbstractFormProcess implements ViewableProcess
         $subject = sprintf(__('Create Student Email/Websites for %1$s at %2$s'), $this->session->get('systemName'), $this->session->get('organisationNameShort'));
         $body = sprintf(__('Please create the following for new student %1$s.'), Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student'))."<br/><br/>";
 
-        $body .= Format::listDetails([
-            __('Email')       => $formData->get('email'),
-            __('Website')     => $formData->get('website'),
-            __('School Year') => $formData->get('schoolYearName'),
-            __('Year Group')  => $formData->get('yearGroupName'),
-            __('Form Group')  => $formData->get('formGroupName'),
-            __('Start Date')  => Format::date($formData->get('dateStart')),
-        ]);
+        $list = [];
+
+        if ($builder->hasConfig('studentDefaultEmail')) {
+            $list[__('Email')] = $formData->get('email');
+        }
+        if ($builder->hasConfig('studentDefaultWebsite')) {
+            $list[__('Website')] = $formData->get('website');
+        }
+        if ($formData->hasAll(['gibbonSchoolYearIDEntry', 'schoolYearName'])) {
+            $list[__('School Year')] = $formData->get('schoolYearName');
+        }
+        if ($formData->hasAll(['gibbonYearGroupIDEntry', 'yearGroupName'])) {
+            $list[__('Year Group')] = $formData->get('yearGroupName');
+        }
+        if ($formData->hasAll(['gibbonYearGroupIDEntry', 'formGroupName'])) {
+            $list[__('Form Group')] = $formData->get('formGroupName');
+        }
+        if ($formData->has('dateStart')) {
+            $list[__('Start Date')] = Format::date($formData->get('dateStart'));
+        }
+
+        $body .= Format::listDetails($list);
 
         // Setup the email
         $this->mail->SetFrom($this->session->get('organisationEmail'), $this->session->get('organisationName'));

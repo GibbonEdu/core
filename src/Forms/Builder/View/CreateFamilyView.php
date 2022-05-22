@@ -38,6 +38,8 @@ class CreateFamilyView extends AbstractFormView
 
     public function getDescription() : string
     {
+        // __('Link student and parents to the family.')
+        // __('Link student to family (who are already in Gibbon).')
         return __('Create a new family or add students to an existing family.');
     }
 

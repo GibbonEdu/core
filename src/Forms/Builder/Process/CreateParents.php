@@ -120,7 +120,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
     protected function createParentAccount(FormBuilderInterface $builder, FormDataInterface $formData, $i)
     {
         // Generate user details
-        $this->generateUsername($formData, "parent{$i}");
+        $this->generateUsername($formData, '004', "parent{$i}");
         $this->generatePassword($formData, "parent{$i}");
 
         // Set and assign default values
