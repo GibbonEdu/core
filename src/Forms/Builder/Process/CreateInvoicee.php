@@ -57,14 +57,14 @@ class CreateInvoicee extends AbstractFormProcess implements ViewableProcess
         // Create a new finance invoicee
         $gibbonFinanceInvoiceeID = $this->invoiceeGateway->insert([
             'gibbonPersonID'  => $formData->get('gibbonPersonIDStudent'),
-            'invoiceTo '      => $formData->get('invoiceTo'),
-            'companyName '    => $formData->get('companyName'),
-            'companyContact ' => $formData->get('companyContact'),
-            'companyAddress ' => $formData->get('companyAddress'),
-            'companyEmail '   => $formData->get('companyEmail'),
+            'invoiceTo'       => $formData->get('invoiceTo', 'Family'),
+            'companyName'     => $formData->get('companyName'),
+            'companyContact'  => $formData->get('companyContact'),
+            'companyAddress'  => $formData->get('companyAddress'),
+            'companyEmail'    => $formData->get('companyEmail'),
             'companyCCFamily' => $formData->get('companyCCFamily'),
-            'companyPhone '   => $formData->get('companyPhone'),
-            'companyAll '     => $formData->get('companyAll'),
+            'companyPhone'    => $formData->get('companyPhone'),
+            'companyAll'      => $formData->get('companyAll'),
             'gibbonFinanceFeeCategoryIDList ' => is_array($categoryList)? implode(',', $categoryList) : $categoryList,
         ]);
 

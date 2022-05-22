@@ -22,7 +22,6 @@ namespace Gibbon\Forms\Builder\Process;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\Exception\FormProcessException;
 use Gibbon\Forms\Builder\Process\ViewableProcess;
 use Gibbon\Forms\Builder\View\ApplicationStatusView;
 
@@ -30,11 +29,6 @@ class ApplicationStatus extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = [];
     protected $initialStatus;
-
-    public function __construct()
-    {
-
-    }
 
     public function getViewClass() : string
     {

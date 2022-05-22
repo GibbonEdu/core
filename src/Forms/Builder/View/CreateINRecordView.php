@@ -55,5 +55,15 @@ class CreateINRecordView extends AbstractFormView
         $col = $form->addRow()->addColumn();
         $col->addSubheading(__('Individual Needs Details'));
 
+        if ($data->hasResult('gibbonINID')) {
+            $list = [
+                'gibbonINID' => $data->getResult('gibbonINID'),
+                __('Special Educational Needs') => Format::yesNo($data->get('sen')),
+            ];
+
+            $col->addContent(Format::listDetails($list));
+        } else {
+            $col->addContent(Format::alert(__('{type} details could not be saved. Please check and create these records manually.', ['type' => __('Individual Needs')]), 'warning'));
+        }
     }
 }

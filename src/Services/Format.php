@@ -602,7 +602,12 @@ class Format
     {
         $output = "<$tag class='$listClass'>";
         foreach ($items as $label => $value) {
-            $output .= "<li class='$itemClass'><strong>".$label.'</strong>: '.$value.'</li>';
+            if ($label == 'heading' || $label == 'subheading') {
+                $hTag = $label == 'heading' ? 'h3' : 'h4';
+                $output .= "<li class='{$itemClass}'><{$hTag}>".$value."</{$hTag}></li>";
+            } else {
+                $output .= "<li class='{$itemClass}'><strong>".$label.'</strong>: '.$value.'</li>';
+            }
         }
         $output .= "</$tag>";
 

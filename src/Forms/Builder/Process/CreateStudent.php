@@ -148,9 +148,9 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             return;
         }
 
-        $this->usernameGenerator->addToken('preferredName', $formData->get('preferredName'));
-        $this->usernameGenerator->addToken('firstName', $formData->get('firstName'));
-        $this->usernameGenerator->addToken('surname', $formData->get('surname'));
+        $this->usernameGenerator->addToken('preferredName', $formData->get($prefix.'preferredName'));
+        $this->usernameGenerator->addToken('firstName', $formData->get($prefix.'firstName'));
+        $this->usernameGenerator->addToken('surname', $formData->get($prefix.'surname'));
 
         $formData->set($prefix.'username', $this->usernameGenerator->generateByRole($gibbonRoleID));
     }
@@ -174,8 +174,8 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected function setStatus(FormDataInterface $formData, $prefix = '')
     {
-        // $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full'
-        $status = $formData['schoolYearStatus'] == 'Upcoming' ? 'Expected' : 'Full';
+        $checkInform = !empty($prefix) ? $formData->get('informParent') : $formData->get('informStudent');
+        $status = $formData->get('schoolYearStatus') == 'Upcoming' && $checkInform != 'N' ? 'Expected' : 'Full';
         $formData->set($prefix.'status', $status);
     }
 

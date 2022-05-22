@@ -46,12 +46,12 @@ class ApplicationCheckView extends AbstractFormView
 
     public function getDescription() : string
     {
-        return __('Set the status of the application to "Accepted".');
+        return '';
     }
 
     public function configure(Form $form)
     {
-
+        
     }
 
     public function display(Form $form, FormDataInterface $data)
@@ -68,16 +68,9 @@ class ApplicationCheckView extends AbstractFormView
 
         if ($data->getStatus() == 'Accepted') {
             $col->addContent(Format::alert(str_replace('ICHK', $this->session->get('organisationNameShort'), __('Applicant has been successfully accepted into ICHK.')), 'success'));
+        } else {
+            $col->addContent(Format::alert(__('Student status could not be updated: student is in the system, but acceptance has failed.'), 'error'));
         }
-
-        // echo ' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
-        // echo '<ol>';
-        // echo '<li>'.__('Enrol the student in the relevant academic year.').'</li>';
-        // echo '<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>';
-        // echo '<li>'.__('Create a timetable for the student.').'</li>';
-        // echo '<li>'.__('Inform the student and parents of their Gibbon login details (if this was not done automatically).').'</li>';
-        // echo '</ol>';
-        // echo '</div>';
 
     }
 }

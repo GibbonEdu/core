@@ -38,7 +38,7 @@ class CreateParentsView extends AbstractFormView
 
     public function getDescription() : string
     {
-        // __('Create user accounts for the parents.')
+        // __('Create user accounts for the parents.'parent1)
         return __("Create a Gibbon user account for one or more parents and connect them to the student's family.");
     }
 
@@ -62,13 +62,13 @@ class CreateParentsView extends AbstractFormView
             $list = [
                 'gibbonPersonID' => $data->getAny('gibbonPersonIDParent1'),
                 __('Name') => Format::name($data->get('parent1title'), $data->get('parent1preferredName'), $data->get('parent1surname'), 'Parent'),
-                __('Email') => $data->getAny('email'),
+                __('Email') => $data->getAny('parent1email'),
             ];
 
             if ($data->hasResult('parent1created')) {
                 $list += [
-                    __('Username') => $data->getResult('username'),
-                    __('Password') => $data->getResult('password'),
+                    __('Username') => $data->getResult('parent1username'),
+                    __('Password') => $data->getResult('parent1password'),
                 ];
             } else {
                 $col->addContent(__('Parent 1 already exists in Gibbon, and so does not need a new account.'));
@@ -92,13 +92,13 @@ class CreateParentsView extends AbstractFormView
             $list = [
                 'gibbonPersonID' => $data->getAny('gibbonPersonIDParent2'),
                 __('Name') => Format::name($data->get('parent2title'), $data->get('parent2preferredName'), $data->get('parent2surname'), 'Parent'),
-                __('Email') => $data->getAny('email'),
+                __('Email') => $data->getAny('parent2email'),
             ];
 
             if ($data->hasResult('parent2created')) {
                 $list += [
-                    __('Username') => $data->getResult('username'),
-                    __('Password') => $data->getResult('password'),
+                    __('Username') => $data->getResult('parent2username'),
+                    __('Password') => $data->getResult('parent2password'),
                 ];
             }
 

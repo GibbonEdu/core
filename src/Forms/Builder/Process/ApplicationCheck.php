@@ -26,8 +26,10 @@ use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\Exception\FormProcessException;
+use Gibbon\Forms\Builder\Process\ViewableProcess;
+use Gibbon\Forms\Builder\View\ApplicationCheckView;
 
-class ApplicationCheck extends AbstractFormProcess
+class ApplicationCheck extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = [];
 
@@ -44,7 +46,7 @@ class ApplicationCheck extends AbstractFormProcess
 
     public function getViewClass() : string
     {
-        return ApplicationStatusView::class;
+        return ApplicationCheckView::class;
     }
 
     public function isEnabled(FormBuilderInterface $builder)

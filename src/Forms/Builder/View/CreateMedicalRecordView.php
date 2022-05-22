@@ -55,5 +55,16 @@ class CreateMedicalRecordView extends AbstractFormView
         $col = $form->addRow()->addColumn();
         $col->addSubheading(__('Medical Details'));
 
+        if ($data->hasResult('gibbonPersonMedicalID')) {
+            $list = [
+                'gibbonPersonMedicalID' => $data->getResult('gibbonPersonMedicalID'),
+                __('Medical Conditions') => Format::yesNo($data->get('medical')),
+            ];
+
+            $col->addContent(Format::listDetails($list));
+
+        } else {
+            $col->addContent(Format::alert(__('{type} details could not be saved. Please check and create these records manually.', ['type' => __('Medical Form')]), 'warning'));
+        }
     }
 }

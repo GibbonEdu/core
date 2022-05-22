@@ -36,7 +36,7 @@ class ApplicationStatusView extends AbstractFormView
     
     public function getHeading() : string
     {
-        return 'Acceptance Options';
+        return '';
     }
 
     public function getName() : string
@@ -58,17 +58,6 @@ class ApplicationStatusView extends AbstractFormView
     {
         // if (!$data->exists($this->getResultName())) return;
 
-        $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName());
-
-        $list[__('Status')] = $data->getStatus();
-        $list[__('Date')] = Format::dateTimeReadable($data->getResult('statusDate'));
-
-        $col->addContent(Format::listDetails($list));
-
-        if ($data->getStatus() == 'Accepted') {
-            $col->addContent(Format::alert(str_replace('ICHK', $this->session->get('organisationNameShort'), __('Applicant has been successfully accepted into ICHK.')), 'success'));
-        }
 
         // echo ' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
         // echo '<ol>';

@@ -58,9 +58,9 @@ class CreateMedicalRecord extends AbstractFormProcess implements ViewableProcess
         // Create a new medical record
         $gibbonPersonMedicalID = $this->medicalGateway->insert([
             'gibbonPersonID'            => $formData->get('gibbonPersonIDStudent'),
-            'comment'                   => $formData->get('medicalInformation'),
+            'comment'                   => $formData->get('medicalInformation', ''),
             'longTermMedication'        => $formData->get('longTermMedication', 'N'),
-            'longTermMedicationDetails' => $formData->get('longTermMedicationDetails'),
+            'longTermMedicationDetails' => $formData->get('longTermMedicationDetails', ''),
             'fields'                    => $this->getCustomFields($formData),
         ]);
 

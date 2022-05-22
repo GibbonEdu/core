@@ -57,7 +57,9 @@ class CreateINRecord extends AbstractFormProcess implements ViewableProcess
         // Create a new IN record
         $gibbonINID = $this->inGateway->insert([
             'gibbonPersonID' => $formData->get('gibbonPersonIDStudent'),
-            'notes '         => $formData->get('senDetails'),
+            'notes'          => $formData->get('senDetails'),
+            'strategies'     => '',
+            'targets'        => '',
             'fields'         => $this->getCustomFields($formData),
         ]);
 

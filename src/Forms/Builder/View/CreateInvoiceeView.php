@@ -55,7 +55,15 @@ class CreateInvoiceeView extends AbstractFormView
         $col = $form->addRow()->addColumn();
         $col->addSubheading(__('Finance Details'));
 
-        // __('Student payment details could not be saved, but we will continue, as this is a minor issue.')
+        if ($data->hasResult('gibbonFinanceInvoiceeID')) {
+            $list = [
+                'gibbonFinanceInvoiceeID' => $data->getResult('gibbonFinanceInvoiceeID'),
+                __('Invoice To') => $data->getAny('invoiceTo'),
+            ];
 
+            $col->addContent(Format::listDetails($list));
+        } else {
+            $col->addContent(Format::alert(__('{type} details could not be saved. Please check and create these records manually.', ['type' => __('Finance')]), 'warning'));
+        }
     }
 }
