@@ -142,6 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $col->addCheckbox('informStudent')
             ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
             ->checked($formBuilder->getConfig('acceptanceEmailStudentDefault') == 'Y')
+            ->setValue('Y')
             ->inline(true)
             ->setClass('ml-4');
     }
@@ -150,6 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $col->addCheckbox('informParents')
             ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
             ->checked($formBuilder->getConfig('acceptanceEmailParentDefault') == 'Y')
+            ->setValue('Y')
             ->inline(true)
             ->setClass('ml-4');
     }

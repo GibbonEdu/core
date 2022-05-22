@@ -81,11 +81,16 @@ class CustomFieldGateway extends QueryableGateway
             ->newSelect()
             ->cols(["(CASE WHEN heading <> '' THEN heading ELSE 'Other Information' END) as groupBy", 'gibbonCustomField.*'])
             ->from('gibbonCustomField')
-            ->where("active='Y'")
-            ->where('context=:context')
-            ->bindValue('context', $context);
+            ->where("active='Y'");
 
-        if ($context == 'User') {
+        if (is_array($context)) {
+            $context = implode(',', $context);
+            $query->where('FIND_IN_SET(context, :context)', ['context' => $context]);
+        } else {
+            $query->where('context=:context', ['context' => $context]);
+        } 
+
+        if (stripos($context, 'User') !== false) {
             // Handle role category flags as ORs
             $query->where(function ($query) use (&$params) {
                 if ($params['student'] ?? false) {
@@ -127,7 +132,7 @@ class CustomFieldGateway extends QueryableGateway
             $query->where('NOT FIND_IN_SET(heading, :headings)', ['headings' => $headings]);
         }
 
-        $query->orderBy(['sequenceNumber', 'name']);
+        $query->orderBy(["(context = 'User') DESC", 'context', 'sequenceNumber', 'name']);
 
         return $this->runSelect($query);
     }

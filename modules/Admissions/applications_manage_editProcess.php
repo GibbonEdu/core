@@ -84,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Run any edit-related processes
-    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
-    $formProcessor->editForm($formBuilder, $formData);
+    // $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    // $formProcessor->editForm($formBuilder, $formData);
 
-    $formData->save($application['identifier']);
+    // $formData->save($application['identifier']);
 
     header("Location: {$URL->withReturn($partialFail ? 'warning1' : 'success0')}");
 }

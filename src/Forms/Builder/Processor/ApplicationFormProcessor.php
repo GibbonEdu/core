@@ -45,7 +45,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
 
     protected function editProcess()
     {
-
+        
     }
 
     protected function acceptProcess()

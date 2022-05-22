@@ -37,20 +37,25 @@ class CustomFields extends AbstractFieldGroup
         $this->customFieldGateway = $customFieldGateway;
         $this->customFieldHandler = $customFieldHandler;
 
+        $contexts = ['User', 'Medical Form', 'Individual Needs'];
         $params = ['applicationForm' => 1];
-        $customFields = $this->customFieldGateway->selectCustomFields('User', [])->fetchAll();
+        $customFields = $this->customFieldGateway->selectCustomFields($contexts, [])->fetchAll();
 
         foreach ($customFields as $field) {
+            
             $id = 'custom'.$field['gibbonCustomFieldID'];
             $this->fields[$id] = [
+                'context'             => $field['context'],
                 'type'                => $field['type'],
                 'label'               => __($field['name']),
                 'description'         => __($field['description']),
                 'options'             => $field['options'],
-                'activePersonStudent' => $field['activePersonStudent'],
+                'activePersonStudent' => $field['context'] != 'User' ? 1 : $field['activePersonStudent'],
                 'activePersonParent'  => $field['activePersonParent'],
                 'activePersonStaff'   => $field['activePersonStaff'],
                 'activePersonOther'   => $field['activePersonOther'],
+                'hidden'              => $field['hidden'],
+                'required'            => $field['required'],
             ];
         }
     }
@@ -62,22 +67,28 @@ class CustomFields extends AbstractFieldGroup
 
     public function getFieldOptions() : array 
     {
+        $defaults = [__('Student') => [], __('Parent') => [], __('Staff') => [], __('Other') => []];
         $fields = array_reduce(array_keys($this->fields), function ($group, $key) {
             $field = $this->fields[$key];
-            if ($field['activePersonStudent']) {
+            if ($field['context'] == 'User' && $field['activePersonStudent']) {
                 $group[__('Student')][$key] = $field['label'];
             }
-            if ($field['activePersonParent']) {
+            if ($field['context'] == 'User' && $field['activePersonParent']) {
                 $group[__('Parent')][$key] = $field['label'];
             }
-            if ($field['activePersonStaff']) {
+            if ($field['context'] == 'User' && $field['activePersonStaff']) {
                 $group[__('Staff')][$key] = $field['label'];
             }
-            if ($field['activePersonOther']) {
+            if ($field['context'] == 'User' && $field['activePersonOther']) {
                 $group[__('Other')][$key] = $field['label'];
             }
+            if ($field['context'] != 'User') {
+                if (!isset($group[__($field['context'])])) $group[__($field['context'])] = [];
+                
+                $group[__($field['context'])][$key] = $field['label'];
+            }
             return $group;
-        }, [__('Student') => [], __('Parent') => [], __('Staff') => [], __('Other') => []]);
+        }, $defaults);
 
         return array_filter($fields);
     }

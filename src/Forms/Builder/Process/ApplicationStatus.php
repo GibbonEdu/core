@@ -63,7 +63,7 @@ class ApplicationStatus extends AbstractFormProcess implements ViewableProcess
         $formData->setStatus('Accepted');
         $formData->setResult('statusDate', date('Y-m-d H:i:s'));
 
-        $this->sendNotifications($formData);
+        $this->sendNotifications($builder, $formData);
     }
 
     public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
@@ -72,7 +72,7 @@ class ApplicationStatus extends AbstractFormProcess implements ViewableProcess
         $formData->setResult('statusDate', null);
     }
 
-    protected function sendNotifications(FormDataInterface $formData)
+    protected function sendNotifications(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         $studentName = Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student');
         $studentGroup = $formData->has('formGroupName')? $formData->get('formGroupName') : $formData->get('yearGroupName');
@@ -80,14 +80,14 @@ class ApplicationStatus extends AbstractFormProcess implements ViewableProcess
         // Raise a new notification event for Admissions
         $event = new NotificationEvent('Students', 'Application Form Accepted');
         $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $formData->get('schoolYearName'));
-        $notificationText .= $formData->hasAll(['gibbonStudentEnrolmentID', 'gibbonFormGroupIDEntry']
+        $notificationText .= $formData->hasAll(['gibbonStudentEnrolmentID', 'gibbonFormGroupIDEntry'])
             ? ' '.__('The student has successfully been enrolled in the specified school year, year group and form group.')
             : ' '.__('Student could not be enrolled, so this will have to be done manually at a later date.');
 
         $event->addScope('gibbonYearGroupID', $formData->get('gibbonYearGroupIDEntry'));
         $event->addRecipient($this->session->get('organisationAdmissions'));
         $event->setNotificationText($notificationText);
-        $event->setActionLink("/index.php?q=/modules/Admissions/applications_manage_edit.php&gibbonAdmissionsApplicationID='.$formData->identify().'&gibbonSchoolYearID=".$formData->get('gibbonSchoolYearIDEntry')."&search=");
+        $event->setActionLink("/index.php?q=/modules/Admissions/applications_manage_edit.php&gibbonAdmissionsApplicationID=".$builder->getConfig('foreignTableID')."&gibbonSchoolYearID=".$formData->get('gibbonSchoolYearIDEntry')."&search=");
 
         $event->pushNotifications($this->notificationGateway, $this->notificationSender);
 

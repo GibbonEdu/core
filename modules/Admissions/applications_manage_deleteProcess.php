@@ -22,8 +22,10 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 require_once '../../gibbon.php';
 
 $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
+$gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+$search = $_REQUEST['search'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applications_manage.php';
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/Admissions/applications_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     $URL .= '&return=error0';

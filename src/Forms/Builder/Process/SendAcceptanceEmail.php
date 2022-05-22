@@ -56,17 +56,17 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         // Inform Student?
-        if ($formData->getResult('informStudent') == 'Y' && $formData->has('email')) {
+        if ($formData->getResult('informStudent') == 'Y' && ($formData->has('email') || $formData->has('emailAlternate'))) {
             $this->sendWelcomeEmail($builder, $formData, 'acceptanceEmailStudent');
         }
 
         // Inform Parent 1?
-        if ($formData->getResult('informParent') == 'Y' && $formData->has('parent1email')) {
+        if ($formData->getResult('informParents') == 'Y' && ($formData->has('parent1email') || $formData->has('parent1emailAlternate'))) {
             $this->sendWelcomeEmail($builder, $formData, 'acceptanceEmailParent', 'parent1');
         }
 
         // Inform Parent 2?
-        if ($formData->getResult('informParent') == 'Y' && $formData->has('parent2email')) {
+        if ($formData->getResult('informParents') == 'Y' && ($formData->has('parent2email') || $formData->has('parent2emailAlternate'))) {
             $this->sendWelcomeEmail($builder, $formData, 'acceptanceEmailParent', 'parent2');
         }
     } 
@@ -84,25 +84,25 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
             'date'                        => Format::date(date('Y-m-d')),
             'username'                    => $formData->getResult($prefix.'username'),
             'password'                    => $formData->getResult($prefix.'password'),
-            'applicationID'               => $formData->get('gibbonAdmissionsApplicationID'),
+            'applicationID'               => $builder->getConfig('foreignTableID'),
             'applicationName'             => $builder->getDetail('name'),
             'studentPreferredName'        => $formData->get('preferredName'),
             'studentSurname'              => $formData->get('surname'),
-            'parentTitle'                 => $formData->get(!empty($prefix) ? $prefix.'Title' : 'parent1Title'),
-            'parentPreferredName'         => $formData->get(!empty($prefix) ? $prefix.'PreferredName' : 'parent1PreferredName'),
-            'parentSurname'               => $formData->get(!empty($prefix) ? $prefix.'Surname' : 'parent1Surname'),
+            'parentTitle'                 => $formData->get(!empty($prefix) ? $prefix.'title' : 'parent1title'),
+            'parentPreferredName'         => $formData->get(!empty($prefix) ? $prefix.'preferredName' : 'parent1preferredName'),
+            'parentSurname'               => $formData->get(!empty($prefix) ? $prefix.'surname' : 'parent1surname'),
             'organisationAdmissionsName'  => $this->session->get('organisationAdmissionsName'),
             'organisationAdmissionsEmail' => $this->session->get('organisationAdmissionsEmail'),
         ];
 
         // Setup the email
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
-        $this->mail->SetReplyTo($this->session->get('organisationAdmissionsEmail'));
+        $this->mail->AddReplyTo($this->session->get('organisationAdmissionsEmail'));
         $this->mail->setDefaultSender($template->renderSubject($templateData));
 
-        $this->mail->AddAddress($formData->get($prefix.'email'));
-        if (!empty($formData->get($prefix.'emailAlternate'))) {
-            $this->mail->AddAddress($formData->get($prefix.'emailAlternate'));
+        $this->mail->AddAddress($formData->getAny($prefix.'email'));
+        if (!empty($formData->getAny($prefix.'emailAlternate'))) {
+            $this->mail->AddAddress($formData->getAny($prefix.'emailAlternate'));
         }
 
         $this->mail->renderBody('mail/message.twig.html', [

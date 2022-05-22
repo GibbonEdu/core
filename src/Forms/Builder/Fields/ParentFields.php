@@ -46,6 +46,11 @@ class ParentFields extends AbstractFieldGroup
                 'type'  => 'varchar',
                 'required' => 'Y',
             ],
+            'parent1email' => [
+                'label' => __('Parent 1 Email'),
+                'type'  => 'email',
+                'required' => 'Y',
+            ],
         ];
     }
 

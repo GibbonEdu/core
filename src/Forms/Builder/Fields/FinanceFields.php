@@ -145,7 +145,7 @@ class FinanceFields extends AbstractFieldGroup
                 if (empty($categories)) {
                     $form->addHiddenValue('companyAll', 'Y');
                 } else {
-                    $colGroup = $row->addColumn()->addClass('flex-col w-full justify-between items-start');
+                    $colGroup = $row->addColumn()->addClass('paymentCompany flex-col w-full justify-between items-start');
                     $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
                     $col->addClass('paymentCompany');
                         $col->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
