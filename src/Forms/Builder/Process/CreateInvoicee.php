@@ -48,16 +48,16 @@ class CreateInvoicee extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if (!$formData->hasAll(['gibbonPersonIDStudent', 'payment'])) {
+        if (!$formData->hasResult('gibbonPersonIDStudent') && !$formData->has('payment')) {
             return;
         }
 
-        $categoryList = $formData->get('companyAll') == 'N' ? $formData->get('gibbonFinanceFeeCategoryIDList') : '';
+        $categoryList = $formData->get('companyAll') == 'N' ? $formData->get('gibbonFinanceFeeCategoryIDList') : null;
 
         // Create a new finance invoicee
         $gibbonFinanceInvoiceeID = $this->invoiceeGateway->insert([
-            'gibbonPersonID'  => $formData->get('gibbonPersonIDStudent'),
-            'invoiceTo'       => $formData->get('invoiceTo', 'Family'),
+            'gibbonPersonID'  => $formData->getResult('gibbonPersonIDStudent'),
+            'invoiceTo'       => $formData->get('payment', 'Family'),
             'companyName'     => $formData->get('companyName'),
             'companyContact'  => $formData->get('companyContact'),
             'companyAddress'  => $formData->get('companyAddress'),
@@ -65,10 +65,10 @@ class CreateInvoicee extends AbstractFormProcess implements ViewableProcess
             'companyCCFamily' => $formData->get('companyCCFamily'),
             'companyPhone'    => $formData->get('companyPhone'),
             'companyAll'      => $formData->get('companyAll'),
-            'gibbonFinanceFeeCategoryIDList ' => is_array($categoryList)? implode(',', $categoryList) : $categoryList,
+            'gibbonFinanceFeeCategoryIDList' => is_array($categoryList)? implode(',', $categoryList) : $categoryList,
         ]);
 
-        $formData->set('gibbonFinanceInvoiceeID', $gibbonFinanceInvoiceeID);
+        $formData->setResult('gibbonFinanceInvoiceeID', $gibbonFinanceInvoiceeID);
         $this->setResult($gibbonFinanceInvoiceeID);
     }
 

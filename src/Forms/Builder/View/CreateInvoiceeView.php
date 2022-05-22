@@ -58,7 +58,7 @@ class CreateInvoiceeView extends AbstractFormView
         if ($data->hasResult('gibbonFinanceInvoiceeID')) {
             $list = [
                 'gibbonFinanceInvoiceeID' => $data->getResult('gibbonFinanceInvoiceeID'),
-                __('Invoice To') => $data->getAny('invoiceTo'),
+                __('Invoice To') => $data->getAny('payment'),
             ];
 
             $col->addContent(Format::listDetails($list));
