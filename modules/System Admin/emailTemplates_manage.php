@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/emailTemplate
     $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
 
     $criteria = $emailTemplateGateway->newQueryCriteria()
-        ->sortBy(['gibbonModule.type', 'templateName'])
+        ->sortBy(['gibbonModule.type', 'moduleName', 'templateName'])
         ->fromPOST();
     $templates = $emailTemplateGateway->queryEmailTemplates($criteria);
 

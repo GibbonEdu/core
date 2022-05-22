@@ -109,6 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         if (empty($viewClass)) continue;
 
         $view = $container->get($viewClass);
+        if (empty($view->getDescription())) continue; 
+
         if ($process->isVerified()) {
             $processList[] = $view->getDescription();
         } else {
@@ -124,7 +126,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $form->addHiddenValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
     $form->addHiddenValue('search', $search);
 
-    $settingGateway = $container->get(SettingGateway::class);
     $applicantName = Format::name('', $formData->get('preferredName', ''), $formData->get('surname', ''), 'Student');
     $entryYear = $container->get(SchoolYearGateway::class)->getByID($formData->get('gibbonSchoolYearIDEntry'), ['name', 'status']);
 
@@ -137,24 +138,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
     // Notification options
-    $informStudent = ($settingGateway->getSettingByScope('Application Form', 'notificationStudentDefault') == 'Y');
-    $col->addCheckbox('informStudent')
-        ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
-        ->inline(true)
-        ->checked($informStudent)
-        ->setClass('ml-4');
+    if (!empty($formBuilder->getConfig('acceptanceEmailStudentTemplate'))) {
+        $col->addCheckbox('informStudent')
+            ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
+            ->checked($formBuilder->getConfig('acceptanceEmailStudentDefault') == 'Y')
+            ->inline(true)
+            ->setClass('ml-4');
+    }
 
-    $informParents = ($settingGateway->getSettingByScope('Application Form', 'notificationParentsDefault') == 'Y');
-    $col->addCheckbox('informParents')
-        ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
-        ->inline(true)
-        ->checked($informParents)
-        ->setClass('ml-4');
+    if (!empty($formBuilder->getConfig('acceptanceEmailParentTemplate'))) {
+        $col->addCheckbox('informParents')
+            ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
+            ->checked($formBuilder->getConfig('acceptanceEmailParentDefault') == 'Y')
+            ->inline(true)
+            ->setClass('ml-4');
+    }
 
     // List active functionality
     if (!empty($processList)) {
-        $processList[] = __('Set the status of the application to "Accepted".');
-
         $col = $form->addRow()->addColumn();
         $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
         $col->addContent(Format::list($processList, 'ol',));
@@ -175,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     //  List manual actions
     $manualActions = [];
 
-    if (!$formData->has('gibbonFormGroupID')) {
+    if (!$formData->has('gibbonFormGroupIDEntry')) {
         $manualActions[] = __('Enrol the student in the selected school year (as the student has not been assigned to a form group).');
     }
 

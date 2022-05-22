@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Builder\Processor;
 
 use Gibbon\Forms\Builder\AbstractFormProcessor;
 use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
+use Gibbon\Forms\Builder\Process\SendAcceptanceEmail;
 use Gibbon\Forms\Builder\Process\ApplicationReferee;
 use Gibbon\Forms\Builder\Process\ApplicationCheck;
 use Gibbon\Forms\Builder\Process\ApplicationStatus;
@@ -60,5 +61,6 @@ class ApplicationFormProcessor extends AbstractFormProcessor
         $this->run(CreateINRecord::class);
         $this->run(CreateInvoicee::class);
         $this->run(ApplicationStatus::class);
+        $this->run(SendAcceptanceEmail::class);
     }
 }

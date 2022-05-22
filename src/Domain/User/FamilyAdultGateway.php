@@ -57,7 +57,10 @@ class FamilyAdultGateway extends QueryableGateway implements ScrubbableGateway
     
     public function insertFamilyRelationship($gibbonFamilyID, $gibbonPersonIDAdult, $gibbonPersonIDStudent, $relationship)
     {
-        $existing = $this->selectBy(['gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDAdult, 'gibbonPersonID2' => $gibbonPersonIDStudent])->fetch();
+        $data = ['gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDAdult, 'gibbonPersonID2' => $gibbonPersonIDStudent];
+        $sql = "SELECT gibbonFamilyRelationshipID FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2";
+        
+        $existing = $this->db()->selectOne($sql, $data);
 
         if ($existing) {
             $query = $this

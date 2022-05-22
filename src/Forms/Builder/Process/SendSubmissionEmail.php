@@ -56,21 +56,18 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        // TODO: make this prettier
-        $details = "<ul>";
+        // Setup Details
+        $details = [];
         foreach ($formData->getData() as $fieldName => $value) {
             $field = $builder->getField($fieldName);
             if (empty($field)) continue;
 
-            $details .= "<li>";
             if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
-                $details .= '<strong>'.__($field['label']).'</strong>';
+                $details[$field['fieldType']] = __($field['label']);
             } else {
-                $details .= __($field['label']).': '.$value;
+                $details[__($field['label'])]  =$value;
             }
-            $details .= "</li>";
         }
-        $details .= "</u>";
 
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('submissionEmailTemplate'));
@@ -79,7 +76,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
             'date'                 => Format::date(date('Y-m-d')),
             'applicationID'        => $formData->get('gibbonAdmissionsApplicationID'),
             'applicationName'      => $builder->getDetail('name'),
-            'submissionDetails'    => $details,
+            'submissionDetails'    => Format::listDetails($details),
             'studentPreferredName' => $formData->get('preferredName'),
             'studentSurname'       => $formData->get('surname'),
             'parentTitle'          => $formData->get('parent1Title'),
