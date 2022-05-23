@@ -61,6 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formData->setReadOnly(true);
 
     $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
+
+    // Link the application to this account family, if one exists (eg: created after the application)
+    if (!$formData->has('gibbonFamilyID') && !empty($account['gibbonFamilyID'])) {
+        $formData->set('gibbonFamilyID', $account['gibbonFamilyID']);
+    }
     
     // Run any accept-related processes
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
@@ -77,6 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Save the final results of the acceptance
     $formData->save($application['identifier']);
+
+    // Link the admissions account to this family, if one was created during this acceptance process
+    if ($formData->hasResult('familyCreated') && $formData->hasResult('gibbonFamilyID') && empty($account['gibbonFamilyID'])) {
+        $container->get(AdmissionsAccountGateway::class)->update($account['gibbonAdmissionsAccountID'], ['gibbonFamilyID' => $formData->getResult('gibbonFamilyID')]);
+    }
 
     header("Location: {$URL->withReturn('success0')}");
 }
