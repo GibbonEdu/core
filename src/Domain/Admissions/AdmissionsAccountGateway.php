@@ -36,7 +36,7 @@ class AdmissionsAccountGateway extends QueryableGateway
     private static $tableName = 'gibbonAdmissionsAccount';
     private static $primaryKey = 'gibbonAdmissionsAccountID';
 
-    private static $searchableColumns = ['email'];
+    private static $searchableColumns = ['gibbonAdmissionsAccount.email', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFamily.name'];
 
     public function queryAdmissionsAccounts(QueryCriteria $criteria)
     {
@@ -48,12 +48,20 @@ class AdmissionsAccountGateway extends QueryableGateway
                 'gibbonAdmissionsAccount.email',
                 'gibbonAdmissionsAccount.timestampCreated',
                 'gibbonAdmissionsAccount.timestampActive',
-                "(COUNT(CASE WHEN gibbonForm.type='Application' THEN gibbonFormSubmissionID END)) as applicationCount",
-                "(COUNT(CASE WHEN gibbonForm.type<>'Application' THEN gibbonFormSubmissionID END)) as formCount"
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.title',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonFamily.name as familyName',
+                'gibbonFamily.gibbonFamilyID as gibbonFamilyID',
+                "(COUNT(DISTINCT gibbonAdmissionsApplicationID)) as applicationCount",
+                "(COUNT(DISTINCT gibbonFormSubmissionID)) as formCount"
             ])
             ->from($this->getTableName())
+            ->leftJoin('gibbonAdmissionsApplication', 'gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount" AND gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
             ->leftJoin('gibbonFormSubmission', 'gibbonFormSubmission.foreignTable="gibbonAdmissionsAccount" AND gibbonFormSubmission.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
-            ->leftJoin('gibbonForm', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->leftJoin('gibbonPerson', 'gibbonAdmissionsAccount.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonFamily', 'gibbonAdmissionsAccount.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->groupBy(['gibbonAdmissionsAccount.gibbonAdmissionsAccountID']);
 
         return $this->runQuery($query, $criteria);

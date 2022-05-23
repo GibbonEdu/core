@@ -675,7 +675,12 @@ class Format
     public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
-        if ($roleCategory == 'Staff') {
+        if ($roleCategory == 'Other') {
+            $url = Url::fromModuleRoute('User Admin', 'user_manage_edit')
+                ->withAbsoluteUrl()
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
+            $output = self::link($url, $name);
+        } elseif ($roleCategory == 'Staff') {
             $url = Url::fromModuleRoute('Staff', 'staff_view_details')
                 ->withAbsoluteUrl()
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);

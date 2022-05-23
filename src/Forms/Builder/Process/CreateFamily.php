@@ -122,7 +122,7 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
             $familyName = $formData->get('preferredName').' '.$formData->get('surname');
         }
         
-        $formData->set('familyName', $familyName);
+        $formData->set('familyName', trim($familyName));
     }
 
     protected function generateNameAddress(FormDataInterface $formData)
@@ -141,6 +141,6 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
             $nameAddress = $formData->get('parent1title').' '.$formData->get('parent1surname');
         }
 
-        $formData->set('nameAddress', $nameAddress);
+        $formData->set('nameAddress', trim($nameAddress));
     }
 }

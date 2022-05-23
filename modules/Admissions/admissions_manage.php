@@ -64,11 +64,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     $table->setTitle(__('Admissions Accounts'));
 
     $table->addColumn('email', __('Email'));
+    $table->addColumn('person', __('Person'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($values) {
+            return !empty($values['gibbonPersonID'])
+                ? Format::nameLinked($values['gibbonPersonID'], $values['title'], $values['preferredName'], $values['surname'], 'Other', false, true)
+                : Format::small(__('N/A'));
+        });
+    $table->addColumn('familyName', __('Family'))
+        ->format(function($values) {
+            $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')
+                ->withQueryParams(['gibbonFamilyID' => $values['gibbonFamilyID']])
+                ->withAbsoluteUrl();
+            return !empty($values['familyName'])
+                ? Format::link($url, $values['familyName']) 
+                : Format::small(__('N/A'));
+        });
     $table->addColumn('timestampCreated', __('Created'))
         ->format(Format::using('relativeTime', 'timestampCreated'));
     $table->addColumn('timestampActive', __('Last Active'))
         ->format(Format::using('relativeTime', 'timestampActive'));
     $table->addColumn('applicationCount', __('Applications'))
+        ->width('12%')
         ->format(function($values) {
             if (empty($values['applicationCount'])) return;
 
@@ -76,6 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
             return Format::link($url, $values['applicationCount']);
         });
     $table->addColumn('formCount', __('Other Forms'))
+        ->width('12%')
         ->format(function($values) {
             if (empty($values['formCount'])) return;
 
@@ -84,6 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
         });
 
     $table->addActionColumn()
+        ->addParam('gibbonAdmissionsAccountID')
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Admissions/admissions_manage_edit.php');
