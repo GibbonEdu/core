@@ -22,7 +22,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_reject.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

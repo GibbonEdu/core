@@ -26,7 +26,7 @@ use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -27,7 +27,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Admissions/applications_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_delete.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonAdmissionsApplicationID)) {

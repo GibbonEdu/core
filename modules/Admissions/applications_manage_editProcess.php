@@ -32,7 +32,7 @@ $search = $_POST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

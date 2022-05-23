@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_delete.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

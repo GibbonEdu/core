@@ -27,7 +27,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
