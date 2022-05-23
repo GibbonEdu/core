@@ -25,7 +25,7 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
-class ApplicationStatusView extends AbstractFormView
+class ApplicationAcceptView extends AbstractFormView
 {
     protected $session;
     

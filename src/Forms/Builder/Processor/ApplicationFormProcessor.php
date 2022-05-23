@@ -24,22 +24,24 @@ use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
 use Gibbon\Forms\Builder\Process\SendAcceptanceEmail;
 use Gibbon\Forms\Builder\Process\ApplicationReferee;
 use Gibbon\Forms\Builder\Process\ApplicationCheck;
-use Gibbon\Forms\Builder\Process\ApplicationStatus;
+use Gibbon\Forms\Builder\Process\ApplicationSubmit;
+use Gibbon\Forms\Builder\Process\ApplicationAccept;
 use Gibbon\Forms\Builder\Process\CreateStudent;
 use Gibbon\Forms\Builder\Process\CreateFamily;
 use Gibbon\Forms\Builder\Process\CreateParents;
-use Gibbon\Forms\Builder\Process\EnrolStudent;
-use Gibbon\Forms\Builder\Process\AssignHouse;
-use Gibbon\Forms\Builder\Process\NewStudentDetails;
 use Gibbon\Forms\Builder\Process\CreateMedicalRecord;
 use Gibbon\Forms\Builder\Process\CreateINRecord;
 use Gibbon\Forms\Builder\Process\CreateInvoicee;
+use Gibbon\Forms\Builder\Process\EnrolStudent;
+use Gibbon\Forms\Builder\Process\AssignHouse;
+use Gibbon\Forms\Builder\Process\NewStudentDetails;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
     protected function submitProcess()
     {
         $this->run(ApplicationReferee::class);
+        $this->run(ApplicationSubmit::class);
         $this->run(SendSubmissionEmail::class);
     }
 
@@ -60,7 +62,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
         $this->run(CreateMedicalRecord::class);
         $this->run(CreateINRecord::class);
         $this->run(CreateInvoicee::class);
-        $this->run(ApplicationStatus::class);
+        $this->run(ApplicationAccept::class);
         $this->run(SendAcceptanceEmail::class);
     }
 }

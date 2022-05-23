@@ -96,8 +96,6 @@ if (empty($gibbonFormID) || empty($identifier)) {
         // Run the form processor on this data
         $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
         $formProcessor->submitForm($formBuilder, $formData);
-
-        $formData->setStatus('Pending');
         $formData->save($identifier);
 
         $URL = $URL->withQueryParam('return', $partialFail ? 'warning1' : 'success0')->withQueryParam('page', $pageNumber+1);
