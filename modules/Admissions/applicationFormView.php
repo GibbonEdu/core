@@ -70,7 +70,7 @@ if (!$proceed) {
         $foreignTableID = $session->get('gibbonPersonID');
     }
     
-    if ($public) {
+    if ($public && !empty($account['timestampTokenExpire'])) {
         echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
     }    
 

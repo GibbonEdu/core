@@ -38,20 +38,24 @@ class FamilyFields extends AbstractFieldGroup
                 'label'       => __('Address Name'),
                 'description' => __('Formal name to address parents with.'),
                 'required'    => 'Y',
+                'prefill'     => 'Y',
             ],
             'homeAddress' => [
                 'label'       => __('Home Address'),
                 'description' => __('Unit, Building, Street'),
                 'required'    => 'Y',
+                'prefill'     => 'Y',
             ],
             'homeAddressDistrict' => [
                 'label'       => __('Home Address (District)'),
                 'description' => __('County, State, District'),
                 'required'    => 'Y',
+                'prefill'     => 'Y',
             ],
             'homeAddressCountry' => [
                 'label'       => __('Home Address (Country)'),
                 'required'    => 'Y',
+                'prefill'     => 'Y',
             ],
             'headingFamilyDetails' => [
                 'label'       => __('Family Details'),
@@ -61,12 +65,15 @@ class FamilyFields extends AbstractFieldGroup
                 'label'       => __('Home Language - Primary'),
                 'description' => __('The primary language used in the student\'s home.'),
                 'required'    => 'Y',
+                'prefill'     => 'Y',
             ],
             'languageHomeSecondary' => [
                 'label'       => __('Home Language - Secondary'),
+                'prefill'     => 'Y',
             ],
             'familyStatus' => [
                 'label'       => __('Marital Status'),
+                'prefill'     => 'Y',
             ],
         ];
     }

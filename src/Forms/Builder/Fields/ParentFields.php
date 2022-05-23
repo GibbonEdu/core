@@ -29,27 +29,31 @@ class ParentFields extends AbstractFieldGroup
         $this->fields = [
             'headingParent1PersonalData' => [
                 'label' => __('Parent 1 Personal Data'),
-                'type' => 'subheading',
+                'type'  => 'subheading',
             ],
             'parent1surname' => [
-                'label' => __('Parent 1 Surname'),
-                'type'  => 'varchar',
+                'label'    => __('Parent 1 Surname'),
+                'type'     => 'varchar',
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
             'parent1preferredName' => [
-                'label' => __('Parent 1 Preferred Name'),
-                'type'  => 'varchar',
+                'label'    => __('Parent 1 Preferred Name'),
+                'type'     => 'varchar',
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
             'parent1relationship' => [
-                'label' => __('Parent 1 Relationship'),
-                'type'  => 'varchar',
+                'label'    => __('Parent 1 Relationship'),
+                'type'     => 'varchar',
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
             'parent1email' => [
-                'label' => __('Parent 1 Email'),
-                'type'  => 'email',
+                'label'    => __('Parent 1 Email'),
+                'type'     => 'email',
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
         ];
     }

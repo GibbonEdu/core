@@ -135,13 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         );
     }
 
+    // $formFields->clearTriggers();
+
     // TEMPLATE
     echo $page->fetchFromTemplate('components/formBuilder.twig.html', [
         'gibbonFormID' => $gibbonFormID,
         'gibbonFormPageID' => $gibbonFormPageID,
-        // 'form'         => $values,
         'fieldCount'   => count($fields),
         'fields'       => $formFields,
-        // 'fieldGroups'  => $formFieldGroups,
     ]);
 }

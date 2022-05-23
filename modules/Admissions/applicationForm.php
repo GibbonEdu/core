@@ -17,15 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
+use Gibbon\Forms\Builder\FormPrefill;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Http\Url;
 
 $proceed = false;
 $public = false;
@@ -40,7 +41,7 @@ if (!$session->has('username')) {
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
+} else if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationForm.php') != false) {
     $proceed = true;
 }
 
@@ -74,7 +75,8 @@ if ($proceed == false) {
         return;
     }
 
-    $account = $container->get(AdmissionsAccountGateway::class)->getAccountByAccessID($accessID);
+    $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
+    $account = $admissionsAccountGateway->getAccountByAccessID($accessID);
     if (empty($account)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
@@ -88,7 +90,7 @@ if ($proceed == false) {
     if ($accountType == 'new') {
         echo Format::alert(__('A new admissions account has been created for {email}.').' '.__('You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     } else if ($accountType == 'existing') {
-        echo Format::alert(__("We've found an existing admissions account for {email}.').' '.__(Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
+        echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
     }
 
     // Setup the form builder & data
@@ -111,20 +113,12 @@ if ($proceed == false) {
     $values = $formData->getData();
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
-    // Prefill values? WIP
-    if (empty($formData->getStatus()) && !empty($account)) {
-        $recentApplication = $admissionsApplicationGateway->selectMostRecentApplicationByContext($gibbonFormID, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'])->fetch();
-
-        if (!empty($recentApplication)) {
-            $data = json_decode($recentApplication['data'] ?? '', true);
-            foreach ($data as $fieldName => $value) {
-                $field = $formBuilder->getField($fieldName);
-                if (empty($field['prefill']) || $field['prefill'] == 'N') continue;
-
-                $values[$fieldName] = $value;
-            }
-        }
-
+    // Prefill application form values
+    if ($incomplete && !empty($account)) {
+        $formPrefill = $container->get(FormPrefill::class)
+            ->loadApplicationData($admissionsApplicationGateway, $gibbonFormID, $account['gibbonAdmissionsAccountID'])
+            ->loadPersonalData($admissionsAccountGateway, $account['gibbonPersonID'], $accessID, $accessToken)
+            ->prefill($formBuilder, $formData, $pageNumber, $values);
     }
 
     // Has the form been completed?

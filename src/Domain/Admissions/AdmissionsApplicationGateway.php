@@ -138,6 +138,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('gibbonAdmissionsApplication.foreignTableID=:foreignTableID')
             ->bindValue('foreignTableID', $foreignTableID)
             ->orderBy(['gibbonAdmissionsApplication.timestampCreated DESC'])
+            ->where("status <> 'Incomplete'")
             ->limit(1);
 
         return $this->runSelect($query);
