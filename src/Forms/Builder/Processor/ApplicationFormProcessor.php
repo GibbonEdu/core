@@ -22,7 +22,7 @@ namespace Gibbon\Forms\Builder\Processor;
 use Gibbon\Forms\Builder\AbstractFormProcessor;
 use Gibbon\Forms\Builder\Process\SendSubmissionEmail;
 use Gibbon\Forms\Builder\Process\SendAcceptanceEmail;
-use Gibbon\Forms\Builder\Process\ApplicationReferee;
+use Gibbon\Forms\Builder\Process\SendReferenceRequest;
 use Gibbon\Forms\Builder\Process\ApplicationCheck;
 use Gibbon\Forms\Builder\Process\ApplicationSubmit;
 use Gibbon\Forms\Builder\Process\ApplicationAccept;
@@ -40,7 +40,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
 {
     protected function submitProcess()
     {
-        $this->run(ApplicationReferee::class);
+        $this->run(SendReferenceRequest::class);
         $this->run(ApplicationSubmit::class);
         $this->run(SendSubmissionEmail::class);
     }

@@ -24,12 +24,12 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\View\ApplicationRefereeView;
+use Gibbon\Forms\Builder\View\SendReferenceRequestView;
 use Gibbon\Comms\EmailTemplate;
 use Gibbon\Services\Format;
 use Gibbon\Http\Url;
 
-class ApplicationReferee extends AbstractFormProcess implements ViewableProcess
+class SendReferenceRequest extends AbstractFormProcess implements ViewableProcess
 {
     protected $requiredFields = ['referenceEmail'];
 
@@ -46,7 +46,7 @@ class ApplicationReferee extends AbstractFormProcess implements ViewableProcess
 
     public function getViewClass() : string
     {
-        return ApplicationRefereeView::class;
+        return SendReferenceRequestView::class;
     }
 
     public function isEnabled(FormBuilderInterface $builder)

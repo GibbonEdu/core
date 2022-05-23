@@ -24,7 +24,7 @@ use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Services\Format;
 
-class ApplicationRefereeView extends AbstractFormView
+class SendReferenceRequestView extends AbstractFormView
 {
     public function getHeading() : string
     {
