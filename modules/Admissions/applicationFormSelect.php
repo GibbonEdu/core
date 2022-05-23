@@ -59,6 +59,9 @@ if ($proceed == false) {
         echo Format::alert(sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $session->get('organisationNameShort'), $session->get('systemName')).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')), 'message');
     }
 
+    $welcomeHeading = $settingGateway->getSettingByScope('Admissions', 'welcomeHeading');
+    $welcomeText = $settingGateway->getSettingByScope('Admissions', 'welcomeText');
+
     // QUERY
     $formGateway = $container->get(FormGateway::class);
     $criteria = $formGateway->newQueryCriteria(true)
@@ -76,10 +79,9 @@ if ($proceed == false) {
     
     // FORM
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormSelectProcess.php');
-
-    $form->setTitle(__('Application Process'));
     $form->setClass('w-full blank');
-    $form->setDescription(__('Select an application form to begin the application process. If you already have an account with one or more application forms in progress, you can choose to receive an email with access to continue an existing application form.'));
+    $form->setTitle(__($welcomeHeading, ['organisationNameShort' => $session->get('organisationNameShort')]));
+    $form->setDescription(__($welcomeText));
     
     $form->addHiddenValue('address', $session->get('address'));
     
@@ -95,7 +97,7 @@ if ($proceed == false) {
     $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
 
     $row = $table->addRow();
-        $row->addLabel('gibbonFormID'.count($forms), __('Continue an Existing Application Form'))->description(__('If you already have an application form in progress or would like to check the status of an application form, select this option. You will receive an email with a link to access your application forms.'))->setClass('block w-full p-6 font-medium text-sm text-gray-700');
+        $row->addLabel('gibbonFormID'.count($forms), __('Continue an Existing Application Form'))->description(__('If you already have an application form in progress or would like to check the status of an application form, select this option. You will receive an email with a link to access your existing forms.'))->setClass('block w-full p-6 font-medium text-sm text-gray-700');
         $row->addRadio('gibbonFormID')->setID('gibbonFormID'.count($forms))->fromArray(['existing' => ''])->required()->addClass('mr-6')->checked(false);
 
     $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full my-4 p-6');
