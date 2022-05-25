@@ -74,6 +74,8 @@ class ApplicationSubmit extends AbstractFormProcess implements ViewableProcess
 
     protected function sendNotifications(FormBuilderInterface $builder, FormDataInterface $formData)
     {
+        if (!$formData->hasAll(['preferredName', 'surname'])) return;
+        
         $studentName = Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student');
         $studentGroup = $formData->has('formGroupName')? $formData->get('formGroupName') : $formData->get('yearGroupName');
 

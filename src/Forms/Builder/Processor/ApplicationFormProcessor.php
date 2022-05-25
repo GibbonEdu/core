@@ -35,6 +35,7 @@ use Gibbon\Forms\Builder\Process\CreateInvoicee;
 use Gibbon\Forms\Builder\Process\EnrolStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
 use Gibbon\Forms\Builder\Process\NewStudentDetails;
+use Gibbon\Forms\Builder\Process\PaySubmissionFee;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
@@ -43,6 +44,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
         $this->run(SendReferenceRequest::class);
         $this->run(ApplicationSubmit::class);
         $this->run(SendSubmissionEmail::class);
+        $this->run(PaySubmissionFee::class);
     }
 
     protected function editProcess()

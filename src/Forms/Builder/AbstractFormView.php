@@ -25,15 +25,21 @@ use Gibbon\Forms\Builder\Storage\FormDataInterface;
 
 abstract class AbstractFormView implements FormViewInterface 
 {
-    abstract public function getHeading() : string;
-
     abstract public function getName() : string;
-
-    abstract public function getDescription() : string;
 
     abstract public function configure(Form $form);
 
     abstract public function display(Form $form, FormDataInterface $data);
+
+    public function getHeading() : string
+    {
+        return '';
+    }
+
+    public function getDescription() : string
+    {
+        return '';
+    }
 
     public function getViewName()
     {

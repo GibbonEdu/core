@@ -27,6 +27,8 @@ namespace Gibbon\Contracts\Services;
  */
 interface Payment
 {
+    public function isEnabled();
+
     public function setReturnURL($url);
 
     public function setCancelURL($url);

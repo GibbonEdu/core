@@ -100,7 +100,7 @@ class AdmissionsFields extends AbstractFieldGroup
                 break;
 
             case 'gibbonSchoolYearIDEntry':
-                $years = $formBuilder->getConfig('enableLimitedYearsOfEntry') == 'Y' && !empty($formBuilder->getConfig('availableYearsOfEntry'))
+                $years = $formBuilder->getConfig('enableLimitedYearsOfEntry') == 'Y' && $formBuilder->hasConfig('availableYearsOfEntry')
                     ? $this->schoolYearGateway->getSchoolYearsFromList($formBuilder->getConfig('availableYearsOfEntry'))
                     : $this->schoolYearGateway->getSchoolYearList(true);
 

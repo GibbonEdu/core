@@ -33,20 +33,10 @@ class ApplicationCheckView extends AbstractFormView
     {
         $this->session = $session;
     }
-    
-    public function getHeading() : string
-    {
-        return 'Acceptance Options';
-    }
 
     public function getName() : string
     {
         return __('Application Status');
-    }
-
-    public function getDescription() : string
-    {
-        return '';
     }
 
     public function configure(Form $form)
@@ -56,8 +46,6 @@ class ApplicationCheckView extends AbstractFormView
 
     public function display(Form $form, FormDataInterface $data)
     {
-        // if (!$data->exists($this->getResultName())) return;
-
         $col = $form->addRow()->addColumn();
         $col->addSubheading($this->getName());
 

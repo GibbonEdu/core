@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
 
             $view = $container->get($viewClass);
 
-            if (!$form->hasHeading($view->getHeading())) {
+            if (!empty($view->getHeading()) && !$form->hasHeading($view->getHeading())) {
                 $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()));
             }
             $view->configure($form);

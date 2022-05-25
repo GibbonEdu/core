@@ -33,12 +33,18 @@ class FormPrefill
     protected $familyGateway;
 
     protected $prefillable = [];
+    protected $prefilled = false;
 
     public function __construct(Session $session, UserGateway $userGateway, FamilyGateway $familyGateway)
     {
         $this->session = $session;
         $this->userGateway = $userGateway;
         $this->familyGateway = $familyGateway;
+    }
+
+    public function isPrefilled()
+    {
+        return $this->prefilled;
     }
 
     /**
@@ -68,15 +74,16 @@ class FormPrefill
      * @param string $accessToken
      * @return self
      */
-    public function loadPersonalData(AdmissionsAccountGateway $admissionsAccountGateway, string $gibbonPersonID, string $accessID, string $accessToken)
+    public function loadPersonalData(AdmissionsAccountGateway $admissionsAccountGateway, ?string $gibbonPersonID, ?string $accessID, ?string $accessToken)
     {
-        // Check if this account can prefill user data
+        if (empty($gibbonPersonID)) return $this;
+
         $canAccessAccount = $canAccessData = false;
-        if (!empty($gibbonPersonID)) {
-            $accountCheck = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
-            $canAccessAccount = !empty($accountCheck) && $gibbonPersonID == $accountCheck['gibbonPersonID'];
-            $canAccessData = (!empty($accountCheck)) || ($this->session->get('gibbonPersonID') == $gibbonPersonID);
-        }
+
+        // Check if this account can prefill user data
+        $accountCheck = $admissionsAccountGateway->getAccountByAccessToken($accessID, $accessToken);
+        $canAccessAccount = !empty($accountCheck) && $gibbonPersonID == $accountCheck['gibbonPersonID'];
+        $canAccessData = (!empty($accountCheck)) || ($this->session->get('gibbonPersonID') == $gibbonPersonID);
 
         if ($canAccessAccount && $canAccessData) {
             // Load and prefill values for Parent 1
@@ -115,6 +122,7 @@ class FormPrefill
             if (empty($field['prefill']) || $field['prefill'] == 'N') continue;
 
             $values[$fieldName] = $value;
+            $this->prefilled = true;
         }
 
         return $this;

@@ -29,10 +29,10 @@ use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Fields\NullFieldGroup;
 use Gibbon\Forms\Builder\Fields\UploadableInterface;
-use Gibbon\Forms\Builder\Storage\FormStorageInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
+use Gibbon\Contracts\Services\Session;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -348,5 +348,37 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         
         return $table;
     }
-   
+
+    public function getReturns(Session $session)
+    {
+        $returnExtra = '';
+
+        if ($this->hasConfig('foreignTableID')) {
+            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$this->getConfig('foreignTableID').'</b></u>.';
+        }
+
+        if ($session->has('organisationAdmissionsName') && $session->has('organisationAdmissionsEmail')) {
+            $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationAdmissionsEmail')."'>".$session->get('organisationAdmissionsName').'</a>');
+        }
+
+        return [
+            'success0' => __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra,
+            'success1' => __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,
+            'success2' => __('Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,
+            'success3' => __('Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.').$returnExtra,
+            'success4' => __("Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.").$returnExtra,
+        ];
+    }
+
+    public function getReturnJavascript()
+    {
+        if (empty($_GET['return']) || stripos($_GET['return'], 'success') === false) return;
+
+        return "<script type='text/javascript'>
+            $(document).ready(function(){'
+            alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."') ;
+            });
+        </script>";
+
+    }
 }

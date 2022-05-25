@@ -169,6 +169,7 @@ class Payment implements PaymentInterface
             // Payment request was successful, continue redirect
             $responseData = $response->getData();
             header("Location: " . $responseData['url']);
+            exit;
             // return self::RETURN_SUCCESS;
 
         } elseif ($response->isRedirect()) {
@@ -179,7 +180,8 @@ class Payment implements PaymentInterface
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;
         } else {
-            // Payment failed: debug with $response->getMessage()
+            // Payment failed
+            error_log('Payment Gateway Failed: '.$this->paymentGatewaySetting.' - '.$response->getMessage());
             return self::RETURN_ERROR_CONNECT;
         }
     }
