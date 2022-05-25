@@ -54,7 +54,7 @@ if (!$proceed) {
         : $admissionsAccountGateway->getAccountByPerson($session->get('gibbonPersonID'));
 
     if ($public && empty($account)) {
-        $page->addError(__('Could not fetch account information. The URL is either invalid or has expired. Please visit the {application} page to try again.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationFormSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
+        $page->addError(__('The application link does not match an existing record in our system. The record may have been removed or the link is no longer valid.').' '.__('Please visit the {application} page to request a new link.', ['application' => Format::link(Url::fromModuleRoute('Admissions', 'applicationFormSelect')->withAbsoluteUrl(), __('Admissions Welcome'))]));
         $session->forget('admissionsAccessToken');
         return;
     }

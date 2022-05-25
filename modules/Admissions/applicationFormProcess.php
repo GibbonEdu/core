@@ -98,15 +98,19 @@ if (empty($gibbonFormID) || empty($identifier)) {
         $formProcessor->submitForm($formBuilder, $formData);
         $formData->save($identifier);
 
-        $URL = $URL->withQueryParam('return', $partialFail ? 'warning1' : 'success0')->withQueryParam('page', $pageNumber+1);
+        if ($formData->hasResult('redirect')) {
+            $URL = Url::fromHandlerRoute($formData->getResult('redirect'))->withQueryParams($formData->getResult('redirectParams', []));
+        } else {
+            $URL = $URL->withQueryParam('page', $pageNumber+1)->withReturn($partialFail ? 'warning1' : 'success0');
+        }
 
     } elseif ($nextPage) {
         // Save data and proceed to the next page
         $formData->addData(['maxPage' => $maxPage]);
         $formData->save($identifier);
 
-        $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber']);
+        $URL = $URL->withQueryParam('page', $nextPage['sequenceNumber'])->withReturn($partialFail ? 'warning1' : '');
     }
 
-    header("Location: {$URL->withReturn($partialFail ? 'warning1' : '')}");
+    header("Location: {$URL}");
 }

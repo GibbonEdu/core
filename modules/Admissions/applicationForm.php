@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Builder\FormPrefill;
 use Gibbon\Forms\Builder\FormBuilder;
+use Gibbon\Forms\Builder\FormPrefill;
+use Gibbon\Forms\Builder\FormPayment;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
@@ -96,13 +97,23 @@ if ($proceed == false) {
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    
     $formData->load($identifier);
-
     $formBuilder->addConfig(['foreignTableID' => $formData->identify($identifier)]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $errors = $formProcessor->submitForm($formBuilder, $formData, true);
+
+    // Display form fee info
+    if ($formBuilder->hasConfig('formSubmissionFee') || $formBuilder->hasConfig('formProcessingFee')) {
+        $formPayment = $container->get(FormPayment::class)->setForm($gibbonFormID);
+        $page->return->addReturns($formPayment->getReturnMessages());
+        echo empty($_GET['return']) ? $formPayment->getFeeInfo() : '';
+    }
+
+    $page->return->addReturns($formBuilder->getReturns($session));
+    echo $formBuilder->getReturnJavascript();
 
     // Display any validation errors
     // foreach ($errors as $errorMessage) {
@@ -119,6 +130,10 @@ if ($proceed == false) {
             ->loadApplicationData($admissionsApplicationGateway, $gibbonFormID, $account['gibbonAdmissionsAccountID'])
             ->loadPersonalData($admissionsAccountGateway, $account['gibbonPersonID'], $accessID, $accessToken)
             ->prefill($formBuilder, $formData, $pageNumber, $values);
+
+        if ($formPrefill->isPrefilled()) {
+            echo Format::alert(__('Some information has been pre-filled for you, feel free to change this information as needed.'), 'message');
+        }
     }
 
     // Has the form been completed?
