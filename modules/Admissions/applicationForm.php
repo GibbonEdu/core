@@ -106,27 +106,27 @@ if ($proceed == false) {
     $formData->load($identifier);
     $formBuilder->addConfig([
         'foreignTableID' => $formData->identify($identifier),
-        'accessID'       => $accessID,
-        'accessToken'    => $accessToken,
+        'gibbonPersonID' => $account['gibbonPersonID'],
+        'gibbonFamilyID' => $account['gibbonFamilyID'],
     ]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $errors = $formProcessor->submitForm($formBuilder, $formData, true);
 
+    // Load values from the form data storage
+    $values = $formData->getData();
+    $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
+
     // Display form fee info
     $hasApplicationFee = $formBuilder->hasConfig('formSubmissionFee') || $formBuilder->hasConfig('formProcessingFee');
     if ($hasApplicationFee) {
         $formPayment = $container->get(FormPayment::class)->setForm($gibbonFormID);
-        $page->return->addReturns($formPayment->getReturnMessages());
+        $page->return->addReturns(!$incomplete ? $formPayment->getReturnMessages() : []);
     }
 
     // Add page returns and javascript
     $page->return->addReturns($formBuilder->getReturns($session));
-
-    // Load values from the form data storage
-    $values = $formData->getData();
-    $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
     // Prefill application form values
     if ($incomplete && !empty($account)) {

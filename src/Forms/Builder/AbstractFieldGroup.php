@@ -68,6 +68,11 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $this->fields[$fieldName] ?? [];
     }
 
+    public function shouldValidate(FormBuilderInterface $formBuilder, $fieldName)
+    {
+        return true;
+    }
+
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $row = $form->addRow();

@@ -69,7 +69,13 @@ if (empty($gibbonFormID) || empty($identifier)) {
     $formData->save($identifier);
 
     // Handle file uploads - on error, flag partial failures
-    $formBuilder->addConfig(['foreignTableID' => $formData->identify($identifier)]);
+    $formBuilder->addConfig([
+        'foreignTableID' => $formData->identify($identifier),
+        'accessID'       => $accessID,
+        'accessToken'    => $account['accessToken'],
+        'gibbonPersonID' => $account['gibbonPersonID'],
+        'gibbonFamilyID' => $account['gibbonFamilyID'],
+    ]);
     $uploaded = $formBuilder->upload();
     $partialFail &= !$uploaded;
 

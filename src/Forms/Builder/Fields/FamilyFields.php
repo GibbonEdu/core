@@ -23,11 +23,17 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Services\Format;
 
 class FamilyFields extends AbstractFieldGroup
 {
-    public function __construct()
+    protected $familyGateway;
+
+    public function __construct(FamilyGateway $familyGateway)
     {
+        $this->familyGateway = $familyGateway;
+
         $this->fields = [
             'headingHomeAddress' => [
                 'label'       => __('Home Address'),
@@ -43,7 +49,7 @@ class FamilyFields extends AbstractFieldGroup
             'homeAddress' => [
                 'label'       => __('Home Address'),
                 'description' => __('Unit, Building, Street'),
-                'required'    => 'Y',
+                'required'    => 'X',
                 'prefill'     => 'Y',
             ],
             'homeAddressDistrict' => [
@@ -89,6 +95,54 @@ class FamilyFields extends AbstractFieldGroup
 
         $row = $form->addRow();
 
+        // FAMILY: Already logged in, record gibbonFamilyID choice
+        if ($formBuilder->hasConfig('gibbonPersonID')) {
+            $gibbonPersonIDParent = str_pad($formBuilder->getConfig('gibbonPersonID'), 10, '0', STR_PAD_LEFT);
+            $families = $this->familyGateway->selectFamiliesByAdult($gibbonPersonIDParent)->fetchAll();
+        }
+
+        if (!empty($families) || $formBuilder->hasConfig('gibbonFamilyID')) {
+        
+            if ($field['fieldName'] == 'homeAddress') {
+                $col = $row->addColumn();
+
+                $col->addLabel('gibbonFamilyID', __('Family'))->description(__('Choose the family you wish to associate this application with.').'<br/><br/>');
+
+                $table = $col->addTable()->addClass('colorOddEven');
+
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Family Name'));
+                $header->addContent(__('Selected'));
+                // $header->addContent(__('Relationships'));
+
+                $firstFamily = current($families);
+                $checked = $formBuilder->getConfig('gibbonFamilyID') ?? $firstFamily['gibbonFamilyID'] ?? '';
+                foreach ($families as $family) {
+
+                    $row = $table->addRow()->setClass('break');
+                    $row->addContent($family['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
+                    $row->addRadio('gibbonFamilyID')->fromArray(array($family['gibbonFamilyID'] => ''))->checked($checked)->required($required);
+
+                    // if ($relationships = $this->familyGateway->selectAdultsByFamily($family['gibbonFamilyID'])->fetchAll()) {
+                    //     $subTable = $row->addTable()->setClass('blank');
+                    //     foreach ($relationships as $relationship) {
+                    //         $selected = ($relationship['gender'] == 'F')? 'Mother' : (($relationship['gender'] == 'M')? 'Father' : '');
+
+                    //         $subTableRow = $subTable->addRow()->addClass('right');
+                    //         $subTableRow->addContent(Format::name($relationship['title'], $relationship['preferredName'], $relationship['surname'], 'Parent'))->setClass('mediumWidth');
+                    //         $subTableRow->addSelectRelationship($family['gibbonFamilyID'].'-relationships[]')->selected($selected)->setClass('mediumWidth');
+                    //         $form->addHiddenValue($family['gibbonFamilyID'].'-relationshipsGibbonPersonID[]', $relationship['gibbonPersonID']);
+                    //     }
+                    // }
+                }
+                
+            } else {
+                $row->addClass('hidden');
+            }
+            
+            return $row;
+        }
+
         switch ($field['fieldName']) {
             case 'nameAddress':
                 $row->addLabel('nameAddress', __($field['label']))->description(__($field['description']));
@@ -127,5 +181,12 @@ class FamilyFields extends AbstractFieldGroup
         }
 
         return $row;
+    }
+
+    public function shouldValidate(FormBuilderInterface $formBuilder, $fieldName)
+    {
+        if ($formBuilder->hasConfig('gibbonPersonID')) return false;
+
+        return true;
     }
 }

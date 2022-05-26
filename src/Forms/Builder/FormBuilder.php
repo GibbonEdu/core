@@ -206,8 +206,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            if (!$fieldGroup->shouldValidate($this, $fieldName)) continue;
+
             $fieldValue = &$data[$fieldName];
-            if ($field['required'] != 'N' &&  (is_null($fieldValue) || $fieldValue == '')) {
+            if ($field['required'] != 'N' && (is_null($fieldValue) || $fieldValue == '')) {
                 $invalid[] = $fieldName;
             }
         }
