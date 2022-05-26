@@ -81,6 +81,7 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig($type.'Template'));
         $templateData = [
+            'email'                       => $formData->getAny($prefix.'email'),
             'date'                        => Format::date(date('Y-m-d')),
             'username'                    => $formData->getResult($prefix.'username'),
             'password'                    => $formData->getResult($prefix.'password'),
@@ -88,6 +89,7 @@ class SendAcceptanceEmail extends AbstractFormProcess implements ViewableProcess
             'applicationName'             => $builder->getDetail('name'),
             'studentPreferredName'        => $formData->get('preferredName'),
             'studentSurname'              => $formData->get('surname'),
+            'studentOfficialName'         => $formData->get('officialName'),
             'parentTitle'                 => $formData->get(!empty($prefix) ? $prefix.'title' : 'parent1title'),
             'parentPreferredName'         => $formData->get(!empty($prefix) ? $prefix.'preferredName' : 'parent1preferredName'),
             'parentSurname'               => $formData->get(!empty($prefix) ? $prefix.'surname' : 'parent1surname'),

@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Services\Format;
 use Gibbon\Comms\EmailTemplate;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
-use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
@@ -65,7 +65,7 @@ if (empty($email)) {
         exit;
     }
 
-    // TODO: Check for existing gibbonPerson account with the same email address, prompt to login
+    // TODO: Check for existing gibbonPerson account with the same email address, prompt to login?
 
     // Redirect if a new application form was selected
     if ($gibbonFormID != 'existing') {
@@ -96,9 +96,18 @@ if (empty($email)) {
     ]);
     
     // Handle sending email link to existing admissions account
-    $template = $container->get(EmailTemplate::class)->setTemplate('Admissions Account Access');
-    $data = ['email' => $email, 'date' => Format::date(date('Y-m-d')) ];
-
+    $template = $container->get(EmailTemplate::class)->setTemplate('Admissions Access Link');
+    $link = Url::fromModuleRoute('Admissions', 'applicationFormView')
+        ->withQueryParams(['acc' => $accessID, 'tok' => $accessToken])
+        ->withAbsoluteUrl();
+    $data = [
+        'email' => $email,
+        'date' => Format::date(date('Y-m-d')),
+        'link' => (string)$link,
+        'organisationAdmissionsEmail' => $session->get('organisationAdmissionsEmail'),
+        'organisationAdmissionsName'  => $session->get('organisationAdmissionsName'),
+    ];
+    
     $mail = $container->get(Mailer::class);
 
     $mail->AddAddress($email);
@@ -108,10 +117,8 @@ if (empty($email)) {
         'title'  => $template->renderSubject($data),
         'body'   => $template->renderBody($data),
         'button' => [
-            'url'  => Url::fromModuleRoute('Admissions', 'applicationFormView')
-                ->withQueryParams(['acc' => $accessID, 'tok' => $accessToken])
-                ->withAbsoluteUrl(),
-            'text' => __('Access your Account'),
+            'url'  => $link,
+            'text' => __('Access your Application Forms'),
             'external' => true,
         ],
     ]);

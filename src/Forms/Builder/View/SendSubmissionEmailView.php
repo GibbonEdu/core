@@ -57,7 +57,7 @@ class SendSubmissionEmailView extends AbstractFormView
 
         $form->toggleVisibilityByClass('submissionEmailTemplate')->onSelect('sendSubmissionEmail')->when('Y');
 
-        $templates = $this->emailTemplateGateway->selectAvailableTemplatesByType('Admissions', 'Application Form Submitted')->fetchKeyPair();
+        $templates = $this->emailTemplateGateway->selectAvailableTemplatesByType('Admissions', 'Application Form Confirmation')->fetchKeyPair();
         $row = $form->addRow()->addClass('submissionEmailTemplate');
             $row->addLabel('submissionEmailTemplate', __('Email Template'))->description(__('The content of email templates can be customized in System Admin > Email Templates.'));
             $row->addSelect('submissionEmailTemplate')->fromArray($templates)->required()->placeholder();

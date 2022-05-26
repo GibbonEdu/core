@@ -79,9 +79,12 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
             'submissionDetails'    => Format::listDetails($details),
             'studentPreferredName' => $formData->get('preferredName'),
             'studentSurname'       => $formData->get('surname'),
+            'studentOfficialName'  => $formData->get('officialName'),
             'parentTitle'          => $formData->get('parent1Title'),
             'parentPreferredName'  => $formData->get('parent1PreferredName'),
             'parentSurname'        => $formData->get('parent1Surname'),
+            'organisationAdmissionsEmail' => $this->session->get('organisationAdmissionsEmail'),
+            'organisationAdmissionsName'  => $this->session->get('organisationAdmissionsName'),
         ];
 
         // Setup the email

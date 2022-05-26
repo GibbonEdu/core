@@ -64,18 +64,32 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 
         if (!is_numeric($processingFee) || $processingFee <= 0) return;
 
+        $link = Url::fromModuleRoute('Admissions', 'applicationForm_payFee')
+            ->withAbsoluteUrl()
+            ->withQueryParams([
+                'acc'  => $builder->getConfig('accessID', ''),
+                'tok'  => $builder->getConfig('accessToken', ''),
+                'id'   => $builder->getConfig('identifier', ''),
+                'form' => $builder->getFormID(),
+                ]);
+
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('formProcessingEmailTemplate'));
         $templateData = [
             'email'                => $formData->get('email'),
             'date'                 => Format::date(date('Y-m-d')),
+            'link'                 => (string)$link,
             'applicationID'        => $builder->getConfig('foreignTableID'),
             'applicationName'      => $builder->getDetail('name'),
+            'applicationFee'       => $this->session->get('currency').$processingFee,
             'studentPreferredName' => $formData->get('preferredName'),
             'studentSurname'       => $formData->get('surname'),
+            'studentOfficialName'  => $formData->get('officialName'),
             'parentTitle'          => $formData->get('parent1Title'),
             'parentPreferredName'  => $formData->get('parent1PreferredName'),
             'parentSurname'        => $formData->get('parent1Surname'),
+            'organisationAdmissionsName'  => $this->session->get('organisationAdmissionsName'),
+            'organisationAdmissionsEmail' => $this->session->get('organisationAdmissionsEmail'),
         ];
 
         // Setup the email
@@ -91,14 +105,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
                 __('Application Processing Fee') => $this->session->get('currency').$processingFee,
             ],
             'button' => [
-                'url'  => Url::fromModuleRoute('Admissions', 'applicationForm_payFee')
-                    ->withQueryParams([
-                        'acc'  => $builder->getConfig('accessID', ''),
-                        'tok'  => $builder->getConfig('accessToken', ''),
-                        'id'   => $builder->getConfig('identifier', ''),
-                        'form' => $builder->getFormID(),
-                        ])
-                    ->withAbsoluteUrl(),
+                'url'  => $link,
                 'text' => __('Pay Online'),
                 'external' => true,
             ],

@@ -61,14 +61,13 @@ class SendReferenceRequest extends AbstractFormProcess implements ViewableProces
         $templateData = [
             'email'                       => $formData->get('referenceEmail'),
             'date'                        => Format::date(date('Y-m-d')),
-            'applicationID'               => $formData->get('gibbonAdmissionsApplicationID'),
-            'applicationName'             => $builder->getDetail('name'),
+            'applicationRefereeLink'      => $builder->getConfig('applicationRefereeLink'),
             'studentPreferredName'        => $formData->get('preferredName'),
             'studentSurname'              => $formData->get('surname'),
+            'studentOfficialName'         => $formData->get('officialName'),
             'parentTitle'                 => $formData->get('parent1Title'),
             'parentPreferredName'         => $formData->get('parent1PreferredName'),
             'parentSurname'               => $formData->get('parent1Surname'),
-            'applicationRefereeLink'      => $builder->getConfig('applicationRefereeLink'),
             'organisationAdmissionsEmail' => $this->session->get('organisationAdmissionsEmail'),
             'organisationAdmissionsName'  => $this->session->get('organisationAdmissionsName'),
         ];
