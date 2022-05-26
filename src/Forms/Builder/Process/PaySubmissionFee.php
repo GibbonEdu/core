@@ -53,10 +53,10 @@ class PaySubmissionFee extends AbstractFormProcess implements ViewableProcess
 
         if (!is_numeric($submissionFee) || $submissionFee <= 0) return;
 
-        $formData->setResult('redirect', 'modules/Admissions/applicationFormFeeProcess.php');
+        $formData->setResult('redirect', 'modules/Admissions/applicationForm_payFeeProcess.php');
         $formData->setResult('redirectParams', [
-            'formFee'      => $submissionFee,
-            'formFeeType'  => 'formSubmissionFee',
+            'feeType'      => 'formSubmissionFee',
+            'feeAmount'    => $submissionFee,
             'gibbonFormID' => $builder->getDetail('gibbonFormID'),
             'pageNumber'   => $builder->getPageNumber(),
             'accessID'     => $_REQUEST['accessID'] ?? '',

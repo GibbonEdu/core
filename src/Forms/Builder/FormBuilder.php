@@ -96,6 +96,16 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $this->config = array_merge($this->config, $values);
     }
 
+    public function getFormID()
+    {
+        return $this->gibbonFormID;
+    }
+
+    public function getPageID()
+    {
+        return $this->details['gibbonFormPageID'] ?? null;
+    }
+
     public function getPageNumber()
     {
         return $this->pageNumber;
@@ -367,6 +377,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             'success2' => __('Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success3' => __('Your application was successfully submitted, payment has been made to your credit card, but there has been an error recording your payment. Please print this screen and contact the school ASAP. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success4' => __("Your application was successfully submitted, but payment could not be made as the payment gateway does not support the system's currency. Our admissions team will review your application and be in touch in due course.").$returnExtra,
+            'success5' => __('Your application was successfully submitted, but payment options were unavailable at this time. Our admissions team will review your application and be in touch in due course.'),
         ];
     }
 

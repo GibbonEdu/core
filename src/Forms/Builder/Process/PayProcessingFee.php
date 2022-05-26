@@ -19,64 +19,58 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\Comms\EmailTemplate;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Services\Payment;
 use Gibbon\Forms\Builder\AbstractFormProcess;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
-use Gibbon\Forms\Builder\View\SendSubmissionEmailView;
-use Gibbon\Comms\EmailTemplate;
-use Gibbon\Services\Format;
-use Gibbon\Http\Url;
+use Gibbon\Forms\Builder\View\PayProcessingFeeView;
+use Gibbon\Forms\Builder\Exception\MissingFieldException;
 
-class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
+class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['email'];
+    protected $requiredFields = ['Payment Gateway'];
 
     private $session;
+    private $payment;
     private $mail;
     private $template;
 
-    public function __construct(Session $session, Mailer $mail, EmailTemplate $template)
+    public function __construct(Session $session, Payment $payment, Mailer $mail, EmailTemplate $template)
     {
         $this->session = $session;
+        $this->payment = $payment;
         $this->mail = $mail;
         $this->template = $template;
     }
 
     public function getViewClass() : string
     {
-        return SendSubmissionEmailView::class;
+        return PayProcessingFeeView::class;
     }
 
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return $builder->getConfig('sendSubmissionEmail') == 'Y';
+        return !empty($builder->getConfig('formProcessingFee'));
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        // Setup Details
-        $details = [];
-        foreach ($formData->getData() as $fieldName => $value) {
-            $field = $builder->getField($fieldName);
-            if (empty($field)) continue;
+        $processingFee = $builder->getConfig('formProcessingFee');
 
-            if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
-                $details[$field['fieldType']] = __($field['label']);
-            } else {
-                $details[__($field['label'])]  =$value;
-            }
-        }
+        if (!is_numeric($processingFee) || $processingFee <= 0) return;
 
         // Setup Template 
-        $template = $this->template->setTemplateByID($builder->getConfig('submissionEmailTemplate'));
+        $template = $this->template->setTemplateByID($builder->getConfig('formProcessingEmailTemplate'));
         $templateData = [
             'email'                => $formData->get('email'),
             'date'                 => Format::date(date('Y-m-d')),
             'applicationID'        => $builder->getConfig('foreignTableID'),
             'applicationName'      => $builder->getDetail('name'),
-            'submissionDetails'    => Format::listDetails($details),
             'studentPreferredName' => $formData->get('preferredName'),
             'studentSurname'       => $formData->get('surname'),
             'parentTitle'          => $formData->get('parent1Title'),
@@ -92,11 +86,20 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         $this->mail->renderBody('mail/message.twig.html', [
             'title'  => $template->renderSubject($templateData),
             'body'   => $template->renderBody($templateData),
+            'details' => [
+                __('Application ID')             => $builder->getConfig('foreignTableID'),
+                __('Application Processing Fee') => $this->session->get('currency').$processingFee,
+            ],
             'button' => [
-                'url'  => Url::fromModuleRoute('Admissions', 'applicationFormView')
-                    ->withQueryParams(['acc' => $builder->getConfig('accessID', ''), 'tok' => $builder->getConfig('accessToken', '')])
+                'url'  => Url::fromModuleRoute('Admissions', 'applicationForm_payFee')
+                    ->withQueryParams([
+                        'acc'  => $builder->getConfig('accessID', ''),
+                        'tok'  => $builder->getConfig('accessToken', ''),
+                        'id'   => $builder->getConfig('identifier', ''),
+                        'form' => $builder->getFormID(),
+                        ])
                     ->withAbsoluteUrl(),
-                'text' => __('Access your Account'),
+                'text' => __('Pay Online'),
                 'external' => true,
             ],
         ]);
@@ -106,8 +109,15 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         $this->setResult($sent);
     }
 
-    public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
+    public function rollback(FormBuilderInterface $builder, FormDataInterface $formData)
     {
         // Cannot unsend what has been sent...
+    }
+
+    public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)
+    {
+        if (!$this->payment->isEnabled()) {
+            throw new MissingFieldException('Payment Gateway');
+        }
     }
 }

@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Services\Payment;
 
-use Omnipay\Common\AbstractGateway as OmnipayGateway;
-use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Omnipay\Omnipay;
+use Omnipay\Common\AbstractGateway as OmnipayGateway;
 use Omnipay\PayPal\ProGateway as OmnipayPaypalProGateway;
 use Omnipay\Stripe\AbstractGateway as OmnipayStripeGateway;
+use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
@@ -35,16 +35,6 @@ use Gibbon\Contracts\Services\Payment as PaymentInterface;
  */
 class Payment implements PaymentInterface
 {
-    const RETURN_SUCCESS = 'success1';
-    const RETURN_SUCCESS_WARNING = 'warning2';
-    const RETURN_CANCEL = 'warning3';
-    const RETURN_ERROR_NOT_ENABLED = 'error1';
-    const RETURN_ERROR_CURRENCY = 'error3';
-    const RETURN_ERROR_CONFIG = 'error4';
-    const RETURN_ERROR_AMOUNT = 'error5';
-    const RETURN_ERROR_GENERAL = 'error6';
-    const RETURN_ERROR_CONNECT = 'error7';
-
     /**
      * @var \Gibbon\Contracts\Services\Session
      */
@@ -195,11 +185,13 @@ class Payment implements PaymentInterface
 
         $paymentState = $_REQUEST['paymentState'] ?? '';
         if ($paymentState == 'cancel') {
+            $this->result['status'] = 'Cancelled';
             return self::RETURN_CANCEL;
         }
 
         $amount = $_GET['amount'] ?? '';
         if (empty($amount)) {
+            $this->result['status'] = 'Failed';
             return self::RETURN_ERROR_AMOUNT;
         }
 
@@ -207,6 +199,7 @@ class Payment implements PaymentInterface
         $response = $this->getPaymentConfirmation($amount);
 
         if (empty($response)) {
+            $this->result['status'] = 'Failed';
             return self::RETURN_ERROR_CONNECT;
         }
 

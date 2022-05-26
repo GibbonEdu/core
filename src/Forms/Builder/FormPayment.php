@@ -110,6 +110,11 @@ class FormPayment extends Payment
         return '';
     }
 
+    public function getProcessingFeeInfo()
+    {
+        return sprintf(__('Payment can be made by credit card, using our secure {gateway} payment gateway. When you press Pay Online Now, you will be directed to {gateway} in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.', ['gateway' => $this->paymentGatewaySetting]), $this->session->get('systemName'));
+    }
+
     public function sendPaymentSuccessEmail(string $email) : bool
     {
         $subject = __('Receipt from {organisation} via {system}', [
@@ -123,26 +128,35 @@ class FormPayment extends Payment
 
     public function sendPaymentUncertainEmail() : bool
     {
-        $subject = $this->session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
         $body = __('Payment via {gateway} may or may not have been successful, but has not been recorded either way due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $this->paymentGatewaySetting]).Format::listDetails($this->getPaymentDetails());
 
-        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $subject, $body, $this->getPaymentDetails());
+        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $this->getEmailSubject(), $body, $this->getPaymentDetails());
     }
 
     public function sendPaymentSuccessNotRecordedEmail() : bool
     {
-        $subject = $this->session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
         $body = __('Payment via {gateway} was successful, but has not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $this->paymentGatewaySetting]);
 
-        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $subject, $body, $this->getPaymentDetails());
+        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $this->getEmailSubject(), $body, $this->getPaymentDetails());
     }
 
     public function sendPaymentFailedNotRecordedEmail() : bool
     {
-        $subject = $this->session->get('organisationNameShort').' Gibbon Application Form Payment Issue';
         $body = __('Payment via {gateway} was unsuccessful, and has also not been recorded due to a system error. Please check your {gateway} account for details. The following may be useful:', ['gateway' => $this->paymentGatewaySetting]);
 
-        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $subject, $body, $this->getPaymentDetails());
+        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $this->getEmailSubject(), $body, $this->getPaymentDetails());
+    }
+
+    public function sendPaymentCancelled() : bool
+    {
+        $body = __('Payment via {gateway} was cancelled by the user before it could be completed. No charges have been processed. The following may be useful:', ['gateway' => $this->paymentGatewaySetting]);
+
+        return $this->sendEmail($this->session->get('organisationAdmissionsEmail'), $this->getEmailSubject(), $body, $this->getPaymentDetails());
+    }
+
+    protected function getEmailSubject()
+    {
+        return $this->session->get('organisationNameShort').' '.__('{system} Application Form Payment Issue', ['system' => $this->session->get('systemName')]);
     }
 
     protected function getPaymentDetails() : array
@@ -157,8 +171,8 @@ class FormPayment extends Payment
             ];
         } else {
             return [
-                __('Application Fee') => $this->currency.$this->feeTotal,
                 __('Application ID')  => $this->foreignTableID,
+                __('Application Fee') => $this->currency.$this->feeTotal,
                 __('Status')          => $result['status'] ?? '',
                 __('Payment ID')      => $result['gibbonPaymentID'] ?? '',
                 __('Transaction ID')  => $result['transactionID'] ?? '',
@@ -175,7 +189,7 @@ class FormPayment extends Payment
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
         $this->mail->AddAddress($to);
         
-        $this->mail->renderBody('mail/email.twig.html', [
+        $this->mail->renderBody('mail/message.twig.html', [
             'title'   => $subject,
             'body'    => $body,
             'details' => $details,

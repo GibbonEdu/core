@@ -24,14 +24,17 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Payment;
 use Gibbon\Forms\Builder\AbstractFormView;
 use Gibbon\Forms\Builder\Storage\FormDataInterface;
+use Gibbon\Domain\System\EmailTemplateGateway;
 
-class PaySubmissionFeeView extends AbstractFormView
+class PayProcessingFeeView extends AbstractFormView
 {
     protected $payment;
-
-    public function __construct(Payment $payment)
+    protected $emailTemplateGateway;
+    
+    public function __construct(Payment $payment, EmailTemplateGateway $emailTemplateGateway)
     {
         $this->payment = $payment;
+        $this->emailTemplateGateway = $emailTemplateGateway;
     }
 
     public function getHeading() : string
@@ -41,19 +44,24 @@ class PaySubmissionFeeView extends AbstractFormView
 
     public function getName() : string
     {
-        return __('Application Submission Fee');
+        return __('Application Processing Fee');
     }
 
     public function getDescription() : string
     {
-        return __('The cost of applying to the school. Paid when submitting the application form.');
+        return __('An optional fee that is paid before processing the application form. Sent by staff via the Manage Applications page.');
     }
 
     public function configure(Form $form)
     {
         $row = $form->addRow()->setHeading($this->getHeading());
-            $row->addLabel('formSubmissionFee', $this->getName())->description($this->getDescription());
-            $row->addCurrency('formSubmissionFee');
+            $row->addLabel('formProcessingFee', $this->getName())->description($this->getDescription());
+            $row->addCurrency('formProcessingFee');
+
+        $templates = $this->emailTemplateGateway->selectAvailableTemplatesByType('Admissions', 'Application Form Fee Request')->fetchKeyPair();
+        $row = $form->addRow()->addClass('formProcessingEmailTemplate');
+            $row->addLabel('formProcessingEmailTemplate', __('Application Processing Email Template'))->description(__('The content of email templates can be customized in System Admin > Email Templates.'));
+            $row->addSelect('formProcessingEmailTemplate')->fromArray($templates)->required()->placeholder();
     }
 
     public function display(Form $form, FormDataInterface $formData)
@@ -65,7 +73,7 @@ class PaySubmissionFeeView extends AbstractFormView
 
         $messages = $this->payment->getReturnMessages();
 
-        if ($formData->hasResult('gibbonPaymentIDSubmit')) {
+        if ($formData->hasResult('gibbonPaymentIDProcess')) {
             $col->addContent(Format::alert($messages[Payment::RETURN_SUCCESS], 'success'));
         } else {
             $return = $formData->getResult($this->getResultName());

@@ -36,6 +36,7 @@ use Gibbon\Forms\Builder\Process\EnrolStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
 use Gibbon\Forms\Builder\Process\NewStudentDetails;
 use Gibbon\Forms\Builder\Process\PaySubmissionFee;
+use Gibbon\Forms\Builder\Process\PayProcessingFee;
 
 class ApplicationFormProcessor extends AbstractFormProcessor 
 {
@@ -49,7 +50,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
 
     protected function editProcess()
     {
-        
+        $this->run(PayProcessingFee::class);
     }
 
     protected function acceptProcess()

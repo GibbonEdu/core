@@ -21,8 +21,12 @@ namespace Gibbon\Forms\Builder;
 
 interface FormBuilderInterface
 {
-    public function getPageNumber();
+    public function getFormID();
 
+    public function getPageID();
+
+    public function getPageNumber();
+    
     public function hasField($fieldName) : bool;
 
     public function getField($fieldName);

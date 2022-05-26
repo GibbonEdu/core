@@ -20,11 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\Storage;
 
 use Gibbon\Forms\Builder\AbstractFormStorage;
-use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 class ApplicationFormStorage extends AbstractFormStorage
 {
+    private $gibbonAdmissionsApplicationID;
     private $admissionsApplicationGateway;
     private $context;
     
@@ -33,11 +33,11 @@ class ApplicationFormStorage extends AbstractFormStorage
         $this->admissionsApplicationGateway = $admissionsApplicationGateway;
     }
 
-    public function setContext(FormBuilderInterface $builder, string $foreignTable, string $foreignTableID, string $owner)
+    public function setContext(string $gibbonFormID, ?string $gibbonFormPageID, string $foreignTable, string $foreignTableID, string $owner)
     {
         $this->context = [
-            'gibbonFormID'     => $builder->getDetail('gibbonFormID'),
-            'gibbonFormPageID' => $builder->getDetail('gibbonFormPageID'),
+            'gibbonFormID'     => $gibbonFormID,
+            'gibbonFormPageID' => $gibbonFormPageID,
             'foreignTable'     => $foreignTable,
             'foreignTableID'   => $foreignTableID,
             'owner'            => $owner,
@@ -48,14 +48,19 @@ class ApplicationFormStorage extends AbstractFormStorage
 
     public function identify(string $identifier) : int
     {
-        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier, ['gibbonAdmissionsApplicationID']);
+        if (!empty($this->gibbonAdmissionsApplicationID)) {
+            return $this->gibbonAdmissionsApplicationID;
+        }
 
-        return $values['gibbonAdmissionsApplicationID'] ?? 0;
+        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier, $this->context['foreignTable'], $this->context['foreignTableID'],  ['gibbonAdmissionsApplicationID']);
+        $this->gibbonAdmissionsApplicationID = $values['gibbonAdmissionsApplicationID'] ?? 0;
+
+        return $this->gibbonAdmissionsApplicationID;
     }
     
     public function save(string $identifier) : bool
     {
-        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier);
+        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier, $this->context['foreignTable'], $this->context['foreignTableID']);
         
         if (!empty($values)) {
             // Update the existing submission
@@ -63,13 +68,16 @@ class ApplicationFormStorage extends AbstractFormStorage
             $data = array_merge($existingData, $this->getData());
 
             $saved = $this->admissionsApplicationGateway->update($values['gibbonAdmissionsApplicationID'], [
-                'data'               => json_encode($data),
-                'result'             => json_encode($this->getResults()),
-                'status'             => $this->getStatus(),
-                'gibbonSchoolYearID' => $this->getOrNull('gibbonSchoolYearIDEntry'),
-                'gibbonYearGroupID'  => $this->getOrNull('gibbonYearGroupIDEntry'),
-                'gibbonFormGroupID'  => $this->getOrNull('gibbonFormGroupIDEntry'),
-                'timestampModified'  => date('Y-m-d H:i:s'),
+                'data'                   => json_encode($data),
+                'result'                 => json_encode($this->getResults()),
+                'status'                 => $this->getStatus(),
+                'gibbonFormPageID'       => $this->context['gibbonFormPageID'] ?? $values['gibbonFormPageID'],
+                'gibbonSchoolYearID'     => $this->getAny('gibbonSchoolYearIDEntry'),
+                'gibbonYearGroupID'      => $this->getOrNull('gibbonYearGroupIDEntry'),
+                'gibbonFormGroupID'      => $this->getOrNull('gibbonFormGroupIDEntry'),
+                'gibbonPaymentIDSubmit'  => $this->getResult('gibbonPaymentIDSubmit'),
+                'gibbonPaymentIDProcess' => $this->getResult('gibbonPaymentIDProcess'),
+                'timestampModified'      => date('Y-m-d H:i:s'),
             ]);
         } else {
             // Create a new submission
@@ -77,7 +85,7 @@ class ApplicationFormStorage extends AbstractFormStorage
                 'identifier'         => $identifier,
                 'data'               => json_encode($this->getData()),
                 'result'             => json_encode($this->getResults()),
-                'gibbonSchoolYearID' => $this->getOrNull('gibbonSchoolYearIDEntry'),
+                'gibbonSchoolYearID' => $this->getAny('gibbonSchoolYearIDEntry'),
                 'gibbonYearGroupID'  => $this->getOrNull('gibbonYearGroupIDEntry'),
                 'gibbonFormGroupID'  => $this->getOrNull('gibbonFormGroupIDEntry'),
                 'timestampCreated'   => date('Y-m-d H:i:s'),
@@ -89,8 +97,11 @@ class ApplicationFormStorage extends AbstractFormStorage
 
     public function load(string $identifier) : bool
     {
-        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier);
+        $values = $this->admissionsApplicationGateway->getApplicationByIdentifier($this->context['gibbonFormID'], $identifier, $this->context['foreignTable'], $this->context['foreignTableID']);
 
+        if (empty($values)) return false;
+
+        $this->gibbonAdmissionsApplicationID = $values['gibbonAdmissionsApplicationID'] ?? '';
         $this->setStatus($values['status'] ?? 'Incomplete');
         $this->setData(json_decode($values['data'] ?? '', true) ?? []);
         $this->setResults(json_decode($values['result'] ?? '', true) ?? []);

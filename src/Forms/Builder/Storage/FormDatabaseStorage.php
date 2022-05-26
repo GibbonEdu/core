@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder\Storage;
 
 use Gibbon\Forms\Builder\AbstractFormStorage;
-use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
 
 class FormDatabaseStorage extends AbstractFormStorage
@@ -33,11 +32,11 @@ class FormDatabaseStorage extends AbstractFormStorage
         $this->formSubmissionGateway = $formSubmissionGateway;
     }
 
-    public function setContext(FormBuilderInterface $builder, string $foreignTable, string $foreignTableID, string $owner)
+    public function setContext(string $gibbonFormID, string $gibbonFormPageID, string $foreignTable, string $foreignTableID, string $owner)
     {
         $this->context = [
-            'gibbonFormID'     => $builder->getDetail('gibbonFormID'),
-            'gibbonFormPageID' => $builder->getDetail('gibbonFormPageID'),
+            'gibbonFormID'     => $gibbonFormID,
+            'gibbonFormPageID' => $gibbonFormPageID,
             'foreignTable'     => $foreignTable,
             'foreignTableID'   => $foreignTableID,
             'owner'            => $owner,

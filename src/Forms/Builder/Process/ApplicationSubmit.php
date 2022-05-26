@@ -63,6 +63,11 @@ class ApplicationSubmit extends AbstractFormProcess implements ViewableProcess
         $formData->setStatus('Pending');
         $formData->setResult('statusDate', date('Y-m-d H:i:s'));
 
+        // Ensure there is always a school year set
+        if (!$formData->has('gibbonSchoolYearIDEntry')) {
+            $formData->set('gibbonSchoolYearIDEntry', $this->session->get('gibbonSchoolYearID'));
+        }
+
         $this->sendNotifications($builder, $formData);
     }
 
