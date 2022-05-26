@@ -36,7 +36,7 @@ if (!$session->has('username')) {
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
+} else if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationForm.php') != false) {
     $proceed = true;
 }
 

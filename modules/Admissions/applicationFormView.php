@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Domain\System\SettingGateway;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
 $accessToken = $_GET['tok'] ?? $session->get('admissionsAccessToken') ?? '';
@@ -60,54 +61,69 @@ if (!$proceed) {
     }
 
     if (!empty($account)) {
-        $session->set('admissionsAccessToken', $accessToken);
+        $session->set('admissionsAccessToken', $account['accessToken']);
         $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], ['timestampActive' => date('Y-m-d H:i:s')]);
 
         $foreignTable = 'gibbonAdmissionsAccount';
         $foreignTableID = $account['gibbonAdmissionsAccountID'];
     } else {
-        $foreignTable = 'gibbonPerson';
-        $foreignTableID = $session->get('gibbonPersonID');
+        // New Admissions Account for Existing User
+        $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/modules/Admissions/applicationFormViewProcess.php');
+
+        $welcomeHeading = $container->get(SettingGateway::class)->getSettingByScope('Admissions', 'welcomeHeading');
+        $form->setTitle(__($welcomeHeading, ['organisationNameShort' => $session->get('organisationNameShort')]));
+        $form->addHiddenValue('address', $session->get('address'));
+
+        $form->addRow()->addContent(__('You\'re ready to begin the admissions process. We do not have an admissions account in our system attached to your user. Please click Next to create an account.'))->wrap('<p>', '</p>');
+        $form->addRow()->addSubmit(__('Next'));
+
+        echo $form->getOutput();
+        return;
     }
     
     if ($public && !empty($account['timestampTokenExpire'])) {
         echo Format::alert(__('Welcome back! You are accessing this page through a unique link sent to your email address {email}. Please keep this link secret to protect your personal details. This link will expire {expiry}.', ['email' => '<u>'.$account['email'].'</u>', 'expiry' => Format::relativeTime($account['timestampTokenExpire'])]), 'message');
     }    
 
+    $page->return->addReturns(['success1' => __('A new admissions account has been created for {email}', ['email' => $account['email'] ?? ''])]);
+
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
 
     $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, $foreignTable, $foreignTableID);
 
-    // DATA TABLE
-    $table = DataTable::create('submissions');
-    $table->setTitle(__('Current Applications'));
+    if (count($submissions) > 0) {
+        // DATA TABLE
+        $table = DataTable::create('submissions');
+        $table->setTitle(__('Current Applications'));
 
-    $table->addColumn('formName', __('Application Form'));
-    $table->addColumn('status', __('Status'));
-    $table->addColumn('timestampCreated', __('Date'))->format(Format::using('date', 'timestampCreated'));
+        $table->addColumn('formName', __('Application Form'));
+        $table->addColumn('status', __('Status'));
+        $table->addColumn('timestampCreated', __('Date'))->format(Format::using('date', 'timestampCreated'));
 
-    $table->modifyRows(function ($values, $row) {
-        if ($values['status'] == 'Incomplete') $row->addClass('warning');
-        if ($values['status'] == 'Accepted') $row->addClass('success');
-        return $row;
-    });
-
-    $table->addActionColumn()
-        ->addParam('accessID', $accessID)
-        ->addParam('gibbonFormID')
-        ->addParam('identifier')
-        ->format(function ($values, $actions) {
-            if ($values['status'] == 'Incomplete') {
-                $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Admissions/applicationForm.php');
-            } else {
-                $actions->addAction('view', __('View'))
-                    ->setURL('/modules/Admissions/applicationForm.php');
-            }
+        $table->modifyRows(function ($values, $row) {
+            if ($values['status'] == 'Incomplete') $row->addClass('warning');
+            if ($values['status'] == 'Accepted') $row->addClass('success');
+            return $row;
         });
 
-    echo $table->render($submissions);
+        $table->addActionColumn()
+            ->addParam('accessID', $account['accessID'])
+            ->addParam('gibbonFormID')
+            ->addParam('identifier')
+            ->addParam('page')
+            ->format(function ($values, $actions) {
+                if ($values['status'] == 'Incomplete') {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Admissions/applicationForm.php');
+                } else {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Admissions/applicationForm.php');
+                }
+            });
+
+        echo $table->render($submissions);
+    }
 
     // QUERY
     $formGateway = $container->get(FormGateway::class);
@@ -127,12 +143,12 @@ if (!$proceed) {
     $form = Form::create('admissionsAccount', $session->get('absoluteURL').'/index.php?q=/modules/Admissions/applicationForm.php');
 
     $form->setTitle(__('New Application Form'));
-    $form->setDescription(__('You may continue submitting applications with the form below and they will be linked to your account data.').' '.__('Some information has been pre-filled for you, feel free to change this information as needed.'));
+    $form->setDescription((count($submissions) > 0 ? __('You may continue submitting applications with the form below and they will be linked to your account data.').' ' : '').__('Some information has been pre-filled for you, feel free to change this information as needed.'));
 
     $form->setClass('w-full blank');
     
     $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('accessID', $accessID);
+    $form->addHiddenValue('accessID', $account['accessID'] ?? '');
     
     // Display all available public forms
     foreach ($forms as $index => $applicationForm) {

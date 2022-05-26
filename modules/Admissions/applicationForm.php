@@ -58,7 +58,7 @@ if ($proceed == false) {
 
     if (!empty($accessID) && !empty($accessToken)) {
         $page->breadcrumbs
-            ->add(__('My Application Forms'), '/modules/Admissions/applicationFormView.php', ['accessID' => $accessID])
+            ->add(__('My Application Forms'), 'applicationFormView.php', ['accessID' => $accessID])
             ->add(__('Application Form'));
     } else {
         $page->breadcrumbs
@@ -83,13 +83,18 @@ if ($proceed == false) {
         return;
     }
 
+    if ($session->has('gibbonPersonID') && $account['gibbonPersonID'] != $session->get('gibbonPersonID')) {
+        $page->addError(__('You do not have access to this action.'));
+        return;
+    }
+
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
     if (empty($identifier) && $pageNumber <= 1) {
         $identifier = $admissionsApplicationGateway->getNewUniqueIdentifier($gibbonFormID);
     }
 
     if ($accountType == 'new') {
-        echo Format::alert(__('A new admissions account has been created for {email}.').' '.__('You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
+        echo Format::alert(__('A new admissions account has been created for {email}').' '.__('You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     } else if ($accountType == 'existing') {
         echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
     }
@@ -116,13 +121,8 @@ if ($proceed == false) {
         $page->return->addReturns($formPayment->getReturnMessages());
     }
 
+    // Add page returns and javascript
     $page->return->addReturns($formBuilder->getReturns($session));
-    echo $formBuilder->getReturnJavascript();
-
-    // Display any validation errors
-    // foreach ($errors as $errorMessage) {
-    //     echo Format::alert($errorMessage);
-    // }
 
     // Load values from the form data storage
     $values = $formData->getData();
@@ -154,7 +154,7 @@ if ($proceed == false) {
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();
-
+        
     } else {
         // Display the results
         $form = Form::create('formBuilder', '');
@@ -175,4 +175,6 @@ if ($proceed == false) {
         $table = $formBuilder->display();
         echo $table->render([$values]);
     }
+
+    echo $formBuilder->getJavascript();
 }

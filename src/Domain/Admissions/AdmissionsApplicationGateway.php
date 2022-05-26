@@ -111,9 +111,11 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsApplication.timestampCreated',
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
+                'gibbonFormPage.sequenceNumber as page',
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
+            ->leftJoin('gibbonFormPage', 'gibbonAdmissionsApplication.gibbonFormPageID=gibbonFormPage.gibbonFormPageID')
             ->where('gibbonAdmissionsApplication.foreignTable=:foreignTable')
             ->bindValue('foreignTable', $foreignTable)
             ->where('gibbonAdmissionsApplication.foreignTableID=:foreignTableID')

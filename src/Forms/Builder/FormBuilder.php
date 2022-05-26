@@ -223,6 +223,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
         $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
         $form->addHiddenValue('page', $this->pageNumber);
+        $form->addHiddenValue('direction', 'next');
         $form->addHiddenValues($this->urlParams);
         
         // Add pages to the multi-part form
@@ -245,6 +246,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             }
 
             $button = $this->pageNumber > 1 ?"<a href='".(string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl()."' class='button inline-block rounded-sm border-gray-400 text-gray-400 text-center w-24 mr-4'>".__('Back')."</a>" : '';
+
+            // $button = $this->pageNumber > 1 ? '<button class="button" onClick="back()">'.__('Back').'</button>' : '';
             
             $row = $form->addRow();
                 $row->addFooter()->prepend($button);
@@ -381,15 +384,23 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         ];
     }
 
-    public function getReturnJavascript()
+    public function getJavascript()
     {
-        if (empty($_GET['return']) || stripos($_GET['return'], 'success') === false) return;
-
-        return "<script type='text/javascript'>
-            $(document).ready(function(){'
-            alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."') ;
+        if (!empty($_GET['return']) && stripos($_GET['return'], 'success') !== false) {
+            $output = "$(document).ready(function(){
+                alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."');
+            });";
+        } else {
+            $output = "
+            $('input,textarea,select').on('input', function() {
+                window.onbeforeunload = function(event) {
+                    if (event.explicitOriginalTarget.value=='Submit' || event.explicitOriginalTarget.value=='Next') return;
+                    return '".__('There are unsaved changes on this page.')."';
+                };
             });
-        </script>";
+        ";
+        }
 
+        return "<script type='text/javascript'>{$output}</script>";
     }
 }

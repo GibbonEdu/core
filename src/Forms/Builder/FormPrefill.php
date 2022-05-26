@@ -87,13 +87,13 @@ class FormPrefill
 
         if ($canAccessAccount && $canAccessData) {
             // Load and prefill values for Parent 1
-            $person = $this->userGateway->getSafeUserData($account['gibbonPersonID'] ?? '');
+            $person = $this->userGateway->getSafeUserData($gibbonPersonID);
             foreach ($person ?? [] as $fieldName => $value) {
                 $this->prefillable['parent1'.$fieldName] = $value;
             }
 
             // Load and prefill values for the family
-            $family = $this->familyGateway->getByID($account['gibbonFamilyID'] ?? '');
+            $family = $this->familyGateway->getByID($accountCheck['gibbonFamilyID'] ?? '');
             foreach ($family ?? [] as $fieldName => $value) {
                 if ($fieldName == 'name') $fieldName = 'familyName';
                 $this->prefillable[$fieldName] = $value;
@@ -116,6 +116,7 @@ class FormPrefill
         // Only prefill fields that are marked as prefillable, and don't already exist
         foreach ($this->prefillable as $fieldName => $value) {
             if ($formData->exists($fieldName)) continue;
+            if (!$formBuilder->hasField($fieldName)) continue;
 
             $field = $formBuilder->getField($fieldName);
             if ($field['pageNumber'] != $pageNumber && $pageNumber > 0) continue;
