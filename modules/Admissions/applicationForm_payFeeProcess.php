@@ -21,25 +21,27 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Builder\FormPayment;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 
 require_once '../../gibbon.php';
 
+$pageNumber = $_REQUEST['page'] ?? 1;
+$source = $_REQUEST['source'] ?? '';
 $accessID = $_REQUEST['accessID'] ?? '';
 $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
 $identifier = $_REQUEST['identifier'] ?? null;
-$page = $_REQUEST['page'] ?? 1;
-$source = $_REQUEST['source'] ?? '';
-$formFeeType = $_REQUEST['feeType'] ?? '';
-$formFeeAmount = $_REQUEST['feeAmount'] ?? '';
+$feeType = $_REQUEST['feeType'] ?? '';
+$feeAmount = $_REQUEST['feeAmount'] ?? '';
 
-$urlParams = compact('gibbonFormID', 'page', 'identifier', 'accessID', 'source', 'feeType');
+$urlParams = compact('gibbonFormID', 'identifier', 'accessID', 'source', 'feeType');
+$urlParams['page'] = $pageNumber;
 
 $URL = $source == 'submission'
     ? Url::fromModuleRoute('Admissions', 'applicationForm')->withQueryParams($urlParams)
-    : Url::fromModuleRoute('Admissions', 'applicationFormFee')->withQueryParams($urlParams);
-$URLPayment = Url::fromHandlerRoute('modules/Admissions/applicationFormFeeProcess.php')->withQueryParams($urlParams);
+    : Url::fromModuleRoute('Admissions', 'applicationForm_payFee')->withQueryParams($urlParams);
+$URLPayment = Url::fromHandlerRoute('modules/Admissions/applicationForm_payFeeProcess.php')->withQueryParams($urlParams);
 
-if (empty($accessID) || empty($identifier) || empty($gibbonFormID) || empty($page)) {
+if (empty($accessID) || empty($identifier) || empty($gibbonFormID)) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {
@@ -47,75 +49,89 @@ if (empty($accessID) || empty($identifier) || empty($gibbonFormID) || empty($pag
     $partialFail = false;
 
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
-    $application = $admissionsApplicationGateway->getApplicationByIdentifier($gibbonFormID, $identifier);
     $account = $container->get(AdmissionsAccountGateway::class)->getAccountByAccessID($accessID);
 
+    // Setup the form data
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($gibbonFormID, null, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData->load($identifier);
+    
     // Setup the form payment class
     $formPayment = $container->get(FormPayment::class);
-    $formPayment->setForm($application['gibbonFormID'], $application['gibbonAdmissionsApplicationID']);
-    $formPayment->setFormFee($formFeeType);
+    $formPayment->setForm($gibbonFormID, $formData->identify($identifier));
+    $formPayment->setFormFee($feeType);
     $formPayment->setReturnURL($URLPayment->withAbsoluteUrl());
     $formPayment->setCancelURL($URLPayment->withAbsoluteUrl());
     
     if (!$formPayment->incomingPayment()) {
         // Check that accounts exist and are accessible
-        if (empty($account) || empty($application) || $application['foreignTableID'] != $account['gibbonAdmissionsAccountID']) {
-            header("Location: {$URL->withReturn('error0')}");
+        if (empty($account) || empty($formData)) {
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success5' : 'error0')}");
             exit;
         }
 
         // Check that payment is possible
-        if (!$formPayment->isEnabled() || !$formPayment->hasFormFee() || $formPayment->getFormFee() != $formFeeAmount) {
-            header("Location: {$URL->withReturn('error4')}");
+        if (!$formPayment->isEnabled()) {
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success5' : 'error4')}");
+            exit;
+        }
+
+        // Check that payment is possible
+        if (!$formPayment->hasFormFee() || $formPayment->getFormFee() != $feeAmount) {
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success5' : 'error5')}");
             exit;
         }
 
         // Check that a payment ID has not already been recorded
-        if (!empty($application[$formPayment->getFormFeeField()])) {
-            header("Location: {$URL->withReturn('error8')}");
+        if ($formData->hasResult($formPayment->getFormFeeField())) {
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success5' : 'error8')}");
             exit;
         }
 
         // Attempt payment if everything is set up for it
         $return = $formPayment->requestPayment($formPayment->getFormFee(), __('Application Fee'));
         if (!empty($return)) {
-            header("Location: {$URL->withReturn($return)}");
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success5' : $return)}");
             exit;
         }
         
     } else {
         // Check everything is still setup for payment post-redirect
-        if (!$formPayment->isEnabled() || !$formPayment->hasFormFee() || empty($account) || empty($application)) {
+        if (!$formPayment->isEnabled() || !$formPayment->hasFormFee() || empty($account) || empty($formData)) {
             $formPayment->sendPaymentUncertainEmail();
-            header("Location: {$URL->withReturn('success2')}");
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success2' : 'error4')}");
             exit;
         }
 
         // Finalize payment
-        $return = $payment->confirmPayment();
-        $result = $payment->getPaymentResult();
+        $return = $formPayment->confirmPayment();
+        $result = $formPayment->getPaymentResult();
         $gibbonPaymentID = $result['gibbonPaymentID'];
 
-        // Payment was successful. Yeah!
-        if ($result && $result['success']) {
-            $updated = $admissionsApplicationGateway->update($application['gibbonAdmissionsApplicationID'], [
-                $formPayment->getFormFeeField() => $gibbonPaymentID,
-            ]);
+        $formData->setResult('PaySubmissionFeeResult', $return);
+        $formData->setResult($formPayment->getFormFeeField(), $gibbonPaymentID);
+        $updated = $formData->save($identifier);
 
+        if ($result && $result['success']) {
+            // Payment was successful. Yeah!
             if (!empty($gibbonPaymentID) && !empty($updated)) {
                 $receiptSent = $formPayment->sendPaymentSuccessEmail($account['email']);
                 header("Location: {$URL->withQueryParam('receipt', $receiptSent)->withReturn('success1')}");
                 exit;
             } else {
                 $formPayment->sendPaymentSuccessNotRecordedEmail();
-                header("Location: {$URL->withReturn('success3')}");
+                header("Location: {$URL->withReturn($source == 'submission' ? 'success3' : 'warning2')}");
                 exit;
             }
-
+        } elseif ($result && $result['status'] == 'Cancelled') {
+            // Payment was cancelled by the end user
+            $formPayment->sendPaymentCancelled();
+            header("Location: {$URL->withReturn($source == 'submission' ? 'success2' : $return)}");
+            exit;
         } else {
             // Payment did not go through, or something else happened.
             $formPayment->sendPaymentFailedNotRecordedEmail();
-            header("Location: {$URL->withReturn($return)}");
+            $submissionReturn = $return == 'error3' ? 'success4' : 'success2'; 
+            header("Location: {$URL->withReturn($source == 'submission' ? $submissionReturn : $return)}");
             exit;
         }
     }

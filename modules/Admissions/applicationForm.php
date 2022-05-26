@@ -96,20 +96,24 @@ if ($proceed == false) {
 
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
-    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     
     $formData->load($identifier);
-    $formBuilder->addConfig(['foreignTableID' => $formData->identify($identifier)]);
+    $formBuilder->addConfig([
+        'foreignTableID' => $formData->identify($identifier),
+        'accessID'       => $accessID,
+        'accessToken'    => $accessToken,
+    ]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $errors = $formProcessor->submitForm($formBuilder, $formData, true);
 
     // Display form fee info
-    if ($formBuilder->hasConfig('formSubmissionFee') || $formBuilder->hasConfig('formProcessingFee')) {
+    $hasApplicationFee = $formBuilder->hasConfig('formSubmissionFee') || $formBuilder->hasConfig('formProcessingFee');
+    if ($hasApplicationFee) {
         $formPayment = $container->get(FormPayment::class)->setForm($gibbonFormID);
         $page->return->addReturns($formPayment->getReturnMessages());
-        echo empty($_GET['return']) ? $formPayment->getFeeInfo() : '';
     }
 
     $page->return->addReturns($formBuilder->getReturns($session));
@@ -140,6 +144,9 @@ if ($proceed == false) {
     if ($incomplete && $formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
         $action = Url::fromHandlerRoute('modules/Admissions/applicationFormProcess.php');
         $pageUrl = Url::fromModuleRoute('Admissions', 'applicationForm');
+
+        // Display fee info
+        if ($hasApplicationFee) echo $formPayment->getFeeInfo();
 
         // Build the form
         $form = $formBuilder->build($action, $pageUrl);

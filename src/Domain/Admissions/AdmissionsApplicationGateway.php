@@ -65,10 +65,11 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
             ->leftJoin('gibbonSchoolYear', 'gibbonSchoolYear.gibbonSchoolYearID=gibbonAdmissionsApplication.gibbonSchoolYearID')
+            ->leftJoin('gibbonSchoolYear as schoolYearCheck', 'gibbonAdmissionsApplication.timestampCreated BETWEEN schoolYearCheck.firstDay AND schoolYearCheck.lastDay')
             ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonAdmissionsApplication.gibbonYearGroupID')
             ->leftJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonAdmissionsApplication.gibbonFormGroupID')
             ->leftJoin('gibbonAdmissionsAccount', "gibbonAdmissionsApplication.foreignTable='gibbonAdmissionsAccount' AND gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID")
-            ->where('gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->where('((gibbonSchoolYear.gibbonSchoolYearID IS NOT NULL AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID) OR (gibbonSchoolYear.gibbonSchoolYearID IS NULL AND schoolYearCheck.gibbonSchoolYearID=:gibbonSchoolYearID))')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonForm.type=:type')
             ->bindValue('type', $type);
@@ -144,9 +145,9 @@ class AdmissionsApplicationGateway extends QueryableGateway
         return $this->runSelect($query);
     }
 
-    public function getApplicationByIdentifier($gibbonFormID, $identifier, $fields = null)
+    public function getApplicationByIdentifier($gibbonFormID, $identifier, $foreignTable, $foreignTableID, $fields = null)
     {
-        return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier], $fields)->fetch();
+        return $this->selectBy(['gibbonFormID' => $gibbonFormID, 'identifier' => $identifier, 'foreignTable' => $foreignTable, 'foreignTableID' => $foreignTableID], $fields)->fetch();
     }
 
     public function getNewUniqueIdentifier(string $gibbonFormID)

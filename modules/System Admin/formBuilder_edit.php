@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             });
 
             if (!$form->hasHeading($view->getHeading())) {
-                $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()));
+                $form->addRow()->addHeading($view->getHeading(), __($view->getHeading()))->addClass('bg-gray-400');
             }
 
             $row = $form->addRow()->addClass('bg-gray-300');

@@ -54,7 +54,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     
     // Setup the form data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
-    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
     // Acquire data from POST - on error, return to the current page
@@ -101,7 +101,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
         if ($formData->hasResult('redirect')) {
             $URL = Url::fromHandlerRoute($formData->getResult('redirect'))->withQueryParams($formData->getResult('redirectParams', []));
         } else {
-            $URL = $URL->withQueryParam('page', $pageNumber+1)->withReturn($partialFail ? 'warning1' : 'success0');
+            $URL = $URL->withQueryParam('page', $pageNumber+1)->withReturn('success0');
         }
 
     } elseif ($nextPage) {

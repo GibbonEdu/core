@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], -1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
 
     // Setup the form data
-    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
+    $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
 
     // Acquire data and handle file uploads - on error, return to the current page
@@ -84,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Run any edit-related processes
-    // $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
-    // $formProcessor->editForm($formBuilder, $formData);
+    $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
+    $formProcessor->editForm($formBuilder, $formData);
 
-    // $formData->save($application['identifier']);
+    $formData->save($application['identifier']);
 
     header("Location: {$URL->withReturn($partialFail ? 'warning1' : 'success0')}");
 }
