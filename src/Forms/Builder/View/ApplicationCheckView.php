@@ -56,7 +56,7 @@ class ApplicationCheckView extends AbstractFormView
 
         if ($data->getStatus() == 'Accepted') {
             $col->addContent(Format::alert(str_replace('ICHK', $this->session->get('organisationNameShort'), __('Applicant has been successfully accepted into ICHK.')), 'success'));
-        } else {
+        } elseif ($data->hasResult('ApplicationAcceptResult')) {
             $col->addContent(Format::alert(__('Student status could not be updated: student is in the system, but acceptance has failed.'), 'error'));
         }
 

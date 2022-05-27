@@ -183,7 +183,7 @@ class FamilyFields extends AbstractFieldGroup
         return $row;
     }
 
-    public function shouldValidate(FormBuilderInterface $formBuilder, $fieldName)
+    public function shouldValidate(FormBuilderInterface $formBuilder, array &$data, string $fieldName)
     {
         if ($formBuilder->hasConfig('gibbonPersonID')) return false;
 

@@ -47,36 +47,43 @@ class FinanceFields extends AbstractFieldGroup
                 'label'       => __('Company Name'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyContact' => [
                 'label'       => __('Company Contact Person'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyAddress' => [
                 'label'       => __('Company Address'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyEmail' => [
                 'label'       => __('Company Emails'),
                 'description' => __('Comma-separated list of email address'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyCCFamily' => [
                 'label'       => __('CC Family?'),
                 'description' => __('Should the family be sent a copy of billing emails?'),
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyPhone' => [
                 'label'       => __('Company Phone'),
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
             'companyAll' => [
                 'label'       => __('Company Fee Categories'),
                 'description' => __('If the specified company is not paying all fees, which categories are they paying?'),
                 'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
             ],
         ];
     }

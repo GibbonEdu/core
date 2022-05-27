@@ -26,6 +26,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 
 require_once '../../gibbon.php';
 
+$public = !$session->has('username');
 $accessID = $_REQUEST['accessID'] ?? '';
 $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
 $identifier = $_REQUEST['identifier'] ?? null;
@@ -73,8 +74,8 @@ if (empty($gibbonFormID) || empty($identifier)) {
         'foreignTableID' => $formData->identify($identifier),
         'accessID'       => $accessID,
         'accessToken'    => $account['accessToken'],
-        'gibbonPersonID' => $account['gibbonPersonID'],
-        'gibbonFamilyID' => $account['gibbonFamilyID'],
+        'gibbonPersonID' => !$public ? $account['gibbonPersonID'] : '',
+        'gibbonFamilyID' => !$public ? $account['gibbonFamilyID'] : '',
     ]);
     $uploaded = $formBuilder->upload();
     $partialFail &= !$uploaded;
@@ -82,7 +83,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
     if (!empty($validated)) {
-        header("Location: {$URL->withReturn('error1')}");
+        header("Location: {$URL->withReturn('error3')->withQueryParam('invalid', implode(',', $validated))}");
         exit;
     }
 

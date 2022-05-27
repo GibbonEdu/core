@@ -61,7 +61,7 @@ class PaySubmissionFeeView extends AbstractFormView
         if (!$formData->exists($this->getResultName())) return;
 
         $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName());
+        $col->addLabel($this->getResultName(), $this->getName());
 
         $messages = $this->payment->getReturnMessages();
 
@@ -69,7 +69,7 @@ class PaySubmissionFeeView extends AbstractFormView
             $col->addContent(Format::alert($messages[Payment::RETURN_SUCCESS], 'success'));
         } else {
             $return = $formData->getResult($this->getResultName());
-            $col->addContent(Format::alert($messages[$return ?? Payment::RETURN_ERROR_CONFIG], stripos($return, 'warning') !== false ? 'warning' : 'error'));
+            $col->addContent(Format::alert($messages[$return] ?? $messages[Payment::RETURN_ERROR_CONFIG], stripos($return, 'warning') !== false ? 'warning' : 'error'));
         }
     }
 }

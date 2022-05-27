@@ -85,9 +85,9 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
             'studentPreferredName' => $formData->get('preferredName'),
             'studentSurname'       => $formData->get('surname'),
             'studentOfficialName'  => $formData->get('officialName'),
-            'parentTitle'          => $formData->get('parent1Title'),
-            'parentPreferredName'  => $formData->get('parent1PreferredName'),
-            'parentSurname'        => $formData->get('parent1Surname'),
+            'parentTitle'          => $formData->get('parent1title'),
+            'parentPreferredName'  => $formData->get('parent1preferredName'),
+            'parentSurname'        => $formData->get('parent1surname'),
             'organisationAdmissionsName'  => $this->session->get('organisationAdmissionsName'),
             'organisationAdmissionsEmail' => $this->session->get('organisationAdmissionsEmail'),
         ];

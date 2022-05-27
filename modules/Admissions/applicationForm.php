@@ -96,7 +96,7 @@ if ($proceed == false) {
     if ($accountType == 'new') {
         echo Format::alert(__('A new admissions account has been created for {email}').' '.__('You can access any application forms in progress using this email address through the admissions page.', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     } else if ($accountType == 'existing') {
-        echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as a copy of all submitted data will be sent to this address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
+        echo Format::alert(__("We've found an existing admissions account for {email}. Your new application form will be attached to this account. Please check that this is your email address, as any current forms will be accessible through this email address.", ['email' => '<u>'.$account['email'].'</u>']), 'message');
     }
 
     // Setup the form builder & data
@@ -106,8 +106,9 @@ if ($proceed == false) {
     $formData->load($identifier);
     $formBuilder->addConfig([
         'foreignTableID' => $formData->identify($identifier),
-        'gibbonPersonID' => $account['gibbonPersonID'],
-        'gibbonFamilyID' => $account['gibbonFamilyID'],
+        'gibbonPersonID' => !$public ? $account['gibbonPersonID'] : '',
+        'gibbonFamilyID' => !$public ? $account['gibbonFamilyID'] : '',
+        'invalid' => !empty($_GET['invalid']) ? explode(',', $_GET['invalid']) : [],
     ]);
 
     // Verify the form

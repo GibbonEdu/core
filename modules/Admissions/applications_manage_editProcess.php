@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Validate submitted data - on error, return to the current page
     $validated = $formBuilder->validate($data);
     if (!empty($validated)) {
-        header("Location: {$URL->withReturn('warning1')}");
+        header("Location: {$URL->withReturn('error3')->withQueryParam('invalid', implode(',', $validated))}");
         exit;
     }
 

@@ -207,7 +207,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-            if (!$fieldGroup->shouldValidate($this, $fieldName)) continue;
+            if (!$fieldGroup->shouldValidate($this, $data, $fieldName)) continue;
 
             $fieldValue = &$data[$fieldName];
             if ($field['required'] != 'N' && (is_null($fieldValue) || $fieldValue == '')) {
@@ -215,7 +215,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             }
         }
 
-        return !empty($invalid);
+        return $invalid;
     }
 
     public function build(Url $action, Url $pageUrl)
@@ -246,6 +246,9 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
+
+                $invalid = in_array($field['fieldName'], $this->getConfig('invalid'));
+                $row->addClass($invalid ? 'bg-red-200 text-red-700' : '');
             }
 
             $button = $this->pageNumber > 1 ?"<a href='".(string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl()."' class='button inline-block rounded-sm border-gray-400 text-gray-400 text-center w-24 mr-4'>".__('Back')."</a>" : '';
@@ -378,6 +381,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         }
 
         return [
+            'error3' => __('Your submitted data has been saved, however one or more required fields were missing or incomplete. Please check the highlighted fields in the form and submit again.'),
             'success0' => __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success1' => __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success2' => __('Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,

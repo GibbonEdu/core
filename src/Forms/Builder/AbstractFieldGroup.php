@@ -68,8 +68,24 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $this->fields[$fieldName] ?? [];
     }
 
-    public function shouldValidate(FormBuilderInterface $formBuilder, $fieldName)
+    /**
+     * Handle whether fields should validate based on the presence of other fields.
+     *
+     * @param FormBuilderInterface $formBuilder
+     * @param array $data
+     * @param string $fieldName
+     * @return bool
+     */
+    public function shouldValidate(FormBuilderInterface $formBuilder, array &$data, string $fieldName)
     {
+        $field = $this->getField($fieldName);
+
+        if (empty($field['conditional']) || !is_array($field['conditional'])) return true;
+
+        foreach ($field['conditional'] as $key => $value) {
+            if (empty($data[$key]) || $data[$key] != $value) return false;
+        }
+
         return true;
     }
 

@@ -82,14 +82,13 @@ class ApplicationSubmit extends AbstractFormProcess implements ViewableProcess
         if (!$formData->hasAll(['preferredName', 'surname'])) return;
         
         $studentName = Format::name('', $formData->get('preferredName'), $formData->get('surname'), 'Student');
-        $studentGroup = $formData->has('formGroupName')? $formData->get('formGroupName') : $formData->get('yearGroupName');
 
         // Raise a new notification event for Admissions
         $event = new NotificationEvent('Students', 'New Application Form');
 
         $event->addScope('gibbonYearGroupID', $formData->get('gibbonYearGroupIDEntry'));
         $event->addRecipient($this->session->get('organisationAdmissions'));
-        $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), $studentName.' ('.$studentGroup.')'));
+        $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), $studentName));
         $event->setActionLink("/index.php?q=/modules/Admissions/applications_manage_edit.php&gibbonAdmissionsApplicationID=".$builder->getConfig('foreignTableID')."&gibbonSchoolYearID=".$formData->get('gibbonSchoolYearIDEntry')."&search=");
 
         $event->pushNotifications($this->notificationGateway, $this->notificationSender);
