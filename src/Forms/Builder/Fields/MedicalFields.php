@@ -52,6 +52,7 @@ class MedicalFields extends AbstractFieldGroup
             'medicalInformation' => [
                 'label'       => __('Medical Information'),
                 'description' => __('Please indicate any medical conditions.'),
+                'required'    => 'Y',
             ],
             'headingMedicalForm' => [
                 'label'       => __('Medical Form'),
