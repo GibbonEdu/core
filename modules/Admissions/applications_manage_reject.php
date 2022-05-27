@@ -17,10 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Prefab\DeleteForm;
-use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_reject.php') == false) {
     // Access denied
@@ -48,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     $values = json_decode($application['data'], true);
+    $name = !empty($values['surname']) ? Format::name('', $values['preferredName'], $values['surname'], 'Student') : $application['owner'];
 
     $form = Form::create('application', $session->get('absoluteURL').'/modules/Admissions/applications_manage_rejectProcess.php');
 
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $form->addHiddenValue('search', $search);
 
     $row = $form->addRow();
-        $row->addContent(sprintf(__('Are you sure you want to reject the application for %1$s?'), Format::name('', $values['preferredName'], $values['surname'], 'Student')));
+        $row->addContent(sprintf(__('Are you sure you want to reject the application for %1$s?'), $name));
 
     $row = $form->addRow();
         $row->addFooter();

@@ -112,6 +112,8 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
                 'gibbonFormPage.sequenceNumber as page',
+                'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
+                'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')

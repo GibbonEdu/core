@@ -18,9 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
@@ -91,6 +91,12 @@ if (!$proceed) {
         ->sortBy('timestampCreated', 'ASC');
 
     $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, $foreignTable, $foreignTableID);
+    $submissions->transform(function (&$values) {
+        // Prevent parents from seeing office-only statuses
+        if ($values['status'] != 'Submitted' && $values['status'] != 'Incomplete') {
+            $values['status'] = 'Submitted';
+        }
+    });
 
     if (count($submissions) > 0) {
         // DATA TABLE
@@ -98,6 +104,12 @@ if (!$proceed) {
         $table->setTitle(__('Current Applications'));
 
         $table->addColumn('formName', __('Application Form'));
+        $table->addColumn('student', __('Student'))->format(function ($values) {
+            return !empty($values['studentSurname'])
+                ? Format::name('', $values['studentPreferredName'], $values['studentSurname'], 'Student')
+                : Format::small(__('N/A')); 
+
+        });
         $table->addColumn('status', __('Status'));
         $table->addColumn('timestampCreated', __('Date'))->format(Format::using('date', 'timestampCreated'));
 
@@ -133,7 +145,7 @@ if (!$proceed) {
         ->filterBy('active', 'Y')
         ->filterBy('public', 'Y');
 
-    $forms = $formGateway->queryForms($criteria);
+    $forms = $formGateway->queryForms($criteria)->toArray();
 
     if (count($forms) == 0) {
         return;
@@ -151,12 +163,13 @@ if (!$proceed) {
     $form->addHiddenValue('accessID', $account['accessID'] ?? '');
     
     // Display all available public forms
+    $firstForm = current($forms);
     foreach ($forms as $index => $applicationForm) {
         $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
 
         $row = $table->addRow();
             $row->addLabel('gibbonFormID'.$index, __($applicationForm['name']))->description($applicationForm['description'])->setClass('block w-full p-6 font-medium text-sm text-gray-700');
-            $row->addRadio('gibbonFormID')->setID('gibbonFormID'.$index)->fromArray([$applicationForm['gibbonFormID'] => ''])->required()->addClass('mr-6')->checked(false);
+            $row->addRadio('gibbonFormID')->setID('gibbonFormID'.$index)->fromArray([$applicationForm['gibbonFormID'] => ''])->required()->addClass('mr-6')->checked($firstForm['gibbonFormID'] ?? false);
     }
 
     $form->addRow()->addSubmit(__('Next'));

@@ -56,9 +56,13 @@ if ($proceed == false) {
     $accessID = $_REQUEST['accessID'] ?? '';
     $accessToken = $session->get('admissionsAccessToken') ?? '';
 
-    if (!empty($accessID) && !empty($accessToken)) {
+    if (!$public) {
         $page->breadcrumbs
             ->add(__('My Application Forms'), 'applicationFormView.php', ['accessID' => $accessID])
+            ->add(__('Application Form'));
+    } elseif (!empty($accessID) && !empty($accessToken)) {
+        $page->breadcrumbs
+            ->add(__('My Application Forms'), '/modules/Admissions/applicationFormView.php', ['accessID' => $accessID])
             ->add(__('Application Form'));
     } else {
         $page->breadcrumbs
