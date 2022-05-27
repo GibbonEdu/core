@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($application, $actions) {
 
-            if ($application['status'] == 'Submitted' or $application['status'] == 'Waiting List') {
+            if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
                 $actions->addAction('accept', __('Accept'))
                     ->setIcon('iconTick')
                     ->setURL('/modules/Admissions/applications_manage_accept.php');

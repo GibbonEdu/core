@@ -93,7 +93,7 @@ if (!$proceed) {
     $submissions = $admissionsApplicationGateway->queryApplicationsByContext($criteria, $foreignTable, $foreignTableID);
     $submissions->transform(function (&$values) {
         // Prevent parents from seeing office-only statuses
-        if ($values['status'] != 'Submitted' && $values['status'] != 'Incomplete') {
+        if ($values['status'] != 'Incomplete') {
             $values['status'] = 'Submitted';
         }
     });
@@ -110,7 +110,7 @@ if (!$proceed) {
                 : Format::small(__('N/A')); 
 
         });
-        $table->addColumn('status', __('Status'));
+        $table->addColumn('status', __('Status'))->translatable();
         $table->addColumn('timestampCreated', __('Date'))->format(Format::using('date', 'timestampCreated'));
 
         $table->modifyRows(function ($values, $row) {

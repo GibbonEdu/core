@@ -60,7 +60,7 @@ class ApplicationSubmit extends AbstractFormProcess implements ViewableProcess
     {
         $this->initialStatus = $formData->getStatus();
 
-        $formData->setStatus('Submitted');
+        $formData->setStatus('Pending');
         $formData->setResult('statusDate', date('Y-m-d H:i:s'));
 
         // Ensure there is always a school year set
