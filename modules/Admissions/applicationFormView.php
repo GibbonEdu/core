@@ -104,14 +104,14 @@ if (!$proceed) {
         $table->setTitle(__('Current Applications'));
 
         $table->addColumn('formName', __('Application Form'));
-        $table->addColumn('student', __('Student'))->format(function ($values) {
+        $table->addColumn('student', __('Applicant'))->format(function ($values) {
             return !empty($values['studentSurname'])
                 ? Format::name('', $values['studentPreferredName'], $values['studentSurname'], 'Student')
                 : Format::small(__('N/A')); 
 
         });
         $table->addColumn('status', __('Status'))->translatable();
-        $table->addColumn('timestampCreated', __('Date'))->format(Format::using('date', 'timestampCreated'));
+        $table->addColumn('timestampCreated', __('Date'))->width('20%')->format(Format::using('dateTimeReadable', 'timestampCreated'));
 
         $table->modifyRows(function ($values, $row) {
             if ($values['status'] == 'Incomplete') $row->addClass('warning');

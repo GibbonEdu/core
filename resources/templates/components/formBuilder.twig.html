@@ -45,6 +45,11 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Personal Documents') }}</div>
         </a>
 
+        <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=RequiredDocuments&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-300">
+            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/file-alt.svg">
+            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Required Documents') }}</div>
+        </a>
+
         <h3>
             {{ __('Layout') }} <span class="text-xxs font-normal"></span>
         </h3>
@@ -58,11 +63,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/edit.svg">
             <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Text') }}</div>
         </a>
-
-        <!-- <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_edit_field_add.php&fieldGroup=LayoutImage&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=500" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-300">
-            <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/image.svg">
-            <div class="text-center text-gray-700 text-sm leading-tight pointer-events-none">{{ __('Image') }}</div>
-        </a> -->
 
         <a href="{{ absoluteURL }}/fullscreen.php?q=/modules/System Admin/formBuilder_page_add.php&redirect=design&gibbonFormID={{ gibbonFormID }}&gibbonFormPageID={{ gibbonFormPageID }}&width=900&height=700" class="thickbox w-full p-4 mb-2 flex items-center justify-start group cursor-pointer p-2 mr-2 mb-2 bg-gray-100 border rounded hover:border-gray-500 hover:bg-gray-300">
             <img class="w-6 h-6 mr-4 opacity-50 pointer-events-none" src="{{ absoluteURL }}/modules/Reports/img/icons/file.svg">

@@ -35,6 +35,7 @@ use Gibbon\Forms\Builder\Process\CreateInvoicee;
 use Gibbon\Forms\Builder\Process\EnrolStudent;
 use Gibbon\Forms\Builder\Process\AssignHouse;
 use Gibbon\Forms\Builder\Process\NewStudentDetails;
+use Gibbon\Forms\Builder\Process\TransferFileUploads;
 use Gibbon\Forms\Builder\Process\PaySubmissionFee;
 use Gibbon\Forms\Builder\Process\PayProcessingFee;
 
@@ -62,6 +63,7 @@ class ApplicationFormProcessor extends AbstractFormProcessor
         $this->run(EnrolStudent::class);
         $this->run(AssignHouse::class);
         $this->run(NewStudentDetails::class);
+        $this->run(TransferFileUploads::class);
         $this->run(CreateMedicalRecord::class);
         $this->run(CreateINRecord::class);
         $this->run(CreateInvoicee::class);

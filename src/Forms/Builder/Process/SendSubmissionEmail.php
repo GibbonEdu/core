@@ -99,7 +99,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
                 'url'  => Url::fromModuleRoute('Admissions', 'applicationFormView')
                     ->withQueryParams(['acc' => $builder->getConfig('accessID', ''), 'tok' => $builder->getConfig('accessToken', '')])
                     ->withAbsoluteUrl(),
-                'text' => __('Access your Account'),
+                'text' => __('Access your Application Forms'),
                 'external' => true,
             ],
         ]);

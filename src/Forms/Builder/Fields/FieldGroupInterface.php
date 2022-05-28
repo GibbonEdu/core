@@ -35,5 +35,5 @@ interface FieldGroupInterface
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row;
 
-    public function getFieldDataFromPOST(string $fieldFame, string $fieldType);
+    public function getFieldDataFromPOST(string $fieldFame, array $field);
 }

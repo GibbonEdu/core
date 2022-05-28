@@ -115,12 +115,12 @@ class INFields extends AbstractFieldGroup
         return $row;
     }
 
-    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
+    public function getFieldDataFromPOST(string $fieldName, array $field)  
     {
         $customField = $this->fields[$fieldName]['custom'] ?? false;
         
         return $customField
-            ? $this->customFieldHandler->getFieldValueFromPOST($fieldName, $fieldType)
-            : parent::getFieldDataFromPOST($fieldName, $fieldType);
+            ? $this->customFieldHandler->getFieldValueFromPOST($fieldName, $field['fieldType'])
+            : parent::getFieldDataFromPOST($fieldName, $field);
     }
 }

@@ -105,17 +105,17 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $row;
     }
 
-    public function getFieldDataFromPOST(string $fieldName, string $fieldType) 
+    public function getFieldDataFromPOST(string $fieldName, array $field)  
     {
-        $field = $this->getField($fieldName);
-        $fieldValue = $_POST[$fieldName] ?? $field['default'] ?? null;
+        $fieldInfo = $this->getField($fieldName);
+        $fieldValue = $_POST[$fieldName] ?? $fieldInfo['default'] ?? null;
 
-        switch ($fieldType) {
+        switch ($field['fieldType']) {
             case 'date': 
                 $fieldValue = !empty($fieldValue) ? Format::dateConvert($fieldValue) : null;
                 break;
             case 'checkboxes': 
-                $fieldValue = !empty($fieldValue) ? implode(',', $fieldValue) : ($field['default'] ?? '');
+                $fieldValue = !empty($fieldValue) ? implode(',', $fieldValue) : ($fieldInfo['default'] ?? '');
                 break;
         }
 

@@ -69,7 +69,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
     $formData->addData($data);
     $formData->save($identifier);
 
-    // Handle file uploads - on error, flag partial failures
+    // Add configuration data to the form, such as recently created IDs
     $formBuilder->addConfig([
         'foreignTableID' => $formData->identify($identifier),
         'accessID'       => $accessID,
@@ -77,6 +77,8 @@ if (empty($gibbonFormID) || empty($identifier)) {
         'gibbonPersonID' => !$public ? $account['gibbonPersonID'] : '',
         'gibbonFamilyID' => !$public ? $account['gibbonFamilyID'] : '',
     ]);
+
+    // Handle file uploads - on error, flag partial failures
     $uploaded = $formBuilder->upload();
     $partialFail &= !$uploaded;
 

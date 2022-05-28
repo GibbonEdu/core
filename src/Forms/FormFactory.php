@@ -261,6 +261,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\CustomBlocks($this, $name, $session);
     }
 
+    public function createDocuments($name, $documents, $view, $settingGateway)
+    {
+        return new Input\Documents($this, $name, $documents, $view, $settingGateway);
+    }
+
     public function createPersonalDocuments($name, $documents, $view, $settingGateway)
     {
         return new Input\PersonalDocuments($this, $name, $documents, $view, $settingGateway);

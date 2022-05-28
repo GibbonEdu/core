@@ -23,5 +23,5 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 
 interface UploadableInterface
 {
-    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, string $fieldType);
+    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, array $field);
 }

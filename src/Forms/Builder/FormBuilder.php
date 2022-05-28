@@ -171,7 +171,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field['fieldType']);
+            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field);
 
             if (!is_null($fieldValue)) {
                 $data[$fieldName] = $fieldValue;
@@ -192,7 +192,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             if (!$fieldGroup instanceof UploadableInterface) continue;
 
-            $success = $fieldGroup->uploadFieldData($this, $fieldName, $field['fieldType']);
+            $success = $fieldGroup->uploadFieldData($this, $fieldName, $field);
             $partialFail &= !$success;
         }
 
@@ -210,7 +210,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if (!$fieldGroup->shouldValidate($this, $data, $fieldName)) continue;
 
             $fieldValue = &$data[$fieldName];
-            if ($field['required'] != 'N' && (is_null($fieldValue) || $fieldValue == '')) {
+            if ($field['required'] != 'N' && (is_null($fieldValue) || $fieldValue == '' || $fieldValue == 'Please select...')) {
                 $invalid[] = $fieldName;
             }
         }
@@ -381,7 +381,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         }
 
         return [
-            'error3' => __('Your submitted data has been saved, however one or more required fields were missing or incomplete. Please check the highlighted fields in the form and submit again.'),
+            'error3' => __('Your submitted data has been saved, however one or more required fields were incomplete. Please check the highlighted fields and submit the form again.'),
             'success0' => __('Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success1' => __('Your application was successfully submitted and payment has been made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,
             'success2' => __('Your application was successfully submitted, but payment could not be made to your credit card. Our admissions team will review your application and be in touch in due course.').$returnExtra,

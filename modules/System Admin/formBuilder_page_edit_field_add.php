@@ -95,6 +95,27 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('typeLabel', __('Role Category'));
         $row->addSelect('fields[PersonalDocuments][0]')->fromArray($fieldGroupClass->getFieldOptions());
     
+    } elseif ($fieldGroup == 'RequiredDocuments') {
+        $row = $form->addRow();
+        $row->addLabel('label', __('Label'));
+        $row->addTextField('label')->maxLength(90)->required()->setValue(__('Required Documents'));
+
+        $row = $form->addRow();
+        $row->addLabel('options', __('Required Documents'))
+            ->description(__('Comma-separated list of documents which must be submitted electronically with the application form.'));
+        $row->addTextArea('options')->required()->setRows(3);
+
+        $row = $form->addRow();
+            $row->addLabel('required', __('Required Documents Compulsory?'))->description(__('Are the required documents compulsory?'));
+            $row->addYesNo('required')->required()->selected('N');
+
+        $row = $form->addRow();
+            $row->addLabel('hidden', __('Office Only'))->description(__('Is this field for office use only?'));
+            $row->addYesNo('hidden')->required()->selected('N');
+
+        $form->addHiddenValue('fields[RequiredDocuments][0]', 'generic');
+        $form->addHiddenValue('type', 'files');
+    
     } elseif ($fieldGroup == 'GenericFields') {
         $form->addHiddenValue('fields[GenericFields][0]', 'generic');
 
@@ -144,16 +165,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             'CustomFields' => __('Custom Fields'),
         ] : [
             'AdmissionsFields' => __('Admissions'),
-            'StudentFields' => __('Student'),
-            'ParentFields' => __('Parent'),
-            'FamilyFields' => __('Family'),
-            'MedicalFields' => __('Medical'),
-            'INFields' => __('Individual Needs'),
-            'DocumentsFields' => __('Documents'),
-            'FinanceFields' => __('Finance'),
-            'LanguageFields' => __('Language'),
-            'PrivacyFields' => __('Privacy'),
-            'AgreementFields' => __('Agreement'),
+            'StudentFields'    => __('Student'),
+            'ParentFields'     => __('Parent'),
+            'FamilyFields'     => __('Family'),
+            'MedicalFields'    => __('Medical'),
+            'INFields'         => __('Individual Needs'),
+            'DocumentsFields'  => __('Documents'),
+            'FinanceFields'    => __('Finance'),
+            'LanguageFields'   => __('Language'),
+            'PrivacyFields'    => __('Privacy'),
+            'AgreementFields'  => __('Agreement'),
         ];
 
         foreach ($fieldGroups as $fieldGroupName => $fieldGroupLabel) {
@@ -192,10 +213,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                         ->addClass('items-center border rounded pl-4 my-2 bg-blue-100');
                 }
             }
-
-            // $col = $form->addRow()->addColumn()->addClass('flex flex-col');
-            // $col->addLabel('fields', __('Fields to add').':');
-            // $col->addCheckbox('fields')->fromArray($fields)->selectableGroups();
         }
 
     }

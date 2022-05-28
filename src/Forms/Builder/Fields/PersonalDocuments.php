@@ -26,8 +26,6 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
-use Gibbon\Domain\Forms\FormSubmissionGateway;
-
 class PersonalDocuments extends AbstractFieldGroup implements UploadableInterface
 {
     protected $personalDocumentGateway;
@@ -37,23 +35,6 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
     {
         $this->personalDocumentTypeGateway = $personalDocumentTypeGateway;
         $this->personalDocumentHandler = $personalDocumentHandler;
-
-        // $criteria = $this->personalDocumentTypeGateway->newQueryCriteria();
-        // $personalDocumentTypes = $this->personalDocumentTypeGateway->queryDocumentTypes($criteria)->toArray();
-
-        // foreach ($personalDocumentTypes as $field) {
-        //     $id = $field['gibbonPersonalDocumentTypeID'];
-        //     $this->fields[$id] = [
-        //         'type'                => $field['type'],
-        //         'label'               => __($field['name']),
-        //         'description'         => __($field['description']),
-        //         'options'             => [],
-        //         'activePersonStudent' => $field['activePersonStudent'],
-        //         'activePersonParent'  => $field['activePersonParent'],
-        //         'activePersonStaff'   => $field['activePersonStaff'],
-        //         'activePersonOther'   => $field['activePersonOther'],
-        //     ];
-        // }
 
         $this->fields = [
             'studentDocuments' => [
@@ -92,7 +73,7 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
         return $form->getRow();
     }
 
-    public function getFieldDataFromPOST(string $fieldName, string $fieldType)   
+    public function getFieldDataFromPOST(string $fieldName, array $field)    
     {
         $roleCategory = str_replace('Documents', '', $fieldName);
         $documents = $this->personalDocumentTypeGateway->selectBy([])->fetchAll();
@@ -110,7 +91,7 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
         return $data;
     }
 
-    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, string $fieldType)
+    public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, array $field)
     {
         $personalDocumentFail = false;
         
