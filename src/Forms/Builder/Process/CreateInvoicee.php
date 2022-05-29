@@ -27,7 +27,7 @@ use Gibbon\Forms\Builder\View\CreateInvoiceeView;
 
 class CreateInvoicee extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['payment', 'companyName', 'companyEmail'];
+    protected $requiredFields = ['payment'];
 
     protected $invoiceeGateway;
 

@@ -78,6 +78,9 @@ class ApplicationFormStorage extends AbstractFormStorage
                 'gibbonPaymentIDSubmit'  => $this->getResult('gibbonPaymentIDSubmit'),
                 'gibbonPaymentIDProcess' => $this->getResult('gibbonPaymentIDProcess'),
                 'timestampModified'      => date('Y-m-d H:i:s'),
+                'timestampCreated'       => $this->getStatus() == 'Pending' && $values['status'] == 'Incomplete' 
+                    ? date('Y-m-d H:i:s') 
+                    : $values['timestampCreated'],
             ]);
         } else {
             // Create a new submission

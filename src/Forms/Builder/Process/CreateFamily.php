@@ -80,7 +80,8 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
             $formData->set('gibbonFamilyID', $gibbonFamilyID);
             $formData->set('familyCreated', true);
         } else {
-            $family = $this->familyGateway->getByID($formData->get('gibbonFamilyID'));
+            $gibbonFamilyID = $formData->get('gibbonFamilyID');
+            $family = $this->familyGateway->getByID($gibbonFamilyID);
 
             $formData->set('familyName', $family['name'] ?? '');
             $formData->set('nameAddress', $family['nameAddress'] ?? '');

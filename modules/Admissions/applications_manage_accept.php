@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
     // Notification options
-    if ($formBuilder->hasConfig('acceptanceEmailStudentTemplate')) {
+    if ($formBuilder->hasConfig('acceptanceEmailStudentTemplate') && !$formData->has('gibbonPersonIDStudent')) {
         $col->addCheckbox('informStudent')
             ->description(__('Automatically inform <u>student</u> of Gibbon login details by email?'))
             ->checked($formBuilder->getConfig('acceptanceEmailStudentDefault') == 'Y')
@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             ->setClass('ml-4');
     }
 
-    if ($formBuilder->hasConfig('acceptanceEmailParentTemplate')) {
+    if ($formBuilder->hasConfig('acceptanceEmailParentTemplate') && !$formData->has('gibbonPersonIDParent1')) {
         $col->addCheckbox('informParents')
             ->description(__('Automatically inform <u>parents</u> of their Gibbon login details by email?'))
             ->checked($formBuilder->getConfig('acceptanceEmailParentDefault') == 'Y')
