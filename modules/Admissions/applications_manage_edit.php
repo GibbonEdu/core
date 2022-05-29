@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
@@ -25,8 +27,8 @@ use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\Forms\FormUploadGateway;
-use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Form;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     // Access denied
@@ -94,6 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 
     // Load related documents
+    $userGateway = $container->get(UserGateway::class);
     $formUploadGateway = $container->get(FormUploadGateway::class);
     $criteria = $formUploadGateway->newQueryCriteria()->fromPOST();
     $uploads = $formUploadGateway->queryAllDocumentsByContext($criteria, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
@@ -128,6 +131,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $editForm = $formBuilder->includeHidden(false)->edit($action);
     $editForm->addHiddenValue('tab', 2);
     $editForm->loadAllValuesFrom($values);
+
+    // Build the milestones
+    if ($milestones = $container->get(SettingGateway::class)->getSettingByScope('Application Form', 'milestones')) {
+        $milestonesList = array_map('trim', explode(',', $milestones));
+        $milestonesData = json_decode($application['milestones'] ?? '', true);
+
+        $milestonesForm = Form::create('applicationMilestones', Url::fromHandlerRoute('modules/Admissions/applications_manage_editMilestones.php'));
+        $milestonesForm->addHiddenValues($urlParams);
+        $milestonesForm->addHiddenValue('tab', 1);
+        $milestonesForm->setClass('w-full blank');
+
+        $col = $milestonesForm->addRow()->addColumn();
+
+        $checkIcon = $icon = $page->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'check', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
+        $crossIcon = $icon = $page->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'cross', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
+
+        foreach ($milestonesList as $index => $milestone) {
+            $data = $milestonesData[$milestone] ?? [];
+            $checked = !empty($data);
+            $dateInfo = '';
+            if ($checked) {
+                $user = $userGateway->getByID($milestonesData[$milestone]['user'], ['preferredName', 'surname']);
+                $dateInfo = Format::dateReadable($milestonesData[$milestone]['date']).' '.__('By').' '.Format::name('', $user['preferredName'], $user['surname'], 'Staff', false, true);
+            }
+
+            $description = '<div class="milestone flex-1 text-left"><span class="milestoneCheck '.($checked ? '' : 'hidden').'">'.$checkIcon.'</span><span class="milestoneCross '.($checked ? 'hidden' : '').'">'.$crossIcon.'</span><span class="text-base leading-normal">'.__($milestone).'</span></div><div class="flex-1 text-left">'.$dateInfo.'</div>';
+            $col->addCheckbox("milestones[{$milestone}]")
+                ->setValue('Y')
+                ->checked($checked ? 'Y' : 'N') 
+                ->description($description)
+                ->alignRight()
+                ->setLabelClass('w-full flex items-center')
+                ->addClass('milestoneInput border rounded p-4 my-2 '. ($checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'));
+        }
+
+        $milestonesForm->addRow()->addSubmit();
+    }
 
     // Build the other forms table
     $formsTable = DataTable::create('')->withData([]);
@@ -196,13 +236,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Display the tabbed view
     echo $page->fetchFromTemplate('application.twig.html', [
-        'defaultTab'   => $tab,
-        'officeForm'   => $officeForm,
-        'editForm'     => $editForm,
-        'formsTable'   => $formsTable ?? null,
-        'uploadsTable' => $uploadsTable ?? null,
-        'processForm'  => $processForm ?? null,
-        'resultsForm'  => $resultsForm ?? null,
+        'defaultTab'     => $tab,
+        'officeForm'     => $officeForm,
+        'editForm'       => $editForm,
+        'milestonesForm' => $milestonesForm ?? null,
+        'formsTable'     => $formsTable ?? null,
+        'uploadsTable'   => $uploadsTable ?? null,
+        'processForm'    => $processForm ?? null,
+        'resultsForm'    => $resultsForm ?? null,
     ]);
 
 }
