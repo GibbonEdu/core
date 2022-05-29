@@ -103,7 +103,7 @@ class StudentFields extends AbstractFieldGroup
     {
         $row = $form->addRow();
 
-        $required = $field['required'] != 'N';
+        $required = $this->getRequired($formBuilder, $field);
 
         switch ($field['fieldName']) {
             // STUDENT PERSONAL DATA

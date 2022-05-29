@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $paymentAPIPassword = $settingGateway->getSettingByScope('System', 'paymentAPIPassword');
     $paymentAPISignature = $settingGateway->getSettingByScope('System', 'paymentAPISignature');
 
-    if ($enablePayments != 'Y' || empty($paymentAPIUsername) || empty($paymentAPIPassword) || empty($paymentAPISignature)) {
+    if ($enablePayments != 'Y') {
         echo Format::alert(__('Online payment options are not available at this time.'));
         return;
     }

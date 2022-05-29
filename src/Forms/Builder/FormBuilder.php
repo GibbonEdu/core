@@ -167,7 +167,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $data = [];
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
+            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -186,7 +186,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $partialFail = false;
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
+            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -203,7 +203,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     {
         $invalid = [];
         foreach ($this->fields as $fieldName => $field) {
-            if ($field['hidden'] == 'Y' && !$this->includeHidden) continue;
+            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -265,7 +265,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
     public function edit(Url $action)
     {
-        $form = Form::create('formBuilder', (string)$action);
+        $form = Form::create('formBuilder'.($this->includeHidden ? 'OfficeOnly' : ''), (string)$action);
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
 
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
@@ -298,16 +298,17 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                     $row = $fieldGroup->addFieldToForm($this, $form, $field);
                 }
             }
-        }
+        } else {
 
-        // Display all non-hidden fields
-        foreach ($this->pages as $formPage) {
-            foreach ($this->fields as $field) {
-                if ($field['hidden'] == 'Y') continue;
-                if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+            // Display all non-hidden fields
+            foreach ($this->pages as $formPage) {
+                foreach ($this->fields as $field) {
+                    if ($field['hidden'] == 'Y') continue;
+                    if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
-                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                $row = $fieldGroup->addFieldToForm($this, $form, $field);
+                    $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+                    $row = $fieldGroup->addFieldToForm($this, $form, $field);
+                }
             }
         }
 

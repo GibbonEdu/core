@@ -95,7 +95,7 @@ class FinanceFields extends AbstractFieldGroup
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
-        $required = $field['required'] != 'N';
+        $required = $this->getRequired($formBuilder, $field);
 
         $row = $form->addRow();
 

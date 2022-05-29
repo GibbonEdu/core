@@ -55,11 +55,13 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return !empty($builder->getConfig('formProcessingFee'));
+        return $builder->hasConfig('formProcessingFee');
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
+        if ($builder->getConfig($this->getProcessName().'Enabled') != 'Y') return;
+
         $processingFee = $builder->getConfig('formProcessingFee');
 
         if (!is_numeric($processingFee) || $processingFee <= 0) return;
@@ -79,7 +81,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
             'email'                => $formData->get('email'),
             'date'                 => Format::date(date('Y-m-d')),
             'link'                 => (string)$link,
-            'applicationID'        => $builder->getConfig('foreignTableID'),
+            'applicationID'        => intval($builder->getConfig('foreignTableID')),
             'applicationName'      => $builder->getDetail('name'),
             'applicationFee'       => $this->session->get('currency').$processingFee,
             'studentPreferredName' => $formData->get('preferredName'),
@@ -101,6 +103,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
             'title'  => $template->renderSubject($templateData),
             'body'   => $template->renderBody($templateData),
             'details' => [
+                __('Application Form')           => $builder->getDetail('name'),
                 __('Application ID')             => $builder->getConfig('foreignTableID'),
                 __('Application Processing Fee') => $this->session->get('currency').$processingFee,
             ],

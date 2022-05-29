@@ -88,10 +88,9 @@ class Documents extends Input
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-start">';
             
             $icon = !empty($this->attachments[$document]) ? 'check' : 'cross';
-            $iconClass = !empty($this->attachments[$document]) ? 'text-green-600' : 'text-red-700';
             $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
                 'icon' => $this->mode =='edit' ? $icon : 'file',
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2 '.($this->mode =='edit' ? $iconClass : ''),
+                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
             ]);
 
             $output .= __($document);

@@ -113,23 +113,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     echo $table->render([$formData->getData()]);
-
-    // Cancel out here so that the print view doesn't display results
-    if (!empty($viewMode)) return;
-
-    // Display the results
-    if ($application['status'] != 'Incomplete') {
-        $form = Form::create('formBuilder', '');
-        $form->setTitle(__('Results'));
-                        
-        $processes = $formProcessor->getViewableProcesses();
-        foreach ($processes as $process) {
-            if ($viewClass = $process->getViewClass()) {
-                $view = $container->get($viewClass);
-                $view->display($form, $formData);
-            }
-        }
-
-        echo $form->getOutput();
-    }
 }

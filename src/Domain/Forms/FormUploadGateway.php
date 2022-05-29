@@ -35,15 +35,24 @@ class FormUploadGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryUploadsByForm(QueryCriteria $criteria, $gibbonFormID)
+    public function queryAllDocumentsByContext(QueryCriteria $criteria, $foreignTable, $foreignTableID)
     {
         $query = $this
             ->newQuery()
             ->distinct()
-            ->from($this->getTableName())
-            ->cols(['gibbonFormUpload.gibbonFormUploadID', 'gibbonFormUpload.name'])
-            ->where('gibbonFormUpload.gibbonFormID=:gibbonFormID')
-            ->bindValue('gibbonFormID', $gibbonFormID);
+            ->from('gibbonFormUpload')
+            ->cols(["'Required Documents' AS type", 'gibbonFormUpload.gibbonFormUploadID AS id', 'gibbonFormUpload.name', 'gibbonFormUpload.path', 'gibbonFormUpload.timestamp'])
+            ->where('gibbonFormUpload.foreignTable=:foreignTable', ['foreignTable' => $foreignTable])
+            ->where('gibbonFormUpload.foreignTableID=:foreignTableID', ['foreignTableID' => $foreignTableID]);
+
+        $this->unionAllWithCriteria($query, $criteria)
+            ->distinct()
+            ->from('gibbonPersonalDocument')
+            ->cols(["'Personal Documents' AS type", 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id', 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+            ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID')
+            ->where('gibbonPersonalDocument.foreignTable=:foreignTable', ['foreignTable' => $foreignTable])
+            ->where('gibbonPersonalDocument.foreignTableID=:foreignTableID', ['foreignTableID' => $foreignTableID])
+            ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%'");
 
         return $this->runQuery($query, $criteria);
     }

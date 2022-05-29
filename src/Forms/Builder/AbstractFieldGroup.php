@@ -68,6 +68,11 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $this->fields[$fieldName] ?? [];
     }
 
+    public function getRequired(FormBuilderInterface $formBuilder, array &$field) : bool 
+    {
+        return $formBuilder->getConfig('mode') != 'edit' && $field['required'] != 'N';
+    }
+
     /**
      * Handle whether fields should validate based on the presence of other fields.
      *
@@ -100,7 +105,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         $row->addLabel($field['fieldName'], __($field['label']))
             ->description(__($field['description']));
         $row->addCustomField($field['fieldName'], $field)
-            ->required($field['required'] != 'N');
+            ->required($this->getRequired($formBuilder, $field));
 
         return $row;
     }

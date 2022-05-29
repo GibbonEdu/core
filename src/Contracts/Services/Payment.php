@@ -30,6 +30,7 @@ interface Payment
     const RETURN_SUCCESS = 'success1';
     const RETURN_SUCCESS_WARNING = 'warning2';
     const RETURN_CANCEL = 'warning3';
+    const RETURN_INCOMPLETE = 'warning4';
     const RETURN_ERROR_NOT_ENABLED = 'error1';
     const RETURN_ERROR_CURRENCY = 'error3';
     const RETURN_ERROR_CONFIG = 'error4';

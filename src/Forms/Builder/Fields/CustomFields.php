@@ -95,6 +95,7 @@ class CustomFields extends AbstractFieldGroup
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
+        $required = $this->getRequired($formBuilder, $field);
         $row = $form->addRow();
 
         if ($field['fieldType'] == 'editor') {
@@ -102,7 +103,7 @@ class CustomFields extends AbstractFieldGroup
         }
 
         $row->addLabel($field['fieldName'], __($field['label']))->description(__($field['description']));
-        $row->addCustomField($field['fieldName'], $field);
+        $row->addCustomField($field['fieldName'], $field)->required($required);
 
         return $row;
     }

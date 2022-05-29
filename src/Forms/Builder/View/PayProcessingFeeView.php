@@ -49,13 +49,13 @@ class PayProcessingFeeView extends AbstractFormView
 
     public function getDescription() : string
     {
-        return __('An optional fee that is paid before processing the application form. Sent by staff via the Manage Applications page.');
+        return __('Send a processing fee request to the parent by email.');
     }
 
     public function configure(Form $form)
     {
         $row = $form->addRow()->setHeading($this->getHeading());
-            $row->addLabel('formProcessingFee', $this->getName())->description($this->getDescription());
+            $row->addLabel('formProcessingFee', $this->getName())->description(__('An optional fee that is paid before processing the application form. Sent by staff via the Manage Applications page.'));
             $row->addCurrency('formProcessingFee');
 
         $templates = $this->emailTemplateGateway->selectAvailableTemplatesByType('Admissions', 'Application Form Fee Request')->fetchKeyPair();
@@ -77,7 +77,7 @@ class PayProcessingFeeView extends AbstractFormView
             $col->addContent(Format::alert($messages[Payment::RETURN_SUCCESS], 'success'));
         } else {
             $return = $formData->getResult($this->getResultName());
-            $col->addContent(Format::alert($messages[$return ?? Payment::RETURN_ERROR_CONFIG], stripos($return, 'warning') !== false ? 'warning' : 'error'));
+            $col->addContent(Format::alert($messages[$return] ?? $messages[Payment::RETURN_INCOMPLETE], stripos($return, 'error') !== false ? 'error' : 'warning'));
         }
     }
 }

@@ -72,7 +72,7 @@ class ParentFields extends AbstractFieldGroup
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
-        $required = $field['required'] != 'N';
+        $required = $this->getRequired($formBuilder, $field);
 
         $row = $form->addRow();
 
@@ -135,7 +135,7 @@ class ParentFields extends AbstractFieldGroup
             // PARENT1 OTHER
             case 'parent1relationship':
                 $row->addLabel('parent1relationship', __('Relationship'));
-                $row->addSelectRelationship('parent1relationship')->required();
+                $row->addSelectRelationship('parent1relationship')->required($required);
                 break;
         }
 

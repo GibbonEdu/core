@@ -89,7 +89,7 @@ class MedicalFields extends AbstractFieldGroup
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
-        $required = $field['required'] != 'N';
+        $required = $this->getRequired($formBuilder, $field);
         $customField = $this->fields[$field['fieldName']]['custom'] ?? false;
 
         $row = $form->addRow();

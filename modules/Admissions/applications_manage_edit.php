@@ -24,6 +24,9 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Domain\Forms\FormUploadGateway;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     // Access denied
@@ -31,7 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 } else {
     // Proceed!
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $search = $_GET['search'] ?? '';
+    $search = $_REQUEST['search'] ?? '';
+    $tab = $_REQUEST['tab'] ?? 0;
 
     $page->breadcrumbs
         ->add(__('Manage Applications'), 'applications_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search])
@@ -40,6 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $gibbonAdmissionsApplicationID = $_GET['gibbonAdmissionsApplicationID'] ?? '';
     $viewMode = $_GET['format'] ?? '';
     
+    $urlParams = compact('gibbonAdmissionsApplicationID', 'gibbonSchoolYearID', 'search');
+
     // Get the application form data
     $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
     if (empty($application)) {
@@ -54,22 +60,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         return;
     }
 
-    // Setup the form builder & data
-    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden();
-    $formBuilder->addConfig($application);
-    
+    // Setup the form builder
+    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, $urlParams + [
+        'identifier' => $application['identifier'],
+        'accessID' => $account['accessID'],
+    ]);
+
+    // Setup form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
+
+    // Add configuration values
+    $formBuilder->addConfig($application);
     $formBuilder->addConfig([
-        'foreignTableID' => $formData->identify($application['identifier']),
+        'foreignTableID' => $gibbonAdmissionsApplicationID,
         'mode' => 'edit',
     ]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
-    $errors = $formProcessor->verifyForm($formBuilder);
-
+    $formProcessor->editForm($formBuilder, $formData, true);
+    $editProcesses = $formProcessor->getViewableProcesses();
+    
     // Display any validation errors
+    $errors = $formProcessor->verifyForm($formBuilder);
+    $processes = $formProcessor->getViewableProcesses();
     foreach ($errors as $errorMessage) {
         echo Format::alert($errorMessage);
     }
@@ -78,20 +93,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = $formData->getData();
     $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 
-    // Build the form
-    $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
+    // Load related documents
+    $formUploadGateway = $container->get(FormUploadGateway::class);
+    $criteria = $formUploadGateway->newQueryCriteria()->fromPOST();
+    $uploads = $formUploadGateway->queryAllDocumentsByContext($criteria, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
 
-    $form = $formBuilder->edit($action);
-
-    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-
-    $form->addHeaderAction('view', __('View'))
+    // Display form actions
+    if (!empty($search)) {
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams($urlParams));
+    }
+    
+    $page->navigator->addHeaderAction('view', __('View'))
         ->setURL('/modules/Admissions/applications_manage_view.php')
         ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
-        ->append(' | ')
         ->displayLabel();
 
-    $form->addHeaderAction('print', __('Print'))
+    $page->navigator->addHeaderAction('print', __('Print'))
         ->setURL('/report.php')
         ->addParam('q', '/modules/Admissions/applications_manage_view.php')
         ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
@@ -100,8 +117,92 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->directLink()
         ->displayLabel();
 
-    $form->loadAllValuesFrom($values);
+    // Build the form
+    $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
-    echo $form->getOutput();
+    $officeForm = $formBuilder->includeHidden(true)->edit($action);
+    $officeForm->addHiddenValue('officeOnly', 'Y');
+    $officeForm->addHiddenValue('tab', 0);
+    $officeForm->loadAllValuesFrom($values);
+
+    $editForm = $formBuilder->includeHidden(false)->edit($action);
+    $editForm->addHiddenValue('tab', 2);
+    $editForm->loadAllValuesFrom($values);
+
+    // Build the other forms table
+    $formsTable = DataTable::create('')->withData([]);
+
+    // Build the uploads table
+    $uploadsTable = DataTable::createPaginated('applicationDocuments', $criteria)->withData($uploads);
+    $uploadsTable->addColumn('status', __('Status'))->width('6%')->format(function($values) use (&$session, &$page) {
+        $fileExists = file_exists($session->get('absolutePath').'/'.$values['path']);
+        return $page->fetchFromTemplate('ui/icons.twig.html', [
+            'icon' => $fileExists ? 'check' : 'cross',
+            'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
+        ]);
+        return Format::link($session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
+    });
+    $uploadsTable->addColumn('name', __('Document'))->format(function($values) use (&$session) {
+        return Format::link($session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
+    });
+    $uploadsTable->addColumn('type', __('Type'));
+    $uploadsTable->addColumn('timestamp', __('When'))->format(Format::using('relativeTime', 'timestamp'));
+
+    $uploadsTable->addActionColumn()
+        ->format(function ($values, $actions) use ($session) {
+            if (!empty($values['path'])) {
+                $actions->addAction('view', __('View'))
+                    ->setExternalURL($session->get('absoluteURL').'/'.$values['path'])
+                    ->directLink();
+
+                $actions->addAction('export', __('Download'))
+                    ->setExternalURL($session->get('absoluteURL').'/'.$values['path'], null, true)
+                    ->directLink();
+            }
+        });
+
+    // Build the edit process list
+    if (!empty($processes)) {
+        $processForm = Form::create('applicationProcess', $action);
+        $processForm->addHiddenValues($urlParams);
+        $processForm->addHiddenValue('tab', 5);
+
+        foreach ($editProcesses as $index => $process) {
+            if (!$process->isEnabled($formBuilder)) continue;
+
+            $processForm->addHiddenValue('applicationProcess['.$process->getProcessName().'][class]', $process->getProcessName());
+
+            if ($viewClass = $process->getViewClass()) {
+                $view = $container->get($viewClass);
+                $row = $processForm->addRow();
+                    $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())->description($view->getDescription());
+                    $row->addCheckbox('applicationProcess['.$process->getProcessName().'][enabled]')->setValue('Y');
+            }
+        }
+        $processForm->addRow()->addSubmit();
+    }
+
+    // Display the results
+    if ($application['status'] != 'Incomplete') {
+        $resultsForm = Form::create('formBuilder', '');
+                        
+        foreach ($processes as $process) {
+            if ($viewClass = $process->getViewClass()) {
+                $view = $container->get($viewClass);
+                $view->display($resultsForm, $formData);
+            }
+        }
+    }
+
+    // Display the tabbed view
+    echo $page->fetchFromTemplate('application.twig.html', [
+        'defaultTab'   => $tab,
+        'officeForm'   => $officeForm,
+        'editForm'     => $editForm,
+        'formsTable'   => $formsTable ?? null,
+        'uploadsTable' => $uploadsTable ?? null,
+        'processForm'  => $processForm ?? null,
+        'resultsForm'  => $resultsForm ?? null,
+    ]);
 
 }

@@ -405,6 +405,7 @@ class Payment implements PaymentInterface
             self::RETURN_SUCCESS           => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'),
             self::RETURN_SUCCESS_WARNING   => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $this->session->get('systemName'), $this->foreignTableID),
             self::RETURN_CANCEL            => __('Your online payment was cancelled before it was completed. No charges have been processed.'),
+            self::RETURN_INCOMPLETE        => __('Online payment has not been completed at this time.'),
             self::RETURN_ERROR_NOT_ENABLED => __('Online payment options are not available at this time.'),
             self::RETURN_ERROR_CURRENCY    => __("Your payment could not be made as the payment gateway does not support the system's currency."),
             self::RETURN_ERROR_CONFIG      => __('Your payment could not be processed due to a system configuration issue. Please contact the school before attempting another payment.'),
