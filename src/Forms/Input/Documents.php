@@ -37,17 +37,19 @@ class Documents extends Input
     protected $factory;
     protected $validation;
     protected $absoluteURL;
+    protected $mode;
 
     protected $documents;
     protected $attachments = [];
 
 
-    public function __construct(FormFactory &$factory, $name, $documents, $absoluteURL, View $view)
+    public function __construct(FormFactory &$factory, $name, $documents, View $view, $absoluteURL, $mode)
     {
         $this->view = $view;
         $this->factory = $factory;
         $this->documents = $documents;
         $this->absoluteURL = $absoluteURL;
+        $this->mode = $mode;
 
         $this->setID($name);
         $this->setName($name);
@@ -85,9 +87,11 @@ class Documents extends Input
             $output .= '<div class="document rounded-sm bg-white border font-sans mt-4">';
             $output .= '<div class=" p-4 text-xs font-medium flex items-center justify-start">';
             
+            $icon = !empty($this->attachments[$document]) ? 'check' : 'cross';
+            $iconClass = !empty($this->attachments[$document]) ? 'text-green-600' : 'text-red-700';
             $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => 'file',
-                'iconClass' => 'w-6 h-6 fill-current mr-2 -my-2',
+                'icon' => $this->mode =='edit' ? $icon : 'file',
+                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2 '.($this->mode =='edit' ? $iconClass : ''),
             ]);
 
             $output .= __($document);
@@ -95,6 +99,9 @@ class Documents extends Input
             if (!empty($this->attachments[$document])) {
                 $output .= '<div class="flex-grow"></div>';
                 $output .= Format::tag(__('Uploaded'), 'success -my-2');
+            } elseif ($this->mode =='edit' && empty($this->attachments[$document])) {
+                $output .= '<div class="flex-grow"></div>';
+                $output .= Format::tag(__('Missing'), 'error -my-2');
             } elseif ($this->getRequired()) {
                 $output .= '<div class="flex-grow"></div>';
                 $output .= Format::tag(__('Required'), 'message -my-2');

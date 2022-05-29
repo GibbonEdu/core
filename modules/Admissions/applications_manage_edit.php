@@ -60,7 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($application['identifier']);
-    $formBuilder->addConfig(['foreignTableID' => $formData->identify($application['identifier'])]);
+    $formBuilder->addConfig([
+        'foreignTableID' => $formData->identify($application['identifier']),
+        'mode' => 'edit',
+    ]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));

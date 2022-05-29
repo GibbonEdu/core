@@ -170,7 +170,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             'FamilyFields'     => __('Family'),
             'MedicalFields'    => __('Medical'),
             'INFields'         => __('Individual Needs'),
-            'DocumentsFields'  => __('Documents'),
             'FinanceFields'    => __('Finance'),
             'LanguageFields'   => __('Language'),
             'PrivacyFields'    => __('Privacy'),

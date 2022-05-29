@@ -63,4 +63,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             S89.731,165.5,93.874,165.5z"/>
         
     </svg>
+{% elseif icon == 'check' %}
+    <svg class="{{ iconClass ?? 'w-8 h-8 fill-current' }}" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path xmlns="http://www.w3.org/2000/svg" clip-rule="evenodd" d="m256 0c-141.2 0-256 114.8-256 256s114.8 256 256 256 256-114.8 256-256-114.8-256-256-256z" class=""></path><path xmlns="http://www.w3.org/2000/svg" d="m206.7 373.1c-32.7-32.7-65.2-65.7-98-98.4-3.6-3.6-3.6-9.6 0-13.2l37.7-37.7c3.6-3.6 9.6-3.6 13.2 0l53.9 53.9 138.6-138.7c3.7-3.6 9.6-3.6 13.3 0l37.8 37.8c3.7 3.7 3.7 9.6 0 13.2l-183.3 183.1c-3.6 3.7-9.5 3.7-13.2 0z" fill="#ffffff" data-original="#ffffff" class=""></path></g></svg>
+
+{% elseif icon == 'cross' %}
+    <svg class="{{ iconClass ?? 'w-8 h-8 fill-current' }}" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g>
+        <ellipse xmlns="http://www.w3.org/2000/svg" style="" cx="256" cy="256" rx="256" ry="255.832" class=""></ellipse>
+        <g xmlns="http://www.w3.org/2000/svg" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 77.26 32)">
+            <rect x="3.98" y="-427.615" style="" width="55.992" height="285.672" fill="#ffffff" data-original="#ffffff" class=""></rect>
+            <rect x="-110.828" y="-312.815" style="" width="285.672" height="55.992" fill="#ffffff" data-original="#ffffff" class=""></rect>
+        </g>
+    </svg>
 {% endif %}
+

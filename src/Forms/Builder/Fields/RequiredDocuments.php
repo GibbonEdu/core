@@ -62,7 +62,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
 
         $col = $row->addColumn();
             $col->addLabel($field['fieldName'], __($field['label']))->description(__($field['description'] ?? ''));
-            $col->addDocuments($field['fieldName'], $documents, $this->session->get('absoluteURL'), $this->view)
+            $col->addDocuments($field['fieldName'], $documents, $this->view, $this->session->get('absoluteURL'), $formBuilder->getConfig('mode'))
                 ->required($required)
                 ->setAttachments($uploads);
 
@@ -71,17 +71,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
 
     public function getFieldDataFromPOST(string $fieldName, array $field) 
     {
-        $data = [];
-
-        // $documents = array_map('trim', explode(',', $field['options'] ?? ''));
-        // if (empty($documents)) return $data;
-        
-        // foreach ($documents as $index => $document) {
-        //     $documentFieldName = $fieldName.$index.'filePath';
-
-        // }
-
-        return $data;
+        return [];
     }
 
     public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, array $field)
