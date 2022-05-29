@@ -26,9 +26,11 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
-use Gibbon\Domain\Forms\FormUploadGateway;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\UserGateway;
+use Gibbon\Module\Admissions\Forms\ApplicationMilestonesForm;
+use Gibbon\Module\Admissions\Forms\ApplicationProcessForm;
+use Gibbon\Module\Admissions\Tables\ApplicationUploadsTable;
+use Symfony\Component\Console\Descriptor\ApplicationDescription;
+use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     // Access denied
@@ -49,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $urlParams = compact('gibbonAdmissionsApplicationID', 'gibbonSchoolYearID', 'search');
 
     // Get the application form data
-    $application = $container->get(AdmissionsApplicationGateway::class)->getByID($gibbonAdmissionsApplicationID);
+    $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationDetailsByID($gibbonAdmissionsApplicationID);
     if (empty($application)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
@@ -95,12 +97,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = $formData->getData();
     $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 
-    // Load related documents
-    $userGateway = $container->get(UserGateway::class);
-    $formUploadGateway = $container->get(FormUploadGateway::class);
-    $criteria = $formUploadGateway->newQueryCriteria()->fromPOST();
-    $uploads = $formUploadGateway->queryAllDocumentsByContext($criteria, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
-
     // Display form actions
     if (!empty($search)) {
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams($urlParams));
@@ -120,6 +116,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->directLink()
         ->displayLabel();
 
+    // Display application details
+    $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable($formBuilder);
+    echo $detailsTable->render([$application]);
+
     // Build the form
     $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
@@ -132,95 +132,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $editForm->addHiddenValue('tab', 2);
     $editForm->loadAllValuesFrom($values);
 
-    // Build the milestones
-    if ($milestones = $container->get(SettingGateway::class)->getSettingByScope('Application Form', 'milestones')) {
-        $milestonesList = array_map('trim', explode(',', $milestones));
-        $milestonesData = json_decode($application['milestones'] ?? '', true);
-
-        $milestonesForm = Form::create('applicationMilestones', Url::fromHandlerRoute('modules/Admissions/applications_manage_editMilestones.php'));
-        $milestonesForm->addHiddenValues($urlParams);
-        $milestonesForm->addHiddenValue('tab', 1);
-        $milestonesForm->setClass('w-full blank');
-
-        $col = $milestonesForm->addRow()->addColumn();
-
-        $checkIcon = $icon = $page->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'check', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
-        $crossIcon = $icon = $page->fetchFromTemplate('ui/icons.twig.html', ['icon' => 'cross', 'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2']);
-
-        foreach ($milestonesList as $index => $milestone) {
-            $data = $milestonesData[$milestone] ?? [];
-            $checked = !empty($data);
-            $dateInfo = '';
-            if ($checked) {
-                $user = $userGateway->getByID($milestonesData[$milestone]['user'], ['preferredName', 'surname']);
-                $dateInfo = Format::dateReadable($milestonesData[$milestone]['date']).' '.__('By').' '.Format::name('', $user['preferredName'], $user['surname'], 'Staff', false, true);
-            }
-
-            $description = '<div class="milestone flex-1 text-left"><span class="milestoneCheck '.($checked ? '' : 'hidden').'">'.$checkIcon.'</span><span class="milestoneCross '.($checked ? 'hidden' : '').'">'.$crossIcon.'</span><span class="text-base leading-normal">'.__($milestone).'</span></div><div class="flex-1 text-left">'.$dateInfo.'</div>';
-            $col->addCheckbox("milestones[{$milestone}]")
-                ->setValue('Y')
-                ->checked($checked ? 'Y' : 'N') 
-                ->description($description)
-                ->alignRight()
-                ->setLabelClass('w-full flex items-center')
-                ->addClass('milestoneInput border rounded p-4 my-2 '. ($checked ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'));
-        }
-
-        $milestonesForm->addRow()->addSubmit();
-    }
-
-    // Build the other forms table
+    // Build forms and tables for other tabs
+    $milestonesForm = $container->get(ApplicationMilestonesForm::class)->createForm($urlParams, $application['milestones']);
     $formsTable = DataTable::create('')->withData([]);
-
-    // Build the uploads table
-    $uploadsTable = DataTable::createPaginated('applicationDocuments', $criteria)->withData($uploads);
-    $uploadsTable->addColumn('status', __('Status'))->width('6%')->format(function($values) use (&$session, &$page) {
-        $fileExists = file_exists($session->get('absolutePath').'/'.$values['path']);
-        return $page->fetchFromTemplate('ui/icons.twig.html', [
-            'icon' => $fileExists ? 'check' : 'cross',
-            'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-        ]);
-        return Format::link($session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
-    });
-    $uploadsTable->addColumn('name', __('Document'))->format(function($values) use (&$session) {
-        return Format::link($session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
-    });
-    $uploadsTable->addColumn('type', __('Type'));
-    $uploadsTable->addColumn('timestamp', __('When'))->format(Format::using('relativeTime', 'timestamp'));
-
-    $uploadsTable->addActionColumn()
-        ->format(function ($values, $actions) use ($session) {
-            if (!empty($values['path'])) {
-                $actions->addAction('view', __('View'))
-                    ->setExternalURL($session->get('absoluteURL').'/'.$values['path'])
-                    ->directLink();
-
-                $actions->addAction('export', __('Download'))
-                    ->setExternalURL($session->get('absoluteURL').'/'.$values['path'], null, true)
-                    ->directLink();
-            }
-        });
-
-    // Build the edit process list
-    if (!empty($processes)) {
-        $processForm = Form::create('applicationProcess', $action);
-        $processForm->addHiddenValues($urlParams);
-        $processForm->addHiddenValue('tab', 5);
-
-        foreach ($editProcesses as $index => $process) {
-            if (!$process->isEnabled($formBuilder)) continue;
-
-            $processForm->addHiddenValue('applicationProcess['.$process->getProcessName().'][class]', $process->getProcessName());
-
-            if ($viewClass = $process->getViewClass()) {
-                $view = $container->get($viewClass);
-                $row = $processForm->addRow();
-                    $row->addLabel('applicationProcess['.$process->getProcessName().'][enabled]', $view->getName())->description($view->getDescription());
-                    $row->addCheckbox('applicationProcess['.$process->getProcessName().'][enabled]')->setValue('Y');
-            }
-        }
-        $processForm->addRow()->addSubmit();
-    }
+    $uploadsTable = $container->get(ApplicationUploadsTable::class)->createTable($gibbonAdmissionsApplicationID);
+    $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
 
     // Display the results
     if ($application['status'] != 'Incomplete') {

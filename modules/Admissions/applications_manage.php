@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -32,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $page->addMessage('This <b>BETA</b> feature is part of the new flexible application form and admissions system. While we have worked to ensure that this functionality is ready to use, this is part of a very large set of changes that are likely to continue evolving over the next version, so we\'ve marked it as beta for v24. You are welcome to use these features and please do let us know in the support forums if you encounter any issues.');
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonYearGroupID = $_REQUEST['gibbonYearGroupID'] ?? '';
     $gibbonAdmissionsAccountID = $_GET['gibbonAdmissionsAccountID'] ?? '';
     $search = $_GET['search'] ?? '';
 
@@ -39,15 +41,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // SEARCH
     $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php','get');
-    $form->setTitle(__('Search'));
+    $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
+    $form->setTitle(__('Search'));
 
     $form->addHiddenValue('q', '/modules/'.$session->get('module').'/applications_manage.php');
     $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description();
+        $row->addLabel('search', __('Search For'))->description(__('Application ID, preferred, surname, payment transaction ID'));
         $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupID', __('Year Group'));
+        $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
@@ -60,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->searchBy($admissionsApplicationGateway->getSearchableColumns(), $search)
         ->sortBy('timestampCreated', 'DESC')
         ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
+        ->filterBy('yearGroup', $gibbonYearGroupID)
         ->fromPOST();
 
     $submissions = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
@@ -79,21 +87,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
         if ($values['status'] == 'Rejected') $row->addClass('error');
         if ($values['status'] == 'Accepted') $row->addClass('success');
+        if ($values['status'] == 'Withdrawn') $row->addClass('error');
         return $row;
     });
+
+    $table->addMetaData('filterOptions', [
+        'status:pending'      => __('Status').': '.__('Pending'),
+        'status:accepted'     => __('Status').': '.__('Accepted'),
+        'status:rejected'     => __('Status').': '.__('Rejected'),
+        'status:waiting list' => __('Status').': '.__('Waiting List'),
+        'paid:y'         => __('Paid').': '.__('Yes'),
+        'paid:n'         => __('Paid').': '.__('No'),
+        'paid:exemption' => __('Paid').': '.__('Exemption'),
+        'formGroup:y'         => __('Form Group').': '.__('Yes'),
+        'formGroup:n'         => __('Form Group').': '.__('No'),
+    ]);
 
     $table->addColumn('gibbonAdmissionsApplicationID', __('ID'))->format(function ($values) {
         return intval($values['gibbonAdmissionsApplicationID']);
     });
 
-    $table->addColumn('student', __('Student'))->format(function ($values) {
-        return Format::name('', $values['studentSurname'], $values['studentPreferredName'], 'Student', true);
-    });
-    $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('formGroup', __('Form Group'));
-    $table->addColumn('formName', __('Application Form'));
-    $table->addColumn('status', __('Status'));
-    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
+    $table->addColumn('student', __('Student'))
+        ->description(__('Application Date'))
+        ->sortable(['studentSurname', 'studentPreferredName'])
+        ->format(function ($values) {
+            return Format::bold(Format::name('', $values['studentSurname'], $values['studentPreferredName'], 'Student', true)).'<br/>'.
+                   Format::small(Format::date($values['timestampCreated']));
+        });
+
+    $table->addColumn('dob', __('Birth Year'))
+        ->description(__('Entry Year'))
+        ->format(function($application) {
+            return substr($application['dob'] ?? '', 0, 4).'<br/>'.Format::small($application['yearGroup'] ?? '');
+        });
+
+    $table->addColumn('parents', __('Parents'))->notSortable();
+
+    $table->addColumn('schoolName1', __('Last School'));
+    
+    $table->addColumn('status', __('Status'))
+        ->description(__('Milestones'))
+        ->format(function($application) {
+            $statusText = Format::bold(__($application['status']));
+            $milestones = array_keys(json_decode($application['milestones'] ?? '', true)?? []);
+            if ($application['status'] == 'Pending' || $application['status'] == 'Waiting List') {
+                $statusText .= '<br/>'.Format::small(implode('<br/>', $milestones)).'</span>';
+            }
+            return $statusText;
+        });
+
+    $table->addColumn('priority', __('Priority'));
 
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)

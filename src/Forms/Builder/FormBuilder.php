@@ -277,21 +277,36 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         if ($this->includeHidden) {
             $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
-            if (!empty($this->getConfig('gibbonAdmissionsApplicationID'))) {
+            if (!empty($this->getConfig('status'))) {
+                $statuses = [
+                    'Incomplete'   => __('Incomplete'),
+                    'Pending'      => __('Pending'),
+                    'Waiting List' => __('Waiting List'),
+                    'Rejected'     => __('Rejected'),
+                    'Withdrawn'    => __('Withdrawn'),
+                ];
+
                 $row = $form->addRow();
-                    $row->addLabel('gibbonAdmissionsApplicationID', __('Application ID'));
-                    $row->addTextField('gibbonAdmissionsApplicationID')->readOnly()->setValue($this->getConfig('gibbonAdmissionsApplicationID'));
+                if ($this->getConfig('status') != 'Accepted') {
+                    $row->addLabel('status', __('Status'))->description(__('Manually set status.'));
+                    $row->addSelect('status')
+                        ->fromArray($statuses)
+                        ->selected($this->getConfig('status'));
+                } else {
+                    $row->addLabel('statusField', __('Status'));
+                    $row->addTextField('statusField')->required()->readOnly()->setValue($this->getConfig('status'));
+                }
             }
 
-            if (!empty($this->getConfig('status'))) {
-                $row = $form->addRow();
-                    $row->addLabel('statusField', __('Status'));
-                    $row->addTextField('statusField')->readOnly()->setValue($this->getConfig('status'));
-            }
+            $row = $form->addRow();
+                $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
+                $row->addSelect('priority')->fromArray(range(-9, 9))->required();
+
+            $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID'];
 
             foreach ($this->pages as $formPage) {
                 foreach ($this->fields as $field) {
-                    if ($field['hidden'] == 'N') continue;
+                    if ($field['hidden'] == 'N' && !in_array($field['fieldName'], $officeFields)) continue;
                     if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
                     $fieldGroup = $this->getFieldGroup($field['fieldGroup']);

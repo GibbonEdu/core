@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
 
     // DATA TABLE
     $table = DataTable::createPaginated('admissions', $criteria);
-    $table->setTitle(__('Applications'));
+    $table->setTitle(__('Forms'));
 
     $table->addColumn('student', __('Student'));
     $table->addColumn('formName', __('Form Name'));

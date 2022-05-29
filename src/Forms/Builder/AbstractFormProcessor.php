@@ -95,9 +95,9 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
     {
         $this->boot($builder, null, $dryRun ? 'preflight' : 'verify');
 
-        $this->acceptProcess();
         $this->submitProcess();
         $this->editProcess();
+        $this->acceptProcess();
 
         return $this->errors;
     }

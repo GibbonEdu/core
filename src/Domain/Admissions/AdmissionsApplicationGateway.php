@@ -36,7 +36,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
     private static $tableName = 'gibbonAdmissionsApplication';
     private static $primaryKey = 'gibbonAdmissionsApplicationID';
 
-    private static $searchableColumns = ['email'];
+    private static $searchableColumns = ['owner', 'gibbonAdmissionsApplicationID'];
 
     /**
      * @param QueryCriteria $criteria
@@ -52,15 +52,19 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsApplication.gibbonFormID',
                 'gibbonAdmissionsApplication.identifier',
                 'gibbonAdmissionsApplication.status',
+                'gibbonAdmissionsApplication.priority',
+                'gibbonAdmissionsApplication.milestones',
                 'gibbonAdmissionsApplication.timestampCreated',
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
                 'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
                 'gibbonAdmissionsAccount.email',
-                'gibbonYearGroup.nameShort as yearGroup',
-                'gibbonFormGroup.nameShort as formGroup',
+                'gibbonYearGroup.name as yearGroup',
+                'gibbonFormGroup.name as formGroup',
                 'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
                 'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
+                'gibbonAdmissionsApplication.data->>"$.schoolName1" as schoolName1',
+                'gibbonAdmissionsApplication.data->>"$.dob" as dob',
              ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
@@ -79,6 +83,28 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 return $query
                     ->where('gibbonAdmissionsAccount.gibbonAdmissionsAccountID = :admissionsAccount')
                     ->bindValue('admissionsAccount', $admissionsAccount);
+            },
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonAdmissionsApplication.status = :status')
+                    ->bindValue('status', ucwords($status));
+            },
+            'paid' => function ($query, $paymentMade) {
+                return $query
+                    ->where(strtoupper($paymentMade) == 'Y'
+                    ? 'gibbonAdmissionsApplication.gibbonPaymentIDSubmit IS NOT NULL'
+                    : 'gibbonAdmissionsApplication.gibbonPaymentIDSubmit IS NULL');
+            },
+            'formGroup' => function ($query, $value) {
+                return $query
+                    ->where(strtoupper($value) == 'Y'
+                        ? 'gibbonAdmissionsApplication.gibbonFormGroupID IS NOT NULL'
+                        : 'gibbonAdmissionsApplication.gibbonFormGroupID IS NULL');
+            },
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('gibbonAdmissionsApplication.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
             },
         ]);
 
@@ -147,6 +173,20 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->limit(1);
 
         return $this->runSelect($query);
+    }
+
+    public function getApplicationDetailsByID($gibbonAdmissionsApplicationID)
+    {
+        $data = ['gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID];
+        $sql = "SELECT gibbonAdmissionsApplication.*, 
+                    gibbonForm.name as applicationName,
+                    gibbonAdmissionsApplication.data->>'$.surname' AS studentSurname,
+                    gibbonAdmissionsApplication.data->>'$.preferredName' AS studentPreferredName
+                FROM gibbonAdmissionsApplication
+                JOIN gibbonForm ON (gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID)
+                WHERE gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 
     public function getApplicationByIdentifier($gibbonFormID, $identifier, $foreignTable, $foreignTableID, $fields = null)
