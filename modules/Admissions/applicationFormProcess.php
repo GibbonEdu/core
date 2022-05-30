@@ -58,6 +58,12 @@ if (empty($gibbonFormID) || empty($identifier)) {
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     $formData->load($identifier);
 
+    // Check the honey pot field, it should always be empty
+    if (!empty($_POST[$formBuilder->getDetail('honeyPot')])) {
+        header("Location: {$URL->withReturn('warning1')}");
+        exit;
+    }
+
     // Acquire data from POST - on error, return to the current page
     $data = $formBuilder->acquire();
     if (!$data) {

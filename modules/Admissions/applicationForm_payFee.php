@@ -157,7 +157,7 @@ if (!$proceed) {
 
         $form->addRow()->addHeading('Application Submission Fee', __('Application Submission Fee'));
 
-        $row = $form->addRow()->addContent(!$submitPaymentMade ? Format::alert(__('It appears your application payment was not successfully completed when your form was submitted. You may use the online payment option below to pay the fees now.'), 'message') : Format::alert(__('A payment has already been made for this application form.'), 'success'))->wrap('<p class="my-2">', '</p>');
+        $row = $form->addRow()->addContent(!$submitPaymentMade ? Format::alert(__('It appears your application payment was not successfully completed when your form was initially submitted. You may use the online payment option below to pay the fees now.'), 'message') : Format::alert(__('A payment has already been made for this application form.'), 'success'))->wrap('<p class="my-2">', '</p>');
 
         $row = $form->addRow();
             $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));

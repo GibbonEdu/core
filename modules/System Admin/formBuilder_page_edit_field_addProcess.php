@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             }
 
             $existing = $formFieldGateway->getFieldInForm($urlParams['gibbonFormID'], $fieldName);
-            if (!empty($existing)) {
+            if (!empty($existing) || $fieldName == $formBuilder->getDetail('honeyPot')) {
                 $duplicateFail[] = $fieldName;
                 $partialFail = true;
                 continue;
