@@ -123,9 +123,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $row->addLabel('label', __('Label'));
         $row->addTextField('label')->maxLength(90)->required();
 
+        // Prevent files in generic types: these should be handled as documents
+        $types = $container->get(CustomFieldHandler::class)->getTypes();
+        unset($types[__('File')], $types['File']);
+
         $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($container->get(CustomFieldHandler::class)->getTypes())->placeholder()->required();
+        $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
         $form->toggleVisibilityByClass('optionsLength')->onSelect('type')->when(['varchar', 'number']);
 
