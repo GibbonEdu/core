@@ -60,7 +60,7 @@ class TransferFileUploads extends AbstractFormProcess
 
         $documents = [];
         foreach ($uploads as $name => $path) {
-            $documents = Format::link($this->session->get('absoluteURL').'/'.$path, $name);
+            $documents[] = Format::link($this->session->get('absoluteURL').'/'.$path, $name);
         }
 
         $this->studentNoteGateway->insert([

@@ -134,8 +134,8 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             'profession'          => $formData->get($prefix.'profession', ''),
             'employer'            => $formData->get($prefix.'employer', ''),
             'jobTitle'            => $formData->get($prefix.'jobTitle', ''),
-            'religion '           => $formData->get($prefix.'religion ', ''),
-            'jobTitle'            => $formData->get($prefix.'jobTitle', ''),
+            'religion'            => $formData->get($prefix.'religion', ''),
+            'ethnicity'           => $formData->get($prefix.'ethnicity', ''),
             'studentID'           => $formData->get($prefix.'studentID', ''),
             'fields'              => $formData->get($prefix.'fields', ''),
         ];
@@ -166,9 +166,12 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected function generatePassword(FormDataInterface $formData, $prefix = '')
     {
+        $salt = getSalt();
+        $password = randomPassword(8);
+
         $formData->set($prefix.'password', randomPassword(8));
-        $formData->set($prefix.'passwordStrongSalt', getSalt());
-        $formData->set($prefix.'passwordStrong', hash('sha256', $formData->get('passwordStrongSalt').$formData->get('password')));
+        $formData->set($prefix.'passwordStrongSalt', $salt);
+        $formData->set($prefix.'passwordStrong', hash('sha256', $salt.$password));
     }
 
     /**

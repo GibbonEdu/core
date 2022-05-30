@@ -66,7 +66,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
         }
 
         // Create Parent 2
-        if (!$formData->has('gibbonPersonIDParent2') && $formData->hasAll(['parent2surname', 'parent2preferredName'])) {
+        if (!$formData->has('gibbonPersonIDParent1') && !$formData->has('gibbonPersonIDParent2') && $formData->hasAll(['parent2surname', 'parent2preferredName'])) {
             $this->createParentAccount($builder, $formData, '2');
         }
 

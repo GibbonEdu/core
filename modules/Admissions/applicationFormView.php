@@ -106,13 +106,14 @@ if (!$proceed) {
         $table = DataTable::create('submissions');
         $table->setTitle(__('Current Applications'));
 
-        $table->addColumn('formName', __('Application Form'));
+        
         $table->addColumn('student', __('Applicant'))->format(function ($values) {
             return !empty($values['studentSurname'])
                 ? Format::name('', $values['studentPreferredName'], $values['studentSurname'], 'Student')
                 : Format::small(__('N/A')); 
 
         });
+        $table->addColumn('formName', __('Application Form'));
         $table->addColumn('status', __('Status'))->translatable();
         $table->addColumn('timestampCreated', __('Date'))->width('20%')->format(Format::using('dateTimeReadable', 'timestampCreated'));
 

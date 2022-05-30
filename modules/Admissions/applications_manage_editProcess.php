@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (!empty($processes)) {
         // Extend the lifetime of any access tokens emailed to people
         $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
-            'timestampTokenExpire' => $date('Y-m-d H:i:s', strtotime("+2 days")),
+            'timestampTokenExpire' => date('Y-m-d H:i:s', strtotime("+2 days")),
         ]);
 
         // Setup which processes are going to run, based on user-selected checkboxes

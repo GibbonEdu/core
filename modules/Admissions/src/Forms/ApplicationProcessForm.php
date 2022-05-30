@@ -24,6 +24,7 @@ use Gibbon\Forms\Form;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * ApplicationProcessForm
@@ -35,11 +36,20 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
+    protected $session;
+
+    public function __construct(Session $session)
+    {
+        $this->session = $session;
+    }
+
     public function createForm($urlParams, FormBuilderInterface $formBuilder, $processes)
     {
         $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
         $form = Form::create('applicationProcess', $action);
+
+        $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
         $form->addHiddenValue('tab', 5);
 

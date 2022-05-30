@@ -54,6 +54,17 @@ class FormUploadGateway extends QueryableGateway
             ->where('gibbonPersonalDocument.foreignTableID=:foreignTableID', ['foreignTableID' => $foreignTableID])
             ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%'");
 
+        $this->unionAllWithCriteria($query, $criteria)
+            ->distinct()
+            ->from('gibbonPersonalDocument')
+            ->cols(["'Personal Documents' AS type", 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id', 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+            ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID')
+            ->innerJoin('gibbonAdmissionsApplication', "gibbonAdmissionsApplication.result->>'$.gibbonPersonIDStudent'=gibbonPersonalDocument.foreignTableID")
+            ->where("gibbonPersonalDocument.foreignTable='gibbonPerson'")
+            ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:foreignTableID', ['foreignTableID' => $foreignTableID])
+            ->where(":foreignTable='gibbonAdmissionsApplication'")
+            ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%'");
+
         return $this->runQuery($query, $criteria);
     }
 
