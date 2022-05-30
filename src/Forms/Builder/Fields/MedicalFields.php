@@ -84,7 +84,7 @@ class MedicalFields extends AbstractFieldGroup
 
     public function getDescription() : string
     {
-        return __('');
+        return '';
     }
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row

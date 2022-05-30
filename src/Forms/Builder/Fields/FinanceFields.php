@@ -80,6 +80,12 @@ class FinanceFields extends AbstractFieldGroup
                 'conditional' => ['payment' => 'Company'],
             ],
             'companyAll' => [
+                'label'       => __('Company All?'),
+                'description' => __('Should all items be billed to the specified company, or just some?'),
+                'prefill'  => 'Y',
+                'conditional' => ['payment' => 'Company'],
+            ],
+            'gibbonFinanceFeeCategoryIDList' => [
                 'label'       => __('Company Fee Categories'),
                 'description' => __('If the specified company is not paying all fees, which categories are they paying?'),
                 'prefill'  => 'Y',
@@ -90,7 +96,7 @@ class FinanceFields extends AbstractFieldGroup
 
     public function getDescription() : string
     {
-        return __('');
+        return '';
     }
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
@@ -157,23 +163,26 @@ class FinanceFields extends AbstractFieldGroup
                 if (empty($categories)) {
                     $form->addHiddenValue('companyAll', 'Y');
                 } else {
-                    $colGroup = $row->addColumn()->addClass('paymentCompany flex-col w-full justify-between items-start');
-                    $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
-                    $col->addClass('paymentCompany');
-                        $col->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+                    $col = $row->addClass('paymentCompany')->addColumn()->setClass('flex flex-row justify-between');
+                        $col->addLabel('companyAll', __($field['label']))->description(__($field['description']));
                         $col->addRadio('companyAll')->fromArray(['Y' => __('All'), 'N' => __('Selected')])->checked('Y')->inline();
-        
+                }
+                break;
+
+            case 'gibbonFinanceFeeCategoryIDList':
+                $categories = $this->feeCategoryGateway->selectActiveFeeCategories()->fetchKeyPair();
+                if (!empty($categories)) {
                     $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
         
-                    $existingFeeCategoryIDList = (isset($application['gibbonFinanceFeeCategoryIDList']) && is_array($application['gibbonFinanceFeeCategoryIDList']))? $application['gibbonFinanceFeeCategoryIDList'] : array();
+                    $existingFeeCategoryIDList = $formBuilder->getConfig('gibbonFinanceFeeCategoryIDList', '');
+                    $existingFeeCategoryIDList = is_array($existingFeeCategoryIDList) ? implode(',', $existingFeeCategoryIDList) : $existingFeeCategoryIDList;
         
-                    $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
-                    $col->addClass('paymentCompany')->addClass('paymentCompanyCategories');
-                        $col->addLabel('gibbonFinanceFeeCategoryIDList[]', __($field['label']))->description(__($field['description']));
-                        $col->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
+                    $col = $row->addClass('paymentCompanyCategories')->addColumn()->setClass('flex flex-row justify-between');
+                        $col->addLabel('gibbonFinanceFeeCategoryIDList', __($field['label']))->description(__($field['description']));
+                        $col->addCheckbox('gibbonFinanceFeeCategoryIDList')
                             ->fromArray($categories)
-                            ->fromArray(['0001' => __('Other')]);
-                            // ->loadFromCSV($application);  
+                            ->fromArray(['0001' => __('Other')])
+                            ->loadFromCSV($existingFeeCategoryIDList);  
                 }
                 break;
         }

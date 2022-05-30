@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Fields;
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 
@@ -32,10 +32,12 @@ class PrivacyFields extends AbstractFieldGroup
     public function __construct(SettingGateway $settingGateway)
     {
         $this->settingGateway = $settingGateway;
+        $privacyBlurb = $this->settingGateway->getSettingByScope('User Admin', 'privacyBlurb');
+
         $this->fields = [
             'headingPrivacyStatement' => [
                 'label'       => __('Privacy Statement'),
-                'description' => __('This is example text. Edit it to suit your school context.'),
+                'description' => $privacyBlurb ?? __('This is example text. Edit it to suit your school context.'),
                 'type'        => 'subheading',
             ],
             'privacyOptions' => [
@@ -46,7 +48,7 @@ class PrivacyFields extends AbstractFieldGroup
 
     public function getDescription() : string
     {
-        return __('');
+        return '';
     }
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
@@ -62,7 +64,7 @@ class PrivacyFields extends AbstractFieldGroup
 
             case 'privacyOptions':
                 $privacyOptions = $this->settingGateway->getSettingByScope('User Admin', 'privacyOptions');
-                $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+                $options = array_map('trim', explode(',', $privacyOptions));
 
                 $row->addLabel('privacyOptions[]', __($field['label']))->description(__($field['description']));
                 $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg')->required($required);

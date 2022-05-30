@@ -21,13 +21,18 @@ namespace Gibbon\Forms\Builder\Fields;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class StudentFields extends AbstractFieldGroup
 {
-    public function __construct()
+    protected $uniqueEmailAddress;
+
+    public function __construct(SettingGateway $settingGateway)
     {
+        $this->uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
+
         $this->fields = [
             'headingStudentPersonalData' => [
                 'label' => __('Student Personal Data'),
@@ -78,13 +83,35 @@ class StudentFields extends AbstractFieldGroup
             'languageHomeSecondary' => [
                 'label' => __('Home Language - Secondary'),
             ],
+            'languageFirst' => [
+                'label' => __('First Language'),
+                'description' => __('Student\'s native/first/mother language.'),
+                'required' => 'Y',
+            ],
+            'languageSecond' => [
+                'label' => __('Second Language'),
+            ],
+            'languageThird' => [
+                'label' => __('Third Language'),
+            ],
+            'countryOfBirth' => [
+                'label' => __('Country of Birth'),
+                'required' => 'Y',
+            ],
+
+
             'headingStudentContact' => [
                 'label' => __('Student Contact'),
                 'type' => 'subheading',
             ],
             'email' => [
                 'label' => __('Email'),
-                'required' => 'N',
+            ],
+            'phone' => [
+                'label'       => __('Phone'),
+                'description' => __('Type, country code, number.'),
+                'type'        => 'phone',
+                'acquire'     => ['phone1' => 'varchar', 'phone1Type' => 'varchar', 'phone1CountryCode' => 'varchar','phone2' => 'varchar', 'phone2Type' => 'varchar', 'phone2CountryCode' => 'varchar'],
             ],
             // 'thing' => [
             //     'label' => __('Label'),
@@ -143,12 +170,52 @@ class StudentFields extends AbstractFieldGroup
                 break;
 
             // STUDENT BACKGROUND
-
+            case 'languageHomePrimary':
+                $row->addLabel('languageHomePrimary', __($field['label']))->description(__($field['description']));
+                $row->addSelectLanguage('languageHomePrimary')->required($required);
+                break;
+        
+            case 'languageHomeSecondary':
+                $row->addLabel('languageHomeSecondary', __($field['label']))->description(__($field['description']));
+                $row->addSelectLanguage('languageHomeSecondary')->placeholder('')->required($required);
+                break;
+        
+            case 'languageFirst':
+                $row->addLabel('languageFirst', __($field['label']))->description(__($field['description']));
+                $row->addSelectLanguage('languageFirst')->required($required);
+                break;
+        
+            case 'languageSecond':
+                $row->addLabel('languageSecond', __($field['label']))->description(__($field['description']));
+                $row->addSelectLanguage('languageSecond')->placeholder('')->required($required);
+                break;
+        
+            case 'languageThird':
+                $row->addLabel('languageThird', __($field['label']))->description(__($field['description']));
+                $row->addSelectLanguage('languageThird')->placeholder('')->required($required);
+                break;
+        
+            case 'countryOfBirth':
+                $row->addLabel('countryOfBirth', __($field['label']))->description(__($field['description']));
+                $row->addSelectCountry('countryOfBirth')->required($required);
+                break;
 
             // STUDENT CONTACT
             case 'email':
                 $row->addLabel('email', __($field['label']))->description(__($field['description']));
                 $email = $row->addEmail('email')->required($required);
+                if ($this->uniqueEmailAddress == 'Y') {
+                    $email->uniqueField('./publicRegistrationCheck.php');
+                }
+                break;
+
+            case 'phone':
+                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
+                for ($i = 1; $i < 3; ++$i) {
+                    $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
+                    $col->addLabel('phone'.$i, __('Phone').' '.$i)->description(__($field['description']));
+                    $col->addPhoneNumber('phone'.$i)->required($required);
+                }
                 break;
         }
 

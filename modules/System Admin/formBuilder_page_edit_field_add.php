@@ -168,16 +168,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $fieldGroups = $fieldGroup == 'CustomFields' ? [
             'CustomFields' => __('Custom Fields'),
         ] : [
-            'AdmissionsFields' => __('Admissions'),
-            'StudentFields'    => __('Student'),
-            'ParentFields'     => __('Parent'),
-            'FamilyFields'     => __('Family'),
-            'MedicalFields'    => __('Medical'),
-            'INFields'         => __('Individual Needs'),
-            'FinanceFields'    => __('Finance'),
-            'LanguageFields'   => __('Language'),
-            'PrivacyFields'    => __('Privacy'),
-            'AgreementFields'  => __('Agreement'),
+            'AdmissionsFields'  => __('Admissions'),
+            'StudentFields'     => __('Student'),
+            'Parent1Fields'      => __('Parent 1'),
+            'Parent2Fields'      => __('Parent 2'),
+            'FamilyFields'      => __('Family'),
+            'MedicalFields'     => __('Medical'),
+            'INFields'          => __('Individual Needs'),
+            'FinanceFields'     => __('Finance'),
+            'LanguageFields'    => __('Language'),
+            'ScholarshipFields' => __('Scholarships'),
+            'PrivacyFields'     => __('Privacy'),
+            'AgreementFields'   => __('Agreement'),
         ];
 
         foreach ($fieldGroups as $fieldGroupName => $fieldGroupLabel) {
@@ -191,9 +193,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             foreach ($fields as $heading => $headingFields) {
                 if (empty($headingFields)) continue;
 
+                if (!is_array($headingFields)) {
+                    $headingFields = [$heading => $headingFields];
+                    $heading = '';
+                }
+
                 if ($fieldGroup == 'CustomFields') {
                     $col->addSubheading($heading);
-                } else {
+                } elseif (!empty($heading)) {
                     $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $heading);
                     $field = $fieldGroupClass->getField($groupName);
 

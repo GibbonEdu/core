@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Fields;
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
@@ -27,11 +26,8 @@ use Gibbon\Forms\Builder\FormBuilderInterface;
 
 class LanguageFields extends AbstractFieldGroup
 {
-    protected $settingGateway;
-
-    public function __construct(SettingGateway $settingGateway)
+    public function __construct()
     {
-        $this->settingGateway = $settingGateway;
         $this->fields = [
             'headingLanguageSelection' => [
                 'label'       => __('Language Selection'),
@@ -73,7 +69,7 @@ class LanguageFields extends AbstractFieldGroup
 
             case 'languageChoiceExperience':
 
-                //$form->toggleVisibilityByClass('languageChoice')->onSelect('languageChoice')->whenNot(__('Please select...'));
+                $form->toggleVisibilityByClass('languageChoice')->onSelect('languageChoice')->whenNot(__('Please select...'));
                 
                 $column = $row->addClass('languageChoice')->addColumn();
                 $column->addLabel('languageChoiceExperience', __($field['label']))->description(__($field['description']));

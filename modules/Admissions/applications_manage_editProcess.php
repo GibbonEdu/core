@@ -106,7 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Enable manually changing the status for non-accepted forms
     if (!empty($_POST['status']) && $application['status'] != 'Accepted') {
-        $formData->set('status', $_POST['status']);
         $formData->setStatus($_POST['status']);
     }
 

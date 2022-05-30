@@ -179,10 +179,21 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldInfo = $fieldGroup->getField($fieldName);
             $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field);
 
-            if (!is_null($fieldValue)) {
+            if (!is_null($fieldValue) || $fieldInfo['type'] == 'checkbox') {
                 $data[$fieldName] = $fieldValue;
+            }
+            
+            if (!empty($fieldInfo['acquire'])) {
+                foreach ($fieldInfo['acquire'] as $subFieldName => $subFieldType) {
+                    $fieldValue = $fieldGroup->getFieldDataFromPOST($subFieldName, ['fieldType' => $subFieldType]);
+
+                    if (!is_null($fieldValue)) {
+                        $data[$subFieldName] = $fieldValue;
+                    }
+                }
             }
         }
 

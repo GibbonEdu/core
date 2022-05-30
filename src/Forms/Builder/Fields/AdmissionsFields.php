@@ -78,13 +78,14 @@ class AdmissionsFields extends AbstractFieldGroup
             'previousSchools' => [
                 'label'       => __('Previous Schools'),
                 'description' => __('Please give information on the last two schools attended by the applicant.'),
+                'acquire'     => ['schoolName1' => 'varchar', 'schoolAddress1' => 'varchar', 'schoolGrades1' => 'varchar', 'schoolLanguage1' => 'varchar', 'schoolDate1' => 'date','schoolName2' => 'varchar', 'schoolAddress2' => 'varchar', 'schoolGrades2' => 'varchar', 'schoolLanguage2' => 'varchar', 'schoolDate2' => 'date'],
             ],
         ];
     }
 
     public function getDescription() : string
     {
-        return __('');
+        return '';
     }
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
@@ -99,6 +100,11 @@ class AdmissionsFields extends AbstractFieldGroup
                 $row->addCheckbox($field['fieldName'])->description(__('Yes'))->setValue('on')->required($required);
                 break;
 
+            case 'dateStart':
+                $row->addLabel('dateStart', __($field['label']))->description(__($field['description']));
+                $row->addDate('dateStart')->required($required);
+                break;
+
             case 'gibbonSchoolYearIDEntry':
                 $years = $formBuilder->getConfig('enableLimitedYearsOfEntry') == 'Y' && $formBuilder->hasConfig('availableYearsOfEntry')
                     ? $this->schoolYearGateway->getSchoolYearsFromList($formBuilder->getConfig('availableYearsOfEntry'))
@@ -106,11 +112,6 @@ class AdmissionsFields extends AbstractFieldGroup
 
                 $row->addLabel('gibbonSchoolYearIDEntry', __($field['label']))->description(__($field['description']));
                 $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder(__('Please select...'));
-                break;
-
-            case 'dateStart':
-                $row->addLabel('dateStart', __($field['label']))->description(__($field['description']));
-                $row->addDate('dateStart')->required($required);
                 break;
 
             case 'gibbonYearGroupIDEntry':

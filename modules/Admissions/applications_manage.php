@@ -127,7 +127,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $table->addColumn('parents', __('Parents'))->notSortable();
 
-    $table->addColumn('schoolName1', __('Last School'));
+    $table->addColumn('schoolName1', __('Last School'))
+        ->format(function($application) {
+            $school = $application['schoolName1'];
+            if ($application['schoolDate2'] > $application['schoolDate1'] && !empty($application['schoolName2'])) {
+                $school = $application['schoolName2'];
+            }
+            return Format::truncate($school, 20);
+        });
     
     $table->addColumn('status', __('Status'))
         ->description(__('Milestones'))

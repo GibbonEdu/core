@@ -56,6 +56,7 @@ abstract class AbstractFormStorage implements FormStorageInterface, FormDataInte
     public function setStatus(string $status)
     {
         $this->status = $status;
+        if (isset($this->data['status'])) $this->data['status'] = $this->status;
     }
 
     public function exists(string $fieldName) : bool

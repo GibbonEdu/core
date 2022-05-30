@@ -64,6 +64,9 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
                 'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
                 'gibbonAdmissionsApplication.data->>"$.schoolName1" as schoolName1',
+                'gibbonAdmissionsApplication.data->>"$.schoolName2" as schoolName2',
+                'gibbonAdmissionsApplication.data->>"$.schoolDate1" as schoolDate1',
+                'gibbonAdmissionsApplication.data->>"$.schoolDate2" as schoolDate2',
                 'gibbonAdmissionsApplication.data->>"$.dob" as dob',
              ])
             ->from($this->getTableName())

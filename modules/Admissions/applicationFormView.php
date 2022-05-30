@@ -28,7 +28,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Builder\FormPayment;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
-$accessToken = $_GET['tok'] ?? $session->get('admissionsAccessToken') ?? '';
+$accessToken = $_GET['tok'] ?? $_GET['accessToken'] ?? $session->get('admissionsAccessToken') ?? '';
 $proceed = false;
 $public = false;
 
