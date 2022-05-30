@@ -131,6 +131,11 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             'dateStart'           => $formData->get($prefix.'dateStart'),
             'privacy'             => $formData->get($prefix.'privacy'),
             'dayType'             => $formData->get($prefix.'dayType'),
+            'profession'          => $formData->get($prefix.'profession', ''),
+            'employer'            => $formData->get($prefix.'employer', ''),
+            'jobTitle'            => $formData->get($prefix.'jobTitle', ''),
+            'religion '           => $formData->get($prefix.'religion ', ''),
+            'jobTitle'            => $formData->get($prefix.'jobTitle', ''),
             'studentID'           => $formData->get($prefix.'studentID', ''),
             'fields'              => $formData->get($prefix.'fields', ''),
         ];
