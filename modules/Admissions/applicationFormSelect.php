@@ -56,7 +56,8 @@ if ($proceed == false) {
     ]);
 
     if (!$session->has('username')) {
-        echo Format::alert(sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $session->get('organisationNameShort'), $session->get('systemName')).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')), 'message');
+        echo Format::alert(__('If you already have an account for {organisation} {systemName}, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under {linkName} in the main menu.', ['organisation' => $session->get('organisationNameShort'), 'systemName' => $session->get('systemName'), 'linkName' => __('People').' > '.__('Admissions') 
+        ]).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')), 'message');
     }
 
     $welcomeHeading = $settingGateway->getSettingByScope('Admissions', 'welcomeHeading');

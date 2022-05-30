@@ -37,13 +37,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/settings.php') 
 
     $settingGateway = $container->get(SettingGateway::class);
 
+    $setting = $settingGateway->getSettingByScope('Admissions', 'admissionsEnabled', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'], $guid)->selected($setting['value']);
+
+    $form->toggleVisibilityByClass('admissions')->onSelect('admissionsEnabled')->when('Y');
+
+    $setting = $settingGateway->getSettingByScope('Admissions', 'admissionsLinkName', true);
+    $row = $form->addRow()->addClass('admissions');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'], $guid)->setValue($setting['value'])->maxLength(90);
+
+    $setting = $settingGateway->getSettingByScope('Admissions', 'admissionsLinkText', true);
+    $row = $form->addRow()->addClass('admissions');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextArea($setting['name'], $guid)->setValue($setting['value'])->setRows(3)->maxLength(255);
+
     $setting = $settingGateway->getSettingByScope('Admissions', 'welcomeHeading', true);
-    $col = $form->addRow()->addColumn();
-        $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $col->addTextField($setting['name'], $guid)->setValue($setting['value'])->maxLength(90);
+    $row = $form->addRow()->addClass('admissions');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'], $guid)->setValue($setting['value'])->maxLength(90);
 
     $setting = $settingGateway->getSettingByScope('Admissions', 'welcomeText', true);
-    $col = $form->addRow()->addColumn();
+    $col = $form->addRow()->addClass('admissions')->addColumn();
         $col->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $col->addEditor($setting['name'], $guid)->setValue($setting['value'])->setRows(8);
 

@@ -591,12 +591,15 @@ if (!$session->has('address')) {
         $templateData = [
             'indexText'                 => $session->get('indexText'),
             'organisationName'          => $session->get('organisationName'),
+            'admissionsEnabled'         => $settingGateway->getSettingByScope('Admissions', 'admissionsEnabled') == 'Y',
+            'admissionsLinkText'        => $settingGateway->getSettingByScope('Admissions', 'admissionsLinkText'),
+            'admissionsLinkName'        => $settingGateway->getSettingByScope('Admissions', 'admissionsLinkName'),
             'publicRegistration'        => $settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration') == 'Y',
             'publicStudentApplications' => $settingGateway->getSettingByScope('Application Form', 'publicApplications') == 'Y',
             'publicStaffApplications'   => $settingGateway->getSettingByScope('Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
             'makeDepartmentsPublic'     => $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic') == 'Y',
             'makeUnitsPublic'           => $settingGateway->getSettingByScope('Planner', 'makeUnitsPublic') == 'Y',
-            'privacyPolicy'           => $settingGateway->getSettingByScope('System Admin', 'privacyPolicy'),
+            'privacyPolicy'             => $settingGateway->getSettingByScope('System Admin', 'privacyPolicy'),
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on

@@ -15,15 +15,23 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         </p>
     </div>
 
-    {% if publicStudentApplications %}
+    {% if admissionsEnabled %}
         {{ homepage.card(
-            __('Student Applications'), 
-            __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), 
+            __(admissionsLinkName), 
+            __(admissionsLinkText), 
             "/?q=/modules/Admissions/applicationFormSelect.php",
             organisationName,
             'first'
         ) }}
 
+    {% elseif publicStudentApplications %}
+        {{ homepage.card(
+            __('Student Applications'), 
+            __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), 
+            "/?q=/modules/Students/applicationForm.php",
+            organisationName,
+            'first'
+        ) }}
     {% endif %}
 
     {% if publicStaffApplications %}

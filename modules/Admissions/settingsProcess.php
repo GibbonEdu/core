@@ -37,6 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/settings.php') 
 
     $settingsToUpdate = [
         'Admissions' => [
+            'admissionsEnabled',
+            'admissionsLinkName',
+            'admissionsLinkText',
             'welcomeHeading',
             'welcomeText',
         ],
@@ -48,18 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/settings.php') 
 
     foreach ($settingsToUpdate as $scope => $settings) {
         foreach ($settings as $name) {
+            if (!isset($_POST[$name])) continue;
             $value = $_POST[$name] ?? '';
 
             $updated = $settingGateway->updateSettingByScope($scope, $name, $value);
             $partialFail &= !$updated;
         }
     }
-
-    $availableYearsOfEntry = $_POST['availableYearsOfEntry'] ?? '';
-    $availableYearsOfEntry = is_array($availableYearsOfEntry)? implode(',', $availableYearsOfEntry) : $availableYearsOfEntry;
-
-    $updated = $settingGateway->updateSettingByScope('Application Form', 'availableYearsOfEntry', $availableYearsOfEntry);
-    $partialFail &= !$updated;
 
     $URL .= $partialFail
         ? '&return=error2'
