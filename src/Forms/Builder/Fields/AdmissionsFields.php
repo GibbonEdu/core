@@ -41,6 +41,8 @@ class AdmissionsFields extends AbstractFieldGroup
         $this->schoolYearGateway = $schoolYearGateway;
         $this->yearGroupGateway = $yearGroupGateway;
         $this->languageGateway = $languageGateway;
+        
+        $dayTypeText = $this->settingGateway->getSettingByScope('User Admin', 'dayTypeText');
 
         $this->fields = [
             'headingStudentEducation' => [
@@ -56,6 +58,7 @@ class AdmissionsFields extends AbstractFieldGroup
                 'label'       => __('Intended Start Date'),
                 'description' => __('Student\'s intended first day at school.'),
                 'required'    => 'X',
+                'type'        => 'date',
             ],
             'gibbonYearGroupIDEntry' => [
                 'label'       => __('Year Group at Entry'),
@@ -69,6 +72,8 @@ class AdmissionsFields extends AbstractFieldGroup
             ],
             'dayType' => [
                 'label'       => __('Day Type'),
+                'description' => $dayTypeText,
+                'required'    => 'Y',
             ],
             'referenceEmail' => [
                 'label'       => __('Current School Reference Email'),
@@ -79,6 +84,11 @@ class AdmissionsFields extends AbstractFieldGroup
                 'label'       => __('Previous Schools'),
                 'description' => __('Please give information on the last two schools attended by the applicant.'),
                 'acquire'     => ['schoolName1' => 'varchar', 'schoolAddress1' => 'varchar', 'schoolGrades1' => 'varchar', 'schoolLanguage1' => 'varchar', 'schoolDate1' => 'date','schoolName2' => 'varchar', 'schoolAddress2' => 'varchar', 'schoolGrades2' => 'varchar', 'schoolLanguage2' => 'varchar', 'schoolDate2' => 'date'],
+            ],
+            'howDidYouHear' => [
+                'label'       => __('How Did You Hear About Us?'),
+                'prefill'     => 'Y',
+                'acquire'     => ['howDidYouHearMore' => 'varchar']
             ],
         ];
     }
@@ -127,10 +137,9 @@ class AdmissionsFields extends AbstractFieldGroup
 
             case 'dayType':
                 $dayTypeOptions = $this->settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
-                if (!empty($dayTypeOptions)) {
-                    $row->addLabel('dayType', __($field['label']))->description(__($field['description']));
-                    $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required);
-                }
+                $row->addLabel('dayType', __($field['label']))->description(__($field['description']));
+                $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required);
+
                 break;
 
             case 'referenceEmail':
@@ -161,6 +170,27 @@ class AdmissionsFields extends AbstractFieldGroup
                     $tableRow->addDate('schoolDate'.$i)->setSize(10);
                 }
                 break;
+            
+            case 'howDidYouHear':
+                $howDidYouHear = $this->settingGateway->getSettingByScope('Application Form', 'howDidYouHear');
+                $howDidYouHearList = array_map('trim', explode(',', $howDidYouHear));
+
+                $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
+
+                $col = $colGroup->addColumn()->setClass('flex flex-row justify-between items-center');
+                $col->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
+
+                if (empty($howDidYouHear)) {
+                    $col->addTextField('howDidYouHear')->required()->maxLength(30);
+                } else {
+                    $col->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
+
+                    $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
+
+                    $col = $colGroup->addColumn()->setClass('tellUsMore flex flex-row justify-between items-center');
+                        $col->addLabel('howDidYouHearMore', __('Tell Us More'))->description(__('The name of a person or link to a website, etc.'));
+                        $col->addTextField('howDidYouHearMore')->maxLength(255)->setClass('w-64');
+                }
         }
 
         return $row;

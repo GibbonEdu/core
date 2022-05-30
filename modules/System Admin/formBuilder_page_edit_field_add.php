@@ -168,11 +168,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $fieldGroups = $fieldGroup == 'CustomFields' ? [
             'CustomFields' => __('Custom Fields'),
         ] : [
-            'AdmissionsFields'  => __('Admissions'),
             'StudentFields'     => __('Student'),
+            'AdmissionsFields'  => __('Admissions'),
+            'FamilyFields'      => __('Family'),
             'Parent1Fields'      => __('Parent 1'),
             'Parent2Fields'      => __('Parent 2'),
-            'FamilyFields'      => __('Family'),
             'MedicalFields'     => __('Medical'),
             'INFields'          => __('Individual Needs'),
             'FinanceFields'     => __('Finance'),

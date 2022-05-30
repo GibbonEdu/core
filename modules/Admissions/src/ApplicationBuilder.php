@@ -132,7 +132,7 @@ class ApplicationBuilder extends FormBuilder
         if (!$this->hasField('priority')) {
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-                $row->addSelect('priority')->fromArray(range(-9, 9))->required();
+                $row->addSelect('priority')->fromArray(range(9, -9))->selected(0)->required();
         }
 
         if (!$this->hasField('dateStart')) {
@@ -144,6 +144,13 @@ class ApplicationBuilder extends FormBuilder
 
     protected function addPaymentInfo(Form $form)
     {
+        
+
+        $formSubmissionFee = $this->getConfig('formSubmissionFee');
+        $formProcessingFee =  $this->getConfig('formProcessingFee');
+
+        if (empty($formSubmissionFee) && empty($formProcessingFee)) return;
+
         $form->addRow()->addHeading('Payment Details', __('Payment Details'));
 
         $paymentMadeOptions = [
@@ -151,12 +158,7 @@ class ApplicationBuilder extends FormBuilder
             'Y'         => __('Yes'),
             'Exemption' => __('Exemption'),
         ];
-
-        $formSubmissionFee = $this->getConfig('formSubmissionFee');
-        $formProcessingFee =  $this->getConfig('formProcessingFee');
-
-        if (empty($formSubmissionFee) && empty($formProcessingFee)) return;
-
+        
         $results = json_decode($this->getConfig('result', ''), true) ?? [];
 
         $paymentGateway = $this->getContainer()->get(PaymentGateway::class);

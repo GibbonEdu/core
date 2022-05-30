@@ -152,9 +152,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
     $processes = $formProcessor->getViewableProcesses();
 
     $activeProcesses = array_filter($processes, function ($process) {
-        return $process->isVerified() == true;
+        return $process->isVerified() == true && !empty($process->getRequiredFields());
     });
-    $inactiveProcesses = array_diff_key($processes, $activeProcesses);
+    $inactiveProcesses = array_filter(array_diff_key($processes, $activeProcesses), function ($process) {
+        return !empty($process->getRequiredFields());
+    });
     
     // Configure active functionality
     if (!empty($activeProcesses)) {
@@ -212,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
             $row = $form->addRow()->addClass('bg-gray-300');
                 $row->addLabel($processName, $view->getName())->description($view->getDescription());
                 $col = $row->addColumn()->addClass('justify-start w-full sm:max-w-lg');
-                $col->addContent(__('Missing required fields: '))->addClass('w-48');
+                $col->addContent(__('Required fields: '))->addClass('w-48');
                 $col->addContent(implode(', ', $missingRequiredFields))->addClass('w-full');
         }
 

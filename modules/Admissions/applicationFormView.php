@@ -161,7 +161,7 @@ if (!$proceed) {
         ->sortBy('name', 'ASC')
         ->filterBy('type', 'Application')
         ->filterBy('active', 'Y')
-        ->filterBy('public', 'Y');
+        ->filterBy('public', $public ? 'Y' : '');
 
     $forms = $formGateway->queryForms($criteria)->toArray();
 

@@ -96,7 +96,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
     public function addConfig($values)
     {
-        $this->config = array_merge($this->config, $values);
+        $this->config = array_merge($this->config ?? [], $values ?? []);
     }
 
     public function getFormID()
@@ -182,7 +182,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             $fieldInfo = $fieldGroup->getField($fieldName);
             $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field);
 
-            if (!is_null($fieldValue) || $fieldInfo['type'] == 'checkbox') {
+            if (!is_null($fieldValue) || (!empty($field['type']) && $field['type'] == 'checkbox')) {
                 $data[$fieldName] = $fieldValue;
             }
             
@@ -267,7 +267,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                 $row = $fieldGroup->addFieldToForm($this, $form, $field);
 
-                $invalid = in_array($field['fieldName'], $this->getConfig('invalid'));
+                $invalid = in_array($field['fieldName'], $this->getConfig('invalid', []));
                 $row->addClass($invalid ? 'bg-red-200 text-red-700' : '');
             }
 

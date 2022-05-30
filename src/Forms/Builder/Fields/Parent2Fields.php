@@ -37,6 +37,10 @@ class Parent2Fields extends AbstractFieldGroup
         $this->userGateway = $userGateway;
 
         $this->fields = [
+            'headingParentGuardian2' => [
+                'label' => __('Parent/Guardian')." 2",
+                'type'  => 'heading',
+            ],
             'secondParent' => [
                 'label' => __('Do not include a second parent/guardian'),
                 'type'  => 'checkbox',
@@ -111,7 +115,6 @@ class Parent2Fields extends AbstractFieldGroup
             'parent2email' => [
                 'label'    => __('Email'),
                 'type'     => 'email',
-                'required' => 'Y',
                 'prefill'  => 'Y',
             ],
             'parent2phone' => [
@@ -127,7 +130,6 @@ class Parent2Fields extends AbstractFieldGroup
             ],
             'parent2profession' => [
                 'label' => __('Profession'),
-                'required' => 'Y',
                 'prefill'  => 'Y',
             ],
             'parent2employer' => [

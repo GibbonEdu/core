@@ -45,7 +45,7 @@ class LayoutText extends AbstractFieldGroup
     {
         $row = $form->addRow();
         
-        $row->addContent(__($field['description']));
+        $row->addContent('<p class="mb-0">'.__($field['description']),'</p>');
         
         return $row;
     }

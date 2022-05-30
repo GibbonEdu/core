@@ -33,7 +33,7 @@ use Gibbon\Forms\Builder\Exception\MissingFieldException;
 
 class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['Payment Gateway'];
+    protected $requiredFields = ['Payment Gateway', 'email'];
 
     private $session;
     private $payment;
@@ -128,6 +128,10 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
     {
         if (!$this->payment->isEnabled()) {
             throw new MissingFieldException('Payment Gateway');
+        }
+
+        if (!$builder->hasField('email')) {
+            throw new MissingFieldException('email');
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Builder\Fields;
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Layout\Row;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Domain\User\FamilyGateway;
@@ -28,10 +29,12 @@ use Gibbon\Services\Format;
 
 class FamilyFields extends AbstractFieldGroup
 {
+    protected $session;
     protected $familyGateway;
 
-    public function __construct(FamilyGateway $familyGateway)
+    public function __construct(Session $session, FamilyGateway $familyGateway)
     {
+        $this->session = $session;
         $this->familyGateway = $familyGateway;
 
         $this->fields = [
@@ -80,6 +83,16 @@ class FamilyFields extends AbstractFieldGroup
             'familyStatus' => [
                 'label'       => __('Marital Status'),
                 'prefill'     => 'Y',
+            ],
+            'headingSiblings' => [
+                'label' => __('Siblings'),
+                'type'  => 'heading',
+            ],
+            'siblings' => [
+                'label'       => __('Siblings'),
+                'description' => __('Please give information on the applicants\'s siblings.'),
+                'prefill'     => 'Y',
+                'acquire'     => ['siblingName1' => 'varchar', 'siblingDOB1' => 'date', 'siblingSchool1' => 'varchar', 'siblingSchoolJoiningDate1' => 'date', 'siblingName2' => 'varchar', 'siblingDOB2' => 'date', 'siblingSchool2' => 'varchar', 'siblingSchoolJoiningDate2' => 'date', 'siblingName3' => 'varchar', 'siblingDOB3' => 'date', 'siblingSchool3' => 'varchar', 'siblingSchoolJoiningDate3' => 'date'],
             ],
         ];
     }
@@ -177,6 +190,27 @@ class FamilyFields extends AbstractFieldGroup
             case 'familyStatus':
                 $row->addLabel('familyStatus', __($field['label']))->description(__($field['description']));
                 $row->addSelectMaritalStatus('familyStatus')->required($required);
+                break;
+
+            case 'siblings':
+                $col = $row->addColumn();
+                $col->addLabel('siblings', __($field['label']))->description(__($field['description']));
+                $table = $col->addTable()->addClass('colorOddEven');
+
+                $header = $table->addHeaderRow();
+                $header->addContent(__('Sibling Name'));
+                $header->addContent(__('Date of Birth'))->append('<br/>'.Format::small($this->session->get('i18n')['dateFormat']));
+                $header->addContent(__('School Attending'));
+                $header->addContent(__('Joining Date'))->append('<br/>'.Format::small($this->session->get('i18n')['dateFormat']));
+
+                for ($i = 1; $i <= 3; ++$i) {
+                    $tableRow = $table->addRow();
+                    $tableRow->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
+                    $tableRow->addDate('siblingDOB'.$i)->setSize(10);
+                    $tableRow->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
+                    $tableRow->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
+                }
+                
                 break;
         }
 

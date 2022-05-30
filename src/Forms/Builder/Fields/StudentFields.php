@@ -34,6 +34,10 @@ class StudentFields extends AbstractFieldGroup
         $this->uniqueEmailAddress = $settingGateway->getSettingByScope('User Admin', 'uniqueEmailAddress');
 
         $this->fields = [
+            'headingStudent' => [
+                'label' => __('Student'),
+                'type'  => 'heading',
+            ],
             'headingStudentPersonalData' => [
                 'label' => __('Student Personal Data'),
                 'type' => 'subheading',
@@ -70,18 +74,11 @@ class StudentFields extends AbstractFieldGroup
             'dob' => [
                 'label' => __('Date of Birth'),
                 'required' => 'Y',
+                'type' => 'date',
             ],
             'headingStudentBackground' => [
                 'label' => __('Student Background'),
                 'type' => 'subheading',
-            ],
-            'languageHomePrimary' => [
-                'label' => __('Home Language - Primary'),
-                'description' => __('The primary language used in the student\'s home.'),
-                'required' => 'Y',
-            ],
-            'languageHomeSecondary' => [
-                'label' => __('Home Language - Secondary'),
             ],
             'languageFirst' => [
                 'label' => __('First Language'),
@@ -98,8 +95,6 @@ class StudentFields extends AbstractFieldGroup
                 'label' => __('Country of Birth'),
                 'required' => 'Y',
             ],
-
-
             'headingStudentContact' => [
                 'label' => __('Student Contact'),
                 'type' => 'subheading',
@@ -113,11 +108,6 @@ class StudentFields extends AbstractFieldGroup
                 'type'        => 'phone',
                 'acquire'     => ['phone1' => 'varchar', 'phone1Type' => 'varchar', 'phone1CountryCode' => 'varchar','phone2' => 'varchar', 'phone2Type' => 'varchar', 'phone2CountryCode' => 'varchar'],
             ],
-            // 'thing' => [
-            //     'label' => __('Label'),
-            //     'description' => __('Description'),
-            //     'required' => 'Y',
-            // ],
         ];
     }
 

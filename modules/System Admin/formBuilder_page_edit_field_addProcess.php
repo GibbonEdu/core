@@ -85,6 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
                 }
 
                 if (!empty($field['type']) && ($field['type'] == 'heading' || $field['type'] == 'subheading')) {
+                    $fieldName = $field['type'].preg_replace('/[^a-zA-Z0-9]/', '', $_POST['label'] ?? $fieldName);
                     $fieldGroupName = 'LayoutHeadings';
                 }
             }

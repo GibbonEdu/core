@@ -72,18 +72,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $form->addHiddenValue('fieldType', $values['fieldType']);
     }
 
-    $row = $form->addRow();
-        $row->addLabel('label', __('Label'));
-        $row->addTextField('label')->maxLength(90)->required();
+    if ($values['fieldType'] != 'text') {
+        $row = $form->addRow();
+            $row->addLabel('label', __('Label'));
+            $row->addTextField('label')->maxLength(90)->required();
+    }
 
     if ($values['fieldType'] == 'heading' || $values['fieldType'] == 'subheading') {
         $col = $form->addRow()->addColumn();
         $col->addLabel('description', __('Description'));
-        $col->addTextArea('description')->maxLength(255)->setRows(4);
+        $col->addTextArea('description')->setRows(4);
     } else {
         $row = $form->addRow();
             $row->addLabel('description', __('Description'));
-            $row->addTextArea('description')->maxLength(255)->setRows(2);
+            $row->addTextArea('description')->setRows(2);
 
         $row = $form->addRow();
             $row->addLabel('required', __('Required'))->description(__('Is this field compulsory?'));
@@ -116,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addNumber('options')->setName('options')->minimum(1)->maximum(20)->onlyInteger(true);
     }
 
-    if (in_array($values['fieldType'], ['select', 'checkboxes', 'radio'])) {
+    if ($values['fieldGroup'] == 'RequiredDocuments' || in_array($values['fieldType'], ['select', 'checkboxes', 'radio'])) {
         $row = $form->addRow();
             $row->addLabel('options', __('Options'))
                 ->description(__('Comma separated list of options.'))

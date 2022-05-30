@@ -37,6 +37,10 @@ class Parent1Fields extends AbstractFieldGroup
         $this->userGateway = $userGateway;
 
         $this->fields = [
+            'headingParentGuardian1' => [
+                'label' => __('Parent/Guardian')." 1",
+                'type'  => 'heading',
+            ],
             'headingParentGuardian1PersonalData' => [
                 'label' => __('Parent/Guardian')." 1 ".__('Personal Data'),
                 'type'  => 'subheading',
