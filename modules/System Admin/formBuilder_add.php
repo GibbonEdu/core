@@ -45,10 +45,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
     $types = [
         'Application'      => __('Application'),
         'Post-application' => __('Post-application'),
-        'Student'          => __('Student'),
-        'Parent'           => __('Parent'),
-        'Family'           => __('Family'),
-        'Staff'            => __('Staff'),
+
+        // These are unavailable until v25
+        // 'Student'          => __('Student'),
+        // 'Parent'           => __('Parent'),
+        // 'Family'           => __('Family'),
+        // 'Staff'            => __('Staff'),
     ];
     
     $row = $form->addRow();

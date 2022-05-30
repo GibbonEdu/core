@@ -25,6 +25,7 @@ use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Builder\FormPayment;
 
 $accessID = $_GET['acc'] ?? $_GET['accessID'] ?? '';
 $accessToken = $_GET['tok'] ?? $session->get('admissionsAccessToken') ?? '';
@@ -87,6 +88,8 @@ if (!$proceed) {
 
     $page->return->addReturns(['success1' => __('A new admissions account has been created for {email}', ['email' => $account['email'] ?? ''])]);
 
+    $formPayment = $container->get(FormPayment::class);
+    
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->sortBy('timestampCreated', 'ASC');
 
@@ -124,13 +127,24 @@ if (!$proceed) {
             ->addParam('gibbonFormID')
             ->addParam('identifier')
             ->addParam('page')
-            ->format(function ($values, $actions) {
+            ->format(function ($values, $actions) use ($accessToken, $formPayment) {
                 if ($values['status'] == 'Incomplete') {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Admissions/applicationForm.php');
                 } else {
                     $actions->addAction('view', __('View'))
                         ->setURL('/modules/Admissions/applicationForm.php');
+                }
+
+                if ($values['status'] != 'Incomplete' && $values['status'] != 'Submitted' && $values['status'] != 'Accepted') return;
+
+                $submitPaymentPossible = !empty($values['formSubmissionFee']) && empty($values['gibbonPaymentIDSubmit']);
+                $processPaymentPossible = !empty($values['formProcessingFee']) && empty($values['gibbonPaymentIDProcess']);
+                if ($formPayment->isEnabled() && ($submitPaymentPossible || $processPaymentPossible)) {
+                    $actions->addAction('payment', __('Pay Online'))
+                        ->addParam('tok', $accessToken)
+                        ->setIcon('payment')
+                        ->setURL('/modules/Admissions/applicationForm_payFee.php');
                 }
             });
 

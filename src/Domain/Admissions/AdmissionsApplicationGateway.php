@@ -135,11 +135,15 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsApplication.identifier',
                 'gibbonAdmissionsApplication.status',
                 'gibbonAdmissionsApplication.timestampCreated',
+                'gibbonAdmissionsApplication.gibbonPaymentIDSubmit',
+                'gibbonAdmissionsApplication.gibbonPaymentIDProcess',
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
                 'gibbonFormPage.sequenceNumber as page',
                 'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
                 'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
+                'gibbonForm.config->>"$.formSubmissionFee" as formSubmissionFee',
+                'gibbonForm.config->>"$.formProcessingFee" as formProcessingFee',
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')

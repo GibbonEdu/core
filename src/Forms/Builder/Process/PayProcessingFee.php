@@ -104,7 +104,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
             'body'   => $template->renderBody($templateData),
             'details' => [
                 __('Application Form')           => $builder->getDetail('name'),
-                __('Application ID')             => $builder->getConfig('foreignTableID'),
+                __('Application ID')             => intval($builder->getConfig('foreignTableID')),
                 __('Application Processing Fee') => $this->session->get('currency').$processingFee,
             ],
             'button' => [

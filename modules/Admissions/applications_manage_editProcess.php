@@ -65,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $formBuilder->addConfig([
         'foreignTableID' => $gibbonAdmissionsApplicationID,
+        'identifier'     => $application['identifier'],
         'accessID'       => $account['accessID'],
         'accessToken'    => $account['accessToken'],
         'gibbonPersonID' => $account['gibbonPersonID'],

@@ -24,6 +24,7 @@ use Gibbon\Forms\Builder\FormPayment;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Domain\Finance\PaymentGateway;
 
 $gibbonFormID = $_GET['form'] ?? $_GET['gibbonFormID'] ?? '';
 $identifier = $_GET['id'] ?? $_GET['identifier'] ?? null;
@@ -47,7 +48,9 @@ if (!$proceed) {
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $page->breadcrumbs->add(__('Application Fee'));
+    $page->breadcrumbs
+        ->add(__('My Application Forms'), 'modules/Admissions/applicationFormView.php', compact('accessID', 'accessToken'))
+        ->add(__('Application Fee'));
 
     if (empty($accessID) || empty($identifier)) {
         echo Format::alert(__('You have not specified one or more required parameters.'));
@@ -65,12 +68,14 @@ if (!$proceed) {
         $page->addError(__('The application link does not match an existing record in our system. The record may have been removed or the link is no longer valid.'));
         $session->forget('admissionsAccessToken');
         return;
+    } else {
+        $session->set('admissionsAccessToken', $accessToken);
     }
 
     $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationByIdentifier($gibbonFormID, $identifier, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'] ?? 0);
 
     $formPayment = $container->get(FormPayment::class);
-    $formPayment->setForeignTable('gibbonApplicationForm', $gibbonApplicationFormID);
+    $formPayment->setForeignTable('gibbonAdmissionsApplication', $application['gibbonAdmissionsApplicationID']);
 
     $form = $container->get(FormGateway::class)->getByID($gibbonFormID);
     $formConfig = json_decode($form['config'] ?? '', true);
@@ -80,43 +85,102 @@ if (!$proceed) {
         return;
     }
 
-    if (!$formPayment->isEnabled() || empty($formConfig['formProcessingFee'])) {
+    if (!$formPayment->isEnabled()) {
         $page->addError(__('Online payment options are not available at this time.'));
         return;
     }
 
-    if (!empty($application['gibbonPaymentIDProcess'])) {
-        $page->addError(__('A payment has already been made for this application form.'), 'success');
-        return;
-    }
+    $processPaymentMade = !empty($application['gibbonPaymentIDProcess']);
+    $submitPaymentMade = !empty($application['gibbonPaymentIDSubmit']);
 
     $page->return->addReturns($formPayment->getReturnMessages() + ['error8' => __('A payment has already been made for this application form.')]);
 
+    // APPLICATION PROCESSING FEE
+    if (!empty($formConfig['formProcessingFee'])) {
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
+                    
+        $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('accessID', $accessID);
+        $form->addHiddenValue('gibbonFormID', $gibbonFormID);
+        $form->addHiddenValue('identifier', $identifier);
+        $form->addHiddenValue('feeType', 'formProcessingFee');
+        $form->addHiddenValue('feeAmount', $formConfig['formProcessingFee']);
 
-    $form = Form::create('action', $session->get('absoluteURL').'/modules/Students/applicationForm_payFeeProcess.php');
+        $form->addRow()->addHeading('Application Fee', __('Application Fee'));
+
+        $row = $form->addRow()->addContent(!$processPaymentMade ? $formPayment->getProcessingFeeInfo() : __('A payment has already been made for this application form.'))->wrap('<p class="my-2">', '</p>');
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));
+            $row->addTextField('gibbonApplicationFormID')->readOnly()->setValue(intval($application['gibbonAdmissionsApplicationID']));
+
+        $row = $form->addRow();
+            $row->addLabel('applicationProcessFeeLabel', __('Application Processing Fee'));
+            $row->addTextField('applicationProcessFee')->readOnly()->setValue($session->get('currency').$formConfig['formProcessingFee']);
+
+        if (!$processPaymentMade) {
+            $form->addRow()->addSubmit(__('Pay Online Now'));
+        } else {
+            $payment = $container->get(PaymentGateway::class)->getByID($application['gibbonPaymentIDProcess']);
+
+            $row = $form->addRow();
+            $row->addLabel('statusLabel', __('Status'));
+            $row->addTextField('status')->readOnly()->setValue($payment['status']);
+        
+            $row = $form->addRow();
+            $row->addLabel('timestampLabel', __('Date Paid'));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp']));
+
+            $row = $form->addRow();
+            $row->addLabel('gatewayLabel', __('Payment Gateway'));
+            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway']);
+        }
+
+        echo $form->getOutput();
+    }
+
+
+    // APPLICATION SUBMISSION FEE
+    if ($formConfig['formSubmissionFee']) {
+        $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
                 
-    $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('accessID', $accessID);
-    $form->addHiddenValue('gibbonFormID', $gibbonFormID);
-    $form->addHiddenValue('identifier', $identifier);
-    $form->addHiddenValue('feeType', 'formProcessingFee');
-    $form->addHiddenValue('feeAmount', $formConfig['formProcessingFee']);
+        $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('accessID', $accessID);
+        $form->addHiddenValue('gibbonFormID', $gibbonFormID);
+        $form->addHiddenValue('identifier', $identifier);
+        $form->addHiddenValue('feeType', 'formSubmissionFee');
+        $form->addHiddenValue('feeAmount', $formConfig['formSubmissionFee']);
 
+        $form->addRow()->addHeading('Application Submission Fee', __('Application Submission Fee'));
 
-    $form->addRow()->addHeading('Application Fee', __('Application Fee'));
+        $row = $form->addRow()->addContent(!$submitPaymentMade ? Format::alert(__('It appears your application payment was not successfully completed when your form was submitted. You may use the online payment option below to pay the fees now.'), 'message') : Format::alert(__('A payment has already been made for this application form.'), 'success'))->wrap('<p class="my-2">', '</p>');
 
-    $row = $form->addRow()->addContent($formPayment->getProcessingFeeInfo())->wrap('<p class="my-2">', '</p>');
+        $row = $form->addRow();
+            $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));
+            $row->addTextField('gibbonApplicationFormID')->readOnly()->setValue(intval($application['gibbonAdmissionsApplicationID']));
 
-    $row = $form->addRow();
-        $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));
-        $row->addTextField('gibbonApplicationFormID')->readOnly()->setValue($application['gibbonAdmissionsApplicationID']);
+        $row = $form->addRow();
+            $row->addLabel('applicationProcessFeeLabel', __('Application Submission Fee'));
+            $row->addTextField('applicationProcessFee')->readOnly()->setValue($session->get('currency').$formConfig['formSubmissionFee']);
 
-    $row = $form->addRow();
-        $row->addLabel('applicationProcessFeeLabel', __('Application Processing Fee'));
-        $row->addTextField('applicationProcessFee')->readOnly()->setValue($session->get('currency').$formConfig['formProcessingFee']);
+        if (!$submitPaymentMade) {
+            $form->addRow()->addSubmit(__('Pay Online Now'));
+        } else {
+            $payment = $container->get(PaymentGateway::class)->getByID($application['gibbonPaymentIDSubmit']);
 
-    $row = $form->addRow();
-        $row->addSubmit(__('Pay Online Now'));
+            $row = $form->addRow();
+            $row->addLabel('statusLabel', __('Status'));
+            $row->addTextField('status')->readOnly()->setValue($payment['status']);
+        
+            $row = $form->addRow();
+            $row->addLabel('timestampLabel', __('Date Paid'));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp']));
 
-    echo $form->getOutput();
+            $row = $form->addRow();
+            $row->addLabel('gatewayLabel', __('Payment Gateway'));
+            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway']);
+        }
+
+        echo $form->getOutput();
+    }
 }
