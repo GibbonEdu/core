@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $result = $payment->getPaymentResult();
 
         // Send a receipt
-        if ($result['success']) {
+        if ($result && $result['success']) {
             $subject = __('Receipt from {organisation} via {system}', [
                 'organisation' => $session->get('organisationNameShort'),
                 'system' => $session->get('systemName'),

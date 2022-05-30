@@ -68,6 +68,11 @@ class EmailTemplateLoader implements LoaderInterface
         return strtotime($template['timestamp']) <= $time;
     }
 
+    public function getNameFromID($id)
+    {
+        return $this->emailTemplateGateway->selectBy(['gibbonEmailTemplateID' => $id], ['templateName'])->fetch(\PDO::FETCH_COLUMN, 0);
+    }
+
     /**
      * @param $name
      * @return array|null

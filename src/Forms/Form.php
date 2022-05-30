@@ -350,6 +350,15 @@ class Form implements OutputableInterface
     }
 
     /**
+     * Clear all Trigger objects.
+     * @return  array
+     */
+    public function clearTriggers()
+    {
+        $this->triggers = [];
+    }
+
+    /**
      * Adds a visibility trigger to the form by class name.
      * @param   string  $class Element name
      * @return  object Trigger

@@ -63,6 +63,13 @@ class EmailTemplate
         return $this;
     }
 
+    public function setTemplateByID($templateID)
+    {
+        $this->templateName = $this->loader->getNameFromID($templateID);
+
+        return $this;
+    }
+
     public function renderSubject($data)
     {
         $twig = new Environment($this->loader->setSource('templateSubject'));

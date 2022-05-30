@@ -48,11 +48,21 @@ class SchoolYearGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
     
-    public function getSchoolYearList()
+    public function getSchoolYearList($activeOnly = false)
     {
-        $sql = "SELECT gibbonSchoolYearID AS value, name FROM gibbonSchoolYear ORDER BY sequenceNumber";
+        $sql = "SELECT gibbonSchoolYearID AS value, name FROM gibbonSchoolYear ";
+        if ($activeOnly) $sql .= "WHERE (status='Current' OR status='Upcoming') ";
+        $sql .= "ORDER BY sequenceNumber";
 
         return $this->db()->select($sql)->fetchKeyPair();
+    }
+
+    public function getSchoolYearsFromList($schoolYearList = [])
+    {
+        $data = ['gibbonSchoolYearIDList' => is_array($schoolYearList) ? implode(',', $schoolYearList) : $schoolYearList];
+        $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE FIND_IN_SET(gibbonSchoolYearID, :gibbonSchoolYearIDList) ORDER BY sequenceNumber";
+
+        return $this->db()->select($sql, $data)->fetchKeyPair();
     }
 
     public function getSchoolYearByID($gibbonSchoolYearID)

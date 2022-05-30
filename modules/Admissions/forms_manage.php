@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Forms\FormSubmissionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.php') == false) {
     // Access denied
@@ -27,8 +29,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     // Proceed!
     $page->breadcrumbs->add(__('Manage Other Forms'));
 
-    $search = $_GET['search'] ?? '';
+    $page->addMessage('This <b>BETA</b> feature is part of the new flexible application form and admissions system. While we have worked to ensure that this functionality is ready to use, this is part of a very large set of changes that are likely to continue evolving over the next version, so we\'ve marked it as beta for v24. You are welcome to use these features and please do let us know in the support forums if you encounter any issues.');
+    
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonAdmissionsAccountID = $_GET['gibbonAdmissionsAccountID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
@@ -49,22 +54,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
 
     echo $form->getOutput();
 
+    // QUERY
+    $formSubmissionGateway = $container->get(FormSubmissionGateway::class);
+    $criteria = $formSubmissionGateway->newQueryCriteria(true)
+        ->sortBy('timestampCreated', 'DESC')
+        ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
+        ->fromPOST();
+
+    $submissions = $formSubmissionGateway->queryFormsBySchoolYear($criteria, $gibbonSchoolYearID);
+
     // DATA TABLE
-    $table = DataTable::create('admissions');
+    $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Forms'));
 
     $table->addColumn('student', __('Student'));
-    $table->addColumn('yearGroup', __('Year Group'));
-    $table->addColumn('formGroup', __('Form Group'));
+    $table->addColumn('formName', __('Form Name'));
+    $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
+    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+        $table->addHeaderAction('forms', __('Form Builder'))
+            ->setURL('/modules/System Admin/formBuilder.php')
+            ->setIcon('markbook')
+            ->displayLabel();
+    }
+    
+    $table->modifyRows(function ($values, $row) {
+        if ($values['status'] == 'Incomplete') $row->addClass('warning');
+        return $row;
+    });
+    
     $table->addActionColumn()
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Admissions/forms_manage_edit.php');
+                ->setURL('/modules/Admissions/applications_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Admissions/forms_manage_delete.php');
+                ->setURL('/modules/Admissions/applications_manage_delete.php');
         });
 
-    echo $table->render([]);
+    echo $table->render($submissions);
 }

@@ -37,6 +37,7 @@ class Checkbox extends Input
     protected $inline = false;
     protected $align = 'right';
     protected $labelClass = '';
+    protected $selectableGroups = false;
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -92,10 +93,10 @@ class Checkbox extends Input
 
         if (is_array($values)) {
             foreach ($values as $key => $value) {
-                $this->checked[trim($key)] = (!is_array($value))? trim((string) $value) : $value;
+                $this->checked[trim($key)] = (!is_array($value))? trim($value) : $value;
             }
         } else {
-            $this->checked = array(trim((string) $values));
+            $this->checked = [trim($values ?? '')];
         }
 
         return $this;
@@ -124,6 +125,16 @@ class Checkbox extends Input
         if (empty($label)) $label = __('All').' / '.__('None');
 
         $this->checkall = $label;
+        return $this;
+    }
+
+    /**
+     * Aligns the list options to the right edge.
+     * @return  self
+     */
+    public function selectableGroups($value = true)
+    {
+        $this->selectableGroups = $value;
         return $this;
     }
 
@@ -203,12 +214,12 @@ class Checkbox extends Input
 
         if (!empty($this->options) && is_array($this->options)) {
             $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
-            $hasMultiple = count($this->options) > 1;
+            $hasMultiple = count($this->options, COUNT_RECURSIVE) > 1;
 
             if ($hasMultiple) {
                 $output .= '<fieldset id="'.$this->getID().'"  style="border: 0px;">';
             }
-
+            
             if (!empty($this->checkall)) {
                 $checked = (count($this->options) == count($this->checked))? 'checked' : '';
                 $output .= '<div class="flex mt-1 '.($this->align == 'right' ? 'justify-end text-right' : '').'">';
@@ -226,9 +237,14 @@ class Checkbox extends Input
                     : $this->options;
 
             foreach ($optionGroups as $group => $options) {
-
+            
                 if (!empty($group)) {
-                    $output .= '<label class="flex font-bold pb-1 border-b border-gray-400">'.$group.'</label>';
+                    $output .= '<label class="flex justify-between font-bold pb-1 border-b border-gray-400 '.($this->selectableGroups ? 'mt-4' : '').'"><span class="flex-1">'.$group.'</span>';
+                    if ($this->selectableGroups) {
+                        $groupName = 'heading'.preg_replace('/[^a-zA-Z0-9]/', '', $group);
+                        $output .= '<input type="checkbox" name="'.$name.'" value="'.$groupName.'" class="text-right"><br/>';
+                    }
+                    $output .= '</label>';
                 }
                 foreach ($options as $value => $label) {
                     if ($hasMultiple) {
@@ -245,12 +261,12 @@ class Checkbox extends Input
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                         $output .= '<label class="'.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label>';
                     } elseif ($this->align == 'left') {
-                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<div class="flex text-left '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'>';
                         $output .= '<label class="leading-compact ml-2 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label><br/>';
                         $output .= '</div>';
                     } else {
-                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'my-px').'">';
+                        $output .= '<div class="flex justify-end text-right '.($hasMultiple ? 'my-2' : 'items-center my-px').'">';
                         $output .= '<label class="leading-compact mr-1 '.$this->getLabelClass().'" for="'.$this->getID().'">'.$label.'</label> ';
                         $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
                         $output .= '</div>';

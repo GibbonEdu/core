@@ -232,11 +232,11 @@ class Format
                 $minutes = floor($seconds / 60);
                 $time = __n('{count} min', '{count} mins', $minutes);
                 break;
-            case ($seconds >= 3600 && $seconds < 86400):
+            case ($seconds >= 3600 && $seconds < 172800):
                 $hours = floor($seconds / 3600);
                 $time = __n('{count} hr', '{count} hrs', $hours);
                 break;
-            case ($seconds >= 86400 && $seconds < 1209600):
+            case ($seconds >= 172800 && $seconds < 1209600):
                 $days = floor($seconds / 86400);
                 $time = __n('{count} day', '{count} days', $days);
                 break;
@@ -598,6 +598,22 @@ class Format
         return $output;
     }
 
+    public static function listDetails(array $items, $tag = 'ul', $listClass = '', $itemClass = 'leading-normal')
+    {
+        $output = "<$tag class='$listClass'>";
+        foreach ($items as $label => $value) {
+            if ($label == 'heading' || $label == 'subheading') {
+                $hTag = $label == 'heading' ? 'h3' : 'h4';
+                $output .= "<li class='{$itemClass}'><{$hTag}>".$value."</{$hTag}></li>";
+            } else {
+                $output .= "<li class='{$itemClass}'><strong>".$label.'</strong>: '.$value.'</li>';
+            }
+        }
+        $output .= "</$tag>";
+
+        return $output;
+    }
+
     /**
      * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
      *
@@ -659,7 +675,12 @@ class Format
     public static function nameLinked($gibbonPersonID, $title, $preferredName, $surname, $roleCategory = 'Other', $reverse = false, $informal = false, $params = [])
     {
         $name = self::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
-        if ($roleCategory == 'Staff') {
+        if ($roleCategory == 'Other') {
+            $url = Url::fromModuleRoute('User Admin', 'user_manage_edit')
+                ->withAbsoluteUrl()
+                ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);
+            $output = self::link($url, $name);
+        } elseif ($roleCategory == 'Staff') {
             $url = Url::fromModuleRoute('Staff', 'staff_view_details')
                 ->withAbsoluteUrl()
                 ->withQueryParams(['gibbonPersonID' => $gibbonPersonID] + $params);

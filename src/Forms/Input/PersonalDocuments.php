@@ -84,7 +84,7 @@ class PersonalDocuments extends Input
             
             $output .= $this->view->fetchFromTemplate('ui/icons.twig.html', [
                 'icon' => strtolower($document['document']),
-                'iconClass' => 'w-6 h-6 fill-current mr-2 -my-2',
+                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
             ]);
 
             $output .= __($document['name']);

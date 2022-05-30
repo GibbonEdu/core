@@ -46,7 +46,7 @@ class PersonalDocumentTypeGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonalDocumentTypeID', 'name', 'active', 'required','type'
+                'gibbonPersonalDocumentTypeID', 'name', 'description', 'active', 'required','type', 'activePersonStudent', 'activePersonParent', 'activePersonStaff', 'activePersonOther' 
             ]);
 
         $criteria->addFilterRules([
@@ -62,7 +62,7 @@ class PersonalDocumentTypeGateway extends QueryableGateway
 
     public function selectDocumentTypes()
     {
-        $sql = "SELECT gibbonPersonalDocumentTypeID as value, name FROM gibbonPersonalDocumentType ORDER BY sequenceNumber, name";
+        $sql = "SELECT gibbonPersonalDocumentTypeID as value, name FROM gibbonPersonalDocumentType WHERE active='Y' ORDER BY sequenceNumber, name";
 
         return $this->db()->select($sql);
     }

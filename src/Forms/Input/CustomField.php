@@ -50,19 +50,21 @@ class CustomField extends Input
         $this->fields = $fields;
         $this->name = $name;
 
-        //From Enum: 'varchar','text','date','url','select', ('checkboxes' unimplemented?)
-        $this->type = $fields['type'] ?? 'varchar';
+        $this->type = $fields['type'] ?? $fields['fieldType'] ?? 'TextField';
         $options = $fields['options'] ?? '';
 
         switch ($this->type) {
+            case 'Date':
             case 'date':
                 $this->customField = $this->factory->createDate($name);
                 break;
 
+            case 'Time':
             case 'time':
                 $this->customField = $this->factory->createTime($name);
                 break;
 
+            case 'Number':
             case 'number':
                 $this->customField = $this->factory->createNumber($name)->onlyInteger(false);
                 if (!empty($options)) {
@@ -70,10 +72,12 @@ class CustomField extends Input
                 }
                 break;
 
+            case 'URL':
             case 'url':
                 $this->customField = $this->factory->createURL($name);
                 break;
 
+            case 'Editor':
             case 'editor':
                 global $guid;
                 $this->customField = $this->factory->createEditor($name, $guid)->allowUpload(false)->showMedia(false);
@@ -82,23 +86,24 @@ class CustomField extends Input
                 }
                 break;
 
+            case 'Color':
             case 'color':
                 $this->customField = $this->factory->createColor($name);
                 break;
 
             case 'image':
-                $fieldName = stripos($name, '[') !== false ?  $name : $name.'File';
-                $this->customField = $this->factory->createFileUpload($fieldName)->accepts('.jpg,.jpeg,.gif,.png,.svg');
+                $this->customField = $this->factory->createFileUpload($name.'File')->accepts('.jpg,.jpeg,.gif,.png,.svg');
                 break;
 
+            case 'FileUpload':
             case 'file':
-                $fieldName = stripos($name, '[') !== false ?  $name : $name.'File';
-                $this->customField = $this->factory->createFileUpload($fieldName);
+                $this->customField = $this->factory->createFileUpload($name.'File');
                 if (!empty($options)) {
                     $this->customField->accepts($options);
                 }
                 break;
 
+            case 'Select':
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
                 $options = $this->parseOptions($options);
@@ -108,16 +113,18 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'checkboxes':
+            case 'Checkbox': 
+            case 'checkboxes': 
                 $this->customField = $this->factory->createCheckbox($name);
                 $options = $this->parseOptions($options);
-
+                
                 if (!empty($options)) {
                     $this->customField->fromArray($options)->alignRight();
                 }
                 break;
 
-            case 'radio':
+            case 'Radio': 
+            case 'radio': 
                 $this->customField = $this->factory->createRadio($name);
                 if (!empty($options) && is_string($options)) {
                     $this->customField->fromString($options);
@@ -126,10 +133,12 @@ class CustomField extends Input
                 }
                 break;
 
+            case 'YesNo':
             case 'yesno':
                 $this->customField = $this->factory->createYesNo($name)->placeholder();
                 break;
 
+            case 'TextArea':
             case 'text':
             case 'paragraph':
                 $this->customField = $this->factory->createTextArea($name);
@@ -139,6 +148,7 @@ class CustomField extends Input
                 break;
 
             default:
+            case 'TextField':
             case 'words':
             case 'varchar':
                 $this->customField = $this->factory->createTextField($name);
@@ -173,16 +183,25 @@ class CustomField extends Input
 
         switch($this->type) {
 
+            case 'Select':
             case 'select':
+            case 'YesNo':
             case 'yesno':
                 $this->customField->selected($value);
                 break;
 
             case 'radio':
             case 'checkboxes':
+                if (is_array($value)) {
+                    $value = array_map('trim', $value);
+                } elseif (stripos($value, ',') !== false) {
+                    $value = array_map('trim', explode(',', $value));
+                }
+
                 $this->customField->checked($value);
                 break;
 
+            case 'Date':
             case 'date':
                 $this->customField->setDateFromValue($value);
                 break;
@@ -192,10 +211,10 @@ class CustomField extends Input
                 $this->customField->setAttachment($this->name, $session->get('absoluteURL'), $value);
                 break;
 
-            default:
             case 'url':
             case 'text':
             case 'varchar':
+            default:
                 $this->customField->setValue($value);
                 break;
         }
@@ -209,7 +228,41 @@ class CustomField extends Input
      */
     public function readonly($value = true)
     {
-        return $this->customField->setReadonly($value)->setDisabled($value);
+        $this->customField->setReadonly($value)->setDisabled($value);
+        return parent::setReadonly($value);
+    }
+
+    /**
+     * Set a custom field as required.
+     * @return  string
+     */
+    public function required($value = true)
+    {
+        $this->customField->setRequired($value);
+        return parent::setRequired($value);
+    }
+
+    /**
+     * Set the default text that appears before any text has been entered.
+     * @param   string  $value
+     * @return  self
+     */
+    public function placeholder($value = '')
+    {
+        $this->customField->setAttribute('placeholder', $value);
+
+        return $this;
+    }
+
+    /**
+     * Set the title attribute.
+     * @param  string  $title
+     * @return self
+     */
+    public function setTitle($title = '')
+    {
+        $this->customField->setAttribute('title', $title);
+        return $this;
     }
 
     /**
@@ -236,7 +289,7 @@ class CustomField extends Input
 
         $optionArray = array_map('trim', explode(',', $options));
         $options = [];
-
+        
         // Enable [] around an option to create optgroups
         for ($i = 0; $i < count($optionArray); $i++) {
             $option = $optionArray[$i];

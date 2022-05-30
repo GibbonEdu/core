@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Services\Format;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_manage.php') == false) {
     // Access denied
@@ -26,6 +29,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
 } else {
     // Proceed!
     $page->breadcrumbs->add(__('Admissions Accounts'));
+
+    $page->addMessage('This <b>BETA</b> feature is part of the new flexible application form and admissions system. While we have worked to ensure that this functionality is ready to use, this is part of a very large set of changes that are likely to continue evolving over the next version, so we\'ve marked it as beta for v24. You are welcome to use these features and please do let us know in the support forums if you encounter any issues.');
 
     $search = $_GET['search'] ?? '';
 
@@ -45,17 +50,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
 
     echo $form->getOutput();
 
+    // QUERY
+    $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
+    $criteria = $admissionsAccountGateway->newQueryCriteria(true)
+        ->searchBy($admissionsAccountGateway->getSearchableColumns(), $search)
+        ->sortBy('timestampCreated', 'DESC')
+        ->fromPOST();
+
+    $accounts = $admissionsAccountGateway->queryAdmissionsAccounts($criteria);
+
     // DATA TABLE
-    $table = DataTable::create('admissions');
+    $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Admissions Accounts'));
 
-    $table->addColumn('name', __('Name'));
     $table->addColumn('email', __('Email'));
-    $table->addColumn('date', __('Created On'));
-    $table->addColumn('applications', __('Applications'));
-    $table->addColumn('otherForms', __('Other Forms'));
+    $table->addColumn('person', __('Person'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($values) {
+            return !empty($values['gibbonPersonID'])
+                ? Format::nameLinked($values['gibbonPersonID'], $values['title'], $values['preferredName'], $values['surname'], 'Other', false, true)
+                : Format::small(__('N/A'));
+        });
+    $table->addColumn('familyName', __('Family'))
+        ->format(function($values) {
+            $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')
+                ->withQueryParams(['gibbonFamilyID' => $values['gibbonFamilyID']])
+                ->withAbsoluteUrl();
+            return !empty($values['familyName'])
+                ? Format::link($url, $values['familyName']) 
+                : Format::small(__('N/A'));
+        });
+    $table->addColumn('timestampCreated', __('Created'))
+        ->format(Format::using('relativeTime', 'timestampCreated'));
+    $table->addColumn('timestampActive', __('Last Active'))
+        ->format(Format::using('relativeTime', 'timestampActive'));
+    $table->addColumn('applicationCount', __('Applications'))
+        ->width('12%')
+        ->format(function($values) {
+            if (empty($values['applicationCount'])) return;
+
+            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
+            return Format::link($url, $values['applicationCount']);
+        });
+    $table->addColumn('formCount', __('Other Forms'))
+        ->width('12%')
+        ->format(function($values) {
+            if (empty($values['formCount'])) return;
+
+            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
+            return Format::link($url, $values['formCount']);
+        });
 
     $table->addActionColumn()
+        ->addParam('gibbonAdmissionsAccountID')
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Admissions/admissions_manage_edit.php');
@@ -64,5 +111,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
                 ->setURL('/modules/Admissions/admissions_manage_delete.php');
         });
 
-    echo $table->render([]);
+    echo $table->render($accounts);
 }

@@ -505,7 +505,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                     echo '<li class="warning">'.__('Student could not be automatically enrolled in courses, so this will have to be done manually at a later date.').'</li>';
                                     $partialFailures[] = 'autoEnrolStudent';
                                 } else {
-                                    echo '<li>'.__('The student has automatically been enrolled in courses for Form Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enrolled in courses for their Form Group.').'</li>';
                                 }
                             }
 

@@ -319,6 +319,8 @@ class Column
             return call_user_func($this->formatter, $data);
         } else {
             $content = isset($data[$this->getID()])? $data[$this->getID()] : '';
+            $content = is_array($content) ? implode(',', array_keys($content)) : $content;
+            
             return $this->getTranslatable() ? __($content) : $content;
         }
     }

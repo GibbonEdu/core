@@ -22,7 +22,7 @@ namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
 
 /**
- * Checkbox
+ * Radio
  *
  * @version v14
  * @since   v14
@@ -125,19 +125,20 @@ class Radio extends Input
             $totalOptions = count($this->getOptions());
             foreach ($this->getOptions() as $value => $label) {
                 $this->setAttribute('checked', $this->getIsChecked($value));
+                $id = !empty($this->getID())? $this->getID() : $this->getName().$count;
 
                 if ($this->inline) {
-                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" id="'.$this->getName().$count.'" '.$this->getAttributeString().'>&nbsp;';
-                    $output .= '<label for="'.$this->getName().$count.'">'.$label.'</label>';
+                    $output .= '&nbsp;&nbsp;<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label for="'.$id.'">'.$label.'</label>';
                 } elseif ($this->align == 'left') {
                     $output .= '<div class="flex text-left '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
-                    $output .= '<input type="radio" value="'.$value.'" id="'.$this->getName().$count.'" '.$this->getAttributeString().'>';
-                    $output .= '<label class="leading-compact ml-2" for="'.$this->getName().$count.'">'.$label.'</label><br/>';
+                    $output .= '<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'>';
+                    $output .= '<label class="leading-compact ml-2" for="'.$id.'">'.$label.'</label><br/>';
                     $output .= '</div>';
                 } else {
                     $output .= '<div class="flex justify-end text-right '.($totalOptions > 1 ? 'my-2' : 'my-px').'">';
-                    $output .= '<label class="leading-compact mr-1" for="'.$this->getName().$count.'">'.$label.'</label>&nbsp;';
-                    $output .= '<input type="radio" value="'.$value.'" id="'.$this->getName().$count.'" '.$this->getAttributeString().'><br/>';
+                    $output .= '<label class="leading-compact mr-1" for="'.$id.'">'.$label.'</label>&nbsp;';
+                    $output .= '<input type="radio" value="'.$value.'" id="'.$id.'" '.$this->getAttributeString().'><br/>';
                     $output .= '</div>';
                 }
                 $count++;
