@@ -107,7 +107,8 @@ if (empty($accessID) || empty($identifier) || empty($gibbonFormID)) {
         $result = $formPayment->getPaymentResult();
         $gibbonPaymentID = $result['gibbonPaymentID'];
 
-        $formData->setResult('PaySubmissionFeeResult', $return);
+        $formData->set($formPayment->getFormFeeClass().'Complete', !empty($gibbonPaymentID) ? 'Y' : 'N');
+        $formData->setResult($formPayment->getFormFeeClass().'Result', $return);
         $formData->setResult($formPayment->getFormFeeField(), $gibbonPaymentID);
         $updated = $formData->save($identifier);
 

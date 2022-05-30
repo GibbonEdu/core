@@ -72,7 +72,8 @@ if (!$proceed) {
         $session->set('admissionsAccessToken', $accessToken);
     }
 
-    $application = $container->get(AdmissionsApplicationGateway::class)->getApplicationByIdentifier($gibbonFormID, $identifier, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'] ?? 0);
+    $application = $admissionsApplicationGateway->getApplicationByIdentifier($gibbonFormID, $identifier, 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'] ?? 0);
+    $paymentDetails = $admissionsApplicationGateway->getApplicationDetailsByID($application['gibbonAdmissionsApplicationID'] ?? '');
 
     $formPayment = $container->get(FormPayment::class);
     $formPayment->setForeignTable('gibbonAdmissionsApplication', $application['gibbonAdmissionsApplicationID']);
@@ -80,7 +81,7 @@ if (!$proceed) {
     $form = $container->get(FormGateway::class)->getByID($gibbonFormID);
     $formConfig = json_decode($form['config'] ?? '', true);
 
-    if (empty($form) || empty($account) || empty($application)) {
+    if (empty($form) || empty($account) || empty($application) || empty($paymentDetails)) {
         $page->addError(__('You do not have access to this action.'));
         return;
     }
@@ -90,13 +91,16 @@ if (!$proceed) {
         return;
     }
 
-    $processPaymentMade = !empty($application['gibbonPaymentIDProcess']);
-    $submitPaymentMade = !empty($application['gibbonPaymentIDSubmit']);
+    $processPaymentRequired = !empty($formConfig['formProcessingFee']) && $paymentDetails['processingFeeComplete'] != 'Exemption';
+    $processPaymentMade = !empty($application['gibbonPaymentIDProcess']) || $paymentDetails['processingFeeComplete'] == 'Y';
+
+    $submitPaymentRequired = !empty($formConfig['formSubmissionFee']) && $paymentDetails['submissionFeeComplete'] != 'Exemption';
+    $submitPaymentMade = !empty($application['gibbonPaymentIDSubmit']) || $paymentDetails['submissionFeeComplete'] == 'Y';
 
     $page->return->addReturns($formPayment->getReturnMessages() + ['error8' => __('A payment has already been made for this application form.')]);
 
     // APPLICATION PROCESSING FEE
-    if (!empty($formConfig['formProcessingFee'])) {
+    if ($processPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
                     
         $form->addHiddenValue('address', $session->get('address'));
@@ -108,7 +112,7 @@ if (!$proceed) {
 
         $form->addRow()->addHeading('Application Fee', __('Application Fee'));
 
-        $row = $form->addRow()->addContent(!$processPaymentMade ? $formPayment->getProcessingFeeInfo() : __('A payment has already been made for this application form.'))->wrap('<p class="my-2">', '</p>');
+        $row = $form->addRow()->addContent(!$processPaymentMade ? $formPayment->getProcessingFeeInfo() : Format::alert(__('A payment has already been made for this application form.'), 'success'))->wrap('<p class="my-2">', '</p>');
 
         $row = $form->addRow();
             $row->addLabel('gibbonApplicationFormIDLabel', __('Application ID'));
@@ -125,15 +129,15 @@ if (!$proceed) {
 
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
-            $row->addTextField('status')->readOnly()->setValue($payment['status']);
+            $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
         
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
-            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp']));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
 
             $row = $form->addRow();
             $row->addLabel('gatewayLabel', __('Payment Gateway'));
-            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway']);
+            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway'] ?? '');
         }
 
         echo $form->getOutput();
@@ -141,7 +145,7 @@ if (!$proceed) {
 
 
     // APPLICATION SUBMISSION FEE
-    if ($formConfig['formSubmissionFee']) {
+    if ($submitPaymentRequired) {
         $form = Form::create('action', $session->get('absoluteURL').'/modules/Admissions/applicationForm_payFeeProcess.php');
                 
         $form->addHiddenValue('address', $session->get('address'));
@@ -170,15 +174,15 @@ if (!$proceed) {
 
             $row = $form->addRow();
             $row->addLabel('statusLabel', __('Status'));
-            $row->addTextField('status')->readOnly()->setValue($payment['status']);
+            $row->addTextField('status')->readOnly()->setValue($payment['status'] ?? __('Complete'));
         
             $row = $form->addRow();
             $row->addLabel('timestampLabel', __('Date Paid'));
-            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp']));
+            $row->addTextField('timestamp')->readOnly()->setValue(Format::dateTimeReadable($payment['timestamp'] ?? ''));
 
             $row = $form->addRow();
             $row->addLabel('gatewayLabel', __('Payment Gateway'));
-            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway']);
+            $row->addTextField('gateway')->readOnly()->setValue($payment['gateway'] ?? '');
         }
 
         echo $form->getOutput();

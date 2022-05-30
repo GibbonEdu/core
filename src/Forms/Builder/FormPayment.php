@@ -36,6 +36,7 @@ class FormPayment extends Payment
     protected $formConfig;
     protected $feeTotal = 0;
     protected $feeField = '';
+    protected $feeClass = '';
 
     public function __construct(Session $session, Mailer $mail, SettingGateway $settingGateway, PaymentGateway $paymentGateway, FormGateway $formGateway)
     {
@@ -68,6 +69,7 @@ class FormPayment extends Payment
 
         // Set the fee total and field
         $this->feeField = $formFeeType == 'formSubmissionFee' ? 'gibbonPaymentIDSubmit' : 'gibbonPaymentIDProcess';
+        $this->feeClass = $formFeeType == 'formSubmissionFee' ? 'PaySubmissionFee' : 'PayProcessingFee';
         $this->feeTotal = floatval($this->formConfig[$formFeeType] ?? 0);
 
         return $this->feeTotal;
@@ -86,6 +88,11 @@ class FormPayment extends Payment
     public function getFormFeeField()
     {
         return $this->feeField;
+    }
+
+    public function getFormFeeClass()
+    {
+        return $this->feeClass;
     }
 
     public function getFeeInfo()

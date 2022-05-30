@@ -138,8 +138,12 @@ if (!$proceed) {
 
                 if ($values['status'] != 'Incomplete' && $values['status'] != 'Submitted' && $values['status'] != 'Accepted') return;
 
-                $submitPaymentPossible = !empty($values['formSubmissionFee']) && empty($values['gibbonPaymentIDSubmit']);
-                $processPaymentPossible = !empty($values['formProcessingFee']) && empty($values['gibbonPaymentIDProcess']);
+                $submitPaymentMade = !empty($values['gibbonPaymentIDSubmit']) || $values['submissionFeeComplete'] == 'Y';
+                $processPaymentMade = !empty($values['gibbonPaymentIDProcess']) || $values['processingFeeComplete'] == 'Y';
+
+                $submitPaymentPossible = !empty($values['formSubmissionFee']) && !$submitPaymentMade && $values['submissionFeeComplete'] != 'Exemption';
+                $processPaymentPossible = !empty($values['formProcessingFee']) && !$processPaymentMade && $values['processingFeeComplete'] != 'Exemption';
+
                 if ($formPayment->isEnabled() && ($submitPaymentPossible || $processPaymentPossible)) {
                     $actions->addAction('payment', __('Pay Online'))
                         ->addParam('tok', $accessToken)

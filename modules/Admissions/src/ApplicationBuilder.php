@@ -23,6 +23,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Finance\PaymentGateway;
 
 /**
  * ApplicationBuilder
@@ -32,7 +33,7 @@ use Gibbon\Forms\DatabaseFormFactory;
  */
 class ApplicationBuilder extends FormBuilder
 {
-    protected $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID', 'priority', 'dateStart'];
+    protected $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID', 'priority', 'dateStart', 'dayType', 'PaySubmissionFeeComplete', 'PayProcessingFeeComplete'];
 
 
     public function isOfficeOnlyField(string $fieldName) : bool
@@ -84,6 +85,8 @@ class ApplicationBuilder extends FormBuilder
                     $row = $fieldGroup->addFieldToForm($this, $form, $field);
                 }
             }
+
+            $this->addPaymentInfo($form);
         } else {
 
             // Display all non-hidden fields
@@ -136,6 +139,63 @@ class ApplicationBuilder extends FormBuilder
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'))->description(__('Student\'s intended first day at school.'));
                 $row->addDate('dateStart')->required();
+        }
+    }
+
+    protected function addPaymentInfo(Form $form)
+    {
+        $form->addRow()->addHeading('Payment Details', __('Payment Details'));
+
+        $paymentMadeOptions = [
+            'N'         => __('No'),
+            'Y'         => __('Yes'),
+            'Exemption' => __('Exemption'),
+        ];
+
+        $formSubmissionFee = $this->getConfig('formSubmissionFee');
+        $formProcessingFee =  $this->getConfig('formProcessingFee');
+
+        if (empty($formSubmissionFee) && empty($formProcessingFee)) return;
+
+        $results = json_decode($this->getConfig('result', ''), true) ?? [];
+
+        $paymentGateway = $this->getContainer()->get(PaymentGateway::class);
+    
+        if ($formSubmissionFee > 0 and is_numeric($formSubmissionFee)) {
+            // PAYMENT MADE
+            $row = $form->addRow();
+                $row->addLabel('PaySubmissionFeeComplete', __('Payment on Submission'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $this->session->get('currency'), $formSubmissionFee));
+                $row->addSelect('PaySubmissionFeeComplete')->fromArray($paymentMadeOptions)->required();
+    
+            // PAYMENT DETAILS
+            $submitPayment = $paymentGateway->getByID($this->getConfig('gibbonPaymentIDSubmit'));
+            if (!empty($submitPayment)) {
+    
+                $row = $form->addRow();
+                    $column = $row->addColumn()->addClass('right');
+                    $column->addContent(__('Payment Token:').' '.$submitPayment['paymentToken']);
+                    $column->addContent(__('Payment Payer ID:').' '.$submitPayment['paymentPayerID']);
+                    $column->addContent(__('Payment Transaction ID:').' '.$submitPayment['paymentTransactionID']);
+                    $column->addContent(__('Payment Amount:').' '.$submitPayment['amount']);
+            }
+        }
+    
+        if ($formProcessingFee > 0 and is_numeric($formProcessingFee)) {
+            // PAYMENT MADE
+            $row = $form->addRow();
+                $row->addLabel('PayProcessingFeeComplete', __('Payment for Processing'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $this->session->get('currency'), $formProcessingFee));
+                $row->addSelect('PayProcessingFeeComplete')->fromArray($paymentMadeOptions)->required();
+    
+            // PAYMENT DETAILS
+            $processPayment = $paymentGateway->getByID($this->getConfig('gibbonPaymentIDProcess'));
+            if (!empty($processPayment)) {
+                $row = $form->addRow();
+                    $column = $row->addColumn()->addClass('right');
+                    $column->addContent(__('Payment Token:').' '.$processPayment['paymentToken']);
+                    $column->addContent(__('Payment Payer ID:').' '.$processPayment['paymentPayerID']);
+                    $column->addContent(__('Payment Transaction ID:').' '.$processPayment['paymentTransactionID']);
+                    $column->addContent(__('Payment Amount:').' '.$processPayment['amount']);
+            }
         }
     }
 }

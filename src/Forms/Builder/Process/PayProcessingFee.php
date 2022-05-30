@@ -73,7 +73,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
                 'tok'  => $builder->getConfig('accessToken', ''),
                 'id'   => $builder->getConfig('identifier', ''),
                 'form' => $builder->getFormID(),
-                ]);
+            ]);
 
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('formProcessingEmailTemplate'));

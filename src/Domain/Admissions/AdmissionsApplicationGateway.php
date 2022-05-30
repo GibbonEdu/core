@@ -146,6 +146,8 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonFormPage.sequenceNumber as page',
                 'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
                 'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
+                'gibbonAdmissionsApplication.data->>"$.PaySubmissionFeeComplete" AS submissionFeeComplete',
+                'gibbonAdmissionsApplication.data->>"$.PayProcessingFeeComplete" AS processingFeeComplete',
                 'gibbonForm.config->>"$.formSubmissionFee" as formSubmissionFee',
                 'gibbonForm.config->>"$.formProcessingFee" as formProcessingFee',
             ])
@@ -189,7 +191,9 @@ class AdmissionsApplicationGateway extends QueryableGateway
         $sql = "SELECT gibbonAdmissionsApplication.*, 
                     gibbonForm.name as applicationName,
                     gibbonAdmissionsApplication.data->>'$.surname' AS studentSurname,
-                    gibbonAdmissionsApplication.data->>'$.preferredName' AS studentPreferredName
+                    gibbonAdmissionsApplication.data->>'$.preferredName' AS studentPreferredName,
+                    gibbonAdmissionsApplication.data->>'$.PaySubmissionFeeComplete' AS submissionFeeComplete,
+                    gibbonAdmissionsApplication.data->>'$.PayProcessingFeeComplete' AS processingFeeComplete
                 FROM gibbonAdmissionsApplication
                 JOIN gibbonForm ON (gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID)
                 WHERE gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID";
