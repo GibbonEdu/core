@@ -71,6 +71,7 @@ class ApplicationFormStorage extends AbstractFormStorage
                 'data'                   => json_encode($data),
                 'result'                 => json_encode($this->getResults()),
                 'status'                 => $this->getStatus(),
+                'priority'               => $this->getOrNull('priority'),
                 'gibbonFormPageID'       => $this->context['gibbonFormPageID'] ?? $values['gibbonFormPageID'],
                 'gibbonSchoolYearID'     => $this->getAny('gibbonSchoolYearIDEntry'),
                 'gibbonYearGroupID'      => $this->getOrNull('gibbonYearGroupIDEntry'),

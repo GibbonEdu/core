@@ -69,7 +69,7 @@ class PayProcessingFeeView extends AbstractFormView
         if (!$formData->exists($this->getResultName())) return;
 
         $col = $form->addRow()->addColumn();
-        $col->addSubheading($this->getName());
+        $col->addLabel($this->getResultName(), $this->getName());
 
         $messages = $this->payment->getReturnMessages();
 

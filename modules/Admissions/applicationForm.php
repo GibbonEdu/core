@@ -131,7 +131,7 @@ if ($proceed == false) {
     }
 
     // Add page returns and javascript
-    $page->return->addReturns($formBuilder->getReturns($session));
+    $page->return->addReturns($formBuilder->getReturns());
 
     // Prefill application form values
     if ($incomplete && !empty($account)) {

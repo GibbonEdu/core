@@ -18,10 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
-use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
+use Gibbon\Module\Admissions\ApplicationBuilder;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 
 require_once '../../gibbon.php';
@@ -49,14 +49,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Get the admissions account
-    $account = $container->get(AdmissionsAccountGateway::class)->getByID($application['foreignTableID']);
+    $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
+    $account = $admissionsAccountGateway->getByID($application['foreignTableID']);
     if (empty($account)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
 
     // Setup the builder class
-    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], -1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden($officeOnly == 'Y');
+    $formBuilder = $container->get(ApplicationBuilder::class)->populate($application['gibbonFormID'], -1, ['identifier' => $application['identifier'], 'accessID' => $account['accessID']])->includeHidden($officeOnly == 'Y');
 
     // Setup the form data
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
@@ -75,6 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Is this form running a set of processes?
     $processes = $_POST['applicationProcess'] ?? [];
     if (!empty($processes)) {
+        // Extend the lifetime of any access tokens emailed to people
+        $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
+            'timestampTokenExpire' => $date('Y-m-d H:i:s', strtotime("+2 days")),
+        ]);
+
         // Setup which processes are going to run, based on user-selected checkboxes
         foreach ($processes as $processName => $process) {
             $formBuilder->addConfig([$processName.'Enabled' => $process['enabled'] ?? 'N']);
@@ -96,6 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (!$data) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
+    }
+
+    // Enable manually changing the status for non-accepted forms
+    if (!empty($_POST['status']) && $application['status'] != 'Accepted') {
+        $formData->set('status', $_POST['status']);
+        $formData->setStatus($_POST['status']);
     }
 
     // Save data before validation, so users don't lose data?

@@ -106,6 +106,10 @@ class AdmissionsApplicationGateway extends QueryableGateway
                     ->where('gibbonAdmissionsApplication.gibbonYearGroupID = :gibbonYearGroupID')
                     ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
             },
+            'incomplete' => function ($query, $incomplete) {
+                return $incomplete != 'N' ? $query : $query
+                    ->where("gibbonAdmissionsApplication.status <> 'Incomplete'");
+            },
         ]);
 
         return $this->runQuery($query, $criteria);

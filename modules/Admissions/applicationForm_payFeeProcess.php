@@ -124,7 +124,7 @@ if (empty($accessID) || empty($identifier) || empty($gibbonFormID)) {
             }
         } elseif ($result && $result['status'] == 'Cancelled') {
             // Payment was cancelled by the end user
-            $formPayment->sendPaymentCancelled();
+            if ($source == 'submission') $formPayment->sendPaymentCancelled();
             header("Location: {$URL->withReturn($source == 'submission' ? 'success2' : $return)}");
             exit;
         } else {

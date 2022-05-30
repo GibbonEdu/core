@@ -38,6 +38,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
     use ContainerAwareTrait;
 
+    protected $session;
     protected $formGateway;
     protected $formPageGateway;
 
@@ -55,8 +56,9 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
     protected $fieldGroups;
 
-    public function __construct(FormGateway $formGateway, FormPageGateway $formPageGateway)
+    public function __construct(Session $session, FormGateway $formGateway, FormPageGateway $formPageGateway)
     {
+        $this->session = $session;
         $this->formGateway = $formGateway;
         $this->formPageGateway = $formPageGateway;
     }
@@ -123,6 +125,11 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this;
     }
 
+    public function isFieldHidden(array $field) : bool
+    {
+        return $this->includeHidden != ($field['hidden'] == 'Y');
+    }
+
     public function getFieldGroup($fieldGroup)
     {
         if (isset($this->fieldGroups[$fieldGroup])) {
@@ -167,7 +174,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $data = [];
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
+            if ($this->isFieldHidden($field)) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -186,7 +193,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $partialFail = false;
 
         foreach ($this->fields as $fieldName => $field) {
-            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
+            if ($this->isFieldHidden($field)) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -203,7 +210,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     {
         $invalid = [];
         foreach ($this->fields as $fieldName => $field) {
-            if ($this->includeHidden != ($field['hidden'] == 'Y')) continue;
+            if ($this->isFieldHidden($field)) continue;
             if ($field['pageNumber'] != $this->pageNumber && $this->pageNumber > 0) continue;
 
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
@@ -223,6 +230,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form = MultiPartForm::create('formBuilder', (string)$action);
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
 
+        $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
         $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
         $form->addHiddenValue('page', $this->pageNumber);
@@ -252,8 +260,6 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             }
 
             $button = $this->pageNumber > 1 ?"<a href='".(string)$pageUrl->withQueryParams($this->urlParams + ['gibbonFormID' => $this->gibbonFormID, 'page' => ($this->pageNumber-1)])->withAbsoluteUrl()."' class='button inline-block rounded-sm border-gray-400 text-gray-400 text-center w-24 mr-4'>".__('Back')."</a>" : '';
-
-            // $button = $this->pageNumber > 1 ? '<button class="button" onClick="back()">'.__('Back').'</button>' : '';
             
             $row = $form->addRow();
                 $row->addFooter()->prepend($button);
@@ -265,9 +271,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
     public function edit(Url $action)
     {
-        $form = Form::create('formBuilder'.($this->includeHidden ? 'OfficeOnly' : ''), (string)$action);
+        $form = Form::create('formBuilder', (string)$action);
         $form->setFactory(DatabaseFormFactory::create($this->getContainer()->get('db')));
 
+        $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValue('gibbonFormID', $this->gibbonFormID);
         $form->addHiddenValue('gibbonFormPageID', $this->getDetail('gibbonFormPageID'));
         $form->addHiddenValue('page', -1);
@@ -277,53 +284,25 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         if ($this->includeHidden) {
             $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
-            if (!empty($this->getConfig('status'))) {
-                $statuses = [
-                    'Incomplete'   => __('Incomplete'),
-                    'Pending'      => __('Pending'),
-                    'Waiting List' => __('Waiting List'),
-                    'Rejected'     => __('Rejected'),
-                    'Withdrawn'    => __('Withdrawn'),
-                ];
-
-                $row = $form->addRow();
-                if ($this->getConfig('status') != 'Accepted') {
-                    $row->addLabel('status', __('Status'))->description(__('Manually set status.'));
-                    $row->addSelect('status')
-                        ->fromArray($statuses)
-                        ->selected($this->getConfig('status'));
-                } else {
-                    $row->addLabel('statusField', __('Status'));
-                    $row->addTextField('statusField')->required()->readOnly()->setValue($this->getConfig('status'));
-                }
-            }
-
-            $row = $form->addRow();
-                $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-                $row->addSelect('priority')->fromArray(range(-9, 9))->required();
-
-            $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID'];
-
             foreach ($this->pages as $formPage) {
                 foreach ($this->fields as $field) {
-                    if ($field['hidden'] == 'N' && !in_array($field['fieldName'], $officeFields)) continue;
+                    if ($field['hidden'] == 'N') continue;
                     if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
                     $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
                     $row = $fieldGroup->addFieldToForm($this, $form, $field);
                 }
             }
-        } else {
+        }
 
-            // Display all non-hidden fields
-            foreach ($this->pages as $formPage) {
-                foreach ($this->fields as $field) {
-                    if ($field['hidden'] == 'Y') continue;
-                    if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
+        // Display all non-hidden fields
+        foreach ($this->pages as $formPage) {
+            foreach ($this->fields as $field) {
+                if ($field['hidden'] == 'Y') continue;
+                if ($field['pageNumber'] != $formPage['sequenceNumber']) continue;
 
-                    $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
-                    $row = $fieldGroup->addFieldToForm($this, $form, $field);
-                }
+                $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+                $row = $fieldGroup->addFieldToForm($this, $form, $field);
             }
         }
 
@@ -384,7 +363,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $table;
     }
 
-    public function getReturns(Session $session)
+    public function getReturns()
     {
         $returnExtra = '';
 
@@ -392,8 +371,8 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$this->getConfig('foreignTableID').'</b></u>.';
         }
 
-        if ($session->has('organisationAdmissionsName') && $session->has('organisationAdmissionsEmail')) {
-            $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$session->get('organisationAdmissionsEmail')."'>".$session->get('organisationAdmissionsName').'</a>');
+        if ($this->session->has('organisationAdmissionsName') && $this->session->has('organisationAdmissionsEmail')) {
+            $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$this->session->get('organisationAdmissionsEmail')."'>".$this->session->get('organisationAdmissionsName').'</a>');
         }
 
         return [

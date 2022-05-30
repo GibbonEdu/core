@@ -65,9 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $admissionsApplicationGateway = $container->get(AdmissionsApplicationGateway::class);
     $criteria = $admissionsApplicationGateway->newQueryCriteria(true)
         ->searchBy($admissionsApplicationGateway->getSearchableColumns(), $search)
-        ->sortBy('timestampCreated', 'DESC')
+        ->sortBy('gibbonAdmissionsApplication.status')
+        ->sortBy('gibbonAdmissionsApplication.priority', 'DESC')
+        ->sortBy('gibbonAdmissionsApplication.timestampCreated', 'DESC')
         ->filterBy('admissionsAccount', $gibbonAdmissionsAccountID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
+        ->filterBy('incomplete', 'N')
         ->fromPOST();
 
     $submissions = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
@@ -92,6 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     });
 
     $table->addMetaData('filterOptions', [
+        'incomplete:N'        => __('Incomplete Forms Hidden'),
         'status:pending'      => __('Status').': '.__('Pending'),
         'status:accepted'     => __('Status').': '.__('Accepted'),
         'status:rejected'     => __('Status').': '.__('Rejected'),

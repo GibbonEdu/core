@@ -21,15 +21,14 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
+use Gibbon\Module\Admissions\ApplicationBuilder;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Module\Admissions\Forms\ApplicationMilestonesForm;
 use Gibbon\Module\Admissions\Forms\ApplicationProcessForm;
 use Gibbon\Module\Admissions\Tables\ApplicationUploadsTable;
-use Symfony\Component\Console\Descriptor\ApplicationDescription;
 use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
@@ -65,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Setup the form builder
-    $formBuilder = $container->get(FormBuilder::class)->populate($application['gibbonFormID'], 1, $urlParams + [
+    $formBuilder = $container->get(ApplicationBuilder::class)->populate($application['gibbonFormID'], 1, $urlParams + [
         'identifier' => $application['identifier'],
         'accessID' => $account['accessID'],
     ]);
@@ -76,10 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Add configuration values
     $formBuilder->addConfig($application);
-    $formBuilder->addConfig([
-        'foreignTableID' => $gibbonAdmissionsApplicationID,
-        'mode' => 'edit',
-    ]);
+    $formBuilder->addConfig(['foreignTableID' => $gibbonAdmissionsApplicationID]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
@@ -128,6 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $officeForm->addHiddenValue('tab', 0);
     $officeForm->loadAllValuesFrom($values);
 
+    $formBuilder->addConfig(['mode' => 'edit']);
     $editForm = $formBuilder->includeHidden(false)->edit($action);
     $editForm->addHiddenValue('tab', 2);
     $editForm->loadAllValuesFrom($values);
