@@ -24,9 +24,9 @@ require_once '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['welcomeHeading' => 'HTML', 'welcomeText' => 'HTML']);
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/settings.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/admissions_settings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/settings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_settings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

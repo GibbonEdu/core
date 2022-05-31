@@ -21,14 +21,14 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/settings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/School Admin/admissions_settings.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Admissions Settings'));
 
-    $form = Form::create('settings', $session->get('absoluteURL').'/modules/Admissions/settingsProcess.php');
+    $form = Form::create('settings', $session->get('absoluteURL').'/modules/School Admin/admissions_settingsProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $session->get('address'));

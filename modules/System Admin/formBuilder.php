@@ -56,6 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
     $table->addColumn('type', __('Type'));
     $table->addColumn('pages', __('Pages'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+    $table->addColumn('public', __('Public'))->format(Format::using('yesNo', 'public'));
 
     $table->addActionColumn()
         ->addParam('gibbonFormID')

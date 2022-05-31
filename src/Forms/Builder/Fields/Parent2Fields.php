@@ -44,6 +44,7 @@ class Parent2Fields extends AbstractFieldGroup
             'secondParent' => [
                 'label' => __('Do not include a second parent/guardian'),
                 'type'  => 'checkbox',
+                'prefill'  => 'Y',
             ],
             'headingParentGuardian2PersonalData' => [
                 'label' => __('Parent/Guardian')." 2 ".__('Personal Data'),
@@ -87,6 +88,7 @@ class Parent2Fields extends AbstractFieldGroup
             'parent2gender' => [
                 'label' => __('Gender'),
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
             'parent2relationship' => [
                 'label'    => __('Relationship'),
@@ -121,6 +123,7 @@ class Parent2Fields extends AbstractFieldGroup
                 'label'       => __('Phone'),
                 'description' => __('Type, country code, number.'),
                 'type'        => 'phone',
+                'prefill'     => 'Y',
                 'acquire'     => ['parent2phone1' => 'varchar', 'parent2phone1Type' => 'varchar', 'parent2phone1CountryCode' => 'varchar','parent2phone2' => 'varchar', 'parent2phone2Type' => 'varchar', 'parent2phone2CountryCode' => 'varchar'],
             ],
             'headingParentGuardian2Employment' => [

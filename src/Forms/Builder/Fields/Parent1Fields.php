@@ -82,6 +82,7 @@ class Parent1Fields extends AbstractFieldGroup
             'parent1gender' => [
                 'label' => __('Gender'),
                 'required' => 'Y',
+                'prefill'  => 'Y',
             ],
             'parent1relationship' => [
                 'label'    => __('Relationship'),
@@ -115,6 +116,7 @@ class Parent1Fields extends AbstractFieldGroup
                 'label'       => __('Phone'),
                 'description' => __('Type, country code, number.'),
                 'type'        => 'phone',
+                'prefill'     => 'Y',
                 'acquire'     => ['parent1phone1' => 'varchar', 'parent1phone1Type' => 'varchar', 'parent1phone1CountryCode' => 'varchar','parent1phone2' => 'varchar', 'parent1phone2Type' => 'varchar', 'parent1phone2CountryCode' => 'varchar'],
             ],
             'headingParentGuardian1Employment' => [
