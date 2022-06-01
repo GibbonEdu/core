@@ -43,6 +43,7 @@ v24.0.00
         Planner: added Create Markbook Column option when editing a lesson plan
         Planner: refactored Manage Outcomes table
         Planner: made time cap obvious to teachers in Lesson Planner view
+        Planner: enabled staff with Future Years access to plan lessons for Upcoming years in the Unit Planner
         Reports: added filters to the proof reading view
         Reports: enabled including Student - Left enrolments in the Course Criteria data source
         Students: adjusted table label in View Student Profiles

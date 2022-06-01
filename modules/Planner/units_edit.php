@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 //Module includes
@@ -156,13 +158,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                         //CLASSES
                         $form->addRow()->addHeading('Classes', __('Classes'))->append(__('Select classes which will have access to this unit.'));
 
-                        if ($session->get('gibbonSchoolYearIDCurrent') == $gibbonSchoolYearID && $session->get('gibbonSchoolYearIDCurrent') == $session->get('gibbonSchoolYearID')) {
+                        $currentRole = $container->get(RoleGateway::class)->getByID($session->get('gibbonRoleIDCurrent'));
+                        $selectedSchoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
 
-                            $dataClass = array('gibbonUnitID' => $gibbonUnitID);
+                        $isCurrentYear = $session->get('gibbonSchoolYearIDCurrent') == $gibbonSchoolYearID && $session->get('gibbonSchoolYearIDCurrent') == $session->get('gibbonSchoolYearID');
+                        $canAccessUpcomingYear = !empty($currentRole) && $currentRole['futureYearsLogin'] == 'Y';
+
+                        if ($isCurrentYear || ($canAccessUpcomingYear && $selectedSchoolYear['status'] == 'Upcoming')) {
+                            $dataClass = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                             $sqlClass = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourseClass.nameShort, running, gibbonUnitClassID, gibbonUnitID
                                         FROM gibbonCourseClass
                                         LEFT JOIN gibbonUnitClass ON (gibbonUnitClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID)
-                                        WHERE gibbonCourseID=$gibbonCourseID
+                                        WHERE gibbonCourseID=:gibbonCourseID
                                         ORDER BY name";
                             $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
 
