@@ -269,22 +269,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         $col = $table->addColumn('Contacts', __('Contacts'));
 
-                        $numberCount = 0;
-                        $phones = 0;
-                        for ($i = 1; $i < 5; $i++) {
+                        for ($i = 1; $i < 5; ++$i) {
+                            if (empty($row['phone' . $i])) continue;
                             if ($row['phone' . $i] != '') {
-                                $phones++;
-                            }
-                        }
-                        if ($phones > 0) {
-                            $width = (100 / $phones) . '%';
-                            for ($i = 1; $i < 5; ++$i) {
-                                if ($row['phone' . $i] != '') {
-                                    ++$numberCount;
-                                    $col->addColumn('phone' . $i, __('Phone') . " $numberCount")
-                                        ->width($width)
-                                        ->format(Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']));
-                                }
+                                $col->addColumn('phone' . $i, __('Phone') . " $i")
+                                    ->format(Format::using('phone', ['phone' . $i, 'phone'.$i.'CountryCode', 'phone'.$i.'Type']));
                             }
                         }
 
