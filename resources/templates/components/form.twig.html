@@ -8,10 +8,18 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
 <form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
 
-    {% if form.getMultiPartSteps %}
-        <ul class="multiPartForm mb-4">
-            {% for stepNumber, stepName in form.getMultiPartSteps %}
-            <li class="step {{ stepNumber <= form.getCurrentStep ? 'active' : '' }}">{{ stepName }}</li>
+    {% if form.hasPages %}
+        <ul class="multiPartForm my-6">
+            {% for page in form.getPages %}
+            <li class="step {{ page.number <= form.getCurrentPage ? 'active' : '' }}">
+                {% if page.url and page.number <= form.getMaxPage and page.number != form.getCurrentPage %}
+                    <a href="{{ page.url }}" class="-mt-10 pt-10 text-gray-800 hover:text-purple-600 hover:underline">
+                {% endif %}
+                {{- page.name -}}
+                {% if page.url and page.number <= form.getMaxPage and page.number != form.getCurrentPage %}
+                    </a>
+                {% endif %}
+            </li>
             {% endfor %}
         </ul>
     {% endif %}
@@ -61,8 +69,13 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     {% set rowClass = "blank" not in form.getClass ? rowClass ~ ' bg-gray-300' : rowClass ~ ' my-2' %}
                 {% endif %}
 
-                <div id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }} {{ "noIntBorder" not in form.getClass and "blank" not in form.getClass and not (sectionLoop.last and loop.last) ? 'border-b' }} ">
 
+                <div id="{{ row.getID }}" class="formRow {{ row.getClass|replace({'standardWidth': ''}) }} {{ rowClass }}" {{ row.getAttributeString("data-drag-id")|raw }}>
+
+                {% if "draggableRow" in row.getClass %}
+                    <div class="drag-handle w-2 h-6 ml-2 px-px border-4 border-dotted cursor-move"></div>
+                {% endif %}
+        
                 {% for element in row.getElements %}
                     {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
 

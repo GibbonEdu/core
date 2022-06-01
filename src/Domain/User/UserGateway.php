@@ -176,4 +176,20 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function addRoleToUser($gibbonPersonID, $gibbonRoleID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonRoleID' => $gibbonRoleID];
+        $sql = "UPDATE gibbonPerson SET gibbonRoleIDAll=concat(gibbonRoleIDAll, ',', :gibbonRoleID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonRoleIDAll NOT LIKE CONCAT('%', :gibbonRoleID, '%')";
+
+        return $this->db()->affectingStatement($sql, $data);
+    }
+
+    public function removeRoleFromUser($gibbonPersonID, $gibbonRoleID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonRoleID' => $gibbonRoleID];
+        $sql = "UPDATE gibbonPerson SET gibbonRoleIDAll=REPLACE(REPLACE(gibbonRoleIDAll, :gibbonRoleID, ''), ',,', '') WHERE gibbonPersonID=:gibbonPersonID AND gibbonRoleIDAll LIKE CONCAT('%', :gibbonRoleID, '%')";
+
+        return $this->db()->update($sql, $data);
+    }
 }

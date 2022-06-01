@@ -45,6 +45,7 @@ v24.0.00
         Planner: made time cap obvious to teachers in Lesson Planner view
         Reports: added filters to the proof reading view
         Reports: enabled including Student - Left enrolments in the Course Criteria data source
+        Students: adjusted table label in View Student Profiles
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
         System Admin: enabled using custom fields with additional modules
@@ -55,10 +56,12 @@ v24.0.00
     Bug Fixes
         System: fixed user's personal language and theme not set after login
         Finance: fixed online payment option not available on invoice print page
+        Library: fixed missing cost field when duplicating library item
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
         Reports: fixed missing dropdown selectors on the Write Reports pages
         Students: fixed H4 headings in application forms with custom fields
+        System Admin: fixed un-unserializable logs not showing up
 
 v23.0.02
 --------

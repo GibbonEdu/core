@@ -307,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->setURL('/modules/User Admin/user_manage_edit.php');
                         }
 
-                        $table->addColumn('name', __('Preferred Name'))
+                        $table->addColumn('name', __('Name'))
                                 ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student']));
 
                         $table->addColumn('officialName', __('Official Name'));
@@ -355,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                     $formGroupGateway = $container->get(FormGroupGateway::class);
                                     $formGroup = $formGroupGateway->getByID($row['gibbonFormGroupID']);
-                                    
+
                                     if (isset($formGroup['gibbonPersonIDTutor'])) {
                                         $dataDetail = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
                                         $sqlDetail = 'SELECT gibbonPersonID, title, surname, preferredName FROM gibbonFormGroup JOIN gibbonPerson ON (gibbonFormGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonFormGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) WHERE gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName';
@@ -432,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     while ($rowSelect = $resultSelect->fetch()) {
                                         echo '<u>'.$rowSelect['schoolYear'].'</u>: '.$rowSelect['formGroup'].'<br/>';
                                     }
-                                    
+
                                     if ($row['dateEnd'] != '') {
                                         echo '<u>'.__('End Date').'</u>: '.Format::date($row['dateEnd']).'</br>';
                                     }
@@ -451,7 +451,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
                                     return '';
                                 });
-                        
+
                         $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
                         if ($privacySetting == 'Y') {
                             $table->addColumn('privacy', __('Privacy'))
@@ -471,7 +471,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     return $output;
                                 });
                         }
-                        
+
                         $studentAgreementOptions = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions');
                         if ($studentAgreementOptions != '') {
                             $table->addColumn('studentAgreements', __('Student Agreements'))

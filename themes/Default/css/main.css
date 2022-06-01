@@ -1247,65 +1247,66 @@ table.smallIntBorder td.noPadding {
 
 /* multi-part form: progress indicator classes */
 .multiPartForm {
-	list-style-type: none;
-	margin: 20px 0 30px 0;
-	padding: 0;
-	overflow: hidden;
-	counter-reset: step;
+    list-style-type: none;
+    margin: 20px 0 30px 0;
+    padding: 0;
+    overflow: hidden;
+    counter-reset: step;
+    display: flex;
 }
 
 /* step labels */
 .multiPartForm .step {
-	list-style-type: none;
-	color: #444;
-	text-transform: uppercase;
-	font-size: 12px;
-	width: 25%;
-	float: left;
-	position: relative;
-	z-index: 0;
-	margin: 0;
-	padding: 0;
-	text-align: center;
+    list-style-type: none;
+    color: #444;
+    text-transform: uppercase;
+    font-size: 12px;
+    width: 40px;
+    position: relative;
+    z-index: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    flex-grow: 1;
 }
 
 /* step counter */
 .multiPartForm .step:before {
-	content: counter(step);
-	counter-increment: step;
-	width: 30px;
-	line-height: 30px;
-	display: block;
-	font-size: 16px;
-	color: #333;
-	background: white;
-	border-radius: 3px;
-	margin: 0 auto 5px auto;
-	z-index: 0;
+    content: counter(step);
+    counter-increment: step;
+    width: 30px;
+    line-height: 32px;
+    display: block;
+    font-size: 16px;
+    color: #333;
+    background-color: #f4f4f4;
+    border-radius: 3px;
+    margin: 1px auto 5px auto;
+    z-index: 0;
 }
 
 /* progress connectors */
 .multiPartForm .step:after {
-	content: '';
-	width: 100%;
-	height: 2px;
-	background: white;
-	position: absolute;
-	left: -50%;
-	top: 14px;
-	z-index: -1;
-	margin: 0 15px;
+    content: '';
+    width: 100%;
+    height: 2px;
+    background-color: #f4f4f4;
+    position: absolute;
+    left: -50%;
+    top: 14px;
+    z-index: -1;
+    margin: 0 15px;
 }
 
 /* connector not needed before the first step */
 .multiPartForm .step:first-child:after {
-	content: none; 
+    content: none; 
 }
 /* active step */
 .multiPartForm .step.active:before,
 .multiPartForm .step.active:after{
-	background-color: #A88EDB;
-	color: white;
+    background-color: #A88EDB;
+    color: white;
 }
 
 .body-gradient-purple {
@@ -1340,3 +1341,6 @@ table.smallIntBorder td.noPadding {
     background: radial-gradient(80% 1000px at 20% 500px, #F687B3 0%, #D53F8C 100%) no-repeat fixed ;
 }
 
+.standardForm:not(.blank) .formRow:not(:last-child)  {
+    border-bottom-width: 1px;
+}

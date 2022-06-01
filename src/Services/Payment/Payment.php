@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Services\Payment;
 
-use Omnipay\Common\AbstractGateway as OmnipayGateway;
-use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Omnipay\Omnipay;
+use Omnipay\Common\AbstractGateway as OmnipayGateway;
 use Omnipay\PayPal\ProGateway as OmnipayPaypalProGateway;
 use Omnipay\Stripe\AbstractGateway as OmnipayStripeGateway;
+use Omnipay\Common\Message\RedirectResponseInterface as OmnipayRedirectResponse;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Finance\PaymentGateway;
@@ -35,16 +35,6 @@ use Gibbon\Contracts\Services\Payment as PaymentInterface;
  */
 class Payment implements PaymentInterface
 {
-    const RETURN_SUCCESS = 'success1';
-    const RETURN_SUCCESS_WARNING = 'warning2';
-    const RETURN_CANCEL = 'warning3';
-    const RETURN_ERROR_NOT_ENABLED = 'error1';
-    const RETURN_ERROR_CURRENCY = 'error3';
-    const RETURN_ERROR_CONFIG = 'error4';
-    const RETURN_ERROR_AMOUNT = 'error5';
-    const RETURN_ERROR_GENERAL = 'error6';
-    const RETURN_ERROR_CONNECT = 'error7';
-
     /**
      * @var \Gibbon\Contracts\Services\Session
      */
@@ -169,6 +159,7 @@ class Payment implements PaymentInterface
             // Payment request was successful, continue redirect
             $responseData = $response->getData();
             header("Location: " . $responseData['url']);
+            exit;
             // return self::RETURN_SUCCESS;
 
         } elseif ($response->isRedirect()) {
@@ -179,7 +170,8 @@ class Payment implements PaymentInterface
             // Payment not possible
             return self::RETURN_ERROR_CURRENCY;
         } else {
-            // Payment failed: debug with $response->getMessage()
+            // Payment failed
+            error_log('Payment Gateway Failed: '.$this->paymentGatewaySetting.' - '.$response->getMessage());
             return self::RETURN_ERROR_CONNECT;
         }
     }
@@ -193,11 +185,13 @@ class Payment implements PaymentInterface
 
         $paymentState = $_REQUEST['paymentState'] ?? '';
         if ($paymentState == 'cancel') {
+            $this->result['status'] = 'Cancelled';
             return self::RETURN_CANCEL;
         }
 
         $amount = $_GET['amount'] ?? '';
         if (empty($amount)) {
+            $this->result['status'] = 'Failed';
             return self::RETURN_ERROR_AMOUNT;
         }
 
@@ -205,6 +199,7 @@ class Payment implements PaymentInterface
         $response = $this->getPaymentConfirmation($amount);
 
         if (empty($response)) {
+            $this->result['status'] = 'Failed';
             return self::RETURN_ERROR_CONNECT;
         }
 
@@ -410,6 +405,7 @@ class Payment implements PaymentInterface
             self::RETURN_SUCCESS           => __('Your payment has been successfully made to your credit card. A receipt has been emailed to you.'),
             self::RETURN_SUCCESS_WARNING   => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $this->session->get('systemName'), $this->foreignTableID),
             self::RETURN_CANCEL            => __('Your online payment was cancelled before it was completed. No charges have been processed.'),
+            self::RETURN_INCOMPLETE        => __('Online payment has not been completed at this time.'),
             self::RETURN_ERROR_NOT_ENABLED => __('Online payment options are not available at this time.'),
             self::RETURN_ERROR_CURRENCY    => __("Your payment could not be made as the payment gateway does not support the system's currency."),
             self::RETURN_ERROR_CONFIG      => __('Your payment could not be processed due to a system configuration issue. Please contact the school before attempting another payment.'),

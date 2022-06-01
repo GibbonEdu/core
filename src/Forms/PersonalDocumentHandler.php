@@ -92,7 +92,7 @@ class PersonalDocumentHandler
 
                     if (!empty($file['tmp_name'])) {
                         $this->fileUploader->setFileSuffixType(FileUploader::FILE_SUFFIX_ALPHANUMERIC);
-                        $data[$field] = $this->fileUploader->uploadFromPost($file, $foreignTable.$foreignTableID.'_scan');
+                        $data[$field] = $this->fileUploader->uploadFromPost($file, $foreignTable.$foreignTableID);
 
                         if (empty($value)) {
                             $personalDocumentFail = true;
@@ -132,7 +132,7 @@ class PersonalDocumentHandler
 
         if (!empty($documents)) {
             $col = $form->addRow()->setClass($params['class'] ?? '')->addColumn();
-                $col->addLabel($prefix.'document', __('Personal Documents'));
+                $col->addLabel($prefix.'document', $params['heading'] ?? __('Personal Documents'));
                 $col->addPersonalDocuments($prefix.'document', $documents, $this->view, $this->settingGateway);
         }
     }

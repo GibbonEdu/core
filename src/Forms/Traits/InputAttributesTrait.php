@@ -76,7 +76,7 @@ trait InputAttributesTrait
     public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
-
+        
         if (isset($data[$name])) {
             $value = $data[$name];
 
@@ -85,7 +85,7 @@ trait InputAttributesTrait
             } else if (method_exists($this, 'checked')) {
                 $this->checked($value);
             } else {
-                $this->setAttribute('value', $value);
+                $this->setValue($value);
             }
         }
 

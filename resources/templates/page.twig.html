@@ -34,6 +34,14 @@ all stylesheets and scripts with a 'head' context.
     {% endif %}
 </div>
 
+<div class="hidden lg:block">
+    {% for type, alerts in page.alerts %}
+        {% for text in alerts %}
+            <div class="{{ type }}">{{ text|raw }}</div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
 {% if page.navigator %}
 <div class="w-full flex justify-end align-center mb-4">
 
@@ -93,11 +101,4 @@ all stylesheets and scripts with a 'head' context.
 </div>
 {% endif %}
 
-<div class="hidden lg:block">
-{% for type, alerts in page.alerts %}
-    {% for text in alerts %}
-        <div class="{{ type }}">{{ text|raw }}</div>
-    {% endfor %}
-{% endfor %}
-</div>
 

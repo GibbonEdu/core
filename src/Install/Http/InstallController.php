@@ -16,6 +16,7 @@ use Gibbon\Install\Installer;
 use Gibbon\Services\Format;
 use Gibbon\View\Page;
 use Psr\Container\ContainerInterface;
+use Gibbon\Forms\MultiPartForm;
 
 class InstallController
 {
@@ -220,10 +221,11 @@ class InstallController
 
         $readyToInstall = true;
 
-        $form = Form::create('installer', $submitUrl);
+        $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
         $form->setClass('smallIntBorder w-full');
-        $form->setMultiPartForm(static::getSteps(), 1);
+        $form->addPages(static::getSteps());
+        $form->setCurrentPage(1);
 
         $form->addHiddenValue('nonce', $nonce);
         $form->addRow()->addHeading('System Requirements', __('System Requirements'));
@@ -354,9 +356,10 @@ class InstallController
         // Check for the presence of a config file (if it hasn't been created yet)
         $this->context->validateConfigPath();
 
-        $form = Form::create('installer', $submitUrl);
+        $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 2]));
-        $form->setMultiPartForm(static::getSteps(), 2);
+        $form->addPages(static::getSteps());
+        $form->setCurrentPage(2);
 
         $form->addHiddenValue('nonce', $nonce);
 
@@ -477,10 +480,11 @@ class InstallController
         $installer->useConfigConnection($config);
 
         //Let's gather some more information
-        $form = Form::create('installer', $submitUrl);
+        $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 3]));
         $form->setFactory(DatabaseFormFactory::create($installer->getConnection()));
-        $form->setMultiPartForm(static::getSteps(), 3);
+        $form->addPages(static::getSteps());
+        $form->setCurrentPage(3);
 
         $form->addHiddenValue('nonce', $nonce);
         $form->addHiddenValue('cuttingEdgeCodeHidden', 'N');
@@ -842,9 +846,11 @@ class InstallController
             $output .= "<iframe class='support' style='display: none; height: 10px; width: 10px' src='{$url}'></iframe>";
         }
 
-        $form = Form::create('installer', "./install.php?step=4");
+        $form = MultiPartForm::create('installer', "./install.php?step=4");
         $form->setTitle(__('Installation - Step {count}', ['count' => $step + 1]));
-        $form->setMultiPartForm(static::getSteps(), 4);
+        $form->addPages(static::getSteps());
+        $form->setCurrentPage(4);
+
         $output .= $form->getOutput();
 
         return $output;
