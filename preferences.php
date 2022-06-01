@@ -56,12 +56,12 @@ if (!$session->exists("username")) {
     //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
     if ($values['mfaSecret']) {
         $secret = $values['mfaSecret']; 
-        $secretcheck = 'Y';
+        $secretcheck = !empty($secret) ? 'Y' : 'N';
     } else {
         $secret = $tfa->createSecret();
         $secretcheck = 'N';
     }
-    
+
     $form = Form::create('resetPassword', $session->get('absoluteURL').'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading('Reset Password', __('Reset Password'));
@@ -160,7 +160,7 @@ if (!$session->exists("username")) {
                 $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
         }
         //If MFA was previously set, and is being disabled
-        if ($secretcheck == 'Y') {
+        if ($secretcheck == 'Y' && !empty($values['mfaSecret'])) {
             $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('N');
             $row = $form->addRow()->addClass('toggle');
                 $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token'));
