@@ -46,6 +46,7 @@ v24.0.00
         Planner: enabled staff with Future Years access to plan lessons for Upcoming years in the Unit Planner
         Reports: added filters to the proof reading view
         Reports: enabled including Student - Left enrolments in the Course Criteria data source
+        Staff: added staff house name to Staff Profile if a house has been set
         Students: adjusted table label in View Student Profiles
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters

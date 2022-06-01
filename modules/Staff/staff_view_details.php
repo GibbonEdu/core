@@ -25,6 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
@@ -194,7 +195,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $col->addColumn('jobTitle', __('Job Title'));
                         $col->addColumn('username', __('Username'));
                         $col->addColumn('email', __('Email'))->format(Format::using('link', 'email'));
-                        $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+                        if (!empty($row['website'])) {
+                            $col->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
+                        }
+
+                        if (!empty($row['gibbonHouseID'])) {
+                            $house = $container->get(HouseGateway::class)->getByID($row['gibbonHouseID'], ['name']);
+                            $row['houseName'] = $house['name'] ?? '';
+                            $col->addColumn('houseName', __('House'));
+                        }
 
                         $col = $table->addColumn('Biography', __('Biography'));
 
