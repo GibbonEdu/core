@@ -550,5 +550,7 @@ UPDATE `gibbonAction` JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonMo
 UPDATE `gibbonAction` JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) SET `URLList`='applications_manage.php,applications_manage_add.php,applications_manage_edit.php,applications_manage_delete.php,applications_manage_accept.php,applications_manage_reject.php,applications_manage_view.php' WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Applications';end
 UPDATE `gibbonAction` JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) SET `URLList`='admissions_manage.php,admissions_manage_add.php,admissions_manage_edit.php,admissions_manage_delete.php' WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Admissions Accounts';end
 UPDATE `gibbonAction` SET category='People', `URLList`='admissions_settings.php', `entryURL`='admissions_settings.php', gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin') WHERE gibbonAction.name='Admissions Settings';end
+ALTER TABLE gibbonPerson ADD `mfaSecret` VARCHAR(16) DEFAULT NULL AFTER `receiveNotificationEmails`;end
+ALTER TABLE gibbonPerson ADD `mfaToken` TEXT DEFAULT NULL AFTER `mfaSecret`;end
 
 ";

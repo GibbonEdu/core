@@ -37,6 +37,16 @@ $gibbonThemeIDPersonal = !empty($_POST['gibbonThemeIDPersonal']) ? $_POST['gibbo
 $gibboni18nIDPersonal = !empty($_POST['gibboni18nIDPersonal']) ? $_POST['gibboni18nIDPersonal'] : null;
 $receiveNotificationEmails = $_POST['receiveNotificationEmails'] ?? 'N';
 
+//TODO: Handle requiring MFA token one last time if disabling MFA
+$mfaEnable = $_POST['mfaEnable'] ?? 'N';
+if ($mfaEnable == 'Y') {
+    $mfaSecret = $_POST['mfaSecret'] ?? null;
+} else {
+    $mfaSecret = null;
+}
+
+$mfaCode = $_POST['mfaCode'] ?? null;
+
 $URL = Url::fromRoute('preferences');
 
 $validated = true;
@@ -51,14 +61,23 @@ if (!empty($calendarFeedPersonal) && filter_var($calendarFeedPersonal, FILTER_VA
     $validated = false;
 }
 
+
 if (!$validated) {
     header("Location: {$URL->withReturn('error1')}");
     exit();
 }
 
+if ($mfaEnable == 'Y') {
+    $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
+    if ($tfa->verifyCode($mfaSecret, $mfaCode) !== true){
+        header("Location: {$URL->withReturn('error8')}");
+        exit();
+    }
+}
+
 try {
-    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'username' => $session->get('username'));
-    $sql = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails WHERE (username=:username)';
+    $data = array('calendarFeedPersonal' => $calendarFeedPersonal, 'personalBackground' => $personalBackground, 'gibbonThemeIDPersonal' => $gibbonThemeIDPersonal, 'gibboni18nIDPersonal' => $gibboni18nIDPersonal, 'receiveNotificationEmails' => $receiveNotificationEmails, 'mfaSecret' => $mfaSecret, 'username' => $session->get('username'));
+    $sql = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal, personalBackground=:personalBackground, gibbonThemeIDPersonal=:gibbonThemeIDPersonal, gibboni18nIDPersonal=:gibboni18nIDPersonal, receiveNotificationEmails=:receiveNotificationEmails, mfaSecret=:mfaSecret WHERE (username=:username)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {

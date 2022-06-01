@@ -33,6 +33,10 @@ $passwordNew = $_POST['passwordNew'] ?? '';
 $passwordConfirm = $_POST['passwordConfirm'] ?? '';
 $forceReset = $session->get('passwordForceReset');
 
+$mfaEnable = $_POST['mfaEnable'] ?? 'N';
+$mfaSecret = $_POST['mfaSecret'] ?? null;
+$mfaCode = $_POST['mfaCode'] ?? null;
+
 if ($forceReset != 'Y') {
     $forceReset = 'N';
     $URLSuccess = Url::fromRoute('preferences')->withQueryParam('forceReset', 'N');
@@ -45,6 +49,14 @@ $URL = Url::fromRoute('preferences')->withQueryParam('forceReset', $forceReset);
 if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
     header("Location: {$URL->withReturn('error1')}");
 } else {
+    //Check the mfaCode is correct
+    if ($mfaEnable == 'Y') {
+        $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
+        if ($tfa->verifyCode($mfaSecret, $mfaCode) !== true){
+            header("Location: {$URL->withReturn('error8')}");
+            exit();
+        }
+    }
     //Check that new password is not same as old password
     if ($password == $passwordNew) {
         header("Location: {$URL->withReturn('error7')}");

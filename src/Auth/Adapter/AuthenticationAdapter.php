@@ -166,6 +166,7 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         // Verify user access beyond basic login credentials
         $this->verifyUserAccess($userData);
         $this->verifySchoolYearAccess($userData);
+        $this->verifyMFA($userData);
 
         // Verification has succeeded, update and return a safe set of user data.
         $this->updateUserData($userData);
@@ -262,6 +263,40 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         $this->session->set('gibbonSchoolYearID', $schoolYear['gibbonSchoolYearID']);
         $this->session->set('gibbonSchoolYearName', $schoolYear['name']);
         $this->session->set('gibbonSchoolYearSequenceNumber', $schoolYear['sequenceNumber']);
+    }
+
+    protected function verifyMFA($userData)
+    {
+        if ($userData['mfaSecret'] == null) {
+            $this->session->forget(['mfaToken', 'mfaTokenPass']);
+            return;
+        }
+
+        // Check that the form nonce can only be used once
+        $mfaFormNonce = $this->session->remove('mfaFormNonce');
+        if (!empty($_POST['mfaFormNonce']) && $mfaFormNonce != $_POST['mfaFormNonce']) {
+            $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaFormNonce']);
+            throw new Exception\InsufficientPrivileges;
+        }
+
+        // Check to see if the user had already passed their MFA check
+        if (!empty($userData['mfaLoginSuccess']) && ($userData['mfaLoginSuccess'] == $this->session->get('mfaToken') && $userData['mfaLoginCode'] == $_POST['mfaCode'])) {
+            $this->session->forget(['mfaToken', 'mfaTokenPass']);
+            return;
+        }
+
+        // Check for presence of MFA secret
+        $passwordStrong = hash('sha256', $userData['passwordStrongSalt'].$_POST['password']);
+        $mfaToken = hash('sha256', $userData['mfaSecret'].session_id());
+        $mfaTokenPass = hash('sha256', $userData['mfaSecret'].$passwordStrong);
+
+        $this->userGateway->update($userData['gibbonPersonID'], ['mfaToken' => $mfaToken]);
+
+        $this->session->set('mfaToken', $mfaToken);
+        $this->session->set('mfaTokenPass', $mfaTokenPass);
+        $this->session->forget('mfaFormNonce');
+
+        throw new Exception\MFATokenRequired;
     }
 
     /**
