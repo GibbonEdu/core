@@ -30,6 +30,7 @@ use Gibbon\Forms\Input\Input;
 class CodeEditor extends Input
 {
     protected $mode = 'mysql';
+    protected $height = '400';
     protected $autocomplete = null;
 
     public function setMode($mode)
@@ -42,6 +43,13 @@ class CodeEditor extends Input
     public function autocomplete($wordList)
     {
         $this->autocomplete = is_array($wordList) ? $wordList : explode(',', $wordList);
+        return $this;
+    }
+
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
         return $this;
     }
 
@@ -58,7 +66,7 @@ class CodeEditor extends Input
         $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</textarea>';
 
-        $output .= '<div id="editor" class="w-full" style="height: 400px;">';
+        $output .= '<div id="editor" class="w-full" style="height: '.$this->height.'px;">';
         $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</div>';
 
@@ -84,6 +92,8 @@ class CodeEditor extends Input
             $output .= 'editor.getSession().setMode("ace/mode/twig");';
         } elseif ($this->mode == 'mysql') {
             $output .= 'editor.getSession().setMode("ace/mode/mysql");';
+        } else {
+            $output .= 'editor.getSession().setMode("ace/mode/html");';
         }
 
         if ($this->autocomplete) {

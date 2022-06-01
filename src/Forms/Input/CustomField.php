@@ -53,18 +53,15 @@ class CustomField extends Input
         $this->type = $fields['type'] ?? $fields['fieldType'] ?? 'TextField';
         $options = $fields['options'] ?? '';
 
-        switch ($this->type) {
-            case 'Date':
+        switch (strtolower($this->type)) {
             case 'date':
                 $this->customField = $this->factory->createDate($name);
                 break;
 
-            case 'Time':
             case 'time':
                 $this->customField = $this->factory->createTime($name);
                 break;
 
-            case 'Number':
             case 'number':
                 $this->customField = $this->factory->createNumber($name)->onlyInteger(false);
                 if (!empty($options)) {
@@ -72,12 +69,10 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'URL':
             case 'url':
                 $this->customField = $this->factory->createURL($name);
                 break;
 
-            case 'Editor':
             case 'editor':
                 global $guid;
                 $this->customField = $this->factory->createEditor($name, $guid)->allowUpload(false)->showMedia(false);
@@ -86,7 +81,10 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'Color':
+            case 'code':
+                $this->customField = $this->factory->createCodeEditor($name)->setMode('html')->setHeight(200);
+                break;
+
             case 'color':
                 $this->customField = $this->factory->createColor($name);
                 break;
@@ -95,7 +93,7 @@ class CustomField extends Input
                 $this->customField = $this->factory->createFileUpload($name.'File')->accepts('.jpg,.jpeg,.gif,.png,.svg');
                 break;
 
-            case 'FileUpload':
+            case 'fileupload':
             case 'file':
                 $this->customField = $this->factory->createFileUpload($name.'File');
                 if (!empty($options)) {
@@ -103,7 +101,6 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'Select':
             case 'select':
                 $this->customField = $this->factory->createSelect($name);
                 $options = $this->parseOptions($options);
@@ -113,7 +110,7 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'Checkbox': 
+            case 'checkbox': 
             case 'checkboxes': 
                 $this->customField = $this->factory->createCheckbox($name);
                 $options = $this->parseOptions($options);
@@ -123,7 +120,6 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'Radio': 
             case 'radio': 
                 $this->customField = $this->factory->createRadio($name);
                 if (!empty($options) && is_string($options)) {
@@ -133,12 +129,11 @@ class CustomField extends Input
                 }
                 break;
 
-            case 'YesNo':
             case 'yesno':
                 $this->customField = $this->factory->createYesNo($name)->placeholder();
                 break;
 
-            case 'TextArea':
+            case 'textarea':
             case 'text':
             case 'paragraph':
                 $this->customField = $this->factory->createTextArea($name);
@@ -148,7 +143,7 @@ class CustomField extends Input
                 break;
 
             default:
-            case 'TextField':
+            case 'textfield':
             case 'words':
             case 'varchar':
                 $this->customField = $this->factory->createTextField($name);
