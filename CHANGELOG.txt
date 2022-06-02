@@ -41,6 +41,7 @@ v24.0.00
         System: removed session-duration caching of index_custom.php
         Behaviour: improved style consistency of View Behaviour Letters filter
         Finance: refactored Manage Billing Schedules table
+        Formal Assessment: improved style consistency of View Internal Assessment filter
         Planner: added Create Markbook Column option when editing a lesson plan
         Planner: refactored Manage Outcomes table
         Planner: made time cap obvious to teachers in Lesson Planner view

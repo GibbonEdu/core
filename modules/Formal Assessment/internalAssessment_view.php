@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             $form = Form::create("filter", $session->get('absoluteURL')."/index.php", "get", "noIntBorder fullWidth standardForm");
 			$form->setFactory(DatabaseFormFactory::create($pdo));
-
+            $form->setClass('noIntBorder fullWidth');
 			$form->addHiddenValue('q', '/modules/Formal Assessment/internalAssessment_view.php');
 			$form->addHiddenValue('address', $session->get('address'));
 
