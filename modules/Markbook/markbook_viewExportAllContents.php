@@ -114,6 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         $columnID = array();
         $attainmentID = array();
         $effortID = array();
+        $subColCount = 3-$effortAdjust;
+
         for ($i = 0;$i < $columns;++$i) {
             $row = $result->fetch();
             if ($row === false) {
@@ -128,13 +130,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             }
 
             if ($columnID[$i]) {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (4-$effortAdjust))), 1, $row['name']);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_head_fill);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_head_fill);
-                $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), 1)->applyFromArray($style_head_fill);
+				$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * ($subColCount))), 1, $row['name']);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), 1)->applyFromArray($style_head_fill);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), 1)->applyFromArray($style_head_fill);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), 1)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), 1)->applyFromArray($style_head_fill);
                 }
 
             $excel->getActiveSheet()->getStyleByColumnAndRow(1, 2)->applyFromArray($style_border);
@@ -145,25 +147,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     		} else {
     			$x = __('Att');
     		}
-    		$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (4-$effortAdjust))), 2, $x);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_border);
-            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
+    		$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * ($subColCount))), 2, $x);
+            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), 2)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), 2)->applyFromArray($style_head_fill2);
             if ($enableEffort == 'Y') {
                 if ($effortAlternativeNameAbrev != '') {
                     $x = $effortAlternativeNameAbrev;
                 } else {
                     $x = __('Eff');
                 }
-        		$excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * (4-$effortAdjust))), 2, $x);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_border);
-                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
+        		$excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * ($subColCount))), 2, $x);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), 2)->applyFromArray($style_border);
+                $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), 2)->applyFromArray($style_head_fill2);
             }
-            $excel->getActiveSheet()->setCellValueByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), 2, __('Com'));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_border);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
+            $excel->getActiveSheet()->setCellValueByColumnAndRow((4 + ($i * ($subColCount))), 2, __('Com'));
+            $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), 2)->applyFromArray($style_border);
+            $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), 2)->applyFromArray($style_head_fill2);
         }
 
         $DAS = $markbook->getDefaultAssessmentScale();
+        $terms = $markbook->getCurrentTerms();
         $markFormat = NumberFormat::FORMAT_GENERAL;
 
         if (isset($DAS['percent']) && $DAS['percent'] == '%') {
@@ -177,8 +180,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
             $markSuffix = (isset($DAS['percent']))? $DAS['percent'] : '';
 
-            $finalColumnNum = ($columns * (4-$effortAdjust));
+            $finalColumnNum = ($columns * ($subColCount));
             $finalColumnStart = $finalColumnNum+1;
+
+            // Add Term Grades, if enabled & available
+            if ($markbook->getSetting('enableGroupByTerm') == 'Y' && !empty($terms)) {
+
+                foreach ($terms as $termCount => $term) {
+                    $finalColumnNum++;
+                    $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
+                    $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, $term['name'] ?? $termCount );
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
+                }
+            }
 
             // Cumulative Average
             $finalColumnNum++;
@@ -210,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnStart, 1, __('Overall Grades'));
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_head_fill);
-            $excel->getActiveSheet()->mergeCells( $excel->num2alpha($finalColumnStart).'1:' .$excel->num2alpha($finalColumnNum).'1');
+            $excel->getActiveSheet()->mergeCells( $excel->num2alpha($finalColumnStart-1).'1:' .$excel->num2alpha($finalColumnNum-1).'1');
         }
 
 		$r = 2;
@@ -251,9 +266,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
                             $attainment = __('Inc');
                         }
-						$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (4-$effortAdjust))), $r, htmlPrep($rowEntry['attainmentValue']));
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), $r)->getNumberFormat()->setFormatCode($markFormat);
+						$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * ($subColCount))), $r, htmlPrep($rowEntry['attainmentValue']));
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), $r)->getNumberFormat()->setFormatCode($markFormat);
 
                         $effort = '';
                         if ($rowEntry['effortValue'] != '') {
@@ -265,24 +280,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                             $effort = __('Inc');
                         }
  						if ($enableEffort == 'Y') {
-                            $excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * (4-$effortAdjust))), $r, $rowEntry['effortValue']);
-                            $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
+                            $excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * ($subColCount))), $r, $rowEntry['effortValue']);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
                         }
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), $r, $rowEntry['comment']);
-                        $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((4 + ($i * ($subColCount))), $r, $rowEntry['comment']);
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
                     } else { //Fill empty spaces
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (4-$effortAdjust))), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * (4-$effortAdjust))), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
-                        $excel->getActiveSheet()->setCellValueByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), $r, '');
-                        $excel->getActiveSheet()->getStyleByColumnAndRow(((4-$effortAdjust) + ($i * (4-$effortAdjust))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * ($subColCount))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((3 + ($i * ($subColCount))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((3 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
+                        $excel->getActiveSheet()->setCellValueByColumnAndRow((4 + ($i * ($subColCount))), $r, '');
+                        $excel->getActiveSheet()->getStyleByColumnAndRow((4 + ($i * ($subColCount))), $r)->applyFromArray($style_border);
                     }
                 }
 
                 // Output Overall Grades, if enabled
                 if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                    $finalColumnNum = 1 + ($columns * (4-$effortAdjust));
+                    $finalColumnNum = 1 + ($columns * ($subColCount));
+
+                    // Add Term Grades, if enabled & available
+                    $terms = $markbook->getCurrentTerms();
+                    if ($markbook->getSetting('enableGroupByTerm') == 'Y' && !empty($terms)) {
+                        foreach ($terms as $termCount => $term) {
+                            $termAverage = number_format(round($markbook->getTermAverage($rowStudents['gibbonPersonID'], $term['gibbonSchoolYearTermID']), 2), 2).$markSuffix;
+                            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, $r, $termAverage);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->applyFromArray($style_border);
+                            $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, $r)->getNumberFormat()->setFormatCode($markFormat);
+                            $finalColumnNum++;
+                        }
+                    }
 
                     // Cumulative Average
                     $cumulativeAverage = $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
