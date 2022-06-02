@@ -39,6 +39,7 @@ v24.0.00
         System: added indexes to the gibbonDiscussion table to improve performance
         System: added user status log entry on successful public registration
         System: removed session-duration caching of index_custom.php
+        Behaviour: improved style consistency of View Behaviour Letters filter
         Finance: refactored Manage Billing Schedules table
         Planner: added Create Markbook Column option when editing a lesson plan
         Planner: refactored Manage Outcomes table

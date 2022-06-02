@@ -38,6 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
 
     $form = Form::create('filter', $session->get('absoluteURL')."/index.php", 'get', 'noIntBorder fullWidth standardForm');
     $form->setTitle(__('Filter'));
+    $form->setClass('noIntBorder fullWidth');
     $form->addHiddenValue('q', '/modules/Behaviour/behaviour_letters.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
