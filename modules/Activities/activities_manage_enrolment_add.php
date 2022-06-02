@@ -33,12 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_manage_enrolment.php', $connection2);
     if ($highestAction == 'My Activities_viewEditEnrolment') {
-
-
-            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
-            $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonPersonID' => $session->get('gibbonPersonID'), 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonActivityID' => $gibbonActivityID);
+        $sql = "SELECT gibbonActivity.*, NULL as status, gibbonActivityStaff.role FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivity.gibbonActivityID=gibbonActivityStaff.gibbonActivityID) WHERE gibbonActivity.gibbonActivityID=:gibbonActivityID AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND gibbonActivityStaff.role='Organiser' AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if (!$result || $result->rowCount() == 0) {
             //Acess denied
@@ -61,11 +59,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     if ($gibbonActivityID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonActivityID' => $gibbonActivityID);
-            $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonActivityID' => $gibbonActivityID);
+        $sql = 'SELECT gibbonActivity.*, gibbonActivityType.access, gibbonActivityType.maxPerStudent, gibbonActivityType.enrolmentType, gibbonActivityType.backupChoice FROM gibbonActivity LEFT JOIN gibbonActivityType ON (gibbonActivity.type=gibbonActivityType.name) WHERE gibbonActivityID=:gibbonActivityID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -90,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     ->setURL('/modules/Activities/activities_manage_enrolment.php')
                     ->addParams($params);
 			}
-			
+
 			$form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
@@ -120,15 +117,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$students = array();
 			$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => date('Y-m-d'));
-			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS formGroupName 
+			$sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonFormGroup.name AS formGroupName
 					FROM gibbonPerson
 					JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
 					JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
 					JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
 					WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
 					AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
-					AND gibbonPerson.status='FULL' 
-					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
+					AND gibbonPerson.status='FULL'
+					AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)
 					ORDER BY formGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
 			$result = $pdo->executeQuery($data, $sql);
 
@@ -152,11 +149,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row = $form->addRow();
                 $row->addLabel('Members[]', __('Students'));
 				$row->addSelect('Members[]')->fromArray($students)->selectMultiple()->required();
-				
+
 			// Load the enrolmentType system setting, optionally override with the Activity Type setting
             $enrolment = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
             $enrolment = !empty($values['enrolmentType'])? $values['enrolmentType'] : $enrolment;
-			
+
 			$statuses = array('Accepted' => __('Accepted'));
 			if ($enrolment == 'Competitive') {
                 if (!empty($values['waitingList']) && $values['waitingList'] == 'Y') {
