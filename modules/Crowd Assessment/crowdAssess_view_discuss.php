@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $discussion = $getDiscussion($homework['gibbonPlannerEntryHomeworkID'], $urlParams, 0);
 
     echo $page->fetchFromTemplate('ui/discussion.twig.html', [
-        'title' => __(''),
+        'title' => '',
         'compact' => true, 
         'discussion' => $discussion
     ]);
