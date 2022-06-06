@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo '</h3>';
 
         $form = Form::create("searchBox", $gibbon->session->get('absoluteURL') . "/index.php", "get", "noIntBorder fullWidth standardForm");
-
+        $form->setClass('noIntBorder fullWidth');
         $form->addHiddenValue("q", "/modules/Finance/billingSchedule_manage.php");
 
         $row = $form->addRow();

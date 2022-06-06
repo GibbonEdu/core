@@ -41,6 +41,7 @@ v24.0.00
         System: removed session-duration caching of index_custom.php
         Behaviour: improved style consistency of View Behaviour Letters filter
         Finance: refactored Manage Billing Schedules table
+        Finance: improved style consistency of Manage Billing Schedules filter
         Formal Assessment: improved style consistency of View Internal Assessment filter
         Markbook: updated the export to include term grades, if available
         Messenger: updated the Message Wall to order messages chronologically
