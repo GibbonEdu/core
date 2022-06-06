@@ -300,8 +300,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                     }
 
                     if (count($grades) < 4) {
-                        echo "<div class='error'>";
-                        echo __('The are less than 4 data points, so no graph can be produced.');
+                        echo "<div class='warning'>";
+                        echo __('There are less than 4 data points, so no graph can be produced.');
                         echo '</div>';
                     } else {
                         //PLOT DATA
