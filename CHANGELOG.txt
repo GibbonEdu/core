@@ -43,6 +43,7 @@ v24.0.00
         Finance: refactored Manage Billing Schedules table
         Finance: improved style consistency of Manage Billing Schedules filter
         Formal Assessment: improved style consistency of View Internal Assessment filter
+        Individual Needs: improved style consistency of Individual Needs filter
         Markbook: updated the export to include term grades, if available
         Messenger: updated the Message Wall to order messages chronologically
         Planner: added Create Markbook Column option when editing a lesson plan
