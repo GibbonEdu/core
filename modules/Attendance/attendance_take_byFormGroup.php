@@ -237,10 +237,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                      ->addParam('subpage', 'Attendance')
                                      ->setClass('pt-2 font-bold underline');
                                 $cell->addContent($student['absenceCount'])->wrap('<div class="text-xxs italic py-2">', '</div>');
+                                $restricted = $attendance->isTypeRestricted($student['log']['type']);
                                 $cell->addSelect($count.'-type')
-                                     ->fromArray(array_keys($attendance->getAttendanceTypes()))
+                                     ->fromArray($attendance->getAttendanceTypes($restricted))
                                      ->selected($student['log']['type'])
-                                     ->setClass('mx-auto float-none w-32 m-0 mb-px');
+                                     ->setClass('mx-auto float-none w-32 m-0 mb-px')
+                                     ->readOnly($restricted);
                                 $cell->addSelect($count.'-reason')
                                      ->fromArray($attendance->getAttendanceReasons())
                                      ->selected($student['log']['reason'])
@@ -265,7 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                             $row->addButton(__('Change All').'?')->addData('toggle', '.change-all')->addClass('w-32 m-px sm:self-center');
 
                             $col = $row->addColumn()->setClass('change-all hidden flex flex-col sm:flex-row items-stretch sm:items-center');
-                                $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->addClass('m-px');
+                                $col->addSelect('set-all-type')->fromArray($attendance->getAttendanceTypes())->addClass('m-px');
                                 $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->addClass('m-px');
                                 $col->addTextField('set-all-comment')->maxLength(255)->addClass('m-px');
                             $col->addButton(__('Apply'))->setID('set-all');

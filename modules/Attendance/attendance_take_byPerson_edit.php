@@ -92,9 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 				$row->addLabel('where', __('Where'));
 				$row->addTextField('where')->readonly()->setValue(__($values['context']));
 
+            $restricted = $attendance->isTypeRestricted($values['type']);
 			$row = $form->addRow();
 				$row->addLabel('type', __('Type'));
-				$row->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()));
+				$row->addSelect('type')
+                    ->fromArray($attendance->getAttendanceTypes($restricted))
+                    ->readOnly($restricted);
 
 			$row = $form->addRow();
 				$row->addLabel('reason', __('Reason'));

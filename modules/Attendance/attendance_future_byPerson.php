@@ -215,15 +215,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 }
         }
 
-        // Filter only attendance types with future = 'Y'
-        $attendanceTypes = array_reduce($attendance->getAttendanceTypes(), function ($group, $item) {
-            if ($item['future'] == 'Y') $group[$item['name']] = __($item['name']);
-            return $group;
-        }, array());
-
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray($attendanceTypes)->required()->selected('Absent');
+            $row->addSelect('type')->fromArray($attendance->getFutureAttendanceTypes())->required()->selected('Absent');
 
         $row = $form->addRow();
             $row->addLabel('reason', __('Reason'));

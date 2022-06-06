@@ -1266,10 +1266,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 // Add attendance fields, teacher only
                                 if ($canTakeAttendance) {
                                     $form->toggleVisibilityByClass($count.'-attendance')->onSelect($count . '-type')->whenNot('Present');
+                                    $restricted = $attendance->isTypeRestricted($person['log']['type']);
                                     $cell->addSelect($count . '-type')
-                                        ->fromArray(array_keys($attendance->getAttendanceTypes()))
+                                        ->fromArray($attendance->getAttendanceTypes($restricted))
                                         ->selected($person['log']['type'] ?? '')
-                                        ->setClass('mx-auto float-none w-24 text-xs p-0 m-0 mb-px');
+                                        ->setClass('mx-auto float-none w-24 text-xs p-0 m-0 mb-px')
+                                        ->readOnly($restricted);
                                     $cell->addSelect($count . '-reason')
                                         ->fromArray($attendance->getAttendanceReasons())
                                         ->selected($person['log']['reason'] ?? '')

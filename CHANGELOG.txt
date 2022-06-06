@@ -62,6 +62,7 @@ v24.0.00
 
     Bug Fixes
         System: fixed user's personal language and theme not set after login
+        Attendance: fixed the Available to Roles setting in Attendance Codes
         Finance: fixed online payment option not available on invoice print page
         Library: fixed missing cost field when duplicating library item
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+

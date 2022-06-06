@@ -46,18 +46,19 @@ class AttendanceView
      * Attendance Types
      * @var array
      */
-    protected $attendanceTypes = array();
+    protected $attendanceTypes = [];
+    protected $attendanceTypesRestricted = [];
 
     /**
      * Attendance Reasons
      * @var array
      */
-    protected $attendanceReasons = array();
-    protected $genericReasons = array();
-    protected $medicalReasons = array();
+    protected $attendanceReasons = [];
+    protected $genericReasons = [];
+    protected $medicalReasons = [];
 
     protected $currentDate;
-    protected $last5SchoolDays = array();
+    protected $last5SchoolDays = [];
 
     /**
      * Constructor
@@ -74,25 +75,15 @@ class AttendanceView
         $this->pdo = $pdo;
         $this->settingGateway = $settingGateway;
 
-        // Get attendance codes
-        try {
-            $data = array();
-            $sql = "SELECT * FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY sequenceNumber ASC, name";
-            $result = $this->pdo->executeQuery($data, $sql);
-        } catch (PDOException $e) {
-            echo "<div class='error'>" . $e->getMessage() . '</div>';
-        }
-        if ($result->rowCount() > 0) {
-            while ($attendanceCode = $result->fetch()) {
-                $this->attendanceTypes[$attendanceCode['name']] = $attendanceCode;
-            }
-        }
-
         // Collect the current IDs of the user
         $this->userRoleIDs = array_filter(array_column($gibbon->session->get('gibbonRoleIDAll'), 0));
-
         // Get the current date
         $currentDate = (isset($_GET['currentDate'])) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
+
+        // Get attendance codes
+        $sql = "SELECT * FROM gibbonAttendanceCode WHERE active = 'Y' ORDER BY sequenceNumber ASC, name";
+        $result = $this->pdo->select($sql);
+        $this->setAttendanceTypes($result->rowCount() > 0? $result->fetchAll() : []);
 
         // Get attendance reasons
         $this->genericReasons = explode(',', $settingGateway->getSettingByScope('Attendance', 'attendanceReasons'));
@@ -105,9 +96,20 @@ class AttendanceView
         $this->last5SchoolDays = getLastNSchoolDays($gibbon->guid(), $this->pdo->getConnection(), $currentDate, 5);
     }
 
-    public function getAttendanceTypes()
+    public function getAttendanceTypes(bool $showRestricted = false)
     {
-        return $this->attendanceTypes;
+        return array_reduce($this->attendanceTypes, function ($group, $item) use ($showRestricted) {
+            if ($showRestricted || $item['restricted'] != 'Y') $group[$item['name']] = __($item['name']);
+            return $group;
+        }, []);
+    }
+
+    public function getFutureAttendanceTypes()
+    {
+        return array_reduce($this->attendanceTypes, function ($group, $item) {
+            if ($item['future'] == 'Y' && $item['restricted'] != 'Y') $group[$item['name']] = __($item['name']);
+            return $group;
+        }, []);
     }
 
     public function getAttendanceReasons()
@@ -122,6 +124,11 @@ class AttendanceView
         }
 
         return $this->attendanceTypes[$type];
+    }
+
+    public function isTypeRestricted($type)
+    {
+        return isset($this->attendanceTypes[$type]) && $this->attendanceTypes[$type]['restricted'] == 'Y';
     }
 
     public function isTypePresent($type)
@@ -252,57 +259,31 @@ class AttendanceView
         return $output;
     }
 
-    public function renderAttendanceTypeSelect($lastType = '', $name = 'type', $width = '302px', $future = false)
+    protected function setAttendanceTypes(array $attendanceTypes)
     {
+        if (empty($attendanceTypes)) return [];
 
-        $output = '';
+        $this->attendanceTypes = [];
 
-        $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
-        if (!empty($this->attendanceTypes)) {
-            foreach ($this->attendanceTypes as $name => $attendanceType) {
-                // Skip non-future codes on Set Future Absence
-                if ($future && $attendanceType['future'] == 'N') {
-                    continue;
-                }
+        foreach ($attendanceTypes as $attendanceType) {
+            $attendanceType['restricted'] = 'N';
+            
+            // Check if a role is restricted - blank for unrestricted use
+            if (!empty($attendanceType['gibbonRoleIDAll'])) {
+                $allowAttendanceType = false;
+                $rolesAllowed = explode(',', $attendanceType['gibbonRoleIDAll']);
 
-                // Check if a role is restricted - blank for unrestricted use
-                if (!empty($attendanceType['gibbonRoleIDAll'])) {
-                    $allowAttendanceType = false;
-                    $rolesAllowed = explode(',', $attendanceType['gibbonRoleIDAll']);
-
-                    foreach ($rolesAllowed as $role) {
-                        if (in_array($role, $this->userRoleIDs)) {
-                            $allowAttendanceType = true;
-                        }
-                    }
-                    if ($allowAttendanceType == false) {
-                        continue;
+                foreach ($rolesAllowed as $role) {
+                    if (in_array($role, $this->userRoleIDs)) {
+                        $allowAttendanceType = true;
                     }
                 }
-
-                $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $name, (($lastType == $name) ? 'selected' : ''));
+                if ($allowAttendanceType == false) {
+                    $attendanceType['restricted'] = 'Y';
+                }
             }
+
+            $this->attendanceTypes[$attendanceType['name']] = $attendanceType; 
         }
-        $output .= '</select>';
-
-        return $output;
-    }
-
-    public function renderAttendanceReasonSelect($lastReason = '', $name = 'reason', $width = '302px')
-    {
-
-        $output = '';
-
-        $output .= "<select style='float: none; width: $width; margin-bottom: 3px' name='$name' id='$name'>";
-
-        if (!empty($this->attendanceReasons) && is_array($this->attendanceReasons)) {
-            foreach ($this->attendanceReasons as $attendanceReason) {
-                $output .= sprintf('<option value="%1$s" %2$s/>%1$s</option>', $attendanceReason, (($lastReason == $attendanceReason) ? 'selected' : ''));
-            }
-        }
-
-        $output .= '</select>';
-
-        return $output;
     }
 }

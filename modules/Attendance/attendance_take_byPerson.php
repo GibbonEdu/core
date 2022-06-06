@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray(array_keys($attendance->getAttendanceTypes()))->selected($lastLog['type'] ?? '');
+                    $row->addSelect('type')->fromArray($attendance->getAttendanceTypes())->selected($lastLog['type'] ?? '');
 
                 $row = $form->addRow();
                     $row->addLabel('reason', __('Reason'));

@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $types = $_POST['types'];
     } else {
         if (!isset($_POST['dateStart'])) {
-            $types = array_keys($attendance->getAttendanceTypes());
+            $types = $attendance->getAttendanceTypes();
             unset($types[0]);
         } else {
             $types = array();
@@ -94,12 +94,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addLabel('dateEnd', __('End Date'));
         $row->addDate('dateEnd')->setValue(Format::date($dateEnd))->required();
 
-    $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
-    $typeOptions = array_map('__', $typeOptions);
-
     $row = $form->addRow();
         $row->addLabel('types', __('Types'));
-        $row->addSelect('types')->fromArray($typeOptions)->selectMultiple()->selected($types);
+        $row->addSelect('types')->fromArray($attendance->getAttendanceTypes())->selectMultiple()->selected($types);
 
     $reasonOptions = $attendance->getAttendanceReasons();
     $reasonOptions = array_map('__', $reasonOptions);
