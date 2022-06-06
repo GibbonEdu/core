@@ -54,8 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/logs_view.php
         $row->addSelectUsers('gibbonPersonID')->selected($gibbonPersonID)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('ip', __('IP Address'))
-            ->setClass('mediumWidth');
+        $row->addLabel('ip', __('IP Address'));
         $row->addTextField('ip')->setValue($ip);
 
     $row = $form->addRow();
