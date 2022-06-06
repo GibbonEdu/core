@@ -209,6 +209,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $form->addConfirmation(__('The selected date for attendance is in the past. Are you sure you want to continue?'));
                 }
 
+                $restricted = $attendance->isTypeRestricted($lastLog['type']);
+                if ($restricted) {
+                    $form->setDescription(Format::alert(__('The current attendance code for this student is {code}, which can only be changed by users with access to this attendance code.', ['code' => $lastLog['type']]), 'warning'));
+                }
+
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('currentDate', $currentDate);
 
@@ -220,7 +225,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray($attendance->getAttendanceTypes())->selected($lastLog['type'] ?? '');
+                    $row->addSelect('type')
+                        ->fromArray($attendance->getAttendanceTypes($restricted))
+                        ->selected($lastLog['type'] ?? '')
+                        ->readOnly($restricted);
 
                 $row = $form->addRow();
                     $row->addLabel('reason', __('Reason'));
