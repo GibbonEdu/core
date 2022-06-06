@@ -615,12 +615,12 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     if ($mode == 'result') {
         $resultReturn = array();
         $resultReturn[0] = $dataPosts;
-        $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+        $resultReturn[1] = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
 
         return serialize($resultReturn);
     } elseif ($mode == 'array') {
         try {
-            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
             $resultPosts = $connection2->prepare($sqlPosts);
             $resultPosts->execute($dataPosts);
         } catch (PDOException $e) {
@@ -641,7 +641,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
     } else {
         $count = 0;
         try {
-            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, subject, gibbonMessengerID, source';
+            $sqlPosts = $sqlPosts.' ORDER BY messageWallPin DESC, timestamp, gibbonMessengerID, source';
             $resultPosts = $connection2->prepare($sqlPosts);
             $resultPosts->execute($dataPosts);
         } catch (PDOException $e) {

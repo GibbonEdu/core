@@ -43,6 +43,7 @@ v24.0.00
         Finance: refactored Manage Billing Schedules table
         Formal Assessment: improved style consistency of View Internal Assessment filter
         Markbook: updated the export to include term grades, if available
+        Messenger: updated the Message Wall to order messages chronologically
         Planner: added Create Markbook Column option when editing a lesson plan
         Planner: refactored Manage Outcomes table
         Planner: made time cap obvious to teachers in Lesson Planner view
