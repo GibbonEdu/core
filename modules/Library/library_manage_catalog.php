@@ -107,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $items = $gateway->queryCatalog($criteria, $session->get('gibbonSchoolYearID'));
 
     $table = ReportTable::createPaginated('items', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Manage Catalog'));
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Library/library_manage_catalog_add.php')
@@ -121,13 +122,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))
-        ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/>%2$s', $item['id'], Format::small(__($item['itemType'])));
+        ->formatDetails(function ($item) {
+            return Format::small(__($item['itemType']));
         });
+
     $table->addColumn('name', __('Name'))
         ->description(__('Producer'))
-        ->format(function ($item) {
-            return sprintf('<b>%1$s</b><br/>%2$s', $item['name'], Format::small($item['producer']));
+        ->formatDetails(function ($item) {
+            return Format::small(__($item['producer']));
         });
     $table->addColumn('spaceName', __('Location'))
         ->format(function ($item) {
@@ -136,24 +138,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $table->addColumn('ownershipType', __('Ownership'))
         ->description(__('User/Owner'))
         ->format(function ($item) use ($gibbon) {
-            $ownership = '';
             if ($item['ownershipType'] == 'School') {
-                $ownership .= sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
+                return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
-                $ownership .= sprintf('<b>%1$s</b><br/>', __('Individual'));
+                return sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
-            return $ownership . Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
+        })
+        ->formatDetails(function ($item) {
+            return Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
         });
     $table->addColumn('status', __('Status'))
         ->description(__('Responsible User'))
         ->format(function ($item) {
+            return Format::bold(__($item['status']));
+        })
+        ->formatDetails(function ($item) {
             $responsible = !empty($item['surnameResponsible'])
                 ? Format::name($item['titleResponsible'], $item['preferredNameResponsible'], $item['surnameResponsible'], 'Student')
                 : '';
             $responsible .= !empty($item['formGroup'])
                 ? ' ('.$item['formGroup'].')'
                 : '';
-            return '<b>' . __($item['status']) . '</b><br/>' . Format::small($responsible);
+
+            return Format::small($responsible);
         });
     $actions = $table->addActionColumn()
           ->addParam('gibbonLibraryItemID')
