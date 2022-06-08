@@ -122,12 +122,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $table->addColumn('id', __('School ID'))
         ->description(__('Type'))
+        ->format(function ($item) {
+            return Format::bold(__($item['id']));
+        })
         ->formatDetails(function ($item) {
             return Format::small(__($item['itemType']));
         });
 
     $table->addColumn('name', __('Name'))
         ->description(__('Producer'))
+        ->format(function ($item) {
+            return Format::bold(__($item['name']));
+        })
         ->formatDetails(function ($item) {
             return Format::small(__($item['producer']));
         });
