@@ -31,7 +31,7 @@ use Gibbon\Http\Url;
 
 class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['email'];
+    protected $requiredFields = ['parent1email'];
 
     private $session;
     private $mail;
@@ -72,7 +72,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('submissionEmailTemplate'));
         $templateData = [
-            'email'                => $formData->get('email'),
+            'email'                => $formData->get('parent1email'),
             'date'                 => Format::date(date('Y-m-d')),
             'applicationID'        => $builder->getConfig('foreignTableID'),
             'applicationName'      => $builder->getDetail('name'),
@@ -88,7 +88,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         ];
 
         // Setup the email
-        $this->mail->AddAddress($formData->get('email'));
+        $this->mail->AddAddress($formData->get('parent1email'));
         $this->mail->setDefaultSender($template->renderSubject($templateData));
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
         
