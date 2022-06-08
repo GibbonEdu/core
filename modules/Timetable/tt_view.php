@@ -119,12 +119,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     ->displayLabel()
                     ->prepend((!empty($search)) ? ' | ' : '');;
                 }
-                $table->addHeaderAction('export', __('Export'))
-                    ->modalWindow()
-                    ->setURL('/modules/Timetable/tt_manage_subscription.php')
-                    ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
-                    ->setIcon('download')
-                    ->displayLabel();
+
+                if ($_GET['gibbonPersonID'] == $session->get('gibbonPersonID')) {
+                    $table->addHeaderAction('export', __('Export'))
+                        ->modalWindow()
+                        ->setURL('/modules/Timetable/tt_manage_subscription.php')
+                        ->addParam('gibbonPersonID', $_GET['gibbonPersonID'])
+                        ->setIcon('download')
+                        ->displayLabel();
+                }
 
 
             $table->addColumn('name', __('Name'))->format(Format::using('name', ['title', 'preferredName', 'surname', 'type', 'false']));
