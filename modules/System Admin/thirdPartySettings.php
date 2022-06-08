@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     // Add return messages for test emails
     $emailError = $session->get('testEmailError');
     $emailRecipient = $session->get('testEmailRecipient');
-    $smsError = $session->get('testSMSErrors');
+    $smsError = $session->get('testSMSErrors', []);
     $smsRecipient = $session->get('testSMSRecipient');
 
     $page->return->addReturns([
