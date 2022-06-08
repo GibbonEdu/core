@@ -125,7 +125,7 @@ class MFAAdapter extends AuthenticationAdapter
         }
         
         //Unset the MFA Token Pass to prevent POST replay attacks
-        $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaTokenPass' => NULL]);
+        $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaToken' => NULL]);
 
         // Get the user login details and verify they exist and match only one user
         $userResult = $this->userGateway->selectLoginDetailsByUsername($userDataCheck['username'] ?? '');
@@ -141,13 +141,25 @@ class MFAAdapter extends AuthenticationAdapter
         $userData = $userResult->fetch();
         $_POST['gibbonPersonIDLoginAttempt'] = $userData['gibbonPersonID'] ?? null;
 
-        // Validate the selected users password against the hashed one saved in the session
-        if (empty($userData['passwordStrong']) || empty($userData['passwordStrongSalt'])) {
+        $method = $this->session->get('mfaMethod');
+        switch ($method) {
+            case 'Gibbon\Auth\Adapter\OAuthGoogleAdapter':
+                $password = $this->session->get('googleAPIAccessToken', [])['access_token'] ?? ''; break;
+            case 'Gibbon\Auth\Adapter\OAuthMicrosoftAdapter':
+                $password = $this->session->get('microsoftAPIAccessToken', [])['access_token'] ?? ''; break;
+            case 'Gibbon\Auth\Adapter\OAuthGenericAdapter':
+                $password = $this->session->get('genericAPIAccessToken', [])['access_token'] ?? ''; break;
+            default:
+                $password = $userData['passwordStrong'];
+        }
+
+        // Validate the selected users password/token against the hashed one saved in the session
+        if (empty($password) || empty($userData['passwordStrong'])) {
             throw new Exception\DatabaseLoginError;
         }
 
         $mfaTokenPass = $this->session->get('mfaTokenPass');
-        $mfaDatabasePass = hash('sha256', $userData['mfaSecret'].$userData['passwordStrong']);
+        $mfaDatabasePass = hash('sha256', $userData['mfaSecret'].$password);
         
         //Unset the MFA Token Pass to prevent POST replay attacks
         $this->userGateway->update($userData['gibbonPersonID'], ['mfaTokenPass' => NULL]);

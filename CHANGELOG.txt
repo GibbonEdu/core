@@ -21,6 +21,7 @@ v24.0.00
 --------
 
     Headlines
+        Added optional Multi-Factor Authentication in user preferences
 
     Significant Changes
         Timetable: added an option to export timetables to iCal format
