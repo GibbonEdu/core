@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/notification_send.
             $edits = $container->get(ReportingProofGateway::class)->selectPendingProofReadingEdits($gibbonReportingCycleIDList)->fetchGroupedUnique();
 
             $notificationCount = count($edits);
-            $notificationList = '<details><ul><li>'.Format::nameList($edits, 'Staff', false, true, '</li><li>').'</li></ul></details>';
+            $notificationList = $notificationCount > 0 ? '<details><ul><li>'.Format::nameList($edits, 'Staff', false, true, '</li><li>').'</li></ul></details>' : '';
             $notificationText = __('There are {count} pending edits for your reports. Please visit the Proof Read page to view these and complete your reporting comments.');
         } elseif ($type == 'reportsAvailable') {
             $parents = $container->get(ReportArchiveEntryGateway::class)->selectParentArchiveAccessByReportingCycle($gibbonReportingCycleIDList)->fetchAll();
