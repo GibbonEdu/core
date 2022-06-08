@@ -78,7 +78,8 @@ v24.0.00
         System Admin: fixed un-unserializable logs not showing up
         System Admin: adjusted field label for IP Address in View Logs
         Tracking: fixed typo are message type in Graphing
-        User Admin: fix Force Password Reset not redirecting users
+        User Admin: fixed Force Password Reset not redirecting users
+        User Admin: fixed users able to change roles for Student username format
 
 v23.0.02
 --------

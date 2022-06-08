@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $data = array('gibbonUsernameFormatID' => $gibbonUsernameFormatID);
     $sql = "SELECT gibbonRole.gibbonRoleID as value, gibbonRole.name FROM gibbonRole LEFT JOIN gibbonUsernameFormat ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonUsernameFormat.gibbonRoleIDList) AND gibbonUsernameFormatID<>:gibbonUsernameFormatID) WHERE gibbonUsernameFormatID IS NULL ORDER BY gibbonRole.name";
-    $result = $pdo->executeQuery($data, $sql);
+    $roles = $pdo->select($sql, $data)->fetchKeyPair();
 
     $row = $form->addRow();
         $row->addLabel('format', __('Username Format'))->description(__('How should usernames be formated? Choose from [preferredName], [firstName], [surname].').'<br>'.__('Use a colon to limit the number of letters, for example [preferredName:1] will use the first initial.'));
@@ -69,7 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
             ->required()
             ->selectMultiple()
             ->setSize(4)
-            ->fromResults($result);
+            ->fromArray($roles)
+            ->readOnly(isset($roles['003']));
 
     $row = $form->addRow();
         $row->addLabel('isDefault', __('Is Default?'));
