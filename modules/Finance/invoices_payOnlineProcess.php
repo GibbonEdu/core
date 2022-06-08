@@ -177,7 +177,7 @@ if (!$payment->incomingPayment()) {
 
             //EMAIL RECEIPT (no error reporting)
             //Populate to email.
-            $emails = array();
+            $emails = [];
             $emailsCount = 0;
             if ($invoiceTo == 'Company') {
 
@@ -189,8 +189,9 @@ if (!$payment->incomingPayment()) {
                 } else {
                     $rowCompany = $resultCompany->fetch();
                     if ($rowCompany['companyEmail'] != '' and $rowCompany['companyContact'] != '' and $rowCompany['companyName'] != '') {
-                        $emails[$emailsCount] = $rowCompany['companyEmail'];
-                        ++$emailsCount;
+                        $emails = array_map('trim', explode(',', $rowCompany['companyEmail']));
+                        $emailsCount += count($emails);
+
                         $rowCompany['companyCCFamily'];
                         if ($rowCompany['companyCCFamily'] == 'Y') {
                             try {

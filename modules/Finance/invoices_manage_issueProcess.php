@@ -200,7 +200,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 
                         if (count($emails) > 0) {
                             //Prep message
-                            $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true)."<p style='font-style: italic;'>Email sent via ".$session->get('systemName').' at '.$session->get('organisationName').'.</p>';
+                            $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $session->get('currency'), true);
 
                             $mail = $container->get(Mailer::class);
                             $mail->SetFrom($from, sprintf(__('%1$s Finance'), $session->get('organisationName')));

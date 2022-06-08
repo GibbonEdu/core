@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
                 $form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
 
-                $row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+                $row = $form->addRow()->addClass('paymentCompanyCategories');
                 $row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
                     ->description(__('If the specified company is not paying all fees, which categories are they paying?'));
                 $row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
