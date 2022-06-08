@@ -77,9 +77,9 @@ class ExpandableColumn extends Column
      * @param array $data
      * @return string
      */
-    public function getOutput(&$data = array())
+    public function getOutput(&$data = [], $joinDetails = true)
     {
-        if ($content = parent::getOutput($data)) {
+        if ($content = parent::getOutput($data, $joinDetails)) {
             return '<a onclick="return false;" class="expander"></a>';
         } else {
             return '';

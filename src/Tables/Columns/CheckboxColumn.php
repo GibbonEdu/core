@@ -74,7 +74,7 @@ class CheckboxColumn extends Column
      * @param array $data
      * @return string
      */
-    public function getOutput(&$data = array())
+    public function getOutput(&$data = [], $joinDetails = true)
     {
         $value = isset($data[$this->key])? $data[$this->key] : '';
 
