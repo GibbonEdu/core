@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     // Access denied
@@ -34,10 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
     //Check if search and gibbonFamilyID specified
     $gibbonFamilyID = $_GET['gibbonFamilyID'];
-    $search = '';
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
+    $search = $_GET['search'] ?? '';
+    if ($search != '') {
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'family_manage.php')->withQueryParam('search', $search));
     }
+
     if (empty($gibbonFamilyID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
@@ -52,12 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             //Let's go!
             $form = Form::create('action1', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_editProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));
-
-            $form->addHeaderAction('back', __('Back to Search Results'))
-                ->displayLabel()
-                ->setIcon('search')
-                ->addParam('search', $search)
-                ->setURL('/modules/User Admin/family_manage.php');
 
             $form->addHiddenValue('address', $session->get('address'));
 
