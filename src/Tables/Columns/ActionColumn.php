@@ -112,7 +112,7 @@ class ActionColumn extends Column
      * @param array $data
      * @return string
      */
-    public function getOutput(&$data = array())
+    public function getOutput(&$data = [], $joinDetails = true)
     {
         $output = '';
 

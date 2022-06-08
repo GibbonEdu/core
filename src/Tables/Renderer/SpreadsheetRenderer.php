@@ -144,6 +144,16 @@ class SpreadsheetRenderer implements RendererInterface
                     $sheet->getStyle($range)->applyFromArray($headerStyle);
 
                     $cellCount += $colSpan;
+
+                    // Handle details as a separate spreadsheet column
+                    if ($column->hasDetailsFormatter()) {
+                        $alpha = $this->num2alpha($cellCount);
+                        $sheet->setCellValue($alpha.$rowCount, $column->getDescription());
+                        $sheet->getStyle($alpha.$rowCount)->applyFromArray($headerStyle);
+                        $sheet->getColumnDimension($alpha)->setAutoSize(true);
+
+                        $cellCount++;
+                    }
                 }
                 $rowCount++;
             }
@@ -161,7 +171,7 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $alpha = $this->num2alpha($cellCount);
 
-                    $cellContent = $this->stripTags($column->getOutput($data));
+                    $cellContent = $this->stripTags($column->getOutput($data, false));
 
                     if (is_numeric($cellContent) && strpos($cellContent, ".") === false) {
                         $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_NUMERIC);
@@ -180,6 +190,18 @@ class SpreadsheetRenderer implements RendererInterface
 
 
                     $cellCount++;
+
+                    // Handle details as a separate spreadsheet column
+                    if ($column->hasDetailsFormatter()) {
+                        $alpha = $this->num2alpha($cellCount);
+                        $cellContent = $this->stripTags($column->getDetailsOutput($data));
+
+                        $sheet->setCellValueExplicit( $alpha.$rowCount, $cellContent, DataType::TYPE_STRING);
+                        $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
+
+
+                        $cellCount++;
+                    }
                 }
                 $rowCount++;
             }

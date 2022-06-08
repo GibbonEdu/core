@@ -39,6 +39,7 @@ class Column
     protected $sortable = false;
     protected $translatable = false;
     protected $formatter;
+    protected $detailsFormatter;
 
     protected $columns = array();
     protected $cellModifiers = [];
@@ -193,6 +194,29 @@ class Column
     }
 
     /**
+     * Sets the formatter as a callable, which should accept a $data param of row data.
+     *
+     * @param callable $formatter
+     * @return self
+     */
+    public function formatDetails(callable $formatter) 
+    {
+        $this->detailsFormatter = $formatter;
+
+        return $this;
+    }
+
+    /**
+     * Does the column have a valid formatter?
+     *
+     * @return bool
+     */
+    public function hasDetailsFormatter() 
+    {
+        return !empty($this->detailsFormatter) && is_callable($this->detailsFormatter);
+    }
+
+    /**
      * Sets that this column of table must be translated
      *
      * @return self
@@ -306,6 +330,11 @@ class Column
         return $count;
     }
 
+    public function getDetailsOutput(&$data = [])
+    {
+        return $this->hasDetailsFormatter() ? call_user_func($this->detailsFormatter, $data) : '';
+    }
+
     /**
      * Renders the column by either passing the row $data to a formatter, 
      * or grabbing the row data by key based on the column name.
@@ -313,13 +342,16 @@ class Column
      * @param array $data
      * @return string
      */
-    public function getOutput(&$data = array())
+    public function getOutput(&$data = [], $joinDetails = true)
     {
+        $details = $joinDetails && $this->hasDetailsFormatter() ? '<br/>'.$this->getDetailsOutput($data) : '';
+        
         if ($this->hasFormatter()) {
-            return call_user_func($this->formatter, $data);
+            return call_user_func($this->formatter, $data).$details;
         } else {
             $content = isset($data[$this->getID()])? $data[$this->getID()] : '';
             $content = is_array($content) ? implode(',', array_keys($content)) : $content;
+            $content .= $details;
             
             return $this->getTranslatable() ? __($content) : $content;
         }
