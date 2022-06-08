@@ -90,7 +90,6 @@ class UserGateway extends QueryableGateway implements ScrubbableGateway
                     gibbonPerson.gibbonRoleIDAll,
                     gibbonPerson.canLogin,
                     gibbonPerson.failCount,
-                    gibbonPerson.mfaSecret,
                     gibbonRole.futureYearsLogin,
                     gibbonRole.pastYearsLogin,
                     gibbonRole.name as roleName,

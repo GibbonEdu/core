@@ -267,7 +267,8 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
 
     protected function verifyMFA($userData)
     {
-        if ($userData['mfaSecret'] == null) {
+        $mfaCheck = @$this->userGateway->getByID($userData['gibbonPersonID'], ['mfaSecret']);
+        if (empty($mfaCheck['mfaSecret'])) {
             $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaMethod']);
             return;
         }
@@ -299,8 +300,8 @@ abstract class AuthenticationAdapter implements AdapterInterface, ContainerAware
         }
 
         // Check for presence of MFA secret
-        $mfaToken = hash('sha256', $userData['mfaSecret'].session_id());
-        $mfaTokenPass = hash('sha256', $userData['mfaSecret'].$password);
+        $mfaToken = hash('sha256', $mfaCheck['mfaSecret'].session_id());
+        $mfaTokenPass = hash('sha256', $mfaCheck['mfaSecret'].$password);
 
         $this->userGateway->update($userData['gibbonPersonID'], ['mfaToken' => $mfaToken]);
 

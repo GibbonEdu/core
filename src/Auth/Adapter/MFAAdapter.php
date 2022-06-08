@@ -24,7 +24,7 @@ use Gibbon\Auth\Adapter\AuthenticationAdapter;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Contracts\Services\Session;
 use Aura\Auth\Exception as AuraException;
-use Gibbon\Auth\Exception\DatabaseLoginError;
+use Gibbon\Auth\Exception\MFATokenInvalid;
 
 /**
  * Multifactor Authentication Adapter
@@ -55,12 +55,13 @@ class MFAAdapter extends AuthenticationAdapter
 
         // Get basic user data needed to verify login access
         $userData = $this->getUserData($input);
+        $mfaCheck = @$this->userGateway->getByID($userData['gibbonPersonID'], ['mfaSecret']);
 
         // Check that the MFA token is valid
         $tfa = new \RobThree\Auth\TwoFactorAuth('Gibbon'); 
-        if ($tfa->verifyCode($userData['mfaSecret'], $this->getToken()) !== true) {
+        if ($tfa->verifyCode($mfaCheck['mfaSecret'], $this->getToken()) !== true) {
             $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaNonce']);
-            throw new Exception\MFATokenInvalid;
+            throw new MFATokenInvalid;
         }
 
         $userData['mfaLoginSuccess'] = $this->session->get('mfaToken');
@@ -111,7 +112,7 @@ class MFAAdapter extends AuthenticationAdapter
             throw new Exception\DatabaseLoginError;
         }
 
-        $mfaRequest = $this->userGateway->selectBy(['mfaToken' => $this->session->get('mfaToken')], ['username', 'gibbonPersonID']);
+        $mfaRequest = $this->userGateway->selectBy(['mfaToken' => $this->session->get('mfaToken')], ['username', 'gibbonPersonID', 'mfaSecret']);
         
         if ($mfaRequest->rowCount() != 1) {
             throw new Exception\DatabaseLoginError;
@@ -120,7 +121,7 @@ class MFAAdapter extends AuthenticationAdapter
         // Get the user with an mfaToken that matches the one provided
         $userDataCheck = $mfaRequest->fetch();
 
-        if (empty($userDataCheck) || empty($userDataCheck['username']) || empty($userDataCheck['gibbonPersonID'])) {
+        if (empty($userDataCheck) || empty($userDataCheck['username']) || empty($userDataCheck['mfaSecret'])) {
             throw new Exception\DatabaseLoginError;
         }
         
@@ -159,15 +160,12 @@ class MFAAdapter extends AuthenticationAdapter
         }
 
         $mfaTokenPass = $this->session->get('mfaTokenPass');
-        $mfaDatabasePass = hash('sha256', $userData['mfaSecret'].$password);
-        
-        //Unset the MFA Token Pass to prevent POST replay attacks
-        $this->userGateway->update($userData['gibbonPersonID'], ['mfaTokenPass' => NULL]);
+        $mfaDatabasePass = hash('sha256', $userDataCheck['mfaSecret'].$password);
         
         // Check that this session value matches the password in the database
         if ($mfaTokenPass != $mfaDatabasePass) {
             $this->updateFailCount($userData, $userData['failCount'] + 1);
-            throw new AuraException\PasswordIncorrect;
+            throw new MFATokenInvalid;
         }
 
         return $userData;
