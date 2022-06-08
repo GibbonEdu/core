@@ -55,6 +55,7 @@ v24.0.00
         System Admin: enabled using custom fields with additional modules
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
         System Admin: added a Code field type to Custom Fields to allow raw HTML
+        System Admin: improved the error reporting of the SMS test feature
         Timetable: improved the error message on the timetable when multiple lessons exist
         User Admin: added selectFamiliesByAdult method to FamilyGateway
 

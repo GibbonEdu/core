@@ -39,12 +39,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     
     $body = __('{name} sent you a test SMS via {system}', ['name' => $name, 'system' => $session->get('systemName')]);
 
-    $result = $container->get(SMS::class)
+    $smsSender = $container->get(SMS::class);
+
+    $result = $smsSender
         ->content($body)
         ->send([$phoneNumber]);
 
+    if ($errors = $smsSender->getErrors()) {
+        $session->set('testSMSErrors', $errors);
+        $session->set('testSMSRecipient', $phoneNumber);
+    }
+
     $URL .= empty($result) 
-        ? '&return=error1'
+        ? '&return=error11'
         : '&return=success0';
     header("Location: " . $URL);
 }

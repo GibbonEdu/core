@@ -30,6 +30,7 @@ use Matthewbdaly\SMS\Drivers\Twilio;
 use Matthewbdaly\SMS\Drivers\Nexmo;
 use Matthewbdaly\SMS\Drivers\Clockwork;
 use Matthewbdaly\SMS\Drivers\TextLocal;
+use Matthewbdaly\SMS\Exceptions\ClientException;
 use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
 
 
@@ -52,6 +53,8 @@ class SMS implements SMSInterface
     protected $content;
 
     protected $batchSize;
+
+    protected $errors = [];
 
     public function __construct(array $config)
     {
@@ -131,6 +134,16 @@ class SMS implements SMSInterface
     }
 
     /**
+     * Return the list of any failed recipients or exceptions generated during sending.
+     *
+     * @return array
+     */
+    public function getErrors() : array
+    {
+        return $this->errors;
+    }
+
+    /**
      * Set the message recipient(s).
      *
      * @param string|array $to
@@ -178,23 +191,30 @@ class SMS implements SMSInterface
         $sent = [];
         $recipients += array_merge($this->to, $recipients);
 
-        // Split the messages into comma-separated batches, if supported by the driver.
-        if (!empty($this->batchSize)) {
-            $recipients = array_map(function ($phoneNumbers) {
-                return implode(',', $phoneNumbers);
-            }, array_chunk($recipients, $this->batchSize));
-        }
+        try {
 
-        foreach ($recipients as $recipient) {
-            $message = [
-                'to'      => $recipient,
-                'from'    => $this->from,
-                'content' => $this->content,
-            ];
-
-            if ($this->client->send($message)) {
-                $sent[] = $recipient;
+            // Split the messages into comma-separated batches, if supported by the driver.
+            if (!empty($this->batchSize)) {
+                $recipients = array_map(function ($phoneNumbers) {
+                    return implode(',', $phoneNumbers);
+                }, array_chunk($recipients, $this->batchSize));
             }
+
+            foreach ($recipients as $recipient) {
+                $message = [
+                    'to'      => $recipient,
+                    'from'    => $this->from,
+                    'content' => $this->content,
+                ];
+
+                if ($this->client->send($message)) {
+                    $sent[] = $recipient;
+                } else {
+                    $this->errors[] = 'SMS failed to send to '.$recipient;
+                }
+            }
+        } catch (ClientException $e) {
+            $this->errors[] = $e->__toString();
         }
 
         return $sent;

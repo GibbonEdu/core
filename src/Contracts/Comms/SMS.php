@@ -28,6 +28,8 @@ interface SMS
 
     public function getCreditBalance() : float;
 
+    public function getErrors() : array;
+
     public function to($to);
 
     public function from(string $from);

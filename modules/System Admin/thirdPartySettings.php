@@ -41,7 +41,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     // Add return messages for test emails
     $emailError = $session->get('testEmailError');
     $emailRecipient = $session->get('testEmailRecipient');
-    $page->return->addReturns(['error10' => sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), $emailError, $emailRecipient)]);
+    $smsError = $session->get('testSMSErrors');
+    $smsRecipient = $session->get('testSMSRecipient');
+
+    $page->return->addReturns([
+        'error10' => sprintf(__('An error (%1$s) occurred sending an email to %2$s.'), $emailError, $emailRecipient),
+        'error11' => sprintf(__('An error occurred sending an SMS to %2$s: %1$s'), implode('<br/>', $smsError), $smsRecipient),
+    ]);
 
     // FORM
     $form = Form::create('thirdPartySettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/thirdPartySettingsProcess.php');
