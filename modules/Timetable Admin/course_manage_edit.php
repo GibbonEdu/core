@@ -23,6 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,16 +34,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 } else {
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $urlParams = compact('gibbonSchoolYearID', 'search');
 
     $page->breadcrumbs
-        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', $urlParams)
         ->add(__('Edit Course & Classes'));
 
-    if (isset($_GET['deleteReturn'])) {
-        $deleteReturn = $_GET['deleteReturn'];
-    } else {
-        $deleteReturn = '';
+    if (!empty($search)) {
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'course_manage.php')->withQueryParams($urlParams));
     }
+
+    $deleteReturn = $_GET['deleteReturn'] ?? '';
     $deleteReturnMessage = '';
     $class = 'error';
     if (!($deleteReturn == '')) {
@@ -144,6 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 ->setURL('/modules/Timetable Admin/course_manage_class_add.php')
                 ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
                 ->addParam('gibbonCourseID', $gibbonCourseID)
+                ->addParam('search', $search)
                 ->displayLabel();
 
             $table->addColumn('nameShort', __('Short Name'))->width('20%');
@@ -155,6 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $table->addActionColumn()
                 ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
                 ->addParam('gibbonCourseID', $gibbonCourseID)
+                ->addParam('search', $search)
                 ->addParam('gibbonCourseClassID')
                 ->format(function ($class, $actions) {
                     $actions->addAction('edit', __('Edit'))

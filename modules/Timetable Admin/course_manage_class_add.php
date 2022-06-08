@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_add.php') == false) {
     // Access denied
@@ -27,10 +28,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     //Proceed!
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $urlParams = compact('gibbonSchoolYearID', 'search');
+
     $page->breadcrumbs
-        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Edit Course & Classes'), 'course_manage_edit.php', ['gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', $urlParams)
+        ->add(__('Edit Course & Classes'), 'course_manage_edit.php', $urlParams + ['gibbonCourseID' => $gibbonCourseID])
         ->add(__('Add Class'));
+
+    if (!empty($search)) {
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'course_manage.php')->withQueryParams($urlParams));
+    }
 
     $editLink = '';
     if (isset($_GET['editID'])) {
