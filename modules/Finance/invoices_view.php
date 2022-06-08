@@ -291,12 +291,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '});';
                             echo '});';
                             echo '</script>';
-                            if ($row['notes'] != '') {
+                            if (!empty($row['notes'])) {
                                 echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$gibbon->session->get('absoluteURL').'/themes/'.$gibbon->session->get('gibbonThemeName')."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                             }
                             echo '</td>';
                             echo '</tr>';
-                            if ($row['notes'] != '') {
+                            if (!empty($row['notes'])) {
                                 echo "<tr class='comment-$count' id='comment-$count'>";
                                 echo '<td colspan=7>';
                                 echo $row['notes'];
