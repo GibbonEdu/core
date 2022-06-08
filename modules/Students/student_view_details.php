@@ -485,6 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         //Get and display a list of student's teachers
                         $studentGateway = $container->get(StudentGateway::class);
                         $staff = $studentGateway->selectAllRelatedUsersByStudent($gibbon->session->get('gibbonSchoolYearID'), $row['gibbonYearGroupID'], $row['gibbonFormGroupID'], $gibbonPersonID)->fetchAll();
+                        $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
                         $criteria = $studentGateway->newQueryCriteria();
 
                         if ($staff) {
@@ -511,19 +512,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 $table->addColumn('image_240', __('Photo'))
                                     ->context('primary')
-                                    ->format(function ($person) {
+                                    ->format(function ($person) use ($canViewStaff) {
+                                        $photo = Format::userPhoto($person['image_240'], 'sm');
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return Format::link($url, Format::userPhoto($person['image_240'], 'sm'));
+                                        return $canViewStaff 
+                                            ? Format::link($url, $photo)
+                                            : $photo;
                                     });
 
                                 $table->addColumn('fullName', __('Name'))
                                     ->context('primary')
                                     ->sortable(['surname', 'preferredName'])
                                     ->width('20%')
-                                    ->format(function ($person) {
+                                    ->format(function ($person) use ($canViewStaff) {
                                         $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return Format::link($url, $text, ['class' => 'font-bold underline leading-normal']);
+                                        return $canViewStaff 
+                                            ? Format::link($url, $text, ['class' => 'font-bold underline leading-normal'])
+                                            : $text;
                                     });
                             } else {
                                 $table->addColumn('fullName', __('Name'))
