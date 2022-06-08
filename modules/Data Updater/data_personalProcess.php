@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                     // Student privacy settings
                     $data['privacy'] = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
-                        ? implode(', ', $_POST['privacyOptions'])
+                        ? implode(',', $_POST['privacyOptions'])
                         : null;
 
                     // COMPARE VALUES: Has the data changed?
