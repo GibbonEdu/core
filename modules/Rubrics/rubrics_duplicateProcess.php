@@ -114,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                         }
                         while ($rowFetch = $resultFetch->fetch()) {
                             try {
-                                $dataInsert = array('gibbonRubricID' => $AI, 'title' => $rowFetch['title'], 'sequenceNumber' => $rowFetch['sequenceNumber'], 'gibbonOutcomeID' => $rowFetch['gibbonOutcomeID']);
-                                $sqlInsert = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber, gibbonOutcomeID=:gibbonOutcomeID';
+                                $dataInsert = array('gibbonRubricID' => $AI, 'title' => $rowFetch['title'], 'sequenceNumber' => $rowFetch['sequenceNumber'], 'gibbonOutcomeID' => $rowFetch['gibbonOutcomeID'], 'backgroundColor' => $rowFetch['backgroundColor']);
+                                $sqlInsert = 'INSERT INTO gibbonRubricRow SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber, gibbonOutcomeID=:gibbonOutcomeID, backgroundColor=:backgroundColor';
                                 $resultInsert = $connection2->prepare($sqlInsert);
                                 $resultInsert->execute($dataInsert);
                             } catch (PDOException $e) {
@@ -136,8 +136,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                         }
                         while ($rowFetch = $resultFetch->fetch()) {
                             try {
-                                $dataInsert = array('gibbonRubricID' => $AI, 'title' => $rowFetch['title'], 'sequenceNumber' => $rowFetch['sequenceNumber'], 'gibbonScaleGradeID' => $rowFetch['gibbonScaleGradeID']);
-                                $sqlInsert = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber, gibbonScaleGradeID=:gibbonScaleGradeID';
+                                $dataInsert = array('gibbonRubricID' => $AI, 'title' => $rowFetch['title'], 'sequenceNumber' => $rowFetch['sequenceNumber'], 'gibbonScaleGradeID' => $rowFetch['gibbonScaleGradeID'], 'backgroundColor' => $rowFetch['backgroundColor']);
+                                $sqlInsert = 'INSERT INTO gibbonRubricColumn SET gibbonRubricID=:gibbonRubricID, title=:title, sequenceNumber=:sequenceNumber, gibbonScaleGradeID=:gibbonScaleGradeID, backgroundColor=:backgroundColor';
                                 $resultInsert = $connection2->prepare($sqlInsert);
                                 $resultInsert->execute($dataInsert);
                             } catch (PDOException $e) {
