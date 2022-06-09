@@ -396,7 +396,7 @@ class ReportingAccessGateway extends QueryableGateway
             ->leftJoin('gibbonCourseClassPerson AS teachers', "teachers.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND teachers.role='Teacher'")
             ->leftJoin('gibbonPerson as teacher', 'teachers.gibbonPersonID=teacher.gibbonPersonID')
             ->where('gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->where("(gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Student - Left')")
+            ->where("(gibbonCourseClassPerson.role='Student' OR (gibbonCourseClassPerson.role='Student - Left' AND gibbonReportingValue.gibbonReportingValueID IS NOT NULL AND (gibbonReportingValue.value IS NOT NULL OR gibbonReportingValue.comment <> '') ))")
             ->where("gibbonCourseClassPerson.reportable='Y'")
             ->where('gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonIDStudent')
             ->bindValue('gibbonPersonIDStudent', $gibbonPersonIDStudent)
