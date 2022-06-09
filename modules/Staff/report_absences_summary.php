@@ -47,11 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_summ
         ->fromPOST();
 
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
+    $nextSchoolYear = $schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID);
 
 
     // Setup the date range for this school year
     $dateStart = new DateTime(substr($schoolYear['firstDay'], 0, 7).'-01');
-    $dateEnd = new DateTime($schoolYear['lastDay']);
+    $dateEnd = !empty($nextSchoolYear) ? new DateTime($nextSchoolYear['firstDay']) : new DateTime($schoolYear['lastDay']);
+    $dateEnd->modify('last day of this month');
 
     $months = [];
     $dateRange = new DatePeriod($dateStart, new DateInterval('P1M'), $dateEnd);
