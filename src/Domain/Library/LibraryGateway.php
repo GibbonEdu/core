@@ -44,7 +44,7 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryItemEvent.returnExpected',
                 'gibbonLibraryItemEvent.returnAction',
                 'gibbonLibraryItemEvent.gibbonPersonIDOut',
-                "IF(gibbonLibraryItemEvent.returnExpected < CURRENT_TIMESTAMP,'Y','N') as pastDue"
+                "IF(gibbonLibraryItemEvent.returnExpected < CURRENT_DATE,'Y','N') as pastDue"
             ])
             ->leftJoin('gibbonPerson as gibbonPersonResponsible', 'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = gibbonPersonResponsible.gibbonPersonID')
             ->leftJoin('gibbonPerson as gibbonPersonOut', 'gibbonLibraryItemEvent.gibbonPersonIDOut = gibbonPersonOut.gibbonPersonID')
@@ -89,7 +89,7 @@ class LibraryGateway extends QueryableGateway
           "gibbonPerson.firstName",
           "gibbonSpace.name as 'spaceName'",
           "gibbonLibraryItem.locationDetail",
-          "IF(gibbonLibraryItem.status = 'On Loan' AND gibbonLibraryItem.returnExpected < CURRENT_TIMESTAMP(),'Y','N') as 'pastDue'"
+          "IF(gibbonLibraryItem.status = 'On Loan' AND gibbonLibraryItem.returnExpected < CURRENT_DATE,'Y','N') as 'pastDue'"
         ])
         ->where("gibbonLibraryItem.status IN ('Available','Repair','Reserved','On Loan')")
         ->where("ownershipType != 'Individual'")
