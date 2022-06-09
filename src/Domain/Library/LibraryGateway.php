@@ -44,7 +44,7 @@ class LibraryGateway extends QueryableGateway
                 'gibbonLibraryItemEvent.returnExpected',
                 'gibbonLibraryItemEvent.returnAction',
                 'gibbonLibraryItemEvent.gibbonPersonIDOut',
-                "IF(gibbonLibraryItemEvent.returnExpected <= CURRENT_TIMESTAMP,'Y','N') as pastDue"
+                "IF(gibbonLibraryItemEvent.returnExpected < CURRENT_TIMESTAMP,'Y','N') as pastDue"
             ])
             ->leftJoin('gibbonPerson as gibbonPersonResponsible', 'gibbonLibraryItemEvent.gibbonPersonIDStatusResponsible = gibbonPersonResponsible.gibbonPersonID')
             ->leftJoin('gibbonPerson as gibbonPersonOut', 'gibbonLibraryItemEvent.gibbonPersonIDOut = gibbonPersonOut.gibbonPersonID')

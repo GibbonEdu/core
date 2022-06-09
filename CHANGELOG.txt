@@ -71,6 +71,7 @@ v24.0.00
         Formal Assessment: improved style consistency of View Internal Assessment filter
         Individual Needs: improved style consistency of Individual Needs filter
         Library: fixed missing cost field when duplicating library item
+        Library: fixed items showing as overdue on the same date as the expected return
         Messenger: fixed Applicant target excluding Expected parents of edited application forms 
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
