@@ -1263,7 +1263,7 @@ else {
     								while ($rowEmail=$resultEmail->fetch()) {
     									try {
     										$dataEmail2=array("gibbonFamilyID"=>$rowEmail["gibbonFamilyID"]);
-    										$sqlEmail2="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full' AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
+    										$sqlEmail2="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND (status='Full' OR status='Expected') AND gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID AND contactEmail='Y'" ;
     										$resultEmail2=$connection2->prepare($sqlEmail2);
     										$resultEmail2->execute($dataEmail2);
     									}
@@ -1992,7 +1992,7 @@ else {
                 $emailErrors = [];
 				$mail= $container->get(Mailer::class);
                 $mail->SMTPKeepAlive = true;
-                $mail->SMTPDebug = 0;
+                $mail->SMTPDebug = 1;
                 $mail->Debugoutput = 'error_log';
                 
 				if ($emailReplyTo!="")
