@@ -90,14 +90,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     $table = ReportTable::createPaginated('catalogSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Catalog Summary'));
 
-    $table->addColumn('id', __('School ID'))->description(__('Type'))
+    $table->addColumn('id', __('School ID'))
+        ->description(__('Type'))
         ->format(function ($item) {
-            return '<b>'.$item['id'].'</b><br/>'.Format::small(__($item['type']));
+            return Format::bold(__($item['id']));
+        })
+        ->formatDetails(function ($item) {
+            return Format::small(__($item['type']));
         });
 
-    $table->addColumn('name', __('Name'))->description(__('Producer'))
+        $table->addColumn('name', __('Name'))
+        ->description(__('Producer'))
         ->format(function ($item) {
-            return '<b>'.$item['name'].'</b><br/>'.Format::small($item['producer']);
+            return Format::bold(__($item['name']));
+        })
+        ->formatDetails(function ($item) {
+            return Format::small(__($item['producer']));
         });
 
     $table->addColumn('space', __('Location'))
@@ -107,33 +115,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
             return $item['space'].'<br/>'.Format::small($item['locationDetail']);
         });
 
-    $table->addColumn('ownership', __('Ownership'))->description(__('User/Owner'))
-        ->sortable(['ownershipType', 'surname'])
+    $table->addColumn('ownershipType', __('Ownership'))
+        ->description(__('User/Owner'))
         ->format(function ($item) use ($gibbon) {
-            $output = '';
             if ($item['ownershipType'] == 'School') {
-                $output = $gibbon->session->get('organisationNameShort');
+                return sprintf('<b>%1$s</b><br/>', $gibbon->session->get('organisationNameShort'));
             } elseif ($item['ownershipType'] == 'Individual') {
-                $output = __('Individual');
+                return sprintf('<b>%1$s</b><br/>', __('Individual'));
             }
-
-            if (!empty($item['gibbonPersonIDOwnership'])) {
-                $output .= '<br/>'.Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], 'Staff', false, true));
-            }
-            return $output;
+        })
+        ->formatDetails(function ($item) {
+            return Format::small(Format::name($item['title'], $item['preferredName'], $item['surname'], "Student"));
         });
 
     $table->addColumn('status', __('Status'))->description(__('Borrowable'))
         ->format(function ($item) {
-            return __($item['status']).'<br/>'.Format::small(Format::yesNo($item['borrowable']));
+            return Format::bold(__($item['status']));
+        })
+        ->formatDetails(function ($item) {
+            return Format::small(Format::yesNo($item['borrowable']));
         });
 
     $table->addColumn('purchaseDate', __('Purchase Date'))->description(__('Vendor'))
         ->format(function ($item) {
-            $output = !empty($item['purchaseDate'])
+            return !empty($item['purchaseDate'])
                 ? Format::date($item['purchaseDate'])
                 : Format::small(__('Unknown'));
-            return $output.'<br/>'.Format::small($item['vendor']);
+        })
+        ->formatDetails(function ($item) {
+            return Format::small($item['vendor']);
         });
     
     echo $table->render($catalog);
