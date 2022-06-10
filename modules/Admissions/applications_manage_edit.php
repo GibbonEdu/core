@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Build forms and tables for other tabs
     $milestonesForm = $container->get(ApplicationMilestonesForm::class)->createForm($urlParams, $application['milestones']);
     $formsTable = DataTable::create('')->withData([]);
-    $uploadsTable = $container->get(ApplicationUploadsTable::class)->createTable($gibbonAdmissionsApplicationID);
+    $uploadsTable = $container->get(ApplicationUploadsTable::class)->createTable($application['gibbonFormID'], $gibbonAdmissionsApplicationID);
     $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
 
     // Display the results

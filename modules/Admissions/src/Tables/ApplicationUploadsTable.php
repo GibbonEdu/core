@@ -45,31 +45,55 @@ class ApplicationUploadsTable extends DataTable
 
     }
 
-    public function createTable($gibbonAdmissionsApplicationID)
+    public function createTable($gibbonFormID, $gibbonAdmissionsApplicationID)
     {
         // Load related documents
         $criteria = $this->formUploadGateway->newQueryCriteria()->fromPOST();
-        $uploads = $this->formUploadGateway->queryAllDocumentsByContext($criteria, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
+        $uploads = $this->formUploadGateway->queryAllDocumentsByContext($criteria, $gibbonFormID, 'gibbonAdmissionsApplication', $gibbonAdmissionsApplicationID);
 
         // Create the table
         $table = DataTable::createPaginated('applicationDocuments', $criteria)->withData($uploads);
-        $table->addColumn('status', __('Status'))->width('6%')->format(function($values)  {
-            $fileExists = file_exists($this->session->get('absolutePath').'/'.$values['path']);
-            return $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                'icon' => $fileExists ? 'check' : 'cross',
-                'iconClass' => 'w-6 h-6 fill-current mr-3 -my-2',
-            ]);
-            return Format::link($this->session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
-        });
-        $table->addColumn('name', __('Document'))->format(function($values)  {
-            return Format::link($this->session->get('absoluteURL').'/'.$values['path'], $values['name'], ['target' => '_blank']);
-        });
-        $table->addColumn('type', __('Type'));
-        $table->addColumn('timestamp', __('When'))->format(Format::using('relativeTime', 'timestamp'));
+        $table->addColumn('status', __('Status'))
+            ->width('5%')
+            ->addClass('h-12')
+            ->format(function($values)  {
+                $filePath = $this->session->get('absolutePath').'/'.$values['path'];
+                $icon = !empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0) ? 'cross' : 'check';
+                return $this->view->fetchFromTemplate('ui/icons.twig.html', [
+                    'icon' => empty($values['path']) ? 'question' : $icon,
+                    'iconClass' => 'w-6 h-6 text-gray-500 fill-current ml-2 -my-2'
+                ]);
+            });
+        $table->addColumn('name', __('Document'))
+            ->format(function($values)  {
+                $output = !empty($values['path'])
+                    ? Format::link($this->session->get('absoluteURL').'/'.$values['path'], __($values['name']), ['target' => '_blank'])
+                    : $values['name'];
+
+                $filePath = $this->session->get('absolutePath').'/'.$values['path'];
+                if (!empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0)) {
+                    $output .= Format::tag(__('Error'), 'error ml-2', __('This file is missing or empty. It may have failed to upload or is no longer on the server.'));
+                }
+                return $output;
+            });
+        $table->addColumn('target', __('Target'))->translatable();
+        $table->addColumn('type', __('Type'))->translatable();
+        $table->addColumn('timestamp', __('When'))
+            ->format(function ($values) {
+                return !empty($values['path'])
+                    ? Format::relativeTime($values['timestamp'])
+                    : Format::small(__('N/A'));
+            });
 
         $table->addActionColumn()
             ->format(function ($values, $actions) {
                 if (!empty($values['path'])) {
+                    // if ($values['confirmable'] == 'Y' && $values['confirmed'] != 'Y') {
+                        // $actions->addAction('confirm', __('Confirm'))
+                        //     ->setURL('/modules/Admissions/applications_manage_editConfirmProcess.php')
+                        //     ->setIcon('iconTick');
+                    // }
+
                     $actions->addAction('view', __('View'))
                         ->setExternalURL($this->session->get('absoluteURL').'/'.$values['path'])
                         ->directLink();
