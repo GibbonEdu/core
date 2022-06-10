@@ -63,15 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     $table = DataTable::createPaginated('admissions', $criteria);
     $table->setTitle(__('Admissions Accounts'));
 
-    $table->addColumn('email', __('Email'));
     $table->addColumn('person', __('Person'))
+        ->description(__('Role'))
         ->sortable(['surname', 'preferredName'])
+            ->width('20%')
         ->format(function($values) {
             return !empty($values['gibbonPersonID'])
                 ? Format::nameLinked($values['gibbonPersonID'], $values['title'], $values['preferredName'], $values['surname'], 'Other', false, true)
                 : Format::small(__('N/A'));
+        })
+        ->formatDetails(function($values) {
+            return Format::small($values['roleName']);
         });
+
     $table->addColumn('familyName', __('Family'))
+        ->width('20%')
         ->format(function($values) {
             $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')
                 ->withQueryParams(['gibbonFamilyID' => $values['gibbonFamilyID']])
@@ -80,25 +86,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
                 ? Format::link($url, $values['familyName']) 
                 : Format::small(__('N/A'));
         });
-    $table->addColumn('timestampCreated', __('Created'))
-        ->format(Format::using('relativeTime', 'timestampCreated'));
+
+    $table->addColumn('email', __('Email'));
+
     $table->addColumn('timestampActive', __('Last Active'))
         ->format(Format::using('relativeTime', 'timestampActive'));
+
     $table->addColumn('applicationCount', __('Applications'))
+        ->description(__('Other Forms'))
         ->width('12%')
         ->format(function($values) {
             if (empty($values['applicationCount'])) return;
-
-            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
-            return Format::link($url, $values['applicationCount']);
-        });
-    $table->addColumn('formCount', __('Other Forms'))
-        ->width('12%')
-        ->format(function($values) {
+            return $values['applicationCount'].'&nbsp;'.__('Applications');
+        })
+        ->formatDetails(function($values) {
             if (empty($values['formCount'])) return;
-
-            $url = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonAdmissionsAccountID' => $values['gibbonAdmissionsAccountID']])->withAbsoluteUrl();
-            return Format::link($url, $values['formCount']);
+            return $values['formCount'].'&nbsp;'.__('Other Forms');
         });
 
     $table->addActionColumn()

@@ -36,7 +36,7 @@ class AdmissionsAccountGateway extends QueryableGateway
     private static $tableName = 'gibbonAdmissionsAccount';
     private static $primaryKey = 'gibbonAdmissionsAccountID';
 
-    private static $searchableColumns = ['gibbonAdmissionsAccount.email', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFamily.name'];
+    private static $searchableColumns = ['gibbonAdmissionsAccount.email', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.name', 'gibbonFamily.name'];
 
     public function queryAdmissionsAccounts(QueryCriteria $criteria)
     {
@@ -52,6 +52,7 @@ class AdmissionsAccountGateway extends QueryableGateway
                 'gibbonPerson.title',
                 'gibbonPerson.surname',
                 'gibbonPerson.preferredName',
+                'gibbonRole.name as roleName',
                 'gibbonFamily.name as familyName',
                 'gibbonFamily.gibbonFamilyID as gibbonFamilyID',
                 "(COUNT(DISTINCT gibbonAdmissionsApplicationID)) as applicationCount",
@@ -61,6 +62,7 @@ class AdmissionsAccountGateway extends QueryableGateway
             ->leftJoin('gibbonAdmissionsApplication', 'gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount" AND gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
             ->leftJoin('gibbonFormSubmission', 'gibbonFormSubmission.foreignTable="gibbonAdmissionsAccount" AND gibbonFormSubmission.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
             ->leftJoin('gibbonPerson', 'gibbonAdmissionsAccount.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
             ->leftJoin('gibbonFamily', 'gibbonAdmissionsAccount.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->groupBy(['gibbonAdmissionsAccount.gibbonAdmissionsAccountID']);
 
