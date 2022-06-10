@@ -50,7 +50,7 @@ class ApplicationMilestonesForm extends Form
 
     public function createForm($urlParams, $milestones)
     {
-        $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editMilestones.php');
+        $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editMilestoneProcess.php');
 
         // Get the milestones
         $milestonesList = $this->settingGateway->getSettingByScope('Application Form', 'milestones');
