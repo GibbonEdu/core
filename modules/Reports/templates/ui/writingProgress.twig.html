@@ -21,8 +21,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% endif %}
     </div>
 
-    <span class="ml-2 text-xxs {{ progressCount > totalCount ? 'text-red-700 font-bold' : 'text-gray-600' }}" title="{{ progressCount > totalCount ? __('Progress count includes students who have left.') }}">
-        {{ progressCount }}/{{ totalCount }}
+    <span class="ml-2 text-xxs text-gray-600" title="{{ leftCount > 0 ? __('Progress count includes students who have left.') }}">
+        {{ progressCount }}/{{ totalCount }} 
+
+        {% if leftCount > 0 %}<br/><span class="text-red-700 font-bold" style="font-size: 80%">(+{{ leftCount }} {{ __('Left') }})</span>{% endif %}
     </span>
 </div>
 {% endif %}

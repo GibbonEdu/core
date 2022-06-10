@@ -153,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_my.php')
                     return $page->fetchFromTemplate('ui/writingProgress.twig.html', [
                         'progressCount' => $reporting['progressCount'],
                         'totalCount'    => $reporting['totalCount'],
+                        'leftCount'    => $reporting['leftCount'],
                         'width'         => 'w-64',
                     ]);
                 });
