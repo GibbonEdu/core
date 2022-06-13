@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Builder\Process;
 
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Forms\Builder\AbstractFormProcess;
@@ -38,9 +39,10 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     protected $customFieldGateway;
     protected $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
+    public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
     {
         $this->userGateway = $userGateway;
+        $this->userStatusLogGateway = $userStatusLogGateway;
         $this->usernameGenerator = $usernameGenerator;
         $this->customFieldGateway = $customFieldGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
@@ -76,6 +78,9 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         if (empty($gibbonPersonIDStudent)) {
             throw new FormProcessException('Failed to insert student into the database');
         }
+
+        // Create the status log
+        $this->userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonIDStudent, 'statusOld' => '', 'statusNew' => $formData->get('status'), 'reason' => __('Created')]);
 
         // Update existing data
         $this->transferPersonalDocuments($builder, $formData, $gibbonPersonIDStudent);

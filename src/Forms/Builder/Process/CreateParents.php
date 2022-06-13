@@ -133,6 +133,9 @@ class CreateParents extends CreateStudent implements ViewableProcess
         $formData->set("gibbonPersonIDParent{$i}", $gibbonPersonID);
         $formData->set("parent{$i}created", !empty($gibbonPersonID));
 
+        // Create the status log
+        $this->userStatusLogGateway->insert(['gibbonPersonID' => $gibbonPersonID, 'statusOld' => '', 'statusNew' => $formData->get("parent{$i}status"), 'reason' => __('Created')]);
+
         // Update existing data
         $this->transferPersonalDocuments($builder, $formData, $gibbonPersonID);
     }
