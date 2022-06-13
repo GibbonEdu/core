@@ -79,6 +79,7 @@ v24.0.00
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
         Reports: fixed missing dropdown selectors on the Write Reports pages
+        Reports: fixed dates in templates to use i18n system date
         Rubrics: fixed row and column colours missing when duplicating a rubric
         Staff: fixed visual display of phone numbers on staff profiles
         Students: fixed H4 headings in application forms with custom fields
