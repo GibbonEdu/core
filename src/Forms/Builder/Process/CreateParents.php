@@ -22,6 +22,7 @@ namespace Gibbon\Forms\Builder\Process;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\FamilyAdultGateway;
 use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Forms\Builder\FormBuilderInterface;
@@ -35,11 +36,11 @@ class CreateParents extends CreateStudent implements ViewableProcess
 
     protected $familyAdultGateway;
 
-    public function __construct(UserGateway $userGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway, FamilyAdultGateway $familyAdultGateway)
+    public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway, FamilyAdultGateway $familyAdultGateway)
     {
         $this->familyAdultGateway = $familyAdultGateway;
 
-        parent::__construct($userGateway, $usernameGenerator, $customFieldGateway, $personalDocumentGateway);
+        parent::__construct($userGateway, $userStatusLogGateway, $usernameGenerator, $customFieldGateway, $personalDocumentGateway);
     }
 
     public function getViewClass() : string
