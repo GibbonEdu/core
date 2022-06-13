@@ -59,8 +59,9 @@ class ApplicationUploadsTable extends DataTable
             ->format(function($values)  {
                 $filePath = $this->session->get('absolutePath').'/'.$values['path'];
                 $icon = !empty($values['path']) && (!is_file($filePath) || filesize($filePath) == 0) ? 'cross' : 'check';
+                $iconRequired = $values['required'] == 'Y' ? 'cross' : 'question';
                 return $this->view->fetchFromTemplate('ui/icons.twig.html', [
-                    'icon' => empty($values['path']) ? 'question' : $icon,
+                    'icon' => empty($values['path']) ? $iconRequired : $icon,
                     'iconClass' => 'w-6 h-6 text-gray-500 fill-current ml-2 -my-2'
                 ]);
             });

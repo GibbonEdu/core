@@ -57,7 +57,7 @@ class FormUploadGateway extends QueryableGateway
                 foreach ($options as $i => $option) {
                     $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
                     
-                    $query->cols(["'Required Documents' AS type", "'Student' as target", ":option{$i} as name", 'gibbonFormUpload.gibbonFormUploadID AS id', 'gibbonFormUpload.path', 'gibbonFormUpload.timestamp'])
+                    $query->cols(["'Required Documents' AS type", "'Student' as target", ":option{$i} as name", 'gibbonFormUpload.gibbonFormUploadID AS id', 'gibbonFormUpload.path', 'gibbonFormField.required', 'gibbonFormUpload.timestamp'])
                         ->from('gibbonFormField')
                         ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
                         ->leftJoin('gibbonFormUpload', "gibbonFormUpload.gibbonFormFieldID=gibbonFormField.gibbonFormFieldID AND gibbonFormUpload.name=:option{$i} AND gibbonFormUpload.foreignTable=:foreignTable AND gibbonFormUpload.foreignTableID=:foreignTableID")
@@ -75,7 +75,7 @@ class FormUploadGateway extends QueryableGateway
             $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
             $query->distinct()
                 ->from('gibbonPersonalDocument')
-                ->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', '"N" as required', 'gibbonPersonalDocument.timestamp'])
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID')
                 ->innerJoin('gibbonAdmissionsApplication', "gibbonAdmissionsApplication.result->>'$.gibbonPersonIDStudent'=gibbonPersonalDocument.foreignTableID")
                 ->where("gibbonPersonalDocument.foreignTable='gibbonPerson' AND gibbonPersonalDocumentType.activePersonStudent=1")
@@ -86,7 +86,7 @@ class FormUploadGateway extends QueryableGateway
             $this->unionAllWithCriteria($query, $criteria)
                 ->distinct()
                 ->from('gibbonPersonalDocument')
-                ->cols(["'Personal Documents' AS type", "'Parent' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->cols(["'Personal Documents' AS type", "'Parent' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', '"N" as required', 'gibbonPersonalDocument.timestamp'])
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID')
                 ->innerJoin('gibbonAdmissionsApplication', "gibbonAdmissionsApplication.result->>'$.gibbonPersonIDStudent'=gibbonPersonalDocument.foreignTableID")
                 ->where("gibbonPersonalDocument.foreignTable='gibbonPerson' AND gibbonPersonalDocumentType.activePersonParent=1")
@@ -96,7 +96,7 @@ class FormUploadGateway extends QueryableGateway
 
         } else {
             $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
-            $query->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+            $query->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonFormField.required', 'gibbonPersonalDocument.timestamp'])
                 ->from('gibbonFormField')
                 ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="studentDocuments" AND gibbonPersonalDocumentType.activePersonStudent=1')
@@ -108,7 +108,7 @@ class FormUploadGateway extends QueryableGateway
                 ->bindValue('foreignTableID', $foreignTableID);
 
             $this->unionAllWithCriteria($query, $criteria)
-                ->cols(["'Personal Documents' AS type", "'Parent 1' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->cols(["'Personal Documents' AS type", "'Parent 1' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id', 'gibbonPersonalDocument.filePath AS path', 'gibbonFormField.required', 'gibbonPersonalDocument.timestamp'])
                 ->from('gibbonFormField')
                 ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="parent1Documents" AND gibbonPersonalDocumentType.activePersonParent=1')
@@ -120,7 +120,7 @@ class FormUploadGateway extends QueryableGateway
                 ->bindValue('foreignTableID', $foreignTableID);
 
             $this->unionAllWithCriteria($query, $criteria)
-                ->cols(["'Personal Documents' AS type", "'Parent 2' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->cols(["'Personal Documents' AS type", "'Parent 2' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonFormField.required', 'gibbonPersonalDocument.timestamp'])
                 ->from('gibbonFormField')
                 ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="parent2Documents" AND gibbonPersonalDocumentType.activePersonParent=1')
