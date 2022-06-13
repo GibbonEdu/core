@@ -120,6 +120,26 @@ class ApplicationBuilder extends FormBuilder
         return $form;
     }
 
+    public function getJavascript()
+    {
+        if (!empty($_GET['return']) && stripos($_GET['return'], 'success') !== false) {
+            $output = "$(document).ready(function(){
+                alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."');
+            });";
+        } else {
+            $output = "
+            $('input,textarea,select').on('input', function() {
+                window.onbeforeunload = function(event) {
+                    if (event.explicitOriginalTarget.value=='Submit' || event.explicitOriginalTarget.value=='Next') return;
+                    return '".__('There are unsaved changes on this page.')."';
+                };
+            });
+        ";
+        }
+
+        return "<script type='text/javascript'>{$output}</script>";
+    }
+
     protected function addOfficeOnlyFields(Form $form)
     {
         if (!empty($this->getConfig('status'))) {

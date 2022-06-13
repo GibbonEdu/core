@@ -23,17 +23,22 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Layout\Row;
 use Gibbon\Forms\PersonalDocumentHandler;
+use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\View\View;
+
 class PersonalDocuments extends AbstractFieldGroup implements UploadableInterface
 {
+    protected $personalDocumentTypeGateway;
     protected $personalDocumentGateway;
     protected $personalDocumentHandler;
-
-    public function __construct(PersonalDocumentTypeGateway $personalDocumentTypeGateway, PersonalDocumentHandler $personalDocumentHandler)
+    
+    public function __construct(PersonalDocumentTypeGateway $personalDocumentTypeGateway, PersonalDocumentGateway $personalDocumentGateway, PersonalDocumentHandler $personalDocumentHandler)
     {
         $this->personalDocumentTypeGateway = $personalDocumentTypeGateway;
+        $this->personalDocumentGateway = $personalDocumentGateway;
         $this->personalDocumentHandler = $personalDocumentHandler;
 
         $this->fields = [
@@ -72,17 +77,10 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
-        $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
-        $foreignTableID = $formBuilder->getConfig('foreignTableID');
-        $roleCategory = str_replace(['Documents', '1', '2'], '', $field['fieldName']);
+        $params = $this->getParams($formBuilder, $field['fieldName']);
+        $params['heading'] = __($field['label']);
 
-        $params = [$roleCategory => true, 'applicationForm' => true, 'class' => '', 'heading' => __($field['label'])];
-        if ($roleCategory == 'parent') {
-            $params['prefix'] = $field['fieldName'] == 'parent1Documents' ? 'parent1' : 'parent2';
-            $foreignTable .= ucfirst($params['prefix']);
-        }
-
-        $this->personalDocumentHandler->addPersonalDocumentsToForm($form, $foreignTable, $foreignTableID, $params);
+        $this->personalDocumentHandler->addPersonalDocumentsToForm($form, $params['foreignTable'], $params['foreignTableID'], $params);
 
         return $form->getRow();
     }
@@ -111,38 +109,44 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
 
     public function uploadFieldData(FormBuilderInterface $formBuilder, string $fieldName, array $field)
     {
+        $params = $this->getParams($formBuilder, $fieldName);
         $personalDocumentFail = false;
-        
-        $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
-        $foreignTableID = $formBuilder->getConfig('foreignTableID');
-        $roleCategory = str_replace(['Documents', '1', '2'], '', $fieldName);
 
-        if (empty($foreignTableID)) return false;
+        if (empty($params['foreignTableID'])) return false;
 
-        $params = [$roleCategory => true, 'applicationForm' => true, 'class' => ''];
-        if ($roleCategory == 'parent') {
-            $params['prefix'] = $fieldName == 'parent1Documents' ? 'parent1' : 'parent2';
-            $foreignTable .= ucfirst($params['prefix']);
-        }
-
-        $this->personalDocumentHandler->updateDocumentsFromPOST($foreignTable, $foreignTableID, $params, $personalDocumentFail);
+        $this->personalDocumentHandler->updateDocumentsFromPOST($params['foreignTable'], $params['foreignTableID'], $params, $personalDocumentFail);
 
         return !$personalDocumentFail;
     }
 
-    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [], View $view = null)
     {
-        $documents = $this->personalDocumentGateway->selectPersonalDocuments($foreignTable, $foreignTableID, $params)->fetchAll();
-        if (empty($documents)) return;
+        $params = $this->getParams($formBuilder, $fieldName);
 
-        $prefix = $params['prefix'] ?? '';
+        if (empty($params['foreignTableID'])) return '';
 
-        if (!empty($documents)) {
-            $col = $form->addRow()->setClass($params['class'] ?? '')->addColumn();
-                $col->addLabel($prefix.'document', $params['heading'] ?? __('Personal Documents'));
-                $col->addPersonalDocuments($prefix.'document', $documents, $this->view, $this->settingGateway);
+        $documents = $this->personalDocumentGateway->selectPersonalDocuments($params['foreignTable'], $params['foreignTableID'], $params)->fetchAll();
+
+        return $view->fetchFromTemplate('ui/personalDocuments.twig.html', ['documents' => $documents, 'noTitle' => true]);
+    }
+
+    private function getParams(FormBuilderInterface $formBuilder, string $fieldName)
+    {
+        $roleCategory = str_replace(['Documents', '1', '2'], '', $fieldName);
+
+        $params = [
+            'foreignTable'    => $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission',
+            'foreignTableID'  => $formBuilder->getConfig('foreignTableID'),
+            'applicationForm' => true,
+            'class'           => '',
+            $roleCategory     => true,
+        ];
+    
+        if ($roleCategory == 'parent') {
+            $params['prefix'] = $fieldName == 'parent1Documents' ? 'parent1' : 'parent2';
+            $params['foreignTable'] .= ucfirst($params['prefix']);
         }
 
-        return '';
+        return $params;
     }
 }

@@ -37,5 +37,5 @@ interface FieldGroupInterface
 
     public function getFieldDataFromPOST(string $fieldFame, array $field);
 
-    public function displayFieldValue(string $fieldName, array $field, array &$data = []);
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, array &$data = []);
 }

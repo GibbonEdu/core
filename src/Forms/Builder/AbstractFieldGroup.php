@@ -121,7 +121,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $fieldValue;
     }
 
-    public function displayFieldValue(string $fieldName, array $field, array &$data = [])
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, array &$data = [])
     {
         $fieldInfo = $this->getField($fieldName);
         $fieldValue = $data[$fieldName] ?? null;

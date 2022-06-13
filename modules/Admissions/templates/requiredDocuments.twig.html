@@ -1,0 +1,40 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if documents %}
+    {% for document in documents %}
+
+        {% if document.path %}
+        <a href="{{ absoluteURL }}/{{ document.path }}" target="_blank" class="flex flex-wrap justify-start items-center rounded bg-gray-100 hover:bg-blue-100 border hover:border-blue-500 text-gray-800 hover:text-blue-700 cursor-pointer font-sans my-2 p-4 ">
+        {% else %}
+        <a class="flex flex-wrap justify-start items-center rounded bg-gray-100 border text-gray-800 font-sans my-2 p-4 ">
+        {% endif %}
+
+            <div class="w-full sm:w-2/5 xl:w-1/3 flex mb-4 sm:mb-0 flex items-center">
+                {{ include('ui/icons.twig.html', {'icon': 'file' }) }}
+
+                <div class="ml-4">
+                    <div class="text-sm font-medium">
+                        {{ __(document.name) }}
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex-grow"></div>
+
+            {% if document.path %}
+            <div class="text-xs font-medium">
+                <img alt="{{ __('View') }}" title="{{ __('View') }} {{ __(document.document) }}" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/zoom.png" class="ml-1" width="25" height="25">
+            </div>
+            {% endif %}
+
+        </a>
+
+    {% endfor %}
+{% endif %}

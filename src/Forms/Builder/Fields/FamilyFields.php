@@ -224,7 +224,7 @@ class FamilyFields extends AbstractFieldGroup
         return true;
     }
 
-    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [])
     {
         if ($fieldName == 'siblings') {
             $output = '';
@@ -232,6 +232,6 @@ class FamilyFields extends AbstractFieldGroup
             return $output;
         }
 
-        return parent::displayFieldValue($fieldName, $field, $data);
+        return parent::displayFieldValue($formBuilder, $fieldName, $field, $data);
     }
 }

@@ -200,7 +200,7 @@ class AdmissionsFields extends AbstractFieldGroup
         return $row;
     }
 
-    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [])
     {
         $fieldValue = $data[$fieldName] ?? null;
 
@@ -222,6 +222,6 @@ class AdmissionsFields extends AbstractFieldGroup
             }
         }
 
-        return parent::displayFieldValue($fieldName, $field, $data);
+        return parent::displayFieldValue($formBuilder, $fieldName, $field, $data);
     }
 }

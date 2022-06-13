@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Builder;
 
 use Gibbon\Http\Url;
+use Gibbon\View\View;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\MultiPartForm;
@@ -28,12 +29,12 @@ use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilderInterface;
 use Gibbon\Forms\Builder\Fields\NullFieldGroup;
+use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 use Gibbon\Forms\Builder\Fields\UploadableInterface;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
 use Gibbon\Contracts\Services\Session;
-use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -332,17 +333,16 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
     public function display()
     {
+        $view = $this->getContainer()->get(View::class);
         $table = DataTable::createDetails('formBuilder');
 
         $table->setTitle(__($this->getDetail('name')));
 
-        $lastType = '';
-        $addFieldToTable = function ($field) use (&$col, &$formPage, &$table, &$lastType) {
+        $addFieldToTable = function ($field) use (&$col, &$formPage, &$table, &$lastType, &$view) {
             if ($field['pageNumber'] != $formPage['sequenceNumber']) return;
 
             if ($field['fieldType'] == 'heading' ) {
                 $col = $table->addColumn($field['label'], __($field['label']));
-                // $lastType = $field['fieldType'];
                 return;
             }
 
@@ -363,18 +363,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 $col = $table->addColumn($formPage['name'], $formPage['name']);
             }
 
-            if ($field['fieldGroup'] == 'PersonalDocuments' || $field['fieldGroup'] == 'RequiredDocuments') {
-                if (!empty($col) && !$col->hasNestedColumns()) {
-                    $table->removeColumn($col->getID());
-                }
-                
-                return;
-            }
-
             $col->addColumn($field['fieldName'], __($field['label']))
                 ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '')
-                ->format(function ($values) use (&$field, &$fieldGroup) {
-                    return $fieldGroup->displayFieldValue($field['fieldName'], $field, $values);
+                ->format(function ($values) use (&$field, &$fieldGroup, &$view) {
+                    return $fieldGroup->displayFieldValue($this, $field['fieldName'], $field, $values, $view);
                 });
         };
 

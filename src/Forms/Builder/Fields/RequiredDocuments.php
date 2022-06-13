@@ -132,10 +132,15 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         return !$requiredDocumentFail;
     }
 
-    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [], View $view = null)
     {
+        $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
+        $foreignTableID = $formBuilder->getConfig('foreignTableID');
+        
+        if (empty($foreignTableID)) return '';
 
+        $uploads = $this->formUploadGateway->selectAllUploadsByContext($formBuilder->getFormID(), $foreignTable, $foreignTableID);
 
-        return '';
+        return $view->fetchFromTemplate('requiredDocuments.twig.html', ['documents' => $uploads]);
     }
 }
