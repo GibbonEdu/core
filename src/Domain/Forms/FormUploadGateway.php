@@ -72,8 +72,8 @@ class FormUploadGateway extends QueryableGateway
 
         if ($status == 'Accepted') {
 
-            $this->unionAllWithCriteria($query, $criteria)
-                ->distinct()
+            $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
+            $query->distinct()
                 ->from('gibbonPersonalDocument')
                 ->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID')
@@ -95,8 +95,8 @@ class FormUploadGateway extends QueryableGateway
                 ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%'");
 
         } else {
-            $this->unionAllWithCriteria($query, $criteria)
-                ->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+            $query = empty($query)? $this->newQuery() : $this->unionAllWithCriteria($query, $criteria);
+            $query->cols(["'Personal Documents' AS type", "'Student' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
                 ->from('gibbonFormField')
                 ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
                 ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="studentDocuments" AND gibbonPersonalDocumentType.activePersonStudent=1')
