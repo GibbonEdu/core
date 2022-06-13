@@ -191,4 +191,18 @@ class FinanceFields extends AbstractFieldGroup
 
         return $row;
     }
+
+    public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [])
+    {
+        $fieldValue = $data[$fieldName] ?? '';
+
+        if ($fieldName == 'gibbonFinanceFeeCategoryIDList' && !empty($fieldValue)) {
+            $categories = $this->feeCategoryGateway->selectActiveFeeCategories()->fetchKeyPair();
+            $selected = is_array($fieldValue) ? $fieldValue : explode(',', $fieldValue);
+
+            return implode(', ', array_intersect_key($categories, array_flip($selected)));
+        }
+
+        return parent::displayFieldValue($formBuilder, $fieldName, $field, $data);
+    }
 }

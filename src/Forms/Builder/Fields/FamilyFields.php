@@ -92,6 +92,7 @@ class FamilyFields extends AbstractFieldGroup
                 'label'       => __('Siblings'),
                 'description' => __('Please give information on the applicants\'s siblings.'),
                 'prefill'     => 'Y',
+                'columns'     => 3,
                 'acquire'     => ['siblingName1' => 'varchar', 'siblingDOB1' => 'date', 'siblingSchool1' => 'varchar', 'siblingSchoolJoiningDate1' => 'date', 'siblingName2' => 'varchar', 'siblingDOB2' => 'date', 'siblingSchool2' => 'varchar', 'siblingSchoolJoiningDate2' => 'date', 'siblingName3' => 'varchar', 'siblingDOB3' => 'date', 'siblingSchool3' => 'varchar', 'siblingSchoolJoiningDate3' => 'date'],
             ],
         ];
@@ -227,9 +228,20 @@ class FamilyFields extends AbstractFieldGroup
     public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, &$data = [])
     {
         if ($fieldName == 'siblings') {
-            $output = '';
+            $siblings = [];
 
-            return $output;
+            for ($i = 1; $i <= 3; ++$i) {
+                if (empty($data['siblingName'.$i])) continue;
+
+                $siblings[] = [
+                    __('Sibling Name') => $data['siblingName'.$i] ?? '',
+                    __('Date of Birth') => Format::date($data['siblingDOB'.$i] ?? ''),
+                    __('School Attending') => $data['siblingSchool'.$i] ?? '',
+                    __('Joining Date') => Format::date($data['siblingSchoolJoiningDate'.$i] ?? ''),
+                ];
+            }
+
+            return Format::table($siblings);
         }
 
         return parent::displayFieldValue($formBuilder, $fieldName, $field, $data);

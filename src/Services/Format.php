@@ -614,6 +614,34 @@ class Format
         return $output;
     }
 
+    public static function table(array $items, $class = 'w-full', $rowClass = '', $cellClass = '')
+    {
+        if (empty($items)) return '';
+
+        $headings =  array_unique(array_merge(...array_map(function ($item) {
+            return array_keys($item);
+        }, $items)));
+
+        $output = "<table class='$class'>";
+
+        $output .= "<thead>";
+        foreach ($headings as $key => $label) {
+            $output .= "<th>".$label.'</th>';
+        }
+        $output .= "</thead>";
+
+        foreach ($items as $index => $item) {
+            $output .= "<tr class='$rowClass'>";
+            foreach ($headings as $key) {
+                $output .= "<td class='$cellClass'>".($item[$key] ?? '').'</td>';
+            }
+            $output .= "</tr>";
+        }
+        $output .= "</table>";
+
+        return $output;
+    }
+
     /**
      * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
      *
