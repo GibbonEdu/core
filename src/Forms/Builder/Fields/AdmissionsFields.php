@@ -101,6 +101,7 @@ class AdmissionsFields extends AbstractFieldGroup
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
     {
         $required = $this->getRequired($formBuilder, $field);
+        $accepted = $formBuilder->getConfig('status') == 'Accepted';
         
         $row = $form->addRow();
 
@@ -112,7 +113,7 @@ class AdmissionsFields extends AbstractFieldGroup
 
             case 'dateStart':
                 $row->addLabel('dateStart', __($field['label']))->description(__($field['description']));
-                $row->addDate('dateStart')->required($required);
+                $row->addDate('dateStart')->required($required)->readonly($accepted);
                 break;
 
             case 'gibbonSchoolYearIDEntry':
@@ -121,24 +122,24 @@ class AdmissionsFields extends AbstractFieldGroup
                     : $this->schoolYearGateway->getSchoolYearList(true);
 
                 $row->addLabel('gibbonSchoolYearIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder(__('Please select...'));
+                $row->addSelect('gibbonSchoolYearIDEntry')->fromArray($years)->required($required)->placeholder(__('Please select...'))->readonly($accepted);
                 break;
 
             case 'gibbonYearGroupIDEntry':
                 $yearGroups = $this->yearGroupGateway->selectYearGroupsByIDs($formBuilder->getDetail('gibbonYearGroupIDList'))->fetchKeyPair();
                 $row->addLabel('gibbonYearGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder(__('Please select...'));
+                $yearGroups = $row->addSelect('gibbonYearGroupIDEntry')->fromArray($yearGroups)->required($required)->placeholder(__('Please select...'))->readonly($accepted);
                 break;
                 
             case 'gibbonFormGroupIDEntry':
                 $row->addLabel('gibbonFormGroupIDEntry', __($field['label']))->description(__($field['description']));
-                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ? __('Please select...') : '');
+                $row->addSelectFormGroup('gibbonFormGroupIDEntry', $formBuilder->getConfig('gibbonSchoolYearID', ''))->required($required)->placeholder($required ? __('Please select...') : '')->readonly($accepted);
                 break;
 
             case 'dayType':
                 $dayTypeOptions = $this->settingGateway->getSettingByScope('User Admin', 'dayTypeOptions');
                 $row->addLabel('dayType', __($field['label']))->description(__($field['description']));
-                $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required);
+                $row->addSelect('dayType')->fromString($dayTypeOptions)->required($required)->readonly($accepted);
 
                 break;
 

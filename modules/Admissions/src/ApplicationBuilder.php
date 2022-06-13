@@ -33,7 +33,7 @@ use Gibbon\Domain\Finance\PaymentGateway;
  */
 class ApplicationBuilder extends FormBuilder
 {
-    protected $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID', 'priority', 'dateStart', 'dayType', 'PaySubmissionFeeComplete', 'PayProcessingFeeComplete'];
+    protected $officeFields = ['gibbonSchoolYearIDEntry', 'gibbonYearGroupIDEntry', 'dateStart', 'username', 'studentID', 'priority', 'dayType', 'officeNotes', 'PaySubmissionFeeComplete', 'PayProcessingFeeComplete'];
 
 
     public function isOfficeOnlyField(string $fieldName) : bool
@@ -46,9 +46,20 @@ class ApplicationBuilder extends FormBuilder
         return $this->includeHidden != ($field['hidden'] == 'Y') && !$this->isOfficeOnlyField($field['fieldName']);
     }
 
-    public function acquire()
+    public function acquireOfficeOnly()
     {
-        $data = parent::acquire();
+        $data = [];
+
+        foreach ($this->fields as $fieldName => $field) {
+            if ($field['hidden'] != 'Y') continue;
+
+            $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
+            $fieldValue = $fieldGroup->getFieldDataFromPOST($fieldName, $field);
+
+            if (!is_null($fieldValue) || (!empty($field['type']) && $field['type'] == 'checkbox')) {
+                $data[$fieldName] = $fieldValue;
+            }
+        }
 
         foreach ($this->officeFields as $fieldName) {
             if (isset($data[$fieldName])) continue;
@@ -86,6 +97,7 @@ class ApplicationBuilder extends FormBuilder
                 }
             }
 
+            $this->addUserFields($form);
             $this->addPaymentInfo($form);
         } else {
 
@@ -132,20 +144,46 @@ class ApplicationBuilder extends FormBuilder
         if (!$this->hasField('priority')) {
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-                $row->addSelect('priority')->fromArray(range(9, -9))->selected(0)->required();
+                $row->addSelect('priority')->fromArray(range(9, -9))->selected(0)->required()->readonly($this->getConfig('status') == 'Accepted');
         }
 
         if (!$this->hasField('dateStart')) {
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'))->description(__('Student\'s intended first day at school.'));
-                $row->addDate('dateStart')->required();
+                $row->addDate('dateStart')->required()->readonly($this->getConfig('status') == 'Accepted');
+        }
+
+        
+    }
+
+    protected function addUserFields(Form $form)
+    {
+        if (!$this->hasField('username')) {
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'))->description(__('System login name.'));
+                $row->addUsername('username')
+                    ->readonly($this->getConfig('status') == 'Accepted')
+                    ->addGenerateUsernameButton($form);
+        }
+
+        if (!$this->hasField('studentID')) {
+            $row = $form->addRow();
+            $row->addLabel('studentID', __('Student ID'));
+            $row->addTextField('studentID')
+                ->maxLength(10)
+                ->uniqueField('./modules/Admissions/applications_manage_edit_studentIDAjax.php', ['gibbonAdmissionsApplicationID' => $this->getConfig('foreignTableID')])
+                ->readonly($this->getConfig('status') == 'Accepted');
+        }
+
+        if (!$this->hasField('officeNotes')) {
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('officeNotes', __('Notes'));
+                $col->addTextArea('officeNotes')->setRows(4);
         }
     }
 
     protected function addPaymentInfo(Form $form)
     {
-        
-
         $formSubmissionFee = $this->getConfig('formSubmissionFee');
         $formProcessingFee =  $this->getConfig('formProcessingFee');
 

@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Acquire data and handle file uploads - on error, return to the current page
-    $data = $formBuilder->acquire();
+    $data = $officeOnly == 'Y' ? $formBuilder->acquireOfficeOnly() : $formBuilder->acquire();
     if (!$data) {
         header("Location: {$URL->withReturn('error1')}");
         exit;

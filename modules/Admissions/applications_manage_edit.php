@@ -91,6 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // Load values from the form data storage
     $values = $formData->getData();
+    $values['username'] = $formData->get('username') ?? $formData->getResult('username');
+    $values['studentID'] = $formData->get('studentID') ?? $formData->getResult('studentID');
+
     $incomplete = empty($application['status']) || $application['status'] == 'Incomplete';
 
     // Display form actions
