@@ -59,6 +59,7 @@ v24.0.00
         System Admin: added a Code field type to Custom Fields to allow raw HTML
         System Admin: improved the error reporting of the SMS test feature
         Timetable: improved the error message on the timetable when multiple lessons exist
+        Timetable: added a visual indicator of clashes with multiple classes in the same period
         User Admin: added selectFamiliesByAdult method to FamilyGateway
 
     Bug Fixes

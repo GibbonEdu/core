@@ -1330,6 +1330,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
             } catch (PDOException $e) {
                 $output .= "<div class='error'>".$e->getMessage().'</div>';
             }
+            $periodCount = [];
             while ($rowPeriods = $resultPeriods->fetch()) {
                 $isSlotInTime = false;
                 if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -1339,6 +1340,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
                     $isSlotInTime = true;
                 }
+
+                // Count how many classes are in this period
+                $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
 
                 if ($isSlotInTime == true) {
                     //Check for an exception for the current user
@@ -1401,6 +1405,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         if ($height >= 45) {
                             $output .= $rowPeriods['name'].'<br/>';
                             $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
+                        }
+
+                        $classCount = count($periodCount[$rowPeriods['name']] ?? []);
+                        if ($classCount > 1) {
+                            $output .= Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
                         }
 
                         if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
