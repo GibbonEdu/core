@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder;
 
+use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
+
 interface FormBuilderInterface
 {
     public function getFormID();
@@ -30,6 +32,8 @@ interface FormBuilderInterface
     public function hasField($fieldName) : bool;
 
     public function getField($fieldName);
+
+    public function getFieldGroup($fieldName) : FieldGroupInterface;
 
     public function hasDetail($name) : bool;
 

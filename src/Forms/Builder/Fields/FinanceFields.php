@@ -73,6 +73,7 @@ class FinanceFields extends AbstractFieldGroup
                 'description' => __('Should the family be sent a copy of billing emails?'),
                 'prefill'  => 'Y',
                 'conditional' => ['payment' => 'Company'],
+                'type'        => 'radio',
             ],
             'companyPhone' => [
                 'label'       => __('Company Phone'),
@@ -84,6 +85,7 @@ class FinanceFields extends AbstractFieldGroup
                 'description' => __('Should all items be billed to the specified company, or just some?'),
                 'prefill'  => 'Y',
                 'conditional' => ['payment' => 'Company'],
+                'type'        => 'radio',
             ],
             'gibbonFinanceFeeCategoryIDList' => [
                 'label'       => __('Company Fee Categories'),

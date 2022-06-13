@@ -83,6 +83,7 @@ class Parent1Fields extends AbstractFieldGroup
                 'label' => __('Gender'),
                 'required' => 'Y',
                 'prefill'  => 'Y',
+                'type'     => 'gender',
             ],
             'parent1relationship' => [
                 'label'    => __('Relationship'),

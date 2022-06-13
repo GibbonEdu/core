@@ -27,19 +27,22 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Builder\AbstractFieldGroup;
 use Gibbon\Forms\Builder\FormBuilderInterface;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 class AdmissionsFields extends AbstractFieldGroup
 {
     protected $settingGateway;
     protected $schoolYearGateway;
     protected $yearGroupGateway;
+    protected $formGroupGateway;
     protected $languageGateway;
 
-    public function __construct(SettingGateway $settingGateway, SchoolYearGateway $schoolYearGateway, YearGroupGateway $yearGroupGateway, LanguageGateway $languageGateway)
+    public function __construct(SettingGateway $settingGateway, SchoolYearGateway $schoolYearGateway, YearGroupGateway $yearGroupGateway,  FormGroupGateway $formGroupGateway, LanguageGateway $languageGateway)
     {
         $this->settingGateway = $settingGateway;
         $this->schoolYearGateway = $schoolYearGateway;
         $this->yearGroupGateway = $yearGroupGateway;
+        $this->formGroupGateway = $formGroupGateway;
         $this->languageGateway = $languageGateway;
         
         $dayTypeText = $this->settingGateway->getSettingByScope('User Admin', 'dayTypeText');
@@ -195,5 +198,30 @@ class AdmissionsFields extends AbstractFieldGroup
         }
 
         return $row;
+    }
+
+    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    {
+        $fieldValue = $data[$fieldName] ?? null;
+
+        if ($fieldName == 'gibbonSchoolYearIDEntry' && !empty($fieldValue)) {
+            if ($schoolYear = $this->schoolYearGateway->getByID($fieldValue, ['name'])) {
+                return $schoolYear['name'];
+            }
+        }
+
+        if ($fieldName == 'gibbonYearGroupIDEntry' && !empty($fieldValue)) {
+            if ($yearGroup = $this->yearGroupGateway->getByID($fieldValue, ['name'])) {
+                return $yearGroup['name'];
+            }
+        }
+
+        if ($fieldName == 'gibbonFormGroupIDEntry' && !empty($fieldValue)) {
+            if ($formGroup = $this->formGroupGateway->getByID($fieldValue, ['name'])) {
+                return $formGroup['name'];
+            }
+        }
+
+        return parent::displayFieldValue($fieldName, $field, $data);
     }
 }

@@ -46,7 +46,6 @@ class StudentFields extends AbstractFieldGroup
                 'label' => __('Surname'),
                 'description' => __('Family name as shown in ID documents.'),
                 'required' => 'X',
-                'columns' => 3,
             ],
             'firstName' => [
                 'label' => __('First Name'),
@@ -70,6 +69,7 @@ class StudentFields extends AbstractFieldGroup
             'gender' => [
                 'label' => __('Gender'),
                 'required' => 'Y',
+                'type'     => 'gender',
             ],
             'dob' => [
                 'label' => __('Date of Birth'),

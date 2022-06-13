@@ -42,6 +42,7 @@ class LanguageFields extends AbstractFieldGroup
             'languageChoiceExperience' => [
                 'label'       => __('Language Choice Experience'),
                 'description' => __('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'),
+                'columns'     => 2,
             ],
         ];
     }

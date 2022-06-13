@@ -58,14 +58,17 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
     {
         // Setup Details
         $details = [];
-        foreach ($formData->getData() as $fieldName => $value) {
+        $data = $formData->getData();
+        foreach ($data as $fieldName => $value) {
             $field = $builder->getField($fieldName);
             if (empty($field)) continue;
+
+            $fieldGroup = $builder->getFieldGroup($field['fieldGroup']);
 
             if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
                 $details[$field['fieldType']] = __($field['label']);
             } else {
-                $details[__($field['label'])]  =$value;
+                $details[__($field['label'])]  = $fieldGroup->displayFieldValue($fieldName, $field, $data);
             }
         }
 

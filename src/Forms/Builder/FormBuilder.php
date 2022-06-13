@@ -33,6 +33,7 @@ use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use League\Container\Exception\NotFoundException;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Forms\Builder\Fields\FieldGroupInterface;
 
 class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 {
@@ -131,7 +132,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         return $this->includeHidden != ($field['hidden'] == 'Y');
     }
 
-    public function getFieldGroup($fieldGroup)
+    public function getFieldGroup($fieldGroup): FieldGroupInterface
     {
         if (isset($this->fieldGroups[$fieldGroup])) {
             return $this->fieldGroups[$fieldGroup];
@@ -335,25 +336,46 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
         $table->setTitle(__($this->getDetail('name')));
 
-        $addFieldToTable = function ($field) use (&$col, &$formPage, &$table) {
+        $lastType = '';
+        $addFieldToTable = function ($field) use (&$col, &$formPage, &$table, &$lastType) {
             if ($field['pageNumber'] != $formPage['sequenceNumber']) return;
 
-            if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
+            if ($field['fieldType'] == 'heading' ) {
                 $col = $table->addColumn($field['label'], __($field['label']));
+                // $lastType = $field['fieldType'];
+                return;
+            }
+
+            if ($field['fieldType'] == 'subheading' ) {
+                $border = $col->hasNestedColumns() ? 'border-t' : '';
+                $col->addColumn($field['label'], __($field['label']))->addClass('uppercase bg-gray-300 col-start-0 col-span-3 pt-3 '.$border);
+                return;
+            }
+
+            if ($field['fieldType'] == 'layout' || $field['fieldName'] == 'secondParent') {
                 return;
             }
             
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
 
-            // if ($fieldGroup instanceof UploadableInterface) return;
-
             if (empty($col)) {
                 $col = $table->addColumn($formPage['name'], $formPage['name']);
             }
 
+            if ($field['fieldGroup'] == 'PersonalDocuments' || $field['fieldGroup'] == 'RequiredDocuments') {
+                if (!empty($col) && !$col->hasNestedColumns()) {
+                    $table->removeColumn($col->getID());
+                }
+                
+                return;
+            }
+
             $col->addColumn($field['fieldName'], __($field['label']))
-                ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '');
+                ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '')
+                ->format(function ($values) use (&$field, &$fieldGroup) {
+                    return $fieldGroup->displayFieldValue($field['fieldName'], $field, $values);
+                });
         };
 
         // Display the Office-Only fields first
@@ -405,9 +427,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     public function getJavascript()
     {
         if (!empty($_GET['return']) && stripos($_GET['return'], 'success') !== false) {
-            $output = "$(document).ready(function(){
-                alert('".__('Your application was successfully submitted. Please read the information in the green box above the application form for additional information.')."');
-            });";
+            $output = "";
         } else {
             $output = "
             $('input,textarea,select').on('input', function() {

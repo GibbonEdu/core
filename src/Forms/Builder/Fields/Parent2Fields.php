@@ -89,6 +89,7 @@ class Parent2Fields extends AbstractFieldGroup
                 'label' => __('Gender'),
                 'required' => 'Y',
                 'prefill'  => 'Y',
+                'type'     => 'gender',
             ],
             'parent2relationship' => [
                 'label'    => __('Relationship'),

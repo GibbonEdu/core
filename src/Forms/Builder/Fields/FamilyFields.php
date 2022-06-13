@@ -223,4 +223,15 @@ class FamilyFields extends AbstractFieldGroup
 
         return true;
     }
+
+    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    {
+        if ($fieldName == 'siblings') {
+            $output = '';
+
+            return $output;
+        }
+
+        return parent::displayFieldValue($fieldName, $field, $data);
+    }
 }

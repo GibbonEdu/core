@@ -47,6 +47,11 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         return __('Documents which must be submitted electronically, either with the form at the time of submission, or afterwards through the form interface.');
     }
 
+    public function getField($fieldName) : array 
+    {
+        return ['type'  => 'files', 'columns' => 3];
+    }
+
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field): Row
     {
         $row = $form->addRow();
@@ -125,5 +130,12 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         }
 
         return !$requiredDocumentFail;
+    }
+
+    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    {
+
+
+        return '';
     }
 }

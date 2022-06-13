@@ -46,6 +46,11 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         return $this->fields;
     }
 
+    public function getField($fieldName) : array 
+    {
+        return $this->fields[$fieldName] ?? [];
+    }
+
     public function getFieldOptions() : array 
     {
         $heading = '';
@@ -61,11 +66,6 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
             }
             return $group;
         }, []);
-    }
-
-    public function getField($fieldName) : array 
-    {
-        return $this->fields[$fieldName] ?? [];
     }
 
     public function getRequired(FormBuilderInterface $formBuilder, array &$field) : bool 
@@ -85,13 +85,7 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
     {
         $field = $this->getField($fieldName);
 
-        if (empty($field['conditional']) || !is_array($field['conditional'])) return true;
-
-        foreach ($field['conditional'] as $key => $value) {
-            if (empty($data[$key]) || $data[$key] != $value) return false;
-        }
-
-        return true;
+        return !$this->checkConditions($field['conditional'] ?? [], $data);
     }
 
     public function addFieldToForm(FormBuilderInterface $formBuilder, Form $form, array $field) : Row
@@ -125,5 +119,58 @@ abstract class AbstractFieldGroup implements FieldGroupInterface
         }
 
         return $fieldValue;
+    }
+
+    public function displayFieldValue(string $fieldName, array $field, array &$data = [])
+    {
+        $fieldInfo = $this->getField($fieldName);
+        $fieldValue = $data[$fieldName] ?? null;
+        $fieldType = $fieldInfo['type'] ?? $field['fieldType'] ?? '';
+
+        if (!empty($fieldInfo['conditional']) && $this->checkConditions($fieldInfo['conditional'], $data)) {
+            return '';
+        }
+
+        if (is_array($fieldValue)) {
+            return implode(', ', $fieldValue);
+        }
+
+        switch ($fieldType) {
+            case 'date':
+                return Format::date($fieldValue);
+        
+            case 'gender':
+                return Format::genderName($fieldValue);
+                
+            case 'yesno':
+                return Format::yesNo($fieldValue);
+
+            case 'radio':
+                return $fieldValue == 'Y' || $fieldValue == 'N' ? Format::yesNo($fieldValue) : $fieldValue;
+
+            case 'checkbox':
+                return $fieldValue == 'Y' || $fieldValue == 'on' ? __('Yes') : (empty($fieldValue) ? __('No') : __($fieldValue));
+
+            case 'phone':
+                $output = '';
+                for ($i = 1; $i <= 4; $i++) {
+                    if (empty($data["{$fieldName}{$i}"])) continue;
+                    $output .= Format::phone($data["{$fieldName}{$i}"] ?? '', $data["{$fieldName}{$i}CountryCode"] ?? '', $data["{$fieldName}{$i}Type"] ?? '').'<br/>';
+                }
+                return $output;
+        }
+
+        return $fieldValue;
+    }
+
+    protected function checkConditions(array $conditions, array &$data) : bool
+    {
+        if (empty($conditions) || !is_array($conditions)) return false;
+
+        foreach ($conditions as $key => $value) {
+            if (empty($data[$key]) || $data[$key] != $value) return true;
+        }
+
+        return false;
     }
 }

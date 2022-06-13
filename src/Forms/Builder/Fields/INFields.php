@@ -48,11 +48,13 @@ class INFields extends AbstractFieldGroup
                 'label'       => __('Special Educational Needs (SEN)'),
                 'description' => __('Are there any known or suspected SEN concerns, or previous SEN assessments?'),
                 'required'    => 'X',
+                'type'        => 'yesno',
             ],
             'senDetails' => [
                 'label'       => __('SEN Details'),
                 'description' => __('Provide any comments or information concerning your child\'s development and SEN history.'),
                 'required'    => 'Y',
+                'columns'     => 2,
                 'conditional' => ['sen' => 'Y'],
             ],
         ];

@@ -40,22 +40,27 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
             'studentDocuments' => [
                 'label' => __('Student'),
                 'type'  => 'personalDocument',
+                'columns' => 3,
             ],
             'parent1Documents' => [
                 'label' => __('Parent 1'),
                 'type'  => 'personalDocument',
+                'columns' => 3,
             ],
             'parent2Documents' => [
                 'label' => __('Parent 2'),
                 'type'  => 'personalDocument',
+                'columns' => 3,
             ],
             'staffDocuments' => [
                 'label' => __('Staff'),
                 'type'  => 'personalDocument',
+                'columns' => 3,
             ],
             'otherDocuments' => [
                 'label' => __('Other'),
                 'type'  => 'personalDocument',
+                'columns' => 3,
             ],
         ];
     }
@@ -123,5 +128,21 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
         $this->personalDocumentHandler->updateDocumentsFromPOST($foreignTable, $foreignTableID, $params, $personalDocumentFail);
 
         return !$personalDocumentFail;
+    }
+
+    public function displayFieldValue(string $fieldName, array $field, &$data = [])
+    {
+        $documents = $this->personalDocumentGateway->selectPersonalDocuments($foreignTable, $foreignTableID, $params)->fetchAll();
+        if (empty($documents)) return;
+
+        $prefix = $params['prefix'] ?? '';
+
+        if (!empty($documents)) {
+            $col = $form->addRow()->setClass($params['class'] ?? '')->addColumn();
+                $col->addLabel($prefix.'document', $params['heading'] ?? __('Personal Documents'));
+                $col->addPersonalDocuments($prefix.'document', $documents, $this->view, $this->settingGateway);
+        }
+
+        return '';
     }
 }

@@ -48,11 +48,13 @@ class MedicalFields extends AbstractFieldGroup
                 'label'       => __('Medical Conditions'),
                 'description' => __('Does your child have any medical conditions or concerns?'),
                 'required'    => 'X',
+                'type'        => 'yesno',
             ],
             'medicalInformation' => [
                 'label'       => __('Medical Information'),
                 'description' => __('Please indicate any medical conditions.'),
                 'required'    => 'Y',
+                'columns'     => 2,
                 'conditional' => ['medical' => 'Y'],
             ],
             'headingMedicalForm' => [
