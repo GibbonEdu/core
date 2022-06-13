@@ -53,6 +53,7 @@ class INFields extends AbstractFieldGroup
                 'label'       => __('SEN Details'),
                 'description' => __('Provide any comments or information concerning your child\'s development and SEN history.'),
                 'required'    => 'Y',
+                'conditional' => ['sen' => 'Y'],
             ],
         ];
 

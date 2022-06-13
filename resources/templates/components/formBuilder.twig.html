@@ -72,6 +72,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
 </section>
 
+<style>
+    #formFields .formRow[style*="display: none"] {
+        display: flex !important;
+        background-image: linear-gradient(45deg, #fafafa 25%, #f4f4f4 25%, #f4f4f4 50%, #fafafa 50%, #fafafa 75%, #f4f4f4 75%, #f4f4f4 100%);
+        background-size: 23.0px 23.0px;
+    }
+</style>
+
 <script>
     $('#formFields .standardForm').sortable({
         placeholder: "drag-placeholder bg-gray-400 shadow-inner",
