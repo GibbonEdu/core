@@ -197,12 +197,9 @@ class FileUpload extends Input
                 if (!empty($attachmentPath)) {
                     $output .= '<div class="input-box rounded-sm standardWidth">';
 
-                    $attachmentName = basename($attachmentPath);
-                    $attachmentName = strlen($attachmentName) > 30 ? substr($attachmentName, 0, 30).'...' : $attachmentName;
-
                     $output .= '<div class="inline-label">';
                     $output .= __('Current attachment:').'<br/>';
-                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.$attachmentName.'</a>';
+                    $output .= '<a target="_blank" rel="noopener noreferrer" href="'.$this->absoluteURL.$attachmentPath.'">'.basename($attachmentPath).'</a>';
 
                     global $session;
                     $absolutePath = $session->get('absolutePath');
