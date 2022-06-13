@@ -554,5 +554,6 @@ ALTER TABLE gibbonPerson ADD `mfaSecret` VARCHAR(16) DEFAULT NULL AFTER `receive
 ALTER TABLE gibbonPerson ADD `mfaToken` TEXT DEFAULT NULL AFTER `mfaSecret`;end
 ALTER TABLE `gibbonCustomField` CHANGE `type` `type` ENUM('varchar','text','date','time','url','select','checkboxes','radio','yesno','editor','color','number','image','file','code') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 UPDATE gibbonSetting SET value='br[style|class],strong[style|class],b[style|class],em[style|class],span[style|class],p[style|class],address[style|class],pre[style|class],h1[style|class],h2[style|class],h3[style|class],h4[style|class],h5[style|class],h6[style|class],table[style|class],thead[style|class],tbody[style|class],tfoot[style|class],tr[style|class],td[style|class|colspan|rowspan],ol[style|class],ul[style|class],li[style|class],blockquote[style|class],a[style|class|target|href],img[style|class|src|width|height],video[style|class],source[style|class],hr[style|class],iframe[style|class|width|height|src|frameborder|allowfullscreen],embed[style|class],div[style|class],sup[style|class],sub[style|class],code[style|class],details[style|class],summary[style|class],pagebreak,columnbreak' WHERE name='allowableHTML' AND scope='System';end
+UPDATE `gibbonFormField` SET fieldName='parent1Documents' WHERE fieldName='parentDocuments';end
 
 ";

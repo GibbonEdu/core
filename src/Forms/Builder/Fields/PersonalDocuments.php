@@ -41,8 +41,12 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
                 'label' => __('Student'),
                 'type'  => 'personalDocument',
             ],
-            'parentDocuments' => [
-                'label' => __('Parent'),
+            'parent1Documents' => [
+                'label' => __('Parent 1'),
+                'type'  => 'personalDocument',
+            ],
+            'parent2Documents' => [
+                'label' => __('Parent 2'),
                 'type'  => 'personalDocument',
             ],
             'staffDocuments' => [
@@ -65,9 +69,14 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
     {
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
-        $roleCategory = str_replace('Documents', '', $field['fieldName']);
+        $roleCategory = str_replace(['Documents', '1', '2'], '', $field['fieldName']);
 
         $params = [$roleCategory => true, 'applicationForm' => true, 'class' => '', 'heading' => __($field['label'])];
+        if ($roleCategory == 'parent') {
+            $params['prefix'] = $field['fieldName'] == 'parent1Documents' ? 'parent1' : 'parent2';
+            $foreignTable .= ucfirst($params['prefix']);
+        }
+
         $this->personalDocumentHandler->addPersonalDocumentsToForm($form, $foreignTable, $foreignTableID, $params);
 
         return $form->getRow();
@@ -75,17 +84,21 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
 
     public function getFieldDataFromPOST(string $fieldName, array $field)    
     {
-        $roleCategory = str_replace('Documents', '', $fieldName);
+        $roleCategory = str_replace(['Documents', '1', '2'], '', $fieldName);
         $documents = $this->personalDocumentTypeGateway->selectBy([])->fetchAll();
 
         $data = [];
         foreach ($documents as $document) {
             $id = $document['gibbonPersonalDocumentTypeID'];
+            $prefix = $roleCategory == 'parent' 
+                ? ($fieldName == 'parent1Documents' ? 'parent1' : 'parent2')
+                : '';
+
 
             if (empty($document['activePerson'.ucfirst($roleCategory)])) continue;
-            if (empty($_POST['document'][$id])) continue;
+            if (empty($_POST[$prefix.'document'][$id])) continue;
 
-            $data[$id] = $_POST['document'][$id];
+            $data[$fieldName][$id] = $_POST[$prefix.'document'][$id];
         }
 
         return $data;
@@ -97,11 +110,16 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
         
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
-        $roleCategory = str_replace('Documents', '', $fieldName);
+        $roleCategory = str_replace(['Documents', '1', '2'], '', $fieldName);
 
         if (empty($foreignTableID)) return false;
 
         $params = [$roleCategory => true, 'applicationForm' => true, 'class' => ''];
+        if ($roleCategory == 'parent') {
+            $params['prefix'] = $fieldName == 'parent1Documents' ? 'parent1' : 'parent2';
+            $foreignTable .= ucfirst($params['prefix']);
+        }
+
         $this->personalDocumentHandler->updateDocumentsFromPOST($foreignTable, $foreignTableID, $params, $personalDocumentFail);
 
         return !$personalDocumentFail;

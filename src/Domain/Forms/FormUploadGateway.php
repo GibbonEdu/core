@@ -108,17 +108,28 @@ class FormUploadGateway extends QueryableGateway
                 ->bindValue('foreignTableID', $foreignTableID);
 
             $this->unionAllWithCriteria($query, $criteria)
-                ->cols(["'Personal Documents' AS type", "'Parent' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->cols(["'Personal Documents' AS type", "'Parent 1' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
                 ->from('gibbonFormField')
                 ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
-                ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="parentDocuments" AND gibbonPersonalDocumentType.activePersonParent=1')
-                ->leftJoin('gibbonPersonalDocument', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID AND gibbonPersonalDocument.foreignTable=:foreignTable AND gibbonPersonalDocument.foreignTableID=:foreignTableID')
+                ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="parent1Documents" AND gibbonPersonalDocumentType.activePersonParent=1')
+                ->leftJoin('gibbonPersonalDocument', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID AND gibbonPersonalDocument.foreignTable=:foreignTableP1 AND gibbonPersonalDocument.foreignTableID=:foreignTableID')
                 ->where('gibbonFormPage.gibbonFormID=:gibbonFormID', ['gibbonFormID' => $gibbonFormID])
                 ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%' and gibbonPersonalDocumentType.activeApplicationForm=1")
                 ->where('gibbonFormField.fieldGroup="PersonalDocuments"')
-                ->bindValue('foreignTable', $foreignTable)
+                ->bindValue('foreignTableP1', $foreignTable.'Parent1')
                 ->bindValue('foreignTableID', $foreignTableID);
 
+            $this->unionAllWithCriteria($query, $criteria)
+                ->cols(["'Personal Documents' AS type", "'Parent 2' as target", 'gibbonPersonalDocumentType.name', 'gibbonPersonalDocument.gibbonPersonalDocumentID AS id',  'gibbonPersonalDocument.filePath AS path', 'gibbonPersonalDocument.timestamp'])
+                ->from('gibbonFormField')
+                ->innerJoin('gibbonFormPage', 'gibbonFormPage.gibbonFormPageID=gibbonFormField.gibbonFormPageID')
+                ->innerJoin('gibbonPersonalDocumentType', 'gibbonFormField.fieldName="parent2Documents" AND gibbonPersonalDocumentType.activePersonParent=1')
+                ->leftJoin('gibbonPersonalDocument', 'gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID=gibbonPersonalDocument.gibbonPersonalDocumentTypeID AND gibbonPersonalDocument.foreignTable=:foreignTableP2 AND gibbonPersonalDocument.foreignTableID=:foreignTableID')
+                ->where('gibbonFormPage.gibbonFormID=:gibbonFormID', ['gibbonFormID' => $gibbonFormID])
+                ->where("gibbonPersonalDocumentType.fields LIKE '%filePath%' and gibbonPersonalDocumentType.activeApplicationForm=1")
+                ->where('gibbonFormField.fieldGroup="PersonalDocuments"')
+                ->bindValue('foreignTableP2', $foreignTable.'Parent2')
+                ->bindValue('foreignTableID', $foreignTableID);
         }
 
         return $this->runQuery($query, $criteria);
