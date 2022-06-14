@@ -166,13 +166,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // List invalid functionality
     if (!empty($processListInvalid)) {
         $col = $form->addRow()->addColumn();
-        $col->addContent(__('The system does not have enough data to perform the following actions:'))->wrap('<i><u>', '</u></i>');
+        $col->addContent(__('The system does not have enough data to perform the following actions:'))->wrap('<span class="underline italic text-red-700 font-bold">', '</span>');
         $col->addContent(Format::list($processListInvalid, 'ol',));
-
-        // Display any validation errors
-        foreach ($formProcessor->getErrors() as $errorMessage) {
-            $col->addContent(Format::alert($errorMessage));
-        }
     }
 
     //  List manual actions

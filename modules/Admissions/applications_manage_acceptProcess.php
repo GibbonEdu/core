@@ -77,13 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
     $formProcessor->acceptForm($formBuilder, $formData);
 
-    // Handle fatal errors
+    // Handle errors
     if ($formProcessor->hasErrors()) {
         $formData->setResult('errors', $formProcessor->getErrors());
-        $formData->save($application['identifier']);
-
-        header("Location: {$URL->withReturn('error3')}");
-        exit;
+        $return = $formProcessor->getMode() == 'rollback' ? 'error3' : 'warning1';
     }
 
     // Save the final results of the acceptance
@@ -103,5 +100,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         }
     }
 
-    header("Location: {$URL->withReturn('success0')}");
+    header("Location: {$URL->withReturn(!empty($return) ? $return : 'success0')}");
 }

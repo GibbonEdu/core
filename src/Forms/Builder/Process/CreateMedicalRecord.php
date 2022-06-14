@@ -28,7 +28,7 @@ use Gibbon\Forms\Builder\View\CreateMedicalRecordView;
 
 class CreateMedicalRecord extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['medical', 'medicalInformation'];
+    protected $requiredFields = ['medical'];
 
     protected $medicalGateway;
     protected $customFieldGateway;

@@ -28,7 +28,7 @@ use Gibbon\Forms\Builder\View\CreateINRecordView;
 
 class CreateINRecord extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['sen', 'senDetails'];
+    protected $requiredFields = ['sen'];
 
     protected $inGateway;
     protected $customFieldGateway;
