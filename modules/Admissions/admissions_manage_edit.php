@@ -24,6 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_manage_edit.php') == false) {
     // Access denied
@@ -44,16 +45,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
         return;
     }
 
-    $person = $container->get(UserGateway::class)->getByID($values['gibbonPersonID']);
-    $personName = !empty($person)
-        ? Format::nameLinked($person['gibbonPersonID'], $person['title'], $person['preferredName'], $person['surname'], 'Other', false, true)
-        : __('This account is not linked to a user.');
+    $values['person'] = $container->get(UserGateway::class)->getByID($values['gibbonPersonID']);
+    $values['family'] = $container->get(FamilyGateway::class)->getByID($values['gibbonFamilyID']);
 
-    $family = $container->get(FamilyGateway::class)->getByID($values['gibbonFamilyID']);
-    $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')->withAbsoluteUrl();
-    $familyName = !empty($family)
-        ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name']) 
-        : __('This account is not linked to a family.');
+    // DETAILS
+    $table = DataTable::createDetails('admissionsAccount');
+
+    $table->addColumn('person', __('Person'))
+        ->format(function ($values)  {
+            $person = $values['person'];
+            return !empty($person)
+                ? Format::nameLinked($person['gibbonPersonID'], $person['title'], $person['preferredName'], $person['surname'], 'Other', false, true)
+                : __('This account is not linked to a user.');
+        });
+
+    $table->addColumn('family', __('Family'))
+        ->addClass('col-span-2')
+        ->format(function ($values) {
+            $family = $values['family'];
+            $url = Url::fromModuleRoute('User Admin', 'family_manage_edit')->withAbsoluteUrl();
+
+            return !empty($family)
+                ? Format::link($url->withQueryParams(['gibbonFamilyID' => $family['gibbonFamilyID']]), $family['name']) 
+                : __('This account is not linked to a family.');
+        });
+
+    $table->addColumn('created', __('Created'))->format(Format::using('dateReadable', 'timestampCreated'));
+
+    $table->addColumn('active', __('Last Active'))->format(Format::using('relativeTime', 'timestampActive'));
+    
+    $table->addColumn('ipAddress', __('IP Address'));
+
+    echo $table->render([$values]);
+
 
     // FORM
     $form = Form::create('admissionsManage', $session->get('absoluteURL').'/modules/Admissions/admissions_manage_editProcess.php');
@@ -62,14 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/admissions_mana
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonAdmissionsAccountID', $gibbonAdmissionsAccountID);
     
-    $row = $form->addRow();
-        $row->addLabel('person', __('Person'));
-        $row->addContent($personName);
-
-    $row = $form->addRow();
-        $row->addLabel('family', __('Family'));
-        $row->addContent($familyName);
-
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
         $row->addEmail('email')
