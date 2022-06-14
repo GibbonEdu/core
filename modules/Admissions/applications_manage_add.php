@@ -67,6 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         echo Format::alert(__('A new admissions account has been created for {email}', ['email' => '<u>'.$account['email'].'</u>']), 'success');
     }
 
+    echo Format::alert(__('Manually creating and submitting an application form will bypass the normal emails, payments, and notifications that are sent upon submission. Most of these actions can be triggered afterwards through the Process tab in the Edit Application page.'), 'message');
+
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
@@ -87,16 +89,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $values = $formData->getData();
     $incomplete = empty($formData->getStatus()) || $formData->getStatus() == 'Incomplete';
 
-    // Display form fee info
-    // $hasApplicationFee = $formBuilder->hasConfig('formSubmissionFee') || $formBuilder->hasConfig('formProcessingFee');
-    // if ($hasApplicationFee) {
-    //     $formPayment = $container->get(FormPayment::class)->setForm($gibbonFormID);
-    //     $page->return->addReturns(!$incomplete ? $formPayment->getReturnMessages() : []);
-    // }
-
-    // Add page returns and javascript
-    // $page->return->addReturns($formBuilder->getReturns());
-
     // Prefill application form values
     if ($incomplete && !empty($account)) {
         $formPrefill = $container->get(FormPrefill::class)
@@ -113,9 +105,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if ($incomplete && $formBuilder->getPageNumber() <= $formBuilder->getFinalPageNumber()) {
         $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_addProcess.php');
         $pageUrl = Url::fromModuleRoute('Admissions', 'applications_manage_add');
-
-        // Display fee info
-        // if ($hasApplicationFee) echo $formPayment->getFeeInfo();
 
         // Build the form
         $form = $formBuilder->build($action, $pageUrl);
