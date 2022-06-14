@@ -1341,9 +1341,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                     $isSlotInTime = true;
                 }
 
-                // Count how many classes are in this period
-                $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
-
                 if ($isSlotInTime == true) {
                     //Check for an exception for the current user
                     try {
@@ -1355,6 +1352,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= "<div class='error'>".$e->getMessage().'</div>';
                     }
                     if ($resultException->rowCount() < 1) {
+                        // Count how many classes are in this period
+                        $periodCount[$rowPeriods['name']][] = $rowPeriods['course'].'.'.$rowPeriods['class'];
+
                         $effectiveStart = $rowPeriods['timeStart'];
                         $effectiveEnd = $rowPeriods['timeEnd'];
                         if ($dayTimeStart > $rowPeriods['timeStart']) {
