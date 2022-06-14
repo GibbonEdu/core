@@ -22,6 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\User\FamilyGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
     // Access denied
@@ -73,10 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->filterBy('incomplete', 'N')
         ->fromPOST();
 
-    $submissions = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
-    $submissions->transform(function (&$values) {
-        $values['data'] = json_decode($values['data'] ?? '', true);
+    $applications = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
+    $applications->transform(function (&$values) {
+        $defaults = ['gibbonFamilyID' => null];
+        $data = json_decode($values['data'] ?? '', true);
+        $values = array_merge($defaults, $data, $values);
     });
+
+    $familyIDs = $applications->getColumn('gibbonFamilyID');
+    $adults = $container->get(FamilyGateway::class)->selectAdultsByFamily($familyIDs)->fetchGrouped();
+    $applications->joinColumn('gibbonFamilyID', 'adults', $adults);
 
     // DATA TABLE
     $table = DataTable::createPaginated('applications', $criteria);
@@ -133,15 +140,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             return substr($application['dob'] ?? '', 0, 4).'<br/>'.Format::small($application['yearGroup'] ?? '');
         });
 
-    $table->addColumn('parents', __('Parents'))->notSortable();
+    $table->addColumn('parents', __('Parents'))
+        ->notSortable()
+        ->format(function($application) {
+            $parentsText = '';
+            if (empty($application['gibbonFamilyID'])) {
+                $application['adults'] = [];
+                if (!empty($application['parent1surname']) && !empty($application['parent1preferredName'])) {
+                    $application['adults'][] = ['title' => $application['parent1title'], 'preferredName' => $application['parent1preferredName'], 'surname' => $application['parent1surname'], 'email' => $application['parent1email']];
+                }
+                if (!empty($application['parent2surname']) && !empty($application['parent2preferredName'])) {
+                    $application['adults'][] = ['title' => $application['parent2title'],'preferredName' => $application['parent2preferredName'],'surname' => $application['parent2surname'],'email' => $application['parent2email']];
+                }
+            }
+
+            foreach ($application['adults'] as $parent) {
+                $name = Format::name($parent['title'], $parent['preferredName'], $parent['surname'], 'Parent');
+                $parentsText .= !empty($parent['email'])
+                    ? Format::link($parent['email'], $name).'<br/>'
+                    : $name.'<br/>';
+            }
+
+            return $parentsText;
+        });
 
     $table->addColumn('schoolName1', __('Last School'))
         ->format(function($application) {
-            $school = $application['data']['schoolName1'] ?? '';
-            if (!empty($application['data']['schoolName2'])) {
-                $schoolDate1 = $application['data']['schoolDate1'] ?? '';
-                $schoolDate2 = $application['data']['schoolDate2'] ?? '';
-                $school = $schoolDate2 > $schoolDate1 ? $application['data']['schoolName2'] : $school;
+            $school = $application['schoolName1'] ?? '';
+            if (!empty($application['schoolName2'])) {
+                $schoolDate1 = $application['schoolDate1'] ?? '';
+                $schoolDate2 = $application['schoolDate2'] ?? '';
+                $school = $schoolDate2 > $schoolDate1 ? $application['schoolName2'] : $school;
             }
             return Format::truncate($school, 20);
         });
@@ -198,5 +227,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                 ->setURL('/modules/Admissions/applications_manage_delete.php');
         });
 
-    echo $table->render($submissions);
+    echo $table->render($applications);
 }
