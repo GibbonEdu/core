@@ -52,6 +52,10 @@ class SendReferenceRequestView extends AbstractFormView
         $row = $form->addRow()->addClass('referee');
             $row->addLabel('applicationRefereeLink', __('Application Form Referee Link'))->description(__("Link to an external form that will be emailed to a referee of the applicant's choosing."));
             $row->addURL('applicationRefereeLink');
+
+        $row = $form->addRow()->addClass('referee');
+            $row->addLabel('applicationRefereeAutomatic', __('Automatic Reference Request'))->description(__('Should a reference request be sent automatically when the form is submitted? Otherwise, it can be sent manually through the application process tab.'));
+            $row->addYesNo('applicationRefereeAutomatic')->required();
     }
 
     public function display(Form $form, FormDataInterface $data)

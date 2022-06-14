@@ -77,6 +77,7 @@ if (empty($gibbonFormID) || empty($identifier)) {
 
     // Add configuration data to the form, such as recently created IDs
     $formBuilder->addConfig([
+        'mode'           => 'submit',
         'foreignTableID' => $formData->identify($identifier),
         'accessID'       => $accessID,
         'accessToken'    => $account['accessToken'],

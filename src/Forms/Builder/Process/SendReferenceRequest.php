@@ -27,7 +27,6 @@ use Gibbon\Forms\Builder\Storage\FormDataInterface;
 use Gibbon\Forms\Builder\View\SendReferenceRequestView;
 use Gibbon\Comms\EmailTemplate;
 use Gibbon\Services\Format;
-use Gibbon\Http\Url;
 
 class SendReferenceRequest extends AbstractFormProcess implements ViewableProcess
 {
@@ -56,6 +55,10 @@ class SendReferenceRequest extends AbstractFormProcess implements ViewableProces
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
+        if ($builder->getConfig('mode') == 'submit' && $builder->getConfig('applicationRefereeAutomatic') == 'N') {
+            return;
+        }
+
         // Setup Template 
         $template = $this->template->setTemplate('Application Form Reference Request');
         $templateData = [
