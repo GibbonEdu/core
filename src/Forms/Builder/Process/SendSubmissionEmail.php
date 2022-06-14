@@ -61,7 +61,9 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
         $data = $formData->getData();
         foreach ($data as $fieldName => $value) {
             $field = $builder->getField($fieldName);
-            if (empty($field)) continue;
+            if (empty($field) || empty($value)) continue;
+            if ($field['fieldGroup'] == 'PersonalDocuments') continue;
+            if ($field['fieldGroup'] == 'RequiredDocuments') continue;
 
             $fieldGroup = $builder->getFieldGroup($field['fieldGroup']);
 

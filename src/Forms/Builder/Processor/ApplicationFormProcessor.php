@@ -43,8 +43,8 @@ class ApplicationFormProcessor extends AbstractFormProcessor
 {
     protected function submitProcess()
     {
-        $this->run(SendReferenceRequest::class);
         $this->run(ApplicationSubmit::class);
+        $this->run(SendReferenceRequest::class);
         $this->run(SendSubmissionEmail::class);
         $this->run(PaySubmissionFee::class);
     }

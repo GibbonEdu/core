@@ -137,7 +137,7 @@ class RequiredDocuments extends AbstractFieldGroup implements UploadableInterfac
         $foreignTable = $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission';
         $foreignTableID = $formBuilder->getConfig('foreignTableID');
         
-        if (empty($foreignTableID)) return '';
+        if (empty($view) || empty($foreignTableID)) return '';
 
         $uploads = $this->formUploadGateway->selectAllUploadsByContext($formBuilder->getFormID(), $foreignTable, $foreignTableID);
 

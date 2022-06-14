@@ -123,7 +123,7 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
     {
         $params = $this->getParams($formBuilder, $fieldName);
 
-        if (empty($params['foreignTableID'])) return '';
+        if (empty($view) || empty($params['foreignTableID'])) return '';
 
         $documents = $this->personalDocumentGateway->selectPersonalDocuments($params['foreignTable'], $params['foreignTableID'], $params)->fetchAll();
 

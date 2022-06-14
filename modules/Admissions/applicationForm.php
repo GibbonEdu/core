@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\FormPrefill;
 use Gibbon\Forms\Builder\FormPayment;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
@@ -28,6 +27,7 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Module\Admissions\ApplicationBuilder;
 
 $proceed = false;
 $public = false;
@@ -104,7 +104,7 @@ if ($proceed == false) {
     }
 
     // Setup the form builder & data
-    $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
+    $formBuilder = $container->get(ApplicationBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
     
     $formData->load($identifier);
