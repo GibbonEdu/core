@@ -68,11 +68,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (empty($account)) {
         // New account
         $accessID = $admissionsAccountGateway->getUniqueAccessID($guid.$email);
+        $accessToken = $admissionsAccountGateway->getUniqueAccessToken($guid.$accessID);
+        $accessExpiry = date('Y-m-d H:i:s', strtotime("+2 days"));
+
         $gibbonAdmissionsAccountID = $admissionsAccountGateway->insert([
-            'email'           => $email ?? null,
-            'accessID'        => $accessID,
-            'gibbonPersonID'  => $gibbonPersonID ?? null,
-            'ipAddress'       => $_SERVER['REMOTE_ADDR'] ?? '',
+            'email'          => $email ?? null,
+            'accessID'       => $accessID,
+            'accessToken'    => $accessToken,
+            'accessExpiry'   => $accessExpiry,
+            'gibbonPersonID' => $gibbonPersonID ?? null,
+            'ipAddress'      => $_SERVER['REMOTE_ADDR'] ?? '',
         ]);
         $accountType = 'new';
     } else {   

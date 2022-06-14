@@ -122,6 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Build the form
     $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');
 
+    $formBuilder->addConfig(['mode' => 'office']);
     $officeForm = $formBuilder->includeHidden(true)->edit($action);
     $officeForm->addHiddenValue('officeOnly', 'Y');
     $officeForm->addHiddenValue('tab', 0);

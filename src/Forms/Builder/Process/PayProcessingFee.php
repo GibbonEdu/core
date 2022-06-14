@@ -55,13 +55,11 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return $builder->hasConfig('formProcessingFee');
+        return $builder->hasConfig('formProcessingFee') && $this->checkEnabled($builder);
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if ($builder->getConfig($this->getProcessName().'Enabled') != 'Y') return;
-
         $processingFee = $builder->getConfig('formProcessingFee');
 
         if (!is_numeric($processingFee) || $processingFee <= 0) return;
@@ -133,5 +131,14 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
         if (!$builder->hasField('parent1email')) {
             throw new MissingFieldException('parent1email');
         }
+    }
+
+    private function checkEnabled(FormBuilderInterface $builder)
+    {
+        if ($builder->getConfig('mode') == 'process' && $builder->getConfig($this->getProcessName().'Enabled') != 'Y') {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
         // Setup which processes are going to run, based on user-selected checkboxes
         foreach ($processes as $processName => $process) {
-            $formBuilder->addConfig([$processName.'Enabled' => $process['enabled'] ?? 'N']);
+            $formBuilder->addConfig(['mode' => 'process', $processName.'Enabled' => $process['enabled'] ?? 'N']);
         }
 
         // Run any edit-related processes
@@ -122,6 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     if (!empty($validated)) {
         header("Location: {$URL->withReturn('error3')->withQueryParam('invalid', implode(',', $validated))}");
         exit;
+    }
+
+    // Update the admissions account email, if there is none
+    if (empty($account['email']) && $formData->has('parent1email')) {
+        $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
+            'email' => $formData->get('parent1email'),
+        ]);
     }
 
     header("Location: {$URL->withReturn($partialFail ? 'warning1' : 'success0')}");

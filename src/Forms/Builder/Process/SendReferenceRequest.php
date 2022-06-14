@@ -50,15 +50,11 @@ class SendReferenceRequest extends AbstractFormProcess implements ViewableProces
 
     public function isEnabled(FormBuilderInterface $builder)
     {
-        return $builder->getConfig('applicationReferee') == 'Y';
+        return $builder->getConfig('applicationReferee') == 'Y' && $this->checkEnabled($builder);
     }
 
     public function process(FormBuilderInterface $builder, FormDataInterface $formData)
     {
-        if ($builder->getConfig('mode') == 'submit' && $builder->getConfig('applicationRefereeAutomatic') == 'N') {
-            return;
-        }
-
         // Setup Template 
         $template = $this->template->setTemplate('Application Form Reference Request');
         $templateData = [
@@ -99,5 +95,18 @@ class SendReferenceRequest extends AbstractFormProcess implements ViewableProces
     public function rollback(FormBuilderInterface $builder, FormDataInterface $data)
     {
         // Cannot unsend what has been sent...
+    }
+
+    private function checkEnabled(FormBuilderInterface $builder)
+    {
+        if ($builder->getConfig('mode') == 'submit' && $builder->getConfig('applicationRefereeAutomatic') == 'N') {
+            return false;
+        }
+
+        if ($builder->getConfig('mode') == 'process' && $builder->getConfig($this->getProcessName().'Enabled') != 'Y') {
+            return false;
+        }
+
+        return true;
     }
 }

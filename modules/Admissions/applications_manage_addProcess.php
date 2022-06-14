@@ -89,6 +89,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         exit;
     }
 
+    // Update the admissions account email, if there is none
+    if (empty($account['email']) && $formData->has('parent1email')) {
+        $admissionsAccountGateway->update($account['gibbonAdmissionsAccountID'], [
+            'email' => $formData->get('parent1email'),
+        ]);
+    }
+
     // Determine how to handle the next page
     $formPageGateway = $container->get(FormPageGateway::class);
     $finalPageNumber = $formPageGateway->getFinalPageNumber($gibbonFormID);
