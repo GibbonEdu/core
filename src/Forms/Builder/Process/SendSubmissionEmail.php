@@ -68,7 +68,7 @@ class SendSubmissionEmail extends AbstractFormProcess implements ViewableProcess
             if ($field['fieldType'] == 'heading' || $field['fieldType'] == 'subheading') {
                 $details[$field['fieldType']] = __($field['label']);
             } else {
-                $details[__($field['label'])]  = $fieldGroup->displayFieldValue($fieldName, $field, $data);
+                $details[__($field['label'])]  = $fieldGroup->displayFieldValue($builder, $fieldName, $field, $data);
             }
         }
 
