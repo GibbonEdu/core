@@ -160,7 +160,7 @@ class CourseEnrolmentGateway extends QueryableGateway
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID
-                AND gibbonPerson.status='Full'
+                AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                 ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
@@ -245,7 +245,7 @@ class CourseEnrolmentGateway extends QueryableGateway
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
-            AND gibbonPerson.status='Full'
+            AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
             AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
             AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)
             AND gibbonCourseClassPerson.role='Student'";
