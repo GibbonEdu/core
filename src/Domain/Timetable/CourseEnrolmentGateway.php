@@ -139,7 +139,7 @@ class CourseEnrolmentGateway extends QueryableGateway
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                AND gibbonPerson.status='Full'
+                AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
                 ORDER BY formGroupName, surname, preferredName";
 

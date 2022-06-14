@@ -113,8 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID AND gibbonCourseClassPerson.role = 'Teacher')
                 WHERE gibbonFormGroup.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourseClassMap.gibbonYearGroupID=:gibbonYearGroupID
-                AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date OR gibbonPerson.status='Expected')
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
                 GROUP BY gibbonPerson.gibbonPersonID
@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID  AND gibbonCourseClassPerson.role = 'Student')
                 WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourseClassMap.gibbonYearGroupID=:gibbonYearGroupID
-                AND gibbonPerson.status='Full'
-                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)
+                AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
+                AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date OR gibbonPerson.status='Expected')
                 AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)
                 AND gibbonCourseClassPerson.gibbonCourseClassPersonID IS NULL
                 GROUP BY gibbonPerson.gibbonPersonID
