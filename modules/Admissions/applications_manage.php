@@ -83,8 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')
-            ->displayLabel();
+            ->displayLabel()
+            ->append(' | ');
     }
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Admissions/applications_manage_addSelect.php')
+        ->displayLabel();
 
     $table->modifyRows(function ($values, $row) {
         if ($values['status'] == 'Incomplete') $row->addClass('warning');
@@ -163,6 +168,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
                 $actions->addAction('reject', __('Reject'))
                     ->setIcon('iconCross')
                     ->setURL('/modules/Admissions/applications_manage_reject.php');
+            }
+
+            if ($application['status'] == 'Incomplete' && empty($application['owner'])) {
+                $actions->addAction('continue', __('Continue'))
+                    ->setURL('/modules/Admissions/applications_manage_add.php')
+                    ->addParam('gibbonFormID', $application['gibbonFormID'])
+                    ->addParam('identifier', $application['identifier'])
+                    ->addParam('accessID', $application['accessID'])
+                    ->setIcon('page_right');
             }
 
             if ($application['status'] == 'Accepted' || $application['status'] == 'Incomplete') {

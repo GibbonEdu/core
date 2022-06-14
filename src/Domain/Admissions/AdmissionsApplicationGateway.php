@@ -58,6 +58,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
                 'gibbonAdmissionsAccount.gibbonAdmissionsAccountID',
+                'gibbonAdmissionsAccount.accessID',
                 'gibbonAdmissionsAccount.email',
                 'gibbonYearGroup.name as yearGroup',
                 'gibbonFormGroup.name as formGroup',
