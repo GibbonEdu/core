@@ -124,6 +124,11 @@ abstract class AbstractFormProcessor implements ContainerAwareInterface
         return $this->errors;
     }
 
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
     protected function boot(FormBuilderInterface $builder, ?FormDataInterface $data, string $mode)
     {
         $this->builder = $builder;

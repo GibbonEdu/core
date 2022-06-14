@@ -70,7 +70,7 @@ class LanguageFields extends AbstractFieldGroup
 
             case 'languageChoiceExperience':
 
-                $form->toggleVisibilityByClass('languageChoice')->onSelect('languageChoice')->whenNot(__('Please select...'));
+                $form->toggleVisibilityByClass('languageChoice')->onSelect('languageChoice')->whenNot(['', 'Please select...']);
                 
                 $column = $row->addClass('languageChoice')->addColumn();
                 $column->addLabel('languageChoiceExperience', __($field['label']))->description(__($field['description']));

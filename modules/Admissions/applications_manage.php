@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-        ->addParam('search', $criteria->getSearchText(true))
+        ->addParam('search', $search)
         ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($application, $actions) {
 

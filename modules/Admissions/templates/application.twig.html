@@ -11,11 +11,14 @@
         {% if uploadsTable %}
             <li><a href='#tabs4'>{{ __('Documents') }}</a></li>
         {% endif %}
+        {% if familyTable %}
+            <li><a href='#tabs5'>{{ __('Family') }}</a></li>
+        {% endif %}
         {% if processForm %}
-            <li><a href='#tabs5'>{{ __('Process') }}</a></li>
+            <li><a href='#tabs6'>{{ __('Process') }}</a></li>
         {% endif %}
         {% if resultsForm %}
-            <li><a href='#tabs6'>{{ __('Results') }}</a></li>
+            <li><a href='#tabs7'>{{ __('Results') }}</a></li>
         {% endif %}
     </ul>
 
@@ -48,15 +51,21 @@
         {{ uploadsTable.getOutput | raw }}
     </div>
     {% endif %}
+    
+    {% if familyTable %}
+    <div id='tabs5'>
+        {{ familyTable.getOutput | raw }}
+    </div>
+    {% endif %}
 
     {% if processForm %}
-    <div id='tabs5'>
+    <div id='tabs6'>
         {{ processForm.getOutput | raw }}
     </div>
     {% endif %}
 
     {% if resultsForm %}
-    <div id='tabs6'>
+    <div id='tabs7'>
         {{ resultsForm.getOutput | raw }}
     </div>
     {% endif %}

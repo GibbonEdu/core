@@ -30,6 +30,7 @@ use Gibbon\Module\Admissions\Forms\ApplicationMilestonesForm;
 use Gibbon\Module\Admissions\Forms\ApplicationProcessForm;
 use Gibbon\Module\Admissions\Tables\ApplicationUploadsTable;
 use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
+use Gibbon\Module\Admissions\Tables\ApplicationFamilyTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     // Access denied
@@ -101,6 +102,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams($urlParams));
     }
     
+    if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
+        $page->navigator->addHeaderAction('accept', __('Accept'))
+            ->setURL('/modules/Admissions/applications_manage_accept.php')
+            ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
+            ->setIcon('iconTick')
+            ->displayLabel();
+
+        $page->navigator->addHeaderAction('reject', __('Reject'))
+            ->setURL('/modules/Admissions/applications_manage_reject.php')
+            ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
+            ->setIcon('iconCross')
+            ->displayLabel();
+    }
+
     $page->navigator->addHeaderAction('view', __('View'))
         ->setURL('/modules/Admissions/applications_manage_view.php')
         ->addParam('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
@@ -137,6 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $milestonesForm = $container->get(ApplicationMilestonesForm::class)->createForm($urlParams, $application['milestones']);
     $formsTable = DataTable::create('')->withData([]);
     $uploadsTable = $container->get(ApplicationUploadsTable::class)->createTable($application['gibbonFormID'], $gibbonAdmissionsApplicationID);
+    $familyTable = $container->get(ApplicationFamilyTable::class)->createTable($gibbonAdmissionsApplicationID, $account['gibbonFamilyID']);
     $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
 
     // Display the results
@@ -159,6 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         'milestonesForm' => $milestonesForm ?? null,
         'formsTable'     => $formsTable ?? null,
         'uploadsTable'   => $uploadsTable ?? null,
+        'familyTable'    => $familyTable ?? null,
         'processForm'    => $processForm ?? null,
         'resultsForm'    => $resultsForm ?? null,
     ]);
