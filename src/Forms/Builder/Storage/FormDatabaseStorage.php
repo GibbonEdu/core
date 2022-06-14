@@ -32,7 +32,7 @@ class FormDatabaseStorage extends AbstractFormStorage
         $this->formSubmissionGateway = $formSubmissionGateway;
     }
 
-    public function setContext(string $gibbonFormID, string $gibbonFormPageID, string $foreignTable, string $foreignTableID, string $owner)
+    public function setContext(string $gibbonFormID, string $gibbonFormPageID, string $foreignTable, string $foreignTableID, ?string $owner)
     {
         $this->context = [
             'gibbonFormID'     => $gibbonFormID,

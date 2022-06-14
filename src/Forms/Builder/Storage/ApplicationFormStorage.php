@@ -33,7 +33,7 @@ class ApplicationFormStorage extends AbstractFormStorage
         $this->admissionsApplicationGateway = $admissionsApplicationGateway;
     }
 
-    public function setContext(string $gibbonFormID, ?string $gibbonFormPageID, string $foreignTable, string $foreignTableID, string $owner)
+    public function setContext(string $gibbonFormID, ?string $gibbonFormPageID, string $foreignTable, string $foreignTableID, ?string $owner)
     {
         $this->context = [
             'gibbonFormID'     => $gibbonFormID,
