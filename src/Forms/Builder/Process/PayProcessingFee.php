@@ -33,7 +33,7 @@ use Gibbon\Forms\Builder\Exception\MissingFieldException;
 
 class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
 {
-    protected $requiredFields = ['Payment Gateway', 'email'];
+    protected $requiredFields = ['Payment Gateway', 'parent1email'];
 
     private $session;
     private $payment;
@@ -78,7 +78,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
         // Setup Template 
         $template = $this->template->setTemplateByID($builder->getConfig('formProcessingEmailTemplate'));
         $templateData = [
-            'email'                => $formData->get('email'),
+            'email'                => $formData->get('parent1email'),
             'date'                 => Format::date(date('Y-m-d')),
             'link'                 => (string)$link,
             'applicationID'        => intval($builder->getConfig('foreignTableID')),
@@ -95,7 +95,7 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
         ];
 
         // Setup the email
-        $this->mail->AddAddress($formData->get('email'));
+        $this->mail->AddAddress($formData->get('parent1email'));
         $this->mail->setDefaultSender($template->renderSubject($templateData));
         $this->mail->SetFrom($this->session->get('organisationAdmissionsEmail'), $this->session->get('organisationAdmissionsName'));
         
@@ -130,8 +130,8 @@ class PayProcessingFee extends AbstractFormProcess implements ViewableProcess
             throw new MissingFieldException('Payment Gateway');
         }
 
-        if (!$builder->hasField('email')) {
-            throw new MissingFieldException('email');
+        if (!$builder->hasField('parent1email')) {
+            throw new MissingFieldException('parent1email');
         }
     }
 }
