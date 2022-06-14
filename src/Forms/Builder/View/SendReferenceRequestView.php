@@ -62,15 +62,15 @@ class SendReferenceRequestView extends AbstractFormView
     {
         if (!$data->exists($this->getResultName())) return;
 
-        if (!$data->has('applicationReferee')) return;
+        if (!$data->has('referenceEmail')) return;
 
         $col = $form->addRow()->addColumn();
         $col->addLabel($this->getResultName(), $this->getName());
 
         if ($data->hasResult($this->getResultName())) {
-            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->get('applicationReferee')]), 'message'));
+            $col->addContent(Format::alert(__('An email was sent to {email}', ['email' => $data->get('referenceEmail')]), 'message'));
         } else {
-            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->get('applicationReferee')]), 'warning'));
+            $col->addContent(Format::alert(__('Email failed to send to {email}', ['email' => $data->get('referenceEmail')]), 'warning'));
         }
     }
 }
