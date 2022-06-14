@@ -92,14 +92,14 @@ if ($proceed == false) {
 
         $row = $table->addRow();
             $row->addLabel('gibbonFormID'.$index, __($applicationForm['name']))->description($applicationForm['description'])->setClass('block w-full p-6 font-medium text-sm text-gray-700');
-            $row->addRadio('gibbonFormID')->setID('gibbonFormID'.$index)->fromArray([$applicationForm['gibbonFormID'] => ''])->required()->addClass('mr-6')->checked(false);
+            $row->addRadio('gibbonFormID')->setID('gibbonFormID'.$index)->fromArray([$applicationForm['gibbonFormID'] => ''])->addClass('mr-6')->checked($index == 0 ? $applicationForm['gibbonFormID'] : false);
     }
 
     $table = $form->addRow()->addTable()->setClass('w-full noIntBorder border rounded my-2 bg-blue-100 mb-2');
 
     $row = $table->addRow();
         $row->addLabel('gibbonFormID'.count($forms), __('Continue an Existing Application Form'))->description(__('If you already have an application form in progress or would like to check the status of an application form, select this option. You will receive an email with a link to access your existing forms.'))->setClass('block w-full p-6 font-medium text-sm text-gray-700');
-        $row->addRadio('gibbonFormID')->setID('gibbonFormID'.count($forms))->fromArray(['existing' => ''])->required()->addClass('mr-6')->checked(false);
+        $row->addRadio('gibbonFormID')->setID('gibbonFormID'.count($forms))->fromArray(['existing' => ''])->addClass('mr-6')->checked(false);
 
     $table = $form->addRow()->addTable()->setClass('smallIntBorder w-full my-4 p-6');
 
