@@ -350,6 +350,8 @@ class Format
      */
     public static function genderName($value, $translate = true)
     {
+        if (empty($value)) return '';
+        
         $genderNames = [
             'F'           => __('Female'),
             'M'           => __('Male'),
