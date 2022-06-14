@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/studentEnrolmen
                 "search" => $search,
                 "gibbonSchoolYearID" => $gibbonSchoolYearID
             ];
-            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Students', 'studentEnrolment_manage.php')->withQueryParams($params));
+            $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Admissions', 'studentEnrolment_manage.php')->withQueryParams($params));
         }
 
         $form = Form::create('studentEnrolmentAdd', $session->get('absoluteURL').'/modules/'.$session->get('module')."/studentEnrolment_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
