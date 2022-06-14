@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $count = 0;
 
     $data = ['gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'studentID' => $studentID];
-    $sql = "SELECT COUNT(*) FROM gibbonAdmissionsApplication WHERE (gibbonAdmissionsApplication.data->>'$.studentID'=:studentID OR gibbonAdmissionsApplication.result->>'$.studentID'=:studentID) AND gibbonAdmissionsApplicationID<>:gibbonAdmissionsApplicationID";
+    $sql = "SELECT COUNT(*) FROM gibbonAdmissionsApplication WHERE ( JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.studentID'))=:studentID OR JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, '$.studentID'))=:studentID) AND gibbonAdmissionsApplicationID<>:gibbonAdmissionsApplicationID";
     $count += $pdo->selectOne($sql, $data);
 
     $data = ['studentID' => $studentID];

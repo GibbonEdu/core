@@ -62,13 +62,10 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonAdmissionsAccount.email',
                 'gibbonYearGroup.name as yearGroup',
                 'gibbonFormGroup.name as formGroup',
-                'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
-                'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
-                'gibbonAdmissionsApplication.data->>"$.schoolName1" as schoolName1',
-                'gibbonAdmissionsApplication.data->>"$.schoolName2" as schoolName2',
-                'gibbonAdmissionsApplication.data->>"$.schoolDate1" as schoolDate1',
-                'gibbonAdmissionsApplication.data->>"$.schoolDate2" as schoolDate2',
-                'gibbonAdmissionsApplication.data->>"$.dob" as dob',
+                'gibbonAdmissionsApplication.data',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.surname")) as studentSurname',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.preferredName")) as studentPreferredName',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.dob")) as dob',
              ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
@@ -148,12 +145,12 @@ class AdmissionsApplicationGateway extends QueryableGateway
                 'gibbonForm.gibbonFormID',
                 'gibbonForm.name as formName',
                 'gibbonFormPage.sequenceNumber as page',
-                'gibbonAdmissionsApplication.data->>"$.surname" as studentSurname',
-                'gibbonAdmissionsApplication.data->>"$.preferredName" as studentPreferredName',
-                'gibbonAdmissionsApplication.data->>"$.PaySubmissionFeeComplete" AS submissionFeeComplete',
-                'gibbonAdmissionsApplication.data->>"$.PayProcessingFeeComplete" AS processingFeeComplete',
-                'gibbonForm.config->>"$.formSubmissionFee" as formSubmissionFee',
-                'gibbonForm.config->>"$.formProcessingFee" as formProcessingFee',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.surname")) as studentSurname',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.preferredName")) as studentPreferredName',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.PaySubmissionFeeComplete")) AS submissionFeeComplete',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.PayProcessingFeeComplete")) AS processingFeeComplete',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonForm.config, "$.formSubmissionFee")) as formSubmissionFee',
+                'JSON_UNQUOTE(JSON_EXTRACT(gibbonForm.config, "$.formProcessingFee")) as formProcessingFee',
             ])
             ->from($this->getTableName())
             ->innerJoin('gibbonForm', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
@@ -194,10 +191,10 @@ class AdmissionsApplicationGateway extends QueryableGateway
         $data = ['gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID];
         $sql = "SELECT gibbonAdmissionsApplication.*, 
                     gibbonForm.name as applicationName,
-                    gibbonAdmissionsApplication.data->>'$.surname' AS studentSurname,
-                    gibbonAdmissionsApplication.data->>'$.preferredName' AS studentPreferredName,
-                    gibbonAdmissionsApplication.data->>'$.PaySubmissionFeeComplete' AS submissionFeeComplete,
-                    gibbonAdmissionsApplication.data->>'$.PayProcessingFeeComplete' AS processingFeeComplete
+                    JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.surname')) AS studentSurname,
+                    JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.preferredName')) AS studentPreferredName,
+                    JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.PaySubmissionFeeComplete')) AS submissionFeeComplete,
+                    JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, '$.PayProcessingFeeComplete')) AS processingFeeComplete
                 FROM gibbonAdmissionsApplication
                 JOIN gibbonForm ON (gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID)
                 WHERE gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID";

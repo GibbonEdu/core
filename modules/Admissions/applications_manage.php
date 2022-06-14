@@ -74,6 +74,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->fromPOST();
 
     $submissions = $admissionsApplicationGateway->queryApplicationsBySchoolYear($criteria, $gibbonSchoolYearID, 'Application');
+    $submissions->transform(function (&$values) {
+        $values['data'] = json_decode($values['data'] ?? '', true);
+    });
 
     // DATA TABLE
     $table = DataTable::createPaginated('applications', $criteria);
@@ -134,9 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $table->addColumn('schoolName1', __('Last School'))
         ->format(function($application) {
-            $school = $application['schoolName1'];
-            if ($application['schoolDate2'] > $application['schoolDate1'] && !empty($application['schoolName2'])) {
-                $school = $application['schoolName2'];
+            $school = $application['data']['schoolName1'] ?? '';
+            if (!empty($application['data']['schoolName2'])) {
+                $schoolDate1 = $application['data']['schoolDate1'] ?? '';
+                $schoolDate2 = $application['data']['schoolDate2'] ?? '';
+                $school = $schoolDate2 > $schoolDate1 ? $application['data']['schoolName2'] : $school;
             }
             return Format::truncate($school, 20);
         });
