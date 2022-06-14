@@ -138,7 +138,7 @@ class PersonalDocuments extends AbstractFieldGroup implements UploadableInterfac
             'foreignTable'    => $formBuilder->getDetail('type') == 'Application' ? 'gibbonAdmissionsApplication' : 'gibbonFormSubmission',
             'foreignTableID'  => $formBuilder->getConfig('foreignTableID'),
             'applicationForm' => true,
-            'class'           => '',
+            'class'           => $fieldName == 'parent2Documents' ? 'parentSection2' : '',
             $roleCategory     => true,
         ];
     
