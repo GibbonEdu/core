@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Module\Admissions\ApplicationBuilder;
@@ -76,8 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $formData->load($application['identifier']);
 
     // Add configuration values
-    $formBuilder->addConfig($application);
-    $formBuilder->addConfig(['foreignTableID' => $gibbonAdmissionsApplicationID]);
+    $formBuilder->addConfig($application + ['foreignTableID' => $gibbonAdmissionsApplicationID]);
 
     // Verify the form
     $formProcessor = $container->get(FormProcessorFactory::class)->getProcessor($formBuilder->getDetail('type'));
@@ -90,6 +90,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     foreach ($errors as $errorMessage) {
         echo Format::alert($errorMessage);
     }
+
+    // Link existing parent 1 or family
+    $formBuilder->addConfig([
+        'gibbonPersonID' => $account['gibbonPersonID'] ?? $formData->getAny('gibbonPersonIDParent1'),
+        'gibbonFamilyID' => $account['gibbonFamilyID'] ?? $formData->getAny('gibbonFamilyID'),
+    ]);
 
     // Load values from the form data storage
     $values = $formData->getData();
@@ -134,6 +140,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     // Display application details
     $detailsTable = $container->get(ApplicationDetailsTable::class)->createTable($formBuilder);
     echo $detailsTable->render([$application]);
+
+    // Detect existing accounts or sibling applications
+    if ($application['status'] != 'Accepted' && !empty($account['gibbonPersonID']) && empty($formData->getAny('gibbonPersonIDParent1'))) {
+        $person = $container->get(UserGateway::class)->getByID($account['gibbonPersonID'], ['gibbonPersonID', 'status', 'title', 'preferredName', 'surname']);
+
+        if (empty($person)) {
+            echo Format::alert(__('The selected record does not exist.'), 'error');
+        } else {
+            $name = Format::nameLinked($person['gibbonPersonID'], $person['title'], $person['preferredName'], $person['surname'], 'Parent');
+            $params = ['name' => $name, 'system' => $session->get('systemName')];
+
+            echo $person['status'] == 'Full' || $person['status'] == 'Expected'
+                ? Format::alert(__('This application is attached to an admissions account for {name}, who is an existing user in {system}. Some parent and family details in the application form have been hidden, as they have been superseded by the active user\'s data.', $params), 'message')
+                : Format::alert(__('This application is attached to an admissions account for {name}, who is no longer active in {system}. Upon acceptance, this user will be reactivated and their personal details will be updated based on the information in this application form.', $params), 'warning');
+        }
+    }
 
     // Build the form
     $action = Url::fromHandlerRoute('modules/Admissions/applications_manage_editProcess.php');

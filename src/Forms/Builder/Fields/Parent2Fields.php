@@ -40,6 +40,7 @@ class Parent2Fields extends AbstractFieldGroup
             'headingParentGuardian2' => [
                 'label' => __('Parent/Guardian')." 2",
                 'type'  => 'heading',
+                'options' => 'familySection',
             ],
             'secondParent' => [
                 'label' => __('Do not include a second parent/guardian'),
@@ -155,8 +156,13 @@ class Parent2Fields extends AbstractFieldGroup
         $row = $form->addRow()->setClass("parentSection2");
 
         // PARENT 2: Already logged in, record gibbonPersonID
-        if ($formBuilder->hasConfig('gibbonPersonID') && $field['fieldName'] != 'parent2relationship') {
+        if ($formBuilder->hasConfig('gibbonFamilyID')) {
+            if ($field['fieldName'] == 'parent2surname') {
+                $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->when('Yes');
+            }
 
+            $row->addClass('hidden');
+            return $row;
            
         }
 

@@ -44,6 +44,7 @@ class Parent1Fields extends AbstractFieldGroup
             'headingParentGuardian1PersonalData' => [
                 'label' => __('Parent/Guardian')." 1 ".__('Personal Data'),
                 'type'  => 'subheading',
+                'options' => 'parentSection1',
             ],
             'parent1title' => [
                 'label'    => __('Title'),
@@ -93,6 +94,7 @@ class Parent1Fields extends AbstractFieldGroup
             'headingParentGuardian1PersonalBackground' => [
                 'label' => __('Parent/Guardian')." 1 ".__('Personal Background'),
                 'type'  => 'subheading',
+                'options' => 'parentSection1',
             ],
             'parent1languageFirst' => [
                 'label' => __('First Language'),
@@ -106,6 +108,7 @@ class Parent1Fields extends AbstractFieldGroup
             'headingParentGuardian1Contact' => [
                 'label' => __('Parent/Guardian')." 1 ".__('Contact'),
                 'type'  => 'subheading',
+                'options' => 'parentSection1',
             ],
             'parent1email' => [
                 'label'    => __('Email'),
@@ -123,6 +126,7 @@ class Parent1Fields extends AbstractFieldGroup
             'headingParentGuardian1Employment' => [
                 'label' => __('Parent/Guardian')." 1 ".__('Employment'),
                 'type'  => 'subheading',
+                'options' => 'parentSection1',
             ],
             'parent1profession' => [
                 'label' => __('Profession'),
@@ -166,7 +170,9 @@ class Parent1Fields extends AbstractFieldGroup
                 $row = $form->addRow();
                 $row->addLabel('parent1preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
                 $row->addTextField('parent1preferredName')->setValue($parent['preferredName'] ?? '')->maxLength(30)->readOnly();
-                    
+
+                $form->toggleVisibilityByClass('parentSection1')->onCheckbox('firstParent')->when('Yes');
+                
             } else {
                 $row->addClass('hidden');
             }

@@ -41,7 +41,8 @@ class FamilyFields extends AbstractFieldGroup
             'headingHomeAddress' => [
                 'label'       => __('Home Address'),
                 'description' => __('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.'),
-                'type'        => 'heading'
+                'type'        => 'heading',
+                'options' => 'familySection',
             ],
             'nameAddress' => [
                 'label'       => __('Address Name'),
@@ -87,6 +88,7 @@ class FamilyFields extends AbstractFieldGroup
             'headingSiblings' => [
                 'label' => __('Siblings'),
                 'type'  => 'heading',
+                'options' => 'familySection',
             ],
             'siblings' => [
                 'label'       => __('Siblings'),
@@ -118,11 +120,10 @@ class FamilyFields extends AbstractFieldGroup
         if (!empty($families) || $formBuilder->hasConfig('gibbonFamilyID')) {
         
             if ($field['fieldName'] == 'homeAddress') {
-                $col = $row->addColumn();
+                $row->addHeading('Family Details', __('Family Details'))->append(__('Choose the family you wish to associate this application with.'));
 
-                $col->addLabel('gibbonFamilyID', __('Family'))->description(__('Choose the family you wish to associate this application with.').'<br/><br/>');
-
-                $table = $col->addTable()->addClass('colorOddEven');
+                $row = $form->addRow();
+                $table = $row->addTable();
 
                 $header = $table->addHeaderRow();
                 $header->addContent(__('Family Name'));
@@ -133,7 +134,7 @@ class FamilyFields extends AbstractFieldGroup
                 $checked = $formBuilder->getConfig('gibbonFamilyID') ?? $firstFamily['gibbonFamilyID'] ?? '';
                 foreach ($families as $family) {
 
-                    $row = $table->addRow()->setClass('break');
+                    $row = $table->addRow();
                     $row->addContent($family['name'])->wrap('<strong>','</strong>')->addClass('shortWidth');
                     $row->addRadio('gibbonFamilyID')->fromArray(array($family['gibbonFamilyID'] => ''))->checked($checked)->required($required);
 
@@ -149,6 +150,8 @@ class FamilyFields extends AbstractFieldGroup
                     //     }
                     // }
                 }
+
+                $form->toggleVisibilityByClass('familySection')->onCheckbox('connectedFamily')->when('Yes');
                 
             } else {
                 $row->addClass('hidden');
