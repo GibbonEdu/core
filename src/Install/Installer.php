@@ -398,13 +398,12 @@ class Installer
      *
      * @param \Gibbon\Install\Context $context  The installation context
      * @param string $defaultLocale             The locale code of system default.
-     * @param bool $shouldInstallDemoData       Should the demo data be import.
      *
      * @return self
      *
      * @throws \Exception
      */
-    public function install(Context $context, string $defaultLocale, bool $shouldInstallDemoData): Installer
+    public function install(Context $context, string $defaultLocale): Installer
     {
         // Get internal connection.
         $pdo = $this->getPDO();
@@ -417,22 +416,6 @@ class Installer
             $this->runQueries($pdo, $queries);
         } catch (\PDOException $e) {
             throw new \Exception(__('Errors occurred in populating the database; empty your database, remove ../config.php and try again.'));
-        }
-
-        // Try to install the demo data, report error but don't stop if any issues
-        if ($shouldInstallDemoData) {
-            try {
-                $sql = $this->getDemoSql($context);
-                $sql = static::removeSqlRemarks($sql);
-                $queries = static::splitSql($sql);
-            } catch (\Exception $e) {
-                echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
-            }
-            try {
-                $this->runQueries($pdo, $queries);
-            } catch (\PDOException $e) {
-                echo Format::alert(__('There were some issues installing the demo data, but we will continue anyway.'), 'warning');
-            }
         }
 
         //Set default language
@@ -452,6 +435,38 @@ class Installer
         }
 
         return $this;
+    }
+
+    /**
+     * Run demo data installation according to the given context.
+     *
+     * @param \Gibbon\Install\Context $context  The installation context
+     *
+     * @return self
+     *
+     * @throws \Exception
+     */
+    public function installDemoData(Context $context)
+    {
+        // Get internal connection.
+        $pdo = $this->getPDO();
+        
+        // Try to install the demo data, report error but don't stop if any issues
+        try {
+            $sql = $this->getDemoSql($context);
+            $sql = static::removeSqlRemarks($sql);
+            $queries = static::splitSql($sql);
+        } catch (\Exception $e) {
+            echo Format::alert($e->getMessage() . ' ' . __('We will continue without demo data.'), 'warning');
+        }
+
+        try {
+            $this->runQueries($pdo, $queries);
+        } catch (\PDOException $e) {
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -495,7 +510,7 @@ class Installer
 
         for ($i = 0; $i < $linecount; ++$i) {
             if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
-                if (isset($lines[$i][0]) && $lines[$i][0] != '#') {
+                if (isset($lines[$i][0]) && $lines[$i][0] != '#' && $lines[$i][0] != '-') {
                     $output .= $lines[$i]."\n";
                 } else {
                     $output .= "\n";

@@ -5186,7 +5186,8 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00338, 'Behaviour', 'enablePositiveBehaviourLetters', 'Enable Positive Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
 (00339, 'Behaviour', 'behaviourLettersPositiveLetter1Count', 'Positive Letter 1 Count', 'After how many positive records should letter 1 be sent?', '3'),
 (00340, 'Behaviour', 'behaviourLettersPositiveLetter2Count', 'Positive Letter 2 Count', 'After how many positive records should letter 2 be sent?', '6'),
-(00341, 'Behaviour', 'behaviourLettersPositiveLetter3Count', 'Positive Letter 3 Count', 'After how many positive records should letter 3 be sent?', '9');
+(00341, 'Behaviour', 'behaviourLettersPositiveLetter3Count', 'Positive Letter 3 Count', 'After how many positive records should letter 3 be sent?', '9'),
+(00342, 'Installer', 'demoData', 'Install Demo Data?', '', 'N');
 
 -- --------------------------------------------------------
 

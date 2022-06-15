@@ -223,7 +223,7 @@ class InstallController
 
         $form = MultiPartForm::create('installer', $submitUrl);
         $form->setTitle(__('Installation - Step {count}', ['count' => 1]));
-        $form->setClass('smallIntBorder w-full');
+        $form->setClass('smallIntBorder standardForm w-full');
         $form->addPages(static::getSteps());
         $form->setCurrentPage(1);
 
@@ -435,9 +435,6 @@ class InstallController
         // Get and set database variables (not set until step 1)
         $config = static::parseConfigSubmission($guid, $data);
 
-        // Check if demo data should be installed.
-        $shouldInstallDemoData = static::parseDemoDataInstallFlag($data);
-
         // Initialize database for the installer with the config data.
         $installer->useConfigConnection($config);
 
@@ -449,7 +446,10 @@ class InstallController
 
         // Run database installation of the config if (1) and (2) are
         // successful.
-        $installer->install($context, $defaultLocale, $shouldInstallDemoData);
+        $installer->install($context, $defaultLocale);
+
+        // Check if demo data should be installed in the next step.
+        $installer->setSetting('demoData', static::parseDemoDataInstallFlag($data) ? 'Y' : 'N', 'Installer');
     }
 
     /**
@@ -753,6 +753,14 @@ class InstallController
                 echo Format::alert(__('Some aspects of your update failed.'));
             }
             $settingsFail = !$installer->setSetting('cuttingEdgeCodeLine', $updater->cuttingEdgeMaxLine) || $settingsFail;
+        }
+
+        if ($installer->getSetting('demoData', 'Installer') === 'Y') {
+            $demoDataFail = !$installer->installDemoData($context);
+            if ($demoDataFail) {
+                error_log('Installer: demo data failed. Will trigger RecoverableException.');
+                throw new RecoverableException(__('There were some issues installing the demo data, but we will continue anyway.'));
+            }
         }
 
         // Update DB version for existing languages (installed manually?)
