@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_add.php') =
             ->isRequired();
 
     $col = $form->addRow()->addClass('schoolClosedOverride hidden')->addColumn();
-        $col->addAlert(__('One or more selected dates are not a school day. Check here to confirm if you would like to continue submitting this form.'), 'warning');
+        $col->addAlert(__('One or more selected dates are not a school day. Check here to confirm if you would like to include these dates.'), 'warning');
         $col->addCheckbox('schoolClosedOverride')
             ->description(__('Confirm'))
             ->setClass('text-right pr-1')
