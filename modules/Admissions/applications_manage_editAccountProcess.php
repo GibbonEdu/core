@@ -25,6 +25,7 @@ require_once '../../gibbon.php';
 
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
 $gibbonAdmissionsApplicationID = $_POST['gibbonAdmissionsApplicationID'] ?? '';
+$gibbonAdmissionsAccountID = $_POST['gibbonAdmissionsAccountID'] ?? '';
 $search = $_POST['search'] ?? '';
 $tab = $_POST['tab'] ?? 0;
 
@@ -44,27 +45,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         exit;
     }
 
-    // Get the admissions account
-    $account = $container->get(AdmissionsAccountGateway::class)->getByID($application['foreignTableID']);
+    // Get the new admissions account
+    $account = $container->get(AdmissionsAccountGateway::class)->getByID($gibbonAdmissionsAccountID);
     if (empty($account)) {
         header("Location: {$URL->withReturn('error1')}");
         exit;
     }
 
-    $milestones = $_POST['milestones'] ?? [];
-    $milestoneData = json_decode($application['milestones'] ?? '', true) ?? [];
-    $milestonesNew = [];
-
-    foreach ($milestones as $milestone => $value) {
-        $milestonesNew[$milestone] = [
-            'date'  => $milestoneData[$milestone]['date'] ?? date('Y-m-d H:i:s'),
-            'user'  => $milestoneData[$milestone]['user'] ?? $session->get('gibbonPersonID'),
-        ];
+    // Check that this application is associated with an account
+    if ($application['foreignTable'] != 'gibbonAdmissionsAccount') {
+        header("Location: {$URL->withReturn('error2')}");
+        exit;
     }
 
     $updated = $admissionsApplicationGateway->update($gibbonAdmissionsApplicationID, [
-        'milestones' => json_encode($milestonesNew),
+        'foreignTableID' => $gibbonAdmissionsAccountID,
     ]);
 
-    header("Location: {$URL->withReturn(!$updated ? 'warning1' : 'success0')}");
+    header("Location: {$URL->withReturn(!$updated ? 'error2' : 'success0')}");
 }

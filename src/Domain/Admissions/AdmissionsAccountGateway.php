@@ -56,7 +56,8 @@ class AdmissionsAccountGateway extends QueryableGateway
                 'gibbonFamily.name as familyName',
                 'gibbonFamily.gibbonFamilyID as gibbonFamilyID',
                 "(COUNT(DISTINCT gibbonAdmissionsApplicationID)) as applicationCount",
-                "(COUNT(DISTINCT gibbonFormSubmissionID)) as formCount"
+                "(COUNT(DISTINCT gibbonFormSubmissionID)) as formCount",
+                '(CASE WHEN gibbonPerson.gibbonPersonID IS NULL THEN 1 ELSE 0 END) as sortOrder',
             ])
             ->from($this->getTableName())
             ->leftJoin('gibbonAdmissionsApplication', 'gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount" AND gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')

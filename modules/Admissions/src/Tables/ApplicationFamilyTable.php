@@ -98,14 +98,17 @@ class ApplicationFamilyTable extends DataTable
         $table->addColumn('email', __('Email'));
 
         $table->addColumn('details', __('Details'))
-            ->format(function ($values) {
+            ->format(function ($values) use ($gibbonAdmissionsApplicationID) {
                 if ($values['status'] == 'Full' || $values['status'] == 'Expected') {
                     return $values['roleCategory'] == 'Parent' ? __('Existing Parent') :  __('Existing Student');
                 } elseif ($values['roleCategory'] == 'Parent' && $values['status'] == 'Pending') {
                     return __('New Parent');
                 } elseif ($values['roleCategory'] == 'Student' && !empty($values['applicationID'])) {
+                    $name = $gibbonAdmissionsApplicationID == $values['applicationID'] 
+                        ? Format::tag(__('Current Application'), 'dull') 
+                        : __('Application').' #'.$values['applicationID'];
                     $url = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonAdmissionsApplicationID' => $values['applicationID']]);
-                    return Format::link($url, __('Application').' #'.$values['applicationID']);
+                    return Format::link($url, $name);
                 }
                 return '';
             })

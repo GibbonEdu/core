@@ -51,7 +51,7 @@ class ApplicationProcessForm extends Form implements ContainerAwareInterface
 
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValues($urlParams);
-        $form->addHiddenValue('tab', 5);
+        $form->addHiddenValue('tab', 6);
 
         foreach ($processes as $index => $process) {
             if (!$process->isEnabled($formBuilder)) continue;

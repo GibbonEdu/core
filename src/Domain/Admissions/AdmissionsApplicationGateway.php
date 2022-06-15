@@ -166,7 +166,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
 
     public function queryFamilyByApplication(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonAdmissionsApplicationID) 
     {
-        // Application parents pre-existing
+        // Application parents, post-acceptance or pre-existing
         $query = $this
             ->newQuery()
             ->distinct()
@@ -192,8 +192,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
-        // Application Parents, pre-acceptance
-
+        // Application Parent 1, pre-acceptance
         $this->unionAllWithCriteria($query, $criteria)
             ->cols([
                 'gibbonAdmissionsApplication.gibbonAdmissionsApplicationID',
@@ -218,6 +217,7 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDParent1")) IS NULL')
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
+        // Application Parent 2, pre-acceptance
         $this->unionAllWithCriteria($query, $criteria)
             ->cols([
                 'gibbonAdmissionsApplication.gibbonAdmissionsApplicationID',
@@ -241,54 +241,6 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.parent2surname")) IS NOT NULL')
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.data, "$.gibbonPersonIDParent2")) IS NULL')
             ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDParent2")) IS NULL')
-            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
-
-        // Application parents created during acceptance
-        // $this->unionAllWithCriteria($query, $criteria)
-        //     ->cols([
-        //         'gibbonAdmissionsApplication.gibbonAdmissionsApplicationID',
-        //         'gibbonPerson.surname',
-        //         'gibbonPerson.preferredName',
-        //         'gibbonPerson.email',
-        //         '"Parent" as roleCategory',
-        //         'gibbonPerson.status',
-        //         'gibbonPerson.image_240',
-        //         'gibbonFamilyRelationship.relationship',
-        //         '"" as yearGroup',
-        //         '"" as applicationID',
-        //     ])
-        //     ->from($this->getTableName())
-        //     ->innerJoin('gibbonAdmissionsAccount', 'gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
-        //     ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDParent1")) OR gibbonPerson.gibbonPersonID=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDParent2"))')
-        //     ->leftJoin('gibbonFamilyRelationship', 'gibbonFamilyRelationship.gibbonFamilyID=gibbonAdmissionsAccount.gibbonFamilyID AND gibbonFamilyRelationship.gibbonPersonID1=gibbonPerson.gibbonPersonID AND gibbonFamilyRelationship.gibbonPersonID2=JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDStudent"))')
-        //     ->where('gibbonAdmissionsApplication.status = "Accepted"')
-        //     ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
-        //     ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
-        //     ->where('JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonFamilyID")) IS NULL')
-        //     ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
-
-        // Application siblings, same admissions account
-        $this->unionAllWithCriteria($query, $criteria)
-            ->cols([
-                'applications.gibbonAdmissionsApplicationID',
-                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.surname")) as surname',
-                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.preferredName")) as preferredName',
-                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.email")) as email',
-                '"" as gibbonPersonID',
-                '"Student" as roleCategory',
-                'applications.status',
-                '"" as image_240',
-                '"Sibling" as relationship',
-                'gibbonYearGroup.name as yearGroup',
-                'applications.gibbonAdmissionsApplicationID as applicationID',
-            ])
-            ->from($this->getTableName())
-            ->innerJoin('gibbonAdmissionsAccount', 'gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
-            ->innerJoin('gibbonAdmissionsApplication as applications', 'applications.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID AND applications.gibbonAdmissionsApplicationID<>gibbonAdmissionsApplication.gibbonAdmissionsApplicationID')
-            ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=applications.gibbonYearGroupID')
-            ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
-            ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
-            ->where('applications.status <> "Accepted"')
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
         // Family siblings, same admissions account
@@ -318,6 +270,30 @@ class AdmissionsApplicationGateway extends QueryableGateway
             ->where('(gibbonAdmissionsApplication.status <> "Accepted" OR JSON_UNQUOTE(JSON_EXTRACT(gibbonAdmissionsApplication.result, "$.gibbonPersonIDStudent")) <> gibbonPerson.gibbonPersonID)')
             ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID)
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        // Application siblings, same admissions account (including self)
+        $this->unionAllWithCriteria($query, $criteria)
+            ->cols([
+                'applications.gibbonAdmissionsApplicationID',
+                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.surname")) as surname',
+                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.preferredName")) as preferredName',
+                'JSON_UNQUOTE(JSON_EXTRACT(applications.data, "$.email")) as email',
+                '"" as gibbonPersonID',
+                '"Student" as roleCategory',
+                'applications.status',
+                '"" as image_240',
+                '"Sibling" as relationship',
+                'gibbonYearGroup.name as yearGroup',
+                'applications.gibbonAdmissionsApplicationID as applicationID',
+            ])
+            ->from($this->getTableName())
+            ->innerJoin('gibbonAdmissionsAccount', 'gibbonAdmissionsApplication.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
+            ->innerJoin('gibbonAdmissionsApplication as applications', 'applications.foreignTableID=gibbonAdmissionsAccount.gibbonAdmissionsAccountID')
+            ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=applications.gibbonYearGroupID')
+            ->where('gibbonAdmissionsApplication.foreignTable="gibbonAdmissionsAccount"')
+            ->where('gibbonAdmissionsApplication.gibbonAdmissionsApplicationID=:gibbonAdmissionsApplicationID')
+            ->where('applications.status <> "Accepted"')
+            ->bindValue('gibbonAdmissionsApplicationID', $gibbonAdmissionsApplicationID);
 
         return $this->runQuery($query, $criteria);
     }

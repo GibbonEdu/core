@@ -115,9 +115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         'status:accepted'     => __('Status').': '.__('Accepted'),
         'status:rejected'     => __('Status').': '.__('Rejected'),
         'status:waiting list' => __('Status').': '.__('Waiting List'),
-        'paid:y'         => __('Paid').': '.__('Yes'),
-        'paid:n'         => __('Paid').': '.__('No'),
-        'paid:exemption' => __('Paid').': '.__('Exemption'),
+        'paid:y'              => __('Paid').': '.__('Yes'),
+        'paid:n'              => __('Paid').': '.__('No'),
+        'paid:exemption'      => __('Paid').': '.__('Exemption'),
         'formGroup:y'         => __('Form Group').': '.__('Yes'),
         'formGroup:n'         => __('Form Group').': '.__('No'),
     ]);

@@ -61,7 +61,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $types = array(
         'blank'   => __('Blank Application'),
         'account' => __('Current').' '.__('Admissions Account'),
-        // 'family'  => __('Current').' '.__('Family'),
         'person'  => __('Current').' '.__('User'),
     );
 
@@ -71,14 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     // QUERY
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
-    $criteria = $admissionsAccountGateway->newQueryCriteria(true)
-        ->searchBy($admissionsAccountGateway->getSearchableColumns(), $search)
-        ->sortBy(['surname', 'preferredName']);
+    $criteria = $admissionsAccountGateway->newQueryCriteria()
+        ->sortBy(['sortOrder', 'surname', 'preferredName']);
 
-    $accounts = $admissionsAccountGateway->queryAdmissionsAccounts($criteria)->toArray();
-    $accounts = array_reduce($accounts, function ($group, $item) {
-        $name = !empty($item['surname']) ? Format::name('', $item['preferredName'], $item['surname'], 'Parent', true) : __('Unknown');
-        $group[$item['roleName']][$item['gibbonAdmissionsAccountID']] = "{$name} ({$item['email']})";
+    $accounts = $admissionsAccountGateway->queryAdmissionsAccounts($criteria);
+    $accounts = array_reduce($accounts->toArray(), function ($group, $item) {
+        $role = !empty($item['roleName']) ? $item['roleName'] : __('Unknown');
+        $name = !empty($item['surname']) ? Format::name('', $item['preferredName'], $item['surname'], 'Parent', true) : __('N/A');
+        $group[$role][$item['gibbonAdmissionsAccountID']] = "{$name} ({$item['email']})";
         return $group;
     }, []);
 

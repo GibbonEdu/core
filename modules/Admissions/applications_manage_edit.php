@@ -31,6 +31,7 @@ use Gibbon\Module\Admissions\Forms\ApplicationProcessForm;
 use Gibbon\Module\Admissions\Tables\ApplicationUploadsTable;
 use Gibbon\Module\Admissions\Tables\ApplicationDetailsTable;
 use Gibbon\Module\Admissions\Tables\ApplicationFamilyTable;
+use Gibbon\Module\Admissions\Forms\ApplicationAccountForm;
 
 if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
     // Access denied
@@ -148,12 +149,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $editForm->addHiddenValue('tab', 2);
     $editForm->loadAllValuesFrom($values);
 
-    // Build forms and tables for other tabs
+    // Build forms for other tabs
     $milestonesForm = $container->get(ApplicationMilestonesForm::class)->createForm($urlParams, $application['milestones']);
+    $accountForm = $container->get(ApplicationAccountForm::class)->createForm($urlParams, $account['gibbonAdmissionsAccountID']);
+    $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
+
+    // Build tables for other tabs
     $formsTable = DataTable::create('')->withData([]);
     $uploadsTable = $container->get(ApplicationUploadsTable::class)->createTable($application['gibbonFormID'], $gibbonAdmissionsApplicationID);
     $familyTable = $container->get(ApplicationFamilyTable::class)->createTable($gibbonAdmissionsApplicationID, $account['gibbonFamilyID']);
-    $processForm = $container->get(ApplicationProcessForm::class)->createForm($urlParams, $formBuilder, $editProcesses);
 
     // Display the results
     if ($application['status'] != 'Incomplete') {
@@ -168,16 +172,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     }
 
     // Display the tabbed view
-    echo $page->fetchFromTemplate('application.twig.html', [
+    echo $page->fetchFromTemplate('applicationEdit.twig.html', [
         'defaultTab'     => $tab,
         'officeForm'     => $officeForm,
         'editForm'       => $editForm,
         'milestonesForm' => $milestonesForm ?? null,
+        'accountForm'    => $accountForm ?? null,
+        'processForm'    => $processForm ?? null,
+        'resultsForm'    => $resultsForm ?? null,
         'formsTable'     => $formsTable ?? null,
         'uploadsTable'   => $uploadsTable ?? null,
         'familyTable'    => $familyTable ?? null,
-        'processForm'    => $processForm ?? null,
-        'resultsForm'    => $resultsForm ?? null,
     ]);
 
 }

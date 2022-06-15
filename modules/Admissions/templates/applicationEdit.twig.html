@@ -11,7 +11,7 @@
         {% if uploadsTable %}
             <li><a href='#tabs4'>{{ __('Documents') }}</a></li>
         {% endif %}
-        {% if familyTable %}
+        {% if accountForm or familyTable %}
             <li><a href='#tabs5'>{{ __('Family') }}</a></li>
         {% endif %}
         {% if processForm %}
@@ -52,8 +52,9 @@
     </div>
     {% endif %}
     
-    {% if familyTable %}
+    {% if accountForm or familyTable %}
     <div id='tabs5'>
+        {{ accountForm.getOutput | raw }}
         {{ familyTable.getOutput | raw }}
     </div>
     {% endif %}
