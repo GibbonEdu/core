@@ -63,6 +63,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
         // Update new or existing Parent 1
         if ($formData->has('gibbonPersonIDParent1')) {
             $this->updateParentRole($formData, '1');
+            $this->updateParentData($formData, '1');
             $this->addParentToFamily($formData, '1');
         }
 
@@ -74,6 +75,7 @@ class CreateParents extends CreateStudent implements ViewableProcess
         // Update new or existing Parent 2
         if ($formData->has('gibbonPersonIDParent2')) {
             $this->updateParentRole($formData, '2');
+            $this->updateParentData($formData, '2');
             $this->addParentToFamily($formData, '2');
         }
 
@@ -145,6 +147,23 @@ class CreateParents extends CreateStudent implements ViewableProcess
     {
         $updated = $this->userGateway->addRoleToUser($formData->get("gibbonPersonIDParent{$i}"), '004');
         $formData->set("parent{$i}roleChanged", $updated);
+    }
+
+    protected function updateParentData(FormDataInterface $formData, $i)
+    {
+        $excludeFields = ['gibbonRoleIDPrimary', 'gibbonRoleIDAll', 'username', 'passwordStrong', 'passwordStrongSalt'];
+        
+        $userData = $this->getUserData($formData, '004', "parent{$i}");
+        $userData = array_diff_key($userData, array_flip($excludeFields));
+
+        $person = $this->userGateway->getByID($formData->get("gibbonPersonIDParent{$i}"), array_keys($userData));
+
+        if ($person['status'] != 'Left') return;
+
+        $updatedData = array_merge($person, $userData);
+
+        $updated = $this->userGateway->update($formData->get("gibbonPersonIDParent{$i}"), $updatedData);
+        $formData->set("parent{$i}updated", $updated);
     }
 
     protected function addParentToFamily(FormDataInterface $formData, $i)
