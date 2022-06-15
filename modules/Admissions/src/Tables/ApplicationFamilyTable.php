@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
+use Gibbon\Http\Url;
 
 /**
  * ApplicationFamilyTable
@@ -42,7 +43,6 @@ class ApplicationFamilyTable extends DataTable
         $this->view = $view;
         $this->session = $session;
         $this->applicationGateway = $applicationGateway;
-
     }
 
     public function createTable($gibbonAdmissionsApplicationID, $gibbonFamilyID)
@@ -55,11 +55,11 @@ class ApplicationFamilyTable extends DataTable
         $table = DataTable::create('applicationFamily')->withData($family);
         
         $table->modifyRows(function ($values, $row) {
-            if ($values['status'] == 'Full') $row->addClass('success');
-            if ($values['status'] == 'Expected') $row->addClass('message');
-            if ($values['status'] == 'Incomplete') $row->addClass('warning');
-            if ($values['status'] == 'Rejected') $row->addClass('error');
+            if ($values['status'] == 'Full' || $values['status'] == 'Expected') $row->addClass('success');
             if ($values['status'] == 'Accepted') $row->addClass('success');
+            if ($values['status'] == 'Incomplete') $row->addClass('warning');
+            if ($values['status'] == 'Left') $row->addClass('error');
+            if ($values['status'] == 'Rejected') $row->addClass('error');
             if ($values['status'] == 'Withdrawn') $row->addClass('error');
             return $row;
         });
@@ -80,7 +80,10 @@ class ApplicationFamilyTable extends DataTable
         $table->addColumn('person', __('Person'))
             ->description(__('Status'))
             ->format(function ($values) {
-                return Format::bold(Format::name('', $values['surname'], $values['preferredName'], 'Student', true));
+                return !empty($values['gibbonPersonID'])
+                    ? Format::nameLinked($values['gibbonPersonID'], '', $values['preferredName'], $values['surname'], $values['roleCategory'], true)
+                    : Format::name('', $values['preferredName'], $values['surname'], 'Student', true);
+
             })
             ->formatDetails(function ($values) {
                 return Format::small($values['roleCategory'] == 'Student' ? Format::userStatusInfo($values) : $values['status']);
@@ -96,13 +99,20 @@ class ApplicationFamilyTable extends DataTable
 
         $table->addColumn('details', __('Details'))
             ->format(function ($values) {
-                if ($values['roleCategory'] == 'Parent' && ($values['status'] == 'Full' || $values['status'] == 'Expected')) {
-                    return __('Existing Parent');
+                if ($values['status'] == 'Full' || $values['status'] == 'Expected') {
+                    return $values['roleCategory'] == 'Parent' ? __('Existing Parent') :  __('Existing Student');
                 } elseif ($values['roleCategory'] == 'Parent' && $values['status'] == 'Pending') {
                     return __('New Parent');
-                } 
-                return $values['yearGroup'];
+                } elseif ($values['roleCategory'] == 'Student' && !empty($values['applicationID'])) {
+                    $url = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonAdmissionsApplicationID' => $values['applicationID']]);
+                    return Format::link($url, __('Application').' #'.$values['applicationID']);
+                }
+                return '';
+            })
+            ->formatDetails(function ($values) {
+                return Format::small($values['yearGroup']);
             });
+
 
         return $table;
     }

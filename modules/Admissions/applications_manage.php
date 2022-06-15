@@ -122,22 +122,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         'formGroup:n'         => __('Form Group').': '.__('No'),
     ]);
 
-    $table->addColumn('gibbonAdmissionsApplicationID', __('ID'))->format(function ($values) {
-        return intval($values['gibbonAdmissionsApplicationID']);
+    $table->addColumn('gibbonAdmissionsApplicationID', __('ID'))->format(function ($application) {
+        return intval($application['gibbonAdmissionsApplicationID']);
     });
 
     $table->addColumn('student', __('Student'))
         ->description(__('Application Date'))
         ->sortable(['studentSurname', 'studentPreferredName'])
-        ->format(function ($values) {
-            return Format::bold(Format::name('', $values['studentSurname'], $values['studentPreferredName'], 'Student', true)).'<br/>'.
-                   Format::small(Format::date($values['timestampCreated']));
+        ->format(function ($application) {
+            return Format::bold(Format::name('', $application['studentPreferredName'], $application['studentSurname'], 'Student', true));
+        })
+        ->formatDetails(function ($application) {
+            return Format::small(Format::date($application['timestampCreated']));
         });
 
     $table->addColumn('dob', __('Birth Year'))
         ->description(__('Entry Year'))
         ->format(function($application) {
-            return substr($application['dob'] ?? '', 0, 4).'<br/>'.Format::small($application['yearGroup'] ?? '');
+            return substr($application['dob'] ?? '', 0, 4);
+        })
+        ->formatDetails(function ($application) {
+            return Format::small($application['yearGroup'] ?? '');
         });
 
     $table->addColumn('parents', __('Parents'))
@@ -178,12 +183,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table->addColumn('status', __('Status'))
         ->description(__('Milestones'))
         ->format(function($application) {
-            $statusText = Format::bold(__($application['status']));
+            return Format::bold(__($application['status']));
+        })
+        ->formatDetails(function ($application) {
             $milestones = array_keys(json_decode($application['milestones'] ?? '', true)?? []);
             if ($application['status'] == 'Pending' || $application['status'] == 'Waiting List') {
-                $statusText .= '<br/>'.Format::small(implode('<br/>', $milestones)).'</span>';
+                return Format::small(implode('<br/>', $milestones));
             }
-            return $statusText;
         });
 
     $table->addColumn('priority', __('Priority'));
@@ -193,7 +199,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         ->addParam('search', $search)
         ->addParam('gibbonAdmissionsApplicationID')
         ->format(function ($application, $actions) {
-
             if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
                 $actions->addAction('accept', __('Accept'))
                     ->setIcon('iconTick')
