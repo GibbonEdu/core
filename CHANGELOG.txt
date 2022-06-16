@@ -47,6 +47,7 @@ v24.0.00
         Planner: refactored Manage Outcomes table
         Planner: made time cap obvious to teachers in Lesson Planner view
         Planner: enabled staff with Future Years access to plan lessons for Upcoming years in the Unit Planner
+        Planner: enabled adding teachers with exceptions as guests of their own classes
         Reports: added filters to the proof reading view
         Reports: enabled including Student - Left enrolments in the Course Criteria data source
         Reports: clarified the My Reporting progress count for left students
