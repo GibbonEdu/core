@@ -18,6 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Forms\FormGateway;
+use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Domain\Forms\FormFieldGateway;
 
 require_once '../../gibbon.php';
 
@@ -38,6 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
     $partialFail = false;
 
     $formGateway = $container->get(FormGateway::class);
+    $formPageGateway = $container->get(FormPageGateway::class);
+    $formFieldGateway = $container->get(FormFieldGateway::class);
+
     $values = $formGateway->getByID($gibbonFormID);
 
     if (empty($values)) {
@@ -46,7 +51,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         exit;
     }
 
+    // Delete the form
     $deleted = $formGateway->delete($gibbonFormID);
+    $partialFail &= !$deleted;
+
+    $pages = $formPageGateway->selectBy(['gibbonFormID' => $gibbonFormID], ['gibbonFormPageID'])->fetchAll();
+
+    // Delete all the fields for each page
+    foreach ($pages as $page) {
+        $deleted = $formFieldGateway->deleteWhere(['gibbonFormPageID' => $page['gibbonFormPageID']]);
+        $partialFail &= !$deleted;
+    }
+
+    // Delete the pages
+    $deleted = $formPageGateway->deleteWhere(['gibbonFormID' => $gibbonFormID]);
     $partialFail &= !$deleted;
 
     $URL .= $partialFail
