@@ -217,7 +217,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 } catch (PDOException $e) {
                                     $partialFail = true;
                                 }
-                                if ($resultGuest->rowCount() == 0) {
+
+                                //Check for an exception for the current user
+                                try {
+                                    $dataException = array('gibbonPersonID' => $t, 'gibbonCourseClassID' => $gibbonCourseClassID, 'date' => $date);
+                                    $sqlException = 'SELECT * FROM gibbonTTDayRowClassException JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonTTDayRowClassID=gibbonTTDayRowClassException.gibbonTTDayRowClassID) JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonTTDayRowClassException.gibbonPersonID=:gibbonPersonID AND gibbonTTDayDate.date=:date';
+                                    $resultException = $connection2->prepare($sqlException);
+                                    $resultException->execute($dataException);
+                                } catch (PDOException $e) {
+                                    $partialFail = true;
+                                }
+
+                                $exception = $pdo->select($sqlException, $dataException)->fetchAll();
+
+
+                                if ($resultGuest->rowCount() == 0 || !empty($exception)) {
                                     //Check to see if person is already a guest in this class
                                     try {
                                         $dataGuest2 = array('gibbonPersonID' => $t, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
@@ -337,10 +351,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                                 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_add.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&date=$date&viewableParents=$viewableParents&viewableStudents=$viewableStudents&name=$name&summary=$summary&return=success1";
                                 header("Location: {$URL}");
                                 exit();
-                            } else {
-                                $URL .= "&return=success0&editID=".$gibbonPlannerEntryID.$params;
-                                header("Location: {$URL}");
-                                exit();
                             }
                         }
                         //Notify participants
@@ -367,6 +377,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                             $notificationSender->sendNotifications();
                         }
+
+                        $URL .= "&return=success0&editID=".$gibbonPlannerEntryID.$params;
+                        header("Location: {$URL}");
+                        exit();
                     }
                 }
             }

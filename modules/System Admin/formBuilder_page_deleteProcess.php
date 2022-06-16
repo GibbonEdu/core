@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Domain\Forms\FormFieldGateway;
 
 require_once '../../gibbon.php';
 
@@ -39,6 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     $partialFail = false;
 
     $formPageGateway = $container->get(FormPageGateway::class);
+    $formFieldGateway = $container->get(FormFieldGateway::class);
+    
     $values = $formPageGateway->getByID($gibbonFormPageID);
 
     if (empty($values)) {
@@ -48,6 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     }
 
     $deleted = $formPageGateway->delete($gibbonFormPageID);
+    $partialFail &= !$deleted;
+
+    $deleted = $formFieldGateway->deleteWhere(['gibbonFormPageID' => $gibbonFormPageID]);
     $partialFail &= !$deleted;
 
     $URL .= $partialFail
