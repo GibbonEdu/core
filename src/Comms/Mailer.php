@@ -66,7 +66,7 @@ class Mailer extends PHPMailer implements MailerInterface
     public function renderBody(string $template, array $data = [])
     {
         $this->Body = $this->view->render($template, $data);
-        $this->AltBody = $this->emailBodyStripTags($data['body'] ?? '');
+        $this->AltBody = $this->emailBodyStripTags($data['body'] ?? '', $data['button'] ?? []);
     }
 
     public function setDefaultSender($subject)
@@ -115,12 +115,17 @@ class Mailer extends PHPMailer implements MailerInterface
         }
     }
 
-    protected function emailBodyStripTags($body)
+    protected function emailBodyStripTags($body, $button = [])
     {
         $body = preg_replace('#<br\s*/?>#i', "\n", $body);
         $body = str_replace(['</p>', '</div>'], "\n\n", $body);
         $body = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $body);
         $body = strip_tags($body, '<a>');
+
+        // Add the button link manually to text-only emails
+        if (!empty($button['url']) && !empty(!empty($button['text']))) {
+            $body .= "\n\n".(string)$button['text'].': '.(string)$button['url']."\n\n";
+        }
 
         return $body;
     }
