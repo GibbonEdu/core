@@ -86,6 +86,7 @@ v24.0.00
         Rubrics: fixed row and column colours missing when duplicating a rubric
         Staff: fixed visual display of phone numbers on staff profiles
         Staff: fixed non-school-day check in New Absence not properly counting days
+        Staff: fixed absence total in Manage Absences to include partial days
         Students: fixed H4 headings in application forms with custom fields
         System Admin: fixed un-unserializable logs not showing up
         System Admin: adjusted field label for IP Address in View Logs
