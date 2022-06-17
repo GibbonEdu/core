@@ -58,7 +58,7 @@ class AbsenceFormats
         $output = Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']);
         if ($absence['allDay'] == 'Y' || $absence['days'] > 1) {
             $output .= $absence['value'] != $absence['days']
-                ? '<br/>'.Format::small(__('{count} Days', ['count' => $absence['value']]))
+                ? '<br/>'.Format::small(__('{total} Total (across {count} Days)', ['total' => round($absence['value'], 1), 'count' => $absence['days']]))
                 : '<br/>'.Format::small(__n('{count} Day', '{count} Days', $absence['days']));
         } else {
             $output .= '<br/>'.Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
