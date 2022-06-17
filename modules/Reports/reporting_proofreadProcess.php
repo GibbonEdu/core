@@ -98,6 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
                 'status' => $data['status'],
                 'comment' => $data['comment'],
                 'reason' => $data['reason'],
+                'gibbonPersonIDProofed' => $data['gibbonPersonIDProofed'],
+                'timestampProofed' => $data['timestampProofed'],
             ]);
         }
         

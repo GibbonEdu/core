@@ -84,6 +84,7 @@ v24.0.00
         Reports: fixed dates in templates to use i18n system date
         Reports: fixed reporting cycle count in AttendanceByCycle data source
         Rubrics: fixed row and column colours missing when duplicating a rubric
+        Reports: fixed second-pass proof reading not updating the person & timestamp
         Staff: fixed visual display of phone numbers on staff profiles
         Staff: fixed non-school-day check in New Absence not properly counting days
         Staff: fixed absence total in Manage Absences to include partial days
