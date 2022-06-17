@@ -145,6 +145,9 @@ if ($proceed == false) {
         $form->addRow()->addContent($privacyStatement);
     }
 
+    // Honey pot field
+    $form->addRow()->addClass('hidden')->addTextField('emailAddress');
+
     $agreement = $settingGateway->getSettingByScope('User Admin', 'publicRegistrationAgreement');
     if ($agreement != '') {
         $form->addRow()->addHeading('Agreement', __('Agreement'));

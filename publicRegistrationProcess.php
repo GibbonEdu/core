@@ -50,6 +50,12 @@ if ($proceed == false) {
     $validator = $container->get(Validator::class);
     $_POST = $validator->sanitize($_POST);
 
+    // Check the honey pot field, it should always be empty
+    if (!empty($_POST['emailAddress'])) {
+        header("Location: {$URL->withReturn('warning1')}");
+        exit;
+    }
+
     //Proceed!
     $surname = trim($_POST['surname']);
     $firstName = trim($_POST['firstName']);

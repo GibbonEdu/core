@@ -889,6 +889,9 @@ if ($proceed == false) {
             $row->addCheckbox('privacyOptions[]')->fromArray($options)->addClass('md:max-w-lg');
     }
 
+    // Honey pot field
+    $form->addRow()->addClass('hidden')->addTextField('emailAddress');
+    
     // AGREEMENT
     $agreement = $settingGateway->getSettingByScope('Application Form', 'agreement');
     if (!empty($agreement)) {

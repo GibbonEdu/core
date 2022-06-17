@@ -72,6 +72,12 @@ if ($proceed == false) {
     if (is_null($applicationFormHash)) {
         //Proceed!
 
+        // Check the honey pot field, it should always be empty
+        if (!empty($_POST['emailAddress'])) {
+            header("Location: {$URL}&return=warning1");
+            exit;
+        }
+
         //GET STUDENT FIELDS
         $surname = $_POST['surname'] ?? '';
         $firstName = trim($_POST['firstName'] ?? '');
