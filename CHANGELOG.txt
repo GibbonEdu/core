@@ -92,6 +92,7 @@ v24.0.00
         Students: fixed H4 headings in application forms with custom fields
         System Admin: fixed un-unserializable logs not showing up
         System Admin: adjusted field label for IP Address in View Logs
+        System Admin: fixed missing fields in Custom Fields import
         Tracking: fixed typo are message type in Graphing
         User Admin: fixed Force Password Reset not redirecting users
         User Admin: fixed users able to change roles for Student username format

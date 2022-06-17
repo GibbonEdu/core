@@ -28,6 +28,10 @@ table:
         name: "Type"
         desc: ""
         args: { filter: string, custom: true }
+    context: 
+        name: "Context"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
     options: 
         name: "Options"
         desc: ""
@@ -36,6 +40,14 @@ table:
         name: "Required"
         desc: "Is this field compulsory?"
         args: { filter: yesno, custom: true }
+    hidden: 
+        name: "Hidden"
+        desc: "Is this field hidden from profiles and user-facing pages?"
+        args: { filter: yesno, custom: true }
+    heading: 
+        name: "Heading"
+        desc: "Optionally list this field under a heading."
+        args: { filter: string, custom: true }
     activePersonStudent: 
         name: "Active for Students?"
         desc: "0 or 1"
@@ -58,6 +70,10 @@ table:
         args: { filter: boolean, custom: true }
     activeApplicationForm: 
         name: "Include In Application Form"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activePublicRegistration: 
+        name: "Include In Public Registration Form?"
         desc: "0 or 1"
         args: { filter: boolean, custom: true }
     

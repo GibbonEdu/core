@@ -1,7 +1,7 @@
 details:
     type: usersCustomData
-    name: Custom Fields - Data
-    desc: Data for custom fields (Included as an example)
+    name: Custom Fields - User Context
+    desc: Data for user custom fields (Included as an example)
     category: Custom Fields
     table: gibbonPerson
     modes: { update: true, insert: false }
