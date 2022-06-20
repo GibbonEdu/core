@@ -29,22 +29,27 @@ v24.0.00
     Significant Changes
         Timetable: added an option to export timetables to iCal format
         System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
-        System: removed deprecated functions no longer used in core and additional modules
-            - printPagination
 
     Changes With Important Notices
         System: removed upgrade path for v19.0.00 and earlier
+        System: removed deprecated functions no longer used in core and additional modules
+            - printPagination
 
     Tweaks & Additions
         System: added pagebreak and columnbreak tags to the allowableHTML list
-        System: ensure PayPal payments default to the system locale
+        System: ensured PayPal payments default to the system locale
         System: updated the robots.txt to enable index access, for noindex meta tag
         System: improved display of IDD country codes in phone number entry field
         System: further refactoring of linkTop divs
         System: added indexes to the gibbonDiscussion table to improve performance
         System: added user status log entry on successful public registration
         System: removed session-duration caching of index_custom.php
+        Behaviour: improved style consistency of View Behaviour Letters filter
+        Finance: improved style consistency of Manage Billing Schedules filter
         Finance: refactored Manage Billing Schedules table
+        Formal Assessment: improved style consistency of View External Assessment filter
+        Formal Assessment: improved style consistency of View Internal Assessment filter
+        Individual Needs: improved style consistency of Individual Needs filter
         Markbook: updated the export to include term grades, if available
         Messenger: updated the Message Wall to order messages chronologically
         Planner: added Create Markbook Column option when editing a lesson plan
@@ -62,6 +67,7 @@ v24.0.00
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
         System Admin: added a Code field type to Custom Fields to allow raw HTML
         System Admin: improved the error reporting of the SMS test feature
+        System Admin: improved field label for IP Address in View Logs
         Timetable: improved the error message on the timetable when multiple lessons exist
         Timetable: added a visual indicator of clashes with multiple classes in the same period
         Timetable Admin: enabled enrolling and syncing classes for Expected students
@@ -73,13 +79,8 @@ v24.0.00
         System: fixed missing password reset link in plain-text copy of emails
         Activities: fixed sidebar disappearing when opening View Details window
         Attendance: fixed the Available to Roles setting in Attendance Codes
-        Behaviour: improved style consistency of View Behaviour Letters filter
         Finance: fixed online payment option not available on invoice print page
         Finance: fixed reminder emails not handling comma separated company email addresses
-        Finance: improved style consistency of Manage Billing Schedules filter
-        Formal Assessment: improved style consistency of View External Assessment filter
-        Formal Assessment: improved style consistency of View Internal Assessment filter
-        Individual Needs: improved style consistency of Individual Needs filter
         Library: fixed missing cost field when duplicating library item
         Library: fixed items showing as overdue on the same date as the expected return
         Messenger: fixed Applicant target excluding Expected parents of edited application forms 
@@ -96,7 +97,6 @@ v24.0.00
         Students: fixed H4 headings in application forms with custom fields
         Students: fixed missing data in Personal Document Summary report
         System Admin: fixed un-unserializable logs not showing up
-        System Admin: adjusted field label for IP Address in View Logs
         System Admin: fixed missing fields in Custom Fields import
         Tracking: fixed typo are message type in Graphing
         User Admin: fixed Force Password Reset not redirecting users
