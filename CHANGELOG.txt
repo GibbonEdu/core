@@ -21,10 +21,14 @@ v24.0.00
 --------
 
     Headlines
+        New Admissions module for managing student enrolment and application forms
+        Added Form Builder functionality, for creating flexible application forms
+        Added more Email Templates to enable customizing admissions emails
         Added optional Multi-Factor Authentication in user preferences
 
     Significant Changes
         Timetable: added an option to export timetables to iCal format
+        System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System: removed deprecated functions no longer used in core and additional modules
             - printPagination
 
@@ -44,17 +48,15 @@ v24.0.00
         Markbook: updated the export to include term grades, if available
         Messenger: updated the Message Wall to order messages chronologically
         Planner: added Create Markbook Column option when editing a lesson plan
-        Planner: refactored Manage Outcomes table
         Planner: made time cap obvious to teachers in Lesson Planner view
         Planner: enabled staff with Future Years access to plan lessons for Upcoming years in the Unit Planner
         Planner: enabled adding teachers with exceptions as guests of their own classes
-        Reports: added filters to the proof reading view
+        Reports: added filters to the report proof reading view
         Reports: enabled including Student - Left enrolments in the Course Criteria data source
         Reports: clarified the My Reporting progress count for left students
         Staff: added staff house name to Staff Profile if a house has been set
         Students: added honey-pot fields to applications and public registration to reduce spam
         Students: adjusted table label in View Student Profiles
-        System Admin: added an Upload Photos & Files page, replacing the old User Photo Upload
         System Admin: increased the length of string translations to 255 characters
         System Admin: enabled using custom fields with additional modules
         System Admin: adjusted "you are up to date" string in System Admin to reduce cutesiness
