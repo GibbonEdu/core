@@ -62,7 +62,7 @@ class CreateStudentView extends AbstractFormView
                 __('Name')            => Format::name('', $data->get('preferredName'), $data->get('surname'), 'Student'),
                 __('Email')           => $data->getAny('email'),
                 __('Email Alternate') => $data->getAny('emailAlternate'),
-                __('Username')        => $data->getResult('username'),
+                __('Username')        => $data->getAny('username'),
                 __('Password')        => $data->getResult('password'),
             ];
 
