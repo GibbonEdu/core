@@ -62,6 +62,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         $gibbonFormPageID = $formPageGateway->getPageIDByNumber($gibbonFormID, 1);
     }
 
+    // Check for existing submissions and warn about making changes
+    $submissions = $formGateway->getSubmissionCountByForm($gibbonFormID);
+    if ($submissions > 0) {
+        $page->addAlert(Format::bold(__('Warning')).': '.__('This form is already in use. Changes to this form could affect the data for {count} existing submissions. Proceed with caution! If you are looking to make significant changes this form, it is safer to set it to inactive and create a new form, which will prevent changes that could affect your existing submissions.', ['count' => Format::bold($submissions)]), 'warning');
+    }
+
     $urlParams = compact('gibbonFormID', 'gibbonFormPageID', 'fieldGroup');
 
     $formValues = $formGateway->getByID($gibbonFormID);

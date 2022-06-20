@@ -82,7 +82,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
             }
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/System Admin/formBuilder_delete.php');
+                ->setURL('/modules/System Admin/formBuilder_delete.php')
+                ->modalWindow(650, 350);
         });
 
     echo $table->render($forms);

@@ -80,6 +80,22 @@ class FormGateway extends QueryableGateway
         return $this->runSelect($select);
     }
 
+    public function getSubmissionCountByForm($gibbonFormID) 
+    {
+        $query = $this
+            ->newSelect()
+            ->cols([
+                'COUNT(gibbonFormSubmission.gibbonFormSubmissionID) + COUNT(gibbonAdmissionsApplication.gibbonAdmissionsApplicationID) as count',
+            ])
+            ->from('gibbonForm')
+            ->leftJoin('gibbonFormSubmission', 'gibbonFormSubmission.gibbonFormID=gibbonForm.gibbonFormID')
+            ->leftJoin('gibbonAdmissionsApplication', 'gibbonAdmissionsApplication.gibbonFormID=gibbonForm.gibbonFormID')
+            ->where('gibbonForm.gibbonFormID=:gibbonFormID')
+            ->bindValue('gibbonFormID', $gibbonFormID);
+
+        return $this->runSelect($query)->fetchColumn(0);
+    }
+
     public function getNewUniqueIdentifier(string $gibbonFormID)
     {
         $data = ['gibbonFormID' => $gibbonFormID];

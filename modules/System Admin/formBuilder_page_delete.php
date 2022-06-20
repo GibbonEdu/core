@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_delete.php') == false) {
@@ -33,11 +35,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
         return;
     }
 
-    $values = $container->get(FormPageGateway::class)->getByID($gibbonFormPageID);
+    $values = $container->get(FormPageGateway::class)->getByID($gibbonFormPageID, ['gibbonFormID']);
 
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
+    }
+
+    // Check for existing submissions and warn about making changes
+    $submissions = $container->get(FormGateway::class)->getSubmissionCountByForm($values['gibbonFormID']);
+    if ($submissions > 0) {
+        $page->addAlert(Format::bold(__('Warning')).': '.__('This form is already in use. Deleting this form will affect the data for {count} existing submissions. Proceed with extreme caution! It is safer to set this form to inactive and create a new form.', ['count' => Format::bold($submissions)]), 'error');
     }
 
     $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/System Admin/formBuilder_page_deleteProcess.php?gibbonFormID='.$gibbonFormID.'&gibbonFormPageID='.$gibbonFormPageID, true);

@@ -53,6 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
         return;
     }
 
+    // Check for existing submissions and warn about making changes
+    $submissions = $formGateway->getSubmissionCountByForm($gibbonFormID);
+    if ($submissions > 0) {
+        $page->addAlert(Format::bold(__('Warning')).': '.__('This form is already in use. Changes to this form could affect the data for {count} existing submissions. Proceed with caution! If you are looking to make significant changes this form, it is safer to set it to inactive and create a new form, which will prevent changes that could affect your existing submissions.', ['count' => Format::bold($submissions)]), 'warning');
+    }
+
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     
@@ -133,7 +139,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_e
                 ->setURL('/modules/System Admin/formBuilder_page_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/System Admin/formBuilder_page_delete.php');
+                ->setURL('/modules/System Admin/formBuilder_page_delete.php')
+                ->modalWindow(650, 350);
         });
 
     echo $table->render($pages);
