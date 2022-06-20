@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
 
     $values = $formGateway->getByID($gibbonFormID);
 
+    // Validate the database relationships exist
     if (empty($values)) {
         $URL .= '&return=error2';
         header("Location: {$URL}");
@@ -62,6 +63,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_d
         'gibbonYearGroupIDList' => $values['gibbonYearGroupIDList'],
         'config'                => $values['config'],
     ];
+
+    // Validate that this record is unique
+    if (!$formGateway->unique($data, ['name'])) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
+    }
 
     // Duplicate the form
     $gibbonFormIDCopy = $formGateway->insert($data);
