@@ -44,9 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_a
 
     $types = [
         'Application'      => __('Application'),
-        'Post-application' => __('Post-application'),
-
-        // These are unavailable until v25
+    
+        // These aren't unavailable until v25
+        // 'Post-application' => __('Post-application'),
         // 'Student'          => __('Student'),
         // 'Parent'           => __('Parent'),
         // 'Family'           => __('Family'),
