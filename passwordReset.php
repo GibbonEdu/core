@@ -68,6 +68,9 @@ else {
     $input = (!empty($_GET['input']) ? $_GET['input'] : null);
     $key = (!empty($_GET['key']) ? $_GET['key'] : null);
     $gibbonPersonResetID = (!empty($_GET['gibbonPersonResetID']) ? $_GET['gibbonPersonResetID'] : null);
+    $step = 2;
+
+    $urlParams = compact('input', 'key', 'gibbonPersonResetID', 'step');
 
     //Verify authenticity of this request and check it is fresh (within 48 hours)
     
@@ -85,9 +88,9 @@ else {
         echo __('Your reset request is valid: you may proceed.');
         echo '</div>';
 
-        $form = Form::create('action', $session->get('absoluteURL')."/passwordResetProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key");
+        $form = Form::create('action', $session->get('absoluteURL').'/passwordResetProcess.php?'.http_build_query($urlParams));
 
-        $form->setClass('smallIntBorder fullWidth');
+        $form->setClass('smallIntBorder fullWidth standardForm');
         $form->addHiddenValue('address', $session->get('address'));
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
