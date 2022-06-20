@@ -156,7 +156,7 @@ class Parent2Fields extends AbstractFieldGroup
         $row = $form->addRow()->setClass("parentSection2");
 
         // PARENT 2: Already logged in, record gibbonPersonID
-        if ($formBuilder->hasConfig('gibbonFamilyID')) {
+        if ($formBuilder->hasConfig('gibbonPersonID')) {
             if ($field['fieldName'] == 'parent2surname') {
                 $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->when('Yes');
             }
