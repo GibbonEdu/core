@@ -668,6 +668,6 @@ SELECT NULL;end
 SELECT NULL;end
 INSERT INTO `gibbonFormField` (`gibbonFormPageID`, `fieldName`, `fieldType`, `fieldGroup`, `required`, `hidden`, `prefill`, `options`, `label`, `description`, `conditional`, `sequenceNumber`) VALUES((SELECT gibbonFormPageID FROM gibbonFormPage JOIN gibbonForm ON (gibbonForm.gibbonFormID=gibbonFormPage.gibbonFormID) WHERE gibbonForm.name='Sample Application Form' AND gibbonFormPage.name='Family' LIMIT 1), 'parent2Documents', 'personalDocument', 'PersonalDocuments', 'N', 'N', 'N', NULL, 'Personal Documents', NULL, NULL, 45);end
 UPDATE `gibbonAction` SET URLList='formBuilder.php,formBuilder_preview.php,formBuilder_add.php,formBuilder_edit.php,formBuilder_delete.php,formBuilder_duplicate.php,formBuilder_page_add.php,formBuilder_page_edit.php,formBuilder_page_delete.php,formBuilder_page_edit_field_add.php,formBuilder_page_edit_field_edit.php,formBuilder_page_edit_field_delete.php' WHERE name='Form Builder' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
-
+DELETE FROM `gibbonPermission` WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Other Forms');end
 
 ";

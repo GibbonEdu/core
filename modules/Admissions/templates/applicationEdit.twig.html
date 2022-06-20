@@ -6,7 +6,7 @@
         {% endif %}
         <li><a href='#tabs2'>{{ __('Application Form') }}</a></li>
         {% if formsTable %}
-            <li><a href='#tabs3'>{{ __('Other Forms') }}</a></li>
+            <!-- <li><a href='#tabs3'>{{ __('Other Forms') }}</a></li> -->
         {% endif %}
         {% if uploadsTable %}
             <li><a href='#tabs4'>{{ __('Documents') }}</a></li>
@@ -39,12 +39,6 @@
             {{ editForm.getOutput | raw }}
         {% endif %}
     </div>
-
-    {% if formsTable %}
-    <div id='tabs3'>
-        {{ formsTable.getOutput | raw }}
-    </div>
-    {% endif %}
 
     {% if uploadsTable %}
     <div id='tabs4'>
