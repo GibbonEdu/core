@@ -100,7 +100,7 @@ class ApplicationFamilyTable extends DataTable
         $table->addColumn('details', __('Details'))
             ->format(function ($values) use ($gibbonAdmissionsApplicationID) {
                 if ($values['status'] == 'Full' || $values['status'] == 'Expected') {
-                    return $values['roleCategory'] == 'Parent' ? __('Existing Parent') :  __('Existing Student');
+                    return __('Existing {role}', ['role' => $values['roleCategory']]);
                 } elseif ($values['roleCategory'] == 'Parent' && $values['status'] == 'Pending') {
                     return __('New Parent');
                 } elseif ($values['roleCategory'] == 'Student' && !empty($values['applicationID'])) {
