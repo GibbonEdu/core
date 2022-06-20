@@ -24,11 +24,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     display: block !important;
 } */
 
-/* These could be moved to style.css */
-.hidden {
-	display: none;
-}
-
 .infoTitle {
 	font-size: 115%;
 	font-weight: bold;
