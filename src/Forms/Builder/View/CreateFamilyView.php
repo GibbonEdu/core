@@ -66,6 +66,10 @@ class CreateFamilyView extends AbstractFormView
 
             if ($data->hasResult('familyCreated')) {
                 $col->addContent(__('A new family was created for {familyName}.', ['familyName' => $data->getResult('familyName')]));
+
+                if (!$data->hasResult('gibbonFamilyChildID')) {
+                    $col->addContent(Format::alert(__('Student could not be linked to family!'), 'warning'));
+                }
             } else {
                 $list[__('Roles')] = __('System has tried to assign parents "Parent" role access if they did not already have it.');
 

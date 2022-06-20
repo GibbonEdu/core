@@ -55,6 +55,7 @@ class FamilyFields extends AbstractFieldGroup
                 'description' => __('Unit, Building, Street'),
                 'required'    => 'X',
                 'prefill'     => 'Y',
+                'acquire'     => ['gibbonFamilyID' => 'varchar'],
             ],
             'homeAddressDistrict' => [
                 'label'       => __('Home Address (District)'),

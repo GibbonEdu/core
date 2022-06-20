@@ -85,6 +85,7 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
 
             $formData->set('familyName', $family['name'] ?? '');
             $formData->set('nameAddress', $family['nameAddress'] ?? '');
+            $formData->set('homeAddress', $family['homeAddress'] ?? '');
         }
 
         // Add the student to the family as a child
@@ -143,5 +144,12 @@ class CreateFamily extends AbstractFormProcess implements ViewableProcess
         }
 
         $formData->set('nameAddress', trim($nameAddress));
+    }
+
+    public function verify(FormBuilderInterface $builder, FormDataInterface $formData = null)
+    {
+        if ($formData && $formData->has('gibbonFamilyID')) return;
+
+        parent::verify($builder, $formData);
     }
 }

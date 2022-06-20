@@ -56,6 +56,7 @@ class Parent1Fields extends AbstractFieldGroup
                 'description' => __('Family name as shown in ID documents.'),
                 'required'    => 'X',
                 'prefill'     => 'Y',
+                'acquire'     => ['gibbonPersonIDParent1' => 'varchar']
             ],
             'parent1firstName' => [
                 'label'    => __('First Name'),
@@ -158,7 +159,7 @@ class Parent1Fields extends AbstractFieldGroup
                 $parent = $this->userGateway->getByID($formBuilder->getConfig('gibbonPersonID'));
 
                 $form->addHiddenValue('parent1email', $parent['email'] ?? '');
-                $form->addHiddenValue('parent1gibbonPersonID', $parent['gibbonPersonID'] ?? '');
+                $form->addHiddenValue('gibbonPersonIDParent1', $formBuilder->getConfig('gibbonPersonID'));
 
                 $row->addLabel('parent1username', __('Username'))->description(__('System login ID.'));
                 $row->addTextField('parent1username')->setValue($parent['username'] ?? '')->maxLength(30)->readOnly();
