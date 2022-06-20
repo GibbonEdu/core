@@ -152,10 +152,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
             if (empty($application['gibbonFamilyID'])) {
                 $application['adults'] = [];
                 if (!empty($application['parent1surname']) && !empty($application['parent1preferredName'])) {
-                    $application['adults'][] = ['title' => $application['parent1title'], 'preferredName' => $application['parent1preferredName'], 'surname' => $application['parent1surname'], 'email' => $application['parent1email']];
+                    $application['adults'][] = ['title' => $application['parent1title'] ?? '', 'preferredName' => $application['parent1preferredName'], 'surname' => $application['parent1surname'], 'email' => $application['parent1email']];
                 }
                 if (!empty($application['parent2surname']) && !empty($application['parent2preferredName'])) {
-                    $application['adults'][] = ['title' => $application['parent2title'],'preferredName' => $application['parent2preferredName'],'surname' => $application['parent2surname'],'email' => $application['parent2email']];
+                    $application['adults'][] = ['title' => $application['parent2title'] ?? '','preferredName' => $application['parent2preferredName'],'surname' => $application['parent2surname'],'email' => $application['parent2email']];
                 }
             }
 
