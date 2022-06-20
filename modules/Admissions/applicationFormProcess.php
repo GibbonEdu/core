@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Data\Validator;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
@@ -25,6 +26,8 @@ use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 
 require_once '../../gibbon.php';
+
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $public = !$session->has('username');
 $accessID = $_REQUEST['accessID'] ?? '';
