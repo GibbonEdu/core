@@ -174,7 +174,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $salt = getSalt();
         $password = randomPassword(8);
 
-        $formData->set($prefix.'password', randomPassword(8));
+        $formData->set($prefix.'password', $password);
         $formData->set($prefix.'passwordStrongSalt', $salt);
         $formData->set($prefix.'passwordStrong', hash('sha256', $salt.$password));
     }
