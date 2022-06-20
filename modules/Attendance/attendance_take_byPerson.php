@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     $form->addConfirmation(__('The selected date for attendance is in the past. Are you sure you want to continue?'));
                 }
 
-                $restricted = $attendance->isTypeRestricted($lastLog['type']);
+                $restricted = $attendance->isTypeRestricted($lastLog['type'] ?? '');
                 if ($restricted) {
                     $form->setDescription(Format::alert(__('The current attendance code for this student is {code}, which can only be changed by users with access to this attendance code.', ['code' => $lastLog['type']]), 'warning'));
                 }
