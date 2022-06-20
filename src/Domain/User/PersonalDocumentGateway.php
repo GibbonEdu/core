@@ -71,6 +71,10 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
 
     public function queryStudentDocuments(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDList)
     {
+        if (is_string($gibbonPersonIDList)) {
+            $gibbonPersonIDList = explode(',', $gibbonPersonIDList);
+        }
+
         if (is_array($gibbonPersonIDList)) {
             $gibbonPersonIDList = array_map(function($item) {
                 return str_pad($item, 12, 0, STR_PAD_LEFT);
@@ -83,7 +87,7 @@ class PersonalDocumentGateway extends QueryableGateway implements ScrubbableGate
             ->from($this->getTableName())
             ->cols(['gibbonPersonalDocument.gibbonPersonalDocumentID', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonFormGroup.name as formGroup', 'gibbonPersonalDocumentType.name as documentTypeName', 'gibbonPersonalDocumentType.document', 'gibbonPersonalDocument.documentNumber', 'gibbonPersonalDocument.documentName', 'gibbonPersonalDocument.documentType', 'gibbonPersonalDocument.dateIssue', 'gibbonPersonalDocument.dateExpiry', 'gibbonPersonalDocument.country', 'gibbonPersonalDocument.filePath'])
             ->innerJoin('gibbonPersonalDocumentType', 'gibbonPersonalDocument.gibbonPersonalDocumentTypeID=gibbonPersonalDocumentType.gibbonPersonalDocumentTypeID')
-            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonPersonalDocument.foreignTableID')
+            ->innerJoin('gibbonPerson', 'LPAD(gibbonPerson.gibbonPersonID, 12, "0")=gibbonPersonalDocument.foreignTableID')
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->innerJoin('gibbonFormGroup', 'gibbonFormGroup.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
