@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     
     // FORM FIELDS
     $formFields = MultiPartForm::create('formFields', '');
-    $formFields->setTitle($values['name']);
+    $formFields->setTitle(__($values['name']));
     $formFields->setFactory(DatabaseFormFactory::create($pdo));
 
     $formFields->setMaxPage($formPageGateway->getFinalPageNumber($gibbonFormID));

@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
     
     
     if (!empty($fieldGroupClass) && $description = $fieldGroupClass->getDescription()) {
-        $form->addRow()->addHeading($fieldGroupClass->getName())->append($fieldGroupClass->getDescription());
+        $form->addRow()->addHeading(__($fieldGroupClass->getName()))->append($fieldGroupClass->getDescription());
     }
 
     if ($fieldGroup == 'LayoutHeadings') {

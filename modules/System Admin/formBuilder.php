@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.p
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('pages', __('Pages'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
     $table->addColumn('public', __('Public'))->format(Format::using('yesNo', 'public'));
