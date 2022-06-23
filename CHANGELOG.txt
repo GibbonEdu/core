@@ -29,6 +29,7 @@ v25.0.00
     Tweaks & Additions
 
     Bug Fixes
+        System: improved exception handling for transactions in Connection class
 
 v24.0.00
 --------

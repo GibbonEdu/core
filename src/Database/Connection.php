@@ -177,7 +177,6 @@ class Connection implements ConnectionInterface
             $this->querySuccess = $this->result->execute($bindings);
         } catch (\PDOException $e) {
             $this->result = $this->handleQueryException($e);
-            $this->querySuccess = false;
         }
 
         return $this->result;
@@ -191,6 +190,8 @@ class Connection implements ConnectionInterface
      */
     protected function handleQueryException($e)
     {
+        $this->querySuccess = false;
+
         trigger_error($e->getMessage(), E_USER_WARNING);
 
         $this->errorMessage = $e->getMessage();
@@ -247,7 +248,7 @@ class Connection implements ConnectionInterface
         if ($this->transactions == 0) {
             try {
                 $this->pdo->beginTransaction();
-            } catch (\Exception $e) {
+            } catch (\PDOException $e) {
                 $this->handleQueryException($e);
                 return;
             }
@@ -264,7 +265,11 @@ class Connection implements ConnectionInterface
     public function commit()
     {
         if ($this->transactions == 1) {
-            $this->pdo->commit();
+            try {
+                $this->pdo->commit();
+            } catch (\PDOException $e) {
+                $this->handleQueryException($e);
+            }
         }
 
         $this->transactions = 0;
@@ -278,7 +283,12 @@ class Connection implements ConnectionInterface
     public function rollBack()
     {
         if ($this->transactions == 1) {
-            $this->pdo->rollBack();
+            try {
+                $this->pdo->rollBack();
+            } catch (\PDOException $e) {
+                $this->handleQueryException($e);
+            }
+
         }
 
         $this->transactions = 0;
