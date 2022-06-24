@@ -30,6 +30,7 @@ v25.0.00
 
     Bug Fixes
         System: improved exception handling for transactions in Connection class
+        System: removed unused medical fields from gibbon.sql
 
 v24.0.00
 --------

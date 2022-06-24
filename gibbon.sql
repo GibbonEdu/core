@@ -3925,10 +3925,8 @@ INSERT INTO `gibbonPersonalDocumentType` (`gibbonPersonalDocumentTypeID`, `name`
 CREATE TABLE `gibbonPersonMedical` (
   `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
-  `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `comment` text NOT NULL,
   `fields` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -3991,10 +3989,8 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
   `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
-  `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
-  `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `comment` text NOT NULL,
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
