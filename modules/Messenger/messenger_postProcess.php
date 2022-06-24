@@ -106,7 +106,8 @@ else {
 		if (isset($_POST["emailReceiptText"])) {
 			$emailReceiptText = $_POST["emailReceiptText"] ;
 		}
-		$individualNaming = $_POST["individualNaming"] ;
+		$individualNaming = $_POST["individualNaming"] ?? 'N';
+        $confidential = $_POST['confidential'] ?? 'N';
 
 		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR $individualNaming == "") {
             //Fail 3
@@ -2110,7 +2111,7 @@ else {
                     return $recipient != $from && !in_array($recipient, $recipientList);
                 });
 
-                if (!empty($messageBccList) && !empty($report)) {
+                if (!empty($messageBccList) && !empty($report) && $confidential == 'N') {
                     $mail->ClearAddresses();
                     foreach ($messageBccList as $recipient) {
                         $mail->AddBCC($recipient, '');

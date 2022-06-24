@@ -49,7 +49,7 @@ class MessengerGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category', 
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonMessenger.confidential', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category', 
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonMessenger.gibbonPersonID')
             ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
@@ -60,6 +60,14 @@ class MessengerGateway extends QueryableGateway
             $query->where('gibbonMessenger.gibbonPersonID=:gibbonPersonID')
                 ->bindValue('gibbonPersonID', $gibbonPersonID);
         }
+
+        $criteria->addFilterRules([
+            'confidential' => function ($query, $gibbonPersonIDCreatedBy) {
+                return $query
+                    ->where('(gibbonMessenger.confidential="N" OR (gibbonMessenger.confidential="Y" AND gibbonMessenger.gibbonPersonID=:gibbonPersonIDCreatedBy))')
+                    ->bindValue('gibbonPersonIDCreatedBy', $gibbonPersonIDCreatedBy);
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }

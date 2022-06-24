@@ -71,6 +71,7 @@ else {
                     $date3=Format::dateConvert($_POST["date3"]) ;
                 }
             }
+            $confidential = $_POST['confidential'] ?? '';
             $subject = $_POST['subject'] ?? '';
             $body = $_POST['body'] ?? '';
 
@@ -82,8 +83,8 @@ else {
             else {
                 //Write to database
                 try {
-                    $dataUpdate=array("messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "subject"=>$subject, "body"=>$body, "timestamp"=>date("Y-m-d H:i:s"), "gibbonMessengerID"=>$gibbonMessengerID);
-                    $sqlUpdate="UPDATE gibbonMessenger SET messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, subject=:subject, body=:body, timestamp=:timestamp WHERE gibbonMessengerID=:gibbonMessengerID" ;
+                    $dataUpdate=array("messageWall"=>$messageWall, "messageWallPin" => $messageWallPin, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "subject"=>$subject, "body"=>$body, 'confidential' => $confidential, "timestamp"=>date("Y-m-d H:i:s"), "gibbonMessengerID"=>$gibbonMessengerID);
+                    $sqlUpdate="UPDATE gibbonMessenger SET messageWall=:messageWall, messageWallPin=:messageWallPin, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, subject=:subject, body=:body, confidential=:confidential, timestamp=:timestamp WHERE gibbonMessengerID=:gibbonMessengerID" ;
                     $resultUpdate=$connection2->prepare($sqlUpdate);
                     $resultUpdate->execute($dataUpdate);
                 }

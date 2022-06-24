@@ -163,10 +163,16 @@ else {
                     $form->addHiddenValue('smsCreditBalance', $smsCredits);
                 }
 
-                $form->addRow()->addAlert($smsAlert, 'error')->addClass('sms');
+                $form->addRow()->addClass('sms')->addAlert($smsAlert, 'error');
             }
         }
 
+        // Confidential Message Option
+        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_confidential")) {
+            $row = $form->addRow();
+                $row->addLabel('confidential', __('Confidential'))->description(__('Other users will not be able to see this message in Manage Messages.'));
+                $row->addYesNoRadio('confidential')->checked('N')->required();
+        }
 
         //MESSAGE DETAILS
         $form->addRow()->addHeading('Message Details', __('Message Details'));
