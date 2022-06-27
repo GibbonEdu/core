@@ -323,7 +323,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                         // Resampling the image
                                         if (!empty($imageSize) && file_exists($imagePath)) {
                                             $image_p = imagecreatetruecolor($dst_w, $dst_h);
-                                            $image = imagecreatefromjpeg($imagePath);
+                                            $extension = mb_substr(mb_strrchr(strtolower($imagePath), '.'), 1);
+                                            
+                                            switch ($extension) {
+                                                case 'png':     $image = imagecreatefrompng($imagePath); break;
+                                                case 'gif':     $image = imagecreatefromgif($imagePath); break;
+                                                case 'webp':    $image = imagecreatefromwebp($imagePath); break;
+                                                default:        $image = imagecreatefromjpeg($imagePath);
+                                            }
 
                                             imagecopyresampled($image_p, $image,
                                                             $dst_x, $dst_y,
