@@ -209,7 +209,7 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction )
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
 
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, gibbonCourseClassPerson.reportable FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Teacher' AND gibbonPerson.status='Full' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY surname, preferredName";
         $result = $pdo->executeQuery($data, $sql);
 
 

@@ -33,6 +33,7 @@ v25.0.00
     Bug Fixes
         System: improved exception handling for transactions in Connection class
         System: removed unused medical fields from gibbon.sql
+        Markbook: fixed Left teachers showing up in "Class taught by" list
 
 v24.0.00
 --------
