@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerParentWeeklyEmailSummaryGateway;
 
@@ -46,6 +47,14 @@ if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $rem
     return;
 }
 
+$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
+$schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID, ['status', 'lastDay']);
+
+if (empty($schoolYear) || date('Y-m-d') > $schoolYear['lastDay']) {
+    echo __('School is not open, so no emails will be sent.');
+    return;
+}
+
 // Check that one of the days in question is a school day
 $isSchoolOpen = false;
 for ($i = 0; $i < 7; ++$i) {
@@ -64,7 +73,6 @@ if ($session->get('organisationEmail') == '') {
     return;
 }
 
-$gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
 $parentWeeklyEmailSummaryIncludeBehaviour = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeBehaviour');
 $parentWeeklyEmailSummaryIncludeMarkbook = $settingGateway->getSettingByScope('School Admin', 'parentWeeklyEmailSummaryIncludeMarkbook');
 $sendReport = ['emailSent' => 0, 'emailFailed' => 0, 'emailErrors' => ''];
