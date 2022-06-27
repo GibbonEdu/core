@@ -29,6 +29,7 @@ v25.0.00
     Tweaks & Additions
         Messenger: added the ability to send confidential messages which are not viewable by other users
         System: updated Parent Weekly Summary CLI to not send if date is outside school year
+        System: improved right-to-left support in Default theme
 
     Bug Fixes
         System: improved exception handling for transactions in Connection class
