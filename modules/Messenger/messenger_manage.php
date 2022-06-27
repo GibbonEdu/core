@@ -41,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $messengerGateway = $container->get(MessengerGateway::class);
     $criteria = $messengerGateway->newQueryCriteria(true)
         ->searchBy($messengerGateway->getSearchableColumns(), $search)
+        ->filterBy('confidential', $session->get('gibbonPersonID'))
         ->sortBy(['timestamp'], 'DESC')
         ->fromPOST();
 
@@ -87,7 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $table->addColumn('subject', __('Subject'))
         ->context('primary')
         ->format(function ($values) {
-            return '<b>'.$values['subject'].'</b>';
+            $tag = $values['confidential'] == 'Y' ? Format::tag(__('Confidential'), 'dull ml-2') : '';
+            return Format::bold($values['subject']).$tag;
         });
 
     $table->addColumn('timestamp', __('Date Sent'))

@@ -46,7 +46,7 @@ class MedicalFields extends Migration
         $partialFail = false;
 
         // Prevent running this migration if the field has already been removed
-        $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPersonMedical` LIKE 'bloodType'");
+        $fieldPresent = $this->db->select("SHOW COLUMNS FROM `gibbonPersonMedical` LIKE 'bloodType'")->fetchAll();
         if (empty($fieldPresent)) return true;
 
         // Create the Blood Type and Tetanus custom fields

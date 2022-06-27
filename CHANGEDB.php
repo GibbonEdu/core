@@ -675,5 +675,7 @@ DELETE FROM `gibbonPermission` WHERE gibbonActionID=(SELECT gibbonActionID FROM 
 ++$count;
 $sql[$count][0] = '25.0.00';
 $sql[$count][1] = "
-
+ALTER TABLE `gibbonMessenger` ADD `confidential` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `smsReport`;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES((SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger'), 'New Message_confidential', 0, 'Manage Messages', 'Enable users to send confidential messages which are not listed in Manage Messages for any other user.', 'messenger_post.php', 'messenger_post.php', 'Y', 'N', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='New Message_confidential'));end
 ";
