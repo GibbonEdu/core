@@ -120,7 +120,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<a href='".Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $student['gibbonPersonID'])."'>".__('Student Profile').'</a><br/>';
 
                 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
-                    $output .= "<a href='".Url::fromModuleRoute('Form Group', 'formGroups_details')->withQueryParam('gibbonFormGroupID', $student['gibbonFormGroupID'])."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
+                    $output .= "<a href='".Url::fromModuleRoute('Form Groups', 'formGroups_details')->withQueryParam('gibbonFormGroupID', $student['gibbonFormGroupID'])."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
                 }
                 if ($student['formGroupWebsite'] != '') {
                     $output .= "<a target='_blank' href='".$student['formGroupWebsite']."'>".$student['formGroup'].' '.__('Website').'</a>';
