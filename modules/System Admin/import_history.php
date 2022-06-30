@@ -63,10 +63,15 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->format(function ($log) {
             return $log['importType']->getDetail('name');
         });
+
+    $table->addColumn('filename', __('File Name'))
+        ->format(function ($log) {
+            return $log['data']['results']['filename'] ?? '';
+        });
         
     $table->addColumn('details', __('Details'))
         ->format(function ($log) {
-            return !empty($log['data']['success']) ? __('Success') : __('Failed');
+            return !empty($log['data']['success']) ? Format::tag(__('Success'), 'success') : Format::tag(__('Failed'), 'error');
         });
 
     $table->addActionColumn()
