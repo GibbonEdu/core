@@ -30,6 +30,7 @@ v25.0.00
         System: updated Parent Weekly Summary CLI to not send if date is outside school year
         System: improved right-to-left support in Default theme
         Messenger: added the ability to send confidential messages which are not viewable by other users
+        Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         System Admin: added filename to Import History in Import From File page
 
     Bug Fixes
