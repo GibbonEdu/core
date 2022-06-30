@@ -37,6 +37,7 @@ v25.0.00
         System: removed unused medical fields from gibbon.sql
         System: fixed Form Group link under student photos on Parent Dashboard
         Markbook: fixed Left teachers showing up in "Class taught by" list
+        Reports: fixed error when milestones are empty in Manage Reporting Cycles
         User Admin: fixed black user photos when using non-jpg image format
 
 v24.0.00
