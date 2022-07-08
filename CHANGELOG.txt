@@ -39,6 +39,7 @@ v25.0.00
         System: fixed Form Group link under student photos on Parent Dashboard
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
+        School Admin: fixed error in Add Attendance Code when no roles specified
         User Admin: fixed black user photos when using non-jpg image format
 
 v24.0.00
@@ -107,7 +108,7 @@ v24.0.00
         Finance: fixed reminder emails not handling comma separated company email addresses
         Library: fixed missing cost field when duplicating library item
         Library: fixed items showing as overdue on the same date as the expected return
-        Messenger: fixed Applicant target excluding Expected parents of edited application forms 
+        Messenger: fixed Applicant target excluding Expected parents of edited application forms
         Planner: fixed invalid values in homeworkSubmissionDrafts in PHP 8+
         Reports: fixed AttendanceByCycle data source mixing up reporting cycle dates
         Reports: fixed missing dropdown selectors on the Write Reports pages
