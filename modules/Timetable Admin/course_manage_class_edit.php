@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID, 'gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance, gibbonCourseClass.fields FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
+            $sql = 'SELECT gibbonCourseClassID, gibbonCourseClass.name, gibbonCourseClass.nameShort, gibbonCourse.gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, reportable, attendance, enrolmentMin, enrolmentMax, gibbonCourseClass.fields FROM gibbonCourseClass, gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=:gibbonCourseID AND gibbonCourseClassID=:gibbonCourseClassID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
@@ -55,21 +55,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-			$values = $result->fetch(); 
-			
+			$values = $result->fetch();
+
 			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_editProcess.php');
-			
+
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 			$form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
 			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
-			
+
             $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
 				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('courseName', __('Course'));
 				$row->addTextField('courseName')->required()->readonly()->setValue($values['courseName']);
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this course.'));
 				$row->addTextField('name')->required()->maxLength(30);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
 				$row->addTextField('nameShort')->required()->maxLength(8);
@@ -92,15 +92,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 				$row->addYesNo('attendance');
 			}
 
+            $row = $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
+
+            $row = $form->addRow();
+				$row->addLabel('enrolmentMin', __('Minimum Enrolment'))->description(__('Class should not run below this number of students.'));
+				$row->addNumber('enrolmentMin')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4);
+
+            $row = $form->addRow();
+				$row->addLabel('enrolmentMax', __('Maximum Enrolment'))->description(__('Enrolment should not exceed this number of students.'));
+				$row->addNumber('enrolmentMax')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4);
+
             // Custom Fields
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Class', [], $values['fields']);
-            
+
 			$row = $form->addRow();
 				$row->addFooter();
 				$row->addSubmit();
 
 			$form->loadAllValuesFrom($values);
-		
+
 			echo $form->getOutput();
         }
     }

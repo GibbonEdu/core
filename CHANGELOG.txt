@@ -25,6 +25,7 @@ v25.0.00
     Significant Changes
 
     Changes With Important Notices
+        Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
 
     Tweaks & Additions
         System: updated Parent Weekly Summary CLI to not send if date is outside school year

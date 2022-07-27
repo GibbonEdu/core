@@ -62,6 +62,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $nameShort = $_POST['nameShort'] ?? '';
                 $reportable = $_POST['reportable'] ?? '';
                 $attendance = $_POST['attendance'] ?? 'N';
+                $enrolmentMin = (!empty($_POST['enrolmentMin']) && is_numeric($_POST['enrolmentMin'])) ? $_POST['enrolmentMin'] : null;
+                $enrolmentMax = (!empty($_POST['enrolmentMax']) && is_numeric($_POST['enrolmentMax'])) ? $_POST['enrolmentMax'] : null;
 
                 $customRequireFail = false;
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Class', [], $customRequireFail);
@@ -94,8 +96,8 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                     } else {
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'fields' => $fields, 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance, fields=:fields WHERE gibbonCourseClassID=:gibbonCourseClassID';
+                            $data = array('name' => $name, 'nameShort' => $nameShort, 'reportable' => $reportable, 'attendance' => $attendance, 'enrolmentMin' => $enrolmentMin, 'enrolmentMax' => $enrolmentMax, 'fields' => $fields, 'gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sql = 'UPDATE gibbonCourseClass SET name=:name, nameShort=:nameShort, reportable=:reportable, attendance=:attendance, enrolmentMin=:enrolmentMin, enrolmentMax=:enrolmentMax, fields=:fields WHERE gibbonCourseClassID=:gibbonCourseClassID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
