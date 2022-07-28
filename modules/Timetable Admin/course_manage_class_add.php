@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
-use Gibbon\Http\Url;
+use Gibbon\Domain\System\SettingGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_add.php') == false) {
     // Access denied
@@ -50,11 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if ($gibbonSchoolYearID == '' or $gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-
-            $data = array('gibbonCourseID' => $gibbonCourseID);
-            $sql = 'SELECT gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+        $data = array('gibbonCourseID' => $gibbonCourseID);
+        $sql = 'SELECT gibbonCourseID, gibbonCourse.name AS courseName, gibbonCourse.nameShort as courseNameShort, gibbonCourse.description AS courseDescription, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -62,6 +62,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
 			$values = $result->fetch();
+
+            $settingGateway = $container->get(SettingGateway::class);
 
 			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_addProcess.php');
 
@@ -99,13 +101,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
             $row = $form->addRow()->addHeading('Advanced Options', __('Advanced Options'));
 
+            $enrolmentMinDefault = $settingGateway->getSettingByScope('Timetable Admin', 'enrolmentMinDefault');
             $row = $form->addRow();
 				$row->addLabel('enrolmentMin', __('Minimum Enrolment'))->description(__('Class should not run below this number of students.'));
-				$row->addNumber('enrolmentMin')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4);
+				$row->addNumber('enrolmentMin')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4)->setValue(is_numeric($enrolmentMinDefault) ? $enrolmentMinDefault : '');
 
+            $enrolmentMaxDefault = $settingGateway->getSettingByScope('Timetable Admin', 'enrolmentMaxDefault');
             $row = $form->addRow();
 				$row->addLabel('enrolmentMax', __('Maximum Enrolment'))->description(__('Enrolment should not exceed this number of students.'));
-				$row->addNumber('enrolmentMax')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4);
+				$row->addNumber('enrolmentMax')->onlyInteger(true)->minimum(1)->maximum(9999)->maxLength(4)->setValue(is_numeric($enrolmentMaxDefault) ? $enrolmentMaxDefault : '');
 
             // Custom Fields
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Class', []);

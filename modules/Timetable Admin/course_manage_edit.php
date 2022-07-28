@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if ($gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, gibbonCourse.name AS name, gibbonCourse.nameShort as nameShort, orderBy, gibbonCourse.description, gibbonCourse.map, gibbonCourse.gibbonSchoolYearID, gibbonSchoolYear.name as yearName, gibbonYearGroupIDList, gibbonCourse.fields FROM gibbonCourse, gibbonSchoolYear WHERE gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
             $table->addColumn('nameShort', __('Short Name'))->width('20%');
             $table->addColumn('name', __('Name'))->width('20%');
-            $table->addColumn('participantsTotal', __('Participants'));
+            $table->addColumn('studentsTotal', __('Students'));
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
             // ACTIONS
