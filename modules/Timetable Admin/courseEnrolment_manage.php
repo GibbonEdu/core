@@ -98,6 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table->addColumn('name', __('Name'));
             $table->addColumn('nameShort', __('Short Name'));
+            $table->addColumn('teachersTotal', __('Teachers'));
             $table->addColumn('studentsActive', __('Students'))->description(__('Active'));
             $table->addColumn('studentsExpected', __('Students'))->description(__('Expected'));
 

@@ -152,6 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
             $table->addColumn('nameShort', __('Short Name'))->width('20%');
             $table->addColumn('name', __('Name'))->width('20%');
+            $table->addColumn('teachersTotal', __('Teachers'));
             $table->addColumn('studentsTotal', __('Students'));
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
