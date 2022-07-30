@@ -238,17 +238,21 @@ class CourseEnrolmentGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function getClassStudentCount($gibbonCourseClassID)
+    public function getClassStudentCount($gibbonCourseClassID, $honourDates = true)
     {
-        $data =['gibbonCourseClassID' => $gibbonCourseClassID, 'today' => date('Y-m-d')];
+        $data =['gibbonCourseClassID' => $gibbonCourseClassID];
         $sql = "SELECT COUNT(gibbonCourseClassPerson.gibbonCourseClassPersonID)
             FROM gibbonCourseClassPerson
             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
             WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
             AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')
-            AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
-            AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)
             AND gibbonCourseClassPerson.role='Student'";
+
+            if ($honourDates) {
+                $data['today'] = date('Y-m-d');
+                $sql .= "AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+                    AND (gibbonPerson.dateEnd IS NULL  OR gibbonPerson.dateEnd>=:today)";
+            }
 
         return $this->db()->selectOne($sql, $data);
     }
