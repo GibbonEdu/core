@@ -150,10 +150,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 ->addParam('search', $search)
                 ->displayLabel();
 
-            $table->addColumn('nameShort', __('Short Name'))->width('20%');
-            $table->addColumn('name', __('Name'))->width('20%');
+            $table->addColumn('nameShort', __('Short Name'));
+            $table->addColumn('name', __('Name'));
             $table->addColumn('teachersTotal', __('Teachers'));
-            $table->addColumn('studentsTotal', __('Students'));
+            $table->addColumn('studentsActive', __('Students'))->description(__('Active'));
+            $table->addColumn('studentsExpected', __('Students'))->description(__('Expected'));
+
+            $table->addColumn('studentsTotal', __('Students'))
+                ->description(__('Total'))
+                ->format(function ($values) {
+                   $return = $values['studentsTotal'];
+                   if (is_numeric($values['enrolmentMin']) && $values['studentsTotal'] < $values['enrolmentMin']) {
+                       $return .= Format::tag(__('Under Enrolled'), 'warning ml-2');
+                   }
+                   if (is_numeric($values['enrolmentMax']) && $values['studentsTotal'] > $values['enrolmentMax']) {
+                       $return .= Format::tag(__('Over Enrolled'), 'error ml-2');
+                   }
+                   return $return;
+                });
+
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
             // ACTIONS
