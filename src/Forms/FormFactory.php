@@ -486,6 +486,7 @@ class FormFactory implements FormFactoryInterface
                 'LYD د.ل' => 'Libyan Dinar (د.ل)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MGA' => 'Malagasy Ariary (Ar)',
+                'MWK' => 'Malawian Kwacha (MWK)',
                 'MVR Rf' => 'Maldivian Rufiyaa (Rf)',
                 'MMK K' => 'Myanmar Kyat (K)',
                 'MZN MT' => 'Mozambique Metical (MT)',
