@@ -38,6 +38,7 @@ v25.0.00
         System: improved exception handling for transactions in Connection class
         System: removed unused medical fields from gibbon.sql
         System: fixed Form Group link under student photos on Parent Dashboard
+        System: fixed missing translations for module strings in dashboard tabs
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         School Admin: fixed error in Add Attendance Code when no roles specified

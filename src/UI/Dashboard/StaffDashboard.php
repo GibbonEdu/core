@@ -545,6 +545,9 @@ class StaffDashboard implements OutputableInterface
             }
 
             foreach ($hooks as $hook) {
+                // Set the module for this hook for translations
+                $this->session->set('module', $hook['sourceModuleName']);
+
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
                 $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
                 if (!file_exists($include)) {
