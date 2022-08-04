@@ -40,6 +40,7 @@ v25.0.00
         System: fixed Form Group link under student photos on Parent Dashboard
         System: fixed missing translations for module strings in dashboard tabs
         Markbook: fixed Left teachers showing up in "Class taught by" list
+        Markbook: fixed View Markbook breadcrumb when class name is blank
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         School Admin: fixed error in Add Attendance Code when no roles specified
         Timetable Admin: adjusted column uniqueness interface string
