@@ -685,3 +685,14 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMinDefault', 'Minimum Enrolment Default', 'The default value for minimum class enrolment.', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMaxDefault', 'Maximum Enrolment Default', 'The default value for maximum class enrolment.', '');end
 ";
+
+//v25.0.01 Integration of BigBlueButton
+++$count;
+$sql[$count][0] = '25.0.01';
+$sql[$count][1] = "
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'enableBigBlueButton', 'Enable BigBlueButton', 'Should BigBlueButton be enabled across the system?', 'N');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'bigBlueButtonURL', 'BigBlueButton Server URL', 'Server URL are provided by the BigBlueButton', '');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'bigBlueButtonCredentials', 'BigBlueButton API Credentials', 'API credentials are provided by the BigBlueButton', '');end
+ALTER TABLE `gibbonPlannerEntry` ADD `includeVideoChat` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `gibbonPersonIDLastEdit`;end
+ALTER TABLE `gibbonPlannerEntry` ADD `sendVideoLink` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `includeVideoChat`;end
+";

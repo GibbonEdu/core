@@ -267,6 +267,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('timeEnd', __('End Time'))->description(__("Format: hh:mm (24hr)"));
                 $row->addTime('timeEnd')->setValue($nextTimeEnd)->required();
 
+            //Video Chat
+            $setting = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
+            if ($setting['value'] == 'Y') {
+                $row = $form->addRow();
+                $row->addLabel('includeVideoChat', __('Include video chat'))->description(__('BigBlueButton session will be linked to this lesson.'));
+                $row->addCheckbox('includeVideoChat')->description(__('Include video chat'));
+                $row->addCheckbox('sendVideoLink')->description(__('Send 10 minute class start warning with video link'));
+            }  
+
             $form->addRow()->addHeading('Lesson Content', __('Lesson Content'));
 
             $description = $settingGateway->getSettingByScope('Planner', 'lessonDetailsTemplate') ;
