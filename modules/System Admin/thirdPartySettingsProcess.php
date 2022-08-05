@@ -49,6 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             'mailerSMTPSecure' => '',
             'mailerSMTPUsername' => '',
             'mailerSMTPPassword' => '',
+            'enableBigBlueButton' => 'required',
+            'bigBlueButtonURL' => 'skip-hidden',
+            'bigBlueButtonCredentials' => 'skip-hidden',
         ],
         'Messenger' => [
             'smsGateway' => '',
