@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "96dad05287a68246961945853c2ca177",
+    "content-hash": "66737fb9fa3df220f655edae6c1226bd",
     "packages": [
         {
             "name": "aura/auth",
@@ -137,6 +137,65 @@
                 "source": "https://github.com/auraphp/Aura.SqlQuery/tree/3.x"
             },
             "time": "2022-02-04T16:05:56+00:00"
+        },
+        {
+            "name": "bigbluebutton/bigbluebutton-api-php",
+            "version": "2.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bigbluebutton/bigbluebutton-api-php.git",
+                "reference": "bae7b32f71119e6c0bc4015ea12ef4a0feeb694d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bigbluebutton/bigbluebutton-api-php/zipball/bae7b32f71119e6c0bc4015ea12ef4a0feeb694d",
+                "reference": "bae7b32f71119e6c0bc4015ea12ef4a0feeb694d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-mbstring": "*",
+                "ext-simplexml": "*",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "composer/composer": "^1.10.0",
+                "ext-mbstring": "*",
+                "fakerphp/faker": "^1.14",
+                "friendsofphp/php-cs-fixer": "2.*",
+                "php-coveralls/php-coveralls": "^2.4.0",
+                "phpunit/phpunit": "^8",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BigBlueButton\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Ghazi Triki",
+                    "email": "ghazi.nocturne@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "BigBlueButton PHP API Library for PHP",
+            "homepage": "http://bigbluebutton.org/",
+            "keywords": [
+                "api",
+                "bbb",
+                "bigbluebutton"
+            ],
+            "support": {
+                "issues": "https://github.com/bigbluebutton/bigbluebutton-api-php/issues",
+                "source": "https://github.com/bigbluebutton/bigbluebutton-api-php/tree/2.0.13"
+            },
+            "time": "2021-06-11T20:48:11+00:00"
         },
         {
             "name": "clue/stream-filter",
