@@ -40,6 +40,10 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\JoinMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -2377,10 +2381,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                          $sidebarExtra .= '</div>';
                     }
 
-                     $sidebarExtra .= Format::userPhoto($studentImage, 240);
+                    $sidebarExtra .= Format::userPhoto($studentImage, 240);
+                    $sidebarExtra .= '<div class="column-no-break">';
+
+                    // Video Chat
+                    $setting = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
+                    if ($setting['value'] == 'Y') {
+                        $bigBlueButtonURL = $settingGateway->getSettingByScope('System', 'bigBlueButtonURL', '');
+                        $bigBlueButtonCredentials = $settingGateway->getSettingByScope('System', 'bigBlueButtonCredentials', '');
+                        putenv('BBB_SERVER_BASE_URL='. $bigBlueButtonURL);
+                        putenv('BBB_SECRET='. $bigBlueButtonCredentials);
+
+                        // Init BigBlueButton API
+                        $bbb = new BigBlueButton();
+                        $meetingId = "user".(int)$gibbonPersonID;
+                        $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
+                        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+                        
+                        if ($response->getReturnCode() == 'FAILED') {
+                            // meeting not found or already closed
+                            // Create the meeting
+                            $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
+                            $createParams = $createParams->setModeratorPassword('moderator_password')
+                                                        ->setAttendeePassword('attendee_password');
+                            $response = $bbb->createMeeting($createParams);                           
+                        }
+
+                        $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), 'moderator_password');
+                        $joinParams->setRedirect(false);
+                        $joinResponse = $bbb->joinMeeting($joinParams);
+                        $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
+                        
+                        $sidebarExtra .= '<h4>'.__('Contact').'</h4>';
+                        $sidebarExtra .= "<ul class='moduleMenu'>";
+                        $sidebarExtra .= "<li><a $style href='".$bbbMeetingUrl."'>".__('Video Chat').'</a></li>';
+                        $sidebarExtra .= '</ul>';
+                    }
 
                     //PERSONAL DATA MENU ITEMS
-                     $sidebarExtra .= '<div class="column-no-break">';
                      $sidebarExtra .= '<h4>'.__('Personal').'</h4>';
                      $sidebarExtra .= "<ul class='moduleMenu'>";
                     $style = '';
