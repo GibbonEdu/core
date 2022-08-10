@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -29,6 +30,10 @@ use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\JoinMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -565,11 +570,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             }
                         }
                     }
+                    
+                    // Video Chat
+                    $bbbMeetingUrl = '';
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $setting = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
+                    if ($setting['value'] == 'Y') {
+                        $bigBlueButtonURL = $settingGateway->getSettingByScope('System', 'bigBlueButtonURL', '');
+                        $bigBlueButtonCredentials = $settingGateway->getSettingByScope('System', 'bigBlueButtonCredentials', '');
+                        putenv('BBB_SERVER_BASE_URL='. $bigBlueButtonURL);
+                        putenv('BBB_SECRET='. $bigBlueButtonCredentials);
+
+                        // Init BigBlueButton API
+                        $bbb = new BigBlueButton();
+                        $meetingId = "user".(int)$gibbonPersonID;
+                        $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
+                        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+                        
+                        if ($response->getReturnCode() == 'FAILED') {
+                            // meeting not found or already closed
+                            // Create the meeting
+                            $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
+                            $createParams = $createParams->setModeratorPassword('moderator_password')
+                                                        ->setAttendeePassword('attendee_password');
+                            $response = $bbb->createMeeting($createParams);                           
+                        }
+
+                        $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), 'moderator_password');
+                        $joinParams->setRedirect(false);
+                        $joinResponse = $bbb->joinMeeting($joinParams);
+                        $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
+                    }
 
                     $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
                         'canViewEmergency' => ($highestActionManage == 'Manage Staff_confidential') ? true : false,
                         'userPhoto' => Format::userPhoto($row['image_240'], 240),
                         'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+                        'videoChat' => ($bbbMeetingUrl == '') ? false : true,
+                        'bbbMeetingUrl' => $bbbMeetingUrl,
                         'gibbonPersonID' => $gibbonPersonID,
                         'subpage' => $subpage,
                         'search' => $search,

@@ -466,7 +466,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                             // Init BigBlueButton API
                             $bbb = new BigBlueButton();
-                            $meetingId = (int)$values['gibbonCourseClassID'];
+                            $meetingId = "class".(int)$values['gibbonCourseClassID'];
                             $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
                             $response = $bbb->getMeetingInfo($getMeetingInfoParams);
                             $existing_meeting = true;
