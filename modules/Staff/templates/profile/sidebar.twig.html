@@ -15,7 +15,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <ul class='moduleMenu'>
         <li>
-            <a href="{{ bbbMeetingUrl }}">{{ __('Video Chat') }}</a>
+            <a href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=VideoChat">{{ __('Video Chat') }}</a>
         </li>
     </ul>
     {% endif %}
