@@ -46,6 +46,7 @@ v25.0.00
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         School Admin: fixed error in Add Attendance Code when no roles specified
         Timetable Admin: adjusted column uniqueness interface string
+        Timetable: fixed class student counts in Manage Student Enrolment
         User Admin: fixed black user photos when using non-jpg image format
 
 v24.0.00
