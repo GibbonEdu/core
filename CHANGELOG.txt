@@ -40,6 +40,7 @@ v25.0.00
         System: removed unused medical fields from gibbon.sql
         System: fixed Form Group link under student photos on Parent Dashboard
         System: fixed missing translations for module strings in dashboard tabs
+        System: fixed incorrect student count with multiple form groups on Staff Dashboard
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Reports: fixed error when milestones are empty in Manage Reporting Cycles

@@ -286,11 +286,13 @@ class StaffDashboard implements OutputableInterface
             $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
             //Form group table
-            $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
-            $this->formGroupTable->setTitle('');
+            $formGroupTable = clone $this->formGroupTable;
+
+            $formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $formGroupTable->setTitle('');
 
             if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {
-                $this->formGroupTable->addHeaderAction('attendance', __('Take Attendance'))
+                $formGroupTable->addHeaderAction('attendance', __('Take Attendance'))
                     ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
@@ -298,13 +300,13 @@ class StaffDashboard implements OutputableInterface
                     ->append(' | ');
             }
 
-            $this->formGroupTable->addHeaderAction('export', __('Export to Excel'))
+            $formGroupTable->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/indexExport.php')
                 ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                 ->directLink()
                 ->displayLabel();
 
-            $formGroups[$count][2] = $this->formGroupTable->getOutput();
+            $formGroups[$count][2] = $formGroupTable->getOutput();
 
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {
