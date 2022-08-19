@@ -39,7 +39,7 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonFamilyUpdate';
     private static $primaryKey = 'gibbonFamilyUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['gibbonFamily.name', 'gibbonFamily.nameAddress'];
     
     private static $scrubbableKey = 'gibbonFamilyID';
     private static $scrubbableColumns = ['nameAddress' => '', 'homeAddress' => '', 'homeAddressDistrict' => '', 'homeAddressCountry' => '', 'status' => 'Other', 'languageHomePrimary' => '', 'languageHomeSecondary' => ''];

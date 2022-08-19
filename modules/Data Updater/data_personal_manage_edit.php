@@ -64,20 +64,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $newValues = $newResult->fetch();
 
             // Provide a link back to edit the associated record
-            $params = [ 
-                'gibbonPersonID' => $oldValues['gibbonPersonID']
-            ];
             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
                 $page->navigator->addHeaderAction('edit', __('Edit User'))
                     ->setURL('/modules/User Admin/user_manage_edit.php')
-                    ->addParams($params)
+                    ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
                     ->setIcon('config')
                     ->displayLabel();
             }
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == true && getRoleCategory($oldValues['gibbonRoleIDPrimary'], $connection2) == 'Student') {
                 $page->navigator->addHeaderAction('view', __('View Student'))
-                    ->setURL('/modules/User Admin/user_manage_edit.php')
-                    ->addParams($params)
+                    ->setURL('/modules/Students/student_view_details.php')
+                    ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
                     ->setIcon('plus')
                     ->displayLabel();    
              }

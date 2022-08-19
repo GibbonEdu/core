@@ -34,7 +34,7 @@ class StaffUpdateGateway extends QueryableGateway
     private static $tableName = 'gibbonStaffUpdate';
     private static $primaryKey = 'gibbonStaffUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['person.surname', 'person.preferredName', 'person.username'];
     
     /**
      * @param QueryCriteria $criteria

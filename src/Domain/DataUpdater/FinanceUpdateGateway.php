@@ -39,7 +39,7 @@ class FinanceUpdateGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonFinanceInvoiceeUpdate';
     private static $primaryKey = 'gibbonFinanceInvoiceeUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['target.surname', 'target.preferredName', 'target.username'];
     
     private static $scrubbableKey = ['gibbonPersonID', 'gibbonFinanceInvoicee', 'gibbonFinanceInvoiceeID'];
     private static $scrubbableColumns = ['companyName' => null,'companyContact' => null,'companyAddress' => null,'companyEmail' => null,'companyCCFamily' => null,'companyPhone' => null,'companyAll' => null];

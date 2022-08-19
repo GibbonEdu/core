@@ -39,7 +39,7 @@ class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
     private static $tableName = 'gibbonPersonUpdate';
     private static $primaryKey = 'gibbonPersonUpdateID';
 
-    private static $searchableColumns = [''];
+    private static $searchableColumns = ['target.surname', 'target.preferredName', 'target.username'];
 
     private static $scrubbableKey = 'gibbonPersonID';
     private static $scrubbableColumns = ['address1' => '','address1District' => '','address1Country' => '','address2' => '','address2District' => '','address2Country' => '','phone1Type' => '','phone1CountryCode' => '','phone1' => '','phone3Type' => '','phone3CountryCode' => '','phone3' => '','phone2Type' => '','phone2CountryCode' => '','phone2' => '','phone4Type' => '','phone4CountryCode' => '','phone4' => '','languageFirst' => '','languageSecond' => '','languageThird' => '','countryOfBirth' => '','ethnicity' => '','religion' => '','profession'=> null,'employer'=> null,'jobTitle'=> null,'emergency1Name'=> null,'emergency1Number1'=> null,'emergency1Number2'=> null,'emergency1Relationship'=> null,'emergency2Name'=> null,'emergency2Number1'=> null,'emergency2Number2'=> null,'emergency2Relationship'=> null,'vehicleRegistration' => '','fields' => ''];
