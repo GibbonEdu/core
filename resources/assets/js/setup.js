@@ -114,5 +114,5 @@ $(document).ready(function(){
         { threshold: [1] }
     );
 
-    observer.observe(el);
+    if (el != undefined) observer.observe(el);
 });
