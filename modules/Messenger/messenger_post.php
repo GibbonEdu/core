@@ -547,10 +547,18 @@ else {
 
             $form->toggleVisibilityByClass('transport')->onRadio('transport')->when('Y');
 
-            $sql = "SELECT DISTINCT transport as value, transport as name FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
+            $sql = "SELECT DISTINCT transport FROM gibbonPerson WHERE status='Full' AND NOT transport='' ORDER BY transport";
+            $transportList = $pdo->select($sql)->fetchAll();
+            $transportList = array_unique(array_reduce($pdo->select($sql)->fetchAll(), function ($group, $item) {
+                $list = array_map('trim', explode(',', $item['transport'] ?? ''));
+                $group = array_merge($group, $list);
+                return $group;
+            }, []));
+            sort($transportList, SORT_NATURAL);
+
             $row = $form->addRow()->addClass('transport hiddenReveal');
                 $row->addLabel('transports[]', __('Select Transport'));
-                $row->addSelect('transports[]')->fromQuery($pdo, $sql)->selectMultiple()->setSize(6)->required();
+                $row->addSelect('transports[]')->fromArray($transportList)->selectMultiple()->setSize(6)->required();
 
             $row = $form->addRow()->addClass('transport hiddenReveal');
                 $row->addLabel('transportStaff', __('Include Staff?'));
