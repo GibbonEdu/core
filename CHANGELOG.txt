@@ -45,6 +45,7 @@ v25.0.00
         Data Updater: fixed incorrect top links on Edit Request pages
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
+        Planner: fixed selected course resetting when navigating between school years
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         School Admin: fixed error in Add Attendance Code when no roles specified
         Timetable Admin: adjusted column uniqueness interface string

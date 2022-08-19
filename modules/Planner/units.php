@@ -45,16 +45,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
     // School Year Info
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
 
     if (empty($gibbonSchoolYearID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
-    
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
-    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
-    if ($gibbonCourseID == '') {
+    $courseName = $_GET['courseName'] ?? '';
+
+    if (empty($gibbonCourseID) && !empty($courseName)) {
+        $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
+        $gibbonCourseID = $row['gibbonCourseID'] ?? '';
+    }
+    
+    if (empty($gibbonCourseID)) {
         try {
             if ($highestAction == 'Unit Planner_all') {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -83,6 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             $row = $result->fetch();
         }
     }
+
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort']]);
 
     //Work out previous and next course with same name
     $gibbonCourseIDPrevious = '';
