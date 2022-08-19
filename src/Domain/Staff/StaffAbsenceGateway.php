@@ -60,7 +60,7 @@ class StaffAbsenceGateway extends QueryableGateway implements ScrubbableGateway
             ])
             ->innerJoin('gibbonStaffAbsenceType', 'gibbonStaffAbsence.gibbonStaffAbsenceTypeID=gibbonStaffAbsenceType.gibbonStaffAbsenceTypeID')
             ->innerJoin('gibbonStaffAbsenceDate', 'gibbonStaffAbsenceDate.gibbonStaffAbsenceID=gibbonStaffAbsence.gibbonStaffAbsenceID')
-            ->innerJoin('gibbonSchoolYear', 'gibbonStaffAbsenceDate.date BETWEEN firstDay AND lastDay')
+            ->innerJoin('gibbonSchoolYear', '((gibbonStaffAbsenceDate.date BETWEEN firstDay AND lastDay) OR (gibbonStaffAbsence.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID))')
             ->leftJoin('gibbonStaffCoverageDate', 'gibbonStaffCoverageDate.gibbonStaffAbsenceDateID=gibbonStaffAbsenceDate.gibbonStaffAbsenceDateID')
             ->leftJoin('gibbonStaffCoverage', 'gibbonStaffCoverage.gibbonStaffCoverageID=gibbonStaffCoverageDate.gibbonStaffCoverageID')
             ->leftJoin('gibbonPerson', 'gibbonStaffAbsence.gibbonPersonID=gibbonPerson.gibbonPersonID')
