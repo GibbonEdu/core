@@ -469,6 +469,7 @@ class FormFactory implements FormFactoryInterface
                 ),
             'OTHERS' => array(
                 'ALL L' => 'Albanian Lek (L)',
+                'DZD دج' => 'Algerian Dinar (دج)',
                 'BDT ó' => 'Bangladeshi Taka (ó)',
                 'BTC' => 'Bitcoin',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
