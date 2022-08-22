@@ -130,14 +130,14 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, gibbonPerson.email
+        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status, MAX(gibbonPersonUpdate.timestamp) as personalUpdate, (CASE WHEN gibbonFamilyAdult.contactEmail='Y' THEN gibbonPerson.email ELSE '' END) as email
             FROM gibbonFamilyAdult
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonPersonUpdate ON (gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList) 
             AND gibbonPerson.status='Full'
             GROUP BY gibbonFamilyAdult.gibbonPersonID 
-            ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+            ORDER BY gibbonFamilyAdult.contactPriority ASC, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
     }

@@ -32,6 +32,7 @@ v25.0.00
         System: improved right-to-left support in Default theme
         System: added Malawian Kwacha and Algerian Dinar as currency options
         Data Updater: added a search option to all Manage Update pages
+        Data Updater: updated Family Data Updater History to order parents by contact priority
         Messenger: added the ability to send confidential messages which are not viewable by other users
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
@@ -45,6 +46,7 @@ v25.0.00
         System: fixed missing translations for module strings in dashboard tabs
         System: fixed incorrect student count with multiple form groups on Staff Dashboard
         Data Updater: fixed incorrect top links on Edit Request pages
+        Data Updater: removed parent emails from Family Data Updater History when contact email is No
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years
