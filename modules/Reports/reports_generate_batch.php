@@ -78,6 +78,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate.p
             ->fromArray(['Draft' => __('Draft'), 'Final' => __('Final')])
             ->required()
             ->setClass('status w-32');
+        $col->addSelect('twoSided')
+            ->fromArray(['Y' => __('Two-sided'), 'N' => __('Single-sided')])
+            ->required()
+            ->setClass('status w-32 ml-1');
         $col->addSubmit(__('Go'));
 
     $form->toggleVisibilityByClass('status')->onSelect('action')->when('Generate');

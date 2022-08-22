@@ -49,6 +49,7 @@ v25.0.00
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
+        Reports: fixed batch report bulk-action missing the two-sided option
         School Admin: fixed error in Add Attendance Code when no roles specified
         Staff: fixed staff absences not showing up if outside school year dates
         Timetable Admin: adjusted column uniqueness interface string
