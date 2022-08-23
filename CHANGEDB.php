@@ -684,4 +684,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable Admin' AND gibbonAction.name='Timetable Settings'));end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMinDefault', 'Minimum Enrolment Default', 'The default value for minimum class enrolment.', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMaxDefault', 'Maximum Enrolment Default', 'The default value for maximum class enrolment.', '');end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ";

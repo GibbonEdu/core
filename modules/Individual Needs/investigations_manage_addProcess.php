@@ -22,6 +22,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Comms\NotificationEvent;
 
 require_once '../../gibbon.php';
 
@@ -67,20 +68,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $notificationGateway = new NotificationGateway($pdo);
     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-    $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
-    $student = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
-    $notificationString = __('A new Individual Needs investigation has been created for {student}.', ['student' => $student]);
+    // Raise a new notification event
+    $event = new NotificationEvent('Individual Needs', 'New Investigation');
+    if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
+        $investigation = $investigationGateway->getInvestigationByID($gibbonINInvestigationID);
+        $student = Format::name('', $investigation['preferredName'], $investigation['surname'], 'Student', false, true);
 
-    if ($investigation['gibbonPersonIDTutor'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+        $event->setNotificationText(__('A new Individual Needs investigation has been created for {student}.', ['student' => $student]));
+        $event->setActionLink("/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
+        $event->addScope('gibbonYearGroupID', $investigation['gibbonYearGroupID']);
+        $event->addScope('gibbonPersonIDStudent', $investigation['gibbonPersonID']);
+
+        if ($investigation['gibbonPersonIDTutor'] != '') {
+            $event->addRecipient($investigation['gibbonPersonIDTutor']);
+        }
+        if ($investigation['gibbonPersonIDTutor2'] != '') {
+            $event->addRecipient($investigation['gibbonPersonIDTutor2']);
+        }
+        if ($investigation['gibbonPersonIDTutor3'] != '') {
+            $event->addRecipient($investigation['gibbonPersonIDTutor3']);
+        }
+
+        $event->pushNotifications($notificationGateway, $notificationSender);
     }
-    if ($investigation['gibbonPersonIDTutor2'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor2'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
-    }
-    if ($investigation['gibbonPersonIDTutor3'] != '') {
-        $notificationSender->addNotification($investigation['gibbonPersonIDTutor3'], $notificationString, "Individual Needs", "/index.php?q=/modules/Individual Needs/investigations_manage_edit.php&gibbonINInvestigationID=$gibbonINInvestigationID");
-    }
-    $notificationSender->sendNotifications();
+    
+
+    // Send all notifications
+    $sendReport = $notificationSender->sendNotifications();
 
     $URL .= !$gibbonINInvestigationID
         ? "&return=error2"
