@@ -245,10 +245,11 @@ class Parent1Fields extends AbstractFieldGroup
 
             case 'parent1phone':
                 $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
-                for ($i = 1; $i < 3; ++$i) {
+                $phoneCount = $field['options'] ?? 2;
+                for ($i = 1; $i <= $phoneCount; ++$i) {
                     $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
                     $col->addLabel('parent1phone'.$i, __('Phone').' '.$i)->description(__($field['description']));
-                    $col->addPhoneNumber('parent1phone'.$i)->required($required);
+                    $col->addPhoneNumber('parent1phone'.$i)->required($required && $i == 1);
                 }
                 break;
 

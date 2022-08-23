@@ -37,6 +37,7 @@ v25.0.00
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         System Admin: added filename to Import History in Import From File page
+        System Admin: added the option to configure phone number fields in Form Builder
         User Admin: added last login timestamp and IP address to password troubleshooting page
 
     Bug Fixes
