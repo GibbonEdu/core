@@ -129,7 +129,7 @@ class EnrolmentTable implements OutputableInterface
         $table->setDescription(__('In the past 60 days or upcoming 60 days'));
 
         $table->addHeaderAction('view', __('View All'))
-            ->setURL('/modules/Students/report_students_new.php')
+            ->setURL('/modules/Admissions/report_students_new.php')
             ->addParam('type', 'Current School Year')
             ->displayLabel();
 
@@ -171,7 +171,7 @@ class EnrolmentTable implements OutputableInterface
         $table->setDescription(__('In the past 60 days or upcoming 60 days'));
 
         $table->addHeaderAction('view', __('View All'))
-            ->setURL('/modules/Students/report_students_left.php')
+            ->setURL('/modules/Admissions/report_students_left.php')
             ->addParam('type', 'Current School Year')
             ->displayLabel();
 

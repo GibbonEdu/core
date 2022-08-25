@@ -445,20 +445,19 @@ class StaffDashboard implements OutputableInterface
         //GET HOOKS INTO DASHBOARD
         $hooks = array();
 
-            $dataHooks = array();
-            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
-            $resultHooks = $connection2->prepare($sqlHooks);
-            $resultHooks->execute($dataHooks);
+        $dataHooks = array();
+        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
+        $resultHooks = $connection2->prepare($sqlHooks);
+        $resultHooks->execute($dataHooks);
         if ($resultHooks->rowCount() > 0) {
             $count = 0;
             while ($rowHooks = $resultHooks->fetch()) {
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
-
-                    $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                    $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
-                    $resultHook = $connection2->prepare($sqlHook);
-                    $resultHook->execute($dataHook);
+                $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
+                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
+                $resultHook = $connection2->prepare($sqlHook);
+                $resultHook->execute($dataHook);
                 if ($resultHook->rowCount() == 1) {
                     $rowHook = $resultHook->fetch();
                     $hooks[$count]['name'] = $rowHooks['name'];
@@ -566,7 +565,7 @@ class StaffDashboard implements OutputableInterface
         }
 
         $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
-        
+
         if (!isset($_GET['tab']) && !empty($staffDashboardDefaultTabCount)) {
             $defaultTab = $staffDashboardDefaultTabCount-1;
         }
