@@ -38,9 +38,11 @@ v25.0.00
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         Students: added a permission check for Family Adult comments in Student Profile
+        Students: added the ability to search students by first name
         System Admin: added filename to Import History in Import From File page
         System Admin: added the option to configure phone number fields in Form Builder
         User Admin: added last login timestamp and IP address to password troubleshooting page
+        User Admin: added the ability to search users by first name
 
     Bug Fixes
         System: improved exception handling for transactions in Connection class
