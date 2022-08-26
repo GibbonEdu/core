@@ -54,6 +54,7 @@ v25.0.00
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years
+        Planner: fixed CLI scripts attempting to users who are Left or have no email address
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         Reports: fixed batch report bulk-action missing the two-sided option
         School Admin: fixed error in Add Attendance Code when no roles specified

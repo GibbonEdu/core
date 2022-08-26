@@ -87,8 +87,8 @@ $families = $familyGateway->selectFamiliesWithActiveStudents($gibbonSchoolYearID
 foreach ($families as $gibbonFamilyID => $students) {
     // Get the adults in this family and filter by email settings
     $familyAdults = $familyGateway->selectAdultsByFamily($gibbonFamilyID, true)->fetchAll();
-    $familyAdults = array_filter($familyAdults, function ($adult) {
-        return $adult['contactEmail'] == 'Y';
+    $familyAdults = array_filter($familyAdults, function ($parent) {
+        return $parent['status'] == 'Full' && $parent['contactEmail'] == 'Y' && !empty($parent['email']);
     });
 
     if (empty($familyAdults)) continue;

@@ -132,6 +132,10 @@ foreach ($yearGroups as $gibbonYearGroupID => $formGroups) {
 
         // Add recipients and sender
         $tutors = $formGroupGateway->selectTutorsByFormGroup($gibbonFormGroupID);
+        $tutors = array_filter($tutors, function ($person) {
+            return $person['status'] == 'Full' && !empty($person['email']);
+        });
+
         foreach ($tutors as $tutor) {
             $mail->AddAddress($tutor['email'], Format::name('', $tutor['preferredName'], $tutor['surname'], 'Staff', false, true));
         }
