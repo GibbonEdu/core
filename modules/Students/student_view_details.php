@@ -960,7 +960,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo '</tr>';
 
-                                    if ($rowMember['comment'] != '') {
+                                    // Check to ensure only people with full profile access can view these comments
+                                    if ($rowMember['comment'] != '' && ($highestAction == 'View Student Profile_fullEditAllNotes' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes')) {
                                         echo '<tr>';
                                         echo "<td $class style='width: 33%; vertical-align: top' colspan=3>";
                                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Comment').'</span><br/>';
