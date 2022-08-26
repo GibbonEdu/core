@@ -1380,6 +1380,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $title .= __('Timeslot:').' '.$rowPeriods['name'].' | ';
                         }
                         if ($rowPeriods['roomName'] != '') {
+                            if ($height < 30) {
+                                $title .= __('Room:').' '.$rowPeriods['roomName'].' | ';
+                            }
                             if ($rowPeriods['phoneInternal'] != '') {
                                 if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0]) == false) {
                                     $title .= __('Phone:').' '.$rowPeriods['phoneInternal'].' | ';
@@ -1419,18 +1422,20 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         } else {
                             $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
                         }
-                        if ($edit == false) {
-                            if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
-                                $output .= $rowPeriods['roomName'];
-                            } else {
-                                if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
-                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'</span>';
+                        if ($height >= 30) {
+                            if ($edit == false) {
+                                if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
+                                    $output .= $rowPeriods['roomName'];
                                 } else {
-                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__('No Facility').'</i></span>';
+                                    if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
+                                        $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>".$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].'</span>';
+                                    } else {
+                                        $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>".__('No Facility').'</i></span>';
+                                    }
                                 }
+                            } else {
+                                $output .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
                             }
-                        } else {
-                            $output .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&gibbonTTDayID='.$rowPeriods['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID').'&gibbonTTColumnRowID='.$rowPeriods['gibbonTTColumnRowID'].'&gibbonTTDayRowClass='.$rowPeriods['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['roomName'].'</a>';
                         }
                         $output .= '</div>';
                         ++$zCount;

@@ -63,6 +63,7 @@ v25.0.00
         Staff: fixed staff absences not showing up if outside school year dates
         Timetable Admin: adjusted column uniqueness interface string
         Timetable: fixed class student counts in Manage Student Enrolment
+        Timetable: fixed display of room number for short periods
         User Admin: fixed black user photos when using non-jpg image format
 
 v24.0.00
