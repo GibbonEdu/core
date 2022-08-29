@@ -124,12 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
                 $columns = array();
                 $activeColumn = 6;
                 //GET EXTERNAL ASSESSMENTS/CATEGORIES AND CREATE HEADERS
-                $data = array('gibbonYearGroupID' => $yearGroups[$i]);
+                $data = array();
                 $sql = 'SELECT gibbonExternalAssessment.gibbonExternalAssessmentID, gibbonExternalAssessment.nameShort AS assessment, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name AS field
 					FROM gibbonExternalAssessment
 					JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessmentField.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID)
-                    WHERE gibbonExternalAssessmentField.gibbonYearGroupIDList LIKE CONCAT(\'%\',:gibbonYearGroupID,\'%\') 
-					ORDER BY gibbonExternalAssessment.name, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name';
+                    ORDER BY gibbonExternalAssessment.name, gibbonExternalAssessmentField.category, gibbonExternalAssessmentField.name';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
                 while ($row = $result->fetch()) {
