@@ -59,6 +59,7 @@ v25.0.00
         Planner: fixed CLI scripts attempting to users who are Left or have no email address
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         Reports: fixed batch report bulk-action missing the two-sided option
+        Reports: fixed HTML being removed from Rich Text template sections
         School Admin: fixed error in Add Attendance Code when no roles specified
         Staff: fixed staff absences not showing up if outside school year dates
         Timetable Admin: adjusted column uniqueness interface string
