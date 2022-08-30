@@ -21,6 +21,7 @@ v25.0.00
 --------
 
     Headlines
+        Activities will now display on student and staff timetables
 
     Significant Changes
 

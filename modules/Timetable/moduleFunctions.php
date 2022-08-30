@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Activities\ActivityGateway;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
 use Microsoft\Graph\Model\Location;
@@ -24,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -605,6 +607,45 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
+            // Get all activities for this student or staff
+            global $container;
+            $activityGateway = $container->get(ActivityGateway::class);
+
+            $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
+            $activities = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
+
+            // Get the date range and check for activities
+            $dateRange = new DatePeriod(
+                (new DateTime(date('Y-m-d H:i:s', $startDayStamp)))->modify('-1 day'),
+                new DateInterval('P1D'),
+                (new DateTime(date('Y-m-d H:i:s', $endDayStamp)))->modify('+1 day')
+            );
+            foreach ($dateRange as $dateObject) {
+                $date = $dateObject->format('Y-m-d');
+                $weekday = $dateObject->format('l');
+                foreach ($activities as $activity) {
+                    // Add activities that match the weekday and the school is open
+                    if ($activity['dayOfWeek'] != $weekday) continue;
+                    if ($date < $activity['dateStart'] || $date > $activity['dateEnd'] ) continue;
+
+                    if (isSchoolOpen($guid, $date, $connection2)) {
+                        $activities[] = [
+                            0 => $activity['name'],
+                            1 => '',
+                            2 => strtotime($date.' '.$activity['timeStart']),
+                            3 => strtotime($date.' '.$activity['timeEnd']),
+                            4 => !empty($activity['space'])? $activity['space'] : $activity['locationExternal'] ?? '',
+                            5 => Url::fromModuleRoute('Activities', 'activities_my.php'),
+
+                            // 5 => Url::fromHandlerModuleRoute('fullscreen.php', 'Activities', 'activities_view_full.php')->withQueryParams(['gibbonActivityID' => $activity['gibbonActivityID'], 'width' => 1000, 'height' => 500]),
+                        ];
+
+                    }
+
+                }
+                
+            }
+
             //Get personal calendar array
             $eventsPersonal = false;
             if ($self == true and $session->get('viewCalendarPersonal') == 'Y') {
@@ -631,7 +672,6 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             // STAFF COVERAGE
             // Add coverage as a space booking *for now*
-            global $container;
             $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
             $criteria = $staffCoverageGateway->newQueryCriteria()
@@ -1024,15 +1064,15 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         if ($resultClosure->rowCount() == 1) {
                             $rowClosure = $resultClosure->fetch();
                             if ($rowClosure['type'] == 'School Closure') {
-                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', $edit);
                             } elseif ($rowClosure['type'] == 'Timing Change') {
-                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $edit);
+                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $edit);
                             }
                         } else {
-                            $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                            $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', $edit);
                         }
                     } else {
-                        $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                        $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', $edit);
                     }
 
                     if ($day == '') {
@@ -1051,7 +1091,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
     return $output;
 }
 
-function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $edit = false)
+function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $edit = false)
 {
     global $session;
 
@@ -1194,6 +1234,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         $output .= '</div>';
         $output .= '</td>';
     } else {
+
         //Make array of space changes
         $spaceChanges = array();
 
@@ -1505,6 +1546,44 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             }
                         }
                     }
+                }
+            }
+
+            //Draw activities
+            if (!empty($activities)) {
+                $height = 0;
+                $top = 0;
+                foreach ($activities as $event) {
+                    if (empty($event[2])) continue;
+
+                    if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        $label = $event[0];
+                        $title = "title='".date('H:i', $event[2]).' to '.date('H:i', $event[3])." ".$event[4]."'";
+                        $height = ceil(($event[3] - $event[2]) / 60);
+                        $charCut = 40;
+                        if ($height <= 60) {
+                            $charCut = 18;
+                        }
+                        if (strlen($label) > $charCut) {
+                            $label = substr($label, 0, $charCut).'...';
+                            $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")  ".$event[4]."'";
+                        }
+                        $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
+                        $output .= "<div class='ttActivities ttPeriod' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; background: #dfcbf6 !important;'>";
+                        if ($height >= 26) {
+                            $output .= __('Activity').'<br/>';
+                        }
+                        if ($height >= 40) {
+                            $output .= '<i>'.date('H:i', $event[2]).' - '.date('H:i', $event[3]).'</i><br/>';
+                        }
+                        $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
+                        if (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
+                            $output .= $event[4].'<br/>';
+                        }
+                        $output .= '</div>';
+                    }
+                    ++$zCount;
+                    
                 }
             }
 
