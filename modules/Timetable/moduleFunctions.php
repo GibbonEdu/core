@@ -625,7 +625,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 $weekday = $dateObject->format('l');
                 foreach ($activities as $activity) {
                     // Add activities that match the weekday and the school is open
-                    if ($activity['dayOfWeek'] != $weekday) continue;
+                    if (empty($activity['dayOfWeek']) || $activity['dayOfWeek'] != $weekday) continue;
                     if ($date < $activity['dateStart'] || $date > $activity['dateEnd'] ) continue;
 
                     if (isSchoolOpen($guid, $date, $connection2)) {
