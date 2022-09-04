@@ -476,7 +476,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     // Create the meeting
                                     $createParams = new CreateMeetingParameters($meetingId, $values['name']);
                                     $createParams = $createParams->setModeratorPassword('moderator_password')
-                                                                ->setAttendeePassword('attendee_password');
+                                                                ->setAttendeePassword('attendee_password')
+                                                                ->setRecord('true')
+                                                                ->setAutoStartRecording('true');
                                     $response = $bbb->createMeeting($createParams);
                                 } else {
                                     $existing_meeting = false;

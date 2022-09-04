@@ -2340,7 +2340,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 // Create the meeting
                                 $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
                                 $createParams = $createParams->setModeratorPassword('moderator_password')
-                                                            ->setAttendeePassword('attendee_password');
+                                                            ->setAttendeePassword('attendee_password')
+                                                            ->setRecord('true')
+                                                            ->setAutoStartRecording('true');
                                 $response = $bbb->createMeeting($createParams);                           
                             }
 
