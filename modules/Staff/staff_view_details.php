@@ -597,7 +597,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 // Create the meeting
                                 $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
                                 $createParams = $createParams->setModeratorPassword('moderator_password')
-                                                            ->setAttendeePassword('attendee_password');
+                                                            ->setAttendeePassword('attendee_password')
+                                                            ->setRecord('true')
+                                                            ->setAutoStartRecording('true');
                                 $response = $bbb->createMeeting($createParams);                           
                             }
 
