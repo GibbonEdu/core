@@ -55,6 +55,7 @@ v25.0.00
         System: fixed broken View All links in Staff Dashboard Enrolment tab
         Data Updater: fixed incorrect top links on Edit Request pages
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
+        Data Updater: fixed unable to remove all privacy settings via data update
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years

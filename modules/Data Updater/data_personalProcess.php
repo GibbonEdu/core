@@ -200,14 +200,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
 
                     // Student privacy settings
-                    $data['privacy'] = isset($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
+                    $data['privacy'] = !empty($_POST['privacyOptions']) && is_array($_POST['privacyOptions'])
                         ? implode(',', $_POST['privacyOptions'])
-                        : null;
+                        : '';
 
                     // COMPARE VALUES: Has the data changed?
                     $dataChanged = $matchAddressCount > 0 ? true : false;
                     foreach ($values as $key => $value) {
                         if (!isset($data[$key])) continue; // Skip fields we don't plan to update
+                        if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
 
                         if ($data[$key] != $value) {
                             $dataChanged = true;

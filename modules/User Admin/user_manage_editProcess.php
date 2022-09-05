@@ -382,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                         //Deal with change to privacy settings
                         if ($student && $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'privacy') == 'Y') {
-                            if ($privacy_old != $privacy) {
+                            if ($privacy_old != $privacy && !(empty($privacy_old) && empty($privacy))) {
 
                                 //Notify tutor
 
