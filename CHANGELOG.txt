@@ -61,6 +61,7 @@ v25.0.00
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years
         Planner: fixed CLI scripts attempting to users who are Left or have no email address
+        Planner: fixed incorrect homework status when both teacher and student recorded homework are used
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         Reports: fixed batch report bulk-action missing the two-sided option
         Reports: fixed HTML being removed from Rich Text template sections

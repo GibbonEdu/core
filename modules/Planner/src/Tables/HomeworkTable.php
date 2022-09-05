@@ -179,7 +179,7 @@ class HomeworkTable
 
                     if ($roleCategory == 'Student' && $homework['homeworkSubmissionRequired'] != 'Required') {
                         return '<input id="complete'.$homework['gibbonPlannerEntryID'].'" type="checkbox" class="mark-complete" data-id="'.$homework['gibbonPlannerEntryID'].'" data-type="'.$homework['type'].'" '.(!empty($homework['tracker']['homeworkComplete']) ? 'checked' : '').'>';
-                    } else if (!empty($homework['tracker']['homeworkComplete']) && $homework['tracker']['type'] == $homework['type']) {
+                    } else if (!empty($homework['tracker']['homeworkComplete']) && ($homework['tracker']['type'] == $homework['type'] || $homework['homeworkSubmissionRequired'] != 'Required')) {
                         return __('Yes');
                     }
 

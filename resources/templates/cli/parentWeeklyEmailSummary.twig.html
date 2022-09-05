@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% set difference = date(item.homeworkDueDateTime).diff(date()) %}
         {% set latestSubmission = (item.submissions|first) %}
 
-        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') %}
+        {% if item.homeworkComplete == 'Y'  or (item.type == 'teacherRecorded' and latestSubmission.version == 'Final') or (item.type == item.tracker.type and item.tracker.homeworkComplete == 'Y') or (item.type == 'studentRecorded' and item.tracker.homeworkComplete == 'Y') %}
             {% set style = "background-color: #c6f6d5;color: #2f855a;border: 0px solid #2f855a;border-right-width: 8px;" %}
             {% set tag = "<div style='display: inline-block; margin-left: 8px; color: #2f855a; background-color: #c6f6d5; border-radius: 3px;'>" ~  __('Complete') ~ ' - ' ~ latestSubmission.status|default(item.status)|default('On Time')  ~ "</div>" %}
         {% else %}
