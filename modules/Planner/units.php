@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
 
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort']]);
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort'] ?? '']);
 
     //Work out previous and next course with same name
     $gibbonCourseIDPrevious = '';
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
 
     if (empty($gibbonCourseID)) {
-        $page->addError(__('Your request failed because your inputs were invalid.'));
+        $page->addError(__('You do not have access to edit the unit planner for any active courses in the current school year. You may need to be added to the relevant Department or Learning Area for the courses you are trying to access, or those courses may not have been added to the necessary Department or Learning Area.'));
         return;
     }
 
