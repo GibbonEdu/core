@@ -349,7 +349,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectClassAttendanceLogsByPersonAndDate($gibbonCourseClassID, $gibbonPersonID, $date)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date, 'gibbonCourseClassID' => $gibbonCourseClassID];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                 AND date=:date
@@ -377,7 +377,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     function selectAttendanceLogsByPersonAndDate($gibbonPersonID, $date, $crossFillClasses)
     {
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $date];
-        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+        $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceLogPerson.direction, context, timestampTaken, gibbonAttendanceCode.prefill
                 FROM gibbonAttendanceLogPerson
                 JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)

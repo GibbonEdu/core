@@ -211,13 +211,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $countPresent = 0;
                         $columns = 4;
 
-                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y');
+                        $defaults = array('type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y');
                         $students = $resultCourseClass->fetchAll();
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
                             $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%', 'gibbonCourseClassID' => $gibbonCourseClassID);
-                            $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
+                            $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, direction, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
                                     AND date LIKE :date
@@ -231,7 +231,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             //Check for school prefill if attendance not taken in this class
                             if ($result->rowCount() == 0) {
                                 $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
-                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, context, timestampTaken, gibbonAttendanceCode.prefill
+                                $sql = "SELECT gibbonAttendanceLogPerson.type, reason, comment, gibbonAttendanceCode.direction, context, timestampTaken, gibbonAttendanceCode.prefill
                                         FROM gibbonAttendanceLogPerson
                                         JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         JOIN gibbonAttendanceCode ON (gibbonAttendanceCode.gibbonAttendanceCodeID=gibbonAttendanceLogPerson.gibbonAttendanceCodeID)
@@ -255,7 +255,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $students[$key]['cellHighlight'] = '';
                             if ($attendance->isTypeAbsent($log['type'])) {
                                 $students[$key]['cellHighlight'] = 'dayAbsent';
-                            } elseif ($attendance->isTypeOffsite($log['type'])) {
+                            } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
                                 $students[$key]['cellHighlight'] = 'dayMessage';
                             } elseif ($attendance->isTypeLate($log['type'])) {
                                 $students[$key]['cellHighlight'] = 'dayPartial';

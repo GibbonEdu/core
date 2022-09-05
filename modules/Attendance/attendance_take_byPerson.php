@@ -107,10 +107,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 // DATA TABLE: Show attendance log for the current day
                 $table = DataTable::create('attendanceLogs');
 
-                $table->modifyRows(function ($log, $row) {
-                    if ($log['scope'] == 'Onsite - Late' || $log['scope'] == 'Offsite - Late' || $log['scope'] == 'Offsite - Left') $row->addClass('warning');
-                    elseif ($log['direction'] == 'Out') $row->addClass('error');
-                    elseif (!empty($log['direction'])) $row->addClass('current');
+                $table->modifyRows(function ($log, $row) use (&$attendance) {
+                    if ($attendance->isTypeAbsent($log['type'])) $row->addClass('error');
+                    elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') $row->addClass('message');
+                    elseif ($attendance->isTypeLate($log['type'])) $row->addClass('warning');
+                    elseif (!empty($log['direction'])) $row->addClass('success');
+
                     return $row;
                 });
 

@@ -99,8 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->toggleVisibilityByClass('partialDateRow')->onSelect('absenceType')->when('partial');
         $row = $form->addRow()->addClass('partialDateRow');
             $row->addLabel('date', __('Date'));
-            $row->addDate('date')->required()->setValue($date)->minimum(date('Y-m-d', strtotime('today +1 day')));
+            $row->addDate('date')->required()->setValue($date)->minimum(date('Y-m-d'));
     }
+
 
     $form->addRow()->addSearchSubmit($gibbon->session);
 
@@ -110,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $today = date('Y-m-d');
         $attendanceLog = '';
 
-        if (!empty($date) && Format::dateConvert($date) <= $today) {
+        if (!empty($date) && Format::dateConvert($date) < $today) {
             echo Format::alert(__('The specified date is not in the future, or is not a school day.'), 'error');
             return;
         }
@@ -138,8 +139,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                 $table->setTitle(__('Attendance Log'));
                 $table->setDescription(__('The following future absences have been set for the selected student.'));
 
-                $table->modifyRows(function ($log, $row) {
-                    $row->addClass($log['direction'] == 'Out' ? 'error' : 'success');
+                $table->modifyRows(function ($log, $row) use (&$attendance) {
+                    if ($attendance->isTypeAbsent($log['type'])) $row->addClass('error');
+                    elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') $row->addClass('message');
+                    elseif ($attendance->isTypeLate($log['type'])) $row->addClass('warning');
+                    else $row->addClass('success');
+
                     return $row;
                 });
 
@@ -190,11 +195,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if ($absenceType == 'full') {
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'));
-                $row->addDate('dateStart')->required()->minimum(date('Y-m-d', strtotime('today +1 day')));
+                $row->addDate('dateStart')->required()->minimum(date('Y-m-d'));
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
-                $row->addDate('dateEnd')->minimum(date('Y-m-d', strtotime('today +1 day')));
+                $row->addDate('dateEnd')->minimum(date('Y-m-d'));
         } else {
             $form->addHiddenValue('dateStart', $date);
             $form->addHiddenValue('dateEnd', $date);

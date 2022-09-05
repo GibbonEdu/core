@@ -30,7 +30,8 @@ include __DIR__ . '/moduleFunctions.php';
 $address = $_POST['address'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $scope = $_POST['scope'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
+$absenceType = $_POST['absenceType'] ?? 'full';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope&absenceType=$absenceType";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -77,15 +78,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $attendanceCode = $attendance->getAttendanceCodeByType($type);
             $direction = $attendanceCode['direction'];
 
-            $absenceType = $_POST['absenceType'] ?? 'full';
-
 
             $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
             $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : $dateStart;
             $today = date('Y-m-d');
 
             //Check to see if date is in the future and is a school day.
-            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or $dateStart <= $today) {
+            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or $dateStart < $today) {
                 $URL .= '&return=error8';
                 header("Location: {$URL}");
             } else {
@@ -125,37 +124,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 // Handle partial absenses per-class
                                 } else if ($absenceType == 'partial') {
 
-                                    // Return error if full-day absense already recorded
-                                    if ($result->rowCount() > 0) {
-                                        $URL .= '&return=error7';
+                                    $courses = $_POST['courses'] ?? null;
+                                    if (!empty($courses) && is_array($courses)) {
+                                        foreach ($courses as $course) {
+                                            try {
+                                                $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
+                                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
+                                                $resultUpdate = $connection2->prepare($sqlUpdate);
+                                                $resultUpdate->execute($dataUpdate);
+                                            } catch (PDOException $e) {
+                                                $partialFail = true;
+                                            }
+                                        }
+                                        $URL .= '&absenceType=partial&date=' . $_POST['dateStart'] ?? ''; //Redirect to exact state of submit form
+                                    } else {
+                                        // Return error if no courses selected for partial absence
+                                        $URL .= '&return=error1';
                                         header("Location: {$URL}");
                                         exit();
-                                    } else {
-                                        $courses = $_POST['courses'] ?? null;
-                                        if (!empty($courses) && is_array($courses)) {
-                                            foreach ($courses as $course) {
-                                                try {
-                                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
-                                                    $resultUpdate = $connection2->prepare($sqlUpdate);
-                                                    $resultUpdate->execute($dataUpdate);
-                                                } catch (PDOException $e) {
-                                                    $partialFail = true;
-                                                }
-                                            }
-                                            $URL .= '&absenceType=partial&date=' . $_POST['dateStart'] ?? ''; //Redirect to exact state of submit form
-                                        } else {
-                                            // Return error if no courses selected for partial absence
-                                            $URL .= '&return=error1';
-                                            header("Location: {$URL}");
-                                            exit();
-                                        }
                                     }
-                                } else {
-                                    $URL .= '&return=error1';
-                                    header("Location: {$URL}");
-                                    exit();
                                 }
+
                             }
                         }
 
