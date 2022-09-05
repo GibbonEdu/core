@@ -1173,7 +1173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $attendanceGateway = $container->get(AttendanceLogPersonGateway::class);
 
                         $participants = $container->get(CourseEnrolmentGateway::class)->selectClassParticipantsByDate($gibbonCourseClassID, $values['date'], $values['timeStart'], $values['timeEnd'])->fetchAll();
-                        $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'prefill' => 'Y'];
+                        $defaults = ['type' => $defaultAttendanceType, 'reason' => '', 'comment' => '', 'context' => '', 'direction' => '', 'prefill' => 'Y'];
 
                         // Build attendance data
                         foreach ($participants as $key => $student) {
@@ -1199,7 +1199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $participants[$key]['cellHighlight'] = '';
                             if ($attendance->isTypeAbsent($log['type'])) {
                                 $participants[$key]['cellHighlight'] = 'bg-red-200';
-                            } elseif ($attendance->isTypeOffsite($log['type'])) {
+                            } elseif ($attendance->isTypeOffsite($log['type']) || $log['direction'] == 'Out') {
                                 $participants[$key]['cellHighlight'] = 'bg-blue-200';
                             } elseif ($attendance->isTypeLate($log['type'])) {
                                 $participants[$key]['cellHighlight'] = 'bg-orange-200';
