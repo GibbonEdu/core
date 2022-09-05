@@ -122,8 +122,7 @@ class INInvestigationGateway extends QueryableGateway implements ScrubbableGatew
                 'gibbonFormGroup.gibbonPersonIDTutor',
                 'gibbonFormGroup.gibbonPersonIDTutor2',
                 'gibbonFormGroup.gibbonPersonIDTutor3',
-                'gibbonYearGroup.gibbonPersonIDHOY',
-                'gibbonYearGroup.gibbonYearGroupID'
+                'gibbonYearGroup.gibbonPersonIDHOY'
             ])
             ->innerJoin('gibbonPerson AS student', 'gibbonINInvestigation.gibbonPersonIDStudent=student.gibbonPersonID')
             ->innerJoin('gibbonStudentEnrolment', 'student.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')

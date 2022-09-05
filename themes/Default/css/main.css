@@ -1344,11 +1344,3 @@ table.smallIntBorder td.noPadding {
 .standardForm:not(.blank) .formRow:not(:last-child)  {
     border-bottom-width: 1px;
 }
-
-.\-bottom-px {
-    bottom: -1px;
-}
-
-.shadow-top {
-    box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -2px 2px -1px rgba(0, 0, 0, 0.1);
-}

@@ -103,16 +103,4 @@ $(document).ready(function(){
             "#ffffff", "White", 
         ],
     });
-
-    // Sticky Observer
-    const el = document.querySelector(".submitRow.sticky");
-    const observer = new IntersectionObserver( 
-        function([e]) { 
-            e.target.classList.toggle("shadow-top", e.intersectionRatio < 1);
-            e.target.classList.toggle("bg-gray-300", e.intersectionRatio < 1);
-        },
-        { threshold: [1] }
-    );
-
-    if (el != undefined) observer.observe(el);
 });

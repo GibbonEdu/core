@@ -75,31 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffID', $oldValues['gibbonStaffID']);
 
-    // Provide links back to edit the associated records
-    if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
-        $page->navigator->addHeaderAction('edit', __('Edit User'))
-            ->setURL('/modules/User Admin/user_manage_edit.php')
-            ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
-            ->setIcon('config')
-            ->displayLabel();
-    }
-    
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == true) {
-        $page->navigator->addHeaderAction('editStaff', __('Edit Staff'))
+    // Provide a link back to edit the associated record
+    if (isActionAccessible($guid, $connection2, '/modules/User Admin/staff_manage_edit.php') == true) {
+        $table->addHeaderAction('edit', __('Edit Staff'))
             ->setURL('/modules/Staff/staff_manage_edit.php')
             ->addParam('gibbonStaffID', $oldValues['gibbonStaffID'])
-            ->setIcon('config')
             ->displayLabel();
     }
-
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == true) {
-        $page->navigator->addHeaderAction('view', __('View Staff'))
-            ->setURL('/modules/Staff/staff_view_details.php')
-            ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
-            ->addParam('gibbonStaffID', $oldValues['gibbonStaffID'])
-            ->setIcon('plus')
-            ->displayLabel();    
-     }
 
     $row = $form->addRow()->setClass('head heading');
         $row->addContent(__('Field'));

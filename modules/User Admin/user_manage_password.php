@@ -146,16 +146,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $row->addTextField('canLoginRole')->setValue($values['email'])->setClass('w-64')->readonly();
                 $row->addContent($emailUnique? $trueIcon : $falseIcon);
 
-            $row = $form->addRow();
-                $row->addLabel('lastTimestampLabel', __('Last Login: Time'));
-                $row->addTextField('lastTimestamp')->setValue(Format::dateTimeReadable($values['lastTimestamp']))->setClass('w-64')->readonly();
-                $row->addContent(!empty($values['lastTimestamp'])? $trueIcon : $falseIcon);
-
-            $row = $form->addRow();
-                $row->addLabel('lastIPAddressLabel', __('Last Login: IP'));
-                $row->addTextField('lastIPAddress')->setValue($values['lastIPAddress'])->setClass('w-64')->readonly();
-                $row->addContent(!empty($values['lastIPAddress'])? $trueIcon : $falseIcon);
-
             echo $form->getOutput();
         }
     }

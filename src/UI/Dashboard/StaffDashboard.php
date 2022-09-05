@@ -286,13 +286,11 @@ class StaffDashboard implements OutputableInterface
             $formGroups[$count][1] = $rowFormGroups['nameShort'];
 
             //Form group table
-            $formGroupTable = clone $this->formGroupTable;
-
-            $formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
-            $formGroupTable->setTitle('');
+            $this->formGroupTable->build($rowFormGroups['gibbonFormGroupID'], true, false, 'rollOrder, surname, preferredName');
+            $this->formGroupTable->setTitle('');
 
             if ($rowFormGroups['attendance'] == 'Y' AND $attendanceAccess) {
-                $formGroupTable->addHeaderAction('attendance', __('Take Attendance'))
+                $this->formGroupTable->addHeaderAction('attendance', __('Take Attendance'))
                     ->setURL('/modules/Attendance/attendance_take_byFormGroup.php')
                     ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                     ->setIcon('attendance')
@@ -300,13 +298,13 @@ class StaffDashboard implements OutputableInterface
                     ->append(' | ');
             }
 
-            $formGroupTable->addHeaderAction('export', __('Export to Excel'))
+            $this->formGroupTable->addHeaderAction('export', __('Export to Excel'))
                 ->setURL('/indexExport.php')
                 ->addParam('gibbonFormGroupID', $rowFormGroups['gibbonFormGroupID'])
                 ->directLink()
                 ->displayLabel();
 
-            $formGroups[$count][2] = $formGroupTable->getOutput();
+            $formGroups[$count][2] = $this->formGroupTable->getOutput();
 
             $behaviourView = isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php');
             if ($behaviourView) {
@@ -445,19 +443,20 @@ class StaffDashboard implements OutputableInterface
         //GET HOOKS INTO DASHBOARD
         $hooks = array();
 
-        $dataHooks = array();
-        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
-        $resultHooks = $connection2->prepare($sqlHooks);
-        $resultHooks->execute($dataHooks);
+            $dataHooks = array();
+            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
+            $resultHooks = $connection2->prepare($sqlHooks);
+            $resultHooks->execute($dataHooks);
         if ($resultHooks->rowCount() > 0) {
             $count = 0;
             while ($rowHooks = $resultHooks->fetch()) {
                 $options = unserialize($rowHooks['options']);
                 //Check for permission to hook
-                $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
-                $resultHook = $connection2->prepare($sqlHook);
-                $resultHook->execute($dataHook);
+
+                    $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
+                    $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
+                    $resultHook = $connection2->prepare($sqlHook);
+                    $resultHook->execute($dataHook);
                 if ($resultHook->rowCount() == 1) {
                     $rowHook = $resultHook->fetch();
                     $hooks[$count]['name'] = $rowHooks['name'];
@@ -546,9 +545,6 @@ class StaffDashboard implements OutputableInterface
             }
 
             foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
                 $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
                 if (!file_exists($include)) {
@@ -565,7 +561,7 @@ class StaffDashboard implements OutputableInterface
         }
 
         $defaultTab = preg_replace('/[^0-9]/', '', $_GET['tab'] ?? 0);
-
+        
         if (!isset($_GET['tab']) && !empty($staffDashboardDefaultTabCount)) {
             $defaultTab = $staffDashboardDefaultTabCount-1;
         }

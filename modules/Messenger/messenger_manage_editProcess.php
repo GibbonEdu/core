@@ -71,7 +71,7 @@ else {
                     $date3=Format::dateConvert($_POST["date3"]) ;
                 }
             }
-            $confidential = $_POST['confidential'] ?? 'N';
+            $confidential = $_POST['confidential'] ?? '';
             $subject = $_POST['subject'] ?? '';
             $body = $_POST['body'] ?? '';
 

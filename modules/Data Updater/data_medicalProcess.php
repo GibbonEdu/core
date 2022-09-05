@@ -117,7 +117,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $dataChanged = empty($values);
                 foreach ($values as $key => $value) {
                     if (!isset($data[$key])) continue; // Skip fields we don't plan to update
-                    if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
 
                     if ($data[$key] != $value) {
                         $dataChanged = true;

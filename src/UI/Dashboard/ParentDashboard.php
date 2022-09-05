@@ -828,9 +828,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             }
             $tabCountExtra = $tabCountExtraReset;
             foreach ($hooks as $hook) {
-                // Set the module for this hook for translations
-                $this->session->set('module', $hook['sourceModuleName']);
-                
                 if ($parentDashboardDefaultTab == $hook['name'])
                     $parentDashboardDefaultTabCount = $tabCountExtra+1;
                 ++$tabCountExtra;

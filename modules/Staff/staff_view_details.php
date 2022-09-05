@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -29,6 +30,11 @@ use Gibbon\Domain\School\HouseGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
+use Gibbon\Module\Staff\AbsenceNotificationProcess;
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\JoinMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -115,6 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
+                    
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $enableBigBlueButton = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
+                    
                     $row = $result->fetch();
 
                     $customFieldHandler = $container->get(CustomFieldHandler::class);
@@ -564,12 +574,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 echo '</div>';
                             }
                         }
+                    } elseif ($subpage == 'VideoChat') {
+                        if ($enableBigBlueButton['value'] !== 'Y') {
+                            echo "<div class='error'>";
+                            echo __('Video chat feature was disabled on this system.');
+                            echo '</div>';
+                        } else {
+                            $bigBlueButtonURL = $settingGateway->getSettingByScope('System', 'bigBlueButtonURL', '');
+                            $bigBlueButtonCredentials = $settingGateway->getSettingByScope('System', 'bigBlueButtonCredentials', '');
+                            putenv('BBB_SERVER_BASE_URL='. $bigBlueButtonURL);
+                            putenv('BBB_SECRET='. $bigBlueButtonCredentials);
+
+                            // Init BigBlueButton API
+                            $bbb = new BigBlueButton();
+                            $meetingId = "user".(int)$gibbonPersonID.'_'.(int)$session->get('gibbonPersonID');
+                            $senderName = $session->get('preferredName').' '.$session->get('surname');
+                            $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
+                            $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+                            
+                            if ($response->getReturnCode() == 'FAILED') {
+                                // meeting not found or already closed
+                                // Create the meeting
+                                $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
+                                $createParams = $createParams->setModeratorPassword('moderator_password')
+                                                            ->setAttendeePassword('attendee_password')
+                                                            ->setRecord('true')
+                                                            ->setAutoStartRecording('true');
+                                $response = $bbb->createMeeting($createParams);                           
+                            }
+
+                            // generate meeting url for recipients
+                            $joinParams = new JoinMeetingParameters($meetingId, $row['preferredName']. ' ' .$row['surname'], 'moderator_password');
+                            $joinParams->setRedirect(true);
+                            $link = $bbb->getJoinMeetingURL($joinParams);
+
+                            // generate meeting url for sender
+                            $joinParams = new JoinMeetingParameters($meetingId, $senderName, 'moderator_password');
+                            $joinParams->setRedirect(false);
+                            $joinResponse = $bbb->joinMeeting($joinParams);
+                            $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
+
+                            $process = $container->get(AbsenceNotificationProcess::class);
+                            $process->startSendingVideoChatRequest([$gibbonPersonID], $session->get('gibbonPersonID'), $senderName, $link);
+
+                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
+                            echo '<tr>';
+                            echo "<td style='text-align: justify; padding-top: 5px; width: 100%; vertical-align: top; max-width: 752px!important; height: 500px;' colspan=3>";
+                            echo "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
+                            echo '</td>';
+                            echo '</tr>';
+                            echo '</table>';
+                        }
                     }
 
                     $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
                         'canViewEmergency' => ($highestActionManage == 'Manage Staff_confidential') ? true : false,
                         'userPhoto' => Format::userPhoto($row['image_240'], 240),
                         'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+                        'videoChat' => $enableBigBlueButton['value'] == 'Y' ? true : false,
                         'gibbonPersonID' => $gibbonPersonID,
                         'subpage' => $subpage,
                         'search' => $search,

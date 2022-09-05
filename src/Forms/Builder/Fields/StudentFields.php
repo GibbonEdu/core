@@ -201,11 +201,10 @@ class StudentFields extends AbstractFieldGroup
 
             case 'phone':
                 $colGroup = $row->addColumn()->setClass('flex-col w-full justify-between items-start');
-                $phoneCount = $field['options'] ?? 2;
-                for ($i = 1; $i <= $phoneCount; ++$i) {
+                for ($i = 1; $i < 3; ++$i) {
                     $col = $colGroup->addColumn()->setClass('flex flex-row justify-between');
                     $col->addLabel('phone'.$i, __('Phone').' '.$i)->description(__($field['description']));
-                    $col->addPhoneNumber('phone'.$i)->required($required && $i == 1);
+                    $col->addPhoneNumber('phone'.$i)->required($required);
                 }
                 break;
         }

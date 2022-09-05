@@ -244,12 +244,7 @@ class Form implements OutputableInterface
 
     public function getRowsByHeading()
     {
-        $rowCount = count($this->rows);
-        return array_reduce($this->rows, function ($group, $row) use (&$rowCount) {
-            
-            if ($row->getHeading() == 'submit' && $rowCount > 10) {
-                $row->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
-            }
+        return array_reduce($this->rows, function ($group, $row) {
             $group[$row->getHeading()][] = $row;
             return $group;
         }, []);

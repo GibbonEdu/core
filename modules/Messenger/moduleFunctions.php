@@ -580,7 +580,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
-        JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport)
         WHERE transportee.gibbonPersonID=:gibbonPersonID8
         AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.staff='Y'
         AND (messageWall_date1=:date63 OR messageWall_date2=:date63 OR messageWall_date3=:date63) )";
@@ -592,7 +592,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
-        JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport)
         WHERE transportee.gibbonPersonID=:gibbonPersonID9
         AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.students='Y'
         AND (messageWall_date1=:date64 OR messageWall_date2=:date64 OR messageWall_date3=:date64) )";
@@ -605,7 +605,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
         JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
         JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
-        JOIN gibbonPerson as transportee ON (FIND_IN_SET(gibbonMessengerTarget.id, transportee.transport))
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport)
         WHERE (transportee.gibbonPersonID=:gibbonPersonID10 OR FIND_IN_SET(transportee.gibbonPersonID, :children))
         AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.parents='Y'
         AND (messageWall_date1=:date65 OR messageWall_date2=:date65 OR messageWall_date3=:date65) )";

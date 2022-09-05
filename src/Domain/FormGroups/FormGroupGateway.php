@@ -110,7 +110,7 @@ class FormGroupGateway extends QueryableGateway
     public function selectTutorsByFormGroup($gibbonFormGroupID)
     {
         $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
-        $sql = "SELECT gibbonPersonID, title, surname, preferredName, email, status
+        $sql = "SELECT gibbonPersonID, title, surname, preferredName, email
                 FROM gibbonFormGroup
                 LEFT JOIN gibbonPerson ON (gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor OR gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor2 OR gibbonPersonID=gibbonFormGroup.gibbonPersonIDTutor3)
                 WHERE gibbonFormGroup.gibbonFormGroupID=:gibbonFormGroupID

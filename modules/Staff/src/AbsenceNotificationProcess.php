@@ -27,6 +27,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\Messages\NewAbsence;
 use Gibbon\Module\Staff\Messages\AbsenceApproval;
 use Gibbon\Module\Staff\Messages\AbsencePendingApproval;
+use Gibbon\Module\Staff\Messages\VideoChatRequest;
 
 /**
  * AbsenceNotificationProcess
@@ -139,5 +140,28 @@ class AbsenceNotificationProcess extends BackgroundProcess
         }
 
         return $absence ?? [];
+    }
+
+    /**
+     * Sends a message to the selected approval to notify them of a new video chat.
+     *
+     * @param string $gibbonStaffAbsenceID
+     * @return array
+     */
+    
+    /**
+     * Send a message class to a group of recipients via multiple channels.
+     *
+     * @param Message   $message
+     * @param array     $recipients gibbonPersonID
+     * @param string    $senderID   gibbonPersonID
+     * @return array
+     */
+    public function runSendingVideoChatRequest($recipients, $senderID, $senderName, $link)
+    {
+        $absence = ['from' => $senderName, 'link' => $link];
+        $message = new VideoChatRequest($absence);
+
+        return $this->messageSender->send($message, $recipients, $senderID);
     }
 }

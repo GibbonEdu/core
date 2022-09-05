@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $table->addColumn('familyAdultsEmail', __('Parent Email'))
             ->notSortable()
             ->format(function($row) {
-                return trim(implode(', ', array_column($row['familyAdults'], 'email')), ', ');
+                return implode(', ', array_column($row['familyAdults'], 'email'));
             });
 
         echo $table->render($dataUpdates);

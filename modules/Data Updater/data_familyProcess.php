@@ -85,7 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 $dataChanged = false;
                 foreach ($values as $key => $value) {
                     if (!isset($data[$key])) continue; // Skip fields we don't plan to update
-                    if (empty($data[$key]) && empty($value)) continue; // Nulls, false and empty strings should cause no change
 
                     if ($data[$key] != $value) {
                         $dataChanged = true;

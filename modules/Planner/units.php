@@ -45,21 +45,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
     // School Year Info
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
 
     if (empty($gibbonSchoolYearID)) {
         $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
-
-    $courseName = $_GET['courseName'] ?? '';
-
-    if (empty($gibbonCourseID) && !empty($courseName)) {
-        $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
-        $gibbonCourseID = $row['gibbonCourseID'] ?? '';
-    }
     
-    if (empty($gibbonCourseID)) {
+    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
+
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? null;
+    if ($gibbonCourseID == '') {
         try {
             if ($highestAction == 'Unit Planner_all') {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -88,8 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             $row = $result->fetch();
         }
     }
-
-    $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID, ['courseName' => $row['nameShort'] ?? '']);
 
     //Work out previous and next course with same name
     $gibbonCourseIDPrevious = '';
@@ -120,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     }
 
     if (empty($gibbonCourseID)) {
-        $page->addError(__('You do not have access to edit the unit planner for any active courses in the current school year. You may need to be added to the relevant Department or Learning Area for the courses you are trying to access, or those courses may not have been added to the necessary Department or Learning Area.'));
+        $page->addError(__('Your request failed because your inputs were invalid.'));
         return;
     }
 

@@ -21,7 +21,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
-use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_manage.php') == false) {
     // Access denied
@@ -31,7 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     $page->breadcrumbs->add(__('Finance Data Updates'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $session->get('gibbonSchoolYearID');
-    $search = $_GET['search'] ?? '';
 
     // School Year Picker
     if (!empty($gibbonSchoolYearID)) {
@@ -42,25 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
 
     // QUERY
     $criteria = $gateway->newQueryCriteria(true)
-        ->searchBy($gateway->getSearchableColumns(), $search)
         ->sortBy('status')
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();
-
-    // SEARCH
-    $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-    $form->setClass('noIntBorder fullWidth');
-
-    $form->addHiddenValue('address', $session->get('address'));
-    $form->addHiddenValue('q', '/modules/Data Updater/data_finance_manage.php');
-    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-
-    $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
-
-    $form->addRow()->addSearchSubmit($gibbon->session, __('Clear Search'), ['gibbonSchoolYearID']);
-    echo $form->getOutput();
 
     $dataUpdates = $gateway->queryDataUpdates($criteria, $gibbonSchoolYearID);
 

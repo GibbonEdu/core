@@ -132,12 +132,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_p
             $row->addTextField('options')->setName('options');
     }
 
-    if (in_array($values['fieldType'], ['phone', 'parent1phone', 'parent2phone'])) {
-        $row = $form->addRow();
-            $row->addLabel('options', __('Phone Number Fields'));
-            $row->addSelect('options')->fromArray([1,2])->required()->selected($values['options'] ?? '2');
-    }
-
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

@@ -54,14 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->add(__('Course Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
                 ->add(__('Edit %1$s.%2$s Enrolment', ['%1$s' => $values['courseNameShort'], '%2$s' => $values['name']]));
 
-            //Report minimum/maximum enrolment messages
-            if (is_numeric($values['enrolmentMin']) && $values['studentsTotal'] < $values['enrolmentMin']) {
-                $page->addWarning(__('This class is currently under enrolled, based on a minimum enrolment of {enrolmentMin} students.', ['enrolmentMin' => $values['enrolmentMin']]));
-            }
-            if (is_numeric($values['enrolmentMax']) && $values['studentsTotal'] > $values['enrolmentMax']) {
-                $page->addError(__('This class is currently over enrolled, based on a maximum enrolment of {enrolmentMax} students.', ['enrolmentMax' => $values['enrolmentMax']]));
-            }
-
             if ($search != '') {
                 $params = [
                     "search" => $search,
@@ -69,13 +61,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ];
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage.php')->withQueryParams($params));
             }
-
+            
             echo '<h2>';
             echo __('Add Participants');
             echo '</h2>';
 
             $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-
+                
             $form->addHiddenValue('address', $session->get('address'));
 
             $people = array();
@@ -205,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
                 return $row;
             });
-
+            
             $table->addColumn('name', __('Name'))
                 ->sortable(['surname', 'preferredName'])
                 ->format($linkedName);

@@ -293,6 +293,26 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             $col->addButton(__('Go'), 'testEmail()')->addClass('-ml-px w-24');
     }
 
+    // BBB server settings
+    $form->addRow()->addHeading('BigBlue Button', __('BigBlue Button'))->append(__('Gibbon can handle BigBlueButton using a API. These are external services, not affiliated with Gibbon.'));
+
+    $setting = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+
+    $form->toggleVisibilityByClass('bigBlueButton')->onSelect($setting['name'])->when('Y');
+
+    $setting = $settingGateway->getSettingByScope('System', 'bigBlueButtonURL', true);
+    $row = $form->addRow()->addClass('bigBlueButton');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
+
+    $setting = $settingGateway->getSettingByScope('System', 'bigBlueButtonCredentials', true);
+    $row = $form->addRow()->addClass('bigBlueButton');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->required();
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
