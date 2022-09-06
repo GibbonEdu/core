@@ -149,7 +149,7 @@ class DatabaseFormFactory extends FormFactory
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND gibbonCourse.name LIKE :courseFilter
                 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
-                AND NOT role LIKE '% - Left%'
+                AND NOT gibbonCourseClassPerson.role LIKE '% - Left%'
                 ORDER BY class";
 
             $result = $this->pdo->select($sql, $data);
@@ -167,7 +167,7 @@ class DatabaseFormFactory extends FormFactory
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID
                 AND FIND_IN_SET(gibbonCourse.gibbonDepartmentID, :gibbonDepartmentIDList)
                 AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID
-                AND NOT role LIKE '% - Left%'
+                AND NOT gibbonCourseClassPerson.role LIKE '% - Left%'
                 ORDER BY class";
 
             $result = $this->pdo->select($sql, $data);
@@ -178,7 +178,13 @@ class DatabaseFormFactory extends FormFactory
 
         if (!empty($gibbonPersonID)) {
             $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID];
-            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID";
+            $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 
+                FROM gibbonCourseClassPerson 
+                JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+                JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND gibbonPersonID=:gibbonPersonID
+                AND NOT gibbonCourseClassPerson.role LIKE '% - Left%'";
             if (isset($params['attendance'])) {
                 $data['attendance'] = $params['attendance'];
                 $sql .= " AND gibbonCourseClass.attendance=:attendance";

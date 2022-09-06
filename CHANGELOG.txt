@@ -55,6 +55,7 @@ v25.0.00
         System: fixed missing translations for module strings in dashboard tabs
         System: fixed incorrect student count with multiple form groups on Staff Dashboard
         System: fixed broken View All links in Staff Dashboard Enrolment tab
+        System: fixed My Classes list including Left classes in DatabaseFormFactory
         Data Updater: fixed incorrect top links on Edit Request pages
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
         Data Updater: fixed unable to remove all privacy settings via data update
