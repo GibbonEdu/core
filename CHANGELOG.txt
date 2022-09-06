@@ -68,6 +68,7 @@ v25.0.00
         Reports: fixed batch report bulk-action missing the two-sided option
         Reports: fixed HTML being removed from Rich Text template sections
         School Admin: fixed error in Add Attendance Code when no roles specified
+        School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups 
         Staff: fixed staff absences not showing up if outside school year dates
         Timetable Admin: adjusted column uniqueness interface string
         Timetable: fixed class student counts in Manage Student Enrolment

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\FormGroups\FormGroupGateway;
 
 require_once '../../gibbon.php';
 
@@ -31,47 +32,48 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/formGroup_man
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school years specified (current and next)
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearIDNext == '') {
+    $formGroupGateway = $container->get(FormGroupGateway::class);
+
+    // Check if school years specified (current and next)
+    if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearIDNext)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
+    }
+
+    // Get the existing form groups for this school year
+    $formGroups = $formGroupGateway->selectFormGroupsBySchoolYear($gibbonSchoolYearID)->fetchAll();
+    if (empty($formGroups)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+        exit;
+    }
+
+    $partialFail = false;
+    $partialFailUnique = false;
+
+    foreach ($formGroups as $formGroup) {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'name' => $formGroup['name'], 'nameShort' => $formGroup['nameShort'], 'gibbonPersonIDTutor' => $formGroup['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $formGroup['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $formGroup['gibbonPersonIDTutor3'], 'gibbonSpaceID' => $formGroup['gibbonSpaceID'], 'website' => $formGroup['website']];
+
+        // Check for uniqueness in the next school year
+        if (!$formGroupGateway->unique($data, ['gibbonSchoolYearID', 'nameShort'])) {
+            $partialFailUnique = true;
+            continue;
+        }
+
+        // Insert the new form group
+        $gibbonFormGroupID = $formGroupGateway->insert($data);
+        $partialFail &= !$gibbonFormGroupID;
+    }
+
+    if ($partialFailUnique == true) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+    } elseif ($partialFail == true) {
+        $URL .= '&return=error5';
+        header("Location: {$URL}");
     } else {
-        //GET CURRENT FORM GROUPS
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        if ($result->rowCount() < 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            $partialFail = false;
-            while ($row = $result->fetch()) {
-                //Write to database
-                try {
-                    $dataInsert = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'gibbonPersonIDTutor' => $row['gibbonPersonIDTutor'], 'gibbonPersonIDTutor2' => $row['gibbonPersonIDTutor2'], 'gibbonPersonIDTutor3' => $row['gibbonPersonIDTutor3'], 'gibbonSpaceID' => $row['gibbonSpaceID'], 'website' => $row['website']);
-                    $sqlInsert = 'INSERT INTO gibbonFormGroup SET gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, nameShort=:nameShort, gibbonPersonIDTutor=:gibbonPersonIDTutor, gibbonPersonIDTutor2=:gibbonPersonIDTutor2, gibbonPersonIDTutor3=:gibbonPersonIDTutor3, gibbonSpaceID=:gibbonSpaceID, gibbonFormGroupIDNext=NULL, website=:website';
-                    $resultInsert = $connection2->prepare($sqlInsert);
-                    $resultInsert->execute($dataInsert);
-                } catch (PDOException $e) {
-                    $partialFail = true;
-                }
-            }
-
-            if ($partialFail == true) {
-                $URL .= '&return=error5';
-                header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
-        }
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }
