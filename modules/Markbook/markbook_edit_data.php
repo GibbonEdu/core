@@ -298,14 +298,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $form = Form::create('markbookEditData', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$session->get('address'));
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->addHiddenValue('address', $session->get('address'));
-                    
+
                     // Add header actions
                     if (!empty($values['gibbonPlannerEntryID'])) {
                         $params = [
                             "viewBy" => 'class',
                             "gibbonCourseClassID" => $gibbonCourseClassID,
                             "gibbonPlannerEntryID" => $values['gibbonPlannerEntryID'],
-                            
+
                         ];
                         $form->addHeaderAction('view', __('View Linked Lesson'))
                             ->setURL('/modules/Planner/planner_view_full.php')
@@ -316,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $params = [
                         "gibbonCourseClassID" => $gibbonCourseClassID,
                         "gibbonMarkbookColumnID" => $gibbonMarkbookColumnID,
-                        
+
                     ];
                     $form->addHeaderAction('edit', __('Edit'))
                         ->setURL('/modules/Markbook/markbook_edit_edit.php')
@@ -324,7 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         ->setIcon('config')
                         ->displayLabel()
                         ->prepend((!empty($values['gibbonPlannerEntryID'])) ? ' | ' : '');
-                        
+
                     if (count($students) == 0) {
                         $form->addRow()->addHeading('Students', __('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
@@ -513,7 +513,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));
                         $row->addDate('completeDate');
 
-                    $row = $form->addRow();
+                    $row = $form->addRow()->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
                         $row->addContent(getMaxUpload($guid, true));
                         $row->addSubmit();
 
