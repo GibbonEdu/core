@@ -346,6 +346,10 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 return;
             }
 
+            if (empty($col)) {
+                $col = $table->addColumn($formPage['name'], $formPage['name']);
+            }
+
             if ($field['fieldType'] == 'subheading' ) {
                 $border = $col->hasNestedColumns() ? 'border-t' : '';
                 $col->addColumn($field['label'], __($field['label']))->addClass('uppercase bg-gray-300 col-start-0 col-span-3 pt-3 '.$border);
@@ -358,10 +362,6 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
-
-            if (empty($col)) {
-                $col = $table->addColumn($formPage['name'], $formPage['name']);
-            }
 
             $col->addColumn($field['fieldName'], __($field['label']))
                 ->addClass(!empty($fieldOptions['columns']) ? 'col-span-'.$fieldOptions['columns'] : '')

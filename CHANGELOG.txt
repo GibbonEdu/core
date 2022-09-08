@@ -70,6 +70,7 @@ v25.0.00
         School Admin: fixed error in Add Attendance Code when no roles specified
         School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups 
         Staff: fixed staff absences not showing up if outside school year dates
+        System Admin: fixed Form Builder submission error when subheading is the first item on a page
         Timetable Admin: adjusted column uniqueness interface string
         Timetable: fixed class student counts in Manage Student Enrolment
         Timetable: fixed display of room number for short periods
