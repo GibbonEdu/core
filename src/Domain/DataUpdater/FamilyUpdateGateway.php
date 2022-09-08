@@ -87,6 +87,8 @@ class FamilyUpdateGateway extends QueryableGateway implements ScrubbableGateway
             ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonFamilyUpdate', 'gibbonFamilyUpdate.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->where("gibbonPerson.status='Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=CURRENT_DATE)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=CURRENT_DATE)')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)')
