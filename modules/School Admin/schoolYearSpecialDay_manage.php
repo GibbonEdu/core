@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 $count = 1;
-                echo "<table cellspacing='0' style='width: 100%'>";
+                echo "<table cellspacing='0' style='width: 100%; border-collapse: collapse;'>";
                 echo "<tr class='head'>";
                 echo "<th style='width: 14px'>";
                 echo __('Monday');
@@ -148,19 +148,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                             $rowSpecial = $resultSpecial->fetch();
                         }
                     } else {
-                        echo "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
                         if ($i == $specialDayStamp) {
-                            echo "<span style='color: #ff0000'>".Format::date(date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
-                            echo '<br/>';
+                            $class = $rowSpecial['type'] == 'Off Timetable' ? 'bg-blue-200 border-blue-700 text-blue-700' : 'bg-red-200 border-red-600 text-red-600';
+
+                            echo "<td class='{$class}' style='text-align: center; font-size: 10px'>";
+                            echo Format::date(date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'<br/>';
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
                             echo "<a class='thickbox' href='".$gibbon->session->get('absoluteURL').'/fullscreen.php?q=/modules/'.$gibbon->session->get('module').'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__('Delete')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
+                            echo '</td>';
                         } else {
+                            echo "<td style='text-align: center; background-color: #eeeeee; font-size: 10px'>";
+
                             echo "<span style='color: #000000'>".Format::date(date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
                             echo '<br/>';
                             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> ";
+                            echo '</td>';
                         }
-                        echo '</td>';
+                        
                     }
 
                     if (date('D', $i) == 'Sun') {

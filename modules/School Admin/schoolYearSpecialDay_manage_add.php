@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     // Access denied
@@ -37,90 +39,111 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonSchoolYearTermID == '' or $firstDay == '' or $lastDay == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
-    } else {
-        
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-
-        if ($result->rowCount() != 1) {
-            echo "<div class='error'>";
-            echo __('The specified record does not exist.');
-            echo '</div>';
-        } elseif ($dateStamp < $firstDay or $dateStamp > $lastDay) {
-            echo "<div class='error'>";
-            echo __('The specified date is outside of the allowed range.');
-            echo '</div>';
-        } else {
-
-            $form = Form::create('specialDayAdd', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYearSpecialDay_manage_addProcess.php');
-
-            $form->addHiddenValue('address', $session->get('address'));
-            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-            $form->addHiddenValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
-            $form->addHiddenValue('dateStamp', $dateStamp);
-            $form->addHiddenValue('firstDay', $firstDay);
-            $form->addHiddenValue('lastDay', $lastDay);
-
-            $row = $form->addRow();
-                $row->addLabel('date', __('Date'))->description(__('Must be unique.'));
-                $row->addTextField('date')->readonly()->setValue(Format::date(date('Y-m-d', $dateStamp)));
-
-            $types = array(
-                'School Closure' => __('School Closure'),
-                'Timing Change' => __('Timing Change'),
-            );
-
-            $row = $form->addRow();
-                $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($types)->required()->placeholder();
-
-            $row = $form->addRow();
-                $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->required()->maxLength(20);
-
-            $row = $form->addRow();
-                $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->maxLength(255);
-
-            $form->toggleVisibilityByClass('timingChange')->onSelect('type')->when('Timing Change');
-
-            $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
-            $hours = implode(',', $hoursArray);
-
-            $minutesArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 59));
-            $minutes = implode(',', $minutesArray);
-
-            $row = $form->addRow()->addClass('timingChange');
-                $row->addLabel('schoolOpen', __('School Opens'));
-                $col = $row->addColumn()->addClass('right inline');
-                $col->addSelect('schoolOpenH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
-                $col->addSelect('schoolOpenM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
-
-            $row = $form->addRow()->addClass('timingChange');
-                $row->addLabel('schoolStart', __('School Starts'));
-                $col = $row->addColumn()->addClass('right inline');
-                $col->addSelect('schoolStartH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
-                $col->addSelect('schoolStartM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
-
-            $row = $form->addRow()->addClass('timingChange');
-                $row->addLabel('schoolEnd', __('School Ends'));
-                $col = $row->addColumn()->addClass('right inline');
-                $col->addSelect('schoolEndH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
-                $col->addSelect('schoolEndM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
-
-            $row = $form->addRow()->addClass('timingChange');
-                $row->addLabel('schoolClose', __('School Closes'));
-                $col = $row->addColumn()->addClass('right inline');
-                $col->addSelect('schoolCloseH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
-                $col->addSelect('schoolCloseM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
-
-            $row = $form->addRow();
-                $row->addFooter();
-                $row->addSubmit();
-
-            echo $form->getOutput();
-        }
+        return;
     }
+    
+    $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
+
+    if (empty($schoolYear)) {
+        $page->addError(__('The specified record does not exist.'));
+        return;
+    } elseif ($dateStamp < $firstDay or $dateStamp > $lastDay) {
+        $page->addError(__('The specified date is outside of the allowed range.'));
+        return;
+    }
+
+    $form = Form::create('specialDayAdd', $session->get('absoluteURL').'/modules/'.$session->get('module').'/schoolYearSpecialDay_manage_addProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $session->get('address'));
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+    $form->addHiddenValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
+    $form->addHiddenValue('dateStamp', $dateStamp);
+    $form->addHiddenValue('firstDay', $firstDay);
+    $form->addHiddenValue('lastDay', $lastDay);
+
+    $row = $form->addRow();
+        $row->addLabel('date', __('Date'))->description(__('Must be unique.'));
+        $row->addTextField('date')->readonly()->setValue(Format::date(date('Y-m-d', $dateStamp)));
+
+    $types = [
+        'School Closure' => __('School Closure'),
+        'Timing Change' => __('Timing Change'),
+        'Off Timetable' => __('Off Timetable'),
+    ];
+
+    $row = $form->addRow();
+        $row->addLabel('type', __('Type'));
+        $row->addSelect('type')->fromArray($types)->required()->placeholder();
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
+        $row->addTextField('name')->required()->maxLength(20);
+
+    $row = $form->addRow();
+        $row->addLabel('description', __('Description'));
+        $row->addTextField('description')->maxLength(255);
+
+    $form->toggleVisibilityByClass('offTimetable')->onSelect('type')->when('Off Timetable');
+
+    $contexts = [
+        'Year Group' => __('Year Group'),
+        // 'Form Group' => __('Form Group'),
+    ];
+
+    $row = $form->addRow()->addClass('offTimetable');
+        $row->addLabel('context', __('Context'));
+        $row->addSelect('context')->fromArray($contexts)->required()->placeholder();
+
+    $form->toggleVisibilityByClass('offTimetableYearGroup')->onSelect('context')->when('Year Group');
+
+    $row = $form->addRow()->addClass('offTimetableYearGroup');
+        $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
+        $row->addSelectYearGroup('gibbonYearGroupIDList')->selectMultiple();
+
+    $form->toggleVisibilityByClass('offTimetableFormGroup')->onSelect('context')->when('Form Group');
+
+    $row = $form->addRow()->addClass('offTimetableFormGroup');
+        $row->addLabel('gibbonFormGroupIDList', __('Form Groups'));
+        $row->addSelectFormGroup('gibbonFormGroupIDList', $session->get('gibbonSchoolYearID'))->selectMultiple();
+
+    $form->toggleVisibilityByClass('timingChange')->onSelect('type')->when('Timing Change');
+
+    $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
+    $hours = implode(',', $hoursArray);
+
+    $minutesArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 59));
+    $minutes = implode(',', $minutesArray);
+
+    $row = $form->addRow()->addClass('timingChange');
+        $row->addLabel('schoolOpen', __('School Opens'));
+        $col = $row->addColumn()->addClass('right inline');
+        $col->addSelect('schoolOpenH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+        $col->addSelect('schoolOpenM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+    $row = $form->addRow()->addClass('timingChange');
+        $row->addLabel('schoolStart', __('School Starts'));
+        $col = $row->addColumn()->addClass('right inline');
+        $col->addSelect('schoolStartH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+        $col->addSelect('schoolStartM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+    $row = $form->addRow()->addClass('timingChange');
+        $row->addLabel('schoolEnd', __('School Ends'));
+        $col = $row->addColumn()->addClass('right inline');
+        $col->addSelect('schoolEndH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+        $col->addSelect('schoolEndM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+    $row = $form->addRow()->addClass('timingChange');
+        $row->addLabel('schoolClose', __('School Closes'));
+        $col = $row->addColumn()->addClass('right inline');
+        $col->addSelect('schoolCloseH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+        $col->addSelect('schoolCloseM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
+
 }

@@ -19,99 +19,89 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 include '../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$date = $_POST['date'] ?? '';
-$type = $_POST['type'] ?? '';
-$name = $_POST['name'] ?? '';
-$description = $_POST['description'] ?? '';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
-$dateStamp = $_POST['dateStamp'] ?? '';
-$gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? '';
 $firstDay = $_POST['firstDay'] ?? '';
 $lastDay = $_POST['lastDay'] ?? '';
-$schoolOpen = null;
-if (!empty($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenM'])) {
-    $schoolOpen = $_POST['schoolOpenH'].':'.$_POST['schoolOpenM'].':00';
-}
-$schoolStart = null;
-if (!empty($_POST['schoolStartH']) && is_numeric($_POST['schoolStartH']) && is_numeric($_POST['schoolStartM'])) {
-    $schoolStart = $_POST['schoolStartH'].':'.$_POST['schoolStartM'].':00';
-}
-$schoolEnd = null;
-if (!empty($_POST['schoolEndH']) && is_numeric($_POST['schoolEndH']) && is_numeric($_POST['schoolEndM'])) {
-    $schoolEnd = $_POST['schoolEndH'].':'.$_POST['schoolEndM'].':00';
-}
-$schoolClose = null;
-if (!empty($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseM'])) {
-    $schoolClose = $_POST['schoolCloseH'].':'.$_POST['schoolCloseM'].':00';
-}
+$dateStamp = $_POST['dateStamp'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = $session->get('absoluteURL')."/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Validate Inputs
-    if ($date == '' or $type == '' or $name == '' or $gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonSchoolYearTermID == '' or $firstDay == '' or $lastDay == '') {
+    $data = [
+        'date'                   => !empty($_POST['date']) ? Format::dateConvert($_POST['date']) : '',
+        'type'                   => $_POST['type'] ?? '',
+        'name'                   => $_POST['name'] ?? '',
+        'description'            => $_POST['description'] ?? '',
+        'gibbonSchoolYearTermID' => $_POST['gibbonSchoolYearTermID'] ?? '',
+        'schoolOpen'             => null,
+        'schoolStart'            => null,
+        'schoolEnd'              => null,
+        'schoolClose'            => null,
+        'context'                => $_POST['context'] ?? '',
+        'gibbonYearGroupIDList'  => $_POST['gibbonYearGroupIDList'] ?? '',
+        'gibbonFormGroupIDList'  => $_POST['gibbonFormGroupIDList'] ?? '',
+    ];
+
+    if (!empty($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenH']) && is_numeric($_POST['schoolOpenM'])) {
+        $data['schoolOpen'] = $_POST['schoolOpenH'].':'.$_POST['schoolOpenM'].':00';
+    }
+
+    if (!empty($_POST['schoolStartH']) && is_numeric($_POST['schoolStartH']) && is_numeric($_POST['schoolStartM'])) {
+        $data['schoolStart'] = $_POST['schoolStartH'].':'.$_POST['schoolStartM'].':00';
+    }
+
+    if (!empty($_POST['schoolEndH']) && is_numeric($_POST['schoolEndH']) && is_numeric($_POST['schoolEndM'])) {
+        $data['schoolEnd'] = $_POST['schoolEndH'].':'.$_POST['schoolEndM'].':00';
+    }
+
+    if (!empty($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseH']) && is_numeric($_POST['schoolCloseM'])) {
+        $data['schoolClose'] = $_POST['schoolCloseH'].':'.$_POST['schoolCloseM'].':00';
+    }
+
+    if (!empty($data['gibbonYearGroupIDList']) && is_array($data['gibbonYearGroupIDList'])) {
+        $data['gibbonYearGroupIDList'] = implode(',', $data['gibbonYearGroupIDList']);
+    }
+
+    if (!empty($data['gibbonFormGroupIDList']) && is_array($data['gibbonFormGroupIDList'])) {
+        $data['gibbonFormGroupIDList'] = implode(',', $data['gibbonFormGroupIDList']);
+    }
+
+    // Validate Inputs
+    if (empty($data['date']) || empty($data['type']) || empty($data['name']) || empty($gibbonSchoolYearID) || empty($dateStamp) || empty($data['gibbonSchoolYearTermID']) || empty($firstDay) || empty($lastDay)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        //Lock table
-        try {
-            $sql = 'LOCK TABLE gibbonSchoolYearSpecialDay WRITE';
-            $result = $connection2->query($sql);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+        exit;
+    } 
 
-        //Check unique inputs for uniquness
-        try {
-            $data = array('date' => Format::dateConvert($date));
-            $sql = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
+    $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
 
-        if ($dateStamp < $firstDay or $dateStamp > $lastDay) {
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
-        } else {
-            if ($result->rowCount() > 0) {
-                $URL .= '&return=error3';
-                header("Location: {$URL}");
-            } else {
-                //Write to database
-                try {
-                    $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID, 'date' => Format::dateConvert($date), 'type' => $type, 'name' => $name, 'description' => $description, 'schoolOpen' => $schoolOpen, 'schoolStart' => $schoolStart, 'schoolEnd' => $schoolEnd, 'schoolClose' => $schoolClose);
-                    $sql = 'INSERT INTO gibbonSchoolYearSpecialDay SET gibbonSchoolYearTermID=:gibbonSchoolYearTermID, date=:date, type=:type, name=:name, description=:description,schoolOpen=:schoolOpen, schoolStart=:schoolStart, schoolEnd=:schoolEnd, schoolClose=:schoolClose';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                //Unlock locked database tables
-
-                    $sql = 'UNLOCK TABLES';
-                    $result = $connection2->query($sql);
-
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
-        }
+    if (!$specialDayGateway->unique($data, ['date'])) {
+        $URL .= '&return=error7';
+        header("Location: {$URL}");
+        exit;
     }
+
+    if ($dateStamp < $firstDay or $dateStamp > $lastDay) {
+        $URL .= '&return=warning1';
+        header("Location: {$URL}");
+        exit;
+    } 
+
+    // Write to database
+    $gibbonSchoolYearSpecialDayID = $specialDayGateway->insert($data);
+
+    $URL .= empty($gibbonSchoolYearSpecialDayID)
+        ? '&return=error2'
+        : '&return=success0';
+    header("Location: {$URL}");
 }

@@ -24,6 +24,7 @@ v25.0.00
         Activities will now display on student and staff timetables
 
     Significant Changes
+        School Admin: added an Off Timetable option for special days
 
     Changes With Important Notices
         Timetable Admin: changed Participant counts to Student counts in Course Enrolment by Class, adding minimum and maximum enrolment controls to courses
