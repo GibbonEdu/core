@@ -97,9 +97,15 @@ class MarkbookView
 
     /**
      * The database ID of the gibbonCourseClass
-     * @var [type]
+     * @var int
      */
     public $gibbonCourseClassID;
+
+    /**
+     * The database ID of the gibbonSchoolYear
+     * @var int
+     */
+    public $gibbonSchoolYearID;
 
     /**
      * @var SettingGateway
@@ -323,10 +329,10 @@ class MarkbookView
         foreach ($dataSet as $i => $columnData) {
             if ($column = new MarkbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
                 $this->columns[$i] = $column;
-				
+
 				// Grab the minimum sequenceNumber for the current page set, to pass to markbook_viewAjax.php
 				$this->minSequenceNumber = min($this->minSequenceNumber, $columnData['sequenceNumber']);
-                
+
 				// Attach planner info to help determine if theres homework submissions for this column
                 if (!empty($columnData['gibbonPlannerEntry'])) {
                     $column->setSubmissionDetails($columnData['gibbonPlannerEntry']);
