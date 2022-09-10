@@ -1120,8 +1120,8 @@ class MarkbookView
      * @since   7th May 2016
      * @param   string $message
      */
-    protected function error($message)
+    protected function error(string $message)
     {
-        echo "<div class='error'>" . $e->getMessage() . '</div>';
+        echo "<div class='error'>" . $message . '</div>';
     }
 }
