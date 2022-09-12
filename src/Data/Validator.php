@@ -57,7 +57,7 @@ class Validator
 
         // Default allowable tags
         $allowableTags['*CustomEditor'] = 'HTML';
-        
+
         // Match wildcard * in allowable tags and add these fields to the list
         foreach ($allowableTags as $field => $value) {
             if (stripos($field, '*') === false) continue;
@@ -110,7 +110,7 @@ class Validator
                     $value = trim($value);
                 }
 
-                
+
             }
 
             $output[$field] = $value;
@@ -201,7 +201,7 @@ class Validator
         $dom->validateOnParse=false;
         libxml_use_internal_errors(true);
 
-        $value = '<?xml encoding="utf-8" ?>' . mb_convert_encoding($value, 'HTML-ENTITIES', 'UTF-8');
+        $value = '<?xml encoding="utf-8" ?>' . mb_encode_numericentity($value, [0x80, 0xfffffff, 0, 0xfffffff], 'UTF-8');
 
         if ($dom->loadHTML('<body>'.$value.'</body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
             // Iterate over the DOM and remove attributes not in the whitelist
