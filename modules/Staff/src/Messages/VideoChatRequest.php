@@ -1,7 +1,7 @@
 <?php
 /*
 Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
+Copyright (C) 2022, Cui wenlan
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -43,7 +43,9 @@ class VideoChatRequest extends Message
 
     public function getText() : string
     {
-        return __("You have a meeting with ".$absence['from'].".");
+        return __('You have a meeting with {person}.', [
+            'person' => $this->absence['from'],
+        ]);
     }
 
     public function getModule() : string
