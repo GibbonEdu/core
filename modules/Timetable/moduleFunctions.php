@@ -1443,7 +1443,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
                         if ($rowPeriods['roomName'] != '') {
                             if ($height < 30) {
-                                $title .= __('Room:').' '.$rowPeriods['roomName'].' | ';
+                                // Handle room changes in the title
+                                if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']]) == false) {
+                                    $title .= __('Room:').' '.$rowPeriods['roomName'].' | ';
+                                } else {
+                                    if ($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0] != '') {
+                                        $title .= __('Room:').' ('.__('Changed').') '.$spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0].' | ';
+                                    } else {
+                                        $title .= __('Room:').' ('.__('Changed').') '.__('No Facility').' | ';
+                                    }
+                                }
                             }
                             if ($rowPeriods['phoneInternal'] != '') {
                                 if (isset($spaceChanges[$rowPeriods['gibbonTTDayRowClassID']][0]) == false) {
