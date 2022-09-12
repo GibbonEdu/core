@@ -35,4 +35,12 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
 
     private static $tableName = 'gibbonSchoolYearSpecialDay';
     private static $primaryKey = 'gibbonSchoolYearSpecialDayID';
+
+    public function getSpecialDayByDate($date)
+    {
+        $data = ['date' => $date];
+        $sql = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

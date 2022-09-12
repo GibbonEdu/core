@@ -1128,11 +1128,8 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         $resultEnrolment = $connection2->prepare($sqlEnrolment);
         $resultEnrolment->execute($dataEnrolment);
 
-        $enrolment =  $resultRole && $resultRole->rowCount() > 0 ? $resultEnrolment->fetch() : [];
-        if (in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
-            $offTimetable = true;
-        }
-        if (in_array($enrolment['gibbonFormGroupID'], $specialDay['gibbonFormGroupIDList'] ?? [])) {
+        $enrolment = $resultEnrolment && $resultEnrolment->rowCount() > 0 ? $resultEnrolment->fetch() : [];
+        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
             $offTimetable = true;
         }
     }
@@ -1405,7 +1402,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                 if ($isSlotInTime == true) {
 
                     // Check for off-timetable classes by year group
-                    $offTimetableClass = !empty($specialDay['gibbonYearGroupIDList']) && count($rowPeriods['gibbonYearGroupIDList']) == count(array_intersect($specialDay['gibbonYearGroupIDList'], $rowPeriods['gibbonYearGroupIDList']));
+                    $offTimetableClass = $roleCategory == 'Staff' && !empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($specialDay['gibbonYearGroupIDList']) && !empty($rowPeriods['gibbonYearGroupIDList']) && count($rowPeriods['gibbonYearGroupIDList']) == count(array_intersect($specialDay['gibbonYearGroupIDList'], $rowPeriods['gibbonYearGroupIDList']));
 
                     //Check for an exception for the current user
                     try {
