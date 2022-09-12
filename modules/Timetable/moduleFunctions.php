@@ -26,6 +26,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Http\Url;
+use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
@@ -607,19 +608,24 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            // Get all activities for this student or staff
-            global $container;
-            $activityGateway = $container->get(ActivityGateway::class);
-
-            $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
-            $activities = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
-
-            // Get the date range and check for activities
+            // Get the date range to check for activities
             $dateRange = new DatePeriod(
                 (new DateTime(date('Y-m-d H:i:s', $startDayStamp)))->modify('-1 day'),
                 new DateInterval('P1D'),
                 (new DateTime(date('Y-m-d H:i:s', $endDayStamp)))->modify('+1 day')
             );
+
+            // Get all special days
+            global $container;
+            $specialDayGateway = $container->get(SchoolYearSpecialDayGateway::class);
+            $specialDays = $specialDayGateway->selectSpecialDaysByDateRange($dateRange->start->format('Y-m-d'), $dateRange->end->format('Y-m-d'))->fetchGroupedUnique();
+
+            // Get all activities for this student or staff
+            $activityGateway = $container->get(ActivityGateway::class);
+
+            $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
+            $activities = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
+
             foreach ($dateRange as $dateObject) {
                 $date = $dateObject->format('Y-m-d');
                 $weekday = $dateObject->format('l');
@@ -636,6 +642,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                             3 => strtotime($date.' '.$activity['timeEnd']),
                             4 => !empty($activity['space'])? $activity['space'] : $activity['locationExternal'] ?? '',
                             5 => Url::fromModuleRoute('Activities', 'activities_my.php'),
+                            6 => $specialDays[$date] ?? [],
 
                             // 5 => Url::fromHandlerModuleRoute('fullscreen.php', 'Activities', 'activities_view_full.php')->withQueryParams(['gibbonActivityID' => $activity['gibbonActivityID'], 'width' => 1000, 'height' => 500]),
                         ];
@@ -979,17 +986,11 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         }
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
-                    try {
-                        $dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-                        $sqlSpecial = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
-                        $resultSpecial = $connection2->prepare($sqlSpecial);
-                        $resultSpecial->execute($dataSpecial);
-                    } catch (PDOException $e) {
-                        $output .= "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultSpecial->rowcount() == 1) {
-                        $rowSpecial = $resultSpecial->fetch();
-                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$rowSpecial['name'].'</u></span>';
+
+                    $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
+
+                    if (!empty($specialDays[$dateCheck]) && $specialDays[$dateCheck]['type'] == 'Timing Change') {
+                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$specialDays[$dateCheck]['name'].'</u></span>';
                     }
                     $output .= '</th>';
                 }
@@ -1053,16 +1054,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
                     if ($isDayInTerm == true) {
                         //Check for school closure day
-                        try {
-                            $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
-                            $sqlClosure = 'SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date';
-                            $resultClosure = $connection2->prepare($sqlClosure);
-                            $resultClosure->execute($dataClosure);
-                        } catch (PDOException $e) {
-                            $output .= "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultClosure->rowCount() == 1) {
-                            $rowClosure = $resultClosure->fetch();
+                        $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
+                        $rowClosure = $specialDays[$dateCheck] ?? '';
+                        
+                        if (!empty($rowClosure)) {
                             $rowClosure['gibbonYearGroupIDList'] = explode(',', $rowClosure['gibbonYearGroupIDList'] ?? '');
                             $rowClosure['gibbonFormGroupIDList'] = explode(',', $rowClosure['gibbonFormGroupIDList'] ?? '');
 
@@ -1606,16 +1601,28 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $label = substr($label, 0, $charCut).'...';
                             $title = "title='".htmlPrep($event[0]).' ('.date('H:i', $event[2]).' to '.date('H:i', $event[3]).")  ".$event[4]."'";
                         }
+
+                        if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
+                            $class = 'ttActivities border';
+                            $bg = 'background-image: linear-gradient(45deg, #e6e6e6 25%, #f1f1f1 25%, #f1f1f1 50%, #e6e6e6 50%, #e6e6e6 75%, #f1f1f1 75%, #f1f1f1 100%); background-size: 23.0px 23.0px;';
+                        } else {
+                            $class = 'ttActivities ttPeriod';
+                            $bg = 'background: #dfcbf6 !important;';
+                        }
                         $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)).' '.$gridTimeStart)) / 60 )).'px';
-                        $output .= "<div class='ttActivities ttPeriod' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; background: #dfcbf6 !important;'>";
+                        $output .= "<div class='{$class}' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid rgb(136, 136, 136); height: {$height}px; margin: 0px; padding: 0px; {$bg}'>";
                         if ($height >= 26) {
                             $output .= __('Activity').'<br/>';
                         }
                         if ($height >= 40) {
                             $output .= '<i>'.date('H:i', $event[2]).' - '.date('H:i', $event[3]).'</i><br/>';
                         }
+
                         $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
-                        if (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
+                        
+                        if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
+                            $output .= '<i>'.__('Cancelled').'</i><br/>';
+                        } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
                             $output .= $event[4].'<br/>';
                         }
                         $output .= '</div>';

@@ -688,5 +688,6 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 ALTER TABLE `gibbonSchoolYearSpecialDay` CHANGE `type` `type` ENUM('School Closure','Timing Change','Off Timetable');end 
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `gibbonYearGroupIDList` VARCHAR(255) NULL AFTER `schoolClose`, ADD `gibbonFormGroupIDList` VARCHAR(255) NULL AFTER `gibbonYearGroupIDList`;end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `context` ENUM('Year Group','Form Group') NULL AFTER `schoolClose`;end
+ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelActivities` ENUM('Y','N') DEFAULT 'N' NULL AFTER `gibbonFormGroupIDList`;end
 
 ";

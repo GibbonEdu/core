@@ -43,4 +43,12 @@ class SchoolYearSpecialDayGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    public function selectSpecialDaysByDateRange($dateStart, $dateEnd)
+    {
+        $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd];
+        $sql = "SELECT date as groupBy, gibbonSchoolYearSpecialDay.* FROM gibbonSchoolYearSpecialDay WHERE date BETWEEN :dateStart AND :dateEnd";
+
+        return $this->db()->select($sql, $data);
+    }
 }
