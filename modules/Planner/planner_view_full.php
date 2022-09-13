@@ -474,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $response = $bbb->getMeetingInfo($getMeetingInfoParams);
                                 if ($response->getReturnCode() == 'FAILED') {
                                     // Create the meeting
-                                    $createParams = new CreateMeetingParameters($meetingId, $values['name']);
+                                    $createParams = new CreateMeetingParameters($meetingId, $values['name'].' lesson');
                                     $createParams = $createParams->setModeratorPassword('moderator_password')
                                                                 ->setAttendeePassword('attendee_password')
                                                                 ->setRecord(true)
