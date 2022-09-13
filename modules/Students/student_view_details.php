@@ -2356,8 +2356,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $bbbMeetingUrl = $joinResponse->getUrl();
 
                             // HOMEWORK TABLE
-                            include './modules/Staff/src/MessageSender.php';
-                            include './modules/Staff/src/AbsenceNotificationProcess.php';
                             $process = $container->get(AbsenceNotificationProcess::class);
                             $process->startSendingVideoChatRequest([$gibbonPersonID], $session->get('gibbonPersonID'), $senderName, $link);
 
