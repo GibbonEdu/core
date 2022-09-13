@@ -466,6 +466,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             putenv('BBB_SECRET='. $bigBlueButtonCredentials);
                             $meetingId = "planner".(int)$values['gibbonPlannerEntryID'];
                             $meeting_html = "";
+                            $meeting_window_height = 0;
                             //checking planer status
                             if ((date('H:i:s') > $values['timeStart']) and (date('H:i:s') < $values['timeEnd']) and $values['date'] == date('Y-m-d')) {
                                 // Init BigBlueButton API
@@ -480,16 +481,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                                                 ->setRecord(true)
                                                                 ->setAllowStartStopRecording(true)
                                                                 ->setAutoStartRecording(true);
-                                    $response = $bbb->createMeeting($createParams);
+                                    $create_response = $bbb->createMeeting($createParams);
+                                    if ($create_response->getReturnCode() == 'FAILED') {
+                                        $meeting_html = $create_response->getMessage();
+                                    }else{
+                                        $meeting_window_height = 500;
+                                    }
+                                }else{
+                                    $meeting_window_height = 500;
                                 }
 
-                                $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), $session->get('gibbonPersonID') == $values['gibbonPersonIDCreator'] ? 'moderator_password':'attendee_password');
-                                $joinParams->setRedirect(false);
-                                $joinResponse = $bbb->joinMeeting($joinParams);
-                                $bbbMeetingUrl = $joinResponse->getUrl();
-                                $meeting_window_height = 500;
-                                $meeting_html = "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms allow-top-navigation' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
-                               
+                                if ($meeting_window_height > 0) {
+                                    $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), $session->get('gibbonPersonID') == $values['gibbonPersonIDCreator'] ? 'moderator_password':'attendee_password');
+                                    $joinParams->setRedirect(false);
+                                    $joinResponse = $bbb->joinMeeting($joinParams);
+                                    $bbbMeetingUrl = $joinResponse->getUrl();
+                                    $meeting_html = "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms allow-top-navigation' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
+                                }
                             }else if ((($values['date']) == date('Y-m-d') and (date('H:i:s') > $values['timeEnd'])) or ($values['date']) < date('Y-m-d')) {
                                 $recordingParams = new GetRecordingsParameters();
                                 $recordingParams->setMeetingId($meetingId);
@@ -506,15 +514,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                         $meeting_window_height = 500;
                                     } else {
                                         $meeting_html = $response->getMessage();
-                                        $meeting_window_height = 0;
                                     }
                                 } else {
                                     $meeting_html = $response->getMessage();
-                                    $meeting_window_height = 0;
                                 }
                             }else {
                                 $meeting_html = "The meeting hasn't started yet.";
-                                $meeting_window_height = 0;
                             }
 
                             echo "<h2>".__('Video Chat').'</h2>';
