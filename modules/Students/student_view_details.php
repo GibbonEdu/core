@@ -2353,7 +2353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             $joinParams = new JoinMeetingParameters($meetingId, $senderName, 'moderator_password');
                             $joinParams->setRedirect(false);
                             $joinResponse = $bbb->joinMeeting($joinParams);
-                            $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
+                            $bbbMeetingUrl = $joinResponse->getUrl();
 
                             // HOMEWORK TABLE
                             include './modules/Staff/src/MessageSender.php';

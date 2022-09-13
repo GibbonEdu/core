@@ -472,34 +472,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 $bbb = new BigBlueButton();
                                 $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
                                 $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-                                $existing_meeting = true;
                                 if ($response->getReturnCode() == 'FAILED') {
-                                    // meeting not found or already closed
-                                    if ($session->get('gibbonPersonID') == $values['gibbonPersonIDCreator']) {
-                                        // Create the meeting
-                                        $createParams = new CreateMeetingParameters($meetingId, $values['name']);
-                                        $createParams = $createParams->setModeratorPassword('moderator_password')
-                                                                    ->setAttendeePassword('attendee_password')
-                                                                    ->setRecord(true)
-                                                                    ->setAllowStartStopRecording(true)
-                                                                    ->setAutoStartRecording(true);
-                                        $response = $bbb->createMeeting($createParams);
-                                    } else {
-                                        $existing_meeting = false;
-                                    }
+                                    // Create the meeting
+                                    $createParams = new CreateMeetingParameters($meetingId, $values['name']);
+                                    $createParams = $createParams->setModeratorPassword('moderator_password')
+                                                                ->setAttendeePassword('attendee_password')
+                                                                ->setRecord(true)
+                                                                ->setAllowStartStopRecording(true)
+                                                                ->setAutoStartRecording(true);
+                                    $response = $bbb->createMeeting($createParams);
                                 }
 
-                                if ($existing_meeting) {
-                                    $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), $session->get('gibbonPersonID') == $values['gibbonPersonIDCreator'] ? 'moderator_password':'attendee_password');
-                                    $joinParams->setRedirect(false);
-                                    $joinResponse = $bbb->joinMeeting($joinParams);
-                                    $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
-                                    $meeting_window_height = 500;
-                                    $meeting_html = "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms allow-top-navigation' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
-                                } else {
-                                    $meeting_window_height = 0;
-                                    $meeting_html = "Meeting did not created. Please contact with your teacher.";
-                                }
+                                $joinParams = new JoinMeetingParameters($meetingId, $session->get('preferredName').' '.$session->get('surname'), $session->get('gibbonPersonID') == $values['gibbonPersonIDCreator'] ? 'moderator_password':'attendee_password');
+                                $joinParams->setRedirect(false);
+                                $joinResponse = $bbb->joinMeeting($joinParams);
+                                $bbbMeetingUrl = $joinResponse->getUrl();
+                                $meeting_window_height = 500;
+                                $meeting_html = "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms allow-top-navigation' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
+                               
                             }else if ((($values['date']) == date('Y-m-d') and (date('H:i:s') > $values['timeEnd'])) or ($values['date']) < date('Y-m-d')) {
                                 $recordingParams = new GetRecordingsParameters();
                                 $recordingParams->setMeetingId($meetingId);

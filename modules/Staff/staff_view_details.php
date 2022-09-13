@@ -610,7 +610,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             $joinParams = new JoinMeetingParameters($meetingId, $senderName, 'moderator_password');
                             $joinParams->setRedirect(false);
                             $joinResponse = $bbb->joinMeeting($joinParams);
-                            $bbbMeetingUrl = "https://bbb-devel.spots.edu/html5client/join?sessionToken=" . $joinResponse->getSessionToken();
+                            $bbbMeetingUrl = $joinResponse->getUrl();
 
                             $process = $container->get(AbsenceNotificationProcess::class);
                             $process->startSendingVideoChatRequest([$gibbonPersonID], $session->get('gibbonPersonID'), $senderName, $link);
