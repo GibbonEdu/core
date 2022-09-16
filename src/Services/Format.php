@@ -463,7 +463,7 @@ class Format
             $url = static::$settings['absoluteURL'].substr($url, 1);
         }
 
-        if (stripos($url, static::$settings['absoluteURL']) === false) {
+        if (stripos($url, static::$settings['absoluteURL']) === false && !$url instanceof Url) {
             return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank" rel="noopener noreferrer">'.$text.'</a>';
         } else {
             return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
