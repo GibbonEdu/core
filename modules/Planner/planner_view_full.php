@@ -458,9 +458,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             // Check for permission to hook
                             $hookPermission = $hookGateway->getHookPermission($hook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
-                            if (empty($options) || empty($hookPermission)) {
-                                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
-                            } else {
+                            if (!empty($options) && !empty($hookPermission)) {
                                 $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
                                 if (!file_exists($include)) {
                                     echo Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
