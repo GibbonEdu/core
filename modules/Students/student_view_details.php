@@ -26,6 +26,7 @@ use Gibbon\Tables\View\GridView;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\School\HouseGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Domain\Students\MedicalGateway;
@@ -70,6 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             return;
         } else {
             $settingGateway = $container->get(SettingGateway::class);
+            $hookGateway = $container->get(HookGateway::class);
             $enableStudentNotes = $settingGateway->getSettingByScope('Students', 'enableStudentNotes');
             $skipBrief = false;
 
@@ -247,15 +249,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     $subpage = $_GET['subpage'] ?? '';
                     $hook = $_GET['hook'] ?? '';
-                    $module = $_GET['module'] ?? '';
-                    $action = $_GET['action'] ?? '';
 
                     // When viewing left students, they won't have a year group ID
                     if (empty($row['gibbonYearGroupID'])) {
                         $row['gibbonYearGroupID'] = '';
                     }
 
-                    if ($subpage == '' and ($hook == '' or $module == '' or $action == '')) {
+                    if ($subpage == '' and $hook == '') {
                         $subpage = 'Overview';
                     }
 
@@ -2313,47 +2313,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                     }
 
-                    //GET HOOK IF SPECIFIED
-                    if ($hook != '' and $module != '' and $action != '') {
-                        //GET HOOKS AND DISPLAY LINKS
-                        //Check for hook
-
-                            $dataHook = array('gibbonHookID' => $_GET['gibbonHookID']);
-                            $sqlHook = 'SELECT * FROM gibbonHook WHERE gibbonHookID=:gibbonHookID';
-                            $resultHook = $connection2->prepare($sqlHook);
-                            $resultHook->execute($dataHook);
-                        if ($resultHook->rowCount() != 1) {
-                            echo "<div class='error'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
+                    // Handle Student Profile Hooks
+                    if (!empty($hook)) {
+                        $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
+                        if (empty($rowHook)) {
+                            echo Format::alert(__('There are no records to display.'), 'error');
                         } else {
-                            $rowHook = $resultHook->fetch();
                             $options = unserialize($rowHook['options']);
 
-                            //Check for permission to hook
-                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
-                                    FROM gibbonHook
-                                    JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                    JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                                    WHERE gibbonModule.name=:sourceModuleName
-                                    AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
-                                    AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                    AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
-                                    AND gibbonHook.type='Student Profile' ORDER BY name";
-                                $resultHook = $connection2->prepare($sqlHook);
-                                $resultHook->execute($dataHook);
-                            if ($resultHook->rowCount() == 0) {
-                                echo "<div class='error'>";
-                                echo __('Your request failed because you do not have access to this action.');
-                                echo '</div>';
+                            // Check for permission to hook
+                            $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+                            if (empty($options) || empty($hookPermission)) {
+                                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
                             } else {
                                 $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
                                 if (!file_exists($include)) {
-                                    echo "<div class='error'>";
-                                    echo __('The selected page cannot be displayed due to a hook error.');
-                                    echo '</div>';
+                                    echo Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
                                 } else {
                                     include $include;
                                 }
@@ -2551,36 +2527,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
                     //Check for hooks, and slot them into array
+                    $hooks = $hookGateway->selectHooksByType('Student Profile')->fetchGroupedUnique();
 
-                        $dataHooks = array();
-                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Student Profile'";
-                        $resultHooks = $connection2->prepare($sqlHooks);
-                        $resultHooks->execute($dataHooks);
-
-                    if ($resultHooks->rowCount() > 0) {
-                        $hooks = array();
+                    if (!empty($hooks)) {
                         $count = 0;
-                        while ($rowHooks = $resultHooks->fetch()) {
+                        foreach ($hooks as $rowHooks) {
                             $options = unserialize($rowHooks['options']);
+
+                            $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
                             //Check for permission to hook
 
-                                $dataHook = array('gibbonRoleIDCurrent' => $session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'],  'sourceModuleAction' => $options['sourceModuleAction']);
-                                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
-                                        FROM gibbonHook
-                                        JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-                                        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                                        WHERE gibbonModule.name=:sourceModuleName
-                                        AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
-                                        AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
-                                        AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
-                                        AND gibbonHook.type='Student Profile'
-                                        ORDER BY name";
-                                $resultHook = $connection2->prepare($sqlHook);
-                                $resultHook->execute($dataHook);
-                            if ($resultHook->rowCount() >= 1) {
+                            if (!empty($hookPermission)) {
                                 $style = '';
-                                if ($hook == $rowHooks['name'] and $_GET['module'] == $options['sourceModuleName']) {
+                                if ($hook == $rowHooks['name']) {
                                     $style = "style='font-weight: bold'";
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];

@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     // HOOKS
     // Custom hooks can replace form fields by criteria type using a custom include.
     // Includes are loaded inside a function to limit their variable scope.
-    $hooks = $container->get(HookGateway::class)->selectHooksByType('Report Writing')->fetchKeyPair();
+    $hooks = $container->get(HookGateway::class)->selectHooksByType('Report Writing')->fetchGroupedUnique();
     $hookInclude = function ($options, $criteria) use (&$gibbon, &$container, &$form, $student, $scopeDetails, $reportingScope, $reportingCriteria, $urlParams, $canWriteReport) {
         $options = json_decode($options, true);
         $includePath = $gibbon->session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];

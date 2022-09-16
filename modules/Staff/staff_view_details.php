@@ -22,6 +22,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -51,8 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
             echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
+            $hookGateway = $container->get(HookGateway::class);
             $search = $_GET['search'] ?? '';
             $allStaff = $_GET['allStaff'] ?? '';
+            $hook = $_GET['hook'] ?? '';
 
             if ($highestAction == 'Staff Directory_brief') {
                 //Proceed!
@@ -118,6 +121,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $row = $result->fetch();
 
                     $customFieldHandler = $container->get(CustomFieldHandler::class);
+                    $hooks = $hookGateway->selectHooksByType('Staff Profile')->fetchGroupedUnique();
+                    $hooks = array_map(function ($item) {
+                        $item['options'] = unserialize($item['options']);
+                        return $item;
+                    }, $hooks);
 
                     $page->breadcrumbs
                         ->add(__('Staff Directory'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
@@ -127,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if (isset($_GET['subpage'])) {
                         $subpage = $_GET['subpage'];
                     }
-                    if ($subpage == '') {
+                    if ($subpage == '' and $hook == '') {
                         $subpage = 'Overview';
                     }
 
@@ -138,6 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo '<h2>';
                     if ($subpage != '') {
                         echo __($subpage);
+                    } else {
+                        echo $hook;
                     }
                     echo '</h2>';
 
@@ -566,6 +576,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                     }
 
+                    // Handle Staff Profile Hooks
+                    if (!empty($hook)) {
+                        $rowHook = $hookGateway->getByID($_GET['gibbonHookID'] ?? '');
+                        if (empty($rowHook)) {
+                            echo Format::alert(__('There are no records to display.'), 'error');
+                        } else {
+                            $options = unserialize($rowHook['options']);
+
+                            // Check for permission to hook
+                            $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+                            if (empty($options) || empty($hookPermission)) {
+                                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
+                            } else {
+                                $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
+                                if (!file_exists($include)) {
+                                    echo Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+                                } else {
+                                    include $include;
+                                }
+                            }
+                        }
+                    }
+
                     $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
                         'canViewEmergency' => ($highestActionManage == 'Manage Staff_confidential') ? true : false,
                         'userPhoto' => Format::userPhoto($row['image_240'], 240),
@@ -574,6 +608,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         'subpage' => $subpage,
                         'search' => $search,
                         'allStaff' => $allStaff,
+                        'hooks' => $hooks,
+                        'currentHook' => $hook,
                         'q' => $_GET['q'] ?? '',
                     ]));
                 }

@@ -39,8 +39,26 @@ class HookGateway extends QueryableGateway
     public function selectHooksByType($type)
     {
         $data = ['type' => $type];
-        $sql = "SELECT name, options FROM gibbonHook WHERE type=:type ORDER BY name";
+        $sql = "SELECT gibbonHook.name as groupBy, gibbonHook.* FROM gibbonHook WHERE type=:type ORDER BY name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getHookPermission($gibbonHookID, $gibbonRoleIDCurrent, $moduleName, $actionName)
+    {
+        $data = ['gibbonHookID' => $gibbonHookID, 'gibbonRoleIDCurrent' => $gibbonRoleIDCurrent, 'sourceModuleName' => $moduleName, 'sourceModuleAction' => $actionName];
+        $sql = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action
+            FROM gibbonHook
+            JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID)
+            JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+            JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+            WHERE gibbonModule.name=:sourceModuleName
+            AND FIND_IN_SET(gibbonAction.name, :sourceModuleAction)
+            AND gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent
+            AND gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:sourceModuleName)
+            AND gibbonHook.gibbonHookID=:gibbonHookID 
+            ORDER BY name";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }

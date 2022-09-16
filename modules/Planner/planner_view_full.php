@@ -22,6 +22,7 @@ use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
@@ -447,6 +448,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                             echo '</table>';
                         }
+
+                        // Get Lesson Planner Hooks
+                        $hookGateway = $container->get(HookGateway::class);
+                        $hooks = $hookGateway->selectHooksByType('Lesson Planner')->fetchGroupedUnique();
+                        foreach ($hooks as $hook) {
+                            $options = unserialize($hook['options']);
+
+                            // Check for permission to hook
+                            $hookPermission = $hookGateway->getHookPermission($hook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+                            if (empty($options) || empty($hookPermission)) {
+                                echo Format::alert(__('Your request failed because you do not have access to this action.'), 'error');
+                            } else {
+                                $include = $session->get('absolutePath').'/modules/'.$options['sourceModuleName'].'/'.$options['sourceModuleInclude'];
+                                if (!file_exists($include)) {
+                                    echo Format::alert(__('The selected page cannot be displayed due to a hook error.'), 'error');
+                                } else {
+                                    include $include;
+                                }
+                            }
+                        }
+
 
                         //Get Smart Blocks
                         $dataBlocks = array('gibbonPlannerEntryID' => $gibbonPlannerEntryID);

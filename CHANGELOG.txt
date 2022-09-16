@@ -32,6 +32,7 @@ v25.0.00
     Tweaks & Additions
         System: updated Parent Weekly Summary CLI to not send if date is outside school year
         System: improved right-to-left support in Default theme
+        System: added new hooks for Staff Profile and Lesson Planner
         System: added Malawian Kwacha and Algerian Dinar as currency options
         Attendance: enabled taking Future attendance on the current date
         Data Updater: added a search option to all Manage Update pages

@@ -48,4 +48,16 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             </li>
         {% endif %}
     </ul>
+
+    {% if hooks %}
+    <h4>{{ __('Modules') }}</h4>
+
+    <ul class='moduleMenu'>
+        {% for hook in hooks %}
+        <li>
+            <a class="{{ currentHook == hook.options.sourceModuleName ? 'font-bold' }} underline" href="{{ absoluteURL }}/index.php?q={{ q }}&gibbonPersonID={{ gibbonPersonID }}&search={{ search }}&allStaff={{ allStaff }}&subpage=&hook={{ hook.options.sourceModuleName }}&gibbonHookID={{ hook.gibbonHookID }}">{{ hook.name ?? hook.options.sourceModuleName }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </div>

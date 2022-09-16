@@ -689,5 +689,6 @@ ALTER TABLE `gibbonSchoolYearSpecialDay` CHANGE `type` `type` ENUM('School Closu
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `gibbonYearGroupIDList` VARCHAR(255) NULL AFTER `schoolClose`, ADD `gibbonFormGroupIDList` VARCHAR(255) NULL AFTER `gibbonYearGroupIDList`;end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `context` ENUM('Year Group','Form Group') NULL AFTER `schoolClose`;end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelActivities` ENUM('Y','N') DEFAULT 'N' NULL AFTER `gibbonFormGroupIDList`;end
+ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing','Staff Profile','Lesson Planner') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 
 ";
