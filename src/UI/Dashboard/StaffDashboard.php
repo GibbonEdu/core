@@ -538,7 +538,7 @@ class StaffDashboard implements OutputableInterface
             }
 
             // Enrolment tab
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
                 $return .= "<div id='tabs".$tabCount."'>";
                 $return .= $this->enrolmentTable->getOutput();
                 $return .= '</div>';
