@@ -263,7 +263,7 @@ if ($isLoggedIn) {
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
 $localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
+$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/datepicker-%1$s.js';
 
 $datepickerLocale = 'en-GB';
 if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
@@ -336,7 +336,7 @@ $page->scripts->addMultiple([
 
 //This sets the default for en-US, or changes for none en-US
 if($datepickerLocale !== 'en-US'){
-    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
+    $page->scripts->add('jquery-date', 'lib/jquery-ui/i18n/datepicker-'.$datepickerLocale.'.js');
 }
 
 // Set page scripts: foot - misc
