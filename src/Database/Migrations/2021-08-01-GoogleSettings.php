@@ -26,13 +26,25 @@ use Gibbon\Database\Migrations\Migration;
  */
 class GoogleSettings extends Migration
 {
+    /**
+     * Database connection
+     *
+     * @var Connection
+     */
     protected $db;
+
+    /**
+     * Setting Gateway
+     *
+     * @var SettingGateway
+     */
+    protected $settingGateway;
 
     public function __construct(Connection $db, SettingGateway $settingGateway)
     {
         $this->db = $db;
         $this->settingGateway = $settingGateway;
-    }   
+    }
 
     public function migrate()
     {
@@ -42,7 +54,7 @@ class GoogleSettings extends Migration
         if ($googleOAuth == 'Migrated') {
             return true;
         }
-        
+
         $data = [
             'enabled'      => $googleOAuth,
             'clientName'   => $this->settingGateway->getSettingByScope('System', 'googleClientName'),
