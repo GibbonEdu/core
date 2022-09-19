@@ -735,11 +735,6 @@ class InstallController
         foreach ($settings as $scope => $scopeSettings) {
             foreach ($scopeSettings as $key => $value) {
                 $settingsFail = !$installer->setSetting($key, $value, $scope) || $settingsFail;
-
-                // Ensure system settings are updated in session
-                if ($scope == 'System') {
-                    $session->set($key, $value);
-                }
             }
         }
 
@@ -1120,7 +1115,7 @@ class InstallController
         $urlBasePath = substr($baseDir, $prefixLength);
         $host = $_SERVER['HTTP_HOST'];
         $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-        return "{$protocol}://{$host}{$urlBasePath}";
+        return rtrim("{$protocol}://{$host}{$urlBasePath}", '/');
     }
 
     /**
