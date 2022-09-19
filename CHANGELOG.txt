@@ -42,6 +42,7 @@ v25.0.00
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Messenger: improved the success message for confirmed read receipts
         Planner: improved the error message when unable to access classes in Unit Planner
+        Planner: update Add Lesson Plan to suggest dates based on existing lesson sequence
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         School Admin: added an option to cancel activities in Special Days
         Students: added a permission check for Family Adult comments in Student Profile

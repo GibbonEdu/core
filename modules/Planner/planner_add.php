@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 //Module includes
@@ -39,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         $today = date('Y-m-d');
 
         $settingGateway = $container->get(SettingGateway::class);
+        $plannerGateway = $container->get(PlannerEntryGateway::class);
         $homeworkNameSingular = $settingGateway->getSettingByScope('Planner', 'homeworkNameSingular');
         $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
 
@@ -196,50 +198,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('summary', __('Summary'));
                 $row->addTextField('summary')->setValue()->maxLength(255);
 
-            //Try and find the next unplanned slot for this class.
+            // Try and find the next unplanned slot for this class.
             if ($viewBy == 'class') {
-                //Get $_GET values
-                $nextDate = null;
-                if (isset($_GET['date'])) {
-                    $nextDate = $_GET['date'];
-                }
-                $nextTimeStart = null;
-                if (isset($_GET['timeStart'])) {
-                    $nextTimeStart = $_GET['timeStart'];
-                }
-                $nextTimeEnd = null;
-                if (isset($_GET['timeEnd'])) {
-                    $nextTimeEnd = $_GET['timeEnd'];
-                }
+                $nextDate = $_GET['date'] ?? null;
+                $nextTimeStart = $_GET['timeStart'] ?? null;
+                $nextTimeEnd = $_GET['timeEnd'] ?? null;
 
-                if ($nextDate == '') {
-                    $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
-                    $sqlNext = "SELECT gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd, gibbonTTDayDate.date
-                    FROM gibbonTTDayRowClass
-                    JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID)
-                    JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID)
-                    JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
-                    JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID)
-                    LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonTTDayDate.date AND gibbonSchoolYearSpecialDay.type='School Closure')
-                    WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
-                    AND gibbonTTDayDate.date>=:date
-                    AND gibbonSchoolYearSpecialDayID IS NULL
-                    ORDER BY gibbonTTDayDate.date, gibbonTTColumnRow.timestart
-                    LIMIT 0, 10";
-                    $resultNext = $connection2->prepare($sqlNext);
-                    $resultNext->execute($dataNext);
-                    $nextDate = '';
-                    $nextTimeStart = '';
-                    $nextTimeEnd = '';
-                    while ($rowNext = $resultNext->fetch()) {
-                        $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                        $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
-                        $resultPlanner = $connection2->prepare($sqlPlanner);
-                        $resultPlanner->execute($dataPlanner);
-                        if ($resultPlanner->rowCount() == 0) {
-                            $nextDate = $rowNext['date'];
-                            $nextTimeStart = $rowNext['timeStart'];
-                            $nextTimeEnd = $rowNext['timeEnd'];
+                if (empty($nextDate)) {
+                    // Select upcoming lessons based on the latest lesson date, if it exists, fallback to the current date
+                    $latestLesson = $plannerGateway->getLatestLessonByClass($gibbonCourseClassID);
+                    $upcomingLessons = $plannerGateway->selectUpcomingPlannerTTByDate($gibbonCourseClassID, $latestLesson['date'] ?? date('Y-m-d'))->fetchAll();
+
+                    foreach ($upcomingLessons as $nextLesson) {
+                        $plannerEntry = $plannerGateway->selectBy(['date' => $nextLesson['date'], 'timeStart' => $nextLesson['timeStart'], 'timeEnd' => $nextLesson['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID], ['gibbonPlannerEntryID'])->fetch();
+
+                        if (empty($plannerEntry)) {
+                            $nextDate = $nextLesson['date'];
+                            $nextTimeStart = $nextLesson['timeStart'];
+                            $nextTimeEnd = $nextLesson['timeEnd'];
                             break;
                         }
                     }
