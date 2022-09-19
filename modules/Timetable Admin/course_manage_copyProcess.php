@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseClassGateway;
 
 require_once '../../gibbon.php';
 
@@ -31,73 +33,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     header("Location: {$URL}");
 } else {
     //Proceed!
-    //Check if school years specified (current and next)
-    if ($gibbonSchoolYearID == '' or $gibbonSchoolYearIDNext == '') {
+    
+    // Check if school years specified (current and next)
+    if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearIDNext)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        //GET CURRENT COURSES
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
+    } 
+
+    $courseGateway = $container->get(CourseGateway::class);
+    $courseClassGateway = $container->get(CourseClassGateway::class);
+
+    // Get current courses
+    $courses = $courseGateway->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID])->fetchAll();
+    if (empty($courses)) {
+        $URL .= '&return=error2';
+        header("Location: {$URL}");
+    }
+
+    $partialFail = false;
+
+    foreach ($courses as $course) {
+        $data = [
+            'gibbonSchoolYearID'    => $gibbonSchoolYearIDNext,
+            'gibbonDepartmentID'    => $course['gibbonDepartmentID'],
+            'name'                  => $course['name'],
+            'nameShort'             => $course['nameShort'],
+            'description'           => $course['description'],
+            'gibbonYearGroupIDList' => $course['gibbonYearGroupIDList'],
+            'orderBy'               => $course['orderBy'],
+            'map'                   => $course['map'],
+            'fields'                => $course['fields'],
+        ];
+
+        // Skip courses that already exist
+        if (!$courseGateway->unique($data, ['gibbonSchoolYearID', 'nameShort'])) {
+            continue;
         }
 
-        if ($result->rowCount() < 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-        } else {
-            $partialFail = false;
-            while ($row = $result->fetch()) {
-                //Write to database
-                try {
-                    $dataInsert = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'gibbonDepartmentID' => $row['gibbonDepartmentID'], 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'description' => $row['description'], 'gibbonYearGroupIDList' => $row['gibbonYearGroupIDList'], 'orderBy' => $row['orderBy']);
-                    $sqlInsert = 'INSERT INTO gibbonCourse SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonDepartmentID=:gibbonDepartmentID, name=:name, nameShort=:nameShort, description=:description, gibbonYearGroupIDList=:gibbonYearGroupIDList, orderBy=:orderBy';
-                    $resultInsert = $connection2->prepare($sqlInsert);
-                    $resultInsert->execute($dataInsert);
-                } catch (PDOException $e) {
-                    $partialFail = true;
-                }
+        // Insert course into database
+        $gibbonCourseIDNew = $courseGateway->insert($data);
+            
+        if (empty($gibbonCourseIDNew)) {
+            $partialFail = true;
+            continue;
+        }
+        
+        $classes = $courseClassGateway->selectBy(['gibbonCourseID' => $course['gibbonCourseID']])->fetchAll();
 
-                $AI = $connection2->lastInsertId();
+        foreach ($classes as $class) {
+            $data = [
+                'gibbonCourseID'      => $gibbonCourseIDNew,
+                'name'                => $class['name'],
+                'nameShort'           => $class['nameShort'],
+                'reportable'          => $class['reportable'],
+                'attendance'          => $class['attendance'],
+                'enrolmentMin'        => $class['enrolmentMin'],
+                'enrolmentMax'        => $class['enrolmentMax'],
+                'gibbonScaleIDTarget' => $class['gibbonScaleIDTarget'],
+                'fields'              => $class['fields'],
+            ];
 
-                if ($AI != null) {
-                    //NOW DEAL WITH CLASSES
-                    try {
-                        $dataClass = array('gibbonCourseID' => $row['gibbonCourseID']);
-                        $sqlClass = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
-                        $resultClass = $connection2->prepare($sqlClass);
-                        $resultClass->execute($dataClass);
-                    } catch (PDOException $e) {
-                        $partialFail = true;
-                    }
-
-                    while ($rowClass = $resultClass->fetch()) {
-                        //Write to database
-                        try {
-                            $dataInsert = array('gibbonCourseID' => $AI, 'name' => $rowClass['name'], 'nameShort' => $rowClass['nameShort'], 'reportable' => $rowClass['reportable'], 'enrolmentMin' => $rowClass['enrolmentMin'], 'enrolmentMax' => $rowClass['enrolmentMax']);
-                            $sqlInsert = 'INSERT INTO gibbonCourseClass SET gibbonCourseID=:gibbonCourseID, name=:name, nameShort=:nameShort, reportable=:reportable, enrolmentMin=:enrolmentMin, enrolmentMax=:enrolmentMax';
-                            $resultInsert = $connection2->prepare($sqlInsert);
-                            $resultInsert->execute($dataInsert);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-                    }
-                }
+            // Skip classes that already exist
+            if (!$courseClassGateway->unique($data, ['gibbonCourseID', 'nameShort'])) {
+                continue;
             }
 
-            if ($partialFail == true) {
-                $URL .= '&return=error5';
-                header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+            // Insert class into database
+            $gibbonCourseClassIDNew = $courseClassGateway->insert($data);
+
+            if (empty($gibbonCourseClassIDNew)) {
+                $partialFail = true;
             }
         }
     }
+
+    $URL .= $partialFail == true
+        ? '&return=error5'
+        : '&return=success0';
+
+    header("Location: {$URL}");
 }
