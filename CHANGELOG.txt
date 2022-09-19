@@ -80,6 +80,7 @@ v25.0.00
         Timetable Admin: adjusted column uniqueness interface string
         Timetable: fixed class student counts in Manage Student Enrolment
         Timetable: fixed display of room number for short periods
+        Timetable: fixed the position of the Add Lesson Plan tooltip
         Tracking: fixed Data Points export MySQL error
         User Admin: fixed black user photos when using non-jpg image format
 
