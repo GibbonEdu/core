@@ -559,16 +559,13 @@ class InstallController
 
         $form->addRow()->addHeading('System Settings', __('System Settings'));
 
-        $pageURL = (@$_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        $port = '';
-        if ($_SERVER['SERVER_PORT'] != '80') {
-            $port = ':'.$_SERVER['SERVER_PORT'];
+        if (empty($absoluteURL)) {
+            $absoluteURL = static::guessAbsoluteUrl();
         }
-        $uri_parts = explode('?', $_SERVER['REQUEST_URI'], 2);
         $setting = $installer->getSetting('absoluteURL', 'System', true);
         $row = $form->addRow();
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addURL($setting['name'])->setValue($data[$setting['name']] ?? $pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
+            $row->addURL($setting['name'])->setValue($absoluteURL)->maxLength(100)->required();
 
         $setting = $installer->getSetting('absolutePath', 'System', true);
         $row = $form->addRow();
@@ -738,6 +735,11 @@ class InstallController
         foreach ($settings as $scope => $scopeSettings) {
             foreach ($scopeSettings as $key => $value) {
                 $settingsFail = !$installer->setSetting($key, $value, $scope) || $settingsFail;
+
+                // Ensure system settings are updated in session
+                if ($scope == 'System') {
+                    $session->set($key, $value);
+                }
             }
         }
 
