@@ -38,6 +38,8 @@ class Locale implements LocaleInterface
 
     protected $stringReplacements;
 
+    protected $isLoggedIn;
+
     protected $supportsGetText = true;
 
 
@@ -45,7 +47,6 @@ class Locale implements LocaleInterface
      * Construct
      *
      * @param string  $absolutePath Absolute path to the Gibbon installation
-     * @param Session $session      Global session object for string
      *                              replacement cache.
      */
     public function __construct(string $absolutePath)
@@ -151,7 +152,7 @@ class Locale implements LocaleInterface
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
         $stringReplacements = $session->get('stringReplacement', null);
-
+        
         // Do this once per session, only if the value doesn't exist
         if ($forceRefresh || $stringReplacements === null) {
 
@@ -172,6 +173,7 @@ class Locale implements LocaleInterface
         }
 
         $this->stringReplacements = $stringReplacements;
+        $this->isLoggedIn = $session->has('username');
     }
 
     /**
@@ -233,6 +235,27 @@ class Locale implements LocaleInterface
     }
 
     /**
+     * Change the auth message when not logged in. Apply this as a string replacement 
+     * rather than changing every instance of the string in the codebase.
+     *
+     * @param string  $text Raw string to apply the string replacement logics
+     *
+     * @return string The substituted version of $text string.
+     */
+    protected function doAuthMessageReplacement($text)
+    {
+        if ($this->isLoggedIn) {
+            return $text;
+        }
+
+        if ($text == 'You do not have access to this action.' || $text == 'Your request failed because you do not have access to this action.') {
+            return 'This page requires you to be logged in to access it. Please login and try again.';
+        }
+
+        return $text;
+    }
+
+    /**
      * Custom translation function to allow custom string replacement
      *
      * @param string $text    Text to Translate.
@@ -266,6 +289,9 @@ class Locale implements LocaleInterface
         if (empty($this->i18ncode)) {
             return $text;
         }
+
+        // change the auth message when not logged in
+        $text = $this->doAuthMessageReplacement($text);
 
         // get domain from options.
         $domain = $options['domain'] ?? '';
