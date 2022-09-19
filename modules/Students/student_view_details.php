@@ -1214,9 +1214,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
 
+                        if (!empty($medical['fields']) && is_string($medical['fields'])) {
+                            $fields = json_decode($medical['fields'], true);
+                            $medical = is_array($fields) ? array_merge($medical, $fields) : $medical;
+                        }
 
-                        $fields = !empty($medical['fields']) && is_string($medical['fields']) ? json_decode($medical['fields'], true) : [];
-                        echo $table->render(!empty($medical) ? [$medical + $fields] : []);
+                        echo $table->render([$medical]);
 
                         // MEDICAL CONDITIONS
                         $canManageMedical = isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php');
