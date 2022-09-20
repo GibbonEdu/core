@@ -2534,8 +2534,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     if (!empty($hooks)) {
                         $count = 0;
-                        foreach ($hooks as $rowHooks) {
-                            $options = unserialize($rowHooks['options']);
+                        foreach ($hooks as $rowHook) {
+                            if (empty($rowHook) || empty($rowHook['options'])) continue;
+
+                            $options = unserialize($rowHook['options']);
 
                             $hookPermission = $hookGateway->getHookPermission($rowHook['gibbonHookID'], $session->get('gibbonRoleIDCurrent'), $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
 
@@ -2543,12 +2545,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             if (!empty($hookPermission)) {
                                 $style = '';
-                                if ($hook == $rowHooks['name']) {
+                                if ($hook == $rowHook['name']) {
                                     $style = "style='font-weight: bold'";
                                 }
                                 $studentMenuCategory[$studentMenuCount] = $mainMenu[$options['sourceModuleName']];
-                                $studentMenuName[$studentMenuCount] = __($rowHooks['name']);
-                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHooks['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHooks['gibbonHookID']."'>".__($rowHooks['name']).'</a></li>';
+                                $studentMenuName[$studentMenuCount] = __($rowHook['name']);
+                                $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search.'&hook='.$rowHook['name'].'&module='.$options['sourceModuleName'].'&action='.$options['sourceModuleAction'].'&gibbonHookID='.$rowHook['gibbonHookID']."'>".__($rowHook['name']).'</a></li>';
                                 ++$studentMenuCount;
                                 ++$count;
                             }
