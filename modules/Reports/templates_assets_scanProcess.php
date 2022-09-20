@@ -52,7 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $parseAndUpdateComponents = function ($directoryPath, $templateType) use (&$prototypeGateway, &$yaml, &$partialFail, &$count) {
         // Get all twig files in this folder and sub-folders
         $directoryPath = DIRECTORY_SEPARATOR.trim($directoryPath, DIRECTORY_SEPARATOR);
-        $directoryFiles = glob($directoryPath.'{,/*,/*/*,/.../*}/*.twig.html', GLOB_BRACE);
+        $directoryFiles = [];
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($iterator as $filename => $fileInfo) {
+            if ($fileInfo->isFile() && $fileInfo->getExtension() == 'html') {
+                $directoryFiles[] = $filename;
+            }
+        }
 
         foreach ($directoryFiles as $filePath) {
             // Scan the file for the necessary front matter
@@ -83,8 +90,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
     $parseAndUpdateFonts = function ($directoryPath) use (&$absolutePath, &$fontGateway, &$partialFail, &$count) {
         // Get all font files in this folder and sub-folders
-        $directoryPath = '/'.trim($directoryPath, '/');
-        $directoryFiles = glob($directoryPath.'{,/*,/.../*}/*.ttf', GLOB_BRACE);
+        $directoryPath = DIRECTORY_SEPARATOR.trim($directoryPath, DIRECTORY_SEPARATOR);
+        $directoryFiles = [];
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+        foreach ($iterator as $filename => $fileInfo) {
+            if ($fileInfo->isFile() && $fileInfo->getExtension() == 'ttf') {
+                $directoryFiles[] = $filename;
+            }
+        }
 
         foreach ($directoryFiles as $filePath) {
             $fontTCPDF = \TCPDF_FONTS::addTTFfont($filePath, 'TrueTypeUnicode', '', 32);
