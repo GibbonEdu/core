@@ -51,7 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
 
     $parseAndUpdateComponents = function ($directoryPath, $templateType) use (&$prototypeGateway, &$yaml, &$partialFail, &$count) {
         // Get all twig files in this folder and sub-folders
-        $directoryPath = DIRECTORY_SEPARATOR.trim($directoryPath, DIRECTORY_SEPARATOR);
+        $directoryPath = trim($directoryPath, '/');
+        if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
+
         $directoryFiles = [];
 
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
@@ -90,7 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.p
     $fontGateway = $container->get(ReportTemplateFontGateway::class);
     $parseAndUpdateFonts = function ($directoryPath) use (&$absolutePath, &$fontGateway, &$partialFail, &$count) {
         // Get all font files in this folder and sub-folders
-        $directoryPath = DIRECTORY_SEPARATOR.trim($directoryPath, DIRECTORY_SEPARATOR);
+        $directoryPath = trim($directoryPath, '/');
+        if (stripos($directoryPath, ':') === false) $directoryPath = '/'.$directoryPath;
+
         $directoryFiles = [];
 
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directoryPath, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
