@@ -34,13 +34,23 @@ use Gibbon\Services\Format;
  */
 class DatabaseFormFactory extends FormFactory
 {
+    /**
+     * Database connection.
+     *
+     * @var Connection
+     */
     protected $pdo;
 
+    /**
+     * Cached queries
+     *
+     * @var array
+     */
     protected $cachedQueries = array();
 
     /**
      * Create a factory with access to the provided a database connection.
-     * @param  Gibbon\Contracts\Database\Connection  $pdo
+     * @param  Connection  $pdo
      */
     public function __construct(Connection $pdo)
     {
