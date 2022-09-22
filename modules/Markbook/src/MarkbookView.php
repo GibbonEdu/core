@@ -1049,52 +1049,6 @@ class MarkbookView
     }
 
     /**
-     * Creates simple SQL statements for options from the Class Selector
-     *
-     * @deprecated v17
-     * @version 7th May 2016
-     * @since   7th May 2016
-     * @param   string $filter
-     * @return  bool   True if the filter was added
-     */
-    public function filterByFormOptions($filter)
-    {
-        if (empty($filter)) {
-            return false;
-        }
-
-        switch ($filter) {
-            case 'marked':
-                return $this->filterByQuery("complete = 'Y'");
-            case 'unmarked':
-                return $this->filterByQuery("complete = 'N'");
-            case 'week':
-                return $this->filterByQuery("WEEKOFYEAR(date)=WEEKOFYEAR(NOW())");
-            case 'month':
-                return $this->filterByQuery("MONTH(date)=MONTH(NOW())");
-        }
-    }
-
-    /**
-     * Add a raw SQL statement to the filters
-     *
-     * @deprecated v17
-     * @version 7th May 2016
-     * @since   7th May 2016
-     * @param   string $query
-     * @return  bool   True if the filter was added
-     */
-    public function filterByQuery($query)
-    {
-        if (empty($query)) {
-            return false;
-        }
-
-        $this->columnFilters[] = $query;
-        return true;
-    }
-
-    /**
      * Get a SQL frieldly string of query modifiers
      *
      * @deprecated v17
