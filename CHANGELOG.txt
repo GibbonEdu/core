@@ -63,6 +63,7 @@ v25.0.00
         System: fixed broken View All links in Staff Dashboard Enrolment tab
         System: fixed My Classes list including Left classes in DatabaseFormFactory
         System: fixed links opening in new tab when using Url object in Format class
+        System: fixed lesson plans not showing up on Staff Dashboard for multiple classes with a TT exception
         Admissions: fixed application username check to include other applications
         Data Updater: fixed incorrect top links on Edit Request pages
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
