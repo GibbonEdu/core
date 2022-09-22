@@ -191,7 +191,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
         if (empty($oauthProvider)) return;
-        
+
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
@@ -650,7 +650,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
 
                 }
-                
+
             }
 
             //Get personal calendar array
@@ -1056,7 +1056,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         //Check for school closure day
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
                         $rowClosure = $specialDays[$dateCheck] ?? '';
-                        
+
                         if (!empty($rowClosure)) {
                             $rowClosure['gibbonYearGroupIDList'] = explode(',', $rowClosure['gibbonYearGroupIDList'] ?? '');
                             $rowClosure['gibbonFormGroupIDList'] = explode(',', $rowClosure['gibbonFormGroupIDList'] ?? '');
@@ -1619,7 +1619,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
-                        
+
                         if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
                             $output .= '<i>'.__('Cancelled').'</i><br/>';
                         } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
@@ -1628,7 +1628,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= '</div>';
                     }
                     ++$zCount;
-                    
+
                 }
             }
 
@@ -1760,7 +1760,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
     global $session;
-    
+
     $output = '';
 
     $blank = true;
@@ -2054,6 +2054,11 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $output .= "<span style='font-weight: normal; font-style: italic;'>".__('Time').'<span>';
             $output .= '</th>';
             $count = 0;
+
+            // Formatter to format date as day of week (full name based on locale).
+            $dayOfWeekNameFormatter = new \IntlDateFormatter(null);
+            $dayOfWeekNameFormatter->setPattern("EEEE");
+
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
@@ -2084,7 +2089,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        $output .= ($rowDay['nameShort'] ?? strftime('%a', ($startDayStamp + (86400 * $dateCorrection)))).'<br/>';
+                        $output .= ($rowDay['nameShort'] ?? $dayOfWeekNameFormatter->format($startDayStamp + (86400 * $dateCorrection))).'<br/>';
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
@@ -2185,7 +2190,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultClosure->rowCount() == 1) {
-                            
+
                             $rowClosure = $resultClosure->fetch();
                             if ($rowClosure['type'] == 'School Closure') {
                                 $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";

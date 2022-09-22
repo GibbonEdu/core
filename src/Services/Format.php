@@ -178,15 +178,24 @@ class Format
 
         $startTime = $startDate->getTimestamp();
         $endTime = $endDate->getTimestamp();
+        $formatter = new \IntlDateFormatter(null);
 
         if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
-            $output = strftime('%b %e, %Y', $startTime);
+            $formatter->setPattern('MMM d, yyyy');
+            $output = $formatter->format($startTime);
         } elseif ($startDate->format('Y-m') == $endDate->format('Y-m')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%e, %Y', $endTime);
+            $formatter->setPattern('MMM d');
+            $output = $formatter->format($startTime) . ' - ';
+            $formatter->setPattern('d, yyyy');
+            $output .= $formatter->format($endTime);
         } elseif ($startDate->format('Y') == $endDate->format('Y')) {
-            $output = strftime('%b %e', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+            $formatter->setPattern('MMM d');
+            $output = $formatter->format($startTime) . ' - ';
+            $formatter->setPattern('MMM d, yyyy');
+            $output .= $formatter->format($endTime);
         } else {
-            $output = strftime('%b %e, %Y', $startTime).' - '.strftime('%b %e, %Y', $endTime);
+            $formatter->setPattern('MMM d, yyyy');
+            $output = $formatter->format($startTime) . ' - ' . $formatter->format($endTime);
         }
 
         return mb_convert_case($output, MB_CASE_TITLE);
@@ -351,7 +360,7 @@ class Format
     public static function genderName($value, $translate = true)
     {
         if (empty($value)) return '';
-        
+
         $genderNames = [
             'F'           => __('Female'),
             'M'           => __('Male'),
