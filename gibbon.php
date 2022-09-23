@@ -131,8 +131,5 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
 if (!empty($session->get('module'))) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $session->get('module'));
     $autoloader->addPsr4('Gibbon\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module').'/src');
-
-    // Temporary backwards-compatibility for external modules (Query Builder)
-    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$session->get('module'));
     $autoloader->register(true);
 }
