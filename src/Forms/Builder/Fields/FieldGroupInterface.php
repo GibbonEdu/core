@@ -38,4 +38,14 @@ interface FieldGroupInterface
     public function getFieldDataFromPOST(string $fieldFame, array $field);
 
     public function displayFieldValue(FormBuilderInterface $formBuilder, string $fieldName, array $field, array &$data = []);
+
+    /**
+     * Handle whether fields should validate based on the presence of other fields.
+     *
+     * @param FormBuilderInterface $formBuilder
+     * @param array $data
+     * @param string $fieldName
+     * @return bool
+     */
+    public function shouldValidate(FormBuilderInterface $formBuilder, array &$data, string $fieldName);
 }
