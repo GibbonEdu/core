@@ -21,7 +21,6 @@ namespace Gibbon;
 
 use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
-use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SessionGateway;
 use Psr\Container\ContainerInterface;
@@ -66,7 +65,7 @@ class Core
     public function __construct($directory)
     {
         $this->basePath = realpath($directory);
-        
+
         // Load the configuration, if installed
         $this->loadConfigFromFile($this->basePath . '/config.php');
 
@@ -85,7 +84,7 @@ class Core
 
         $db = $container->get('db');
         $this->session = $container->get('session');
-        
+
         if (empty($this->session->get('systemSettingsSet'))) {
             SessionFactory::populateSettings($this->session, $db);
         }
@@ -152,7 +151,7 @@ class Core
     /**
      * Get a config value by name, otherwise return the config array.
      * @param string|null $name
-     * 
+     *
      * @return mixed|array
      */
     public function getConfig($name = null)
@@ -169,8 +168,8 @@ class Core
      */
     public function getSystemRequirement($key)
     {
-        return isset($this->config['systemRequirements'][$key]) 
-            ? $this->config['systemRequirements'][$key] 
+        return isset($this->config['systemRequirements'][$key])
+            ? $this->config['systemRequirements'][$key]
             : null;
     }
 
@@ -189,8 +188,8 @@ class Core
 
         include $versionFilePath;
 
-        $this->config['version'] = $version;
-        $this->config['systemRequirements'] = $systemRequirements;
+        $this->config['version'] = $version ?? 'version-not-found';
+        $this->config['systemRequirements'] = $systemRequirements ?? [];
     }
 
     /**
@@ -202,7 +201,7 @@ class Core
     {
         // Load the config values (from an array if possible)
         if (!$this->isInstalled()) return;
-        
+
         $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';
