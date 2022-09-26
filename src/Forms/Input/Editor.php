@@ -27,7 +27,7 @@ namespace Gibbon\Forms\Input;
  */
 class Editor extends Input
 {
-    protected $guid;
+    protected $tinymceInit = true;
     protected $rows = 20;
     protected $showMedia = false;
     protected $initiallyHidden = false;
@@ -38,12 +38,10 @@ class Editor extends Input
     /**
      * Create a tinyMCE rich-text editor input.
      * @param  string  $name
-     * @param  string  $guid
      */
-    public function __construct($name, $guid)
+    public function __construct(string $name)
     {
         $this->setName($name);
-        $this->guid = $guid;
     }
 
     /**
@@ -54,6 +52,18 @@ class Editor extends Input
     public function setRows($count)
     {
         $this->rows = $count;
+        return $this;
+    }
+
+    /**
+     * Set whether tinyMCE uploader should be enabled.
+     *
+     * @param   bool  $value
+     * @return  self
+     */
+    public function tinymceInit(bool $value)
+    {
+        $this->tinymceInit = $value;
         return $this;
     }
 
@@ -116,12 +126,31 @@ class Editor extends Input
      * Gets the HTML output for this form element.
      * @return  string
      */
-    protected function getElement()
+    protected function getElement(): string
     {
         if ($this->getReadonly()) {
             return '<p>'.$this->getValue().'</p>';
         } else {
-            return getEditor($this->guid, true, $this->getName(), $this->getValue(), $this->rows, $this->showMedia, $this->getRequired(), $this->initiallyHidden, $this->allowUpload, $this->initialFilter, $this->resourceAlphaSort);
+            /**
+             * @var \Gibbon\View\Page $page
+             * @var \Gibbon\Contracts\Services\Session $session
+             */
+            global $page, $session;
+            $templateData = [
+                'tinymceInit' => $this->tinymceInit,
+                'name' => $this->getName(),
+                'id' => preg_replace('/[^a-zA-Z0-9_-]/', '', ($this->getID() ?: $this->getName())),
+                'value' => $this->getValue(),
+                'rows' => $this->rows,
+                'showMedia' => $this->showMedia,
+                'required' => $this->getRequired(),
+                'initiallyHidden' => $this->initiallyHidden,
+                'allowUpload' => $this->allowUpload,
+                'initialFilter' => $this->initialFilter,
+                'resourceAlphaSort' => $this->resourceAlphaSort,
+                'absoluteURL' => $session->get('absoluteURL'),
+            ];
+            return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
         }
     }
 }

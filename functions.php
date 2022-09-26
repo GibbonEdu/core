@@ -465,11 +465,26 @@ function getWeekNumber($date, $connection2, $guid)
 }
 
 /**
- * Updated v18 to use a twig template.
+ * Render the editor. Updated v18 to use a twig template.
  *
- * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
+ * @deprecated  Since v25. Will be removed in the future.
+ *              Please use \Gibbon\Forms\Input\Editor directly.
+ *
+ * @param string   $guid              Obsoleted parameter.
+ * @param boolean  $tinymceInit
+ * @param string   $id
+ * @param string   $value
+ * @param integer  $rows
+ * @param boolean  $showMedia
+ * @param boolean  $required
+ * @param boolean  $initiallyHidden
+ * @param boolean  $allowUpload
+ * @param string   $initialFilter
+ * @param boolean  $resourceAlphaSort
+ *
+ * @return string
  */
-function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
+function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false): string
 {
     global $page, $session;
 
