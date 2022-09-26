@@ -72,7 +72,13 @@ class Config
 
         $config = (function () use ($path) {
             include($path);
-            return compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'guid');
+            return [
+                'databaseServer' => $databaseServer ?? null,
+                'databaseUsername' => $databaseUsername ?? null,
+                'databasePassword' => $databasePassword ?? null,
+                'databaseName' => $databaseName ?? null,
+                'guid' => $guid ?? null,
+            ];
         })();
 
         return (new static())
