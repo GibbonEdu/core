@@ -204,13 +204,19 @@ class Core
 
         $this->config = include $configFilePath;
 
-        if (!isset($databasePort)) $databasePort = '';
-        if (!isset($sessionHandler)) $sessionHandler = 'default';
-        if (!isset($sessionEncryptionKey)) $sessionEncryptionKey = '';
-
         // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
-            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching', 'sessionHandler', 'sessionEncryptionKey');
+            $this->config = [
+                'databaseServer' => $databaseServer ?? '',
+                'databaseUsername' => $databaseUsername ?? 'gibbon',
+                'databasePassword' => $databasePassword ?? '',
+                'databaseName' => $databaseName ?? 'gibbon',
+                'databasePort' => $databasePort ?? 3306,
+                'guid' => $guid ?? null,
+                'caching' => $caching ?? 10,
+                'sessionHandler' => $sessionHandler ?? null,
+                'sessionEncryptionKey' => $sessionEncryptionKey ?? null,
+            ];
         }
     }
 }
