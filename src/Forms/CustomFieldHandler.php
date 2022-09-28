@@ -73,6 +73,9 @@ class CustomFieldHandler
                 'Course' => __('Course'),
                 'Class' => __('Class'),
             ],
+            __('Planner') => [
+                'Lesson Plan' => __('Lesson Plan'),
+            ],
             __('Other') => [
                 'Custom' => __('Custom Context'),
             ]
@@ -143,6 +146,16 @@ class CustomFieldHandler
             ],
             'Class' => [
                 'Basic Details' => __('Basic Details'),
+            ],
+            'Lesson Plan' => [
+                'Basic Information' => __('Basic Information'),
+                'Lesson Content' => __('Lesson Content'),
+                'Homework' => __('Homework'),
+                'Markbook' => __('Markbook'),
+                'Advanced Options' => __('Advanced Options'),
+                'Outcomes' => __('Outcomes'),
+                'Access' => __('Access'),
+                'Guests' => __('Guests'),
             ],
             'Custom' => [
             ],
