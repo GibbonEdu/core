@@ -1,10 +1,10 @@
+<?xml version="1.0"?>
 <phpunit
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/3.7/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
          backupGlobals="false"
          backupStaticAttributes="false"
          bootstrap="bootstrap.php"
-         cacheTokens="false"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -19,12 +19,13 @@
          timeoutForMediumTests="10"
          timeoutForLargeTests="60"
          verbose="true">
+    <coverage/>
     <testsuites>
         <testsuite name="Tests">
             <directory suffix=".php">unit</directory>
         </testsuite>
     </testsuites>
     <logging>
-        <log type="testdox-text" target="log/testdox.txt"/>
+        <testdoxText outputFile="log/testdox.txt"/>
     </logging>
 </phpunit>
