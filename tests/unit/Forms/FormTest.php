@@ -87,26 +87,6 @@ class FormTest extends TestCase
         $this->assertSame($newRenderer, $form->getRenderer());
     }
 
-    public function testEachNewFormHasAFactory()
-    {
-        $form = Form::create('testID', 'testAction');
-
-        $this->assertInstanceOf(
-            FormFactoryInterface::class,
-            $form->getFactory()
-        );
-    }
-
-    public function testEachNewFormHasARenderer()
-    {
-        $form = Form::create('testID', 'testAction');
-
-        $this->assertInstanceOf(
-            FormRendererInterface::class,
-            $form->getRenderer()
-        );
-    }
-
     public function testEachNewFormHasBasicAttributes()
     {
         $form = Form::create('testID', 'testAction');
