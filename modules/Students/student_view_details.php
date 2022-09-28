@@ -41,6 +41,11 @@ use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
 use Gibbon\Module\Attendance\StudentHistoryView;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
+use Gibbon\Module\Staff\AbsenceNotificationProcess;
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\JoinMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -242,6 +247,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 } else {
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
+                    $settingGateway = $container->get(SettingGateway::class);
+                    $enableBigBlueButton = $settingGateway->getSettingByScope('System', 'enableBigBlueButton', true);
 
                     $page->breadcrumbs
                     ->add(__('View Student Profiles'), 'student_view.php')
@@ -2314,6 +2321,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Print assessments
                             echo getBehaviourRecord($container, $gibbonPersonID);
                         }
+                    } elseif ($subpage == 'VideoChat') {
+                        if ($enableBigBlueButton['value'] !== 'Y') {
+                            echo "<div class='error'>";
+                            echo __('Video chat feature was disabled on this system.');
+                            echo '</div>';
+                        } else {
+                            $bigBlueButtonURL = $settingGateway->getSettingByScope('System', 'bigBlueButtonURL', '');
+                            $bigBlueButtonCredentials = $settingGateway->getSettingByScope('System', 'bigBlueButtonCredentials', '');
+                            putenv('BBB_SERVER_BASE_URL='. $bigBlueButtonURL);
+                            putenv('BBB_SECRET='. $bigBlueButtonCredentials);
+
+                            // Init BigBlueButton API
+                            $bbb = new BigBlueButton();
+                            $meetingId = "user".(int)$gibbonPersonID.'_'.(int)$session->get('gibbonPersonID');
+                            $senderName = $session->get('preferredName').' '.$session->get('surname');
+                            $getMeetingInfoParams = new GetMeetingInfoParameters($meetingId, 'moderator_password');
+                            $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+                            
+                            if ($response->getReturnCode() == 'FAILED') {
+                                // meeting not found or already closed
+                                // Create the meeting
+                                $createParams = new CreateMeetingParameters($meetingId, "Contact Meeting");
+                                $createParams = $createParams->setModeratorPassword('moderator_password')
+                                                            ->setAttendeePassword('attendee_password');
+                                $response = $bbb->createMeeting($createParams);
+                            }
+
+                            // generate meeting url for recipients
+                            $joinParams = new JoinMeetingParameters($meetingId, $row['preferredName']. ' ' .$row['surname'], 'moderator_password');
+                            $joinParams->setRedirect(true);
+                            $link = $bbb->getJoinMeetingURL($joinParams);
+
+                            // generate meeting url for sender
+                            $joinParams = new JoinMeetingParameters($meetingId, $senderName, 'moderator_password');
+                            $joinParams->setRedirect(false);
+                            $joinResponse = $bbb->joinMeeting($joinParams);
+                            $bbbMeetingUrl = $joinResponse->getUrl();
+
+                            // HOMEWORK TABLE
+                            $process = $container->get(AbsenceNotificationProcess::class);
+                            $process->startSendingVideoChatRequest([$gibbonPersonID], $session->get('gibbonPersonID'), $senderName, $link);
+
+                            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
+                            echo '<tr>';
+                            echo "<td style='text-align: justify; padding-top: 5px; width: 100%; vertical-align: top; max-width: 752px!important; height: 500px;' colspan=3>";
+                            echo "<IFRAME src='".$bbbMeetingUrl."' allow='geolocation *; microphone *; camera *; display-capture *;' allowFullScreen='true' webkitallowfullscreen='true' mozallowfullscreen='true' sandbox='allow-same-origin allow-scripts allow-modals allow-forms' style='width:100%;height:100%;border:0' scrolling='no'></IFRAME>";
+                            echo '</td>';
+                            echo '</tr>';
+                            echo '</table>';
+                        }
                     }
 
                     // Handle Student Profile Hooks
@@ -2357,10 +2414,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                          $sidebarExtra .= '</div>';
                     }
 
-                     $sidebarExtra .= Format::userPhoto($studentImage, 240);
+                    $sidebarExtra .= Format::userPhoto($studentImage, 240);
+                    $sidebarExtra .= '<div class="column-no-break">';
+
+                    if ($enableBigBlueButton['value'] == 'Y') {                        
+                        $sidebarExtra .= '<h4>'.__('Contact').'</h4>';
+                        $sidebarExtra .= "<ul class='moduleMenu'>";
+                        $sidebarExtra .= "<li><a href='".$session->get('absoluteURL').'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=VideoChat'>".__('VideoChat').'</a></li>';
+                        $sidebarExtra .= '</ul>';
+                    }
 
                     //PERSONAL DATA MENU ITEMS
-                     $sidebarExtra .= '<div class="column-no-break">';
                      $sidebarExtra .= '<h4>'.__('Personal').'</h4>';
                      $sidebarExtra .= "<ul class='moduleMenu'>";
                     $style = '';
