@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
+use Gibbon\Forms\CustomFieldHandler;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -258,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
 
             //HOMEWORK
-            $form->addRow()->addHeading($homeworkNameSingular, __($homeworkNameSingular));
+            $form->addRow()->addHeading('Homework', __($homeworkNameSingular));
 
             $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
             $row = $form->addRow();
@@ -385,6 +386,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addFooter();
                 $row->addCheckbox('notify')->description(__('Notify all class participants'));
                 $row->addSubmit();
+
+            // CUSTOM FIELDS
+            $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Lesson Plan', [], '');
 
             echo $form->getOutput();
         }
