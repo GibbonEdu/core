@@ -89,7 +89,12 @@ $locale_code = $_POST['code'] ?? 'en_GB';
 
 //Set language pre-install
 if (function_exists('gettext')) {
-    $gibbon->locale->setLocale($locale_code);
+    try {
+        $gibbon->locale->setLocale($locale_code);
+    } catch (\Exception $e) {
+        // Do nothing.
+    }
+
     bindtextdomain('gibbon', '../i18n');
     textdomain('gibbon');
 }
