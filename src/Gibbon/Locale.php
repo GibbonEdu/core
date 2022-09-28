@@ -32,7 +32,12 @@ use Gibbon\Contracts\Services\Session as SessionInterface;
  */
 class Locale implements LocaleInterface
 {
-    protected $i18ncode;
+    /**
+     * The locale set through this class.
+     *
+     * @var string|null
+     */
+    protected $i18ncode = null;
 
     protected $absolutePath;
 
@@ -65,22 +70,38 @@ class Locale implements LocaleInterface
         // Cancel if there's no code set
         if (empty($i18ncode)) return;
 
-        $this->i18ncode = $i18ncode;
+        // Try setting locale
+        $result = setlocale(LC_ALL,
+            $this->i18ncode.'.utf8',
+            $this->i18ncode.'.UTF8',
+            $this->i18ncode.'.utf-8',
+            $this->i18ncode.'.UTF-8',
+            $this->i18ncode
+        );
+        if ($result === false || !in_array($result, [
+            $this->i18ncode.'.utf8',
+            $this->i18ncode.'.UTF8',
+            $this->i18ncode.'.utf-8',
+            $this->i18ncode.'.UTF-8',
+            $this->i18ncode,
+        ])) {
+            throw new \Exception('Locale not supported by this system: ' . $i18ncode);
+        }
 
-        putenv('LC_ALL='.$this->i18ncode.'.utf8');
-        putenv('LANG='.$this->i18ncode.'.utf8');
-        putenv('LANGUAGE='.$this->i18ncode.'.utf8');
-        $localeSet = setlocale(LC_ALL, $this->i18ncode.'.utf8',
-                                       $this->i18ncode.'.UTF8',
-                                       $this->i18ncode.'.utf-8',
-                                       $this->i18ncode.'.UTF-8',
-                                       $this->i18ncode);
+        // After confirmed locale setup, set the object accordingly.
+        $this->i18ncode = $i18ncode;
+        putenv('LC_ALL='.$result);
+        putenv('LANG='.$result);
+        putenv('LANGUAGE='.$result);
+
+        // Return the default locale, or the current system locale.
+        return $i18ncode;
     }
 
     /**
-     * Get the current i18n code
+     * Get the current i18n code, or null if not setup.
      *
-     * @return  string
+     * @return  string|null
      */
     public function getLocale() {
         return $this->i18ncode;
@@ -152,7 +173,7 @@ class Locale implements LocaleInterface
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
         $stringReplacements = $session->get('stringReplacement', null);
-        
+
         // Do this once per session, only if the value doesn't exist
         if ($forceRefresh || $stringReplacements === null) {
 
@@ -189,7 +210,7 @@ class Locale implements LocaleInterface
     protected static function formatString(string $text, array $params = [])
     {
         if (empty($params)) return $text;
-        
+
         return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
             $placeholder = stripos($key, '$s') !== false ? $key : '{'.$key.'}';
             $carry[$placeholder] = $params[$key]; // apply quote to the keys for replacement
@@ -235,7 +256,7 @@ class Locale implements LocaleInterface
     }
 
     /**
-     * Change the auth message when not logged in. Apply this as a string replacement 
+     * Change the auth message when not logged in. Apply this as a string replacement
      * rather than changing every instance of the string in the codebase.
      *
      * @param string  $text Raw string to apply the string replacement logics

@@ -48,7 +48,12 @@ class TranslateNTest extends TestCase
         // mocked locale object
         $i18ncode = 'es_ES';
         $locale = new Locale(__DIR__ . '/mock', $mockSession);
-        $locale->setLocale($i18ncode);
+        try {
+            $locale->setLocale($i18ncode);
+        } catch (\Exception $e) {
+            $this->markTestSkipped('Unable to proceed with the test: ' . $e->getMessage());
+            return;
+        }
         $locale->setSystemTextDomain(__DIR__ . '/mock');
         $this->locale = $locale;
     }

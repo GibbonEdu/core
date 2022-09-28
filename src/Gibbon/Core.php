@@ -65,7 +65,7 @@ class Core
     public function __construct($directory)
     {
         $this->basePath = realpath($directory);
-        
+
         // Load the configuration, if installed
         $this->loadConfigFromFile($this->basePath . '/config.php');
 
@@ -84,7 +84,7 @@ class Core
 
         $db = $container->get('db');
         $this->session = $container->get('session');
-        
+
         Format::setupFromSession($this->session);
 
         if (empty($this->session->get('systemSettingsSet'))) {
@@ -96,7 +96,11 @@ class Core
             ini_set('display_errors', 0);
         }
 
-        $this->locale->setLocale($this->session->get(array('i18n', 'code')));
+        try {
+            $this->locale->setLocale($this->session->get(array('i18n', 'code')));
+        } catch (\Exception $e) {
+            error_log('Core Warning: ' . $e->getMessage());
+        }
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
         $this->locale->setStringReplacementList($this->session, $db);
@@ -147,7 +151,7 @@ class Core
     /**
      * Get a config value by name, otherwise return the config array.
      * @param string|null $name
-     * 
+     *
      * @return mixed|array
      */
     public function getConfig($name = null)
@@ -197,7 +201,7 @@ class Core
     {
         // Load the config values (from an array if possible)
         if (!$this->isInstalled()) return;
-        
+
         $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';

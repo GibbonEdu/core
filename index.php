@@ -278,11 +278,19 @@ if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
     $sql = "SELECT * FROM gibboni18n WHERE code=:code LIMIT 1";
 
     if ($result = $pdo->selectOne($sql, $data)) {
-        setLanguageSession($guid, $result, false);
-        $gibbon->locale->setLocale($_GET['i18n']);
-        $gibbon->locale->setTextDomain($pdo);
-        $localeCode = str_replace('_', '-', $gibbon->locale->getLocale());
-        $cacheLoad = true;
+        try {
+            $gibbon->locale->setLocale($_GET['i18n']);
+
+            // Only do the below if the setLocale is success.
+            setLanguageSession($guid, $result, false);
+            $gibbon->locale->setLocale($_GET['i18n']);
+            $gibbon->locale->setTextDomain($pdo);
+            $localeCode = str_replace('_', '-', $_GET['i18n']);
+            $cacheLoad = true;
+        } catch (\Exception $e) {
+            error_log('Warning: ' . $e->getMessage());
+            $page->addWarning($e->getMessage());
+        }
     }
 }
 
