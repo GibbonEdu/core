@@ -36,7 +36,11 @@ $_POST = $validator->sanitize($_POST);
 
 // Fix missing locale causing failed page load
 if (empty($gibbon->locale->getLocale())) {
-    $gibbon->locale->setLocale('en_GB');
+    try {
+        $gibbon->locale->setLocale('en_GB');
+    } catch (\Exception $e) {
+        // Do nothing.
+    }
 }
 
 // Page object for rendering
