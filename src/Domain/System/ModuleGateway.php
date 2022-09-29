@@ -26,7 +26,7 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * Module Gateway
  *
- * @version v16
+ * @version v25
  * @since   v16
  */
 class ModuleGateway extends QueryableGateway implements ModuleGatewayInterface
@@ -140,5 +140,20 @@ class ModuleGateway extends QueryableGateway implements ModuleGatewayInterface
                 ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
 
         return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since v25
+     */
+    public function getActiveAdditional(): array
+    {
+        $select = $this->newSelect()
+            ->from($this->getTableName())
+            ->cols($this->getSearchableColumns())
+            ->where('active="Y"')
+            ->where('type="Additional"');
+        return $this->runSelect($select)->fetchAll();
     }
 }

@@ -51,4 +51,16 @@ interface ModuleGatewayInterface
      * @return array
      */
     public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID);
+
+    /**
+     * Get all active module
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @return array  Modules information specified
+     *    An array of "searchable field" in the module
+     *    table.
+     */
+    public function getActiveAdditional(): array;
 }
