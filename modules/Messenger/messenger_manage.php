@@ -84,11 +84,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             ->displayLabel()
             ->prepend(' | ');
     }
+
+    $table->modifyRows(function($values, $row) {
+        if ($values['status'] != 'Sent') $row->addClass('dull');
+        return $row;
+    });
     
     $table->addColumn('subject', __('Subject'))
         ->context('primary')
         ->format(function ($values) {
             $tag = $values['confidential'] == 'Y' ? Format::tag(__('Confidential'), 'dull ml-2') : '';
+            if ($values['status'] != 'Sent') {
+                $tag .= Format::tag(__('Draft'), 'message ml-2');
+            }
             return Format::bold($values['subject']).$tag;
         });
 
@@ -241,12 +249,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Messenger/messenger_manage_edit.php');
+                ->setURL('/modules/Messenger/messenger_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Messenger/messenger_manage_delete.php');
+                ->setURL('/modules/Messenger/messenger_manage_delete.php');
 
-            if (!is_null($values['emailReceipt'])) {
+            if (!is_null($values['emailReceipt']) && $values['status'] == 'Sent') {
                 $actions->addAction('send', __('View Send Report'))
                         ->setURL('/modules/Messenger/messenger_manage_report.php')
                         ->setIcon('target');

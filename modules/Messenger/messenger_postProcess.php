@@ -34,12 +34,12 @@ $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Fail 0
-    return ['return' => 'fail0'];
+    return ['return' => 'error0'];
 }
 else {
 	if (empty($_POST)) {
         //Fail 5
-        return ['return' => 'fail5'];
+        return ['return' => 'error5'];
 	}
 	else {
 		//Proceed!
@@ -111,7 +111,7 @@ else {
 
 		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR $individualNaming == "") {
             //Fail 3
-            return ['return' => 'fail3'];
+            return ['return' => 'error3'];
 		}
 		else {
             $settingGateway = $container->get(SettingGateway::class);
@@ -2131,7 +2131,7 @@ else {
 			}
 
             return [
-                'return'        => $partialFail ? 'fail4' : 'success0',
+                'return'        => $partialFail ? 'error4' : 'success0',
                 'emailCount'    => $emailCount ?? 0,
                 'emailErrors'   => $emailErrors ?? [],
                 'smsCount'      => $smsCount ?? 0,

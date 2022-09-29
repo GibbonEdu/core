@@ -22,6 +22,7 @@ use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -36,44 +37,20 @@ else {
         $page->addError(__("You do not have a personal email address set in Gibbon, and so cannot send out emails."));
     } else {
         //Proceed!
-
         $settingGateway = $container->get(SettingGateway::class);
 
-        if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-        $addReturnMessage="" ;
-        $class="error" ;
-        if (!($addReturn=="")) {
-            if ($addReturn=="fail0") {
-                $addReturnMessage=__("Your request failed because you do not have access to this action.") ;
-            }
-            else if ($addReturn=="fail2") {
-                $addReturnMessage=__("Your request failed due to a database error.") ;
-            }
-            else if ($addReturn=="fail3") {
-                $addReturnMessage=__("Your request failed because your inputs were invalid.") ;
-            }
-            else if ($addReturn=="fail4") {
-                $addReturnMessage=__("Your request was completed successfully, but some or all messages could not be delivered.") ;
-            }
-            else if ($addReturn=="fail5") {
-                $addReturnMessage=__("Your request failed due to an attachment error.") ;
-            }
-            else if ($addReturn=="success0") {
-                if (!empty($_GET['notification']) && $_GET['notification'] == 'Y') {
-                    $addReturnMessage = __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.");
-                } else {
-                    $addReturnMessage = __('Your message has been posted successfully.');
-                }
+        $page->return->addReturns([
+            'error4' => __('Your request was completed successfully, but some or all messages could not be delivered.'),
+            'error5' => __('Your request failed due to an attachment error.'),
+            'success1' => !empty($_GET['notification']) && $_GET['notification'] == 'Y'
+                ? __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.")
+                : __('Your message has been posted successfully.'),
+            'success2' => __('Your message has been saved as a draft. You can continue to edit and preview your message before sending.')
+        ]);
 
-                $class="success" ;
-            }
-            print "<div class='$class'>" ;
-                print $addReturnMessage;
-            print "</div>" ;
-        }
-
-        $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messenger_postPreProcess.php');
+        $form = Form::create('messengerMessage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/messenger_postPreProcess.php');
         $form->addHiddenValue('address', $session->get('address'));
+        $form->addHiddenValue('status', 'Sending');
 
         //DELIVERY MODE
         $form->addRow()->addHeading('Delivery Mode', __('Delivery Mode'));
@@ -682,10 +659,31 @@ else {
                         ->fromArray($individuals);
         }
 
-        $row = $form->addRow();
+        $form->addRow()->addClass('email')->addHeading('Preflight', __('Preflight'))->append(__("Before sending your message you'll have the option to preview the message as well as view a list of the recipients, based on your targets selected above. You can also choose to save your message as a draft and return to it later."));
+
+        $row = $form->addRow()->addClass('email');
+            $row->addCheckbox('sendTestEmail')->description(__('Send a test copy to {email}', ['email' => '<u>'.$session->get('email').'</u>']));
+
+        $form->toggleVisibilityByClass('noEmail')->onRadio('email')->when('N');
+
+        $row = $form->addRow('submit');
             $row->addFooter();
-            $row->addSubmit();
+            $col = $row->addColumn()->addClass('items-center');
+            $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('email rounded-sm w-24 mr-2');
+            $col->addSubmit(__('Preview & Send'))->addClass('email');
+            $col->addSubmit()->addClass('noEmail');
 
         echo $form->getOutput();
     }
 }
+
+?>
+<script>
+function saveDraft() {
+    var form = LiveValidationForm.getInstance(document.getElementById('messengerMessage'));
+    if (LiveValidation.massValidate(form.fields)) {
+        $('input[name="status"]').val('Draft');
+        document.getElementById('messengerMessage').submit();
+    }
+}
+</script>

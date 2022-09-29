@@ -91,16 +91,16 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
                     $actionText .= '<br/>' . sprintf(__('%1$s SMS(es) were dispatched in %2$s batch(es).'), $sendResult['smsCount'], $sendResult['smsBatchCount']);
                 }
                 break;
-            case 'fail0':
+            case 'error0':
                 $actionText = __('Your request failed because you do not have access to this action.');
                 break;
-            case 'fail2':
+            case 'error2':
                 $actionText = __('Your request failed due to a database error.');
                 break;
-            case 'fail3':
+            case 'error3':
                 $actionText = __('Your request failed because your inputs were invalid.');
                 break;
-            case 'fail5':
+            case 'error5':
                 $actionText = __('Your request failed due to an attachment error.');
                 break;
             default:

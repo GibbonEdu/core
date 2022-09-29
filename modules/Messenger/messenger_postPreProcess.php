@@ -30,15 +30,18 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_post.php";
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == false) {
-    $URL .= "&addReturn=fail0";
+    $URL .= "&return=error0";
     header("Location: {$URL}");
     exit;
 } else {
     $messengerGateway = $container->get(MessengerGateway::class);
 
+    $status = $_POST['status'] ?? 'Sending';
+
     $from = $_POST['from'] ?? '';
     $data = [
         'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),
+        'status'            => $_POST['status'] ?? 'Sending',
         'email'             => $_POST['email'] ?? 'N',
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
@@ -57,32 +60,34 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     // Validate that the required values are present
     if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $from == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
-        $URL .= "&addReturn=fail3";
+        $URL .= "&return=error3";
         header("Location: {$URL}");
         exit;
     }
 
     // Check for empty POST. This can happen if attachments go horribly wrong.
     if (empty($_POST)) {
-        $URL .= "&addReturn=fail5";
+        $URL .= "&return=error5";
         header("Location: {$URL}");
         exit;
     }
 
     $gibbonMessengerID = $messengerGateway->insert($data);
 
-    $process = $container->get(MessageProcess::class);
-    $process->startSendMessage(
-        $gibbonMessengerID,
-        $gibbon->session->get('gibbonSchoolYearID'),
-        $gibbon->session->get('gibbonPersonID'),
-        $gibbon->session->get('gibbonRoleIDCurrent'),
-        $_POST
-    );
+    // $process = $container->get(MessageProcess::class);
+    // $process->startSendMessage(
+    //     $gibbonMessengerID,
+    //     $gibbon->session->get('gibbonSchoolYearID'),
+    //     $gibbon->session->get('gibbonPersonID'),
+    //     $gibbon->session->get('gibbonRoleIDCurrent'),
+    //     $_POST
+    // );
 
     $session->set('pageLoads', null);
     $notification = $data['email'] == 'Y' || $data['sms'] == 'Y' ? 'Y' : 'N';
 
-    $URL.="&addReturn=success0&notification={$notification}";
+    $URL.= $data['status'] == 'Draft'
+        ? "&return=success2"
+        : "&return=success1&notification={$notification}";
     header("Location: {$URL}") ;
 }
