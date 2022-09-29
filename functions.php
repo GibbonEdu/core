@@ -24,6 +24,7 @@ use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Input\Editor;
+use Gibbon\Locale;
 
 function getIPAddress() {
     $return = false;
@@ -114,7 +115,10 @@ function __($text, $params=[], $options=[])
         return $text;
     }
 
-    return $gibbon->locale->translate($text, $params, $options);
+    // Fallback to format string if global locale does not exists.
+    return isset($gibbon->locale)
+        ? $gibbon->locale->translate($text, $params, $options)
+        : Locale::formatString($text, $params);
 }
 
 /**
