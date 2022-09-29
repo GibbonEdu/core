@@ -29,20 +29,35 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class ModuleGateway extends QueryableGateway
+class ModuleGateway extends QueryableGateway implements ModuleGatewayInterface
 {
     use TableAware;
 
+    /**
+     * Table name used by TableAware trait.
+     *
+     * @var string
+     */
     private static $tableName = 'gibbonModule';
+
+    /**
+     * Table primary key used by TableAware trait.
+     *
+     * @var string
+     */
     private static $primaryKey = 'gibbonModuleID';
 
-    private static $searchableColumns = ['name'];
-    
     /**
-     * Queries the list for the Manage Modules page.
+     * Searchable columns used by TableAware trait.
      *
-     * @param QueryCriteria $criteria
-     * @return DataSet
+     * @var string
+     */
+    private static $searchableColumns = ['name'];
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since v16
      */
     public function queryModules(QueryCriteria $criteria)
     {
@@ -71,9 +86,9 @@ class ModuleGateway extends QueryableGateway
     }
 
     /**
-     * Gets an unfiltered list of all modules.
+     * {@inheritDoc}
      *
-     * @return array
+     * @since v16
      */
     public function getAllModuleNames()
     {
@@ -82,24 +97,34 @@ class ModuleGateway extends QueryableGateway
         return $this->db()->select($sql)->fetchAll(\PDO::FETCH_COLUMN);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since v16
+     */
     public function selectModulesByRole($gibbonRoleID)
     {
         $mainMenuCategoryOrder = $this->db()->selectOne("SELECT value FROM gibbonSetting WHERE scope='System' AND name='mainMenuCategoryOrder'");
 
         $data = array('gibbonRoleID' => $gibbonRoleID, 'menuOrder' => $mainMenuCategoryOrder);
         $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
-                FROM gibbonModule 
-                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                WHERE gibbonModule.active='Y' 
-                AND gibbonAction.menuShow='Y' 
-                AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
-                GROUP BY gibbonModule.name 
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                WHERE gibbonModule.active='Y'
+                AND gibbonAction.menuShow='Y'
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID
+                GROUP BY gibbonModule.name
                 ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
 
         return $this->db()->select($sql, $data);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @since v16
+     */
     public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID)
     {
         $data = array('gibbonModuleID' => $gibbonRoleID, 'gibbonRoleID' => $gibbonModuleID);
