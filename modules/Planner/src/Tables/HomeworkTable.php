@@ -107,6 +107,7 @@ class HomeworkTable
 
         $table->addColumn('class', __('Class'))
             ->sortable(['course', 'class'])
+            ->context('primary')
             ->description(__('Date'))
             ->format(function ($homework) {
                 $output = Format::bold(Format::courseClassName($homework['course'], $homework['class'])).'<br/>'
@@ -120,6 +121,7 @@ class HomeworkTable
 
         $table->addColumn('name', __('Lesson'))
             ->description(__('Unit'))
+            ->context('primary')
             ->format(function ($homework) {
                 return !empty($homework['unit'])
                     ? Format::bold($homework['name']).'<br/>'.Format::small($homework['unit'])
@@ -169,6 +171,7 @@ class HomeworkTable
 
         if ($roleCategory == 'Student' || $roleCategory == 'Parent') {
             $table->addColumn('complete', __('Complete?'))
+                ->context('primary')
                 ->notSortable()
                 ->width('10%')
                 ->format(function ($homework) use ($roleCategory) {
