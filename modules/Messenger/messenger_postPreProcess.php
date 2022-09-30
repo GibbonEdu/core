@@ -36,8 +36,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 } else {
     $messengerGateway = $container->get(MessengerGateway::class);
 
-    $status = $_POST['status'] ?? 'Sending';
-
     $from = $_POST['from'] ?? '';
     $data = [
         'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),

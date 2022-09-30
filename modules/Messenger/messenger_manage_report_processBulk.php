@@ -39,7 +39,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
     } else {
         $highestAction=getHighestGroupedAction($guid, '/modules/Messenger/messenger_manage_report.php', $connection2) ;
         if ($highestAction==FALSE) {
-            $URL.="&updateReturn=error0" ;
+            $URL.="&return=error0" ;
             header("Location: {$URL}");
             exit;
         }
