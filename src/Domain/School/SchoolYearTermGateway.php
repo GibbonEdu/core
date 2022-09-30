@@ -74,12 +74,24 @@ class SchoolYearTermGateway extends QueryableGateway
     public function selectSchoolClosuresByTerm($gibbonSchoolYearTermID)
     {
         $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
-        $sql = "SELECT date, name 
-                FROM gibbonSchoolYearSpecialDay 
-                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID 
-                AND type='School Closure' 
+        $sql = "SELECT date, name
+                FROM gibbonSchoolYearSpecialDay
+                WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID
+                AND type='School Closure'
                 ORDER BY date";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getCurrentTermByDate($date)
+    {
+        $data = array('date' => $date);
+        $sql = "SELECT gibbonSchoolYearTermID, gibbonSchoolYearID, name, sequenceNumber, firstDay, lastDay
+                FROM gibbonSchoolYearTerm
+                WHERE firstDay<=:date AND lastDay>=:date
+                LIMIT 0, 1";
+
+        $result = $this->db()->select($sql, $data);
+        return ($result->rowCount() == 1) ? $result->fetch() : false;
     }
 }
