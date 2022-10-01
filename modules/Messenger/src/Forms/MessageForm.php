@@ -64,7 +64,7 @@ class MessageForm extends Form
 
         // Get the existing message data, if any
         $values = !empty($gibbonMessengerID) ? $this->messengerGateway->getByID($gibbonMessengerID) : [];
-        $sent = !empty($values) && $values['status'] != 'Draft';
+        $sent = !empty($values) && $values['status'] == 'Sent';
 
         // FORM
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
@@ -94,8 +94,8 @@ class MessageForm extends Form
                     $from[$this->session->get('organisationEmail')] = $this->session->get('organisationEmail');
                 }
                 $row = $form->addRow()->addClass('email');
-                    $row->addLabel('from', __('Email From'));
-                    $row->addSelect('from')->fromArray($from)->required();
+                    $row->addLabel('emailFrom', __('Email From'));
+                    $row->addSelect('emailFrom')->fromArray($from)->required();
 
                 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_fromSchool')) {
                     $row = $form->addRow()->addClass('email');
@@ -698,14 +698,13 @@ class MessageForm extends Form
             $form->addRow()->addClass('email')->addHeading('Preflight', __('Preflight'))->append(__("Before sending your message you'll have the option to preview the message as well as view a list of the recipients, based on your targets selected above. You can also choose to save your message as a draft and return to it later."));
 
             $row = $form->addRow()->addClass('email');
-                $row->addCheckbox('sendTestEmail')->description(__('Send a test copy to {email}', ['email' => '<u>'.$this->session->get('email').'</u>']));
+                $row->addCheckbox('sendTestEmail')->description(__('Send a test copy to {email}', ['email' => '<u>'.$this->session->get('email').'</u>']))->setValue('Y');
 
             $form->toggleVisibilityByClass('noEmail')->onRadio('email')->when('N');
 
             $row = $form->addRow('submit');
-                $row->addFooter();
+                $row->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('email rounded-sm w-24 mr-2');
                 $col = $row->addColumn()->addClass('items-center');
-                $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('email rounded-sm w-24 mr-2');
                 $col->addSubmit(__('Preview & Send'))->addClass('email');
                 $col->addSubmit()->addClass('noEmail');
         }

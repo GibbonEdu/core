@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precendence
-    $highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -41,10 +41,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $page->return->addReturns([
         'error4' => __('Your request was completed successfully, but some or all messages could not be delivered.'),
         'error5' => __('Your request failed due to an attachment error.'),
+        'error6' => __('Your message is not ready to send because no targets have been selected. Be sure to select at least one target for your message.'),
         'success1' => !empty($_GET['notification']) && $_GET['notification'] == 'Y'
             ? __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.")
             : __('Your message has been posted successfully.'),
-        'success2' => __('Your message has been saved as a draft. You can continue to edit and preview your message before sending.')
     ]);
 
     // Check if gibbonMessengerID specified
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         return;
     }
 
-    if ($values['status'] == 'Draft') {
+    if ($values['status'] != 'Sent') {
         $page->addMessage('<b><u>'.__('Note').'</u></b>: '.__('This is a draft message, it has not been sent yet. You may continue editing the message contents below.'));
     } else {
         $page->addWarning('<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.'));
@@ -84,7 +84,7 @@ function saveDraft() {
     $('option', '#individualList').each(function() {
         $(this).prop('selected', true);
     });
-    
+
     var form = LiveValidationForm.getInstance(document.getElementById('messengerMessage'));
     if (LiveValidation.massValidate(form.fields)) {
         $('input[name="status"]').val('Draft');

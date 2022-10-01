@@ -27,6 +27,10 @@ use Gibbon\Services\BackgroundProcess;
 use Gibbon\Contracts\Database\Connection;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
 
 /**
  * MessageProcess
@@ -49,23 +53,27 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         
         // Setup the core Gibbon objects
         $container = $this->getContainer();
-        $gibbon = $container->get('config');
-        $guid = $gibbon->getConfig('guid');
         $pdo = $container->get(Connection::class);
         $connection2 = $pdo->getConnection();
-        $session = $gibbon->session;
+        $session = $container->get(Session::class);
+        $guid = $session->get('guid');
 
         // Setup session variables for this user
         SessionFactory::populateSettings($session, $pdo);
         $userData = $container->get(UserGateway::class)->getSafeUserData($gibbonPersonID);
         $session->set($userData);
 
-        $gibbon->session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
-        $gibbon->session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
-        $gibbon->session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
+        $session->set('gibbonRoleIDCurrent', $gibbonRoleIDCurrent);
+        $session->set('gibbonSchoolYearID', $gibbonSchoolYearID);
+        $session->set('gibbonSchoolYearIDCurrent', $gibbonSchoolYearID);
 
         // Setup messenger variables
         $AI = str_pad($gibbonMessengerID, 12, '0', STR_PAD_LEFT);
+        $messengerReceiptGateway = $container->get(MessengerReceiptGateway::class);
+        $messengerGateway = $container->get(MessengerGateway::class);
+
+        // Get the recipients (which have already been manually checked)
+        $report = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
 
         // Run the original message process script
         $sendResult = include __DIR__ . '/../messenger_postProcess.php';
@@ -76,6 +84,28 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
         }
 
         return $sendResult;
+    }
+
+    public function runSendDraft($messageData)
+    {
+        if ($messageData['email'] != 'Y') return false;
+
+        $session = $this->getContainer()->get(Session::class);
+        $mail = $this->getContainer()->get(Mailer::class);
+
+        $mail->Subject = __('Draft').': '.$messageData['subject'];
+        $mail->SetFrom($messageData['emailFrom']);
+        $mail->AddReplyTo($messageData['emailReplyTo']);
+        $mail->AddAddress($session->get('email'));
+
+        $messageData['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $messageData['body']);
+
+        $mail->renderBody('mail/email.twig.html', [
+            'title'  => $messageData['subject'],
+            'body'   => $messageData['body'],
+        ]);
+
+        return $mail->Send();
     }
 
     protected function sendResultNotification($gibbonPersonID, $gibbonMessengerID, $subject, $sendResult)

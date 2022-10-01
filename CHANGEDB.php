@@ -692,4 +692,9 @@ ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelActivities` ENUM('Y','N') DE
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing','Staff Profile','Lesson Planner') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonPlannerEntry` ADD `fields` TEXT NULL AFTER `gibbonPersonIDLastEdit`;end
 ALTER TABLE `gibbonMessenger` ADD `status` ENUM('Draft','Sending','Sent') NOT NULL DEFAULT 'Sent' AFTER `gibbonSchoolYearID`;end
+ALTER TABLE `gibbonMessenger` ADD `emailFrom` VARCHAR(75) NULL AFTER `timestamp`;end
+ALTER TABLE `gibbonMessenger` ADD `emailReplyTo` VARCHAR(75) NULL AFTER `emailFrom`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD `sent` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `gibbonPersonID`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD `nameListStudent` TEXT NULL AFTER `gibbonPersonIDListStudent`;end
+UPDATE `gibbonMessengerReceipt` SET sent='Y';end
 ";

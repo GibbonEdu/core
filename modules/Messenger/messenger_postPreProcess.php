@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageProcess;
+use Gibbon\Module\Messenger\MessageTargets;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
 require_once '../../gibbon.php';
@@ -27,7 +28,9 @@ require_once '../../gibbon.php';
 $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
 
 $address = $_POST['address'] ?? '';
-$URL = $session->get('absoluteURL') . "/index.php?q=/modules/" . getModuleName($address) . "/messenger_post.php";
+$URL = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_post.php&sidebar=true';
+$URLSend = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_postPreview.php';
+$URLEdit = $session->get('absoluteURL') . '/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true';
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == false) {
     $URL .= "&return=error0";
@@ -35,8 +38,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     exit;
 } else {
     $messengerGateway = $container->get(MessengerGateway::class);
+    $messageTargets = $container->get(MessageTargets::class);
 
-    $from = $_POST['from'] ?? '';
+    $sendTestEmail = $_GET['sendTestEmail'] ?? 'N';
     $data = [
         'gibbonSchoolYearID'=> $gibbon->session->get('gibbonSchoolYearID'),
         'status'            => $_POST['status'] ?? 'Sending',
@@ -49,6 +53,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         'sms'               => $_POST['sms'] ?? 'N',
         'subject'           => $_POST['subject'] ?? '',
         'body'              => $_POST['body'] ?? '',
+        'emailFrom'         => $_POST['emailFrom'] ?? $session->get('email'),
+        'emailReplyTo'      => $_POST['emailReplyTo'] ?? $session->get('email'),
         'emailReceipt'      => $_POST['emailReceipt'] ?? 'N',
         'emailReceiptText'  => $_POST['emailReceiptText'] ?? '',
         'confidential'      => $_POST['confidential'] ?? 'N',
@@ -57,7 +63,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     ];
 
     // Validate that the required values are present
-    if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $from == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
+    if (empty($data['subject']) || empty($data['body']) || ($data['email'] == 'Y' && $data['emailFrom'] == '') || ($data['emailReceipt'] == 'Y' && $data['emailReceiptText'] == '')) {
         $URL .= "&return=error3";
         header("Location: {$URL}");
         exit;
@@ -70,22 +76,41 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         exit;
     }
 
+    // Insert the message and get the ID
     $gibbonMessengerID = $messengerGateway->insert($data);
+    
+    $URLEdit .= "&gibbonMessengerID={$gibbonMessengerID}";
+    $URLSend .= "&gibbonMessengerID={$gibbonMessengerID}";
 
-    // $process = $container->get(MessageProcess::class);
-    // $process->startSendMessage(
-    //     $gibbonMessengerID,
-    //     $gibbon->session->get('gibbonSchoolYearID'),
-    //     $gibbon->session->get('gibbonPersonID'),
-    //     $gibbon->session->get('gibbonRoleIDCurrent'),
-    //     $_POST
-    // );
+    // Send Draft
+    $testEmail = 0;
+    if ($sendTestEmail == 'Y') {
+        $process = $container->get(MessageProcess::class);
+        $testEmail =  $process->runSendDraft($data);
+        $URLSend .= "&testEmail={$testEmail}";
+        $URLEdit .= "&testEmail={$testEmail}";
+    }
 
-    $session->set('pageLoads', null);
-    $notification = $data['email'] == 'Y' || $data['sms'] == 'Y' ? 'Y' : 'N';
+    // Go to preview page?
+    if ($data['status'] == 'Sending') {
+        $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data);
 
-    $URL.= $data['status'] == 'Draft'
-        ? "&return=success2"
-        : "&return=success1&notification={$notification}";
-    header("Location: {$URL}") ;
+        if (empty($recipients)) {
+            $URLEdit.="&return=error6";
+            header("Location: {$URLEdit}");
+            exit;
+        }
+
+        header("Location: {$URLSend}");
+        exit;
+    }
+
+    // Otherwise save any edits to targets
+    $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
+
+    $URLEdit .= $partialFail
+        ? "&return=warning1"
+        : "&return=success0";
+
+    header("Location: {$URLEdit}") ;
 }

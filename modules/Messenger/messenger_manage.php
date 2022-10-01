@@ -225,21 +225,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         });
 
     $table->addColumn('email', __('Email'))->format(function ($values) use (&$session) {
+        if ($values['status'] != 'Sent') return '';
+
         return $values['email'] == 'Y'
-            ? '<img title="'.__('Sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by email.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by email.'))
+            : Format::icon('iconCross', __('Not sent by email.'));
     });
 
     $table->addColumn('messageWall', __('Wall'))->format(function ($values) use (&$session) {
+        if ($values['status'] != 'Sent') return '';
+
         return $values['messageWall'] == 'Y'
-            ? '<img title="'.__('Sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by message wall.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by message wall.'))
+            : Format::icon('iconCross', __('Not sent by message wall.'));
     });
 
     $table->addColumn('sms', __('SMS'))->format(function ($values) use (&$session) {
+        if ($values['status'] != 'Sent') return '';
+
         return $values['sms'] == 'Y'
-            ? '<img title="'.__('Sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconTick.png"/>'
-            : '<img title="'.__('Not sent by SMS.').'" src="'.$session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/iconCross.png"/>';
+            ? Format::icon('iconTick', __('Sent by SMS.'))
+            : Format::icon('iconCross', __('Not sent by SMS.'));
     });
 
     // ACTIONS

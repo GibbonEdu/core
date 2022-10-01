@@ -65,9 +65,9 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                 header("Location: {$URL}");
                 exit;
             } else {
-                $row = $result->fetch();
+                $values = $result->fetch();
 
-                if ($row['gibbonPersonID'] != $session->get('gibbonPersonID') && $highestAction != 'Manage Messages_all') {
+                if ($values['gibbonPersonID'] != $session->get('gibbonPersonID') && $highestAction != 'Manage Messages_all') {
                     $URL .= '&return=error0';
                     header("Location: {$URL}");
                     exit;
@@ -75,12 +75,12 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                 else {
                     //Prep message
                     $emailCount = 0;
-                    $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
+                    $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>";
 
                     $mail= $container->get(Mailer::class);
                     $mail->SMTPKeepAlive = true;
     				$mail->SetFrom($session->get('email'), $session->get('preferredName') . ' ' . $session->get('surname'));
-    				$mail->Subject=__('REMINDER:').' '.$row['subject'];
+    				$mail->Subject = $values['emailReceipt'] == 'Y' ? __('REMINDER:').' '.$values['subject'] : $values['subject'];
 
                     //Scan through receipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {
@@ -101,21 +101,21 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                             $mail->ClearAddresses();
     						$mail->AddAddress($rowRecipt['contactDetail']);
     						//Deal with email receipt and body finalisation
-    						if ($row['emailReceipt'] == 'Y') {
-    							$bodyReadReceipt = '<a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$row['emailReceiptText'].'</a>';
-    							if (is_numeric(strpos($row['body'], '[confirmLink]'))) {
-    								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $row['body']);
+    						if ($values['emailReceipt'] == 'Y') {
+    							$bodyReadReceipt = '<a target="_blank" href="'.$session->get('absoluteURL').'/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID='.$gibbonMessengerID.'&gibbonPersonID='.$rowRecipt['gibbonPersonID'].'&key='.$rowRecipt['key'].'">'.$values['emailReceiptText'].'</a>';
+    							if (is_numeric(strpos($values['body'], '[confirmLink]'))) {
+    								$bodyOut = $bodyReminder.str_replace('[confirmLink]', $bodyReadReceipt, $values['body']);
     							}
     							else {
-    								$bodyOut = $bodyReminder.$row['body'].$bodyReadReceipt;
+    								$bodyOut = $bodyReminder.$values['body'].$bodyReadReceipt;
     							}
     						}
     						else {
-    							$bodyOut = $bodyReminder.$row['body'];
+    							$bodyOut = $values['body'];
     						}
 
                             $mail->renderBody('mail/email.twig.html', [
-                                'title'  => $row['subject'],
+                                'title'  => $values['subject'],
                                 'body'   => $bodyOut
                             ]);
 
