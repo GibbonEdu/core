@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Module\Messenger\Forms;
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
@@ -70,7 +69,8 @@ class MessageForm extends Form
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
         $form->addHiddenValue('address', $this->session->get('address'));
         $form->addHiddenValue('gibbonMessengerID', $values['gibbonMessengerID'] ?? '');
-        $form->addHiddenValue('status', empty($values) || $values['status'] == 'Draft' ? 'Sending' : $values['status']);
+        $form->addHiddenValue('status', $values['status'] ?? 'Draft');
+        $form->addHiddenValue('saveMode', empty($values['status']) || $values['status'] == 'Draft' ? 'Preview' : 'Submit');
 
         $form->addRow()->addHeading('Delivery Mode', __('Delivery Mode'));
 
@@ -145,17 +145,6 @@ class MessageForm extends Form
                     $row->addContent($values['sms'] == 'Y' ? Format::icon('iconTick', __('Sent by SMS.')) : Format::icon('iconCross', __('Not sent by SMS.')))->addClass('right');
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
-
-                    $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
-    
-                    // $smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
-    
-                    // $sms = $container->get(SMS::class);
-                    // if ($smsCredits = $sms->getCreditBalance()) {
-                    //     $smsAlert .= "<br/><br/><b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>" ;
-                    //     $form->addHiddenValue('smsCreditBalance', $smsCredits);
-                    // }
-                    // $form->addRow()->addClass('sms')->addAlert($smsAlert, 'error');
                 }
             }
         }
@@ -170,7 +159,8 @@ class MessageForm extends Form
         // MESSAGE DETAILS
         $form->addRow()->addHeading('Message Details', __('Message Details'));
 
-        $signature = getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
+        // TODO: refactor this
+        $signature = $this->getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
 
         // CANNED RESPONSES
         $cannedResponse = isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_cannedResponse');
@@ -702,11 +692,12 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('noEmail')->onRadio('email')->when('N');
 
-            $row = $form->addRow('submit');
-                $row->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('email rounded-sm w-24 mr-2');
+            $row = $form->addRow('stickySubmit');
                 $col = $row->addColumn()->addClass('items-center');
-                $col->addSubmit(__('Preview & Send'))->addClass('email');
-                $col->addSubmit()->addClass('noEmail');
+                    $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('email rounded-sm w-24 mr-2');
+                $col = $row->addColumn()->addClass('items-center');
+                    $col->addSubmit(__('Preview & Send'))->addClass('email');
+                    $col->addSubmit()->addClass('noEmail');
         }
 
         return $form;
@@ -726,6 +717,33 @@ class MessageForm extends Form
             }
             return $group;
         }, []);
+    }
+
+    //Build an email signautre for the specified user
+    private function getSignature($guid, $connection2, $gibbonPersonID)
+    {
+        $return = false;
+
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        if ($result->rowCount() == 1) {
+            $row = $result->fetch();
+
+            $return = '<br/><br/>----<br/>';
+            $return .= "<span style='font-weight: bold; color: #447CAA'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
+            $return .= "<span style='font-style: italic'>";
+            if ($row['jobTitle'] != '') {
+                $return .= $row['jobTitle'].'<br/>';
+            }
+            $return .= $this->session->get('organisationName').'<br/>';
+            $return .= '</span>';
+            $return .= '<br/>';
+        }
+
+        return $return;
     }
 
     private function getCannedResponseJS(array $cannedResponses = [], string $signature = '')

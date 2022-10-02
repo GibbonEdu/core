@@ -75,6 +75,17 @@ class MessengerReceiptGateway extends QueryableGateway
     {
         $recipientList = is_array($recipientList)? implode(',', $recipientList) : $recipientList;
 
+        // Delete individual targets
+        $data = ['gibbonMessengerID' => $gibbonMessengerID, 'recipientList' => $recipientList];
+        $sql = "DELETE gibbonMessengerTarget FROM gibbonMessengerTarget
+                JOIN gibbonMessengerReceipt ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessengerTarget.gibbonMessengerID AND gibbonMessengerReceipt.targetType=gibbonMessengerTarget.type COLLATE utf8_general_ci AND gibbonMessengerReceipt.gibbonPersonID=gibbonMessengerTarget.id)
+                WHERE gibbonMessengerTarget.gibbonMessengerID=:gibbonMessengerID 
+                AND gibbonMessengerTarget.type='Individuals'
+                AND FIND_IN_SET(gibbonMessengerReceipt.gibbonMessengerReceiptID, :recipientList)";
+
+        $this->db()->delete($sql, $data);
+
+        // Delete recipients
         $data = ['gibbonMessengerID' => $gibbonMessengerID, 'recipientList' => $recipientList];
         $sql = "DELETE FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID AND FIND_IN_SET(gibbonMessengerReceiptID, :recipientList)";
 

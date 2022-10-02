@@ -697,4 +697,5 @@ ALTER TABLE `gibbonMessenger` ADD `emailReplyTo` VARCHAR(75) NULL AFTER `emailFr
 ALTER TABLE `gibbonMessengerReceipt` ADD `sent` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `gibbonPersonID`;end
 ALTER TABLE `gibbonMessengerReceipt` ADD `nameListStudent` TEXT NULL AFTER `gibbonPersonIDListStudent`;end
 UPDATE `gibbonMessengerReceipt` SET sent='Y';end
+UPDATE `gibbonAction` SET URLList='messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php' WHERE name LIKE 'Manage Messages_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 ";

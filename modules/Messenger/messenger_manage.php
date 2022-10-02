@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     }
 
     $table->modifyRows(function($values, $row) {
-        if ($values['status'] != 'Sent') $row->addClass('dull');
+        if ($values['status'] == 'Draft') $row->addClass('dull');
         return $row;
     });
     
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         ->context('primary')
         ->format(function ($values) {
             $tag = $values['confidential'] == 'Y' ? Format::tag(__('Confidential'), 'dull ml-2') : '';
-            if ($values['status'] != 'Sent') {
+            if ($values['status'] == 'Draft') {
                 $tag .= Format::tag(__('Draft'), 'message ml-2');
             }
             return Format::bold($values['subject']).$tag;
@@ -225,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         });
 
     $table->addColumn('email', __('Email'))->format(function ($values) use (&$session) {
-        if ($values['status'] != 'Sent') return '';
+        if ($values['status'] == 'Draft') return '';
 
         return $values['email'] == 'Y'
             ? Format::icon('iconTick', __('Sent by email.'))
@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     });
 
     $table->addColumn('messageWall', __('Wall'))->format(function ($values) use (&$session) {
-        if ($values['status'] != 'Sent') return '';
+        if ($values['status'] == 'Draft') return '';
 
         return $values['messageWall'] == 'Y'
             ? Format::icon('iconTick', __('Sent by message wall.'))
@@ -241,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     });
 
     $table->addColumn('sms', __('SMS'))->format(function ($values) use (&$session) {
-        if ($values['status'] != 'Sent') return '';
+        if ($values['status'] == 'Draft') return '';
 
         return $values['sms'] == 'Y'
             ? Format::icon('iconTick', __('Sent by SMS.'))

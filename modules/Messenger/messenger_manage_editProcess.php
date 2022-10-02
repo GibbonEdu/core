@@ -22,6 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageTargets;
 use Gibbon\Module\Messenger\MessageProcess;
 use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\Messenger\MessengerReceiptGateway;
+use Gibbon\Domain\Messenger\MessengerTargetGateway;
 
 require_once '../../gibbon.php';
 
@@ -30,8 +32,8 @@ $sendTestEmail = $_POST['sendTestEmail'] ?? '';
 $search = $_GET['search'] ?? '';
 $address = $_POST['address'] ?? '';
 
-$URL=$session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID;
-$URLSend = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_postPreview.php&sidebar=true&gibbonMessengerID={$gibbonMessengerID}";
+$URL=$session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=$gibbonMessengerID";
+$URLSend = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true&gibbonMessengerID={$gibbonMessengerID}";
 
 $time=time();
 
@@ -54,15 +56,17 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         exit;
     }
 
-    
     // Validate Inputs
     $validator = $container->get(Validator::class);
     $_POST = $validator->sanitize($_POST, ['body' => 'HTML']);
 
     $messengerGateway = $container->get(MessengerGateway::class);
+    $messengerTargetGateway = $container->get(MessengerTargetGateway::class);
+    $messengerReceiptGateway = $container->get(MessengerReceiptGateway::class);
     $messageTargets = $container->get(MessageTargets::class);
 
-    $status = $_POST['status'] ?? 'Sent';
+    $saveMode = $_POST['saveMode'] ?? 'Preview';
+    $status = $_POST['status'] ?? 'Draft';
     $data = [
         'messageWall'       => $_POST['messageWall'] ?? 'N',
         'messageWallPin'    => $_POST['messageWallPin'] ?? 'N',
@@ -75,9 +79,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         'timestamp'         => date('Y-m-d H:i:s'),
     ];
 
-    if ($status != 'Sent') {
+    if ($status == 'Draft') {
         $data += [
-            'status'           => $status,
             'email'            => $_POST['email'] ?? 'N',
             'sms'              => $_POST['sms'] ?? 'N',
             'emailFrom'        => $_POST['emailFrom'] ?? $session->get('email'),
@@ -115,15 +118,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 
     $partialFail = false;
 
-    $sqlRemove="DELETE FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID";
-    $pdo->delete($sqlRemove, ['gibbonMessengerID' => $gibbonMessengerID]);
+    // Remove existing targets before adding new ones
+    $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
 
     // Go to preview page?
-    if ($status == 'Sending') {
-        $sqlRemove="DELETE FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
-        $pdo->delete($sqlRemove, ['gibbonMessengerID' => $gibbonMessengerID]);
-
+    if ($saveMode == 'Preview') {
+        // Clear existing recipients, then add new ones
+        $messengerReceiptGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
         $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
+
         if (empty($recipients)) {
             $URL.="&return=error6";
             header("Location: {$URL}");
@@ -134,7 +137,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
         exit;
     }
 
-    // Otherwise save any edits to targets
+    // Otherwise save any edits by creating new targets
     $messageTargets->createMessageTargets($gibbonMessengerID, $partialFail);
 
     $URL .= $partialFail

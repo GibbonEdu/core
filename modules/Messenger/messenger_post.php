@@ -63,9 +63,8 @@ else {
 
     $page->addWarning(sprintf(__('Each family in Gibbon must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $session->get('organisationNameShort')));
     
-    $form = $container->get(MessageForm::class)->createForm('messenger_postPreProcess.php');
+    $form = $container->get(MessageForm::class)->createForm('messenger_postProcess.php');
     echo $form->getOutput();
-
 }
 
 ?>
@@ -77,7 +76,7 @@ function saveDraft() {
 
     var form = LiveValidationForm.getInstance(document.getElementById('messengerMessage'));
     if (LiveValidation.massValidate(form.fields)) {
-        $('input[name="status"]').val('Draft');
+        $('input[name="saveMode"]').val('Draft');
         document.getElementById('messengerMessage').submit();
     }
 }

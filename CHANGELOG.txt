@@ -21,6 +21,7 @@ v25.0.00
 --------
 
     Headlines
+        Messages can now be saved as a draft and previewed before sending
         Activities will now display on student and staff timetables
 
     Significant Changes

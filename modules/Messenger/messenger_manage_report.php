@@ -71,20 +71,6 @@ else {
 			<script type='text/javascript'>
 				$(function() {
 					$( "#tabs" ).tabs({
-						create: function( event, ui ) {
-							action1.enable();
-							action2.disable();
-						},
-						activate: function( event, ui ) {
-							if (ui.newPanel.attr('id') == 'tabs1') {
-								action1.enable();
-								action2.disable();
-							}
-							else if (ui.newPanel.attr('id') == 'tabs2') {
-								action1.disable();
-								action2.enable();
-							}
-						},
 						ajaxOptions: {
 							error: function( xhr, status, index, anchor ) {
 								$( anchor.hash ).html(
@@ -112,9 +98,9 @@ else {
 			}
 
             if ($values['email'] == 'Y' && $values['emailReceipt'] == 'Y') {
-                echo Format::alert(__('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email due to an email delivery issue are highlighted in orange.'), 'success');
+                echo Format::alert(__('Email read receipts have been enabled for this message. You can use the Resend action along with the checkboxes next to recipients who have not yet confirmed to send a reminder to these users.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.'), 'success');
             } elseif ($values['email'] == 'Y' && $values['emailReceipt'] == 'N') {
-                echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email due to an email delivery issue are highlighted in orange.'), 'message');
+                echo Format::alert(__('Email read receipts have not been enabled for this message, however you can still use the Resend action to manually send messages.').' '.__('Recipients who may not have received the original email due to a delivery issue are highlighted in orange.'), 'message');
             }
 
             if ($values['emailReceiptText'] != '') {
@@ -345,6 +331,7 @@ else {
 									$row->onlyIf($recipient['confirmed'] == 'N' || $values['emailReceipt'] == 'N')
 										->addCheckbox('gibbonMessengerReceiptIDs[]')
 										->setValue($recipient['gibbonMessengerReceiptID'])
+                                        ->addClass('bulkCheckbox')
 										->alignCenter();
 
 									$row->onlyIf($recipient['confirmed'] != 'N' && $values['emailReceipt'] == 'Y')->addContent();

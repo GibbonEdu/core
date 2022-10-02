@@ -22,6 +22,8 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Messenger\MessengerReceiptGateway;
+use Gibbon\Http\Url;
+use Gibbon\Contracts\Comms\SMS;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -31,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
 } else {
     $sendTestEmail = $_GET['sendTestEmail'] ?? 'N';
     $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     $page->breadcrumbs
         ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
@@ -79,14 +82,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
     $sent = !empty($_GET['return']) || $values['status'] == 'Sent';
 
     // QUERY
-    $criteria = $messengerReceiptGateway->newQueryCriteria()->fromPOST();
+    $criteria = $messengerReceiptGateway->newQueryCriteria()
+        ->sortBy(['targetType', 'role',  'surname', 'preferredName'])
+        ->fromPOST();
     $recipients = $messengerReceiptGateway->queryMessageRecipients($criteria, $gibbonMessengerID, $session->get('gibbonSchoolYearID'));
 
     // FORM
-    $form = Form::create('messengerPreview', $session->get('absoluteURL').'/modules/Messenger/messenger_postPreviewProcess.php');
+    $form = Form::create('messengerPreview', $session->get('absoluteURL').'/modules/Messenger/messenger_sendProcess.php');
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonMessengerID', $gibbonMessengerID);
     $form->addClass('bulkActionForm');
+
+    if ($values['sms'] == 'Y') {
+        $smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
+
+        $sms = $container->get(SMS::class);
+        if ($smsCredits = $sms->getCreditBalance()) {
+            $smsAlert .= "<br/><br/><b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>" ;
+            $form->addHiddenValue('smsCreditBalance', $smsCredits);
+        }
+        $form->addRow()->addAlert($smsAlert, 'error');
+    }
 
     $form->addRow()->addHeading('Recipients', __('Recipients'));
 
@@ -111,7 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
     $table->addColumn('contactType', __('Contact Type'));
     $table->addColumn('contactDetail', __('Contact Detail'));
 
-    if (empty($_GET['return']) && $values['status'] != 'Sent') {
+    if (!$sent) {
+        // If the message is not sent, let users manually select the recipients and click send
         $table->addCheckboxColumn('gibbonMessengerReceiptID')->checked(true);
 
         $form->addRow()->addHeading('Send', __('Send'));
@@ -119,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
         if ($values['email'] == 'Y') {
             $details = Format::listDetails([
                 __('Email From') => $values['emailFrom'] ?? '',
-                __('Reply To') => $values['emailReplyTo'] ?? '',
+                __('Reply To') => !empty($values['emailReplyTo']) ? $values['emailReplyTo'] : ($values['emailFrom'] ?? ''),
                 __('Subject') => $values['subject'],
             ], 'ul', 'w-full text-left m-0');
 
@@ -128,12 +145,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
             $row->addContent($details);
         }
 
-        $row = $form->addRow('submit');
+        $editURL = Url::fromModuleRoute('Messenger', 'messenger_manage_edit')->withQueryParams(['gibbonMessengerID' => $gibbonMessengerID, 'sidebar' => true]);
+
+        $row = $form->addRow('stickySubmit');
             $col = $row->addColumn()->addClass('items-center');
-            $col->addButton(__('Edit Draft'))->onClick('window.location="'.$session->get('absoluteURL').'index.php?q=/modules/Messenger/messenger_manage_edit.php&sidebar=true&gibbonMessengerID='.$gibbonMessengerID.'"')->addClass('email rounded-sm w-24 mr-2');
+            $col->addButton(__('Edit Draft'))->onClick('window.location="'.$editURL.'"')->addClass('email rounded-sm w-24 mr-2');
             $row->addSubmit(__('Send'));
     } else {
-
+        // If the message is sent, display the message status
         $table->addColumn('status', __('Status'))
             ->format(function($values) {
                 return $values['sent'] == 'Y' ? Format::tag(__('Sent'), 'success') : '';
@@ -141,5 +160,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
     }
 
     echo $form->getOutput();
-    
 }

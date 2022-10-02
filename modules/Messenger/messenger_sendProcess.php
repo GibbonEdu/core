@@ -26,12 +26,12 @@ use Gibbon\Domain\Messenger\MessengerReceiptGateway;
 
 require_once '../../gibbon.php';
 
-$_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML']);
+$_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $address = $_POST['address'] ?? '';
 $gibbonMessengerID = $_POST['gibbonMessengerID'] ?? '';
 
-$URL = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_postPreview.php&gibbonMessengerID={$gibbonMessengerID}";
+$URL = $session->get('absoluteURL') . "/index.php?q=/modules/Messenger/messenger_send.php&sidebar=true&gibbonMessengerID={$gibbonMessengerID}";
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == false) {
     $URL .= "&return=error0";
@@ -68,6 +68,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     $recipients = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
     $unselected = array_diff(array_column($recipients, 'gibbonMessengerReceiptID'), $recipientList);
     $messengerReceiptGateway->deleteRecipientsByID($gibbonMessengerID, $unselected);
+
+    // Set the status of the message
+    $messengerGateway->update($gibbonMessengerID, ['status' => 'Sending']);
 
     $process = $container->get(MessageProcess::class);
     $process->startSendMessage(

@@ -247,7 +247,7 @@ class Form implements OutputableInterface
         $rowCount = count($this->rows);
         return array_reduce($this->rows, function ($group, $row) use (&$rowCount) {
             
-            if ($row->getHeading() == 'submit' && $rowCount > 10) {
+            if (($row->getHeading() == 'submit' && $rowCount > 10) || $row->getID() == 'stickySubmit') {
                 $row->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
             }
             $group[$row->getHeading()][] = $row;

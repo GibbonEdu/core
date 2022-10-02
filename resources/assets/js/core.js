@@ -50,8 +50,25 @@ jQuery(function($){
     /**
      * Form Class: generic check All/None checkboxes
      */
-    $(document).on('click', '.checkall', function () {
-        $(this).closest('fieldset, .bulkActionForm').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+    $(document).on('click', '.checkall[type="checkbox"]', function () {
+        var checkall = this;
+        var checked = checkall.checked;
+        var parent = checkall.closest('fieldset, .bulkActionForm');
+
+        parent.querySelectorAll('input[type="checkbox"]').forEach(function (element, index, elements) {
+            if (element === checkall) return;
+
+            element.checked = checked;
+
+            let formRow = element.closest('tr');
+            if (formRow != undefined) {
+                formRow.classList.toggle('selected', element.checked);
+            }
+
+            if (index == elements.length-1) {
+                $(element).trigger('change');
+            }
+        });
     });
 
     /**
@@ -62,17 +79,19 @@ jQuery(function($){
         var checkedCount = checkboxes.filter(':checked').length;
 
         if (checkedCount > 0) {
-            $('.bulkActionPanel').removeClass('hidden');
+            if ($('.bulkActionPanel').hasClass('hidden')) {
+                $('.bulkActionPanel').removeClass('hidden');
 
-            var header = $(this).parents('.bulkActionForm').find('.dataTable header');
-            var panelHeight = $('.bulkActionPanel').innerHeight();
+                var header = $(this).parents('.bulkActionForm').find('.dataTable header');
+                var panelHeight = $('.bulkActionPanel').innerHeight();
 
-            $('.bulkActionCount span').html(checkedCount);
-            $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
+                $('.bulkActionCount span').html(checkedCount);
+                $('.bulkActionPanel').css('top', header.outerHeight(false) - panelHeight + 6);
 
 
-            // Trigger a showhide event on any nested inputs to update their visibility & validation state
-            $('.bulkActionPanel :input').trigger('showhide');
+                // Trigger a showhide event on any nested inputs to update their visibility & validation state
+                $('.bulkActionPanel :input').trigger('showhide');
+            }
         } else {
             $('.bulkActionPanel').addClass('hidden');
         }
@@ -84,8 +103,8 @@ jQuery(function($){
     });
 
     // Highlight any pre-checked rows
-    $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
-        $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
+    document.querySelectorAll('.bulkCheckbox input[type="checkbox"]').forEach(function (element) {
+        element.closest('tr').classList.toggle('selected', element.checked);
     });
 
     /**

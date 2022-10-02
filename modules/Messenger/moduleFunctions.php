@@ -20,35 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
-//Build an email signautre for the specified user
-function getSignature($guid, $connection2, $gibbonPersonID)
-{
-    global $session;
-
-    $return = false;
-
-    $data = array('gibbonPersonID' => $gibbonPersonID);
-    $sql = 'SELECT gibbonStaff.*, surname, preferredName, initials FROM gibbonStaff JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-
-    if ($result->rowCount() == 1) {
-        $row = $result->fetch();
-
-        $return = '<br/><br/>----<br/>';
-        $return .= "<span style='font-weight: bold; color: #447CAA'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
-        $return .= "<span style='font-style: italic'>";
-        if ($row['jobTitle'] != '') {
-            $return .= $row['jobTitle'].'<br/>';
-        }
-        $return .= $session->get('organisationName').'<br/>';
-        $return .= '</span>';
-        $return .= '----<br/>';
-    }
-
-    return $return;
-}
-
 //Mode may be "print" (return table of messages), "count" (return message count) or "result" (return database query result)
 function getMessages($guid, $connection2, $mode = '', $date = '')
 {

@@ -1831,11 +1831,10 @@ class MessageTargets
                 $choices=$_POST["attendanceStatus"];
                 $students=$_POST["attendanceStudents"];
                 $parents=$_POST["attendanceParents"];
-                $selectedDate=Format::dateConvert($_POST["attendanceDate"]);
                 if ($choices!="") {
                     foreach ($choices as $t) {
                         try {
-                            $data=array("AI"=>$AI, "t"=>$t." ".$selectedDate, "students"=>$students, "parents"=>$parents);
+                            $data=array("AI"=>$AI, "t"=>$t, "students"=>$students, "parents"=>$parents);
                             $sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:AI, type='Attendance', id=:t, students=:students, parents=:parents" ;
                             $result=$connection2->prepare($sql);
                             $result->execute($data);
@@ -1846,7 +1845,7 @@ class MessageTargets
                     }
                     //Get all logs by student, with latest log entry first.
                     try {
-                        $data=array("selectedDate"=>$selectedDate, "gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "nowDate"=>date("Y-m-d"));
+                        $data=array("selectedDate"=>date('Y-m-d'), "gibbonSchoolYearID"=>$this->session->get('gibbonSchoolYearID'), "nowDate"=>date("Y-m-d"));
                         $sql="SELECT galp.gibbonPersonID, galp.gibbonAttendanceLogPersonID, galp.type, galp.date FROM gibbonAttendanceLogPerson AS galp JOIN gibbonStudentEnrolment AS gse ON (galp.gibbonPersonID=gse.gibbonPersonID) JOIN gibbonPerson AS gp ON (gse.gibbonPersonID=gp.gibbonPersonID) WHERE gp.status='Full' AND (gp.dateStart IS NULL OR gp.dateStart<=:nowDate) AND (gp.dateEnd IS NULL OR gp.dateEnd>=:nowDate) AND gse.gibbonSchoolYearID=:gibbonSchoolYearID AND galp.date=:selectedDate ORDER BY galp.gibbonPersonID, gibbonAttendanceLogPersonID DESC" ;
                         $result=$connection2->prepare($sql);
                         $result->execute($data);
