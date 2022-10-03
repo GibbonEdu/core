@@ -120,7 +120,7 @@ if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
         $urlBasePath = substr($baseDir, $prefixLength);
 
         // Construct the full URL to the base URL path.
-        $host = $_SERVER['HTTP_HOST'];
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
         return "{$protocol}://{$host}{$urlBasePath}";
     })();
