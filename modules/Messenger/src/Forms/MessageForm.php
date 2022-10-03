@@ -65,6 +65,9 @@ class MessageForm extends Form
         $values = !empty($gibbonMessengerID) ? $this->messengerGateway->getByID($gibbonMessengerID) : [];
         $sent = !empty($values) && $values['status'] == 'Sent';
 
+        // TODO: refactor this
+        $signature = $this->getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
+
         // FORM
         $form = Form::create('messengerMessage', $this->session->get('absoluteURL').'/modules/Messenger/' .$action);
         $form->addHiddenValue('address', $this->session->get('address'));
@@ -145,6 +148,10 @@ class MessageForm extends Form
                     $row->addContent($values['sms'] == 'Y' ? Format::icon('iconTick', __('Sent by SMS.')) : Format::icon('iconCross', __('Not sent by SMS.')))->addClass('right');
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
+
+                    $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+
+                    $this->getSMSSignatureJS($signature);
                 }
             }
         }
@@ -158,9 +165,6 @@ class MessageForm extends Form
 
         // MESSAGE DETAILS
         $form->addRow()->addHeading('Message Details', __('Message Details'));
-
-        // TODO: refactor this
-        $signature = $this->getSignature($guid, $connection2, $this->session->get('gibbonPersonID'));
 
         // CANNED RESPONSES
         $cannedResponse = isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_cannedResponse');
@@ -179,7 +183,10 @@ class MessageForm extends Form
 
         $row = $form->addRow();
             $row->addLabel('subject', __('Subject'));
-            $row->addTextField('subject')->maxLength(60)->required();
+            $col = $row->addColumn()->addClass('flex-col');
+            $col->addTextField('subject')->maxLength(60)->required()->addClass('w-full');
+            $col->addContent(Format::alert('<b><u>'.__('Note').'</u></b>: '.__('SMS messages will not include the subject line.'), 'warning'))->addClass('sms');
+
 
         $row = $form->addRow();
             $col = $row->addColumn('body');
@@ -732,18 +739,43 @@ class MessageForm extends Form
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
 
-            $return = '<br/><br/>----<br/>';
-            $return .= "<span style='font-weight: bold; color: #447CAA'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br/>';
-            $return .= "<span style='font-style: italic'>";
+            $return = '<br /><br />----<br />';
+            $return .= '<span style="font-weight: bold; color: #447caa;">'.Format::name('', $row['preferredName'], $row['surname'], 'Student').'</span><br />';
+            $return .= '<span style="font-style: italic;">';
             if ($row['jobTitle'] != '') {
-                $return .= $row['jobTitle'].'<br/>';
+                $return .= $row['jobTitle'].'<br />';
             }
-            $return .= $this->session->get('organisationName').'<br/>';
+            $return .= $this->session->get('organisationName').'<br />';
             $return .= '</span>';
-            $return .= '<br/>';
         }
 
         return $return;
+    }
+
+    private function getSMSSignatureJS($signature)
+    {
+        echo "<script>
+        
+        document.addEventListener('DOMContentLoaded', function () {
+            var smsRadio = document.querySelectorAll('input[name=\"sms\"]');
+            if (smsRadio == undefined || smsRadio.length == 0) return;
+
+            smsRadio.forEach(function (element) {
+                element.addEventListener('click', function(event) {
+                    tinymce.triggerSave();
+    
+                    if (element.value == 'Y') {
+                        alert('".__('SMS sending has been enabled. Your signature has automatically been removed from the message body. Please note that the subject line is not included in SMS messages.')."');
+                        var contents = $('#body').val().replace('" . addSlashes($signature) . "', ' ');
+                    } else {
+                        var contents = $('#body').val() + '" . addSlashes($signature) . "';
+                    }
+
+                    tinymce.get('body').execCommand('mceSetContent', false, contents) ;
+                });
+            });
+          }, false);
+        </script>";
     }
 
     private function getCannedResponseJS(array $cannedResponses = [], string $signature = '')

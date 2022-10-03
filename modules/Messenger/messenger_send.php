@@ -102,6 +102,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
             $form->addHiddenValue('smsCreditBalance', $smsCredits);
         }
         $form->addRow()->addAlert($smsAlert, 'error');
+
+        $smsBody = stripslashes(strip_tags($values['body']));
+        $form->addRow()->addContent(Format::bold(__('SMS Preview')).' ('.strlen($smsBody).' '.__('chars').'):<br/><br/>'.Format::alert($smsBody, 'exception'));
     }
 
     $form->addRow()->addHeading('Recipients', __('Recipients'));

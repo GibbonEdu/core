@@ -292,10 +292,10 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         $sendResult = [
             'return'        => $partialFail ? 'error4' : 'success0',
-            'email'         => $email == 'Y',
+            'email'         => $message['email'],
             'emailCount'    => $emailCount ?? 0,
             'emailErrors'   => $emailErrors ?? [],
-            'sms'           => $sms == 'Y',
+            'sms'           => $message['sms'],
             'smsCount'      => $smsCount ?? 0,
             'smsBatchCount' => $smsBatchCount ?? 0,
         ];

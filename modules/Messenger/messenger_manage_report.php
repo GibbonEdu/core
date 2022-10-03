@@ -327,7 +327,7 @@ else {
 								$row->addContent($confirmationIndicator($recipient));
 								$row->addContent(Format::date(substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
 
-								if ($sender == true) {
+								if ($sender == true && $recipient['contactType'] == 'Email') {
 									$row->onlyIf($recipient['confirmed'] == 'N' || $values['emailReceipt'] == 'N')
 										->addCheckbox('gibbonMessengerReceiptIDs[]')
 										->setValue($recipient['gibbonMessengerReceiptID'])
@@ -335,7 +335,9 @@ else {
 										->alignCenter();
 
 									$row->onlyIf($recipient['confirmed'] != 'N' && $values['emailReceipt'] == 'Y')->addContent();
-								}
+								} else {
+                                    $row->addContent();
+                                }
 
 							if (is_null($recipient['key'])) $nonConfirm++;
 							else if ($recipient['confirmed'] == 'Y') $yesConfirm++;
