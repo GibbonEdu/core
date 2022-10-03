@@ -162,9 +162,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\Finder($name);
     }
 
-    public function createEditor($name, $guid)
+    public function createEditor(string $name)
     {
-        return new Input\Editor($name, $guid);
+        return new Input\Editor($name);
     }
 
     public function createCodeEditor($name)
