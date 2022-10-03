@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -918,11 +919,13 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         // Medical
-        if ($alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)) {
+        /** @var MedicalGateway */
+        $medicalGateway = $container->get(MedicalGateway::class);
+        if ($alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID)) {
             $alerts[] = [
-                'highestLevel'    => $alert[1],
-                'highestColour'   => $alert[3],
-                'highestColourBG' => $alert[4],
+                'highestLevel'    => __($alert['name']),
+                'highestColour'   => $alert['color'],
+                'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
