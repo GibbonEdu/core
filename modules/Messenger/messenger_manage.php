@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));

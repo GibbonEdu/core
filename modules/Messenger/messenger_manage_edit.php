@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 
     $page->return->addReturns([
         'error5' => __('Your request failed due to an attachment error.'),
-        'error6' => __('Your message is not ready to send because no targets have been selected. Be sure to select at least one target for your message.'),
+        'error6' => __('Your message is not ready to send because no targets have been selected or no valid recipients were found. Be sure to select at least one target for your message.'),
     ]);
 
     // Check if gibbonMessengerID specified
