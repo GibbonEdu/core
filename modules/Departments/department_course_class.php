@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\View\GridView;
@@ -110,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ];
             }
             // Markbook
-            if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
+            if ($container->get(ActionGateway::class)->getHighestGrouped('/modules/Markbook/markbook_view.php') == 'View Markbook_allClassesAllData') {
                 $menuItems[] = [
                     'name' => __('Markbook'),
                     'url'  => './index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$gibbonCourseClassID,

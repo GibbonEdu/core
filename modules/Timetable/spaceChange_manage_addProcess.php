@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\FacilityChangeGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 include '../../gibbon.php';
 
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
     header("Location: {$URL}");
 } else {
     // Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0";
         header("Location: {$URL}");
@@ -74,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
-    } 
+    }
 
     // Check unique inputs for uniquness
     $data = ['gibbonTTDayRowClassID' => $gibbonTTDayRowClassID, 'date' => $date, 'gibbonSpaceID' => $gibbonSpaceID, 'gibbonPersonID' => $session->get('gibbonPersonID')];
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Redirect back to View Timetable by Facility if we started there
     if (!empty($_POST['source'])) {
         $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$_POST['source'].'&ttDate='.Format::date($date);

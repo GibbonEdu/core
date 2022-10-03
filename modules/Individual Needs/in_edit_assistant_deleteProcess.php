@@ -19,6 +19,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
+
 include '../../gibbon.php';
 
 $gibbonPersonIDAssistant = $_GET['gibbonPersonIDAssistant'] ?? '';
@@ -29,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, '/modules/Individual Needs/in_edit.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Individual Needs/in_edit.php');
     if ($highestAction == false) {
         $URL .= '&return=error2';
         header("Location: {$URL}");

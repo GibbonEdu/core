@@ -28,13 +28,14 @@ use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffContractGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -172,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $facilities = $staffFacilityGateway->queryFacilitiesByPerson($criteria, $gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID);
 
                 $table = DataTable::create('facilities');
-                
+
                 $table->setTitle(__('Facilities'));
 
                 $table->addHeaderAction('add', __('Add'))
@@ -207,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $contracts = $contractsGateway->queryContractsByStaff($criteria, $gibbonStaffID);
 
                     $table = DataTable::create('contracts');
-                    
+
                     $table->setTitle(__('Contracts'));
 
                     $table->addHeaderAction('add', __('Add'))

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_proofrea
     // Proceed!
     $page->breadcrumbs->add(__('Proof Read'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;

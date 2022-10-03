@@ -27,6 +27,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('The highest grouped action cannot be determined.'));
     } else {

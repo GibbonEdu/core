@@ -23,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 
 //Module includes
@@ -30,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $style = '';
 
-$highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+$highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));

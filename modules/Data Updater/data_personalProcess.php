@@ -26,6 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         header("Location: {$URL}");
     } else {
         //Get action with highest precendence
-        $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($address);
         if ($highestAction == false) {
             $URL .= "&return=error0$params";
             header("Location: {$URL}");

@@ -27,6 +27,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\AbsenceCalendar;
 use Gibbon\Domain\System\SettingGateway;
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
 } else {
     $page->breadcrumbs->add(__('View Absences'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;
@@ -75,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
-    
+
     $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
@@ -138,11 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     // COLUMNS
     $table->addColumn('date', __('Date'))
         ->format([AbsenceFormats::class, 'dateDetails']);
-    
+
     $table->addColumn('type', __('Type'))
         ->description(__('Reason'))
         ->format([AbsenceFormats::class, 'typeAndReason']);
-    
+
     $table->addColumn('coverage', __('Coverage'))
         ->format([AbsenceFormats::class, 'coverageList']);
 

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
             $column->addTextArea('actionTaken')->setRows(8)->setClass('fullWidth');
 
         $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
-        
+
         $row = $form->addRow();
             $row->addLabel('gibbonPersonIDFollowUp', __('Follow up Request'))->description(__('If selected, this user will be notified to enter follow up details about the first aid incident.'));
             $row->addSelectStaff('gibbonPersonIDFollowUp')->photo(true, 'small')->placeholder();

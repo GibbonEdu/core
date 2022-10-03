@@ -23,6 +23,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
     echo '</div>';
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');

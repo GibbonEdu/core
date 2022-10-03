@@ -24,6 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 } else {
     $page->breadcrumbs->add(__('View All Assessments'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         echo Format::alert(__('The highest grouped action cannot be determined.'));
         return;

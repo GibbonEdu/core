@@ -19,14 +19,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
-use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\Finance\ExpenseGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Http\Url;
 use Gibbon\Module\Finance\Tables\ExpenseLog;
+use Gibbon\Services\Format;
 
 
 //Module includes
@@ -36,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
         $page->addError(__('You do not have access to this action.'));
     } else {

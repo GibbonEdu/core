@@ -29,6 +29,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -81,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
             $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? null;
 
-            
+
             if ($search != '' and $source == '') {
                 $params = [
                     "search" => $search,

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
-    $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Activities/activities_attendance.php');
 
     if($highestAction == "Enter Activity Attendance_leader") {
         try {

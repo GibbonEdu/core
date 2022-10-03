@@ -26,6 +26,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
     $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';

@@ -29,6 +29,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
     echo '</div>';
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -1189,7 +1190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $gibbonCourseClassID = $values['gibbonCourseClassID'];
                         $columns = 2;
 
-                        $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+                        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Students/student_view_details.php');
 
                         $canAccessProfile = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes') ;
 

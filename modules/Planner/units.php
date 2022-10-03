@@ -24,6 +24,7 @@ use Gibbon\Domain\Planner\UnitGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {
     // Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;

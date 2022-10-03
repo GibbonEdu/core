@@ -22,6 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 include '../../gibbon.php';
 
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
     header("Location: {$URL}");
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             'reason'         => $_POST['reason'] ?? '',
             'gibbonPersonID' => $_POST['gibbonPersonID'] ?? $session->get('gibbonPersonID'),
         ];
-        
+
         $dates = $_POST['dates'] ?? '';
         $repeat = $_POST['repeat'] ?? '';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;

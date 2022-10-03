@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         if ($step == 1 or $gibbonBehaviourID == null) {
             $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            
+
             $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
             if (!empty($policyLink)) {
                 $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
@@ -93,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                     ->addParam('type', $_GET['type'])
                     ->prepend((!empty($policyLink)) ? ' | ' : '');
             }
-            
+
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
             $form->addRow()->addHeading('Step 1', __('Step 1'));
 

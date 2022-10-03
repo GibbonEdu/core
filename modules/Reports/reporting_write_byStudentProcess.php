@@ -27,6 +27,7 @@ use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
-    
+
     $values = $_POST['value'] ?? [];
 
     // Validate the required values are present
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
 
     // ACCESS CHECK: overall check (for high-level access) or per-scope check for general access
     $accessCheck = $reportingAccessGateway->getAccessToScopeByPerson($urlParams['gibbonReportingScopeID'], $gibbon->session->get('gibbonPersonID'));
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == 'Write Reports_editAll') {
         $reportingOpen = ($accessCheck['reportingOpen'] ?? 'N') == 'Y';
         $canAccessReport = true;
@@ -103,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_by
         'gibbonPersonIDStudent'     => $gibbonPersonIDStudent,
         'gibbonPersonIDCreated'     => $gibbon->session->get('gibbonPersonID'),
     ];
-    
+
     // Insert or update each record
     foreach ($values as $gibbonReportingCriteriaID => $value) {
         $data['gibbonReportingCriteriaID'] = $gibbonReportingCriteriaID;

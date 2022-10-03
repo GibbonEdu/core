@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                     echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
-                    
+
                         $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
                         $sql = 'SELECT * FROM gibbonUnit WHERE gibbonUnitID=:gibbonUnitID AND gibbonCourseID=:gibbonCourseID';
                         $result = $connection2->prepare($sql);

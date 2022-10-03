@@ -23,6 +23,7 @@ namespace Gibbon\Tables\Prefab;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Forms\Input\Checkbox;
 use Gibbon\Http\Url;
@@ -40,14 +41,33 @@ class ClassGroupTable extends DataTable
 {
     protected $db;
     protected $session;
+
+    /**
+     * Course Enrolment Gateway
+     *
+     * @var CourseEnrolmentGateway
+     */
     protected $enrolmentGateway;
 
-    public function __construct(GridView $renderer, CourseEnrolmentGateway $enrolmentGateway, Connection $db, Session $session)
-    {
+    /**
+     * Action Gateway
+     *
+     * @var ActionGateway
+     */
+    protected $actionGateway;
+
+    public function __construct(
+        GridView $renderer,
+        CourseEnrolmentGateway $enrolmentGateway,
+        ActionGateway $actionGateway,
+        Connection $db,
+        Session $session
+    ) {
         parent::__construct($renderer);
 
         $this->db = $db;
         $this->session = $session;
+        $this->actionGateway = $actionGateway;
         $this->enrolmentGateway = $enrolmentGateway;
     }
 
@@ -56,7 +76,7 @@ class ClassGroupTable extends DataTable
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
-        $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
+        $highestAction = $this->actionGateway->getHighestGrouped('/modules/Students/student_view_details.php');
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
 

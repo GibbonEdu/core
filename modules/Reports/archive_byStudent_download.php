@@ -23,6 +23,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
@@ -67,7 +68,8 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 
     } else {
         $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
-        $highestAction = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_download.php', $connection2);
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Reports/archive_byStudent_download.php');
+
         if ($highestAction == 'View by Student') {
             $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
         } else if ($highestAction == 'View Reports_myChildren') {

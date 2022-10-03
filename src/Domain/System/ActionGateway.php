@@ -21,12 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v16
+ * @version v25
  * @since   v16
  */
 class ActionGateway extends QueryableGateway
@@ -37,6 +39,28 @@ class ActionGateway extends QueryableGateway
     private static $primaryKey = 'gibbonActionID';
 
     private static $searchableColumns = ['name'];
+
+    /**
+     * Session instance.
+     *
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * Create a new gateway instance using the supplied database connection.
+     *
+     * @param Connection $db
+     * @param Session    $session
+     */
+    public function __construct(
+        Connection $db,
+        Session $session
+    )
+    {
+        parent::__construct($db);
+        $this->session = $session;
+    }
 
     /**
      * Query for actions.
@@ -127,5 +151,47 @@ class ActionGateway extends QueryableGateway
         $sql = "DELETE FROM gibbonPermission WHERE gibbonActionID=:gibbonActionID";
 
         return $this->db()->delete($sql, $data);
+    }
+
+    /**
+     * Looks at the grouped actions accessible to the user in the current
+     * module and returns the highest.
+     *
+     * @since   v25
+     * @version v25
+     *
+     * @param string $address  Part of the address string to search
+     *
+     * @return string|false  The name of the action, or false if none is found.
+     */
+    public function getHighestGrouped(string $address)
+    {
+        if (empty($this->session->get('gibbonRoleIDCurrent'))) {
+            return false;
+        }
+
+        $sql = 'SELECT
+            gibbonAction.name
+            FROM
+            gibbonAction
+            INNER JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+            INNER JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+            INNER JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
+            WHERE
+            gibbonAction.URLList LIKE :actionName AND
+            gibbonPermission.gibbonRoleID=:gibbonRoleID AND
+            gibbonModule.name=:moduleName
+            ORDER BY gibbonAction.precedence DESC, gibbonAction.gibbonActionID
+        ';
+
+        $result = $this->db()->select($sql, [
+            'actionName' => '%'.getActionName($address).'%',
+            'gibbonRoleID' => $this->session->get('gibbonRoleIDCurrent'),
+            'moduleName' => getModuleName($address),
+        ]);
+
+        return $result->isNotEmpty()
+            ? $result->fetchColumn()
+            : false;
     }
 }

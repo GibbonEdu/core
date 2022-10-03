@@ -25,6 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Data\Validator;
 
@@ -289,7 +290,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateSt
 {
     global $pdo, $session, $container;
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $output = "<div class='error'>";
         $output .= __('The highest grouped action cannot be determined.');
@@ -402,7 +403,7 @@ function sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYe
     global $container, $session;
 
     $output = '';
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $output = Format::error(__('The highest grouped action cannot be determined.'));
     } else {

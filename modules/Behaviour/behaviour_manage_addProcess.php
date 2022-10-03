@@ -29,6 +29,7 @@ use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\IndividualNeeds\INGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 include '../../gibbon.php';
 
@@ -50,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     $URL .= '&return=error0&step=1';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($address);
     if ($highestAction == false) {
         $URL .= '&return=error0&step=1';
         header("Location: {$URL}");
@@ -160,10 +161,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         if (!empty($studentIN)) {
                             // Raise a notification event for IN students
                             $eventIN = new NotificationEvent('Behaviour', 'Behaviour Record for IN Student');
-                            
+
                             $eventIN->setNotificationText(sprintf(__('Someone has created a negative behaviour record for %1$s.'), $studentName));
                             $eventIN->setActionLink($actionLink);
-    
+
                             $eventIN->addScope('gibbonPersonIDStudent', $gibbonPersonID);
                             $eventIN->addScope('gibbonYearGroupID', $rowDetail['gibbonYearGroupID']);
 

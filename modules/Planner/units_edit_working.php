@@ -27,6 +27,7 @@ use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Planner\UnitBlockGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Planner\UnitClassBlockGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -49,18 +50,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
-    } 
+    }
 
     // Proceed!
     // Check if course & school year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $plannerEntryGateway = $container->get(PlannerEntryGateway::class);
     $unitBlockGateway = $container->get(UnitBlockGateway::class);
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -111,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
     // FORM
     $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/Planner/units_edit_workingProcess.php?'.http_build_query($urlParams));
-    
+
     $form->setTitle(__('Lessons & Blocks'));
     $form->setDescription(__('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.').Format::alert(__('Deploying lessons only works for units with smart blocks. If you have duplicated a unit from a past year that does not have smart blocks, be sure to edit the lessons manually and assign a new date to them.'), 'message'));
 
@@ -166,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         $form->addHiddenValue('date'.$index, $lesson['date']);
         $form->addHiddenValue('timeStart'.$index, $lesson['timeStart']);
         $form->addHiddenValue('timeEnd'.$index, $lesson['timeEnd']);
-        
+
         $col->addColumn()
             ->setClass('-mt-4')
             ->addSelect('blockAdd')
@@ -229,5 +230,5 @@ $('.blockAdd').change(function () {
     $(sortable).append($('<div class="draggable z-100">').load("<?php echo $gibbon->session->get('absoluteURL'); ?>/modules/Planner/units_add_blockAjax.php?mode=workingEdit&gibbonUnitID=<?php echo $gibbonUnitID; ?>&gibbonUnitBlockID=" + $(this).val(), "id=" + count) );
     count++;
 });
-    
+
 </script>

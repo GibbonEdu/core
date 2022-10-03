@@ -21,13 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Module\Messenger\Forms\MessageForm;
 use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\System\ActionGateway;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET["q"]) ;
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
@@ -72,7 +73,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     } else {
         $page->addWarning('<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.'));
     }
-    
+
     $form = $container->get(MessageForm::class)->createForm('messenger_manage_editProcess.php', $gibbonMessengerID);
     echo $form->getOutput();
 }

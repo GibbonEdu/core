@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     header("Location: {$URL}");
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_POST['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_POST['address']);
     if ($highestAction == false or ($highestAction != 'Individual Needs Records_viewContribute' and $highestAction != 'Individual Needs Records_viewEdit')) {
         $URL .= '&return=error0';
         header("Location: {$URL}");

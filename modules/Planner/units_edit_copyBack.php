@@ -23,6 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Planner\UnitGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 // Module includes
@@ -45,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;

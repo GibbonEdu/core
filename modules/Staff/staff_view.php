@@ -26,6 +26,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\View\GridView;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Staff\StaffGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\View\View;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Get action with highest precedence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;

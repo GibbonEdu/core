@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\CustomFieldHandler;
 
 include '../../gibbon.php';
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
     header("Location: {$URL}");
     exit();
 } else {
-    $highestAction = getHighestGroupedAction($guid, $_GET['address'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['address']);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

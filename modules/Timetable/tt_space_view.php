@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if ($highestAction == false) {
         echo "<div class='error'>";
         echo __('The highest grouped action cannot be determined.');
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
         $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
 
-        
+
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
             $sql = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
             $result = $connection2->prepare($sql);

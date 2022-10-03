@@ -26,6 +26,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\ActionGateway;
 
 require_once '../../gibbon.php';
 
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    $highestAction = getHighestGroupedAction($guid, $address, $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($address);
     if ($highestAction == false) {
         $URL .= "&return=error0$params";
         header("Location: {$URL}");

@@ -19,6 +19,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     //Allow tag selection
     $form = Form::create('conceptExplorer', $session->get('absoluteURL').'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->setTitle(__('Choose Concept'));
     $form->setClass('noIntBorder fullWidth');
 
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 
     if (count($tags) > 0) {
         //Set up for edit access
-        $highestAction = getHighestGroupedAction($guid, '/modules/Planner/units.php', $connection2);
+        $highestAction = $container->get(ActionGateway::class)->getHighestGrouped('/modules/Planner/units.php');
         $departments = array();
         if ($highestAction == 'Unit Planner_learningAreas') {
             $departmentCount = 1 ;

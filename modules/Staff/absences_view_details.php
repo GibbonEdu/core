@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
+use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\AbsenceView;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_detail
         ->add(__('View Absences'), 'absences_view_byPerson.php')
         ->add(__('View Details'));
 
-    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $highestAction = $container->get(ActionGateway::class)->getHighestGrouped($_GET['q']);
     if (empty($highestAction)) {
         $page->addError(__('You do not have access to this action.'));
         return;
