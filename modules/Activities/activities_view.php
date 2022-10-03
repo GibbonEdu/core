@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -188,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             $and = " AND gibbonYearGroupIDList LIKE '%$gibbonYearGroupID%'";
                         }
                     }
-                    
+
                 } else {
                     echo '<div class="message">';
                     echo __('Select a child in your family view their available activities.');
@@ -210,7 +211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     $dateType = 'Date';
                 }
 
-                $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
+                /**
+                 * @var SchoolYearTermGateway
+                 */
+                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                $schoolTerms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
                 $yearGroups = getYearGroups($connection2);
 
                 // Toggle Features
@@ -218,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $paymentOn = $settingGateway->getSettingByScope('Activities', 'payment') != 'None' && $settingGateway->getSettingByScope('Activities', 'payment') != 'Single';
 
                 $activityGateway = $container->get(ActivityGateway::class);
-    
+
                 // CRITERIA
                 $criteria = $activityGateway->newQueryCriteria()
                     ->searchBy($activityGateway->getSearchableColumns(), $search)
@@ -262,7 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 $activityCountByType = $activityGateway->getStudentActivityCountByType($activity['name'], $gibbonPersonID);
                                 $activityCountRemaining = max(0, $activity['maxPerStudent'] - $activityCountByType);
 
-                                if ($activityCountRemaining > 0) { 
+                                if ($activityCountRemaining > 0) {
                                     echo '<div class="warning">';
                                         echo '<strong>'.$activity['name'].' '.__('Registration Available').':</strong> ';
                                         echo sprintf(__('Each student can register for %1$s %2$s activities.'), $activity['maxPerStudent'], $activity['name']).'<br/>&nbsp;<br/>';
@@ -289,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     $activities->transform(function (&$activity) use ($enroledActivities) {
                         $activity['enrolmentFull'] = $activity['waitingList'] != 'Y' && $activity['enrolment'] >= $activity['maxParticipants'];
-    
+
                         if (isset($enroledActivities[$activity['gibbonActivityID']])) {
                             $activity['currentEnrolment'] = $enroledActivities[$activity['gibbonActivityID']];
                         }
@@ -299,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if (!empty($activity['currentEnrolment'])) $row->addClass('current');
                         else if ($activity['registration'] != 'Y') $row->addClass('dull');
                         else if ($activity['enrolmentFull']) $row->addClass('error');
-    
+
                         return $row;
                     });
                 }
@@ -355,11 +360,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         ->width('15%')
                         ->description($session->get('currency'))
                         ->format(function ($activity) {
-                            $payment = ($activity['payment'] > 0) 
+                            $payment = ($activity['payment'] > 0)
                                 ? Format::currency($activity['payment']) . '<br/>' . __($activity['paymentType'])
                                 : '<i>'.__('None').'</i>';
                             if ($activity['paymentFirmness'] != 'Finalised') $payment .= '<br/><i>'.__($activity['paymentFirmness']).'</i>';
-            
+
                             return $payment;
                         });
                 }
@@ -401,7 +406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
 
                         if (!$canAccessRegistration || !$signup) return;
-                         
+
                         if (isset($activity['currentEnrolment'])) {
                             $actions->addAction('unregister', __('Unregister'))
                                 ->addParam('mode', 'unregister')

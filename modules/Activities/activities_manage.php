@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Forms\Form;
@@ -35,14 +36,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     //Set returnTo point for upcoming pages
     $page->breadcrumbs->add(__('Manage Activities'));
 
+    /** @var SettingGateway        $settingGateway */
     $settingGateway = $container->get(SettingGateway::class);
+    /** @var SchoolYearTermGateway $schoolYearTermGateway */
+    $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
 
     $search = $_GET['search'] ?? '';
     $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $dateType = $settingGateway->getSettingByScope('Activities', 'dateType');
     $enrolmentType = $settingGateway->getSettingByScope('Activities', 'enrolmentType');
-    $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
+    $schoolTerms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
     $yearGroups = getYearGroups($connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);

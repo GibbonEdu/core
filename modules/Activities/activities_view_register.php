@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -236,7 +237,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $row->addTextField('name')->readonly();
 
                                         if ($dateType != 'Date') {
-                                            $schoolTerms = getTerms($connection2, $session->get('gibbonSchoolYearID'));
+                                            /**
+                                             * @var SchoolYearTermGateway
+                                             */
+                                            $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                                            $schoolTerms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
                                             $termList = array_filter(array_map(function($item) use ($schoolTerms) {
                                                 $index = array_search($item, $schoolTerms);
                                                 return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
