@@ -91,6 +91,18 @@ jobs:
 
       - name: Check PHP warning and deprecated messages in server_log
         run: |
+          # Check number of uncaught exceptions.
+          export NUM_EXCEPTION=$(grep --perl-regexp 'Uncaught Exception: ' ./tests/log/server_log | wc -l)
+          if [ "$NUM_EXCEPTION" -eq 0 ]; then
+            echo -e '\e[32mNo Uncaught exception.\e[0m'
+            echo
+          else
+            echo -e "\e[1m\e[33mGot $NUM_EXCEPTION uncaught exceptions:\e[0m"
+            grep --line-number --color=always --perl-regexp 'Uncaught Exception: ' ./tests/log/server_log
+            echo
+            (exit 1)
+          fi
+
           # Check number of warning messages.
           export NUM_WARNING=$(grep --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log | wc -l)
           if [ "$NUM_WARNING" -eq 0 ]; then
@@ -106,7 +118,7 @@ jobs:
           # Check number of PHP warning messages.
           export NUM_PHP_WARNING=$(grep 'PHP Warning: ' ./tests/log/server_log | wc -l)
           if [ "$NUM_PHP_WARNING" -eq 0 ]; then
-            echo -e '\e[32mNo warning message.\e[0m'
+            echo -e '\e[32mNo PHP warning message.\e[0m'
             echo
           else
             echo -e "\e[1m\e[31mGot $NUM_PHP_WARNING PHP warning messages:\e[0m"
