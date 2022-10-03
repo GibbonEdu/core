@@ -37,8 +37,13 @@ class ActionGateway extends QueryableGateway
     private static $primaryKey = 'gibbonActionID';
 
     private static $searchableColumns = ['name'];
-    
+
     /**
+     * Query for actions.
+     *
+     * @version  v16
+     * @since    v16
+     *
      * @param QueryCriteria $criteria
      * @return DataSet
      */
@@ -54,6 +59,16 @@ class ActionGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * Get fast finder actions.
+     *
+     * @version  v16
+     * @since    v16
+     *
+     * @param int $gibbonRoleIDCurrent
+     *
+     * @return array Actions
+     */
     public function getFastFinderActions($gibbonRoleIDCurrent)
     {
         $data = ['gibbonRoleID' => $gibbonRoleIDCurrent];
@@ -76,21 +91,41 @@ class ActionGateway extends QueryableGateway
 
         return $actions;
     }
-    
+
+    /**
+     * Insert permission by action.
+     *
+     * @version  v16
+     * @since    v16
+     *
+     * @param int $gibbonActionID
+     * @param int $gibbonRoleID
+     *
+     * @return int Last insert ID.
+     */
     public function insertPermissionByAction($gibbonActionID, $gibbonRoleID)
     {
         $data = ['gibbonActionID' => $gibbonActionID, 'gibbonRoleID' => $gibbonRoleID];
         $sql = "INSERT INTO gibbonPermission SET gibbonActionID=:gibbonActionID, gibbonRoleID=:gibbonRoleID";
-        
+
         return $this->db()->insert($sql, $data);
     }
-    
+
+    /**
+     * Delete permission by action.
+     *
+     * @version  v16
+     * @since    v16
+     *
+     * @param int $gibbonActionID
+     *
+     * @return int Affected row.
+     */
     public function deletePermissionByAction($gibbonActionID)
     {
         $data = array('gibbonActionID' => $gibbonActionID);
         $sql = "DELETE FROM gibbonPermission WHERE gibbonActionID=:gibbonActionID";
-        
+
         return $this->db()->delete($sql, $data);
     }
-    
 }
