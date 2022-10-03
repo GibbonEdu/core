@@ -30,10 +30,10 @@ if (!$session->has('username')) return;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php')) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
-    if (empty($log)) return;
+    $data = unserialize($log['serialisedArray'] ?? '') ?? [];
 
-    $data = unserialize($log['serialisedArray']) ?? [];
-    $status = $data['status'];
+    if (empty($log) || empty($data)) return;
+    $status = $data['status'] ?? '';
 
     if ($status == 'Running' || $status == 'Ready') {
         echo '<div class="mb-2"><img class="align-middle w-56 -mt-px -ml-1" src="./themes/Default/img/loading.gif">'

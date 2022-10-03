@@ -49,7 +49,7 @@ class MessengerGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonMessenger.confidential', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category', 
+                'gibbonMessenger.gibbonMessengerID', 'gibbonMessenger.subject', 'gibbonMessenger.timestamp', 'gibbonMessenger.email', 'gibbonMessenger.messageWall', 'gibbonMessenger.sms', 'gibbonMessenger.messageWall_date1', 'gibbonMessenger.messageWall_date2', 'gibbonMessenger.messageWall_date3', 'gibbonMessenger.emailReceipt', 'gibbonMessenger.confidential', 'gibbonMessenger.status', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonRole.category', 
             ])
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonMessenger.gibbonPersonID')
             ->innerJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary')
@@ -62,6 +62,11 @@ class MessengerGateway extends QueryableGateway
         }
 
         $criteria->addFilterRules([
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonMessenger.status=:status')
+                    ->bindValue('status', $status);
+            },
             'confidential' => function ($query, $gibbonPersonIDCreatedBy) {
                 return $query
                     ->where('(gibbonMessenger.confidential="N" OR (gibbonMessenger.confidential="Y" AND gibbonMessenger.gibbonPersonID=:gibbonPersonIDCreatedBy))')
@@ -101,5 +106,29 @@ class MessengerGateway extends QueryableGateway
 
             return $group;
         }, []));
+    }
+
+    public function getMessageDetailsByID($gibbonMessengerID)
+    {
+        $data = ['gibbonMessengerID' => $gibbonMessengerID];
+        $sql = "SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger LEFT JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getMessageDetailsByIDAndOwner($gibbonMessengerID, $gibbonPersonID)
+    {
+        $data = ['gibbonMessengerID' => $gibbonMessengerID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql="SELECT gibbonMessenger.*, title, surname, preferredName FROM gibbonMessenger LEFT JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonMessengerID=:gibbonMessengerID AND gibbonMessenger.gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectMessageTargetsByID($gibbonMessengerID)
+    {
+        $data = ['gibbonMessengerID' => $gibbonMessengerID];
+        $sql = "SELECT * FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type";
+
+        return $this->db()->select($sql, $data);
     }
 }

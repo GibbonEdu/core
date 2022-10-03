@@ -766,6 +766,19 @@ class Format
     }
 
     /**
+     * Renders an HTML <img> for a theme-based icon, based on the icon name.
+     *
+     * @param string $icon
+     * @param string $title
+     * @return string
+     */
+    public static function icon(string $icon, string $title)
+    {
+        $icon .= stripos($icon, '.') === false ? '.png' : '';
+        return "<img title='{$title}' src='./themes/".static::$settings['gibbonThemeName']."/img/{$icon}'/>";
+    }
+    
+    /**
      * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time. Works using local images or linked images using HTTP(S)
      *
      * @param string $path

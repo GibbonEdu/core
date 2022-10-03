@@ -54,4 +54,11 @@ class CannedResponseGateway extends QueryableGateway
         
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectCannedResponses()
+    {
+        $sql = "SELECT * FROM gibbonMessengerCannedResponse ORDER BY subject";
+        
+        return $this->db()->select($sql);
+    }
 }

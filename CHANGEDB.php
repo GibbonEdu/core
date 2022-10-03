@@ -691,5 +691,11 @@ ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `context` ENUM('Year Group','Form G
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelActivities` ENUM('Y','N') DEFAULT 'N' NULL AFTER `gibbonFormGroupIDList`;end
 ALTER TABLE `gibbonHook` CHANGE `type` `type` ENUM('Public Home Page','Student Profile','Parental Dashboard','Staff Dashboard','Student Dashboard','Report Writing','Staff Profile','Lesson Planner') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonPlannerEntry` ADD `fields` TEXT NULL AFTER `gibbonPersonIDLastEdit`;end
-
+ALTER TABLE `gibbonMessenger` ADD `status` ENUM('Draft','Sending','Sent') NOT NULL DEFAULT 'Sent' AFTER `gibbonSchoolYearID`;end
+ALTER TABLE `gibbonMessenger` ADD `emailFrom` VARCHAR(75) NULL AFTER `timestamp`;end
+ALTER TABLE `gibbonMessenger` ADD `emailReplyTo` VARCHAR(75) NULL AFTER `emailFrom`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD `sent` ENUM('N','Y') NOT NULL DEFAULT 'N' AFTER `gibbonPersonID`;end
+ALTER TABLE `gibbonMessengerReceipt` ADD `nameListStudent` TEXT NULL AFTER `gibbonPersonIDListStudent`;end
+UPDATE `gibbonMessengerReceipt` SET sent='Y';end
+UPDATE `gibbonAction` SET URLList='messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php' WHERE name LIKE 'Manage Messages_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 ";
