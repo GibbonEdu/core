@@ -137,7 +137,7 @@ class MessageForm extends Form
             $smsUsername = $this->settingGateway->getSettingByScope('Messenger', 'smsUsername');
 
             if (empty($smsGateway) || empty($smsUsername)) {
-                $row = $form->addRow()->addClass('sms');
+                $row = $form->addRow();
                     $row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
                     $row->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $this->session->get('organisationAdministratorEmail') . "'>" . $this->session->get('organisationAdministratorName') . "</a>"), 'message');
             } else {
@@ -148,8 +148,6 @@ class MessageForm extends Form
                     $row->addContent($values['sms'] == 'Y' ? Format::icon('iconTick', __('Sent by SMS.')) : Format::icon('iconCross', __('Not sent by SMS.')))->addClass('right');
                 } else {
                     $row->addYesNoRadio('sms')->checked('N')->required();
-
-                    $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 
                     $this->getSMSSignatureJS($signature);
                 }
@@ -185,6 +183,8 @@ class MessageForm extends Form
             $row->addLabel('subject', __('Subject'));
             $col = $row->addColumn()->addClass('flex-col');
             $col->addTextField('subject')->maxLength(60)->required()->addClass('w-full');
+
+            $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
             $col->addContent(Format::alert('<b><u>'.__('Note').'</u></b>: '.__('SMS messages will not include the subject line.'), 'warning'))->addClass('sms');
 
 
