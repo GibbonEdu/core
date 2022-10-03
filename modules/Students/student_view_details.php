@@ -504,8 +504,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $view = $_GET['view'] ?? 'grid';
                             if ($view == 'grid') {
-                                $table->setRenderer(new GridView($container->get('twig')));
-                                $table->getRenderer()->setCriteria($criteria);
+                                /** @var GridView */
+                                $gridView = $container->get(GridView::class);
+                                $table->setRenderer($gridView->setCriteria($criteria));
 
                                 $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
                                 $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
