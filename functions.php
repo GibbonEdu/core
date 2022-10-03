@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -367,6 +368,21 @@ function getFastFinder($connection2, $guid)
     return $templateData;
 }
 
+/**
+ * Get alert of the especified alert level.
+ *
+ * @deprecated v25
+ *             Use AlertLevelGateway::getByID instead.
+ *
+ * @since    v12
+ * @version  v23
+ *
+ * @param string  $guid
+ * @param \PDO    $connection2
+ * @param int     $gibbonAlertLevelID
+ *
+ * @return array|false
+ */
 function getAlert($guid, $connection2, $gibbonAlertLevelID)
 {
     $output = false;
@@ -862,7 +878,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -904,7 +924,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -933,7 +957,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         // Privacy
         $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
-            if ($alert = getAlert($guid, $connection2, 001)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_HIGH)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
