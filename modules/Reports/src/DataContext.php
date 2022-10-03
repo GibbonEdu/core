@@ -23,6 +23,21 @@ use Gibbon\Contracts\Database\Connection;
 
 interface DataContext
 {
+    /**
+     * Get formatter (callable) to format with.
+     *
+     * @return callable
+     */
     public function getFormatter();
+
+    /**
+     * Get the identifiers.
+     *
+     * @param Connection $pdo
+     * @param string     $gibbonReportID
+     * @param string     $gibbonYearGroupID
+     *
+     * @return array
+     */
     public function getIdentifiers(Connection $pdo, string $gibbonReportID, string $gibbonYearGroupID);
 }
