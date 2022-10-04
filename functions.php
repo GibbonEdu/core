@@ -1286,7 +1286,21 @@ function getModuleCategory($address, $connection2)
     return $output;
 }
 
-//GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
+/**
+ * Get the current year and set it as a global variable.
+ * (i.e. global $session instance)
+ *
+ * @deprecated v25
+ *             Use SchoolYearGateway::setCurrentSchoolYear instead.
+ *
+ * @version v23
+ * @since   v12
+ *
+ * @param  string $guid
+ * @param  \PDO $connection2
+ *
+ * @return void
+ */
 function setCurrentSchoolYear($guid,  $connection2)
 {
     global $session;

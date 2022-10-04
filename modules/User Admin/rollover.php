@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -621,7 +622,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $advance2 = false;
                     }
                     if ($advance2) {
-                        setCurrentSchoolYear($guid, $connection2);
+                        try {
+                            $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
+                        } catch (\Exception $e) {
+                            die($e->getMessage());
+                        }
                         $session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
                         $session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
                         $session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));

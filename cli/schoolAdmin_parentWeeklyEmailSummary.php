@@ -34,8 +34,13 @@ require __DIR__.'/../gibbon.php';
 
 // Setup some of the globals
 getSystemSettings($guid, $connection2);
-setCurrentSchoolYear($guid, $connection2);
-Format::setupFromSession($container->get('session'));
+try {
+    $session = $container->get('session');
+    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
+    Format::setupFromSession($session);
+} catch (\Exception $e) {
+    die($e->getMessage());
+}
 
 $settingGateway = $container->get(SettingGateway::class);
 

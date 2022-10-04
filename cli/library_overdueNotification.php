@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -26,7 +27,11 @@ require getcwd().'/../gibbon.php';
 
 getSystemSettings($guid, $connection2);
 
-setCurrentSchoolYear($guid, $connection2);
+try {
+    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
+} catch (\Exception $e) {
+    die($e->getMessage());
+}
 
 //Set up for i18n via gettext
 if (!empty($session->get('i18n')['code'])) {
