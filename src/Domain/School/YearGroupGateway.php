@@ -132,4 +132,22 @@ class YearGroupGateway extends QueryableGateway
         }
         return false;
     }
+
+    /**
+     * Return the last school year in the school, or false if none.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @return int|false
+     */
+    public function getLastYearGroupID()
+    {
+        $sql = 'SELECT gibbonYearGroupID FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
+        $result = $this->db()->select($sql);
+        if ($result->rowCount() > 1) {
+            return $result->fetchColumn();
+        }
+        return false;
+    }
 }

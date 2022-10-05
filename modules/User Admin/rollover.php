@@ -358,7 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 $form->addRow()->addHeading('Re-Enrol Other Students', __('Re-Enrol Other Students'));
                 $form->addRow()->addContent(__('Any students who are not re-enrolled will have their status set to "Left".').' '.__('Students who are already enrolled will have their enrolment updated.'));
 
-                $lastYearGroup = getLastYearGroupID($connection2);
+                $lastYearGroup = $yearGroupGateway->getLastYearGroupID();
 
                 if (count($yearGroups) < 1 or count($formGroups) < 1) {
                     $form->addRow()->addAlert(__('Year groups or form groups are not properly set up, so you cannot proceed with this section.'), 'error');
