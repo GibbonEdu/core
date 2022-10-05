@@ -29,6 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
+use Gibbon\Services\Module\Action;
 
 function getIPAddress() {
     $return = false;
@@ -1187,7 +1188,19 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
     $session->set('i18n', $i18n);
 }
 
-function isActionAccessible($guid, $connection2, $address, $sub = '')
+/**
+ * Check if a module action is accessible to the session user.
+ *
+ * @version v25
+ * @since   v12
+ *
+ * @param string        $guid
+ * @param \PDO          $connection2
+ * @param string|Action $action
+ * @param string        $sub
+ * @return boolean
+ */
+function isActionAccessible($guid, $connection2, $action, $sub = '')
 {
     global $session;
 
@@ -1196,12 +1209,19 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
     if ($session->has('username')) {
         //Check user has a current role set
         if ($session->get('gibbonRoleIDCurrent') != '') {
+            if (!($action instanceof Action)) {
+                $action = Action::fromLegacyPath($action);
+            }
+
             //Check module ready
-            $module = getModuleName($address);
-            if (!empty($module)) {
+            if (!empty($action->getModule())) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'moduleName' => $module);
+                    $data = [
+                        'actionName' => '%'.$action->getLegacyAction().'%',
+                        'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
+                        'moduleName' => $action->getModule(),
+                    ];
 
                     $sql = "SELECT gibbonAction.name FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
