@@ -103,4 +103,33 @@ class YearGroupGateway extends QueryableGateway
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup WHERE FIND_IN_SET(gibbonYearGroupID, :gibbonYearGroupIDList) ORDER BY sequenceNumber";
         return $this->db()->select($sql, $data);
     }
+
+    /**
+     * Take a year group, and return the next one, or false if none.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param int $gibbonYearGroupID
+     *
+     * @return int|false
+     */
+    public function getNextYearGroupID(int $gibbonYearGroupID)
+    {
+        $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
+        $result = $this->db()->select($sql, [
+            'gibbonYearGroupID' => $gibbonYearGroupID,
+        ]);
+        if ($result->rowCount() == 1) {
+            $row = $result->fetch();
+            $sqlPrevious = 'SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
+            $resultPrevious = $this->db()->select($sqlPrevious, [
+                'sequenceNumber' => $row['sequenceNumber'],
+            ]);
+            if ($resultPrevious->rowCount() >= 1) {
+                return $resultPrevious->fetchColumn();
+            }
+        }
+        return false;
+    }
 }

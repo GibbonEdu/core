@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\School\YearGroupGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserStatusLogGateway;
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Rollover'));
-    
+
     $step = null;
     if (isset($_GET['step'])) {
         $step = $_GET['step'];
@@ -40,7 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
         $step = 1;
     }
 
+    /** @var UserStatusLogGateway */
     $userStatusLogGateway = $container->get(UserStatusLogGateway::class);
+    /** @var YearGroupGateway */
+    $yearGroupGateway = $container->get(YearGroupGateway::class);
 
     //Step 1
     if ($step == 1) {
@@ -54,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
@@ -94,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
@@ -115,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                 //Set up years, form groups and statuses arrays for use later on
                 $yearGroups = array();
-                
+
                     $dataSelect = array();
                     $sqlSelect = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -125,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                 }
 
                 $formGroups = array();
-                
+
                     $dataSelect = array('gibbonSchoolYearID' => $nextYear);
                     $sqlSelect = 'SELECT gibbonFormGroupID, name FROM gibbonFormGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
                     $resultSelect = $connection2->prepare($sqlSelect);
@@ -411,7 +415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y')->alignLeft();
                                 //If no enrolment, try and work out next year and form group
                                 if (is_null($enrolmentCheckYearGroup)) {
-                                    $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
+                                    $enrolmentCheckYearGroup=$yearGroupGateway->getNextYearGroupID($rowReenrol['gibbonYearGroupID']);
                                     $enrolmentCheckFormGroup=$rowReenrol['gibbonFormGroupIDNext'];
                                 }
                                 $column = $row->addColumn();
@@ -513,7 +517,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
@@ -551,7 +555,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         echo '</div>';
                     } else {
                         //Check unique inputs for uniqueness
-                        
+
                             $data = array('name' => $name, 'sequenceNumber' => $sequenceNumber);
                             $sql = 'SELECT * FROM gibbonSchoolYear WHERE name=:name OR sequenceNumber=:sequenceNumber';
                             $result = $connection2->prepare($sql);
@@ -710,19 +714,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     if ($enrolled) {
                                         ++$success;
 
-                                        
+
                                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                             $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
                                         while ($rowFamily = $resultFamily->fetch()) {
-                                            
+
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                                 $sqlFamily2 = 'SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
-                                                
+
                                                     $dataFamily3 = array('gibbonPersonID' => $rowFamily2['gibbonPersonID']);
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
@@ -828,19 +832,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                     if ($enrolled) {
                                         ++$success;
-                                        
+
                                             $dataFamily = array('gibbonPersonID' => $gibbonPersonID);
                                             $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
                                             $resultFamily->execute($dataFamily);
                                         while ($rowFamily = $resultFamily->fetch()) {
-                                            
+
                                                 $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                                                 $sqlFamily2 = 'SELECT gibbonPerson.gibbonPersonID, gibbonPerson.status FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                                                 $resultFamily2 = $connection2->prepare($sqlFamily2);
                                                 $resultFamily2->execute($dataFamily2);
                                             while ($rowFamily2 = $resultFamily2->fetch()) {
-                                                
+
                                                     $dataFamily3 = array('gibbonPersonID' => $rowFamily2['gibbonPersonID']);
                                                     $sqlFamily3 = "UPDATE gibbonPerson SET status='Full' WHERE gibbonPersonID=:gibbonPersonID";
                                                     $resultFamily3 = $connection2->prepare($sqlFamily3);
