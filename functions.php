@@ -1289,7 +1289,18 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
     return $output;
 }
 
-//Take a year group, and return the next one, or false if none
+/**
+ * Take a year group, and return the next one, or false if none
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonYearGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextYearGroupID($gibbonYearGroupID, $connection2)
 {
     $output = false;
@@ -1314,7 +1325,19 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
-//Take a form group, and return the next one, or false if none
+/**
+ * Take a form group, and return the next one, or false if none.
+ * Use FormGroupGateway::getNextFormGroupID instead.
+ *
+ * @deprecated v25
+ * @version v17
+ * @since   v17
+ *
+ * @param int $gibbonFormGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;
