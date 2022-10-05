@@ -20,18 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 
 //Get variables
-$key = '';
-if (isset($_GET['key'])) {
-    $key = $_GET['key'];
-}
-$gibbonPersonID = '';
-if (isset($_GET['gibbonPersonID'])) {
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-}
-$gibbonMessengerID = '';
-if (isset($_GET['gibbonMessengerID'])) {
-    $gibbonMessengerID = $_GET['gibbonMessengerID'];
-}
+$key = $_GET['key'] ?? '';
+$gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+$gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
 
 //Check variables
 if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
@@ -39,6 +30,11 @@ if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
 } else {
     //Check for record
     $keyReadFail = false;
+
+    if ($key == 'test') {
+        $page->addSuccess(Format::bold(__('Test Email')).': '.__('Thank you for confirming receipt and reading of this email.'));
+        return;
+    }
 
     $dataKeyRead = array('key' => $key, 'gibbonPersonID' => $gibbonPersonID, 'gibbonMessengerID' => $gibbonMessengerID, 'key' => $key);
     $sqlKeyRead = 'SELECT gibbonMessengerReceipt.confirmed, gibbonMessenger.subject FROM gibbonMessengerReceipt JOIN gibbonMessenger ON (gibbonMessenger.gibbonMessengerID=gibbonMessengerReceipt.gibbonMessengerID) WHERE gibbonMessengerReceipt.key=:key AND gibbonMessengerReceipt.gibbonPersonID=:gibbonPersonID AND gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID';
