@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Http\Url;
@@ -32,7 +33,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $URL = Url::fromModuleRoute('Reports', 'reporting_cycles_manage_edit')
     ->withQueryParam('gibbonReportingCycleID', $gibbonReportingCycleID);
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_cycles_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_cycles_manage_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

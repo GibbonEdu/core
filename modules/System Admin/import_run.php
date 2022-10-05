@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Importer;
@@ -168,7 +169,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $table->setTitle(__('Notes'));
         $table->setDescription($notes);
 
-        if (isActionAccessible($guid, $connection2, '/modules/System Admin/export_run.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('System Admin', 'export_run'))) {
             $table->addHeaderAction('export', __('Export Columns'))
                 ->setURL('/modules/System Admin/export_run.php')
                 ->addParam('type', $type)

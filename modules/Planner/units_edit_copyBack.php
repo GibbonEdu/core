@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -38,7 +39,7 @@ $page->breadcrumbs
     ->add(__('Edit Unit'), 'units_edit.php', $urlParams)
     ->add(__('Copy Unit Back'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBack.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_copyBack')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

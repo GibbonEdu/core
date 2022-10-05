@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\Builder\FormBuilder;
@@ -31,7 +32,7 @@ $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier]);
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

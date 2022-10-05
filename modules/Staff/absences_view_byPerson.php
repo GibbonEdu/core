@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -28,7 +29,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\AbsenceCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -145,8 +146,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         ->format([AbsenceFormats::class, 'createdOn']);
 
     // ACTIONS
-    $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php');
-    $canRequest = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php');
+    $canManage = isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage'));
+    $canRequest = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request'));
 
     $table->addActionColumn()
         ->addParam('gibbonStaffAbsenceID')

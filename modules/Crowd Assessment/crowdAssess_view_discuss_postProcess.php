@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
@@ -34,7 +35,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss_post.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Crowd Assessment', 'crowdAssess_view_discuss_post')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

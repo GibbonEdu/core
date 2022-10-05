@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -25,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/house_manage_assign.php';
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Students/report_students_byHouse.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_assign.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('School Admin', 'house_manage_assign')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

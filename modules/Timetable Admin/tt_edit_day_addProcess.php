@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
@@ -32,7 +33,7 @@ $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTID=$gibbonTTID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

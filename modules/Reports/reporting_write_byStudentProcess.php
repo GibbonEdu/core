@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
@@ -43,7 +44,7 @@ $urlParams = [
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write_byStudent.php&'.http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write_byStudent')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

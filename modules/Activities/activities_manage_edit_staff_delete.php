@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Note: This is a modal page
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_edit')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {

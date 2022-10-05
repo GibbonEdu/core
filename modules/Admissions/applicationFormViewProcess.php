@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
@@ -27,7 +28,7 @@ $gibbonPersonID = $session->get('gibbonPersonID');
 
 $URL = Url::fromModuleRoute('Admissions', 'applicationFormView');
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationFormView.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applicationFormView')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

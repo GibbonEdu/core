@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -32,7 +33,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $settingGateway = $container->get(SettingGateway::class);
 
 $makeDepartmentsPublic = $settingGateway->getSettingByScope('Departments', 'makeDepartmentsPublic');
-if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course_class')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -100,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ];
             }
             // Planner
-            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+            if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner'))) {
                 $menuItems[] = [
                     'name' => __('Planner'),
                     'url'  => './index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$gibbonCourseClassID.'&viewBy=class',
@@ -116,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ];
             }
             // Homework
-            if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
+            if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_deadlines'))) {
                 $homeworkNamePlural = $settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
                 $menuItems[] = [
                     'name' => __($homeworkNamePlural),
@@ -125,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 ];
             }
             // Internal Assessment
-            if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
+            if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write'))) {
                 $menuItems[] = [
                     'name' => __('Internal Assessment'),
                     'url'  => './index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID='.$gibbonCourseClassID,

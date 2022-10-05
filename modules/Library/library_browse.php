@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
@@ -28,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Browse The Library'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Library', 'library_browse')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
 
@@ -32,7 +33,7 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_duplicate.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

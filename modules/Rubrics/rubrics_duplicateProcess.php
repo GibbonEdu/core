@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -33,7 +34,7 @@ $filter2 = $_GET['filter2'] ?? '';
 $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_duplicate.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

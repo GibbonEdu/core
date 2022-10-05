@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
@@ -38,7 +39,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm.php') != false) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'applicationForm')) != false) {
         $proceed = true;
     }
 }

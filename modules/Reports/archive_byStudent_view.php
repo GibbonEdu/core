@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -26,7 +27,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byStudent_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -32,10 +32,11 @@ $page->breadcrumbs
     ])
     ->add(__('Dump Unit'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') == false && isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner/units_dump.php') == false && isActionAccessible($guid, $connection2, '/modules/Planner', 'scopeAndSequence')) == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
+    echo __('Your request failed because Gibbon\Services\Module\Action;
+use you do not have access to this action.');
     echo '</div>';
 } else {
     //Check if courseschool year specified

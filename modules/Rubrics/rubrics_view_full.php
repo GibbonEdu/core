@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Rubric includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_view_full')) == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __('Your request failed because you do not have access to this action.');
+    echo __('Your request failed because Gibbon\Services\Module\Action;
+use you do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!

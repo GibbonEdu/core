@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -32,7 +33,7 @@ $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents";
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details_notes_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

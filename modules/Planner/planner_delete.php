@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

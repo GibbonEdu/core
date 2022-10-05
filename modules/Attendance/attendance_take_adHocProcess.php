@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Messenger\GroupGateway;
@@ -42,7 +43,7 @@ $today = date('Y-m-d');
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_adHoc.php&currentDate=".Format::date($currentDate)."&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_adHoc.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_adHoc')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

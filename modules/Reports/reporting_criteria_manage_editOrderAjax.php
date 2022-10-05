@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 
 $_POST['address'] = '/modules/Reports/reporting_scopes_manage_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_scopes_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_scopes_manage_edit')) == false) {
     exit;
 } else {
     // Proceed!

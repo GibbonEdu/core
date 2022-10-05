@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -37,7 +38,7 @@ if (!$session->has('gibbonPersonID')) {
     if (!empty($accessID) && !empty($accessToken)) {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, '/modules/Admissions/applicationFormView.php') != false) {
+} else if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applicationFormView')) != false) {
     $proceed = true;
 }
 

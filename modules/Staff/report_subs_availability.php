@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -24,7 +25,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_subs_availability')) == false) {
     // Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
             ->isRequired()
             ->setValue($timeEnd);
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage'))) {
         $row = $form->addRow();
             $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
             $row->addCheckbox('allStaff')->checked($allStaff);
@@ -138,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->notSortable()
         ->format(Format::using('userPhoto', 'image_240'));
 
-    $canManageCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage.php');
+    $canManageCoverage = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage'));
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Priority'))

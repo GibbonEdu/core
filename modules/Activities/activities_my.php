@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -25,14 +26,14 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('My Activities')); 
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
-    $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
+    $canAccessEnrolment = isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_enrolment'));
 
     $activityGateway = $container->get(ActivityGateway::class);
     

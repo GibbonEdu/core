@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -29,7 +30,7 @@ include './moduleFunctions.php';
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_view_full_submit_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

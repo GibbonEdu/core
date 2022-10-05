@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -24,7 +25,7 @@ use Gibbon\Forms\CustomFieldHandler;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_medical_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $newValues = $newResult->fetch();
 
             // Provide a link back to edit the associated record
-            if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == true && !empty($oldValues['gibbonPersonMedicalID'])) {
+            if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage_edit')) == true && !empty($oldValues['gibbonPersonMedicalID'])) {
                 $params = [ 
                     'gibbonPersonMedicalID' => $oldValues['gibbonPersonMedicalID']
                 ];

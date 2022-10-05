@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -26,12 +27,12 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\CoverageCalendar;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availability.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_availability')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage'))) {
         $page->breadcrumbs
             ->add(__('Manage Substitutes'), 'substitutes_manage.php')
             ->add(__('Edit Availability'));

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 
 include '../../gibbon.php';
@@ -24,7 +25,7 @@ include '../../gibbon.php';
 $gibbonActivityTypeID = $_GET['gibbonActivityTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/activitySettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySettings_type_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('School Admin', 'activitySettings_type_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

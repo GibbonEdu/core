@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -26,7 +27,7 @@ $address = $_POST['address'] ?? '';
 $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendanceProcess.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_attendanceProcess')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

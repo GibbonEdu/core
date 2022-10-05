@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
@@ -27,7 +28,7 @@ $page->breadcrumbs
     ->add(__('Manage Catalog'), 'library_manage_catalog.php')
     ->add(__('Duplicate Item'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_duplicate.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Library', 'library_manage_catalog_duplicate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

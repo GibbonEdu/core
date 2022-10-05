@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
@@ -33,7 +34,7 @@ $overwrite = $_POST['overwrite'] ?? 'N';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttDates_edit_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

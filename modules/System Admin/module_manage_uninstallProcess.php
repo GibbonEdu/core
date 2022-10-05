@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -35,7 +36,7 @@ $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
 $URLDelete = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'module_manage_uninstall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

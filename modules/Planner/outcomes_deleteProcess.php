@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 include './moduleFunctions.php';
@@ -28,7 +30,7 @@ $gibbonOutcomeID = $_POST['gibbonOutcomeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes_delete.php&gibbonOutcomeID=$gibbonOutcomeID&filter2=$filter2";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/outcomes.php&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'outcomes_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

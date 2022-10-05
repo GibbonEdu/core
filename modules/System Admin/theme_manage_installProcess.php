@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\ThemeGateway;
 use Gibbon\Data\Validator;
 
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 //Get URL from calling page, and set returning URL
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_install.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'theme_manage_install')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

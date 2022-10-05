@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Rubrics\RubricGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

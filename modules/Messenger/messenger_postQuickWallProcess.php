@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
@@ -31,7 +32,7 @@ $address = $_GET['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/messenger_postQuickWall.php';
 $time = time();
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_postQuickWall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

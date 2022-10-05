@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -30,7 +31,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_future_byPerson')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

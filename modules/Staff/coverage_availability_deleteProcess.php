@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
 require_once '../../gibbon.php';
@@ -26,7 +27,7 @@ $gibbonStaffCoverageDateID = $_REQUEST['gibbonStaffCoverageDateID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$gibbonPersonID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_availability.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_availability')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonPersonID) || empty($gibbonStaffCoverageDateID)) {

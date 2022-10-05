@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_byProofReading.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'progress_byProofReading')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

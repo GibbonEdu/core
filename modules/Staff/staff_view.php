@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -26,7 +27,7 @@ use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\View\View;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -173,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             });
         }
 
-        if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_add'))) {
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Staff/staff_manage_add.php')
                 ->addParam('search', $urlParams['search'])

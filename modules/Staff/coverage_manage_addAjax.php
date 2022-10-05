@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\DataSet;
@@ -35,7 +36,7 @@ $request = [
 
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage_add')) == false) {
     die(Format::alert(__('Your request failed because you do not have access to this action.')));
 } elseif (empty($request['dateStart']) || empty($request['dateEnd'])|| $gibbonPersonIDCoverage == 'Please select...') {
     die();

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Database\Updater;
 use Gibbon\Database\Migrations\EngineUpdate;
 use Gibbon\Domain\System\SessionGateway;
@@ -33,7 +34,7 @@ $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POS
 $partialFail = false;
 $session->set('systemUpdateError', '');
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'update')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

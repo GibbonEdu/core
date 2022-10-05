@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
@@ -26,7 +27,7 @@ use Gibbon\Forms\CustomFieldHandler;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -308,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
                     $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
-                if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
+                if (isActionAccessible($guid, $connection2, new Action('Crowd Assessment', 'crowdAssess'))) {
                     $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
                     $row = $form->addRow()->addClass('homeworkSubmission');
                         $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));

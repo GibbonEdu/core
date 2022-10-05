@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -34,7 +35,7 @@ if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

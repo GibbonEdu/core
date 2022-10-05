@@ -22,6 +22,7 @@ namespace Gibbon\UI\Dashboard;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
+use Gibbon\Services\Module\Action;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\HookGateway;
@@ -122,7 +123,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                     "<span style='font-size: 70%'>".
                     "<a href='".Url::fromModuleRoute('Students', 'student_view_details')->withQueryParam('gibbonPersonID', $student['gibbonPersonID'])."'>".__('Student Profile').'</a><br/>';
 
-                if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups_details.php')) {
+                if (isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroups_details'))) {
                     $output .= "<a href='".Url::fromModuleRoute('Form Groups', 'formGroups_details')->withQueryParam('gibbonFormGroupID', $student['gibbonFormGroupID'])."'>".__('Form Group').' ('.$student['formGroup'].')</a><br/>';
                 }
                 if ($student['formGroupWebsite'] != '') {
@@ -166,11 +167,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         //PREPARE PLANNER SUMMARY
         $classes = false;
 
-        if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner'))) {
             $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner')->withQueryParam('search', $gibbonPersonID)."'>".__('View Planner').'</a></span>';
 
             $date = date('Y-m-d');
-            if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $this->session->get('username') != '') {
+            if (isSchoolOpen($guid, $date, $connection2) == true and isActionAccessible($guid, $connection2, new Action('Planner', 'planner')) and $this->session->get('username') != '') {
                 try {
                     $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $gibbonPersonID, 'date2' => $date, 'gibbonPersonID2' => $gibbonPersonID);
                     $sql = "(SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, gibbonPlannerEntryStudentHomework.homeworkDueDateTime AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND date=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left') UNION (SELECT gibbonPlannerEntry.gibbonPlannerEntryID, gibbonUnitID, gibbonPlannerEntry.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkSubmission, homeworkCrowdAssess, role, date, summary, NULL AS myHomeworkDueDateTime FROM gibbonPlannerEntry JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonPlannerEntryGuest ON (gibbonPlannerEntryGuest.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE date=:date2 AND gibbonPlannerEntryGuest.gibbonPersonID=:gibbonPersonID2) ORDER BY date, timeStart";
@@ -274,7 +275,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         //PREPARE RECENT GRADES
         $grades = false;
 
-        if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_view'))) {
             $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='" . Url::fromModuleRoute('Markbook', 'markbook_view')->withQueryParam('search', $gibbonPersonID) . "'>".__('View Markbook').'</a></span></div>';
 
             //Get settings
@@ -560,7 +561,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         //PREPARE UPCOMING DEADLINES
         $deadlines = false;
-        if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner'))) {
 
             $homeworkNamePlural = $this->settingGateway->getSettingByScope('Planner', 'homeworkNamePlural');
             $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Due Dates')."</span> . <span style='font-size: 70%'><a href='".Url::fromModuleRoute('Planner', 'planner_deadlines')->withQueryParam('search', $gibbonPersonID)."'>".__('View {homeworkName}', ['homeworkName' => __($homeworkNamePlural)]).'</a></span></div>';
@@ -578,7 +579,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         //PREPARE TIMETABLE
         $timetable = false;
         $timetableOutput = '';
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view'))) {
             $date = date('Y-m-d');
             if (isset($_POST['ttDate'])) {
                 $date = Format::dateConvert($_POST['ttDate']);
@@ -597,7 +598,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         //PREPARE ACTIVITIES
         $activities = false;
         $activitiesOutput = false;
-        if (!(isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php'))) {
+        if (!(isActionAccessible($guid, $connection2, new Action('Activities', 'activities_view')))) {
             $activitiesOutput .= "<div class='error'>";
             $activitiesOutput .= __('Your request failed because you do not have access to this action.');
             $activitiesOutput .= '</div>';

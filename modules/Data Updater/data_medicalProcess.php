@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
@@ -33,7 +34,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_medical.php&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_medical')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

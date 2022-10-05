@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
@@ -36,7 +37,7 @@ $gibbonINInvestigationContributionID = $_POST['gibbonINInvestigationContribution
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
 $URLSuccess = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_submit_detail.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_submit_detail')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

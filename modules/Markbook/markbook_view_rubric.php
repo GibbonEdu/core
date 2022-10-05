@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 
 //Rubric includes
 require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_view')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

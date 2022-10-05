@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\AbsenceView;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_details.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

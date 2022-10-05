@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
     $table = DataTable::createPaginated('messages', $criteria);
     $table->setTitle(__('Messages'));
 
-    if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_post'))) {
         $table->addHeaderAction('new', __('New Message'))
             ->setURL('/modules/Messenger/messenger_post.php')
             ->setIcon('page_new')
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             ->displayLabel();
     }
 
-    if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_postQuickWall'))) {
         $table->addHeaderAction('newWall', __('New Quick Wall Message'))
             ->setURL('/modules/Messenger/messenger_postQuickWall.php')
             ->setIcon('page_new')

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\FileUploader;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
@@ -36,7 +37,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_edit.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage_condition_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

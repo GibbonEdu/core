@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

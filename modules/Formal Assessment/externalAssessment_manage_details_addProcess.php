@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -36,7 +37,7 @@ $allStudents = $_GET['allStudents'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search&allStudents=$allStudents";
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

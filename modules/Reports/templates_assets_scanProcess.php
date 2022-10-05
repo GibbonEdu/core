@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
@@ -32,7 +33,7 @@ require_once __DIR__.'/moduleFunctions.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

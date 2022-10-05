@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Services\Module\Action;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,7 +32,7 @@ $attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook',
 $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
@@ -171,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                         //Work out details for external assessment display
                         $externalAssessment = false;
-                        if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_details.php')) {
+                        if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_details'))) {
                             $gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
                             if (count($gibbonYearGroupIDListArray) == 1) {
                                 $primaryExternalAssessmentByYearGroup = unserialize($settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
@@ -317,7 +318,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 echo " | <a 'title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$row['attachment']."'>More info</a>";
                             }
                             echo '</span><br/>';
-                            if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
+                            if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit'))) {
                                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                             }
                             echo '</th>';

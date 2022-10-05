@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 $gibbonMessengerID = $_GET['gibbonMessengerID'] ?? '';
@@ -26,7 +28,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/messenger_manage_delete.php&search=$search&gibbonMessengerID=".$gibbonMessengerID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/messenger_manage.php&search=$search";
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

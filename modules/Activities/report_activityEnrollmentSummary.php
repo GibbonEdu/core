@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
@@ -25,7 +26,7 @@ use Gibbon\Domain\Activities\ActivityReportGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityEnrollmentSummary.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_activityEnrollmentSummary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

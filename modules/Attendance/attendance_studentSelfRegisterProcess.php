@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 
@@ -31,7 +32,7 @@ include './moduleFunctions.php';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_studentSelfRegister.php";
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_studentSelfRegister')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

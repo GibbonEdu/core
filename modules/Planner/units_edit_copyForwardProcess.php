@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Data\Validator;
 
@@ -34,7 +35,7 @@ $nameTarget = $_POST['nameTarget'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyForward.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_copyForward')) == false) {
     $URL .= '&copyForwardReturn=error0';
     header("Location: {$URL}");
 } else {

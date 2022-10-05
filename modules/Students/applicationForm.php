@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\View\View;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -43,7 +44,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
+    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
@@ -65,7 +66,7 @@ if ($proceed == false) {
         echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $session->get('organisationNameShort'), $session->get('systemName')).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')).'</div>';
     } else {
         // Application Manager
-        if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage'))) {
             $applicationType = (isset($_POST['applicationType']))? $_POST['applicationType'] : '';
 
             if ($applicationType == 'blank') {
@@ -903,7 +904,7 @@ if ($proceed == false) {
     }
 
     // OFFICE ONLY
-    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage'))) {
         $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
         $row = $form->addRow();

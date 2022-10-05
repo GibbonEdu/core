@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Psr\Container\ContainerInterface;
 use Gibbon\Tables\DataTable;
@@ -62,7 +63,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             $table->setTitle($schoolYear['name']);
 
             if ($schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
-                if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php')) {
+                if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage'))) {
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Behaviour/behaviour_manage_add.php')
                         ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -135,7 +136,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
                 });
 
-            if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+            if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage')) && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
 
                 $table->addActionColumn()

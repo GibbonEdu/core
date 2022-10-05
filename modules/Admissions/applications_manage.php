@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\FamilyGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -89,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
     $table = DataTable::createPaginated('applications', $criteria);
     $table->setTitle(__('Applications'));
 
-    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder'))) {
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')

@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
 $gibbonFinanceBudgetPersonID = $_GET['gibbonFinanceBudgetPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('School Admin', 'department_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

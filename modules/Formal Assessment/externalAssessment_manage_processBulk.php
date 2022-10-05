@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentGateway;
 use Gibbon\Domain\FormalAssessment\ExternalAssessmentStudentEntryGateway;
@@ -28,7 +29,7 @@ $search = $_POST['search'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Formal Assessment/externalAssessment.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($action) || empty($gibbonPersonID)) {

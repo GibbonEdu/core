@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_delete.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

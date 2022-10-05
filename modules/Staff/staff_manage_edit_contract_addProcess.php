@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -31,7 +32,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_contract_add.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit_contract_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

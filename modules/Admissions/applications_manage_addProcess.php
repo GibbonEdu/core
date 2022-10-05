@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Forms\FormPageGateway;
@@ -36,7 +37,7 @@ $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_add')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier, 'accessID' => $accessID]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_add')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

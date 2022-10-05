@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Forms\FormGateway;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Services\Format;
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

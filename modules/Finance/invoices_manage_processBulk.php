@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
@@ -47,7 +48,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
         $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
     }
 
-    if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoices_manage')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

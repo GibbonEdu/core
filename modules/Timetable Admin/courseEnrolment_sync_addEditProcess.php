@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -27,7 +28,7 @@ $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? null;
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_edit.php&gibbonYearGroupID='.$gibbonYearGroupID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_sync_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
@@ -32,7 +33,7 @@ $dateStamp = $_POST['dateStamp'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

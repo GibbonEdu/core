@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Messenger\GroupGateway;
 
 // Gibbon system-wide include
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings')) == false) {
     // Access denied
     die(__('Your request failed because you do not have access to this action.') );
 } else {

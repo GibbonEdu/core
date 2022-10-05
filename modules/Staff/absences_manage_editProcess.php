@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Data\Validator;
 
@@ -28,7 +29,7 @@ $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonStaffAbsenceID)) {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -26,7 +27,7 @@ $gibbonReportID = $_GET['gibbonReportID'] ?? '';
 $contextData = $_GET['contextData'] ?? '';
 $gibbonStudentEnrolmentID = $_GET['gibbonStudentEnrolmentID'] ?? [];
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_generate_batch.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_generate_batch')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

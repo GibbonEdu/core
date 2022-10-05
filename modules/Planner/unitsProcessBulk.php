@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 $gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
@@ -28,7 +30,7 @@ if ($gibbonCourseID == '' or $gibbonCourseIDCopyTo == '' or $gibbonSchoolYearID 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units.php&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Planner', 'units')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

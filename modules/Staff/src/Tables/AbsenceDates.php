@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\Tables;
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -81,8 +82,8 @@ class AbsenceDates
         }
 
         // ACTIONS
-        $canRequestCoverage = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') && $absence['status'] == 'Approved';
-        $canManage = isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php');
+        $canRequestCoverage = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) && $absence['status'] == 'Approved';
+        $canManage = isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage'));
         $canDelete = count($dates) > 1;
 
         if ($canManage || $absence['gibbonPersonID'] == $this->session->get('gibbonPersonID')) {

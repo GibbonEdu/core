@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model\Event;
@@ -671,7 +672,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 }
             }
 
-            $spaceBookingAvailable = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php');
+            $spaceBookingAvailable = isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceBooking_manage'));
             $eventsSpaceBooking = false;
             if ($spaceBookingAvailable) {
                 //Get space booking array
@@ -717,7 +718,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
                 ->filterBy('status', 'Approved');
             $absenceList = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $gibbonPersonID, false);
-            $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
+            $canViewAbsences = isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_byPerson'));
 
             foreach ($absenceList as $absence) {
                 $summary = __('Absent');
@@ -1494,9 +1495,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                             $output .= Format::tag("+".($classCount -1), 'error absolute top-0 right-0 mt-1 mr-1 p-1 text-xxs leading-none', implode(' & ', array_slice($periodCount[$rowPeriods['name']], 0, -1)));
                         }
 
-                        if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
+                        if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course_class')) and $edit == false) {
                             $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."&currentDate=".Format::date($date)."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
-                        } elseif (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') and $edit == true) {
+                        } elseif (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_class_edit')) and $edit == true) {
                             $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID'].'&gibbonSchoolYearID='.$session->get('gibbonSchoolYearID').'&gibbonCourseID='.$rowPeriods['gibbonCourseID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
                         } else {
                             $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';
@@ -2302,9 +2303,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
     $dayDiffTime = strtotime($dayTimeEnd) - strtotime($dayTimeStart);
     $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-    $canAddBookings = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php');
-    $canAddChanges = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage_add.php');
-    $canEditTTDays = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_edit.php');
+    $canAddBookings = isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceBooking_manage_add'));
+    $canAddChanges = isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceChange_manage_add'));
+    $canEditTTDays = isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_edit_class_edit'));
 
     $today = (date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($session->get('i18n')['dateFormatPHP']) ? "class='ttToday'" : '');
     $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
@@ -2478,7 +2479,7 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         $output .= '<i>'.substr($effectiveStart, 0, 5).' - '.substr($effectiveEnd, 0, 5).'</i><br/>';
                     }
 
-                    if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php')) {
+                    if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course_class'))) {
                         $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='".$session->get('absoluteURL').'/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID='.$rowPeriods['gibbonCourseClassID']."'>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</a><br/>';
                     } else {
                         $output .= "<span style='font-size: 120%'><b>".$rowPeriods['course'].'.'.$rowPeriods['class'].'</b></span><br/>';

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\UI\Chart\Chart;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -27,7 +28,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\DataSet;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_weekly.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_absences_weekly')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -173,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
                 return $output;
             });
 
-        if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availability.php')) {
+        if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_subs_availability'))) {
             $table->addColumn('coverage', __('Coverage'))
                 ->width('30%')
                 ->format([AbsenceFormats::class, 'coverage']);

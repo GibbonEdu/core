@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
@@ -31,7 +32,7 @@ $tab = $_POST['tab'] ?? 0;
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search, 'tab' => $tab]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

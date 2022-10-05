@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
@@ -31,7 +33,7 @@ if (isset($_GET['search'])) {
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_delete.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage.php&search=$search&allStaff=$allStaff";
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

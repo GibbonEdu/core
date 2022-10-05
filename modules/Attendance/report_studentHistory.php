@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -28,7 +29,7 @@ use Gibbon\Module\Attendance\StudentHistoryView;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Attendance', 'report_studentHistory')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo '</div>';
     } else {
         $viewMode = $_REQUEST['viewMode'] ?? '';
-        $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
+        $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byPerson'));
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
         if ($highestAction == 'Student History_all') {

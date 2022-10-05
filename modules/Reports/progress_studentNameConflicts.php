@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -25,7 +26,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNameConflicts.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'progress_studentNameConflicts')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -115,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/progress_studentNa
             return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
         });
 
-    if (isActionAccessible($guid, $connection2, '/modules/Reports/reporting_write_byStudent.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write_byStudent'))) {
         $table->addActionColumn()
             ->addParam('gibbonReportingCycleID', $gibbonReportingCycleID)
             ->addParam('gibbonReportingScopeID')

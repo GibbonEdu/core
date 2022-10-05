@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\UnitGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -28,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Unit Planner'));
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'units')) == false) {
     //Acess denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {

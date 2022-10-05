@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\FileUploader;
 use Gibbon\Data\Validator;
@@ -29,7 +30,7 @@ $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_edit.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

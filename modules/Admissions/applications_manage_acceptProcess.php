@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\ApplicationFormStorage;
@@ -32,7 +33,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_accept')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_manage_accept.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_accept')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

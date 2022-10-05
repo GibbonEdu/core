@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Data\Validator;
@@ -29,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
 $gibbon->session->set('moduleInstallError', '');
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'module_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

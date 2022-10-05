@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Contracts\Comms\Mailer;
 
 include '../../gibbon.php';
@@ -32,7 +33,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
 } else {
     $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_manage_report.php&search=$search&gibbonMessengerID=$gibbonMessengerID&sidebar=true";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage_report.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage_report')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

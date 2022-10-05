@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -33,11 +34,11 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
-$URLSuccess = isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_edit.php')
+$URLSuccess = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view_edit'))
     ? $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID
     : $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

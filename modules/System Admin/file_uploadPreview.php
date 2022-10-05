@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
+use Gibbon\Services\Module\Action;
 use Gibbon\FileUploader;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -27,7 +28,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/import_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'import_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -1,5 +1,6 @@
 <?php
 
+use Gibbon\Services\Module\Action;
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
 /*
@@ -27,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/displaySettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/displaySettings.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'displaySettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

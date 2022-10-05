@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\StudentGateway;
@@ -34,7 +35,7 @@ $gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $gibbon->session->g
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
 
-if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_download.php') == false) {
+if (empty($accessToken) && isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byStudent_download')) == false) {
     // Access denied
     header("location:$returnPath&return=error0");
     exit;

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\School\MedicalConditionGateway;
 
 require_once '../../gibbon.php';
@@ -25,7 +26,7 @@ $gibbonMedicalConditionID = $_GET['gibbonMedicalConditionID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/medicalConditions_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/School Admin/medicalConditions_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('School Admin', 'medicalConditions_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonMedicalConditionID)) {

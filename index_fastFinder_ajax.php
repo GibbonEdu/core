@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\ActionGateway;
 
 include './gibbon.php';
@@ -38,14 +39,14 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     if (empty($searchTerm)) die('[]');
 
     // Check access levels
-    $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
+    $studentIsAccessible = isActionAccessible($guid, $connection2, new Action('students', 'student_view'));
     $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
 
-    $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
+    $staffIsAccessible = isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view'));
     $classIsAccessible = false;
-    $alarmIsAccessible = isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php');
+    $alarmIsAccessible = isActionAccessible($guid, $connection2, new Action('System Admin', 'alarm'));
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-    if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
+    if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner')) and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
         $classIsAccessible = true;
     }
 

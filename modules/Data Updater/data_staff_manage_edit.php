@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -26,7 +27,7 @@ use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_staff_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
     $form->addHiddenValue('gibbonStaffID', $oldValues['gibbonStaffID']);
 
     // Provide links back to edit the associated records
-    if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
+    if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage_edit')) == true) {
         $page->navigator->addHeaderAction('edit', __('Edit User'))
             ->setURL('/modules/User Admin/user_manage_edit.php')
             ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
             ->displayLabel();
     }
     
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == true) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit')) == true) {
         $page->navigator->addHeaderAction('editStaff', __('Edit Staff'))
             ->setURL('/modules/Staff/staff_manage_edit.php')
             ->addParam('gibbonStaffID', $oldValues['gibbonStaffID'])
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_staff_ma
             ->displayLabel();
     }
 
-    if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == true) {
+    if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details')) == true) {
         $page->navigator->addHeaderAction('view', __('View Staff'))
             ->setURL('/modules/Staff/staff_view_details.php')
             ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])

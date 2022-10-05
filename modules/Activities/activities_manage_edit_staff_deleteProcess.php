@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 
 include '../../gibbon.php';
@@ -28,7 +29,7 @@ $gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/' . $gibbon->session->get('module') . "/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

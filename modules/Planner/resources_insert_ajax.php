@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -40,7 +41,7 @@ $purpose = isset($_POST['purpose'.$id])? $_POST['purpose'.$id] : (isset($_GET['p
 $gibbonYearGroupID = isset($_POST['gibbonYearGroupID'.$id])? $_POST['gibbonYearGroupID'.$id] : (isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '');
 $tags = isset($_POST['tags'.$id])? $_POST['tags'.$id] : (isset($_GET['tags'])? $_GET['tags'] : null);
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_view')) == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __('Your request failed because you do not have access to this action.');

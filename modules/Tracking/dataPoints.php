@@ -18,11 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Tracking', 'dataPoints')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     $internalAssessmentDataPoints = unserialize($settingGateway->getSettingByScope('Tracking', 'internalAssessmentDataPoints'));
     if (empty($externalAssessmentDataPoints) and empty($internalAssessmentDataPoints)) { //Seems like things are not configured, so give appropriate information according to access
         echo "<div class='warning'>";
-        if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSettings.php') == false) { //No access, just give warning
+        if (isActionAccessible($guid, $connection2, new Action('School Admin', 'trackingSettings')) == false) { //No access, just give warning
                 echo sprintf(__('Data Points needs to be configured before use, but you do not have permission to do this. Please contact %1$s for help with this issue.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>');
         } else { //Yes access, give link to settings.
                 echo sprintf(__('Data Points needs to be configured before use. Please take a look at %1$sTracking Settings%2$s to set up what data points to use.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/School Admin/trackingSettings.php'>", '</a>');
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
         echo '</div>';
     } else { //Seems like things are configured, so give welcome message.
         echo '<p>';
-        if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSettings.php') == false) { //No access, just give warning
+        if (isActionAccessible($guid, $connection2, new Action('School Admin', 'trackingSettings')) == false) { //No access, just give warning
                 echo sprintf(__('Data Points has been configured to allow you to export certain key assessment data. Please contact %1$s if you are not seeing the data you need here.'), "<a href='mailto:".$session->get('organisationAdministratorEmail')."'>".$session->get('organisationAdministratorName').'</a>').'<br/>';
         } else { //Yes access, give link to settings.
                 echo sprintf(__('Data Points has been configured to export certain key assessment data. Please take a look at %1$sTracking Settings%2$s to change what data points are included.'), "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/School Admin/trackingSettings.php'>", '</a>').' '.__('Use the export button below to prepare your Data Points export for download.').'<br/>';

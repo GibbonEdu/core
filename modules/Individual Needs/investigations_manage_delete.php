@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 
@@ -27,7 +28,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investigations_manage_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

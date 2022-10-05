@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Domain\Forms\FormFieldGateway;
 
@@ -27,7 +28,7 @@ $gibbonFormPageID = $_GET['gibbonFormPageID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_delete.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

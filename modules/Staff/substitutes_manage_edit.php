@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserGateway;
@@ -25,7 +26,7 @@ use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Action;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_e
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSubstituteID', $gibbonSubstituteID);
     
-    $canEdit = (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php'));
+    $canEdit = (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage_edit')));
     if ($canEdit) {
         $form->addHeaderAction('edit', __('Edit User'))
             ->setURL('/modules/User Admin/user_manage_edit.php')

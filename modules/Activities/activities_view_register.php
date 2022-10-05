@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
@@ -26,7 +27,7 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_view_register')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

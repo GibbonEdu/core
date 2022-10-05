@@ -20,8 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide include
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog.php') == false) {
-    die(__('Your request failed because you do not have access to this action.'));
+if (isActionAccessible($guid, $connection2, new Action('Library', 'library_manage_catalog')) == false) {
+    die(__('Your request failed because Gibbon\Services\Module\Action;
+use you do not have access to this action.'));
 } else {
     $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
     $id = isset($_POST['id'])? $_POST['id'] : (isset($_POST['idCheck'])? $_POST['idCheck'] : '');

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -29,7 +31,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $action == '') { echo 'Fatal error load
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
+    if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenses_manage')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

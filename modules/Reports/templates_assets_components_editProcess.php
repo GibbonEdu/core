@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -30,7 +31,7 @@ $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? ''
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
 
-if (isActionAccessible($guid, $connection2, '/modules/Reports/templates_assets_components_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

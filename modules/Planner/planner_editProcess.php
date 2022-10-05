@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -44,7 +45,7 @@ if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_edit')) == false) {
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +28,7 @@ use Gibbon\Tables\View\GridView;
 require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = $container->get(SettingGateway::class)->getSettingByScope('Departments', 'makeDepartmentsPublic');
-if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php') == false and $makeDepartmentsPublic != 'Y') {
+if (isActionAccessible($guid, $connection2, new Action('Departments', 'department')) == false and $makeDepartmentsPublic != 'Y') {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             $table->addMetaData('gridClass', 'rounded-sm bg-blue-100 border py-2');
             $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-2 text-center');
 
-            $canViewProfile = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
+            $canViewProfile = isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details'));
             $table->addColumn('image_240')
                 ->format(function ($person) use ($canViewProfile) {
                     $class = !empty($person['roleOrder'])? 'bg-blue-300' : '';

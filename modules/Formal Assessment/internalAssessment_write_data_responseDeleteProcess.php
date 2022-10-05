@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -31,7 +32,7 @@ $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ??
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write_data.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write_data')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

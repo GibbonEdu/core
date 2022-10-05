@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -24,7 +25,7 @@ use Gibbon\Domain\Timetable\TimetableGateway;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

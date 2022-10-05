@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -34,7 +35,7 @@ use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -181,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         // Overview
                         $table = DataTable::createDetails('overview');
 
-                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
+                        if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage'))) {
                             $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -189,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 ->append(' | ');
                         }
 
-                        if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
+                        if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage'))) {
                             $table->addHeaderAction('edit2', __('Edit Staff'))
                                 ->setIcon('config')
                                 ->setURL('/modules/Staff/staff_manage_edit.php')
@@ -231,8 +232,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '<h4>';
                         echo __('Timetable');
                         echo '</h4>';
-                        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
-                            if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
+                        if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')) == true) {
+                            if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == true) {
                                 echo "<div class='linkTop'>";
                                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                 echo '</div>';
@@ -259,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Personal') {
                         $table = DataTable::createDetails('personal');
 
-                        if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php')) {
+                        if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage'))) {
                             $table->addHeaderAction('edit', __('Edit User'))
                                 ->setURL('/modules/User Admin/user_manage_edit.php')
                                 ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -267,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 ->append(' | ');
                         }
 
-                        if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php')) {
+                        if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage'))) {
                             $table->addHeaderAction('edit2', __('Edit Staff'))
                                 ->setIcon('config')
                                 ->setURL('/modules/Staff/staff_manage_edit.php')
@@ -395,7 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                             echo '</div>';
                         }
                         else {
-                            if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
+                            if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage')) == true) {
                                 echo "<div class='linkTop'>";
                                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                 echo '</div>';
@@ -492,7 +493,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Activities') {
 
                         $highestActionActivities = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
-                        $canAccessEnrolment = isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php');
+                        $canAccessEnrolment = isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_enrolment'));
 
                         // CRITERIA
                         $activityGateway = $container->get(ActivityGateway::class);
@@ -545,12 +546,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo $table->render($activities);
 
                     } elseif ($subpage == 'Timetable') {
-                        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
+                        if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')) == false) {
                             echo "<div class='error'>";
                             echo __('The selected record does not exist, or you do not have access to it.');
                             echo '</div>';
                         } else {
-                            if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
+                            if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == true) {
                                 echo "<div class='linkTop'>";
                                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
                                 echo '</div>';
@@ -603,7 +604,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     $page->addSidebarExtra($page->fetchFromTemplate('profile/sidebar.twig.html', [
                         'canViewEmergency' => ($highestActionManage == 'Manage Staff_confidential') ? true : false,
                         'userPhoto' => Format::userPhoto($row['image_240'], 240),
-                        'canViewTimetable' => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
+                        'canViewTimetable' => isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')),
                         'gibbonPersonID' => $gibbonPersonID,
                         'subpage' => $subpage,
                         'search' => $search,

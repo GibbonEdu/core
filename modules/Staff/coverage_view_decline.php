@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
@@ -24,7 +25,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_view_decline.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view_decline')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

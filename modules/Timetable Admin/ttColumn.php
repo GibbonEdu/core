@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -27,7 +28,7 @@ $page->breadcrumbs->add(__('Manage Columns'));
     echo __('In Gibbon a column is a holder for the structure of a day. A number of columns can be defined, and these can be tied to particular timetable days in the timetable interface.');
     echo '</p>';
 
-if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn')) == false) {
     //Acess denied
     echo '<div class="error">';
     echo __('You do not have access to this action.');

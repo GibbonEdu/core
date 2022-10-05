@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\View;
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Contracts\Services\Session;
@@ -74,10 +75,10 @@ class StaffCard
         $page->writeFromTemplate('staffCard.twig.html', [
             'staff'             => $this->staffGateway->selectStaffByID($this->gibbonPersonID ?? '')->fetch(),
             'formGroup'         => $this->formGroupGateway->selectFormGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
-            'canViewProfile'    => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php'),
+            'canViewProfile'    => isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details')),
             'canViewAbsences'   => isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any'),
-            'canViewTimetable'  => isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php'),
-            'canViewFormGroups' => isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php'),
+            'canViewTimetable'  => isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')),
+            'canViewFormGroups' => isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroups')),
             'status'            => $this->status,
             'tag'               => $this->tag,
         ]);

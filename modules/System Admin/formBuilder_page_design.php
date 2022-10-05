@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\Action;
 use Gibbon\Services\Format;
@@ -29,7 +30,7 @@ use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder_page_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

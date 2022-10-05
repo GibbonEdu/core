@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Forms\FormSubmissionGateway;
 
-if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.php') == false) {
+if (isActionAccessible($guid, $connection2, new Action('Admissions', 'forms_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -71,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/forms_manage.ph
     $table->addColumn('formName', __('Form Name'));
     $table->addColumn('timestampCreated', __('Created'))->format(Format::using('relativeTime', 'timestampCreated'));
 
-    if (isActionAccessible($guid, $connection2, '/modules/System Admin/formBuilder.php')) {
+    if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder'))) {
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')

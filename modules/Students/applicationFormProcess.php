@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Module\Action;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -57,7 +58,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
+    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
