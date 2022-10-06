@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -70,7 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     }
 
     // FORM
-    $form = Form::create('crowdAssessment', $gibbon->session->get('absoluteURL').'/modules/'.$session->get('module')."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
+    $form = Form::create(
+        'crowdAssessment',
+        Url::fromModuleRoute('Crowd Assessment', 'crowdAssess_view_discuss_postProcess')
+            ->withQueryParams([
+                'gibbonPlannerEntryID' => $gibbonPlannerEntryID,
+                'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID,
+                'address' => $_GET['q'],
+                'gibbonPersonID' => $gibbonPersonID,
+                'replyTo' => $replyTo,
+            ])
+    );
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
 
