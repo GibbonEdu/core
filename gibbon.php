@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Http\Url;
+use Gibbon\Services\Module\AccessManager;
 
 // Handle fatal errors more gracefully
 register_shutdown_function(function () {

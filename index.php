@@ -18,7 +18,6 @@ along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\HookGateway;
-use Gibbon\Services\Module\Action;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\Students\StudentGateway;
@@ -26,6 +25,8 @@ use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Http\Url;
+use Gibbon\Services\Module\AccessManager;
+use Gibbon\Services\Module\Action;
 
 /**
  * BOOTSTRAP
@@ -49,6 +50,7 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 $settingGateway = $container->get(SettingGateway::class);
+$accessManager = $container->get(AccessManager::class);
 
 /**
  * USER ROLES
@@ -696,6 +698,7 @@ if (!$session->has('address')) {
             'container'   => $container,
             'page'        => $page,
             'session'     => $session,
+            'accessManager' => $accessManager,
         ];
 
         if (is_file('./'.$address)) {
