@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -28,17 +29,19 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
 if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit.php&gibbonTTID=$gibbonTTID&gibbonTTDayID=$gibbonTTDayID&gibbonSchoolYearID=$gibbonSchoolYearID";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit')->withQueryParams([
+        'gibbonTTID' => $gibbonTTID,
+        'gibbonTTDayID' => $gibbonTTDayID,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if tt specified
         if ($gibbonTTDayID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonTTDayID' => $gibbonTTDayID);
@@ -46,14 +49,12 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Validate Inputs
                 $name = $_POST['name'] ?? '';
@@ -63,8 +64,7 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
                 if ($name == '' or $nameShort == '' or $gibbonTTColumnID == '') {
-                    $URL .= '&return=error3';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error3'));
                 } else {
                     //Check unique inputs for uniquness
                     try {
@@ -73,14 +73,12 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                         exit();
                     }
 
                     if ($result->rowCount() > 0) {
-                        $URL .= '&return=error3';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error3'));
                     } else {
                         //Write to database
                         try {
@@ -89,13 +87,11 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
+                            header('Location: ' . $URL->withReturn('error2'));
                             exit();
                         }
 
-                        $URL .= '&return=success0';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('success0'));
                     }
                 }
             }

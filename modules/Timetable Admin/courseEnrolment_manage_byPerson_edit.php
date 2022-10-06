@@ -24,9 +24,10 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
+use Gibbon\Http\Url;
 
 //Module includes for Timetable module
-include './modules/Timetable/moduleFunctions.php';
+require_once __DIR__ . '/../Timetable/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == false) {
     // Access denied
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         try {
             if ($allUsers == 'on') {
                 $data = array('gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'), 'gibbonPersonID' => $gibbonPersonID);
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) 
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, NULL AS gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonFormGroup.nameShort AS formGroup, NULL AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
             } else {
                 if ($type == 'Student') {
@@ -80,11 +81,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '<h2>';
             echo __('Add Classes');
             echo '</h2>';
-            
-            $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
-                
+
+            $form = Form::create(
+                'manageEnrolment',
+                Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_addProcess')
+                    ->withQueryParams([
+                        'type' => $type,
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                        'gibbonPersonID' => $gibbonPersonID,
+                        'allUsers' => $allUsers,
+                        'search' => $search,
+                    ])
+            );
+
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,
@@ -92,8 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     "gibbonSchoolYearID" => $gibbonSchoolYearID
                 ];
                 $form->addHeaderAction('back', __('Back to Search Results'))
-                    ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson.php')
-                    ->addParams($params)
+                    ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson')->withQueryParams($params))
                     ->setIcon('search')
                     ->displayLabel();
             }
@@ -103,12 +113,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     "gibbonSchoolYearID" => $gibbonSchoolYearID
                 ];
             $form->addHeaderAction('view', __('View'))
-                ->setURL('/modules/Timetable/tt_view.php')
-                ->addParams($params)
+                ->setURL(Url::fromModuleRoute('Timetable', 'tt_view')->withQueryParams($params))
                 ->setIcon('planner')
                 ->displayLabel()
                 ->prepend((!empty($search)) ? ' | ' : '');
-            
+
             $classes = array();
             if ($type == 'Student') {
                 $enrolableClasses = $courseEnrolmentGateway->selectEnrolableClassesByYearGroup($gibbonSchoolYearID, $values['gibbonYearGroupID'])->fetchAll();
@@ -153,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo $form->getOutput();
 
-            
+
             //SHOW CURRENT ENROLMENT
             echo '<h2>';
             echo __('Current Enrolment');
@@ -168,7 +177,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 
             // FORM
-            $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/courseEnrolment_manage_byPerson_editProcessBulk.php?allUsers='.$allUsers);
+            $form = BulkActionForm::create(
+                'bulkAction',
+                Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_editProcessBulk')
+                    ->withQueryParam('allUsers', $allUsers)
+            );
             $form->addHiddenValue('type', $type);
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -208,9 +221,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->addParams($linkParams)
                 ->format(function ($class, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_edit'));
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_delete'));
                 });
 
             $table->addCheckboxColumn('gibbonCourseClassID');
@@ -257,9 +270,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->addParams($linkParams)
                 ->format(function ($class, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_edit'));
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_delete'));
                 });
 
             echo $table->render($enrolmentLeft);

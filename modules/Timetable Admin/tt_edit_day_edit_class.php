@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class.php') == false) {
     // Access denied
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $table->setTitle(__('Classes in Period'));
 
             $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_add.php')
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_add'))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonTTID', $gibbonTTID)
                 ->addParam('gibbonTTDayID', $gibbonTTDayID)
@@ -88,14 +89,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('gibbonCourseClassID')
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_edit.php');
-                        
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_edit'));
+
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_delete'));
 
                     $actions->addAction('exceptions', __('Exceptions'))
                         ->setIcon('attendance')
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_exception.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception'));
                 });
 
             echo $table->render($ttDayRowClasses->toDataSet());

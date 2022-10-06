@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception.php') == false) {
     // Access denied
@@ -66,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $table = DataTable::create('timetableDayRowClassExceptions');
 
             $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php')
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_add'))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonTTID', $gibbonTTID)
                 ->addParam('gibbonTTDayID', $gibbonTTDayID)
@@ -88,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('gibbonTTDayRowClassExceptionID')
                 ->format(function ($values, $actions) {
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_delete'));
                 });
 
             echo $table->render($ttDayRowClassExceptions->toDataSet());

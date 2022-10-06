@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -25,21 +26,21 @@ $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $action = $_POST['action'];
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = Url::fromModuleRoute('Timetable Admin', 'tt_edit')->withQueryParams([
+    'gibbonTTID' => $gibbonTTID,
+    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else if ($action == '') {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error1'));
 } else {
     $days = isset($_POST['gibbonTTDayIDList']) ? $_POST['gibbonTTDayIDList'] : array();
 
     //Proceed!
     if (count($days) < 1) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error3'));
     } else {
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $partialFail = false;
@@ -82,11 +83,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
         }
 
         if ($partialFail == true) {
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('warning1'));
         } else {
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('success0'));
         }
     }
 }

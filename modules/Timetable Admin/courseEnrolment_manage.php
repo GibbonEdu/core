@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage.php') == false) {
     // Access denied
@@ -55,13 +56,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('Filters');
         echo '</h3>';
 
-        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
+        $form = Form::create(
+            'searchForm',
+            Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage')
+                ->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID),
+            'get'
+        );
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->setClass('noIntBorder fullWidth');
-
-        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/courseEnrolment_manage.php');
-        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
@@ -123,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->addParam('gibbonCourseClassID')
                 ->format(function ($class, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit'));
                 });
 
             echo $table->render($classes->toDataSet());

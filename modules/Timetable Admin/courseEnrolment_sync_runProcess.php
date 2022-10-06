@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -25,20 +26,22 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonYearGroupIDList = $_POST['gibbonYearGroupIDList'] ?? null;
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_sync_run.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
-$URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_sync.php';
+$URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_run')
+    ->withQueryParams([
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonYearGroupIDList' => $gibbonYearGroupIDList,
+    ]);
+$URLSuccess = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync.php');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_run.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
     exit;
 } else {
     //Proceed!
     $syncData = (isset($_POST['syncData']))? $_POST['syncData'] : false;
 
     if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID) || empty($syncData)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
         exit;
     } else {
         $partialFail = false;
@@ -58,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 // Update existing course enrolments
                 $sql = "UPDATE gibbonCourseClassPerson
                         JOIN gibbonStudentEnrolment ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID 
+                        JOIN gibbonCourseClassMap ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID
                             AND gibbonCourseClassMap.gibbonFormGroupID=gibbonStudentEnrolment.gibbonFormGroupID)
                         SET gibbonCourseClassPerson.role=:role, gibbonCourseClassPerson.dateEnrolled=:dateEnrolled, gibbonCourseClassPerson.dateUnenrolled=NULL, reportable='Y'
                         WHERE gibbonStudentEnrolment.gibbonPersonID=:gibbonPersonID
@@ -82,12 +85,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
 
         if ($partialFail) {
-            $URL .= '&return=warning3';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('warning3'));
             exit;
         } else {
-            $URLSuccess .= '&return=success0';
-            header("Location: {$URLSuccess}");
+            header('Location: ' . $URLSuccess->withReturn('success0'));
             exit;
         }
     }

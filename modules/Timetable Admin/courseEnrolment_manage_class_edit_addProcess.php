@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -29,11 +30,16 @@ $search = $_GET['search'] ?? '';
 
 if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit')
+        ->withQueryParams([
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+            'gibbonCourseID' => $gibbonCourseID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'search' => $search,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Run through each of the selected participants.
@@ -42,8 +48,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID =
         $role = $_POST['role'] ?? '';
 
         if (count($choices) < 1 or $role == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             foreach ($choices as $t) {
                 //Check to see if student is already registered in this class
@@ -80,11 +85,9 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID =
             }
             //Write to database
             if ($update == false) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('success0'));
             }
         }
     }

@@ -18,27 +18,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
 $action = $_POST['action'] ?? '';
 
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/ttColumn.php";
+$URL = Url::fromModuleRoute('Timetable Admin', 'ttColumn');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else if ($action == '') {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error1'));
 } else {
 
     $columns = isset($_POST['gibbonTTColumnIDList']) ? $_POST['gibbonTTColumnIDList'] : array();
 
     //Proceed!
     if (count($columns) < 1) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error3'));
     } else {
         $timetableColumnGateway = $container->get(TimetableColumnGateway::class);
         $partialFail = false;
@@ -69,11 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
         }
 
         if ($partialFail == true) {
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('warning1'));
         } else {
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('success0'));
         }
     }
 

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_add.php') == false) {
     // Access denied
@@ -48,12 +49,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn_edit_row_edit.php&gibbonTTColumnRowID='.$_GET['editID'].'&gibbonTTColumnID='.$_GET['gibbonTTColumnID'];
+                $editLink = Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_edit')
+                    ->withQueryParams([
+                        'gibbonTTColumnRowID' => $_GET['editID'],
+                        'gibbonTTColumnID' => $_GET['gibbonTTColumnID'],
+                    ]);
             }
             $page->return->setEditLink($editLink);
 
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumn_edit_row_addProcess.php');
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_addProcess'));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTColumnID', $gibbonTTColumnID);

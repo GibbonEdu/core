@@ -17,21 +17,25 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_delete.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+$URL = Url::fromModuleRoute('Timetable Admin', 'tt_delete')
+    ->withQueryParams([
+        'gibbonTTID' => $gibbonTTID,
+        'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'] ?? '',
+    ]);
+$URLDelete = Url::fromModuleRoute('Timetable Admin', 'tt')->withQueryParam('gibbonSchoolYearID', $_GET['gibbonSchoolYearID'] ?? '');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Check if gibbonTTID specified
     if ($gibbonTTID == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         try {
             $data = array('gibbonTTID' => $gibbonTTID);
@@ -39,14 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit();
         }
 
         if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
         } else {
             //Delete Course
             try {
@@ -55,13 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
-            $URLDelete = $URLDelete.'&return=success0';
-            header("Location: {$URLDelete}");
+            header('Location: ' . $URLDelete->withReturn('success0'));
         }
     }
 }

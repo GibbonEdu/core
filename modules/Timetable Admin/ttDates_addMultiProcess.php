@@ -21,6 +21,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -31,19 +32,17 @@ $dates = $_POST['dates'] ?? [];
 $gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 $overwrite = $_POST['overwrite'] ?? 'N';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = Url::fromModuleRoute('Timetable Admin', 'ttDates')->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     // Proceed!
     $partialFail = false;
 
     // Validate Inputs
     if (empty($gibbonSchoolYearID) or empty($dates) or empty($gibbonTTDayID)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
         exit;
     }
 
@@ -54,16 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
     $gibbonTTDay = $timetableDayGateway->getTTDayByID($gibbonTTDayID);
     if (empty($schoolYear) || empty($gibbonTTDay)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error2'));
         exit();
     }
-    
+
     foreach ($dates as $date) {
         if (!isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true)) {
             $partialFail = true;
             continue;
-        } 
+        }
 
         // Remove existing TT Day Dates if overwriting
         if ($overwrite == 'Y') {
@@ -80,12 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             $inserted = $timetableDayDateGateway->insert($data);
             $partialFail &= !$inserted;
         }
-        
+
     }
 
-    $URL .= $partialFail
-        ? '&return=warning1'
-        : '&return=success0';
-    header("Location: {$URL}");
-
+    if ($partialFail) {
+        header('Location: ' . $URL->withReturn('warning1'));
+    } else {
+        header('Location: ' . $URL->withReturn('success0'));
+    }
 }

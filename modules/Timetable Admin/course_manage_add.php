@@ -44,7 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/course_manage_edit.php&gibbonCourseID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = Url::fromModuleRoute('Timetable Admin', 'course_manage_edit')
+            ->withQueryParams([
+                'gibbonCourseID' => $_GET['editID'],
+                'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'],
+            ]);
     }
     $page->return->setEditLink($editLink);
 
@@ -53,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
@@ -64,61 +68,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo __('The specified record does not exist.');
             echo '</div>';
         } else {
-			$schoolYear = $result->fetch(); 
-			
-			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_addProcess.php');
+			$schoolYear = $result->fetch();
+
+			$form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'course_manage_addProcess'));
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
-			
+
             $row = $form->addRow()->addHeading('Basic Details', __('Basic Details'));
 
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
 				$row->addTextField('schoolYearName')->required()->readonly()->setValue($schoolYear['name']);
-			
+
 			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
 				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
-			
+
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
 				$row->addTextField('name')->required()->maxLength(60);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
 				$row->addTextField('nameShort')->required()->maxLength(12);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
 				$row->addNumber('orderBy')->maxLength(3);
-			
+
             $row = $form->addRow()->addHeading('Display Information', __('Display Information'));
 
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');
 				$column->addLabel('description', __('Blurb'));
 				$column->addEditor('description', $guid)->setRows(20);
-			
+
 			$row = $form->addRow();
 				$row->addLabel('map', __('Include In Curriculum Map'));
 				$row->addYesNo('map')->required();
-			
+
             $row = $form->addRow()->addHeading('Configure', __('Configure'));
 
 			$row = $form->addRow();
 				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
 				$row->addCheckboxYearGroup('gibbonYearGroupIDList');
-			
+
             // Custom Fields
             $container->get(CustomFieldHandler::class)->addCustomFieldsToForm($form, 'Course', []);
 
 			$row = $form->addRow();
 				$row->addFooter();
 				$row->addSubmit();
-			
+
 			echo $form->getOutput();
         }
     }

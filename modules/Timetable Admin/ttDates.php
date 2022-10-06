@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.php') == false) {
     // Access denied
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
             $page->addData('preventOverflow', true);
 
-            $form = Form::createTable('ttDates', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttDates_addMultiProcess.php?gibbonSchoolYearID='.$gibbonSchoolYearID);
+            $form = Form::createTable('ttDates', Url::fromModuleRoute('Timetable Admin', 'ttDates_addMultiProcess')->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID));
             $form->setClass('w-full blank');
 
             $form->addHiddenValue('q', $session->get('address'));
@@ -143,7 +144,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
 
                             $column->addCheckbox('dates[]')->setValue($i)->setClass($dayOfWeek.$values['nameShort'])->alignCenter();
 
-                            $column->addContent("<br/><a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a><br/>");
+                            $column->addContent("<br/><a href='".Url::fromModuleRoute('Timetable Admin', 'ttDates_edit')
+                                ->withQueryParams([
+                                    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                                    'dateStamp' => $i,
+                                ])."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a><br/>");
 
                             if (isset($ttDays[$date])) {
                                 foreach ($ttDays[$date] as $day) {

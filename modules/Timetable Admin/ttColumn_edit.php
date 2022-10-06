@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumn_editProcess.php');
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'ttColumn_editProcess'));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTColumnID', $values['gibbonTTColumnID']);
@@ -79,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $table = DataTable::create('timetableColumnRows');
 
             $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Timetable Admin/ttColumn_edit_row_add.php')
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_add'))
                 ->addParam('gibbonTTColumnID', $gibbonTTColumnID)
                 ->displayLabel();
 
@@ -94,10 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 ->addParam('gibbonTTColumnRowID')
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/ttColumn_edit_row_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_edit'));
 
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/ttColumn_edit_row_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_delete'));
                 });
 
             echo $table->render($rows->toDataSet());

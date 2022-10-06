@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
@@ -29,18 +31,33 @@ $gibbonTTDayRowClassExceptionID = $_GET['gibbonTTDayRowClassExceptionID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '' or $gibbonTTDayRowClassExceptionID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_exception_delete.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID";
-    $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_delete')
+        ->withQueryParams([
+            'gibbonTTDayID' => $gibbonTTDayID,
+            'gibbonTTID' => $gibbonTTID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+            'gibbonTTDayRowClass' => $gibbonTTDayRowClassID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+            'gibbonTTDayRowClassExceptionID' => $gibbonTTDayRowClassExceptionID,
+        ]);
+    $URLDelete = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception')
+        ->withQueryParams([
+            'gibbonTTDayID' => $gibbonTTDayID,
+            'gibbonTTID' => $gibbonTTID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+            'gibbonTTDayRowClass' => $gibbonTTDayRowClassID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if gibbonTTDayID specified
         if ($gibbonTTDayID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -48,14 +65,12 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() < 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 try {
                     $data = array('gibbonTTDayRowClassExceptionID' => $gibbonTTDayRowClassExceptionID);
@@ -63,14 +78,12 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                     exit();
                 }
 
                 if ($result->rowCount() < 1) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                 } else {
                     //Write to database
                     try {
@@ -79,13 +92,11 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                         exit();
                     }
 
-                    $URLDelete = $URLDelete.'&return=success0';
-                    header("Location: {$URLDelete}");
+                    header('Location: ' . $URLDelete->withReturn('success0'));
                 }
             }
         }

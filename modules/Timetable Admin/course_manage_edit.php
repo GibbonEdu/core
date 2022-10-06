@@ -75,7 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_editProcess.php?gibbonCourseID='.$gibbonCourseID);
+            $form = Form::create(
+                'action',
+                Url::fromModuleRoute('Timetable Admin', 'course_manage_editProcess')->withQueryParam('gibbonCourseID', $gibbonCourseID)
+            );
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
 			$form->addHiddenValue('address', $session->get('address'));
@@ -144,10 +147,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $table = DataTable::create('courseClassManage');
 
             $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Timetable Admin/course_manage_class_add.php')
-                ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
-                ->addParam('gibbonCourseID', $gibbonCourseID)
-                ->addParam('search', $search)
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_class_add')
+                    ->withQueryParams([
+                        'gibbonSchoolYearID' => $values['gibbonSchoolYearID'],
+                        'gibbonCourseID' => $gibbonCourseID,
+                        'search' => $search,
+                    ]))
                 ->displayLabel();
 
             $table->addColumn('nameShort', __('Short Name'));
@@ -172,21 +177,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
             // ACTIONS
+            $params = [
+                'gibbonSchoolYearID' => $values['gibbonSchoolYearID'],
+                'gibbonCourseID' => $gibbonCourseID,
+                'search' => $search,
+                'gibbonCourseClassID' => '',
+            ];
             $table->addActionColumn()
-                ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
-                ->addParam('gibbonCourseID', $gibbonCourseID)
-                ->addParam('search', $search)
-                ->addParam('gibbonCourseClassID')
-                ->format(function ($class, $actions) {
+                ->format(function ($class, $actions) use ($params) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/course_manage_class_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_class_edit')->withQueryParams($params));
 
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/course_manage_class_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_class_delete')->withQueryParams($params));
 
                     $actions->addAction('enrolment', __('Enrolment'))
                         ->setIcon('attendance')
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit')->withQueryParams($params));
                 });
 
             echo $table->render($classes->toDataSet());

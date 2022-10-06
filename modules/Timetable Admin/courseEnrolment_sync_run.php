@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -73,7 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncRun', $session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_runProcess.php');
+    $form = Form::create(
+        'courseEnrolmentSyncRun',
+        Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_runProcess')
+    );
     $form->setClass('w-full blank');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module').'/courseEnrolment_sync_deleteProcess.php');
+        $form = DeleteForm::createForm(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_deleteProcess'));
         echo $form->getOutput();
     }
 }

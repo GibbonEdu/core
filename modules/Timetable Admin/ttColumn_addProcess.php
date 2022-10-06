@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -25,17 +26,15 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $name = $_POST['name'] ?? '';
 $nameShort = $_POST['nameShort'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn_add.php';
+$URL = Url::fromModuleRoute('Timetable Admin', 'ttColumn_add');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Validate Inputs
     if ($name == '' or $nameShort == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         //Check unique inputs for uniquness
         try {
@@ -44,14 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_a
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit();
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error3'));
         } else {
             //Write to database
             try {
@@ -60,16 +57,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_a
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 6, '0', STR_PAD_LEFT);
 
-            $URL .= "&return=success0&editID=$AI";
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withQueryParam('editID', $AI)->withReturn('success0'));
         }
     }
 }

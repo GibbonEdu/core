@@ -17,16 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_sync.php';
+$URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
     exit;
 } else {
     //Proceed!
@@ -43,12 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     }
 
     if ($partialFail) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error2'));
         exit;
     } else {
-        $URL .= '&return=success0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('success0'));
         exit;
     }
 }

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,11 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_a
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn_edit.php&gibbonTTColumnID='.$_GET['editID'];
+        $editLink = Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit')->withQueryParam('gibbonTTColumnID', $_GET['editID']);
     }
     $page->return->setEditLink($editLink);
 
-    $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumn_addProcess.php');
+    $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'ttColumn_addProcess'));
 
     $form->addHiddenValue('address', $session->get('address'));
 

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
 require_once __DIR__ . '/../../gibbon.php';
 
@@ -31,17 +32,15 @@ $count = $_POST['count'] ?? '';
 $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupID'] ?? []);
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
+$URL = Url::fromModuleRoute('Timetable Admin', 'tt_add')->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Validate Inputs
     if ($gibbonSchoolYearID == '' or $name == '' or $nameShort == '' or $nameShortDisplay == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         //Check unique inputs for uniquness
         try {
@@ -50,14 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit();
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error3'));
         } else {
             //Write to database
             try {
@@ -66,16 +63,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
-            $URL .= "&return=success0&editID=$AI";
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withQueryParam('editID', $AI)->withReturn('error0'));
         }
     }
 }

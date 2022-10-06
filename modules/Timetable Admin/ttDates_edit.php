@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Http\Url;
 use Gibbon\Tables\DataTable;
 
 //Module includes
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
         $data = array('date' => date('Y-m-d', $dateStamp));
         $sql = 'SELECT gibbonTTDay.gibbonTTDayID, gibbonTTDay.name AS dayName, gibbonTT.name AS ttName FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date';
         $result = $connection2->prepare($sql);
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('dateStamp', $dateStamp)
                 ->displayLabel()
-                ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_add.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttDates_edit_add'));
 
         $table->addColumn('ttName', __('Timetable'));
         $table->addColumn('dayName', __('Day'));
@@ -60,10 +62,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 ->addParam('gibbonTTDayID')
                 ->format(function ($subcategory, $actions) use ($gibbon) {
                     $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/' . $gibbon->session->get('module') . '/ttDates_edit_delete.php');
+                            ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttDates_edit_delete'));
                 });
 
         echo $table->render($result->toDataSet());
     }
-    
+
 }

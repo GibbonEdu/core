@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Http\Url;
+
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
@@ -24,18 +26,24 @@ $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
 
 if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_delete.php&gibbonTTColumnID=$gibbonTTColumnID&gibbonTTColumnRowID=$gibbonTTColumnRowID";
-    $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID&gibbonTTColumnRowID=$gibbonTTColumnRowID";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_delete')
+        ->withQueryParams([
+            'gibbonTTColumnID' => $gibbonTTColumnID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+        ]);
+    $URLDelete = Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit')
+        -> withQueryParams([
+            'gibbonTTColumnID' => $gibbonTTColumnID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_delete.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if gibbonTTColumnRowID specified
         if ($gibbonTTColumnRowID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID);
@@ -43,14 +51,12 @@ if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Write to database
                 try {
@@ -59,13 +65,11 @@ if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                     exit();
                 }
 
-                $URLDelete = $URLDelete.'&return=success0';
-                header("Location: {$URLDelete}");
+                header('Location: ' . $URLDelete->withReturn('success0'));
             }
         }
     }

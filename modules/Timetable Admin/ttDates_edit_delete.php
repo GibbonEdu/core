@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php') == false) {
     // Access denied
@@ -30,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonTTDayID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('date' => date('Y-m-d', $dateStamp), 'gibbonTTDayID' => $gibbonTTDayID);
             $sql = 'SELECT * FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) WHERE date=:date AND gibbonTTDay.gibbonTTDayID=:gibbonTTDayID';
             $result = $connection2->prepare($sql);
@@ -43,7 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             $row = $result->fetch();
 
             //Proceed!
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttDates_edit_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp&gibbonTTDayID=$gibbonTTDayID");
+            $form = DeleteForm::createForm(
+                Url::fromModuleRoute('Timetable Admin', 'ttDates_edit_deleteProcess')
+                    ->withQueryParams([
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                        'dateStamp' => $dateStamp,
+                        'gibbonTTDayID' => $gibbonTTDayID,
+                    ])
+                );
             echo $form->getOutput();
         }
     }

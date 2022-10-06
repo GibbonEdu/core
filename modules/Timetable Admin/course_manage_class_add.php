@@ -38,12 +38,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         ->add(__('Add Class'));
 
     if (!empty($search)) {
-        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'course_manage.php')->withQueryParams($urlParams));
+        $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Timetable Admin', 'course_manage')->withQueryParams($urlParams));
     }
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
+        $editLink = Url::fromModuleRoute('Timetable Admin', 'course_manage_class_edit')
+            ->withQueryParams([
+                'gibbonCourseClassID' => $_GET['editID'],
+                'gibbonCourseID' => $gibbonCourseID,
+                'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            ]);
     }
 
     $page->return->setEditLink($editLink);
@@ -65,7 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
             $settingGateway = $container->get(SettingGateway::class);
 
-			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_addProcess.php');
+			$form = Form::create(
+                'action',
+                Url::fromModuleRoute('Timetable Admin', 'course_manage_class_addProcess')
+            );
 
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
