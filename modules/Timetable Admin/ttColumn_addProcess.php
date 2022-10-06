@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $name = $_POST['name'] ?? '';
 $nameShort = $_POST['nameShort'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_add.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_add.php') == false) {
     $URL .= '&return=error0';

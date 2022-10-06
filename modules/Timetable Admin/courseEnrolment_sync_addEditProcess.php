@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonYearGroupID = $_REQUEST['gibbonYearGroupID'] ?? null;
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? null;
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_edit.php&gibbonYearGroupID='.$gibbonYearGroupID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_sync_edit.php&gibbonYearGroupID='.$gibbonYearGroupID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_edit.php') == false) {
     $URL .= '&return=error0';

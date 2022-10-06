@@ -32,7 +32,7 @@ $gibbonYearGroupIDList = (isset($_POST["gibbonYearGroupID"]) ? implode(',', $_PO
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $gibbonTTID = $_POST['gibbonTTID'];
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_edit.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.php') == false) {
     $URL .= '&return=error0';

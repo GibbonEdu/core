@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_delete.php&gibbonTTColumnID='.$gibbonTTColumnID;
-$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn_delete.php&gibbonTTColumnID='.$gibbonTTColumnID;
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/ttColumn.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_delete.php') == false) {
     $URL .= '&return=error0';

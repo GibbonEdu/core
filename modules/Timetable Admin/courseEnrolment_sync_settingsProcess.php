@@ -22,7 +22,7 @@ require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/courseEnrolment_sync.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync.php') == false) {
     $URL .= '&return=error0';
