@@ -1192,6 +1192,30 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
 /**
  * Check if a module action is accessible to the session user.
  *
+ * Deprecated. Use AccessManager::allow() instead.
+ *
+ * <code>
+ * use Gibbon\Services\Module\Action;
+ * use Gibbon\Services\Module\AccessManager;
+ *
+ * $accessManager = $container->get(AccessManager::class);
+ * // For "modules/Module Name/entryPoint.php"
+ * if ($accessManager->allow(new Action('Module Name', 'entryPoint'))) {
+ *   // ...
+ * }
+ * </code>
+ *
+ * Or when routed from index.php, simply:
+ * <code>
+ * use Gibbon\Services\Module\Action;
+ *
+ * // For "modules/Module Name/entryPoint.php"
+ * if ($accessManager->allow(new Action('Module Name', 'entryPoint'))) {
+ *   // ...
+ * }
+ * </code>
+ *
+ * @deprecated v25
  * @version v25
  * @since   v12
  *
