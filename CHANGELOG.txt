@@ -44,6 +44,7 @@ v25.0.00
         Messenger: added the ability to send confidential messages which are not viewable by other users
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Messenger: improved the success message for confirmed read receipts
+        Messenger: added form group name to students in Individual target list
         Markbook: added Term filter to student view, when Group Columns by Term enabled
         Planner: improved the error message when unable to access classes in Unit Planner
         Planner: update Add Lesson Plan to suggest dates based on existing lesson sequence
