@@ -55,11 +55,11 @@ class AccessManager
         }
 
         // Check if the specified user role has access to the module action specified.
-        return $this->moduleGateway->checkActionAccessible(
+        return $this->moduleGateway->selectRoleModuleActionNames(
             $this->session->get('gibbonRoleIDCurrent'),
             $action->getModule(),
             $action->getRoutePath(),
             $action->getActionName(),
-        );
+        )->isNotEmpty();
     }
 }

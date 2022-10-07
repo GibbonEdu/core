@@ -180,32 +180,35 @@ class ModuleGateway extends QueryableGateway
 
     /**
      * Check the specified role has access rights to the specified action.
+     * Get the names of all actions available for the given role to the
+     * specified module and route path.
      *
-     * @param string       $gibbonRoleID  The role ID.
+     * @param int          $gibbonRoleID  The role ID.
      * @param string       $moduleName    The module name.
-     * @param string       $action        Partial string of the action URL.
+     * @param string       $routePath     Route path of the entry point in the module.
      * @param string|null  $actionName    Specific action name string, or null if unspecified.
      *                                    Default: null.
      *
-     * @return bool
+     * @return Result
      */
-    public function checkActionAccessible(
-        string $gibbonRoleID,
+    public function selectRoleModuleActionNames(
+        $gibbonRoleID,
         string $moduleName,
-        string $action,
+        string $routePath,
         ?string $actionName = null
-    ) {
+    ): Result {
         $data = [
             'gibbonRoleID' => $gibbonRoleID,
             'moduleName' => $moduleName,
-            'actionURL' => '%'.$action.'%',
+            'routePath' => '%'.$routePath.'.php%',
         ];
-        $sql = 'SELECT gibbonAction.name FROM gibbonAction
+        $sql = 'SELECT gibbonAction.name as actionName
+        FROM gibbonAction
         JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
         JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
         JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
         WHERE
-            gibbonAction.URLList LIKE :actionURL
+            gibbonAction.URLList LIKE :routePath
             AND gibbonPermission.gibbonRoleID=:gibbonRoleID
             AND gibbonModule.name=:moduleName';
 
@@ -214,9 +217,6 @@ class ModuleGateway extends QueryableGateway
             $sql .= ' AND gibbonAction.name=:actionName';
         }
 
-        return $this
-            ->db()
-            ->select($sql, $data)
-            ->isNotEmpty();
+        return $this->db()->select($sql, $data);
     }
 }
