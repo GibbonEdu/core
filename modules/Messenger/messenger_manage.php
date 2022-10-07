@@ -228,8 +228,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 }
             }
 
-            foreach ($targetTypeCount as $count) {
-                if ($count > $targetTypeThreshold) {
+            foreach ($targets as $target) {
+                if (empty($targetTypeCount[$target['type']])) continue; 
+                $count = $targetTypeCount[$target['type']];
+                if ($count > 0 && $count > $targetTypeThreshold) {
                     $output .= '<b>' . __($target['type']) . '</b><i> '.__('{count} more', ['count' => '+ '.($count - $targetTypeThreshold)]) . '</i><br/>';
                 }
             }
