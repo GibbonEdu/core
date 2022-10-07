@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $gibbonTTID = isset($_GET['gibbonTTID'])? $_GET['gibbonTTID'] : null;
             $ttDate = isset($_POST['ttDate'])? Format::timestamp(Format::dateConvert($_POST['ttDate'])) : null;
 
-            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php', "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type&allUsers=$allUsers#tt", 'full', true);
+            $tt = renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, false, $ttDate, Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit'), "&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type&allUsers=$allUsers#tt", 'full', true);
             if ($tt != false) {
                 echo $tt;
             } else {
