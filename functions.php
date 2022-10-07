@@ -1259,6 +1259,9 @@ function isActionAccessible($guid, $connection2, $action, $sub = '')
                     if ($sub != '') {
                         $data['sub'] = $sub;
                         $sql .= ' AND gibbonAction.name=:sub';
+                    } elseif (($actionName = $action->getActionName()) != '') {
+                        $data['sub'] = $actionName;
+                        $sql .= ' AND gibbonAction.name=:sub';
                     }
 
                     $result = $connection2->prepare($sql);
