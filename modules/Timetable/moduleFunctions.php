@@ -191,7 +191,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
         if (empty($oauthProvider)) return;
-        
+
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
@@ -327,11 +327,32 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
     return $eventsSchool;
 }
 
-//TIMETABLE FOR INDIVIUDAL
-//$narrow can be "full", "narrow", or "trim" (between narrow and full)
-function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '', $narrow = 'full', $edit = false)
+/**
+ * TIMETABLE FOR INDIVIUDAL
+ *
+ * @version v25
+ * @since   v12
+ *
+ * @param string       $guid
+ * @param \PDO         $connection2
+ * @param int          $gibbonPersonID
+ * @param int          $gibbonTTID
+ * @param int|string   $startDayStamp   Unix timestamp of the start day. Empty string if want to use the current time.
+ * @param Url|string   $url             Url instance of common timetable form action URL. Or the "q" parameter string for
+ *                                      backward compatibility.
+ * @param string       $params          Common suffix string of form action URLs.
+ * @param string       $narrow          The style of rendered timetable. Can be either "full", "narrow", or "trim"
+ *                                      (between narrow and full). Default: full.
+ * @param bool         $edit            Render in editing mode or not. Default: false.
+ */
+function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = '', $startDayStamp = '', $url = '', $params = '', $narrow = 'full', $edit = false)
 {
     global $session;
+
+    // For backward
+    if (!($url instanceof Url)) {
+        $url = Url::fromRoute()->withQueryParam('q', $url);
+    }
 
     $zCount = 0;
     $output = '';
@@ -424,7 +445,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '<td>';
             $output .= "<span style='font-size: 115%; font-weight: bold'>".__('Timetable Chooser').'</span>: ';
             while ($row = $result->fetch()) {
-                $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+                $output .= "<form method='post' action='".$url->withQueryParam('gibbonTTID', $row['gibbonTTID'])."$params'>";
                 $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='hidden'>";
                 $output .= "<input name='schoolCalendar' value='".($session->get('viewCalendarSchool') == 'Y' ? 'Y' : '')."' type='hidden'>";
                 $output .= "<input name='personalCalendar' value='".($session->get('viewCalendarPersonal') == 'Y' ? 'Y' : '')."' type='hidden'>";
@@ -469,7 +490,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= '<tr>';
             $output .= "<td style='vertical-align: top;width:360px'>";
-            $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<form method='post' action='".$url->withQueryParam('gibbonTTID', $row['gibbonTTID'])."$params'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".$session->get('viewCalendarPersonal')."' type='hidden'>";
@@ -477,7 +498,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='< ".__('Last Week')."'>";
             $output .= '</form>';
-            $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<form method='post' action='".$url->withQueryParam('gibbonTTID', $row['gibbonTTID'])."$params'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'],($thisWeek))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".$session->get('viewCalendarPersonal')."' type='hidden'>";
@@ -485,7 +506,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
             $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__('This Week')."'>";
             $output .= '</form>';
-            $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<form method='post' action='".$url->withQueryParam('gibbonTTID', $row['gibbonTTID'])."$params'>";
             $output .= "<input name='ttDate' value='".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$session->get('viewCalendarSchool')."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".$session->get('viewCalendarPersonal')."' type='hidden'>";
@@ -495,7 +516,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= '</form>';
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
-            $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<form method='post' action='".$url->withQueryParam('gibbonTTID', $row['gibbonTTID'])."$params'>";
             $output .= '<span class="relative">';
             $output .= "<input name='ttDate' id='ttDate' aria-label='".__('Choose Date')."' maxlength=10 value='".date($session->get('i18n')['dateFormatPHP'], $startDayStamp)."' type='text' style='width:120px; margin-right: 0px; float: none'> ";
             $output .= '</span>';
@@ -559,7 +580,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Monday—i.e. it's Sunday now and Sunday is not a school day)
             $homeSunday = true ;
-            if ($q == '' && ($session->get('firstDayOfTheWeek') == 'Monday' || $session->get('firstDayOfTheWeek') == 'Sunday')) {
+            if (empty($url->getQueryParams()['q'] ?? null) && ($session->get('firstDayOfTheWeek') == 'Monday' || $session->get('firstDayOfTheWeek') == 'Sunday')) {
                 try {
                     $dataDays = array();
                     $sqlDays = "SELECT nameShort FROM gibbonDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
@@ -650,7 +671,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
 
                 }
-                
+
             }
 
             //Get personal calendar array
@@ -887,7 +908,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                 if ($self == true and ($session->get('calendarFeed') != '' || $session->get('calendarFeedPersonal') != '' || $session->get('viewCalendarSpaceBooking') != '')) {
                     $output .= "<tr class='head' style='height: 37px;'>";
                     $output .= "<th class='ttCalendarBar' colspan=".($daysInWeek + 1).'>';
-                    $output .= "<form method='post' action='".$session->get('absoluteURL')."/index.php?q=$q".$params."' style='padding: 5px 5px 0 0'>";
+                    $output .= "<form method='post' action='".$url.$params."' style='padding: 5px 5px 0 0'>";
 
                     $displayCalendars = $session->has('googleAPIAccessToken') || $session->has('microsoftAPIAccessToken');
                     if ($session->has('calendarFeed') && $session->has('googleAPIAccessToken')) {
@@ -1056,7 +1077,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         //Check for school closure day
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
                         $rowClosure = $specialDays[$dateCheck] ?? '';
-                        
+
                         if (!empty($rowClosure)) {
                             $rowClosure['gibbonYearGroupIDList'] = explode(',', $rowClosure['gibbonYearGroupIDList'] ?? '');
                             $rowClosure['gibbonFormGroupIDList'] = explode(',', $rowClosure['gibbonFormGroupIDList'] ?? '');
@@ -1619,7 +1640,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
-                        
+
                         if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
                             $output .= '<i>'.__('Cancelled').'</i><br/>';
                         } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
@@ -1628,7 +1649,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= '</div>';
                     }
                     ++$zCount;
-                    
+
                 }
             }
 
@@ -1760,7 +1781,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
     global $session;
-    
+
     $output = '';
 
     $blank = true;
@@ -2185,7 +2206,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultClosure->rowCount() == 1) {
-                            
+
                             $rowClosure = $resultClosure->fetch();
                             if ($rowClosure['type'] == 'School Closure') {
                                 $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
