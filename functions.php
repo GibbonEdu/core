@@ -1243,7 +1243,7 @@ function isActionAccessible($guid, $connection2, $action, $sub = '')
                 //Check current role has access rights to the current action.
                 try {
                     $data = [
-                        'actionName' => '%'.$action->getLegacyAction().'%',
+                        'actionName' => '%'.$action->getLegacyRoutePath().'%',
                         'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
                         'moduleName' => $action->getModule(),
                     ];

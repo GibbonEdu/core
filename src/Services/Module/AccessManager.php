@@ -58,7 +58,8 @@ class AccessManager
         return $this->moduleGateway->checkActionAccessible(
             $this->session->get('gibbonRoleIDCurrent'),
             $action->getModule(),
-            $action->getAction()
+            $action->getRoutePath(),
+            $action->getActionName(),
         );
     }
 }

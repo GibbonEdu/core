@@ -12,22 +12,31 @@ class Action
     protected $module = '';
 
     /**
-     * Action of the capability for the module.
+     * Route path of the module.
      *
      * @var string
      */
-    protected $action = '';
+    protected $routePath = '';
+
+    /**
+     * Action name of the action.
+     *
+     * @var string
+     */
+    protected $actionName = '';
 
     /**
      * Constructor.
      *
-     * @param string $module  Relevant module name of the capability.
-     * @param string $action  Action of the capability for the module.
+     * @param string $module     Relevant module name of the capability.
+     * @param string $routePath  Route path of the module.
+     * @param string $actionName Optional action name on the routePath. Default: ''.
      */
-    public function __construct(string $module, string $action)
+    public function __construct(string $module, string $routePath, string $actionName = '')
     {
         $this->module = $module;
-        $this->action = $action;
+        $this->routePath = $routePath;
+        $this->actionName = $actionName;
     }
 
     /**
@@ -39,33 +48,37 @@ class Action
     public static function fromLegacyPath(string $path): Action
     {
         return new Action(
-            static::getModuleName($path),
-            static::getActionName($path)
+            static::parseModuleName($path),
+            static::parseRoutePath($path)
         );
     }
 
     /**
-     * Get the module name from the address
+     * Get the module name from the address.
+     *
+     * From the original "getModuleName" function.
      *
      * @param string $path
      *
      * @return string The parsed module name.
      */
-    private static function getModuleName(string $path): string
+    private static function parseModuleName(string $path): string
     {
         return substr(substr($path, 9), 0, strpos(substr($path, 9), '/'));
     }
 
     /**
-     * Get the action name from the address
+     * Get the legacy route path from the address.
+     *
+     * From the original "getActionName" function.
      *
      * @param string $path
      *
      * @return string The parsed action name
      */
-    private static function getActionName(string $path): string
+    private static function parseRoutePath(string $path): string
     {
-        return substr(substr($path, (10 + strlen(static::getModuleName($path)))), 0, -4);
+        return substr(substr($path, (10 + strlen(static::parseModuleName($path)))), 0, -4);
     }
 
     /**
@@ -83,9 +96,19 @@ class Action
      *
      * @return string
      */
-    public function getAction(): string
+    public function getRoutePath(): string
     {
-        return $this->action;
+        return $this->routePath;
+    }
+
+    /**
+     * Get the action string of the capability.
+     *
+     * @return string
+     */
+    public function getActionName(): string
+    {
+        return $this->actionName;
     }
 
     /**
@@ -93,9 +116,9 @@ class Action
      *
      * @return string
      */
-    public function getLegacyAction(): string
+    public function getLegacyRoutePath(): string
     {
-        return $this->action . '.php';
+        return $this->routePath . '.php';
     }
 
     /**
@@ -105,6 +128,6 @@ class Action
      */
     public function toLegacyPath(): string
     {
-        return '/modules/' . $this->getModule() . '/' . $this->getLegacyAction();
+        return '/modules/' . $this->getModule() . '/' . $this->getLegacyRoutePath();
     }
 }
