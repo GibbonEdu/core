@@ -293,9 +293,9 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
-    public function createSubmit($label = 'Submit')
+    public function createSubmit($label = 'Submit', $class = '')
     {
-        $content = sprintf('<input type="submit" value="%s">', __($label));
+        $content = sprintf('<input type="submit" value="%1$s" class="%2$s">', __($label), $class);
         return $this->createContent($content)->setClass('right');
     }
 

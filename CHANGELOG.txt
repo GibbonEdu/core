@@ -48,6 +48,7 @@ v25.0.00
         Markbook: added Term filter to student view, when Group Columns by Term enabled
         Planner: improved the error message when unable to access classes in Unit Planner
         Planner: update Add Lesson Plan to suggest dates based on existing lesson sequence
+        Resources: differentiated the upload button from the sticky submit button
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         Reports: added a school year switcher to the Generate Reports page
         School Admin: added an option to cancel activities in Special Days
