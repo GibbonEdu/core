@@ -56,6 +56,7 @@ v25.0.00
         Students: added the ability to search students by first name
         System Admin: added filename to Import History in Import From File page
         System Admin: added the option to configure phone number fields in Form Builder
+        Timetable: enabled View Available Facilities for non-lesson periods
         User Admin: added last login timestamp and IP address to password troubleshooting page
         User Admin: added the ability to search users by first name
 
