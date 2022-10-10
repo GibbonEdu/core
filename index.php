@@ -34,11 +34,6 @@ use Gibbon\Http\Url;
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-// Module include: Messenger has a bug where files have been relying on these
-// functions because this file was included via getNotificationTray()
-// TODO: Fix that :)
-require_once './modules/Messenger/moduleFunctions.php';
-
 // Setup the Page and Session objects
 $theme = $container->get('theme');
 $page = $container->get('page');
