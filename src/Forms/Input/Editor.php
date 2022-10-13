@@ -47,7 +47,7 @@ class Editor extends Input
     /**
      * Set the textarea rows attribute to control the height of the editor box.
      * @param  int  $count
-     * @return self
+     * @return $this
      */
     public function setRows($count)
     {
@@ -59,7 +59,7 @@ class Editor extends Input
      * Set whether tinyMCE uploader should be enabled.
      *
      * @param   bool  $value
-     * @return  self
+     * @return  $this
      */
     public function tinymceInit(bool $value)
     {
@@ -70,7 +70,7 @@ class Editor extends Input
     /**
      * Set whether the media bar for upload and quick inser is available.
      * @param   bool    $value
-     * @return  self
+     * @return  $this
      */
     public function showMedia($value = true)
     {
@@ -81,7 +81,7 @@ class Editor extends Input
     /**
      * Set whether the editor input is initially hidden.
      * @param   bool    $value
-     * @return  self
+     * @return  $this
      */
     public function initiallyHidden($value = true)
     {
@@ -92,7 +92,7 @@ class Editor extends Input
     /**
      * Allow resources to be uploaded through the editor window.
      * @param   bool    $value
-     * @return  self
+     * @return  $this
      */
     public function allowUpload($value = true)
     {
@@ -103,7 +103,7 @@ class Editor extends Input
     /**
      * Sets the sort order for resource upload.
      * @param   bool    $value
-     * @return  self
+     * @return  $this
      */
     public function resourceAlphaSort($value = true)
     {
@@ -114,7 +114,7 @@ class Editor extends Input
     /**
      * Sets a filter for resource upload.
      * @param   string    $value
-     * @return  self
+     * @return  $this
      */
     public function initialFilter($value = '')
     {
