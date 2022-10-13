@@ -23,6 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Input\Editor;
 
 function getIPAddress() {
     $return = false;
@@ -469,6 +470,8 @@ function getWeekNumber($date, $connection2, $guid)
  *
  * @deprecated  Since v25. Will be removed in the future.
  *              Please use \Gibbon\Forms\Input\Editor directly.
+ * @version v25
+ * @since   v12
  *
  * @param string   $guid              Obsoleted parameter.
  * @param boolean  $tinymceInit
@@ -486,16 +489,17 @@ function getWeekNumber($date, $connection2, $guid)
  */
 function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false): string
 {
-    global $page, $session;
-
-    $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
-
-    $templateData['name'] = $templateData['id'];
-    $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
-
-    $templateData['absoluteURL'] = $session->get('absoluteURL');
-
-    return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
+    $editor = (new Editor($id))
+        ->tinymceInit($tinymceInit)
+        ->setValue($value)
+        ->setRows($rows)
+        ->showMedia($showMedia)
+        ->setRequired($required)
+        ->initiallyHidden($initiallyHidden)
+        ->allowUpload($allowUpload)
+        ->initialFilter($initialFilter)
+        ->resourceAlphaSort($resourceAlphaSort);
+    return $editor->getOutput();
 }
 
 function getYearGroups($connection2)
