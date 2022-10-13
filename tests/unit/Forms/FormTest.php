@@ -11,24 +11,66 @@ namespace Gibbon\Forms;
 
 use PHPUnit\Framework\TestCase;
 use Gibbon\Forms\View\FormRendererInterface;
-use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Services\ViewServiceProvider;
+use League\Container\Container;
 
 /**
  * @covers Form
  */
 class FormTest extends TestCase
 {
+    /**
+     * Container instance to generate the Form instance.
+     *
+     * @var Container $container
+     */
+    private $container;
+
+    /**
+     * Backup of global container instance.
+     *
+     * @var Container $container
+     */
+    private $containerBackup = null;
+
+    /**
+     * Provide a container environment for the tests to conduct.
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $container = new Container();
+
+        $container->share('twig', function () {
+            $absolutePath = realpath(__DIR__ . '/../../../');
+            $loader = new \Twig\Loader\FilesystemLoader($absolutePath.'/resources/templates');
+            return new \Twig\Environment($loader);
+        });
+
+        $service = new ViewServiceProvider();
+        $service->setContainer($container);
+        $service->register();
+
+        $this->container = $container;
+    }
+
     public function testCanBeCreatedStatically()
     {
+        $this->useOwnGlobalContainer();
         $this->assertInstanceOf(
             Form::class,
             Form::create('testID', 'testAction')
         );
+        $this->restoreGlobalContainer();
     }
 
     public function testCanOutputToHtml()
     {
-        $form = Form::create('testID', 'testAction');
+        /** @var Form */
+        $form = $this->container->get(Form::class);
         $output = $form->getOutput();
 
         $this->assertTrue(stripos($output, '<form') !== false);
@@ -37,7 +79,9 @@ class FormTest extends TestCase
 
     public function testCanAddRow()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $this->assertTrue(count($form->getRows()) == 0);
         $row = $form->addRow();
@@ -49,7 +93,9 @@ class FormTest extends TestCase
 
     public function testCanAddHiddenValue()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $this->assertTrue(count($form->getHiddenValues()) == 0);
         $form->addHiddenValue('name', 'value');
@@ -59,7 +105,9 @@ class FormTest extends TestCase
 
     public function testCanAddTrigger()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $this->assertTrue(count($form->getTriggers()) == 0);
         $form->addTrigger('selector', 'trigger');
@@ -69,7 +117,9 @@ class FormTest extends TestCase
 
     public function testCanSetFactory()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $newFactory = FormFactory::create();
         $form->setFactory($newFactory);
@@ -79,7 +129,9 @@ class FormTest extends TestCase
 
     public function testCanSetRenderer()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $newRenderer = FormRenderer::create();
         $form->setRenderer($newRenderer);
@@ -89,10 +141,41 @@ class FormTest extends TestCase
 
     public function testEachNewFormHasBasicAttributes()
     {
-        $form = Form::create('testID', 'testAction');
+        $form = $this->container->get(Form::class)
+            ->setID('testID')
+            ->setAction('testAction');
 
         $this->assertSame('testID', $form->getID());
         $this->assertSame('testAction', $form->getAction());
         $this->assertSame('post', $form->getMethod());
+    }
+
+    /**
+     * Use the container in setUp as global container.
+     * For testing with Form::create().
+     *
+     * @return void
+     */
+    private function useOwnGlobalContainer()
+    {
+        global $container;
+        if (!isset($container)) {
+            $this->containerBackup = $container;
+        }
+        $container = $this->container; // Use the custom container.
+    }
+
+    /**
+     * Restore container replaced by useOwnGlobalContainer().
+     *
+     * @return void
+     */
+    private function restoreGlobalContainer()
+    {
+        if (empty($this->containerBackup)) {
+            return; // do nothing
+        }
+        global $container;
+        $container = $this->containerBackup;
     }
 }
