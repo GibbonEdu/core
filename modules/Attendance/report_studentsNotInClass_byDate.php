@@ -102,9 +102,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $table = ReportTable::createPaginated('studentsNotInClass', $criteria)->setViewMode($viewMode, $gibbon->session);
         $table->setTitle(__('Students Not In Class'));
 
-        $table->addRowCountColumn($logs->getPageFrom());
+        $table->addRowCountColumn($logs->getPageFrom())->context('primary');
 
-        $table->addColumn('formGroup', __('Form Group'));
+        $table->addColumn('formGroup', __('Form Group'))->context('secondary');
 
         $table->addColumn('student', __('Student'))
             ->context('primary')
@@ -116,13 +116,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             });
 
         $table->addColumn('class', __('Class'))
+            ->context('primary')
             ->sortable(['courseName', 'className'])
             ->format(function ($log) {
                 return Format::courseClassName($log['courseName'], $log['className']);
             });
 
-        $table->addColumn('type', __('Status'));
+        $table->addColumn('type', __('Status'))->context('primary');
         $table->addColumn('reason', __('Reason'))
+            ->context('secondary')
             ->format(function ($log) {
                 return Format::tooltip($log['reason'], $log['comment']);
             });
