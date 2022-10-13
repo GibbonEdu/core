@@ -1,5 +1,1 @@
 *.yml
-!travis_ci.yml
-!gitlab_ci.yml
-!env.yml
-
