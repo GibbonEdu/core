@@ -22,8 +22,6 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    env:
-      CI_PLATFORM: travis_ci
 
     steps:
 

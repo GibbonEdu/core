@@ -7,7 +7,6 @@
     DEBIAN_FRONTEND: noninteractive
     # variables required for Gibbon to test with
     TEST_ENV: codeception
-    CI_PLATFORM: gitlab_ci
     GIT_SUBMODULE_STRATEGY: recursive
     ABSOLUTE_URL: http://127.0.0.1:8888
     DB_HOST: mariadb
