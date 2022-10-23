@@ -92,6 +92,7 @@ v25.0.00
         School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups
         Staff: fixed staff absences not showing up if outside school year dates
         System Admin: fixed Form Builder submission error when subheading is the first item on a page
+        System Admin: fixed calendar feed cleared when saving Third Party Settings
         Timetable Admin: adjusted column uniqueness interface string
         Timetable Admin: fixed Copy All To Next Year to copy custom fields and prevent duplicate values
         Timetable: fixed class student counts in Manage Student Enrolment
