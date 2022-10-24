@@ -146,7 +146,6 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
     protected function renderChildDashboard($gibbonPersonID, $dateStart)
     {
-        global $container;
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
         $session = $this->session;
@@ -158,7 +157,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
         /**
          * @var AlertLevelGateway
          */
-        $alertLevelGateway = $container->get(AlertLevelGateway::class);
+        $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
         $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
 
