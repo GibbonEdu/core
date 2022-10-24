@@ -201,7 +201,20 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-//Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
+/**
+ * Archives one or more notifications, based on partial match of actionLink
+ * and total match of gibbonPersonID.
+ *
+ * @deprecated v25
+ *             Should use NotificationGateway::archiveNotificationForPersonAction()
+ *
+ * @param \PDO    $connection2     The PDO instance.
+ * @param string  $guid            The guid of current installation.
+ * @param int     $gibbonPersonID  The Gibbon person ID.
+ * @param string  $actionLinkPart  The partial string in an action link.
+ *
+ * @return bool Whether the database update was successful.
+ */
 function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 {
     $return = true;
