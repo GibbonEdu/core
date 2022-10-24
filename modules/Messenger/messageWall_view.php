@@ -75,6 +75,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	echo $form->getOutput();
 
-    echo getMessages($guid, $connection2, 'print', Format::dateConvert($date));
+    $messageGateway = $container->get(MessengerGateway::class);
+    echo $messageGateway->getMessages('print', Format::dateConvert($date));
 }
-?>
