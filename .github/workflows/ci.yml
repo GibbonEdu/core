@@ -149,5 +149,7 @@ jobs:
         if: ${{ failure() || matrix.experimental }}
         with:
           name: Test Artifacts (PHP ${{ matrix.php-version }})
-          path: tests/log
+          path: |
+            tests/log
+            tests/_output
           retention-days: 5
