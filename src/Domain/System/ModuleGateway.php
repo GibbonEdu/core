@@ -29,7 +29,7 @@ use Gibbon\Domain\QueryableGateway;
  * @version v25
  * @since   v16
  */
-class ModuleGateway extends QueryableGateway implements ModuleGatewayInterface
+class ModuleGateway extends QueryableGateway
 {
     use TableAware;
 

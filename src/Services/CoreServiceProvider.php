@@ -36,8 +36,6 @@ use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
 use Gibbon\Contracts\Services\Session as SessionInterface;
-use Gibbon\Domain\System\ModuleGateway;
-use Gibbon\Domain\System\ModuleGatewayInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -78,7 +76,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'gibbon_logger',
         'mysql_logger',
         Validator::class,
-        ModuleGatewayInterface::class,
     ];
 
     /**
@@ -93,7 +90,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      * this one, otherwise they will be ignored.
      */
     public function boot()
-    {
+    { 
         $container = $this->getLeagueContainer();
 
         $container->share('config', new Core($this->absolutePath));
@@ -233,7 +230,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->share('page', function () use ($container) {
             $session = $this->getLeagueContainer()->get('session');
-
+            
             $pageTitle = $session->get('organisationNameShort').' - '.$session->get('systemName');
             if ($session->has('module')) {
                 $pageTitle .= ' - '.__($session->get('module'));
@@ -278,10 +275,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add(Validator::class, function () {
             return new Validator($this->getLeagueContainer()->get('session')->get('allowableHTML', ''));
-        });
-
-        $container->add(ModuleGatewayInterface::class, function () use ($container) {
-            return $container->get(ModuleGateway::class);
         });
     }
 }
