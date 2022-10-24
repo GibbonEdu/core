@@ -55,9 +55,10 @@ class ModuleGateway extends QueryableGateway
     private static $searchableColumns = ['name'];
 
     /**
-     * {@inheritDoc}
+     * Queries the list for the Manage Modules page.
      *
-     * @since v16
+     * @param QueryCriteria $criteria
+     * @return DataSet
      */
     public function queryModules(QueryCriteria $criteria)
     {
@@ -86,9 +87,12 @@ class ModuleGateway extends QueryableGateway
     }
 
     /**
-     * {@inheritDoc}
+     * Gets an unfiltered list of all modules.
      *
-     * @since v16
+     * @version v16
+     * @since   v16
+     *
+     * @return string[]
      */
     public function getAllModuleNames()
     {
@@ -97,10 +101,15 @@ class ModuleGateway extends QueryableGateway
         return $this->db()->select($sql)->fetchAll(\PDO::FETCH_COLUMN);
     }
 
-    /**
-     * {@inheritDoc}
+   /**
+     * The modules by role.
      *
-     * @since v16
+     * @version v16
+     * @since   v16
+     *
+     * @param string $gibbonRoleID
+     *
+     * @return array
      */
     public function selectModulesByRole($gibbonRoleID)
     {
@@ -121,9 +130,14 @@ class ModuleGateway extends QueryableGateway
     }
 
     /**
-     * {@inheritDoc}
+     * The module actions by role.
      *
-     * @since v16
+     * @version v16
+     * @since   v16
+     *
+     * @param string $gibbonRoleID
+     * @param string $gibbonModuleID
+     * @return array
      */
     public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID)
     {
@@ -143,9 +157,14 @@ class ModuleGateway extends QueryableGateway
     }
 
     /**
-     * {@inheritDoc}
+     * A list of additional (non-core) modules.
      *
-     * @since v25
+     * @version v25
+     * @since   v25
+     *
+     * @param string $gibbonRoleID
+     * @param string $gibbonModuleID
+     * @return array
      */
     public function getActiveAdditional(): array
     {
