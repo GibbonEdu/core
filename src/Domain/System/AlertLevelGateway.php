@@ -61,7 +61,7 @@ class AlertLevelGateway extends QueryableGateway
             ->selectOne($sql, [
                 'gibbonAlertLevelID' => $gibbonAlertLevelID,
             ]);
-        return ($row !== false && $translated)
+        return (!empty($row) && $translated)
             ? [
                 'gibbonAlertLevelID' => $row['gibbonAlertLevelID'],
                 'name' => __($row['name']),
