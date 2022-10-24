@@ -283,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $medicalGateway = $container->get(MedicalGateway::class);
                         //Medical alert!
                         $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
-                        if ($alert != false) {
+                        if (!empty($alert)) {
                             echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
                             echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
@@ -1157,7 +1157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Medical alert!
                         $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
-                        if ($alert != false) {
+                        if (!empty($alert)) {
                             echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
                             echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';

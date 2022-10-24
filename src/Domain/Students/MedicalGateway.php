@@ -125,16 +125,12 @@ class MedicalGateway extends QueryableGateway implements ScrubbableGateway
      *
      * @param int   $gibbonPersonID  The person ID.
      *
-     * @return array|false  The medical alert information of the person, or false if none found.
+     * @return array  An array of fields in the medical alert information of the person,
+     *                or an empty array if none found.
      */
-    public function getHighestMedicalRisk(int $gibbonPersonID)
+    public function getHighestMedicalRisk(int $gibbonPersonID): array
     {
         $sql = 'SELECT * FROM gibbonPersonMedical JOIN gibbonPersonMedicalCondition ON (gibbonPersonMedical.gibbonPersonMedicalID=gibbonPersonMedicalCondition.gibbonPersonMedicalID) JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY gibbonAlertLevel.sequenceNumber DESC';
-        $result = $this->db()->select($sql, ['gibbonPersonID' => $gibbonPersonID]);
-        if ($result->isNotEmpty()) {
-            $row = $result->fetch();
-            return $row;
-        }
-        return false;
+        return $this->db()->selectOne($sql, ['gibbonPersonID' => $gibbonPersonID]);
     }
 }
