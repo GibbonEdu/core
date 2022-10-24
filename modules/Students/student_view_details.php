@@ -36,6 +36,7 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
@@ -516,7 +517,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $photo = Format::userPhoto($person['image_240'], 'sm');
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $photo)
                                             : $photo;
                                     });
@@ -528,7 +529,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $text, ['class' => 'font-bold underline leading-normal'])
                                             : $text;
                                     });
@@ -1425,7 +1426,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
                                 $enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
-                                $alert = getAlert($guid, $connection2, 002);
+                                /**
+                                 * @var AlertLevelGateway
+                                 */
+                                $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                                $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
                                 $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');

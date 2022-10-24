@@ -22,6 +22,7 @@ namespace Gibbon\UI\Dashboard;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
@@ -153,7 +154,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         $return = false;
 
-        $alert = getAlert($guid, $connection2, 002);
+        /**
+         * @var AlertLevelGateway
+         */
+        $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
+        $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
 
         //PREPARE PLANNER SUMMARY
@@ -830,7 +835,7 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             foreach ($hooks as $hook) {
                 // Set the module for this hook for translations
                 $this->session->set('module', $hook['sourceModuleName']);
-                
+
                 if ($parentDashboardDefaultTab == $hook['name'])
                     $parentDashboardDefaultTabCount = $tabCountExtra+1;
                 ++$tabCountExtra;
