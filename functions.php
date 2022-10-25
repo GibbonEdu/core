@@ -1356,7 +1356,20 @@ function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
     return $output;
 }
 
-//Take a year group, and return the next one, or false if none
+/**
+ * Take a year group, and return the next one, or false if none.
+ * Use YearGroupGateway::getNextYearGroupID instead.
+ *
+ * @deprecated v25
+ *
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonYearGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextYearGroupID($gibbonYearGroupID, $connection2)
 {
     $output = false;
@@ -1400,7 +1413,19 @@ function getNextFormGroupID($gibbonFormGroupID, $connection2)
     return $output;
 }
 
-//Return the last school year in the school, or false if none
+/**
+ * Return the last school year in the school, or false if none.
+ * Use YearGroupGateway::getLastYearGroupID instead.
+ *
+ * @deprecated v25
+ *
+ * @version v12
+ * @since   v12
+ *
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getLastYearGroupID($connection2)
 {
     $output = false;
