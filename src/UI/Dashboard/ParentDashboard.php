@@ -22,6 +22,7 @@ namespace Gibbon\UI\Dashboard;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
@@ -685,7 +686,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                             $activitiesOutput .= '</td>';
                             $activitiesOutput .= '<td>';
                             if ($dateType != 'Date') {
-                                $terms = getTerms($connection2, $this->session->get('gibbonSchoolYearID'), true);
+                                /**
+                                 * @var SchoolYearTermGateway
+                                 */
+                                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
+                                $terms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $this->session->get('gibbonSchoolYearID')), true);
                                 $termList = '';
                                 for ($i = 0; $i < count($terms); $i = $i + 2) {
                                     if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {

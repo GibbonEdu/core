@@ -617,7 +617,22 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
     return $output;
 }
 
-//Gets terms in the specified school year
+/**
+ * Gets terms in the specified school year
+ *
+ * @deprecated v25
+ *             Use SchoolYearTermGateway::getBySchoolYear() with
+ *             SchoolYearTermGateway::mapNames() instead.
+ *
+ * @since   v12
+ * @version v12
+ *
+ * @param \PDO     $connection2
+ * @param int      $gibbonSchoolYearID
+ * @param boolean  $short
+ *
+ * @return string[]
+ */
 function getTerms($connection2, $gibbonSchoolYearID, $short = false)
 {
     $output = false;

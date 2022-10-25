@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\School;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -26,7 +27,7 @@ use Gibbon\Domain\QueryableGateway;
 /**
  * School Year Term Gateway
  *
- * @version v17
+ * @version v25
  * @since   v17
  */
 class SchoolYearTermGateway extends QueryableGateway
@@ -93,5 +94,38 @@ class SchoolYearTermGateway extends QueryableGateway
 
         $result = $this->db()->select($sql, $data);
         return ($result->rowCount() == 1) ? $result->fetch() : false;
+    }
+
+    /**
+     * Get schol year terms in the specified school year.
+     *
+     * @param integer $gibbonSchoolYearID  The ID of the school year.
+     *
+     * @return Result
+     */
+    public function getBySchoolYear(int $gibbonSchoolYearID): Result
+    {
+        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+        return $this->db()->select($sql, [
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        ]);
+    }
+
+    /**
+     * Map the school year names from the result.
+     *
+     * @param Result   $schoolYears  A result set of school year.
+     * @param boolean  $short        To map the short name instead or not.
+     *                               Default: false.
+     *
+     * @return string[]  An array of school year name.
+     */
+    public static function mapNames(Result $schoolYears, bool $short = false): array
+    {
+        $years = [];
+        while ($row = $schoolYears->fetch()) {
+            $years[] = $short ? $row['nameShort'] : $row['name'];
+        }
+        return $years;
     }
 }
