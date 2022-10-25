@@ -109,7 +109,7 @@ class ModuleGateway extends QueryableGateway
      *
      * @param string $gibbonRoleID
      *
-     * @return array
+     * @return Result
      */
     public function selectModulesByRole($gibbonRoleID)
     {
