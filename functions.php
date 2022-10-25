@@ -1394,7 +1394,19 @@ function getNextYearGroupID($gibbonYearGroupID, $connection2)
     return $output;
 }
 
-//Take a form group, and return the next one, or false if none
+/**
+ * Take a form group, and return the next one, or false if none.
+ * Use FormGroupGateway::getNextFormGroupID instead.
+ *
+ * @deprecated v25
+ * @version v17
+ * @since   v17
+ *
+ * @param int $gibbonFormGroupID
+ * @param \PDO $connection2
+ *
+ * @return int|false
+ */
 function getNextFormGroupID($gibbonFormGroupID, $connection2)
 {
     $output = false;

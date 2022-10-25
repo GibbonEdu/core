@@ -143,4 +143,22 @@ class FormGroupGateway extends QueryableGateway
 
         return $this->db()->selectOne($sql, $data);
     }
+
+    /**
+     * Take a form group, and return the next one, or false if none.
+     *
+     * @version v17
+     * @since   v17
+     *
+     * @param int $gibbonFormGroupID
+     *
+     * @return int|false
+     */
+    public function getNextFormGroupID($gibbonFormGroupID)
+    {
+        $sql = 'SELECT gibbonFormGroupIDNext FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
+        return $this->db()->selectOne($sql, [
+            'gibbonFormGroupID' => $gibbonFormGroupID,
+        ]);
+    }
 }
