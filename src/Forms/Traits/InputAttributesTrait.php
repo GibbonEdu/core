@@ -32,7 +32,7 @@ trait InputAttributesTrait
     /**
      * Set the input's name attribute.
      * @param  string  $name
-     * @return self
+     * @return $this
      */
     public function setName($name = '')
     {
@@ -52,7 +52,7 @@ trait InputAttributesTrait
     /**
      * Set the input's value.
      * @param  string  $value
-     * @return self
+     * @return $this
      */
     public function setValue($value = '')
     {
@@ -76,7 +76,7 @@ trait InputAttributesTrait
     public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
-        
+
         if (isset($data[$name])) {
             $value = $data[$name];
 
@@ -110,7 +110,7 @@ trait InputAttributesTrait
     /**
      * Set the input's size attribute.
      * @param  string|int  $size
-     * @return self
+     * @return $this
      */
     public function setSize($size = '')
     {
@@ -149,7 +149,7 @@ trait InputAttributesTrait
     /**
      * Set the input's disabled attribute.
      * @param  bool  $disabled
-     * @return self
+     * @return $this
      */
     public function setDisabled($disabled)
     {
@@ -177,7 +177,7 @@ trait InputAttributesTrait
     /**
      * Set the input to required.
      * @param   bool    $value
-     * @return  self
+     * @return $this
      */
     public function required($required = true)
     {
@@ -187,7 +187,7 @@ trait InputAttributesTrait
     /**
      * Set if the input is required.
      * @param  bool  $required
-     * @return self
+     * @return $this
      */
     public function setRequired($required)
     {
@@ -207,7 +207,7 @@ trait InputAttributesTrait
     /**
      * Set the input to readonly.
      * @param   bool    $value
-     * @return  self
+     * @return  $this
      */
     public function readonly($value = true)
     {
@@ -217,7 +217,7 @@ trait InputAttributesTrait
     /**
      * Set the input's readonly attribute.
      * @param  string  $value
-     * @return self
+     * @return $this
      */
     public function setReadonly($value)
     {
@@ -238,7 +238,7 @@ trait InputAttributesTrait
     /**
      * Set the input's tabindex attribute.
      * @param  string  $value
-     * @return self
+     * @return $this
      */
     public function setTabIndex($value)
     {
@@ -246,7 +246,7 @@ trait InputAttributesTrait
 
         return $this;
     }
-    
+
     /**
      * Gets the input's tabindex attribute.
      * @return  int
@@ -260,7 +260,7 @@ trait InputAttributesTrait
      * Set the input's aria property and value.
      * @param  string      $property
      * @param  string|int  $value
-     * @return self
+     * @return $this
      */
     public function setAria($property, $value)
     {

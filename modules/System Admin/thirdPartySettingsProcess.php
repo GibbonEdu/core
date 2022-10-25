@@ -42,7 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             'paymentAPIPassword' => 'skip-hidden',
             'paymentAPISignature' => 'skip-hidden',
             'paymentAPIKey' => 'skip-hidden',
-            'calendarFeed' => '',
             'enableMailerSMTP' => 'required',
             'mailerSMTPHost' => '',
             'mailerSMTPPort' => '',

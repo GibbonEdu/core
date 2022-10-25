@@ -22,8 +22,11 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Forms\Input\Editor;
+use Gibbon\Locale;
 
 function getIPAddress() {
     $return = false;
@@ -114,7 +117,10 @@ function __($text, $params=[], $options=[])
         return $text;
     }
 
-    return $gibbon->locale->translate($text, $params, $options);
+    // Fallback to format string if global locale does not exists.
+    return isset($gibbon->locale)
+        ? $gibbon->locale->translate($text, $params, $options)
+        : Locale::formatString($text, $params);
 }
 
 /**
@@ -201,7 +207,20 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
     return $return;
 }
 
-//Archives one or more notifications, based on partial match of actionLink and total match of gibbonPersonID
+/**
+ * Archives one or more notifications, based on partial match of actionLink
+ * and total match of gibbonPersonID.
+ *
+ * @deprecated v25
+ *             Should use NotificationGateway::archiveNotificationForPersonAction()
+ *
+ * @param \PDO    $connection2     The PDO instance.
+ * @param string  $guid            The guid of current installation.
+ * @param int     $gibbonPersonID  The Gibbon person ID.
+ * @param string  $actionLinkPart  The partial string in an action link.
+ *
+ * @return bool Whether the database update was successful.
+ */
 function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
 {
     $return = true;
@@ -368,6 +387,21 @@ function getFastFinder($connection2, $guid)
     return $templateData;
 }
 
+/**
+ * Get alert of the especified alert level.
+ *
+ * @deprecated v25
+ *             Use AlertLevelGateway::getByID instead.
+ *
+ * @since    v12
+ * @version  v23
+ *
+ * @param string  $guid
+ * @param \PDO    $connection2
+ * @param int     $gibbonAlertLevelID
+ *
+ * @return array|false
+ */
 function getAlert($guid, $connection2, $gibbonAlertLevelID)
 {
     $output = false;
@@ -466,22 +500,40 @@ function getWeekNumber($date, $connection2, $guid)
 }
 
 /**
- * Updated v18 to use a twig template.
+ * Render the editor. Updated v18 to use a twig template.
  *
- * $tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
+ * @deprecated  Since v25. Will be removed in the future.
+ *              Please use \Gibbon\Forms\Input\Editor directly.
+ * @version v25
+ * @since   v12
+ *
+ * @param string   $guid              Obsoleted parameter.
+ * @param boolean  $tinymceInit
+ * @param string   $id
+ * @param string   $value
+ * @param integer  $rows
+ * @param boolean  $showMedia
+ * @param boolean  $required
+ * @param boolean  $initiallyHidden
+ * @param boolean  $allowUpload
+ * @param string   $initialFilter
+ * @param boolean  $resourceAlphaSort
+ *
+ * @return string
  */
-function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false)
+function getEditor($guid, $tinymceInit = true, $id = '', $value = '', $rows = 10, $showMedia = false, $required = false, $initiallyHidden = false, $allowUpload = true, $initialFilter = '', $resourceAlphaSort = false): string
 {
-    global $page, $session;
-
-    $templateData = compact('tinymceInit', 'id', 'value', 'rows', 'showMedia', 'required', 'initiallyHidden', 'allowUpload', 'initialFilter', 'resourceAlphaSort');
-
-    $templateData['name'] = $templateData['id'];
-    $templateData['id'] = preg_replace('/[^a-zA-Z0-9_-]/', '', $templateData['id']);
-
-    $templateData['absoluteURL'] = $session->get('absoluteURL');
-
-    return $page->fetchFromTemplate('components/editor.twig.html', $templateData);
+    $editor = (new Editor($id))
+        ->tinymceInit($tinymceInit)
+        ->setValue($value)
+        ->setRows($rows)
+        ->showMedia($showMedia)
+        ->setRequired($required)
+        ->initiallyHidden($initiallyHidden)
+        ->allowUpload($allowUpload)
+        ->initialFilter($initialFilter)
+        ->resourceAlphaSort($resourceAlphaSort);
+    return $editor->getOutput();
 }
 
 function getYearGroups($connection2)
@@ -863,7 +915,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -905,7 +961,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         }
 
         if ($gibbonAlertLevelID != '') {
-            if ($alert = getAlert($guid, $connection2, $gibbonAlertLevelID)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID($gibbonAlertLevelID)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],
@@ -936,7 +996,11 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         // Privacy
         $privacySetting = $settingGateway->getSettingByScope('User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
-            if ($alert = getAlert($guid, $connection2, 001)) {
+            /**
+             * @var AlertLevelGateway
+             */
+            $alertLevelGateway = $container->get(AlertLevelGateway::class);
+            if ($alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_HIGH)) {
                 $alerts[] = [
                     'highestLevel'    => __($alert['name']),
                     'highestColour'   => $alert['color'],

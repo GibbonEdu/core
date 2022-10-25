@@ -391,8 +391,14 @@ class CustomFieldHandler
 
             $row = $form->addRow();
             $row->addLabel('new'.$fieldID.'On', $label);
-            $row->addContent($oldValue);
-            $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
+
+            if ($field['type'] == 'file' || $field['type'] == 'image') {
+                $row->addContent(!empty($oldValue) ? Format::link('./'.$oldValue, $oldValue, ['target' => '_blank']) : '');
+                $row->addContent(!empty($newValue) ? Format::link('./'.$newValue, $newValue, ['class' => $isNotMatching ? 'matchHighlightText underline' : '', 'target' => '_blank']) : '');
+            } else {
+                $row->addContent($oldValue);
+                $row->addContent($newValue)->addClass($isNotMatching ? 'matchHighlightText' : '');
+            }
 
             if ($isNotMatching) {
                 $row->addCheckbox('newcustom'.$fieldID.'On')->checked(true)->setClass('textCenter');

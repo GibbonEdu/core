@@ -44,9 +44,12 @@ v25.0.00
         Messenger: added the ability to send confidential messages which are not viewable by other users
         Messenger: updated the Transport target to be able to handle comma-separated transport values
         Messenger: improved the success message for confirmed read receipts
+        Messenger: added form group name to students in Individual target list
         Markbook: added Term filter to student view, when Group Columns by Term enabled
+        Markbook: increased maxlength of Name field to 40 characters
         Planner: improved the error message when unable to access classes in Unit Planner
         Planner: update Add Lesson Plan to suggest dates based on existing lesson sequence
+        Resources: differentiated the upload button from the sticky submit button
         Reports: improved the UTF8 character set for DroidSansFallback to include wider CJK support
         Reports: added a school year switcher to the Generate Reports page
         School Admin: added an option to cancel activities in Special Days
@@ -54,6 +57,7 @@ v25.0.00
         Students: added the ability to search students by first name
         System Admin: added filename to Import History in Import From File page
         System Admin: added the option to configure phone number fields in Form Builder
+        Timetable: enabled View Available Facilities for non-lesson periods
         User Admin: added last login timestamp and IP address to password troubleshooting page
         User Admin: added the ability to search users by first name
 
@@ -68,6 +72,8 @@ v25.0.00
         System: fixed links opening in new tab when using Url object in Format class
         System: fixed lesson plans not showing up on Staff Dashboard for multiple classes with a TT exception
         Admissions: fixed application username check to include other applications
+        Attendance: fixed duplicate entries in Students Not Present and Students Not Onsite
+        Attendance: fixed Students Not Onsite reports not displaying student name on mobile
         Data Updater: fixed incorrect top links on Edit Request pages
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
         Data Updater: fixed unable to remove all privacy settings via data update
@@ -81,10 +87,12 @@ v25.0.00
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         Reports: fixed batch report bulk-action missing the two-sided option
         Reports: fixed HTML being removed from Rich Text template sections
+        Reports: fixed file upload not working in Template Builder
         School Admin: fixed error in Add Attendance Code when no roles specified
         School Admin: fixed possible duplicate values using Copy All To Next Year in Manage Form Groups
         Staff: fixed staff absences not showing up if outside school year dates
         System Admin: fixed Form Builder submission error when subheading is the first item on a page
+        System Admin: fixed calendar feed cleared when saving Third Party Settings
         Timetable Admin: adjusted column uniqueness interface string
         Timetable Admin: fixed Copy All To Next Year to copy custom fields and prevent duplicate values
         Timetable: fixed class student counts in Manage Student Enrolment

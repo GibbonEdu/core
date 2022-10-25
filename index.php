@@ -538,7 +538,8 @@ if ($isLoggedIn && !$upgrade) {
 
     $timeDifference = $messageWallRefreshed - $messageWallLatestPost;
     if (!$session->exists('messageWallArray') || ($messageWallLatestPost >= $messageWallRefreshed) || (time() - $messageWallRefreshed > 3600)) {
-        $session->set('messageWallArray', getMessages($guid, $connection2, 'array'));
+        $messageGateway = $container->get(MessengerGateway::class);
+        $session->set('messageWallArray', $messageGateway->getMessages('array'));
         $session->set('messageWallRefreshed', time());
     }
 }

@@ -54,7 +54,7 @@ class MedicalUpdateGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonMedicalUpdateID', 'gibbonPersonMedicalUpdate.status', 'gibbonPersonMedicalUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
+                'gibbonPersonMedicalUpdateID', 'gibbonPersonMedicalUpdate.status', 'gibbonPersonMedicalUpdate.timestamp', 'target.preferredName', 'target.surname', 'target.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
             ])
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID')
             ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonIDUpdater')

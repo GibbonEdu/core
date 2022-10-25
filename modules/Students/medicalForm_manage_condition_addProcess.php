@@ -22,6 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\AlertLevelGateway;
 
 include '../../gibbon.php';
 
@@ -111,7 +112,12 @@ if ($gibbonPersonMedicalID == '') { echo 'Fatal error loading this page!';
                     $AI = str_pad($connection2->lastInsertID() , 12, '0', STR_PAD_LEFT);
 
                     $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $values['gibbonPersonID'])->fetch();
-                    $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+
+                    /**
+                     * @var AlertLevelGateway
+                     */
+                    $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                    $alert = $alertLevelGateway->getByID($gibbonAlertLevelID);
 
                     // Raise a new notification event
                     $event = new NotificationEvent('Students', 'Medical Condition');

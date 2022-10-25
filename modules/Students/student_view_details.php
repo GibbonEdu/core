@@ -36,6 +36,7 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
@@ -503,8 +504,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $view = $_GET['view'] ?? 'grid';
                             if ($view == 'grid') {
-                                $table->setRenderer(new GridView($container->get('twig')));
-                                $table->getRenderer()->setCriteria($criteria);
+                                /** @var GridView */
+                                $gridView = $container->get(GridView::class);
+                                $table->setRenderer($gridView->setCriteria($criteria));
 
                                 $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
                                 $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
@@ -1421,7 +1423,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
                                 $enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
-                                $alert = getAlert($guid, $connection2, 002);
+                                /**
+                                 * @var AlertLevelGateway
+                                 */
+                                $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                                $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
                                 $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
