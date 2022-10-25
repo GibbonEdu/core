@@ -663,13 +663,21 @@ class MessageForm extends Form
 
             $form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
 
-            $sql = "SELECT gibbonRole.category, gibbonPersonID, preferredName, surname, username FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE status='Full' ORDER BY surname, preferredName";
-            $result = $pdo->select($sql);
-
             // Build a set of individuals by ID => formatted name
-            $individuals = ($result->rowCount() > 0)? $result->fetchAll() : array();
+            $data = ['gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID')];
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonFormGroup.name AS formGroupName, gibbonRole.category
+                    FROM gibbonPerson
+                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                    LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+                    LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
+                    WHERE gibbonPerson.status='Full'
+                    ORDER BY surname, preferredName";
+            
+            $individuals = $pdo->select($sql, $data)->fetchAll();
             $individuals = array_reduce($individuals, function($group, $item){
-                $group[$item['gibbonPersonID']] = Format::name("", $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
+                $name = Format::name("", $item['preferredName'], $item['surname'], 'Student', true).' (';
+                if (!empty($item['formGroupName'])) $name .= $item['formGroupName'].', ';
+                $group[$item['gibbonPersonID']] = $name.$item['username'].', '.__($item['category']).')';
                 return $group;
             }, array());
             $selectedIndividuals = array_intersect_key($individuals, array_flip($selected));

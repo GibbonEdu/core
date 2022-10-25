@@ -184,7 +184,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         $subSelect = $this
             ->newSelect()
             ->from('gibbonAttendanceLogPerson')
-            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context', 'MAX(gibbonAttendanceLogPersonID) as gibbonAttendanceLogPersonID'])
             ->where("date=:date")
             ->groupBy(['gibbonPersonID', 'date']);
 
@@ -223,9 +223,9 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->bindValue('date', $date);
 
         if ($allStudents == 'Y') {
-            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp AND gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID>=log.gibbonAttendanceLogPersonID))");
         } else {
-            $query->where("(gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+            $query->where("(gibbonAttendanceLogPerson.direction = 'Out' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp AND gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID>=log.gibbonAttendanceLogPersonID)");
         }
 
         $criteria->addFilterRules([
@@ -245,7 +245,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
         $subSelect = $this
             ->newSelect()
             ->from('gibbonAttendanceLogPerson')
-            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context'])
+            ->cols(['gibbonPersonID', 'date', 'MAX(timestampTaken) as maxTimestamp', 'context', 'MAX(gibbonAttendanceLogPersonID) as gibbonAttendanceLogPersonID'])
             ->where("date=:date")
             ->groupBy(['gibbonPersonID', 'date']);
 
@@ -285,9 +285,9 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->bindValue('date', $date);
 
         if ($allStudents == 'Y') {
-            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp))");
+            $query->where("(gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID IS NULL OR (gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp AND gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID>=log.gibbonAttendanceLogPersonID))");
         } else {
-            $query->where("(gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp)");
+            $query->where("(gibbonAttendanceCode.scope LIKE 'Offsite%' AND gibbonAttendanceLogPerson.timestampTaken=log.maxTimestamp AND gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID>=log.gibbonAttendanceLogPersonID)");
         }
 
         $criteria->addFilterRules([

@@ -23,6 +23,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\AlertLevelGateway;
 
 require_once '../../gibbon.php';
 
@@ -459,7 +460,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             if (!empty($conditions)) {
                 $student = $container->get(StudentGateway::class)->selectActiveStudentByPerson($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonID)->fetch();
-                $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
+                $alert = $container->get(AlertLevelGateway::class)->getByID($gibbonAlertLevelID);
 
                 // Raise a new notification event
                 $event = new NotificationEvent('Students', 'Medical Condition');

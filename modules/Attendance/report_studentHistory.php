@@ -71,15 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
             if ($gibbonPersonID != '') {
                 $output = '';
-                echo '<h2>';
-                echo __('Report Data');
-                echo '</h2>';
 
-
-                    $data = array('gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                $data = array('gibbonPersonID' => $gibbonPersonID);
+                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __('The specified record does not exist.');
@@ -97,6 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     $renderer->addData('canTakeAttendanceByPerson', $canTakeAttendanceByPerson);
 
                     $table = DataTable::create('studentHistory', $renderer);
+                    $table->setTitle(__('Attendance History for {name}', ['name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Student')]));
 
                     if (empty($viewMode)) {
                         $table->addHeaderAction('print', __('Print'))
@@ -202,15 +199,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                         if ($gibbonPersonID != '') {
                             $output = '';
-                            echo '<h2>';
-                            echo __('Report Data');
-                            echo '</h2>';
 
-
-                                $data = array('gibbonPersonID' => $gibbonPersonID);
-                                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
+                            $data = array('gibbonPersonID' => $gibbonPersonID);
+                            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
                             if ($result->rowCount() != 1) {
                                 echo "<div class='error'>";
                                 echo __('The specified record does not exist.');
@@ -226,6 +219,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                                 // DATA TABLE
                                 $renderer = $container->get(StudentHistoryView::class);
                                 $table = DataTable::create('studentHistory', $renderer);
+                                $table->setTitle(__('Attendance History for {name}', ['name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Student')]));
+
                                 echo $table->render($attendanceData);
                             }
                         }
@@ -235,15 +230,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         }
         else if ($highestAction == 'Student History_my') {
             $output = '';
-            echo '<h2>';
-            echo __('Report Data');
-            echo '</h2>';
 
-
-                $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
-                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
+            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
                 echo __('The specified record does not exist.');
@@ -259,6 +250,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 // DATA TABLE
                 $renderer = $container->get(StudentHistoryView::class);
                 $table = DataTable::create('studentHistory', $renderer);
+                $table->setTitle(__('Attendance History for {name}', ['name' => Format::name($row['title'], $row['preferredName'], $row['surname'], 'Student')]));
+
                 echo $table->render($attendanceData);
             }
         }

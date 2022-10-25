@@ -23,7 +23,7 @@
             "cd tests && codecept run acceptance --debug --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && ../vendor/bin/phpunit --verbose --colors=always --configuration phpunit.xml"
+            "cd tests && codecept run unit"
         ],
         "test:phpstan": [
             "vendor/bin/phpstan analyse --ansi --no-progress --memory-limit=-1 --no-interaction -c phpstan.neon"

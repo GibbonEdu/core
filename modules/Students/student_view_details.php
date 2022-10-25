@@ -36,6 +36,7 @@ use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Students\StudentNoteGateway;
 use Gibbon\Domain\Library\LibraryReportGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 use Gibbon\Module\Attendance\StudentHistoryData;
@@ -279,14 +280,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</h2>';
 
                     if ($subpage == 'Overview') {
+                        /** @var MedicalGateway */
+                        $medicalGateway = $container->get(MedicalGateway::class);
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($highestLevel))).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
@@ -504,8 +504,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $view = $_GET['view'] ?? 'grid';
                             if ($view == 'grid') {
-                                $table->setRenderer(new GridView($container->get('twig')));
-                                $table->getRenderer()->setCriteria($criteria);
+                                /** @var GridView */
+                                $gridView = $container->get(GridView::class);
+                                $table->setRenderer($gridView->setCriteria($criteria));
 
                                 $table->addMetaData('gridClass', 'rounded-sm bg-gray-100 border');
                                 $table->addMetaData('gridItemClass', 'w-1/2 sm:w-1/4 md:w-1/5 my-4 text-center text-xs');
@@ -515,7 +516,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $photo = Format::userPhoto($person['image_240'], 'sm');
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $photo)
                                             : $photo;
                                     });
@@ -527,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     ->format(function ($person) use ($canViewStaff) {
                                         $text = Format::name('', $person['preferredName'], $person['surname'], 'Staff', false, true);
                                         $url = './index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$person['gibbonPersonID'];
-                                        return $canViewStaff 
+                                        return $canViewStaff
                                             ? Format::link($url, $text, ['class' => 'font-bold underline leading-normal'])
                                             : $text;
                                     });
@@ -1150,19 +1151,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
                     } elseif ($subpage == 'Medical') {
+                        /** @var MedicalGateway */
                         $medicalGateway = $container->get(MedicalGateway::class);
 
                         $medical = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
                         $conditions = $medicalGateway->selectMedicalConditionsByID($medical['gibbonPersonMedicalID'] ?? null)->fetchAll();
 
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
@@ -1424,7 +1423,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
                                 $enableModifiedAssessment = $settingGateway->getSettingByScope('Markbook', 'enableModifiedAssessment');
 
-                                $alert = getAlert($guid, $connection2, 002);
+                                /**
+                                 * @var AlertLevelGateway
+                                 */
+                                $alertLevelGateway = $container->get(AlertLevelGateway::class);
+                                $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
                                 $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');

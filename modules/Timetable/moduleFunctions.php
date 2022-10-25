@@ -1116,8 +1116,16 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         $roleCategory = $resultRole && $resultRole->rowCount() > 0 ? $resultRole->fetch(\PDO::FETCH_COLUMN, 0) : 'Other';
     }
 
+    try {
+        $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+        $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
+        $resultDay = $connection2->prepare($sqlDay);
+        $resultDay->execute($dataDay);
+    } catch (PDOException $e) {}
+
     $offTimetable = false;
     if ($roleCategory == 'Student') {
+        // Display off-timetable days for students based on their year group
         $dataEnrolment = ['gibbonPersonID' => $gibbonPersonID, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
         $sqlEnrolment = "SELECT gibbonYearGroupID, gibbonFormGroupID FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID";
         $resultEnrolment = $connection2->prepare($sqlEnrolment);
@@ -1125,6 +1133,11 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $enrolment = $resultEnrolment && $resultEnrolment->rowCount() > 0 ? $resultEnrolment->fetch() : [];
         if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
+            $offTimetable = true;
+        }
+    } elseif ($roleCategory == 'Staff') {
+        // Display off-timetable days for staff on days that have not been timetabled
+        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && $resultDay->rowCount() == 0) {
             $offTimetable = true;
         }
     }
@@ -1296,15 +1309,6 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $today = ((date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($session->get('i18n')['dateFormatPHP'])) ? "class='ttToday'" : '');
         $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
-
-        try {
-            $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-            $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
-            $resultDay = $connection2->prepare($sqlDay);
-            $resultDay->execute($dataDay);
-        } catch (PDOException $e) {
-            $output .= "<div class='error'>".$e->getMessage().'</div>';
-        }
 
         if ($resultDay->rowCount() == 1) {
             $rowDay = $resultDay->fetch();

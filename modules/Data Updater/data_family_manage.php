@@ -77,7 +77,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
     $table->addColumn('familyName', __('Target Family'));
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
-        ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
+        ->format(Format::using('nameLinked', ['gibbonPersonIDUpdater', 'updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
+
     $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
     $table->addColumn('status', __('Status'))->translatable()->width('12%');
 

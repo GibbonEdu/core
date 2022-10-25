@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
+use Gibbon\Domain\System\NotificationGateway;
 
 require_once '../../gibbon.php';
 
@@ -167,11 +168,21 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         exit();
                                     }
 
+                                    /**
+                                     * @var NotificationGateway
+                                     */
+                                    $notificationGateway = $container->get(NotificationGateway::class);
                                     //Attempt to archive notification
-                                    archiveNotification($connection2, $guid, $session->get('gibbonPersonID'), "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID");
+                                    $notificationGateway->archiveNotificationForPersonAction(
+                                        $session->get('gibbonPersonID'),
+                                        "/index.php?q=/modules/Finance/expenses_manage_approve.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID"
+                                    );
 
+                                    /**
+                                     * @var NotificationSender
+                                     */
                                     $notificationSender = $container->get(NotificationSender::class);
-                                        
+
                                     if ($approval == 'Rejection') { //REJECT!
                                         //Write back to gibbonFinanceExpense
                                         try {
@@ -201,7 +212,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $notificationText = sprintf(__('Your expense request for "%1$s" in budget "%2$s" has been rejected.'), $row['title'], $row['budget']);
                                         $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                         $notificationSender->sendNotifications();
-              
+
                                         $URLApprove .= '&return=success0';
                                         header("Location: {$URLApprove}");
                                     } elseif ($approval == 'Comment') { //COMMENT!
@@ -221,7 +232,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                         $notificationText = sprintf(__('Someone has commented on your expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                         $notificationSender->addNotification($row['gibbonPersonIDCreator'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                         $notificationSender->sendNotifications();
-            
+
                                         $URLApprove .= '&return=success0';
                                         header("Location: {$URLApprove}");
                                     } else { //APPROVE!
@@ -322,7 +333,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '') { echo 'F
                                                     $notificationText = sprintf(__('A newly approved expense (%1$s) needs to be purchased from budget "%2$s".'), $row['title'], $row['budget']);
                                                     $notificationSender->addNotification($purchasingOfficer, $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                                     $notificationSender->sendNotifications();
-                                                    
+
                                                     $notificationExtra = '. '.__('The Purchasing Officer has been alerted, and will purchase the item on your behalf.');
                                                 }
 

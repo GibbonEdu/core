@@ -685,7 +685,7 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMinDefault', 'Minimum Enrolment Default', 'The default value for minimum class enrolment.', '');end
 INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'enrolmentMaxDefault', 'Maximum Enrolment Default', 'The default value for maximum class enrolment.', '');end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('New Investigation', 'Individual Needs', 'Manage Investigations', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
-ALTER TABLE `gibbonSchoolYearSpecialDay` CHANGE `type` `type` ENUM('School Closure','Timing Change','Off Timetable');end 
+ALTER TABLE `gibbonSchoolYearSpecialDay` CHANGE `type` `type` ENUM('School Closure','Timing Change','Off Timetable');end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `gibbonYearGroupIDList` VARCHAR(255) NULL AFTER `schoolClose`, ADD `gibbonFormGroupIDList` VARCHAR(255) NULL AFTER `gibbonYearGroupIDList`;end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `context` ENUM('Year Group','Form Group') NULL AFTER `schoolClose`;end
 ALTER TABLE `gibbonSchoolYearSpecialDay` ADD `cancelActivities` ENUM('Y','N') DEFAULT 'N' NULL AFTER `gibbonFormGroupIDList`;end
@@ -698,4 +698,5 @@ ALTER TABLE `gibbonMessengerReceipt` ADD `sent` ENUM('N','Y') NOT NULL DEFAULT '
 ALTER TABLE `gibbonMessengerReceipt` ADD `nameListStudent` TEXT NULL AFTER `gibbonPersonIDListStudent`;end
 UPDATE `gibbonMessengerReceipt` SET sent='Y';end
 UPDATE `gibbonAction` SET URLList='messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php' WHERE name LIKE 'Manage Messages_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
+ALTER TABLE gibbonMarkbookColumn MODIFY name VARCHAR(40);end
 ";

@@ -322,6 +322,16 @@ class MessageProcess extends BackgroundProcess implements ContainerAwareInterfac
 
         $message['body'] = str_ireplace(['<div ', '<div>', '</div>'], ['<p ', '<p>', '</p>'], $message['body']);
 
+        if ($message['emailReceipt'] == 'Y') {
+            $bodyReadReceipt = "<a target='_blank' href='".$session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=test&gibbonPersonID=test&key=test'>".$message['emailReceiptText']."</a>";
+            if (is_numeric(strpos($message['body'], '[confirmLink]'))) {
+                $message['body'] = str_replace('[confirmLink]', $bodyReadReceipt, $message['body']);
+            }
+            else {
+                $message['body'] = $message['body'].$bodyReadReceipt;
+            }
+        }
+
         $mail->renderBody('mail/email.twig.html', [
             'title'  => $message['subject'],
             'body'   => $message['body'],
