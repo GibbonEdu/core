@@ -116,21 +116,11 @@ class YearGroupGateway extends QueryableGateway
      */
     public function getNextYearGroupID(int $gibbonYearGroupID)
     {
-        $sql = 'SELECT * FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID';
-        $result = $this->db()->select($sql, [
+        $sql = "SELECT * FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
+
+        return $this->db()->selectOne($sql, [
             'gibbonYearGroupID' => $gibbonYearGroupID,
         ]);
-        if ($result->rowCount() == 1) {
-            $row = $result->fetch();
-            $sqlPrevious = 'SELECT gibbonYearGroupID FROM gibbonYearGroup WHERE sequenceNumber>:sequenceNumber ORDER BY sequenceNumber ASC';
-            $resultPrevious = $this->db()->select($sqlPrevious, [
-                'sequenceNumber' => $row['sequenceNumber'],
-            ]);
-            if ($resultPrevious->rowCount() >= 1) {
-                return $resultPrevious->fetchColumn();
-            }
-        }
-        return false;
     }
 
     /**
@@ -144,10 +134,6 @@ class YearGroupGateway extends QueryableGateway
     public function getLastYearGroupID()
     {
         $sql = 'SELECT gibbonYearGroupID FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
-        $result = $this->db()->select($sql);
-        if ($result->rowCount() > 1) {
-            return $result->fetchColumn();
-        }
-        return false;
+        return $this->db()->selectOne($sql);
     }
 }

@@ -987,7 +987,7 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
                 'highestColour'   => $alert['color'],
                 'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('M'),
-                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
+                'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert['name']),
                 'link'            => Url::fromModuleRoute('Students', 'student_view_details')
                                         ->withQueryParams(['gibbonPersonID' => $gibbonPersonID, 'subpage' => 'Medical']),
             ];
