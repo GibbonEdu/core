@@ -157,12 +157,8 @@ class FormGroupGateway extends QueryableGateway
     public function getNextFormGroupID($gibbonFormGroupID)
     {
         $sql = 'SELECT gibbonFormGroupIDNext FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
-        $result = $this->db()->select($sql, [
+        return $this->db()->selectOne($sql, [
             'gibbonFormGroupID' => $gibbonFormGroupID,
         ]);
-        if ($result->rowCount() == 1) {
-            return $result->fetchColumn() ?? false;
-        }
-        return false;
     }
 }
