@@ -621,8 +621,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
  * Gets terms in the specified school year
  *
  * @deprecated v25
- *             Use SchoolYearTermGateway::getBySchoolYear() with
- *             SchoolYearTermGateway::mapNames() instead.
+ *             Use SchoolYearTermGateway::selectTermsBySchoolYear() instead.
  *
  * @since   v12
  * @version v12

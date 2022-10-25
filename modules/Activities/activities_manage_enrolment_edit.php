@@ -111,16 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                  * @var SchoolYearTermGateway
                  */
                 $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-                $schoolTerms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) session->get('gibbonSchoolYearID')));
-                $termList = array_filter(array_map(function ($item) use ($schoolTerms) {
-                    $index = array_search($item, $schoolTerms);
-                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                }, explode(',', $values['gibbonSchoolYearTermIDList'])));
-                $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
+                $termList = $schoolYearTermGateway->getTermNamesByID($values['gibbonSchoolYearTermIDList']);
 
                 $row = $form->addRow();
                 $row->addLabel('termsLabel', __('Terms'));
-                $row->addTextField('terms')->readOnly()->setValue($termList);
+                $row->addTextField('terms')->readOnly()->setValue(!empty($termList)? implode(', ', $termList) : '-');
 	    }
 
             $row = $form->addRow();

@@ -689,15 +689,9 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
                                 /**
                                  * @var SchoolYearTermGateway
                                  */
-                                $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-                                $terms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $this->session->get('gibbonSchoolYearID')), true);
-                                $termList = '';
-                                for ($i = 0; $i < count($terms); $i = $i + 2) {
-                                    if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                        $termList .= $terms[($i + 1)].'<br/>';
-                                    }
-                                }
-                                $activitiesOutput .= $termList;
+                                $schoolYearTermGateway = $this->getContainer()->get(SchoolYearTermGateway::class);
+                                $termList = $schoolYearTermGateway->getTermNamesByID($row['gibbonSchoolYearTermIDList']);
+                                $activitiesOutput .= !empty($termList) ? implode('<br/>', $termList) : '-';
                             } else {
                                 if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {
                                     if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {

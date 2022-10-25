@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                  * @var SchoolYearTermGateway
                  */
                 $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-                $schoolTerms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
+                $schoolTerms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
                 $yearGroups = getYearGroups($connection2);
 
                 // Toggle Features
@@ -329,13 +329,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                         $output = '';
                         if ($dateType != 'Date') {
-                            $dateRange = '';
-                            if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
-                                $termList = array_map(function ($item) use ($schoolTerms) {
-                                    $index = array_search($item, $schoolTerms);
-                                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                                }, explode(',', $activity['gibbonSchoolYearTermIDList']));
-                                $output .= implode('<br/>', $termList);
+                            $termList = array_intersect_key($schoolTerms, array_flip(explode(',', $activity['gibbonSchoolYearTermIDList'] ?? '')));
+                            if (!empty($termList)) {
+                                return implode('<br/>', $termList);
                             }
                         } else {
                             $output .= Format::dateRangeReadable($activity['programStart'], $activity['programEnd']);

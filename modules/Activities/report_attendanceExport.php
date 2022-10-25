@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
              * @var SchoolYearTermGateway
              */
             $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-            $terms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
+            $terms = $schoolYearTermGateway->selectTermsBySchoolYear((int) $session->get('gibbonSchoolYearID'))->fetchKeyPair();
             $termList = array();
             for ($i = 0; $i < count($terms); $i = $i + 2) {
                 if (is_numeric(strpos($activity['gibbonSchoolYearTermIDList'], $terms[$i]))) {

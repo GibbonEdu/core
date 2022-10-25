@@ -97,35 +97,33 @@ class SchoolYearTermGateway extends QueryableGateway
     }
 
     /**
-     * Get schol year terms in the specified school year.
+     * Select a list of school year term ID and names in the specified school year.
      *
      * @param integer $gibbonSchoolYearID  The ID of the school year.
      *
      * @return Result
      */
-    public function getBySchoolYear(int $gibbonSchoolYearID): Result
+    public function selectTermsBySchoolYear(int $gibbonSchoolYearID): Result
     {
-        $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
+        $sql = 'SELECT gibbonSchoolYearTermID, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
         return $this->db()->select($sql, [
             'gibbonSchoolYearID' => $gibbonSchoolYearID,
         ]);
     }
 
     /**
-     * Map the school year names from the result.
+     * Get a list of school year term names based on an ID or list of IDs.
      *
-     * @param Result   $schoolYears  A result set of school year.
-     * @param boolean  $short        To map the short name instead or not.
-     *                               Default: false.
+     * @param string|array $gibbonSchoolYearTermID  The IDs of the school year terms.
      *
-     * @return string[]  An array of school year name.
+     * @return array
      */
-    public static function mapNames(Result $schoolYears, bool $short = false): array
+    public function getTermNamesByID($gibbonSchoolYearTermID): array
     {
-        $years = [];
-        while ($row = $schoolYears->fetch()) {
-            $years[] = $short ? $row['nameShort'] : $row['name'];
-        }
-        return $years;
+        $sql = 'SELECT name FROM gibbonSchoolYearTerm WHERE FIND_IN_SET(gibbonSchoolYearTermID, :gibbonSchoolYearTermIDList) ORDER BY sequenceNumber';
+        return $this->db()->select($sql, [
+            'gibbonSchoolYearTermIDList' => is_array($gibbonSchoolYearTermID)? implode(',', $gibbonSchoolYearTermID) : $gibbonSchoolYearTermID,
+        ])->fetchAll(\PDO::FETCH_COLUMN, 0);
     }
+
 }

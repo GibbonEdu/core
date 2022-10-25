@@ -102,18 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                          * @var SchoolYearTermGateway
                          */
                         $schoolYearTermGateway = $container->get(SchoolYearTermGateway::class);
-                        $terms = SchoolYearTermGateway::mapNames($schoolYearTermGateway->getBySchoolYear((int) $session->get('gibbonSchoolYearID')));
-                        $termList = '';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
-                            if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                $termList .= $terms[($i + 1)].', ';
-                            }
-                        }
-                        if ($termList == '') {
-                            echo '<i>'.__('NA').'</i>';
-                        } else {
-                            echo substr($termList, 0, -2);
-                        }
+                        $termList = $schoolYearTermGateway->getTermNamesByID($row['gibbonSchoolYearTermIDList']);
+                        echo !empty($termList)
+                            ? implode(', ', $termList)
+                            : '<i>'.__('NA').'</i>';
                         echo '</td>';
                     } else {
                         echo "<td style='width: 33%; vertical-align: top'>";
