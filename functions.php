@@ -818,7 +818,20 @@ function getHighestGroupedAction($guid, $address, $connection2)
     return $output;
 }
 
-//Returns the category of the specified role
+/**
+ * Returns the category of the specified role.
+ *
+ * Deprecated. Use RoleGateway::getRoleCategory() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int   $gibbonRoleID
+ * @param \PDO  $connection2
+ *
+ * @return string|false
+ */
 function getRoleCategory($gibbonRoleID, $connection2)
 {
     $output = false;
@@ -1328,7 +1341,7 @@ function getModuleCategory($address, $connection2)
  *
  * @deprecated v25
  *             This happens in SessionFactory::setCurrentSchoolYear instead,
- *             which is called by Core::initializeCore, so shouldn't need to 
+ *             which is called by Core::initializeCore, so shouldn't need to
  *             be called manually.
  *
  * @version v23
