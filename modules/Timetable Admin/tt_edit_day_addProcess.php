@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -30,17 +31,19 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $gibbonTTID = $_POST['gibbonTTID'] ?? '';
 $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTID=$gibbonTTID";
+$URL = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_add')
+    ->withQueryParams([
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonTTID' => $gibbonTTID,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Validate Inputs
     if ($gibbonSchoolYearID == '' or $gibbonTTID == '' or $name == '' or $nameShort == '' or $gibbonTTColumnID == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         //Check unique inputs for uniquness
         try {
@@ -49,14 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit();
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error3'));
         } else {
             //Write to database
             try {
@@ -65,16 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             //Last insert ID
             $AI = str_pad($connection2->lastInsertID(), 6, '0', STR_PAD_LEFT);
 
-            $URL .= "&return=success0&editID=$AI";
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withQueryParam('editID', $AI)->withReturn('success0'));
         }
     }
 }

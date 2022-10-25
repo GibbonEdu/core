@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
@@ -63,7 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo '</div>';
             } else {
 
-                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=2');
+                $form = Form::create(
+                    'courseRollover',
+                    Url::fromModuleRoute('Timetable Admin', 'course_rollover')->withQueryParam('step', 2)
+                );
 
                 $form->addHiddenValue('nextYear', $nextYear);
 
@@ -87,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
                 $dataNext = array('gibbonSchoolYearID' => $nextYear);
                 $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $resultNext = $connection2->prepare($sqlNext);
@@ -131,7 +135,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     return $currentCourse;
                 }, $currentCourses);
 
-                $form = Form::create('courseRollover', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/course_rollover.php&step=3');
+                $form = Form::create(
+                    'courseRollover',
+                    Url::fromModuleRoute('Timetable Admin', 'course_rollover')->withQueryParam('step', 3)
+                );
                 $form->setClass('w-full blank');
 
                 $form->addHiddenValue('nextYear', $nextYear);
@@ -181,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
-            
+
             $dataNext = array('gibbonSchoolYearID' => $nextYear);
             $sqlNext = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $rowNext = $pdo->selectOne($sqlNext, $dataNext);

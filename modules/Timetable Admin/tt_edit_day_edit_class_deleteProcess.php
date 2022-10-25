@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Http\Url;
+
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
 $gibbonTTID = $_GET['gibbonTTID'] ?? '';
@@ -28,18 +30,31 @@ $gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
 
 if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_delete.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
-    $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_delete')
+        ->withQueryParams([
+            'gibbonTTDayID' => $gibbonTTDayID,
+            'gibbonTTID' => $gibbonTTID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+        ]);
+    $URLDelete = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class')
+        ->withQueryParams([
+            'gibbonTTDayID' => $gibbonTTDayID,
+            'gibbonTTID' => $gibbonTTID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_delete.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if gibbonTTDayID specified
         if ($gibbonTTDayID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -47,14 +62,12 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() < 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Write to database
                 try {
@@ -63,13 +76,11 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                     exit();
                 }
 
-                $URLDelete = $URLDelete.'&return=success0';
-                header("Location: {$URLDelete}");
+                header('Location: ' . $URLDelete->withReturn('success0'));
             }
         }
     }

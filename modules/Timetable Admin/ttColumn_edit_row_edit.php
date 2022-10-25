@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_edit.php') == false) {
     // Access denied
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
                 ->add(__('Edit Column Row'));
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumn_edit_row_editProcess.php');
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_editProcess'));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTColumnID', $gibbonTTColumnID);

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_add.php') == false) {
     // Access denied
@@ -49,12 +50,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit.php&gibbonTTDayID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonTTID='.$_GET['gibbonTTID'];
+                $editLink = Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit')
+                    ->withQueryParams([
+                        'gibbonTTDayID' => $_GET['editID'],
+                        'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'],
+                        'gibbonTTID' => $_GET['gibbonTTID'],
+                    ]);
             }
             $page->return->setEditLink($editLink);
 
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/tt_edit_day_addProcess.php');
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_addProcess'));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);

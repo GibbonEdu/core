@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttSettings.php') == false) {
     // Access denied
@@ -27,11 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttSettings
     // Proceed!
     $page->breadcrumbs->add(__('Timetable Settings'));
 
-    $form = Form::create('ttSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttSettingsProcess.php');
-
     $settingGateway = $container->get(SettingGateway::class);
 
-    $form = Form::create('ttSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttSettingsProcess.php');
+    $form = Form::create('ttSettings', Url::fromModuleRoute('Timetable Admin', 'ttSettingsProcess'));
     $form->setTitle(__('Settings'));
     $form->addHiddenValue('address', $session->get('address'));
 

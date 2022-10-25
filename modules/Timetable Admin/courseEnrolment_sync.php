@@ -21,6 +21,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Timetable\CourseSyncGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,7 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
 
-    $form = Form::create('settings', $session->get('absoluteURL').'/modules/Timetable Admin/courseEnrolment_sync_settingsProcess.php');
+    $form = Form::create(
+        'settings',
+        Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_settingsProcess')
+    );
     $form->setTitle(__('Settings'));
     $form->addHiddenValue('address', $session->get('address'));
 
@@ -65,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $table->setDescription(__('Syncing enrolment lets you enrol students into courses by mapping them to a Form Group and Year Group within the school. If auto-enrol is turned on, new students accepted through the application form and student enrolment process will be enrolled in courses automatically.'));
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Timetable Admin/courseEnrolment_sync_add.php')
+        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_add'))
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->displayLabel()
         ->append('&nbsp;|&nbsp;');
 
     $table->addHeaderAction('sync', __('Sync All'))
-        ->setURL('/modules/Timetable Admin/courseEnrolment_sync_run.php')
+        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_run'))
         ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->addParam('gibbonYearGroupIDList', $classMapsAllYearGroups)
         ->setIcon('refresh')
@@ -87,15 +91,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->addParam('gibbonYearGroupID')
         ->format(function ($row, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Timetable Admin/courseEnrolment_sync_edit.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_edit'));
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Timetable Admin/courseEnrolment_sync_delete.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_delete'));
 
             $actions->addAction('sync', __('Sync Now'))
                 ->setIcon('refresh')
                 ->addParam('gibbonYearGroupIDList', $row['gibbonYearGroupID'])
-                ->setURL('/modules/Timetable Admin/courseEnrolment_sync_run.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_run'));
         });
 
     echo $table->render($classMaps);

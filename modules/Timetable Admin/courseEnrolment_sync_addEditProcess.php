@@ -17,19 +17,23 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonYearGroupID = $_REQUEST['gibbonYearGroupID'] ?? null;
 $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? null;
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_edit.php&gibbonYearGroupID='.$gibbonYearGroupID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_edit')
+    ->withQueryParams([
+        'gibbonYearGroupID' => $gibbonYearGroupID,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_edit.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
     exit;
 } else {
     //Proceed!
@@ -37,8 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $syncTo = (isset($_POST['syncTo']))? $_POST['syncTo'] : null;
 
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID) || empty($syncTo) || empty($syncEnabled)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
         exit;
     } else {
         $partialFail = false;
@@ -67,12 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
 
         if ($partialFail) {
-            $URL .= '&return=warning3';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('warning3'));
             exit;
         } else {
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('success0'));
             exit;
         }
     }

@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -28,19 +29,23 @@ $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
-if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
+if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
+    echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_edit.php&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'course_manage_class_edit')
+        ->withQueryParams([
+            'gibbonCourseID' => $gibbonCourseID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_edit.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if course specified
         if ($gibbonCourseClassID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -48,14 +53,12 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Validate Inputs
                 $name = $_POST['name'] ?? '';
@@ -69,14 +72,12 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $fields = $container->get(CustomFieldHandler::class)->getFieldDataFromPOST('Class', [], $customRequireFail);
 
                 if ($customRequireFail) {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error1'));
                     exit;
                 }
 
                 if ($name == '' or $nameShort == '') {
-                    $URL .= '&return=error3';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error3'));
                 } else {
                     //Check unique inputs for uniquness
                     try {
@@ -85,14 +86,12 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                         exit();
                     }
 
                     if ($result->rowCount() > 0) {
-                        $URL .= '&return=error3';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error3'));
                     } else {
                         //Write to database
                         try {
@@ -101,13 +100,11 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
+                            header('Location: ' . $URL->withReturn('error2'));
                             exit();
                         }
 
-                        $URL .= '&return=success0';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('success0'));
                     }
                 }
             }

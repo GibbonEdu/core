@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_delete.php') == false) {
     // Access denied
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     if ($gibbonCourseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonCourseID' => $gibbonCourseID);
             $sql = 'SELECT * FROM gibbonCourse WHERE gibbonCourseID=:gibbonCourseID';
             $result = $connection2->prepare($sql);
@@ -38,7 +39,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         if ($result->rowCount() != 1) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/course_manage_deleteProcess.php?gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']);
+            $form = DeleteForm::createForm(
+                Url::fromModuleRoute('Timetable Admin', 'course_manage_deleteProcess')
+                    ->withQueryParams([
+                        'gibbonCourseID' => $gibbonCourseID,
+                        'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'],
+                    ])
+            );
             echo $form->getOutput();
         }
     }

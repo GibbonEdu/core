@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
     // Access denied
@@ -41,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
         $table = DataTable::create('timetables');
 
         $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Timetable Admin/tt_add.php')
+            ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_add'))
             ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->displayLabel();
 
@@ -61,18 +62,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
             ->addParam('gibbonSchoolYearID')
             ->format(function ($person, $actions) {
                 $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Timetable Admin/tt_edit.php');
+                    ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit'));
 
                 $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Timetable Admin/tt_delete.php');
+                    ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_delete'));
 
                 $actions->addAction('import', __('Import'))
                     ->setIcon('upload')
-                    ->setURL('/modules/Timetable Admin/tt_import.php');
+                    ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_import'));
 
                 $actions->addAction('notify', __('Notify Subscribers'))
                     ->setIcon('copyforward')
-                    ->setURL('/modules/Timetable Admin/tt_notifyProcess.php')->directLink()
+                    ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_notifyProcess'))->directLink()
                     ->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
             });
 

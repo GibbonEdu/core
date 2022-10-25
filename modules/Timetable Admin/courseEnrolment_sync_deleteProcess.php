@@ -17,22 +17,26 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Http\Url;
+
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
+$URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync')
+    ->withQueryParams([
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_delete.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
+    exit();
 } else {
     //Proceed!
     $gibbonYearGroupID = (isset($_POST['gibbonYearGroupID']))? $_POST['gibbonYearGroupID'] : null;
 
     if (empty($gibbonYearGroupID)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
         exit;
     } else {
         $data = array('gibbonYearGroupID' => $gibbonYearGroupID);
@@ -41,12 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $pdo->executeQuery($data, $sql);
 
         if ($pdo->getQuerySuccess() == false) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error2'));
             exit;
         } else {
-            $URL .= "&return=success0";
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('success0'));
             exit;
         }
     }

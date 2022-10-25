@@ -19,26 +19,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'] ?? '';
-$URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/course_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
+$URL = Url::fromModuleRoute('Timetable Admin', 'course_manage')->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearIDNext);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
-    
+
     // Check if school years specified (current and next)
     if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearIDNext)) {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
-    } 
+        header('Location: ' . $URL->withReturn('error1'));
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
     $courseClassGateway = $container->get(CourseClassGateway::class);
@@ -46,8 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     // Get current courses
     $courses = $courseGateway->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID])->fetchAll();
     if (empty($courses)) {
-        $URL .= '&return=error2';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error2'));
     }
 
     $partialFail = false;
@@ -72,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         // Insert course into database
         $gibbonCourseIDNew = $courseGateway->insert($data);
-            
+
         if (empty($gibbonCourseIDNew)) {
             $partialFail = true;
             continue;
         }
-        
+
         $classes = $courseClassGateway->selectBy(['gibbonCourseID' => $course['gibbonCourseID']])->fetchAll();
 
         foreach ($classes as $class) {
@@ -107,9 +105,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
     }
 
-    $URL .= $partialFail == true
-        ? '&return=error5'
-        : '&return=success0';
+    $URL = $partialFail == true
+        ? $URL->withReturn('error5')
+        : $URL->withReturn('success0');
 
     header("Location: {$URL}");
 }

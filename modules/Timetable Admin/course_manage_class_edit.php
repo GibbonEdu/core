@@ -57,7 +57,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             //Let's go!
 			$values = $result->fetch();
 
-			$form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/course_manage_class_editProcess.php');
+			$form = Form::create(
+                'action',
+                Url::fromModuleRoute('Timetable Admin', 'course_manage_class_editProcess')
+            );
 
 			$form->addHiddenValue('address', $session->get('address'));
 			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

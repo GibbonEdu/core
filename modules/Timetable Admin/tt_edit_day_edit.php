@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit.php') == false) {
     // Access denied
@@ -46,7 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
                 ->add(__('Edit Timetable Day'));
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_editProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_editProcess')
+                ->withQueryParams([
+                    'gibbonTTDayID' => $gibbonTTDayID,
+                    'gibbonTTID' => $gibbonTTID,
+                    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                ])
+            );
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);
@@ -112,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('gibbonTTColumnRowID')
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class'));
                 });
 
             echo $table->render($ttDayRows->toDataSet());

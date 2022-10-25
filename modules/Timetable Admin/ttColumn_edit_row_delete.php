@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_delete.php') == false) {
     // Access denied
@@ -29,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     if ($gibbonTTColumnRowID == '' or $gibbonTTColumnID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID);
             $sql = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID';
             $result = $connection2->prepare($sql);
@@ -39,7 +40,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/ttColumn_edit_row_deleteProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID", true);
+            $form = DeleteForm::createForm(
+                Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit_row_deleteProcess')
+                    ->withQueryParams([
+                        'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+                        'gibbonTTColumnID' => $gibbonTTColumnID,
+                    ]),
+                true
+            );
             echo $form->getOutput();
         }
     }

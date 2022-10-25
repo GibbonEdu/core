@@ -21,6 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson.php') == false) {
     // Access denied
@@ -52,13 +53,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         echo '<h3>';
         echo __('Filters');
-        echo '</h3>'; 
-        
-        $form = Form::create('searchForm', $session->get('absoluteURL').'/index.php', 'get');
-        $form->setClass('noIntBorder fullWidth');
+        echo '</h3>';
 
-        $form->addHiddenValue('q', '/modules/'.$session->get('module').'/courseEnrolment_manage_byPerson.php');
-        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+        $form = Form::create(
+            'searchForm',
+            Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson')
+                ->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID),
+            'get'
+        );
+        $form->setClass('noIntBorder fullWidth');
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
@@ -76,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo '<h3>';
         echo __('View');
         echo '</h3>';
-            
+
         $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID, $gibbon->session->get('gibbonRoleIDCurrentCategory'));
 
         // DATA TABLE
@@ -122,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->format(function ($person, $actions) {
                 $actions->addAction('edit', __('Edit'))
                         ->addParam('type', $person['roleCategory'])
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit'));
             });
 
         echo $table->render($users);

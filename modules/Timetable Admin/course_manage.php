@@ -23,6 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     // Access denied
@@ -53,13 +54,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo __('Filters');
         echo '</h3>';
 
-        $form = Form::create('action', $session->get('absoluteURL').'/index.php','get');
+        $form = Form::create(
+            'action',
+            Url::fromModuleRoute('Timetable Admin', 'course_manage')
+                ->withQueryParam('gibbonSchoolYearID', $gibbonSchoolYearID),
+            'get'
+        );
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
-
-        $form->addHiddenValue('q', "/modules/".$session->get('module')."/course_manage.php");
-        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
@@ -85,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         if (!empty($nextYear)) {
             $table->addHeaderAction('copy', __('Copy All To Next Year'))
-                ->setURL('/modules/Timetable Admin/course_manage_copyProcess.php')
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_copyProcess'))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonSchoolYearIDNext', $nextYear['gibbonSchoolYearID'])
                 ->addParam('search', $search)
@@ -97,9 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
 
         $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Timetable Admin/course_manage_add.php')
-            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->addParam('search', $search)
+            ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_add')
+                ->withQueryParams([
+                    'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                    'search' => $search,
+                ]))
             ->displayLabel();
 
         // COLUMNS
@@ -115,10 +120,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($course, $actions) {
                 $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/course_manage_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_edit'));
 
                 $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/course_manage_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'course_manage_delete'));
             });
 
         echo $table->render($courses);

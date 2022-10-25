@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_delete.php') == false) {
     // Access denied
@@ -50,7 +51,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID");
+                $form = DeleteForm::createForm(
+                    Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_deleteProcess')
+                        ->withQueryParams([
+                            'gibbonTTDayID' => $gibbonTTDayID,
+                            'gibbonTTID' => $gibbonTTID,
+                            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+                            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+                            'gibbonCourseClassID' => $gibbonCourseClassID,
+                            'gibbonTTDayRowClassExceptionID' => $gibbonTTDayRowClassExceptionID,
+                        ])
+                );
                 echo $form->getOutput();
             }
         }

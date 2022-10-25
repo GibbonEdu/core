@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
     // Access denied
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             echo __('School is not open on the specified day.');
             echo '</div>';
         } else {
-            
+
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
                 $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
                 $result = $connection2->prepare($sql);
@@ -53,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                     ->add(__('Edit Days in Date'), 'ttDates_edit.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStamp' => $dateStamp])
                     ->add(__('Add Day to Date'));
 
-				$form = Form::create('addTTDate', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttDates_edit_addProcess.php');
+				$form = Form::create('addTTDate', Url::fromModuleRoute('Timetable Admin', 'ttDates_edit_addProcess'));
 
 				$form->addHiddenValue('address', $session->get('address'));
 				$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

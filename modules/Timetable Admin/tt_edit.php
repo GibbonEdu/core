@@ -23,6 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/tt_editProcess.php');
+            $form = Form::create('action', Url::fromModuleRoute('Timetable Admin', 'tt_editProcess'));
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);
@@ -114,7 +115,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             $ttDays = $timetableDayGateway->queryTTDays($criteria, $gibbonTTID);
 
             // FORM
-            $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_editProcessBulk.php?gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
+            $form = BulkActionForm::create(
+                'bulkAction',
+                Url::fromModuleRoute('Timetable Admin', 'tt_editProcessBulk')
+                    ->withQueryParams([
+                        'gibbonTTID' => $gibbonTTID,
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                    ])
+            );
             $form->addHiddenValue('address', $session->get('address'));
 
             // BULK ACTIONS
@@ -130,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             $table->addMetaData('bulkActions', $col);
 
             $table->addHeaderAction('add', __('Add'))
-                ->setURL('/modules/Timetable Admin/tt_edit_day_add.php')
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_add'))
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
                 ->addParam('gibbonTTID', $gibbonTTID)
                 ->displayLabel();
@@ -146,10 +154,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 ->addParam('gibbonTTDayID')
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit'));
 
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/tt_edit_day_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_delete'));
                 });
 
             $table->addCheckboxColumn('gibbonTTDayIDList', 'gibbonTTDayID');

@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Http\Url;
+
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonCourseClassID = $_POST['gibbonCourseClassID'] ?? '';
 $gibbonCourseID = $_POST['gibbonCourseID'] ?? '';
@@ -25,22 +27,25 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $action = $_POST['action'] ?? '';
 $search = $_POST['search'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit.php&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassID=$gibbonCourseClassID&search=$search";
+$URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit')
+    ->withQueryParams([
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'search' => $search,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '' or $action == '') {
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error1'));
 } else {
     $people = isset($_POST['gibbonCourseClassPersonID']) ? $_POST['gibbonCourseClassPersonID'] : array();
 
     //Proceed!
     //Check if person specified
     if (count($people) < 1) {
-        $URL .= '&return=error3';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error3'));
     } else {
         $partialFail = false;
         if ($action == 'Delete') {
@@ -85,8 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
                 }
             } else {
-                $URL .= '&return=error3';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error3'));
             }
         } else if ($action == 'Mark as left') {
             foreach ($people as $gibbonCourseClassPersonID) {
@@ -102,11 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
 
         if ($partialFail == true) {
-            $URL .= '&return=warning1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('warning1'));
         } else {
-            $URL .= '&return=success0';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('success0'));
         }
     }
 

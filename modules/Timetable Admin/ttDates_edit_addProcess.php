@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
-include '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -26,21 +27,22 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $dateStamp = $_POST['dateStamp'] ?? '';
 $gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$dateStamp;
+$URL = Url::fromModuleRoute('Timetable Admin', 'ttDates_edit_add')
+    ->withQueryParams([
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'dateStamp' => $dateStamp,
+    ]);
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
     //Proceed!
     //Validate Inputs
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonTTDayID == '') {
-        $URL .= '&return=error1';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error1'));
     } else {
         if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2, true) == false) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -48,14 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Write to database
                 try {
@@ -64,13 +64,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                     exit();
                 }
 
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('success0'));
             }
         }
     }

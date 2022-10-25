@@ -74,7 +74,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo __('Add Participants');
             echo '</h2>';
 
-            $form = Form::create('manageEnrolment', $session->get('absoluteURL').'/modules/'.$session->get('module')."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
+            $form = Form::create(
+                'manageEnrolment',
+                Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_addProcess')
+                    ->withQueryParams([
+                        'gibbonCourseClassID' => $gibbonCourseClassID,
+                        'gibbonCourseID' => $gibbonCourseID,
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                        'search' => $search,
+                    ])
+            );
 
             $form->addHiddenValue('address', $session->get('address'));
 
@@ -121,7 +130,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 $isStudent = stripos($person['role'], 'Student') !== false;
                 $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
                 return $isStudent
-                    ? Format::link('./index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name).'<br/>'.Format::userStatusInfo($person)
+                    ? Format::link(
+                        Url::fromModuleRoute('Students', 'student_view_details')
+                            ->withQueryParams([
+                                'gibbonPersonID' => $person['gibbonPersonID'],
+                                'subpage' => 'Timetable',
+                            ]),
+                        $name
+                    ).'<br/>'.Format::userStatusInfo($person)
                     : $name;
             };
 
@@ -134,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID, false, true);
 
             // FORM
-            $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL') . '/modules/' . $session->get('module') . '/courseEnrolment_manage_class_editProcessBulk.php');
+            $form = BulkActionForm::create('bulkAction', Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_editProcessBulk'));
             $form->setTitle(__('Current Participants'));
 
             $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
@@ -187,9 +203,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_edit'));
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_delete'));
                 });
 
             $table->addCheckboxColumn('gibbonCourseClassPersonID');
@@ -219,9 +235,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 ->addParams($linkParams)
                 ->format(function ($person, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_edit'));
                     $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
+                        ->setURL(Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_class_edit_delete'));
                 });
 
             echo $table->render($enrolmentLeft);

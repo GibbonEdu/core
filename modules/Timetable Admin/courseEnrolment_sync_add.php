@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -40,7 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         return;
     }
 
-    $form = Form::create('courseEnrolmentSyncAdd', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/courseEnrolment_sync_edit.php');
+    $form = Form::create(
+        'courseEnrolmentSyncAdd',
+        Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_sync_edit')
+    );
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $session->get('address'));

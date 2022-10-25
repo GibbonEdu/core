@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
     // Access denied
@@ -84,7 +85,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relevant classes. The system will do its best to keep existing data intact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
 				echo '</p>';
 
-                $form = Form::create('importTimetable', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2");
+                $form = Form::create(
+                    'importTimetable',
+                    Url::fromModuleRoute('Timetable Admin', 'tt_import')->withQueryParams([
+                        'gibbonTTID' => $gibbonTTID,
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                        'step' => 2,
+                    ])
+                );
 
                 $form->addHiddenValue('address', $session->get('address'));
 
@@ -686,7 +694,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         echo '</div>';
                     } elseif ($proceed == true) {
                         echo "<div class='success'>";
-                        echo '<b><u>'.sprintf(__('You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'), "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module')."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=3'>", '</a>').'</u></b>';
+                        echo '<b><u>'.sprintf(
+                            __('You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'),
+                            "<a href='".Url::fromModuleRoute('Timetable Admin', 'tt_import')->withQueryParams([
+                                'gibbonTTID' => $gibbonTTID,
+                                'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                                'step' => 3,
+                            ]) . "'>",
+                            '</a>'
+                        ).'</u></b>';
                         echo '</div>';
                     }
                 }

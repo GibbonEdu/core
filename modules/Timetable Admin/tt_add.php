@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\TimetableGateway;
+use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,14 +37,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+        $editLink = Url::fromModuleRoute('Timetable Admin', 'tt_edit')
+            ->withQueryParams([
+                'gibbonTTID' => $_GET['editID'],
+                'gibbonSchoolYearID' => $_GET['gibbonSchoolYearID'],
+            ]);
     }
     $page->return->setEditLink($editLink);
 
     if ($gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
             $sql = 'SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
@@ -58,7 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 
             $timetableGateway = $container->get(TimetableGateway::class);
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module').'/tt_addProcess.php');
+            $form = Form::create(
+                'action',
+                Url::fromModuleRoute('Timetable Admin', 'tt_addProcess')
+            );
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);

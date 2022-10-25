@@ -21,6 +21,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
+use Gibbon\Http\Url;
 
 $page->breadcrumbs->add(__('Manage Columns'));
     echo '<p>';
@@ -43,7 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
     $columns = $timetableColumnGateway->queryTTColumns($criteria);
 
     // FORM
-    $form = BulkActionForm::create('bulkAction', $session->get('absoluteURL').'/modules/'.$session->get('module').'/ttColumnProcessBulk.php');
+    $form = BulkActionForm::create(
+        'bulkAction',
+        Url::fromModuleRoute('Timetable Admin', 'ttColumnProcessBulk')
+    );
     $form->addHiddenValue('address', $session->get('address'));
 
     // BULK ACTIONS
@@ -59,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
     $table->addMetaData('bulkActions', $col);
 
     $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/Timetable Admin/ttColumn_add.php')
+        ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_add'))
         ->displayLabel();
 
     // COLUMNS
@@ -72,10 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
         ->addParam('gibbonTTColumnID')
         ->format(function ($values, $actions) {
             $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Timetable Admin/ttColumn_edit.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_edit'));
 
             $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Timetable Admin/ttColumn_delete.php');
+                ->setURL(Url::fromModuleRoute('Timetable Admin', 'ttColumn_delete'));
         });
 
     $table->addCheckboxColumn('gibbonTTColumnIDList', 'gibbonTTColumnID');

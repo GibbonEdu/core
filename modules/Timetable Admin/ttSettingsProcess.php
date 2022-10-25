@@ -18,16 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttSettings.php';
+$URL = Url::fromModuleRoute('Timetable Admin', 'ttSettings');
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttSettings.php') == false) {
-    $URL .= '&return=error0';
-    header("Location: {$URL}");
+    header('Location: ' . $URL->withReturn('error0'));
 } else {
 
     $partialFail = false;
@@ -49,8 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttSettings
         }
     }
 
-    $URL .= $partialFail
-        ? '&return=error2'
-        : '&return=success0';
-    header("Location: {$URL}");
+    if ($partialFail) {
+        header('Location: ' . $URL->withReturn('error2'));
+        exit();
+    }
+
+    header('Location: ' . $URL->withReturn('success0'));
 }

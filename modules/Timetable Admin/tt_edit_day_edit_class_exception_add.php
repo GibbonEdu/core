@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php') == false) {
@@ -60,7 +61,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $gibbonTTDayRowClassID = $values['gibbonTTDayRowClassID'];
 
-            $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_exception_addProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID");
+            $form = Form::create(
+                'action',
+                Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_addProcess')
+                    ->withQueryParams([
+                        'gibbonTTDayID' => $gibbonTTDayID,
+                        'gibbonTTID' => $gibbonTTID,
+                        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                        'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+                        'gibbonTTDayRowClass' => $gibbonTTDayRowClassID,
+                        'gibbonCourseClassID' => $gibbonCourseClassID,
+                        'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+                    ])
+            );
 
             $form->addHiddenValue('address', $session->get('address'));
             $form->addHiddenValue('gibbonTTID', $gibbonTTID);

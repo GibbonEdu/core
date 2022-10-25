@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Http\Url;
+
+require_once __DIR__ . '/../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $dateStamp = $_GET['dateStamp'] ?? '';
@@ -25,17 +27,19 @@ $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
 
 if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'ttDates_edit')
+        ->withQueryParams([
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'dateStamp' => $dateStamp,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_delete.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if gibbonTTDayID specified
         if ($gibbonTTDayID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('date' => date('Y-m-d', $dateStamp), 'gibbonTTDayID' => $gibbonTTDayID);
@@ -43,14 +47,12 @@ if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading t
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() < 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Write to database
                 try {
@@ -59,13 +61,11 @@ if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading t
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error2'));
                     exit();
                 }
 
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('success0'));
             }
         }
     }

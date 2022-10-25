@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Http\Url;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_edit.php') == false) {
     // Access denied
@@ -33,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpaceID FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID';
             $result = $connection2->prepare($sql);
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             $gibbonSpaceID = $row['gibbonSpaceID'];
             $gibbonTTDayRowClassID = $row['gibbonTTDayRowClassID'];
 
-            
+
                 $data = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID);
                 $sql = 'SELECT gibbonTT.name AS ttName, gibbonTTDay.name AS dayName, gibbonTTColumnRow.name AS rowName, gibbonYearGroupIDList FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTDay.gibbonTTDayID=:gibbonTTDayID AND gibbonTT.gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTColumnRowID=:gibbonTTColumnRowID';
                 $result = $connection2->prepare($sql);
@@ -71,7 +72,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                     ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', $urlParams)
                     ->add(__('Edit Class in Period'));
 
-                $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID");
+                $form = Form::create(
+                    'action',
+                    Url::fromModuleRoute('Timetable Admin', 'tt_edit_day_edit_class_editProcess')
+                        ->withQueryParams([
+                            'gibbonTTDayID' => $gibbonTTDayID,
+                            'gibbonTTID' => $gibbonTTID,
+                            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+                            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+                            'gibbonTTDayRowClassID' => $gibbonTTDayRowClassID,
+                            'gibbonCourseClassID' => $gibbonCourseClassID,
+                        ])
+                );
 
                 $form->addHiddenValue('address', $session->get('address'));
                 $form->addHiddenValue('gibbonTTID', $gibbonTTID);
@@ -94,13 +106,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                     $row->addTextField('class')->maxLength(20)->required()->readonly()->setValue($course.'.'.$class);
 
                 $locations = array() ;
-                
+
                     $dataSelect = array();
                     $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
                     $resultSelect = $connection2->prepare($sqlSelect);
                     $resultSelect->execute($dataSelect);
                 while ($rowSelect = $resultSelect->fetch()) {
-                    
+
                         $dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
                         $sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID';
                         $resultUnique = $connection2->prepare($sqlUnique);

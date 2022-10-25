@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Data\Validator;
+use Gibbon\Http\Url;
 
-require_once '../../gibbon.php';
+require_once __DIR__ . '/../../gibbon.php';
 
 $_POST = $container->get(Validator::class)->sanitize($_POST);
 
@@ -31,17 +32,23 @@ $search = $_GET['search'] ?? '';
 
 if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '' or $gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_byPerson_edit_edit.php&type=$type&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseClassID=$gibbonCourseClassID&allUsers=$allUsers&search=$search";
+    $URL = Url::fromModuleRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit_edit')
+        ->withQueryParams([
+            'type' => $type,
+            'gibbonPersonID' => $gibbonPersonID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+            'allUsers' => $allUsers,
+            'search' => $search,
+        ]);
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php') == false) {
-        $URL .= '&return=error0';
-        header("Location: {$URL}");
+        header('Location: ' . $URL->withReturn('error0'));
     } else {
         //Proceed!
         //Check if person specified
         if ($gibbonPersonID == '') {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
+            header('Location: ' . $URL->withReturn('error1'));
         } else {
             try {
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
@@ -49,14 +56,12 @@ if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '' or $gibbonPersonID =
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
                 exit();
             }
 
             if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                header('Location: ' . $URL->withReturn('error2'));
             } else {
                 //Validate Inputs
                 $values = $result->fetch();
@@ -64,8 +69,7 @@ if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '' or $gibbonPersonID =
                 $reportable = $_POST['reportable'] ?? '';
 
                 if ($role == '') {
-                    $URL .= '&return=error3';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('error3'));
                 } else {
                     //Write to database
                     $dateEnrolled = $role != $values['role'] && stripos($role, 'Left') === false ? date('Y-m-d') : $values['dateEnrolled'];
@@ -76,13 +80,11 @@ if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '' or $gibbonPersonID =
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
+                        header('Location: ' . $URL->withReturn('error2'));
                         exit();
                     }
 
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
+                    header('Location: ' . $URL->withReturn('success0'));
                 }
             }
         }
