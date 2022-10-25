@@ -63,10 +63,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
         exit;
     }
 
-    // Remove recipients who have been manually unchecked
+    // Check which recipients who have been manually unchecked
     $recipientList = $_POST['gibbonMessengerReceiptID'] ?? [];
     $recipients = $messengerReceiptGateway->selectMessageRecipientList($gibbonMessengerID)->fetchAll();
     $unselected = array_diff(array_column($recipients, 'gibbonMessengerReceiptID'), $recipientList);
+    
+    // Check if all users have been unselected
+    if (count($unselected) == count($recipients)) {
+        $URL .= "&return=error6";
+        header("Location: {$URL}");
+        exit;
+    }
+
+    // Remove recipients who have been manually unchecked
     $messengerReceiptGateway->deleteRecipientsByID($gibbonMessengerID, $unselected);
 
     // Set the status of the message

@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -134,8 +134,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $data = ['gibbonMessengerID' => $values['gibbonMessengerID']];
             $sql = "SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id";
             $targets = $pdo->select($sql, $data)->fetchAll();
+            $targetTypeCount = [];
+            $targetTypeThreshold = 7;
 
             foreach ($targets as $target) {
+                $targetTypeCount[$target['type']] = ($targetTypeCount[$target['type']] ?? 0) + 1; 
+
+                if ($targetTypeCount[$target['type']] > $targetTypeThreshold) {
+                    continue;
+                }
                 if ($target['type']=='Activity') {
                     $data = ['gibbonActivityID'=>$target['id']];
                     $sql = "SELECT name FROM gibbonActivity WHERE gibbonActivityID=:gibbonActivityID";
@@ -218,6 +225,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                     if ($targetData = $pdo->select($sql, $data)->fetch()) {
                         $output .= '<b>' . __($target['type']) . '</b> - ' . $targetData['name'] . '<br/>';
                     }
+                }
+            }
+
+            foreach ($targetTypeCount as $targetType => $count) {
+                if ($count > 0 && $count > $targetTypeThreshold) {
+                    $output .= '<b>' . __($targetType) . '</b><i> '.__('{count} more', ['count' => '+ '.($count - $targetTypeThreshold)]) . '</i><br/>';
                 }
             }
 

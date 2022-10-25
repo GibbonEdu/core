@@ -152,7 +152,7 @@ class Locale implements LocaleInterface
     public function setStringReplacementList(Session $session, Connection $pdo, $forceRefresh = false)
     {
         $stringReplacements = $session->get('stringReplacement', null);
-        
+
         // Do this once per session, only if the value doesn't exist
         if ($forceRefresh || $stringReplacements === null) {
 
@@ -186,10 +186,10 @@ class Locale implements LocaleInterface
      *
      * @return string The substituted version of $text string.
      */
-    protected static function formatString(string $text, array $params = [])
+    public static function formatString(string $text, array $params = [])
     {
         if (empty($params)) return $text;
-        
+
         return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
             $placeholder = stripos($key, '$s') !== false ? $key : '{'.$key.'}';
             $carry[$placeholder] = $params[$key]; // apply quote to the keys for replacement
@@ -235,7 +235,7 @@ class Locale implements LocaleInterface
     }
 
     /**
-     * Change the auth message when not logged in. Apply this as a string replacement 
+     * Change the auth message when not logged in. Apply this as a string replacement
      * rather than changing every instance of the string in the codebase.
      *
      * @param string  $text Raw string to apply the string replacement logics

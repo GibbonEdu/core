@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
     $page->return->addReturns([
         'error4' => __('Your request was completed successfully, but some or all messages could not be delivered.'),
         'error5' => __('Your request failed due to an attachment error.'),
-        'error6' => __('Your message is not ready to preview and send because no targets have been selected.'),
+        'error6' => __('Your message is not ready to send because no targets have been selected or no valid recipients were found. Be sure to select at least one target for your message.'),
         'success1' => !empty($_GET['notification']) && $_GET['notification'] == 'Y'
             ? __("Your message has been dispatched to a team of highly trained gibbons for delivery: not all messages may arrive at their destination, but an attempt has been made to get them all out. You'll receive a notification once all messages have been sent.")
             : __('Your message has been posted successfully.'),
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.p
         return;
     }
 
-    $sent = !empty($_GET['return']) || $values['status'] == 'Sent';
+    $sent = $values['status'] == 'Sent' || (!empty($_GET['return']) && $_GET['return'] == 'success1');
 
     // QUERY
     $criteria = $messengerReceiptGateway->newQueryCriteria()

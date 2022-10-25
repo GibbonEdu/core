@@ -54,7 +54,7 @@ class PersonUpdateGateway extends QueryableGateway implements ScrubbableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname', 'gibbonRole.category as roleCategory'
+                'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'target.gibbonPersonID as gibbonPersonIDTarget', 'updater.gibbonPersonID as gibbonPersonIDUpdater', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname', 'gibbonRole.category as roleCategory'
             ])
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID')
             ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonUpdate.gibbonPersonIDUpdater')

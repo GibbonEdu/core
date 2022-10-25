@@ -75,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     // COLUMNS
     $table->addColumn('target', __('Target User'))
         ->sortable(['target.surname', 'target.preferredName'])
-        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student']));
+        ->format(Format::using('nameLinked', ['gibbonPersonIDTarget', '', 'preferredName', 'surname', 'roleCategory']));
     $table->addColumn('roleCategory', __('Role Category'));
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
-        ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
+        ->format(Format::using('nameLinked', ['gibbonPersonIDUpdater', 'updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
     $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
     $table->addColumn('status', __('Status'))->translatable()->width('12%');
 

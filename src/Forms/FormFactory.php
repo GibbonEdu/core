@@ -162,9 +162,9 @@ class FormFactory implements FormFactoryInterface
         return new Input\Finder($name);
     }
 
-    public function createEditor($name, $guid)
+    public function createEditor(string $name)
     {
-        return new Input\Editor($name, $guid);
+        return new Input\Editor($name);
     }
 
     public function createCodeEditor($name)
@@ -293,9 +293,9 @@ class FormFactory implements FormFactoryInterface
         return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
-    public function createSubmit($label = 'Submit')
+    public function createSubmit($label = 'Submit', $class = '')
     {
-        $content = sprintf('<input type="submit" value="%s">', __($label));
+        $content = sprintf('<input type="submit" value="%1$s" class="%2$s">', __($label), $class);
         return $this->createContent($content)->setClass('right');
     }
 

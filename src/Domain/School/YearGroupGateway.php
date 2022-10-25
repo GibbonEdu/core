@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\School;
 
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -37,6 +38,16 @@ class YearGroupGateway extends QueryableGateway
     private static $primaryKey = 'gibbonYearGroupID';
     private static $searchableColumns = [];
 
+    /**
+     * Query for the year group.
+     *
+     * @version v16
+     * @since   v16
+     *
+     * @param QueryCriteria $criteria
+     *
+     * @return DataSet
+     */
     public function queryYearGroups(QueryCriteria $criteria)
     {
         $query = $this
@@ -50,6 +61,16 @@ class YearGroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * Get student count by year group.
+     *
+     * @version v16
+     * @since   v16
+     *
+     * @param int $gibbonYearGroupID
+     *
+     * @return array|false
+     */
     public function studentCountByYearGroup($gibbonYearGroupID)
     {
         $data = array('gibbonYearGroupID' => $gibbonYearGroupID, 'today' => date('Y-m-d'));
@@ -67,10 +88,52 @@ class YearGroupGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
+    /**
+     * Select year group by ids.
+     *
+     * @version v24
+     * @since   v24
+     *
+     * @param int[] $gibbonYearGroupIDList  An array of year group IDs.
+     * @return void
+     */
     public function selectYearGroupsByIDs($gibbonYearGroupIDList)
     {
         $data = ['gibbonYearGroupIDList' => is_array($gibbonYearGroupIDList) ? implode(',', $gibbonYearGroupIDList) : $gibbonYearGroupIDList];
         $sql = "SELECT gibbonYearGroupID as value, name FROM gibbonYearGroup WHERE FIND_IN_SET(gibbonYearGroupID, :gibbonYearGroupIDList) ORDER BY sequenceNumber";
         return $this->db()->select($sql, $data);
+    }
+
+    /**
+     * Take a year group, and return the next one, or false if none.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param int $gibbonYearGroupID
+     *
+     * @return int|false
+     */
+    public function getNextYearGroupID(int $gibbonYearGroupID)
+    {
+        $sql = "SELECT * FROM gibbonYearGroup WHERE sequenceNumber=(SELECT MIN(sequenceNumber) FROM gibbonYearGroup WHERE sequenceNumber > (SELECT sequenceNumber FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupID))";
+
+        return $this->db()->selectOne($sql, [
+            'gibbonYearGroupID' => $gibbonYearGroupID,
+        ]);
+    }
+
+    /**
+     * Return the last school year in the school, or false if none.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @return int|false
+     */
+    public function getLastYearGroupID()
+    {
+        $sql = 'SELECT gibbonYearGroupID FROM gibbonYearGroup ORDER BY sequenceNumber DESC';
+        return $this->db()->selectOne($sql);
     }
 }

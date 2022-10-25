@@ -8,7 +8,7 @@ modules:
             dsn: "mysql:host=mariadb;dbname=gibbon_test"
             user: "gibbon_test"
             password: "gibbon_password"
-            dump: 'config/data/dump.sql'
+            dump: '_data/dump.sql'
             populate: true
             cleanup: false
             reconnect: true

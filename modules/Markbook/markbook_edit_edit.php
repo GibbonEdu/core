@@ -128,14 +128,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $form = Form::create('markbook', $session->get('absoluteURL').'/modules/'.$session->get('module').'/markbook_edit_editProcess.php?gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$session->get('address'));
                         $form->setFactory(DatabaseFormFactory::create($pdo));
                         $form->addHiddenValue('address', $session->get('address'));
-                        
+
                          // Add header actions
                         if (!empty($values['gibbonPlannerEntryID'])) {
                             $params = [
                                 "viewBy" => 'class',
                                 "gibbonCourseClassID" => $gibbonCourseClassID,
                                 "gibbonPlannerEntryID" => $values['gibbonPlannerEntryID'],
-                            
+
                             ];
                             $form->addHeaderAction('view', __('View Linked Lesson'))
                                 ->setURL('/modules/Planner/planner_view_full.php')
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                         $params = [
                             "gibbonCourseClassID" => $gibbonCourseClassID,
                             "gibbonMarkbookColumnID" => $gibbonMarkbookColumnID,
-                        
+
                         ];
                         $form->addHeaderAction('data', __('Enter Data'))
                             ->setURL('/modules/Markbook/markbook_edit_data.php')
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                             ->setIcon('markbook')
                             ->displayLabel()
                             ->prepend((!empty($values['gibbonPlannerEntryID'])) ? ' | ' : '');
-                            
+
                         $form->addRow()->addHeading('Basic Information', __('Basic Information'));
 
                         $row = $form->addRow();
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
                         $row = $form->addRow();
                             $row->addLabel('name', __('Name'));
-                            $row->addTextField('name')->required()->maxLength(20);
+                            $row->addTextField('name')->required()->maxLength(40);
 
                         $row = $form->addRow();
                             $row->addLabel('description', __('Description'));

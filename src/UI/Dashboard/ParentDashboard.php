@@ -23,6 +23,7 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
@@ -154,7 +155,11 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
 
         $return = false;
 
-        $alert = getAlert($guid, $connection2, 002);
+        /**
+         * @var AlertLevelGateway
+         */
+        $alertLevelGateway = $this->getContainer()->get(AlertLevelGateway::class);
+        $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
         $entryCount = 0;
 
         //PREPARE PLANNER SUMMARY

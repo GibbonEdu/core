@@ -109,19 +109,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $table->setTitle(__('Report Data'));
 
     $table->addMetaData('blankSlate', __('All students are present.'));
-    $table->addRowCountColumn($attendance->getPageFrom());
+    $table->addRowCountColumn($attendance->getPageFrom())->context('primary');
 
-    $table->addColumn('formGroup', __('Form Group'))->width('10%');
+    $table->addColumn('formGroup', __('Form Group'))->context('primary')->width('10%');
     $table->addColumn('name', __('Name'))
+        ->context('primary')
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(function ($student) {
             return Format::nameLinked($student['gibbonPersonID'], '', $student['preferredName'], $student['surname'], 'Student', true, true, ['subpage' => 'Attendance']);
         });
     $table->addColumn('status', __('Status'))
+        ->context('primary')
         ->format(function ($student) {
             return !empty($student['type']) ? __($student['type']) : Format::small(__('Not registered'));
         });
-    $table->addColumn('reason', __('Reason'));
+    $table->addColumn('reason', __('Reason'))->context('secondary');
     $table->addColumn('comment', __('Comment'))
         ->format(Format::using('truncate', 'comment'));
 

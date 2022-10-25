@@ -353,7 +353,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
                                         $availability = [];
                                         $vacancies = '';
-                                        if ($rowPeriods['type'] == 'Lesson') {
+                                        if ($rowPeriods['type'] != 'Break') {
                                             
                                             $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
                                             $resultSelect = $pdo->select($sqlSelect);
