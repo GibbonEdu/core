@@ -280,14 +280,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     echo '</h2>';
 
                     if ($subpage == 'Overview') {
+                        /** @var MedicalGateway */
+                        $medicalGateway = $container->get(MedicalGateway::class);
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($highestLevel))).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
@@ -1152,19 +1151,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
                     } elseif ($subpage == 'Medical') {
+                        /** @var MedicalGateway */
                         $medicalGateway = $container->get(MedicalGateway::class);
 
                         $medical = $medicalGateway->getMedicalFormByPerson($gibbonPersonID);
                         $conditions = $medicalGateway->selectMedicalConditionsByID($medical['gibbonPersonMedicalID'] ?? null)->fetchAll();
 
                         //Medical alert!
-                        $alert = getHighestMedicalRisk($guid, $gibbonPersonID, $connection2);
-                        if ($alert != false) {
-                            $highestLevel = $alert[1];
-                            $highestColour = $alert[3];
-                            $highestColourBG = $alert[4];
-                            echo "<div class='error' style='background-color: #".$highestColourBG.'; border: 1px solid #'.$highestColour.'; color: #'.$highestColour."'>";
-                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower($highestLevel)).'</b>';
+                        $alert = $medicalGateway->getHighestMedicalRisk($gibbonPersonID);
+                        if (!empty($alert)) {
+                            echo "<div class='error' style='background-color: #".$alert['colorBG'].'; border: 1px solid #'.$alert['color'].'; color: #'.$alert['color']."'>";
+                            echo '<b>'.sprintf(__('This student has one or more %1$s risk medical conditions.'), strToLower(__($alert['name']))).'</b>';
                             echo '</div>';
                         }
 
