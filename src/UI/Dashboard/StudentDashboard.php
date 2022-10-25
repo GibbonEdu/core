@@ -29,6 +29,7 @@ use Gibbon\Contracts\Services\Session;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Student Dashboard View Composer
@@ -39,16 +40,29 @@ use Gibbon\Domain\System\HookGateway;
 class StudentDashboard implements OutputableInterface, ContainerAwareInterface
 {
     use ContainerAwareTrait;
-    
+
     protected $db;
     protected $session;
     protected $settingGateway;
 
-    public function __construct(Connection $db, Session $session, SettingGateway $settingGateway)
+    /**
+     * Role gateway
+     *
+     * @var RoleGateway
+     */
+    protected $roleGateway;
+
+    public function __construct(
+        Connection $db,
+        Session $session,
+        SettingGateway $settingGateway,
+        RoleGateway $roleGateway
+    )
     {
         $this->db = $db;
         $this->session = $session;
         $this->settingGateway = $settingGateway;
+        $this->roleGateway = $roleGateway;
     }
 
     public function getOutput()
@@ -214,7 +228,10 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
 
         //GET TIMETABLE
         $timetable = false;
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Student') {
+        if (
+            isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != ''
+            && $this->roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent'))
+        ) {
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $_POST = (new Validator(''))->sanitize($_POST);
             $jsonQuery = [
@@ -277,7 +294,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
             foreach ($hooks as $hook) {
                 // Set the module for this hook for translations
                 $this->session->set('module', $hook['sourceModuleName']);
-                
+
                 $return .= "<div style='min-height: 100px' id='tabs".$tabCount."'>";
                 $include = $this->session->get('absolutePath').'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
                 if (!file_exists($include)) {

@@ -21,6 +21,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
@@ -41,7 +42,7 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
 } else {
     // Proceed!
     $gibbonReportArchiveEntryID = $_GET['gibbonReportArchiveEntryID'] ?? '';
-    
+
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
@@ -64,7 +65,9 @@ if (empty($accessToken) && isActionAccessible($guid, $connection2, '/modules/Rep
         }
 
     } else {
-        $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+        /** @var RoleGateway */
+        $roleGateway = $container->get(RoleGateway::class);
+        $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
         $highestAction = getHighestGroupedAction($guid, '/modules/Reports/archive_byStudent_download.php', $connection2);
         if ($highestAction == 'View by Student') {
             $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';

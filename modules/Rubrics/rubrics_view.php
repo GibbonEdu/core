@@ -22,6 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Rubrics\RubricGateway;
 use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php') == false) {
     // Access denied
@@ -70,7 +71,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
 
     // If the current user is a student, limit the results to their year group
     $gibbonYearGroupID = null;
-    $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
+
+    $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
     if ($roleCategory == 'Student') {
         $studentGateway = $container->get(StudentGateway::class);
         $enrolment = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'))->fetch();

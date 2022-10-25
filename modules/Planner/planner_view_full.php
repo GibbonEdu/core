@@ -27,6 +27,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 use Gibbon\Domain\Attendance\AttendanceLogCourseClassGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 
@@ -203,7 +204,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $params['subView'] = $subView;
                     $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                    $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                    /** @var RoleGateway */
+                    $roleGateway = $container->get(RoleGateway::class);
+                    $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
 
                     $page->breadcrumbs
                         ->add(__('Planner for {classDesc}', [
@@ -333,10 +336,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             }
                             echo '</div>';
                         }
-                        
+
                         // Details Table
                         $table = DataTable::createDetails('overview');
-                        
+
                         $col = $table->addColumn('Basic Information');
 
                         $col->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));

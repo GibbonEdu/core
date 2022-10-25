@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\DataSet;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -89,7 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 ->add(Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
             $canEdit = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
-            $roleCategory = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
+
+            $roleCategory = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
 
             // DISPLAY PERSON DATA
             $table = DataTable::createDetails('personal');

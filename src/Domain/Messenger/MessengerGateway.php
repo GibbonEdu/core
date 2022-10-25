@@ -24,6 +24,7 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
@@ -47,13 +48,20 @@ class MessengerGateway extends QueryableGateway
      */
     private $session;
 
+    /**
+     * @var RoleGateway
+     */
+    private $roleGateway;
+
     public function __construct(
         Connection $db,
-        Session $session
+        Session $session,
+        RoleGateway $roleGateway
     )
     {
         parent::__construct($db);
         $this->session = $session;
+        $this->roleGateway = $roleGateway;
     }
 
     /**
@@ -186,7 +194,7 @@ class MessengerGateway extends QueryableGateway
         $student = false;
         $parent = false;
         for ($i = 0; $i < count($roles); ++$i) {
-            $roleCategory = getRoleCategory($roles[$i][0], $connection2);
+            $roleCategory = $this->roleGateway->getRoleCategory($roles[$i][0]);
             if ($roleCategory == 'Staff') {
                 $staff = true;
             } elseif ($roleCategory == 'Student') {

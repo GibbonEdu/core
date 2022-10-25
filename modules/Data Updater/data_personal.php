@@ -24,6 +24,7 @@ use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -188,10 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     //Get categories
                     $staff = $student = $parent = $other = false;
                     $roles = explode(',', $rowSelect['gibbonRoleIDAll']);
-                    $primaryRoleCategory = getRoleCategory($rowSelect['gibbonRoleIDPrimary'], $connection2);
+                    /** @var RoleGateway */
+                    $roleGateway = $container->get(RoleGateway::class);
+                    $primaryRoleCategory = $roleGateway->getRoleCategory($rowSelect['gibbonRoleIDPrimary']);
                     $roleCategories = [];
                     foreach ($roles as $role) {
-                        $roleCategory = getRoleCategory($role, $connection2);
+                        $roleCategory = $roleGateway->getRoleCategory($role);
                         $staff = $staff || ($roleCategory == 'Staff');
                         $student = $student || ($roleCategory == 'Student');
                         $parent = $parent || ($roleCategory == 'Parent');

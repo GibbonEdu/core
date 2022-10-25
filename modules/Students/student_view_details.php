@@ -52,6 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 } else {
     $page->scripts->add('chart');
 
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
+
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
@@ -569,7 +572,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</h4>';
 
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+                                $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
                                     echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role&allUsers=$allStudents'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
@@ -1428,7 +1431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                  */
                                 $alertLevelGateway = $container->get(AlertLevelGateway::class);
                                 $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
-                                $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                                $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
                                     $showParentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
@@ -1960,7 +1963,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             // QUERY
                             $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
                             $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
-                            $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+                            $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
 
                             $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
@@ -2189,7 +2192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+                                $role = $roleGateway->getRoleCategory($row['gibbonRoleIDPrimary']);
                                 if ($role == 'Student' or $role == 'Staff') {
                                     echo "<div class='linkTop'>";
                                     echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$session->get('gibbonSchoolYearID')."&type=$role'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$session->get('gibbonThemeName')."/img/config.png'/></a> ";
@@ -2286,7 +2289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                            $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES

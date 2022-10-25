@@ -16,6 +16,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportGateway;
@@ -33,18 +35,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
-    
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
 
     if (empty($gibbonReportID)) {
         // QUERY
         $criteria = $reportArchiveEntryGateway->newQueryCriteria(true)
             ->sortBy(['sequenceNumber', 'reportIdentifier', 'name'])
             ->filterBy('reportID', true)
-            ->filterBy('active', 'Y') 
+            ->filterBy('active', 'Y')
             ->fromPOST();
 
         $archives = $reportArchiveEntryGateway->queryArchiveReportsBySchoolYear($criteria, $gibbonSchoolYearID, $roleCategory, false, true);

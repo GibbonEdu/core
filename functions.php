@@ -25,6 +25,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
 
@@ -377,7 +378,9 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    global $session;
+    global $session, $container;
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
@@ -399,7 +402,7 @@ function getFastFinder($connection2, $guid)
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
     $templateData = [
-        'roleCategory'        => getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2),
+        'roleCategory'        => $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent')),
         'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
         'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
         'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',

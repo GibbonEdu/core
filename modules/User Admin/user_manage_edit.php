@@ -26,6 +26,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\DataRetentionGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserGateway;
 
 //Module includes
@@ -59,8 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             $parent = false;
             $other = false;
             $roles = explode(',', $values['gibbonRoleIDAll']);
+
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
+
             foreach ($roles as $role) {
-                $roleCategory = getRoleCategory($role, $connection2);
+                $roleCategory = $roleGateway->getRoleCategory($role);
                 $staff = $staff || ($roleCategory == 'Staff');
                 $student = $student || ($roleCategory == 'Student');
                 $parent = $parent || ($roleCategory == 'Parent');

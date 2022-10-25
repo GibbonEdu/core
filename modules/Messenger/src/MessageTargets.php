@@ -24,6 +24,7 @@ use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\LogGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 /**
  * MessageTargets
@@ -35,12 +36,26 @@ class MessageTargets
 {
     protected $report;
 
-    public function __construct(Session $session, Connection $db, SettingGateway $settingGateway, LogGateway $logGateway)
+    /**
+     * Role gateway
+     *
+     * @var RoleGateway
+     */
+    protected $roleGateway;
+
+    public function __construct(
+        Session $session,
+        Connection $db,
+        SettingGateway $settingGateway,
+        LogGateway $logGateway,
+        RoleGateway $roleGateway
+    )
     {
         $this->session = $session;
         $this->db = $db;
         $this->settingGateway = $settingGateway;
         $this->logGateway = $logGateway;
+        $this->roleGateway = $roleGateway;
     }
 
     public function createMessageTargets($gibbonMessengerID, &$partialFail = false)
@@ -399,7 +414,7 @@ class MessageTargets
                         }
 
                         //Get email addresses
-                        $category=getRoleCategory($t, $connection2) ;
+                        $category = $this->roleGateway->getRoleCategory($t);
                         $gibbonRoleID = str_pad(intval($t), 3, '0', STR_PAD_LEFT);
                         if ($email=="Y") {
                             if ($category=="Parent") {
@@ -2225,7 +2240,7 @@ class MessageTargets
                 }
                 $count ++;
             }
-    
+
             if ($unique) { //Entry is unique, so create
                 $count = count($this->report);
                 $this->report[$count][0] = $gibbonPersonID;
@@ -2244,7 +2259,7 @@ class MessageTargets
             }
             else { //Entry is not unique, so apend student details
                 $this->report[$uniqueCount][6] = (empty($this->report[$uniqueCount][6])) ? $gibbonPersonIDListStudent : (!empty($gibbonPersonIDListStudent) ? $this->report[$uniqueCount][6].','.$gibbonPersonIDListStudent : $this->report[$uniqueCount][6]);
-    
+
                 if (empty($this->report[$uniqueCount][7])) {
                     $this->report[$uniqueCount][7] = [$nameStudent];
                 } else {

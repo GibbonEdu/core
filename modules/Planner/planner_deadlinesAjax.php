@@ -19,13 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\Planner\PlannerEntryStudentTrackerGateway;
 use Gibbon\Domain\Planner\PlannerEntryStudentHomeworkGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 include '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php') == false) {
     die('error0');
 } else {
-    $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
+    $category = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
     if ($category != 'Student') {
         die('error0');
     } else {

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -63,6 +64,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
 
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
+
             // Provide a link back to edit the associated record
             if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
                 $page->navigator->addHeaderAction('edit', __('Edit User'))
@@ -71,12 +75,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     ->setIcon('config')
                     ->displayLabel();
             }
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == true && getRoleCategory($oldValues['gibbonRoleIDPrimary'], $connection2) == 'Student') {
+            if (
+                isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == true
+                && $roleGateway->getRoleCategory($oldValues['gibbonRoleIDPrimary']) == 'Student'
+            ) {
                 $page->navigator->addHeaderAction('view', __('View Student'))
                     ->setURL('/modules/Students/student_view_details.php')
                     ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
                     ->setIcon('plus')
-                    ->displayLabel();    
+                    ->displayLabel();
              }
 
             //Get categories
@@ -86,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $other = false;
             $roles = explode(',', $oldValues['gibbonRoleIDAll']);
             foreach ($roles as $role) {
-                $roleCategory = getRoleCategory($role, $connection2);
+                $roleCategory = $roleGateway->getRoleCategory($role);
                 $staff = $staff || ($roleCategory == 'Staff');
                 $student = $student || ($roleCategory == 'Student');
                 $parent = $parent || ($roleCategory == 'Parent');
