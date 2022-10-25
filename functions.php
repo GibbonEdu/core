@@ -1286,7 +1286,21 @@ function getModuleCategory($address, $connection2)
     return $output;
 }
 
-//GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
+/**
+ * Get the current year and set it as a global variable.
+ * (i.e. global $session instance)
+ *
+ * @deprecated v25
+ *             Use SchoolYearGateway::setCurrentSchoolYear instead.
+ *
+ * @version v23
+ * @since   v12
+ *
+ * @param  string $guid
+ * @param  \PDO $connection2
+ *
+ * @return void
+ */
 function setCurrentSchoolYear($guid,  $connection2)
 {
     global $session;
@@ -1318,7 +1332,20 @@ function nl2brr($string)
     return preg_replace("/\r\n|\n|\r/", '<br/>', $string);
 }
 
-//Take a school year, and return the previous one, or false if none
+/**
+ * Take a school year, and return the previous one, or false if none.
+ *
+ * Please use SchoolYearGateway::getPreviousSchoolYearByID instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonSchoolYearID
+ * @param \PDO $connection2
+ *
+ * @return int|false  The ID of the previous school year, or false if none.
+ */
 function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;
@@ -1344,7 +1371,20 @@ function getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)
     return $output;
 }
 
-//Take a school year, and return the previous one, or false if none
+/**
+ * Take a school year, and return the previous one, or false if none.
+ *
+ * Please use SchoolYearGateway::getNextSchoolYearByID instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param int  $gibbonSchoolYearID
+ * @param \PDO $connection2
+ *
+ * @return int|false  The ID of the next school year, or false if none.
+ */
 function getNextSchoolYearID($gibbonSchoolYearID, $connection2)
 {
     $output = false;

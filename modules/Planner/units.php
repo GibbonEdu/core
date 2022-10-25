@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         return;
     }
 
+    /** @var SchoolYearGateway */
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $courseGateway = $container->get(CourseGateway::class);
     $unitGateway = $container->get(UnitGateway::class);
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         $row = $container->get(CourseGateway::class)->selectBy(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'nameShort' => $courseName])->fetch();
         $gibbonCourseID = $row['gibbonCourseID'] ?? '';
     }
-    
+
     if (empty($gibbonCourseID)) {
         try {
             if ($highestAction == 'Unit Planner_all') {
@@ -93,10 +94,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
     //Work out previous and next course with same name
     $gibbonCourseIDPrevious = '';
-    $gibbonSchoolYearIDPrevious = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
-    if ($gibbonSchoolYearIDPrevious != false and isset($row['nameShort'])) {
-
-        $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearIDPrevious, 'nameShort' => $row['nameShort']);
+    $gibbonSchoolYearPrevious = $schoolYearGateway->getPreviousSchoolYearByID($gibbonSchoolYearID);
+    if ($gibbonSchoolYearPrevious != false and isset($row['nameShort'])) {
+        $dataPrevious = array('gibbonSchoolYearID' => $gibbonSchoolYearPrevious['gibbonSchoolYearID'], 'nameShort' => $row['nameShort']);
         $sqlPrevious = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
         $resultPrevious = $connection2->prepare($sqlPrevious);
         $resultPrevious->execute($dataPrevious);
@@ -106,10 +106,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
     $gibbonCourseIDNext = '';
-    $gibbonSchoolYearIDNext = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
-    if ($gibbonSchoolYearIDNext != false and isset($row['nameShort'])) {
+    $gibbonSchoolYearNext = $schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID);
+    if ($gibbonSchoolYearNext != false and isset($row['nameShort'])) {
 
-        $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearIDNext, 'nameShort' => $row['nameShort']);
+        $dataNext = array('gibbonSchoolYearID' => $gibbonSchoolYearNext['gibbonSchoolYearID'], 'nameShort' => $row['nameShort']);
         $sqlNext = 'SELECT * FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND nameShort=:nameShort';
         $resultNext = $connection2->prepare($sqlNext);
         $resultNext->execute($dataNext);
