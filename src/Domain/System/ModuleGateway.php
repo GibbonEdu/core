@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
+use Gibbon\Contracts\Database\Result;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -137,7 +138,8 @@ class ModuleGateway extends QueryableGateway
      *
      * @param string $gibbonRoleID
      * @param string $gibbonModuleID
-     * @return array
+     *
+     * @return Result
      */
     public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID)
     {
