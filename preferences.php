@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicies;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -52,10 +53,10 @@ if (!$session->exists("username")) {
         $values = $result->fetch();
     }
     $tfa = new RobThree\Auth\TwoFactorAuth('Gibbon'); //TODO: change the name to be based on the actual value of the school's gibbon name or similar...
-        
+
     //Check if there is an existing MFA Secret, so that we don't create a new one accidentally, and to have the correct values load below...
     if (!empty($values['mfaSecret'])) {
-        $secret = $values['mfaSecret']; 
+        $secret = $values['mfaSecret'];
         $secretcheck = !empty($secret) ? 'Y' : 'N';
     } else {
         $secret = $tfa->createSecret();
@@ -66,11 +67,12 @@ if (!$session->exists("username")) {
 
     $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
-    $policy = getPasswordPolicy($guid, $connection2);
-    if ($policy != false) {
-        $form->addRow()->addAlert($policy, 'warning');
+    /** @var PasswordPolicies */
+    $policies = $container->get(PasswordPolicies::class);
+    if (($policiesHTML = $policies->describeHTML()) !== '') {
+        $form->addRow()->addAlert($policiesHTML, 'warning');
     }
-    
+
     $row = $form->addRow();
         $row->addLabel('password', __('Current Password'));
         $row->addPassword('password')
@@ -91,16 +93,16 @@ if (!$session->exists("username")) {
             ->addConfirmation('passwordNew')
             ->required()
             ->maxLength(30);
-    
+
     if ($secretcheck == 'Y') {
         $row = $form->addRow();
             $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to change your password, please input the current 6 digit token'));
             $row->addNumber('mfaCode')->isRequired(); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
     }
-    
+
     $form->addHiddenValue('mfaSecret', $secret);
     $form->addHiddenValue('mfaEnable', $secretcheck);
-    
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
@@ -142,17 +144,17 @@ if (!$session->exists("username")) {
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
             $row->addYesNo('receiveNotificationEmails');
-        
-        
+
+
         $form->addHiddenValue('mfaSecret', $secret);
-        
-        
+
+
         $row = $form->addRow();
             $row->addLabel('mfaEnable', __('Enable Multi Factor Authentication?'))->description(__('Enhance the security of your account login.'));
             $row->addYesNo('mfaEnable')->selected($secretcheck);
-        
-        
-       //If MFA wasn't previously set, show the MFA QR code. 
+
+
+       //If MFA wasn't previously set, show the MFA QR code.
         if ($secretcheck == 'N') {
             $form->toggleVisibilityByClass('toggle')->onSelect('mfaEnable')->when('Y');
             $row = $form->addRow()->addClass('toggle');
@@ -166,10 +168,10 @@ if (!$session->exists("username")) {
                 $row->addLabel('mfaCode', __('Multi Factor Authentication Code'))->description(__('In order to disable your Multi Factor Authentication, please input the current 6 digit token'));
                 $row->addNumber('mfaCode'); //TODO: Add visual validation that it's a 6 digit number, bit finnicky because there's the possibility of leading 0s this can't be done with max/min values... also not required for it to work.
         }
-        
-       
+
+
         //TODO: Allow for easy reset of MFA secret, currently would need to disable and then re-enable MFA to do so
-        
+
         $row = $form->addRow();
             $row->addFooter();
             $row->addSubmit();

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicies;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -116,9 +117,10 @@ if ($proceed == false) {
         $row->addUsername('usernameCheck')
             ->required();
 
-    $policy = getPasswordPolicy($guid, $connection2);
-    if ($policy != false) {
-        $form->addRow()->addAlert($policy, 'warning');
+    /** @var PasswordPolicies */
+    $policies = $container->get(PasswordPolicies::class);
+    if (($policiesHTML = $policies->describeHTML()) !== '') {
+        $form->addRow()->addAlert($policiesHTML, 'warning');
     }
 
     $row = $form->addRow();
