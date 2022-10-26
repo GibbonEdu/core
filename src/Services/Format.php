@@ -351,7 +351,7 @@ class Format
     public static function genderName($value, $translate = true)
     {
         if (empty($value)) return '';
-        
+
         $genderNames = [
             'F'           => __('Female'),
             'M'           => __('Male'),
@@ -777,7 +777,7 @@ class Format
         $icon .= stripos($icon, '.') === false ? '.png' : '';
         return "<img title='{$title}' src='./themes/".static::$settings['gibbonThemeName']."/img/{$icon}'/>";
     }
-    
+
     /**
      * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time. Works using local images or linked images using HTTP(S)
      *
@@ -951,5 +951,25 @@ class Format
         return !empty($expectedFormat)
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
+    }
+
+    /**
+     * Convert an HTML email body into a plain text email body.
+     *
+     * @param string $body  The supposed HTML email body.
+     *
+     * @return string  The sanitized plain text version of the body.
+     */
+    public static function emailBodyToPlain(string $body): string
+    {
+        $return = $body;
+
+        $return = preg_replace('#<br\s*/?>#i', "\n", $return);
+        $return = str_replace('</p>', "\n\n", $return);
+        $return = str_replace('</div>', "\n\n", $return);
+        $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
+        $return = strip_tags($return, '<a>');
+
+        return $return;
     }
 }

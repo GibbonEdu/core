@@ -47,7 +47,19 @@ function getIPAddress() {
     return $return;
 }
 
-//Convert an HTML email body into a plain text email body
+/**
+ * Convert an HTML email body into a plain text email body.
+ *
+ * Deprecated. Use \Gibbon\Services\Format::emailBodyToPlain() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param string $body
+ *
+ * @return string
+ */
 function emailBodyConvert($body)
 {
     $return = $body;
