@@ -28,28 +28,14 @@ use Gibbon\Auth\Adapter\OAuthAdapterInterface;
 use Gibbon\Auth\Adapter\OAuthGoogleAdapter;
 use Gibbon\Auth\Adapter\OAuthMicrosoftAdapter;
 use Gibbon\Auth\Adapter\OAuthGenericAdapter;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\LogGateway;
 use League\Container\Exception\NotFoundException;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
 
-try {
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
-
-// The current/actual school year info, just in case we are working in a different year
-$session->set('gibbonSchoolYearIDCurrent', $session->get('gibbonSchoolYearID'));
-$session->set('gibbonSchoolYearNameCurrent', $session->get('gibbonSchoolYearName'));
-$session->set('gibbonSchoolYearSequenceNumberCurrent', $session->get('gibbonSchoolYearSequenceNumber'));
-
 $session->forget('pageLoads');
 $URL = Url::fromRoute();
-
-
 
 // Sanitize the whole $_POST array
 $_POST = $container->get(Validator::class)->sanitize($_POST);

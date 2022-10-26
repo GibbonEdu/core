@@ -17,28 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 
 $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
 
 require __DIR__.'/../gibbon.php';
-
-// Setup some of the globals
-getSystemSettings($guid, $connection2);
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    Format::setupFromSession($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
 
 //Check for CLI, so this cannot be run through browser
 $settingGateway = $container->get(SettingGateway::class);

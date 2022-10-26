@@ -21,28 +21,10 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Domain\System\NotificationGateway;
 
 require getcwd().'/../gibbon.php';
-
-getSystemSettings($guid, $connection2);
-
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
-
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['code']);
-    setlocale(LC_ALL, $session->get('i18n')['code']);
-    bindtextdomain('gibbon', getcwd().'/../i18n');
-    textdomain('gibbon');
-}
 
 $settingGateway = $container->get(SettingGateway::class);
 

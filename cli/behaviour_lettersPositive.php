@@ -23,7 +23,6 @@ use Gibbon\Comms\EmailTemplate;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\User\UserGateway;
@@ -35,23 +34,6 @@ require getcwd().'/../gibbon.php';
 ini_set('max_execution_time', 7200);
 ini_set('memory_limit','1024M');
 set_time_limit(1200);
-
-getSystemSettings($guid, $connection2);
-
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
-
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['code']);
-    setlocale(LC_ALL, $session->get('i18n')['code']);
-    bindtextdomain('gibbon', getcwd().'/../i18n');
-    textdomain('gibbon');
-}
 
 //Check for CLI, so this cannot be run through browser
 if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');

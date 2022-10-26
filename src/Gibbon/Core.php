@@ -21,9 +21,10 @@ namespace Gibbon;
 
 use Gibbon\Services\Format;
 use Gibbon\Session\SessionFactory;
-use Psr\Container\ContainerInterface;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\SessionGateway;
+use Psr\Container\ContainerInterface;
 
 /**
  * Gibbon Core
@@ -85,11 +86,15 @@ class Core
         $db = $container->get('db');
         $this->session = $container->get('session');
         
-        Format::setupFromSession($this->session);
-
         if (empty($this->session->get('systemSettingsSet'))) {
             SessionFactory::populateSettings($this->session, $db);
         }
+
+        if (empty($this->session->get('gibbonSchoolYearID'))) {
+            SessionFactory::setCurrentSchoolYear($this->session, $container->get(SchoolYearGateway::class)->getCurrentSchoolYear());
+        }
+
+        Format::setupFromSession($this->session);
 
         $installType = $this->session->get('installType');
         if (empty($installType) || $installType == 'Production') {

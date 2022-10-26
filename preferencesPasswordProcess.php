@@ -17,20 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\UserGateway;
 
 include './gibbon.php';
-
-//Check to see if academic year id variables are set, if not set them
-if ($session->exists('gibbonAcademicYearID') == false or $session->exists('gibbonSchoolYearName') == false) {
-    try {
-        $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    } catch (\Exception $e) {
-        die($e->getMessage());
-    }
-}
 
 //Check password address is not blank
 $password = $_POST['password'] ?? '';

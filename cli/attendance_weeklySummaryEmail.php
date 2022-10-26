@@ -19,20 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
 
 require getcwd().'/../gibbon.php';
-
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
 
 //Check for CLI, so this cannot be run through browser
 $settingGateway = $container->get(SettingGateway::class);
@@ -41,11 +33,6 @@ $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;
 if (!(isCommandLineInterface() OR ($remoteCLIKey != '' AND $remoteCLIKey == $remoteCLIKeyInput))) {
     echo __('This script cannot be run from a browser, only via CLI.');
 } else {
-    try {
-        $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    } catch (\Exception $e) {
-        die($e->getMessage());
-    }
 
     require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
     require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
