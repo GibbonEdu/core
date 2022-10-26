@@ -622,6 +622,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
             // Get all activities for this student or staff
             $activityGateway = $container->get(ActivityGateway::class);
+            $activities = [];
 
             $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
             $activityList = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
