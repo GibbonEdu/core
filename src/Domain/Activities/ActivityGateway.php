@@ -152,8 +152,6 @@ class ActivityGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
-                '(CASE WHEN :dateType="Term" THEN gibbonSchoolYearTerm.firstDay ELSE gibbonActivity.programStart END) as dateStart',
-                '(CASE WHEN :dateType="Term" THEN gibbonSchoolYearTerm.lastDay ELSE gibbonActivity.programEnd END) as dateEnd',
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
@@ -174,16 +172,17 @@ class ActivityGateway extends QueryableGateway
             ->bindValue('dateType', $dateType);
 
         if ($dateType == 'Term') {
-            $query->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)")
+            $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
+                ->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)")
                 ->where(':date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay');
+        } else {
+            $query->cols(['gibbonActivity.programStart as dateStart', 'gibbonActivity.programEnd as dateEnd']);
         }
 
         $query->unionAll()
             ->from($this->getTableName())
             ->cols([
                 'gibbonActivity.gibbonActivityID', 'gibbonActivity.name', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonActivitySlot.timeStart', 'gibbonActivitySlot.timeEnd', 'gibbonActivitySlot.locationExternal', 'gibbonSpace.name as space', 'gibbonDaysOfWeek.name as dayOfWeek',
-                '(CASE WHEN :dateType="Term" THEN gibbonSchoolYearTerm.firstDay ELSE gibbonActivity.programStart END) as dateStart',
-                '(CASE WHEN :dateType="Term" THEN gibbonSchoolYearTerm.lastDay ELSE gibbonActivity.programEnd END) as dateEnd',
             ])
             ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
             ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
@@ -203,8 +202,11 @@ class ActivityGateway extends QueryableGateway
             ->bindValue('date', $date ?? date('Y-m-d'));
 
         if ($dateType == 'Term') {
-            $query->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)")
+            $query->cols(['gibbonSchoolYearTerm.firstDay as dateStart', 'gibbonSchoolYearTerm.lastDay as dateEnd'])
+                ->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)")
                 ->where(':date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay');
+        } else {
+            $query->cols(['gibbonActivity.programStart as dateStart', 'gibbonActivity.programEnd as dateEnd']);
         }
 
         return $this->runSelect($query);

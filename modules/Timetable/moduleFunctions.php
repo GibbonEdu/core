@@ -624,12 +624,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $activityGateway = $container->get(ActivityGateway::class);
 
             $dateType = $container->get(SettingGateway::class)->getSettingByScope('Activities', 'dateType');
-            $activities = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
+            $activityList = $activityGateway->selectActiveEnrolledActivities($session->get('gibbonSchoolYearID'), $gibbonPersonID, $dateType, date('Y-m-d', $startDayStamp))->fetchAll();
 
             foreach ($dateRange as $dateObject) {
                 $date = $dateObject->format('Y-m-d');
                 $weekday = $dateObject->format('l');
-                foreach ($activities as $activity) {
+                foreach ($activityList as $activity) {
                     // Add activities that match the weekday and the school is open
                     if (empty($activity['dayOfWeek']) || $activity['dayOfWeek'] != $weekday) continue;
                     if ($date < $activity['dateStart'] || $date > $activity['dateEnd'] ) continue;
@@ -1062,24 +1062,24 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                             $rowClosure['gibbonFormGroupIDList'] = explode(',', $rowClosure['gibbonFormGroupIDList'] ?? '');
 
                             if ($rowClosure['type'] == 'School Closure') {
-                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', $rowClosure, $edit);
+                                $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', $rowClosure, $edit);
                             } elseif ($rowClosure['type'] == 'Timing Change') {
-                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $rowClosure, $edit);
+                                $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $rowClosure, $edit);
                             } elseif ($rowClosure['type'] == 'Off Timetable') {
-                                $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $rowClosure, $edit);
+                                $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $rowClosure, $edit);
                             }
                         } else {
-                            $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', [], $edit);
+                            $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', [], $edit);
                         }
                     } else {
-                        $day = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', [], $edit);
+                        $dayOutput = renderTTDay($guid, $connection2, $row['gibbonTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $gibbonPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, '', '', [], $edit);
                     }
 
-                    if ($day == '') {
-                        $day .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
+                    if ($dayOutput == '') {
+                        $dayOutput .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
                     }
 
-                    $output .= $day;
+                    $output .= $dayOutput;
                 }
             }
             $output .= '</tr>';
