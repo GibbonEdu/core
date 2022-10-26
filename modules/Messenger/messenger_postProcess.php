@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     }
 
     // Go to preview page?
-    if ($saveMode == 'Preview') {
+    if ($saveMode == 'Preview' && $data['email'] == 'Y') {
         $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data);
 
         if (empty($recipients)) {
@@ -104,6 +104,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
         header("Location: {$URLSend}");
         exit;
+    } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
+        $messengerGateway->update($gibbonMessengerID, ['status' => 'Sent']);
     }
 
     // Otherwise save any edits to targets

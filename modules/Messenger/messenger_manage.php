@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
             $sql = "SELECT type, id FROM gibbonMessengerTarget WHERE gibbonMessengerID=:gibbonMessengerID ORDER BY type, id";
             $targets = $pdo->select($sql, $data)->fetchAll();
             $targetTypeCount = [];
-            $targetTypeThreshold = 7;
+            $targetTypeThreshold = 8;
 
             foreach ($targets as $target) {
                 $targetTypeCount[$target['type']] = ($targetTypeCount[$target['type']] ?? 0) + 1; 

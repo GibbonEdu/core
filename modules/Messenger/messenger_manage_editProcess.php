@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     $messengerTargetGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
 
     // Go to preview page?
-    if ($saveMode == 'Preview') {
+    if ($saveMode == 'Preview' && $data['email'] == 'Y') {
         // Clear existing recipients, then add new ones
         $messengerReceiptGateway->deleteWhere(['gibbonMessengerID' => $gibbonMessengerID]);
         $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data, $partialFail);
@@ -135,6 +135,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 
         header("Location: {$URLSend}");
         exit;
+    } elseif ($saveMode == 'Preview' && $data['messageWall'] == 'Y') {
+        $messengerGateway->update($gibbonMessengerID, ['status' => 'Sent']);
     }
 
     // Otherwise save any edits by creating new targets
