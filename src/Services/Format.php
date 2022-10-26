@@ -351,7 +351,7 @@ class Format
     public static function genderName($value, $translate = true)
     {
         if (empty($value)) return '';
-        
+
         $genderNames = [
             'F'           => __('Female'),
             'M'           => __('Male'),
@@ -777,7 +777,7 @@ class Format
         $icon .= stripos($icon, '.') === false ? '.png' : '';
         return "<img title='{$title}' src='./themes/".static::$settings['gibbonThemeName']."/img/{$icon}'/>";
     }
-    
+
     /**
      * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time. Works using local images or linked images using HTTP(S)
      *
@@ -872,7 +872,7 @@ class Format
     public static function userBirthdayIcon($dob, $preferredName)
     {
         // HEY SHORTY IT'S YOUR BIRTHDAY!
-        $daysUntilNextBirthday = daysUntilNextBirthday($dob);
+        $daysUntilNextBirthday = static::daysUntilNextBirthday($dob);
 
         if (empty($dob) || $daysUntilNextBirthday >= 8) {
             return '';
@@ -892,6 +892,33 @@ class Format
         }
 
         return sprintf('<img class="absolute bottom-0 -ml-4" title="%1$s" src="%2$s">', $title, static::$settings['absoluteURL'].'/themes/'.static::$settings['gibbonThemeName'].'/img/'.$icon);
+    }
+
+    /**
+     * Calculate the number of days before next birthday.
+     *
+     * @version v25
+     * @since   v25
+     *
+     * @param string $birthday  Accepts birthday in mysql date (YYYY-MM-DD).
+     *
+     * @return int  Number of days before the next birthday. If today is a birthday, returns 0.
+     */
+    protected static function daysUntilNextBirthday(string $birthday): int
+    {
+        // DateTime of 00:00:00 today
+        $today = new \DateTime('today');
+
+        // DateTime of 00:00:00 on this year birthday's date.
+        $nextBirthday = \DateTime::createFromFormat('m-d H:i:s', substr($birthday, 5) . ' 00:00:00');
+
+        // If birthday this year has past, increment for a 1 year period.
+        if ($nextBirthday < $today) {
+            $nextBirthday->add(new \DateInterval('P1Y'));
+        }
+
+        // Return the absolute difference between 2 DateTime formatted as number of days.
+        return (int) $nextBirthday->diff($today, true)->format('%a');
     }
 
     public static function userStatusInfo($person = [])
