@@ -237,7 +237,20 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
     return $return;
 }
 
-//Accepts birthday in mysql date (YYYY-MM-DD) ;
+/**
+ * Calculate the number of days before next birthday.
+ *
+ * Deprecated because it was only used in \Gibbon\Services\Format.
+ * Replaced by the private method \Gibbon\Services\Format::daysUntilNextBirthday().
+ *
+ * @deprecated v25
+ * @version v12
+ * @since   v12
+ *
+ * @param string $birthday  Accepts birthday in mysql date (YYYY-MM-DD).
+ *
+ * @return int  Number of days before the next birthday. If today is a birthday, returns 0.
+ */
 function daysUntilNextBirthday($birthday)
 {
     $today = date('Y-m-d');
@@ -268,7 +281,16 @@ function daysUntilNextBirthday($birthday)
     return $days;
 }
 
-//This function written by David Walsh, shared under MIT License (http://davidwalsh.name/checking-for-leap-year-using-php)
+/**
+ * This function written by David Walsh, shared under MIT License
+ * (http://davidwalsh.name/checking-for-leap-year-using-php)
+ *
+ * @deprecated v25
+ *
+ * @param int  $year  The year.
+ *
+ * @return bool
+ */
 function is_leap_year($year)
 {
     return (($year % 4) == 0) && ((($year % 100) != 0) || (($year % 400) == 0));
