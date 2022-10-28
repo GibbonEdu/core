@@ -89,7 +89,14 @@ if ($gibbon->isInstalled()) {
         }
 
         // Initialize core
-        $gibbon->initializeCore($container);
+        try {
+            $gibbon->initializeCore($container);
+        } catch (\Exception $e) {
+            $message = __('Configuration Error: there is a problem accessing the current Academic Year from the database.');
+            include __DIR__.'/error.php';
+            exit;
+        }
+        
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');

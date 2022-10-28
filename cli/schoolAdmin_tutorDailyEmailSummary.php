@@ -33,16 +33,6 @@ $_POST['address'] = '/modules/School Admin/emailSummarySettings.php';
 
 require __DIR__.'/../gibbon.php';
 
-// Setup some of the globals
-getSystemSettings($guid, $connection2);
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    Format::setupFromSession($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
-
 //Check for CLI, so this cannot be run through browser
 $remoteCLIKey = $container->get(SettingGateway::class)->getSettingByScope('System Admin', 'remoteCLIKey');
 $remoteCLIKeyInput = $_GET['remoteCLIKey'] ?? null;

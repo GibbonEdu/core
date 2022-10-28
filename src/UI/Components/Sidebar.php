@@ -198,13 +198,6 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
                     echo __('Login');
                 echo '</h2>';
 
-                if (!$this->session->has('gibbonSchoolYearID')) {
-                    try {
-                        $this->schoolYearGateway->setCurrentSchoolYear($this->session);
-                    } catch (\Exception $e) {
-                        die($e->getMessage());
-                    }
-                }
                 unset($_GET['return']);
 
                 $enablePublicRegistration = $this->settingGateway->getSettingByScope('User Admin', 'enablePublicRegistration');

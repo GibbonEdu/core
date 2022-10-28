@@ -24,29 +24,11 @@ use Gibbon\Comms\EmailTemplate;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\Behaviour\BehaviourLetterGateway;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\Domain\User\UserGateway;
 
 require getcwd().'/../gibbon.php';
-
-getSystemSettings($guid, $connection2);
-
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
-}
-
-//Set up for i18n via gettext
-if (!empty($session->get('i18n')['code'])) {
-    putenv('LC_ALL='.$session->get('i18n')['code']);
-    setlocale(LC_ALL, $session->get('i18n')['code']);
-    bindtextdomain('gibbon', getcwd().'/../i18n');
-    textdomain('gibbon');
-}
 
 //Check for CLI, so this cannot be run through browser
 $remoteCLIKey = $settingGateway->getSettingByScope('System Admin', 'remoteCLIKey');

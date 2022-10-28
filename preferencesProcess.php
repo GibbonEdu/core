@@ -18,19 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\Validator;
-use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Http\Url;
 
 include './gibbon.php';
-
-//Check to see if academic year id variables are set, if not set them
-if ($session->exists('gibbonAcademicYearID') == false or $session->exists('gibbonSchoolYearName') == false) {
-    try {
-        $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    } catch (\Exception $e) {
-        die($e->getMessage());
-    }
-}
 
 // Sanitize the whole $_POST array
 $validator = $container->get(Validator::class);

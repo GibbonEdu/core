@@ -1313,7 +1313,9 @@ function getModuleCategory($address, $connection2)
  * (i.e. global $session instance)
  *
  * @deprecated v25
- *             Use SchoolYearGateway::setCurrentSchoolYear instead.
+ *             This happens in SessionFactory::setCurrentSchoolYear instead,
+ *             which is called by Core::initializeCore, so shouldn't need to 
+ *             be called manually.
  *
  * @version v23
  * @since   v12

@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Services\Format;
+use Gibbon\Services\BackgroundProcessor;
+use Gibbon\Session\SessionFactory;
+use Gibbon\Domain\School\SchoolYearGateway;
 
 $_POST['address'] = '/modules/'.($argv[3] ?? 'System Admin').'/index.php';
 
@@ -28,16 +29,6 @@ require __DIR__.'/../gibbon.php';
 // Cancel out now if we're not running via CLI
 if (!isCommandLineInterface()) {
     die(__('This script cannot be run from a browser, only via CLI.'));
-}
-
-// Setup some of the globals
-getSystemSettings($guid, $connection2);
-try {
-    $session = $container->get('session');
-    $container->get(SchoolYearGateway::class)->setCurrentSchoolYear($session);
-    Format::setupFromSession($session);
-} catch (\Exception $e) {
-    die($e->getMessage());
 }
 
 // Override the ini to keep this process alive

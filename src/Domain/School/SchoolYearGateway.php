@@ -155,33 +155,15 @@ class SchoolYearGateway extends QueryableGateway
     }
 
     /**
-     * Set the current school year information on session.
+     * Get the current school year information.
      *
      * @version v25
      * @since   v25
-     *
-     * @param Session $session  The session instance to set.
-     *
-     * @return $this
-     *
-     * @throws \Exception  If cannot find current school year row.
+
+     * @return array
      */
-    public function setCurrentSchoolYear(Session $session)
+    public function getCurrentSchoolYear()
     {
-        $result = $this->db()->select("SELECT * FROM gibbonSchoolYear WHERE status='Current'");
-
-        // If the result set is empty, throw exception.
-        if ($result->isEmpty()) {
-            throw new \Exception(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
-        }
-
-        $row = $result->fetch();
-        $session->set('gibbonSchoolYearID', $row['gibbonSchoolYearID']);
-        $session->set('gibbonSchoolYearName', $row['name']);
-        $session->set('gibbonSchoolYearSequenceNumber', $row['sequenceNumber']);
-        $session->set('gibbonSchoolYearFirstDay',$row['firstDay']);
-        $session->set('gibbonSchoolYearLastDay', $row['lastDay']);
-
-        return $this;
+        return $this->db()->selectOne("SELECT * FROM gibbonSchoolYear WHERE status='Current'");
     }
 }
