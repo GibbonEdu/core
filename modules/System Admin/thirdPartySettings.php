@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $settingGateway = $container->get(SettingGateway::class);
     $ssoGoogle = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoGoogle'), true);
     $ssoMicrosoft = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoMicrosoft'), true);
+    $ssoLDAP = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoLDAP'), true);
     $ssoOther = json_decode($settingGateway->getSettingByScope('System Admin', 'ssoOther'), true);
 
     $ssoList = [
@@ -76,6 +77,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
             'service' => __('Microsoft Azure Portal'),
             'url' => 'https://portal.azure.com',
             'enabled' => $ssoMicrosoft['enabled'] ?? 'N',
+        ],
+        [
+            'sso' => 'LDAP',
+            'name' => __('LDAP'),
+            'service' => __('Generic LDAP Connections'),
+            'url' => '',
+            'enabled' => $ssoLDAP['enabled'] ?? 'N',
         ],
         [
             'sso' => 'Other',
