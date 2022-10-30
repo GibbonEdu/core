@@ -46,7 +46,7 @@ class LDAPAdapter extends AuthenticationAdapter
     }
     
     /**
-     * Verifies a set of credentials against the database. Exceptions are thrown
+     * Attempts to connect to the LDAP server using the provided credentials. Exceptions are thrown
      * if any credentials are not valid.
      *
      * @param array $input Credential input.
@@ -72,10 +72,10 @@ class LDAPAdapter extends AuthenticationAdapter
         );
         $loginService = $authFactory->newLoginService($ldapAdapter);
         try {
-        $loginService->login($auth, array(
-            'username' => $input['username'],
-            'password' => $input['password']
-        ));
+            $loginService->login($auth, array(
+                'username' => $input['username'],
+                'password' => $input['password']
+            ));
         } catch (AuraException\BindFailed $e) {
             throw new Exception\LDAPBindFailed;
         }
