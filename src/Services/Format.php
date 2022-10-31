@@ -871,10 +871,14 @@ class Format
      */
     public static function userBirthdayIcon($dob, $preferredName)
     {
+        if (empty($dob)) {
+            return '';
+        }
+
         // HEY SHORTY IT'S YOUR BIRTHDAY!
         $daysUntilNextBirthday = static::daysUntilNextBirthday($dob);
 
-        if (empty($dob) || $daysUntilNextBirthday >= 8) {
+        if ($daysUntilNextBirthday >= 8) {
             return '';
         }
 
