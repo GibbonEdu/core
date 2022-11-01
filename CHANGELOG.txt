@@ -95,6 +95,7 @@ v25.0.00
         Staff: fixed staff absences not showing up if outside school year dates
         System Admin: fixed Form Builder submission error when subheading is the first item on a page
         System Admin: fixed calendar feed cleared when saving Third Party Settings
+        System Admin: fixed untranslated fields in Form Builder when viewing a form
         Timetable Admin: adjusted column uniqueness interface string
         Timetable Admin: fixed Copy All To Next Year to copy custom fields and prevent duplicate values
         Timetable: fixed class student counts in Manage Student Enrolment

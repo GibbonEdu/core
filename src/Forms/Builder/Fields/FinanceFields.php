@@ -42,6 +42,7 @@ class FinanceFields extends AbstractFieldGroup
                 'label'       => __('Send Future Invoices To'),
                 'required' => 'X',
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'companyName' => [
                 'label'       => __('Company Name'),

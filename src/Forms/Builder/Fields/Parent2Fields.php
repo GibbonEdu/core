@@ -56,6 +56,7 @@ class Parent2Fields extends AbstractFieldGroup
                 'label'    => __('Title'),
                 'required' => 'Y',
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'parent2surname' => [
                 'label'       => __('Surname'),
@@ -96,6 +97,7 @@ class Parent2Fields extends AbstractFieldGroup
                 'label'    => __('Relationship'),
                 'required' => 'Y',
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'headingParentGuardian2PersonalBackground' => [
                 'label'   => __('Parent/Guardian')." 2 ".__('Personal Background'),
@@ -106,10 +108,12 @@ class Parent2Fields extends AbstractFieldGroup
                 'label' => __('First Language'),
                 'description' => __('Student\'s native/first/mother language.'),
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'parent2languageSecond' => [
                 'label' => __('Second Language'),
                 'prefill'  => 'Y',
+                'translate' => 'Y',
             ],
             'headingParentGuardian2Contact' => [
                 'label'   => __('Parent/Guardian')." 2 ".__('Contact'),

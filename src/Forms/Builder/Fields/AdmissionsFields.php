@@ -91,7 +91,8 @@ class AdmissionsFields extends AbstractFieldGroup
             'howDidYouHear' => [
                 'label'       => __('How Did You Hear About Us?'),
                 'prefill'     => 'Y',
-                'acquire'     => ['howDidYouHearMore' => 'varchar']
+                'acquire'     => ['howDidYouHearMore' => 'varchar'],
+                'translate' => 'Y',
             ],
         ];
     }

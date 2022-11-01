@@ -84,16 +84,20 @@ class StudentFields extends AbstractFieldGroup
                 'label' => __('First Language'),
                 'description' => __('Student\'s native/first/mother language.'),
                 'required' => 'Y',
+                'translate' => 'Y',
             ],
             'languageSecond' => [
                 'label' => __('Second Language'),
+                'translate' => 'Y',
             ],
             'languageThird' => [
                 'label' => __('Third Language'),
+                'translate' => 'Y',
             ],
             'countryOfBirth' => [
                 'label' => __('Country of Birth'),
                 'required' => 'Y',
+                'translate' => 'Y',
             ],
             'headingStudentContact' => [
                 'label' => __('Student Contact'),

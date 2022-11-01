@@ -77,14 +77,17 @@ class FamilyFields extends AbstractFieldGroup
                 'description' => __('The primary language used in the student\'s home.'),
                 'required'    => 'Y',
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'languageHomeSecondary' => [
                 'label'       => __('Home Language - Secondary'),
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'familyStatus' => [
                 'label'       => __('Marital Status'),
                 'prefill'     => 'Y',
+                'translate' => 'Y',
             ],
             'headingSiblings' => [
                 'label' => __('Siblings'),
