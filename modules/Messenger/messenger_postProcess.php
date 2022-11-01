@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
     }
 
     // Go to preview page?
-    if ($saveMode == 'Preview' && $data['email'] == 'Y') {
+    if ($saveMode == 'Preview' && ($data['email'] == 'Y' || $data['sms'] == 'Y')) {
         $recipients = $messageTargets->createMessageRecipientsFromTargets($gibbonMessengerID, $data);
 
         if (empty($recipients)) {
