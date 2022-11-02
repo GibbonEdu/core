@@ -169,15 +169,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     Display a badge number for attendance days with partial absence / presence.
 -->#}
 {% macro badge(day) %}
-    {% if (day.absentCount > 0 or day.partialCount > 0) and "Present" in day.endOfDay.type %}
+    {% if (day.absentCount > 0 or day.partialCount > 0) and day.endOfDay.status == "present" %}
     <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
         {{ day.absentCount + day.partialCount }}
     </div>
-    {% endif %}
 
-    {% if (day.presentCount > 0 or day.partialCount > 0) and "Absent" in day.endOfDay.type %}
+    {% elseif (day.presentCount > 0 or day.partialCount > 0) and day.endOfDay.status == "absent" %}
     <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
         {{ day.presentCount + day.partialCount }}
+    </div>
+
+    {% elseif (day.presentCount > 0 or day.absentCount > 0) and day.endOfDay.status == "partial" %}
+    <div class="absolute top-0 right-0 mt-1 mr-1 z-10 rounded-full bg-gray-600 text-white no-underline leading-tight font-sans" style="padding: 1px 3px; font-size: 8px">
+        {{ day.presentCount + day.absentCount }}
     </div>
     {% endif %}
 {% endmacro badge %}
