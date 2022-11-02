@@ -101,8 +101,12 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getLeagueContainer();
 
         $core = new Core($this->absolutePath);
+
+        // TODO: decouple config file reading logics from Core to prevent cyclic
+        //       reference in building 'config' (Core) object.
+        // TODO: migrate Core object setup to this provider
+        //       (i.e. $gibbon->locale and $gibbon->session).
         $container->share('config', $core);
-        $container->share('locale', new Locale($this->absolutePath));
 
         // If configuration exists, create and share the database connection.
         $config = $core->getConfig();
@@ -131,6 +135,26 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $hasSessionTable = $connection->selectOne("SHOW TABLES LIKE 'gibbonSession'");
             return !empty($hasSessionTable);
         }, false);
+
+        // Define locale object.
+        $container->share('locale', function () {
+            // Get dependencies.
+            $container = $this->getContainer();
+            $session = $container->get(SessionInterface::class);
+
+            // Create locale instance.
+            $locale = new Locale($this->absolutePath);
+            $locale->setLocale($session->get(array('i18n', 'code')));
+            $locale->setTimezone($session->get('timezone', 'UTC'));
+
+            // If database is configured, setup the text domain and string replacement.
+            if ($container->has('db')) {
+                $db = $container->get(Connection::class);
+                $locale->setTextDomain($db);
+                $locale->setStringReplacementList($session, $db);
+            }
+            return $locale;
+        });
     }
 
     /**
