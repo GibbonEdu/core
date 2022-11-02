@@ -28,7 +28,7 @@ $search = $_POST['search'] ?? '';
 $gibbonFormID = $_POST['gibbonFormID'] ?? '';
 $applicationType = $_POST['applicationType'] ?? '';
 $gibbonAdmissionsAccountID = $_POST['gibbonAdmissionsAccountID'] ?? '';
-$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
+$gibbonPersonID = $_POST['gibbonPersonID'] ?? null;
 $email = $_POST['email'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_addSelect')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search]);
@@ -47,6 +47,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
 
     $admissionsAccountGateway = $container->get(AdmissionsAccountGateway::class);
     switch ($applicationType) {
+        case 'blank':
+            $email = $_POST['email'] ?? '';
+            $account = !empty($email) ? $admissionsAccountGateway->selectBy(['email' => $email])->fetch() : [];
+            break;
+
         case 'account':
             $account = $admissionsAccountGateway->getByID($gibbonAdmissionsAccountID);
             break;
@@ -72,12 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Admissions/applications_ma
         $accessExpiry = date('Y-m-d H:i:s', strtotime("+2 days"));
 
         $gibbonAdmissionsAccountID = $admissionsAccountGateway->insert([
-            'email'          => $email ?? null,
-            'accessID'       => $accessID,
-            'accessToken'    => $accessToken,
-            'accessExpiry'   => $accessExpiry,
-            'gibbonPersonID' => $gibbonPersonID ?? null,
-            'ipAddress'      => $_SERVER['REMOTE_ADDR'] ?? '',
+            'email'                => $email ?? null,
+            'accessID'             => $accessID,
+            'accessToken'          => $accessToken,
+            'timestampTokenExpire' => $accessExpiry,
+            'gibbonPersonID'       => $gibbonPersonID ?? null,
+            'ipAddress'            => $_SERVER['REMOTE_ADDR'] ?? '',
         ]);
         $accountType = 'new';
     } else {   
