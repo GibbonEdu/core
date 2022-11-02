@@ -115,7 +115,6 @@ if (!defined('SESSION_TABLE_AVAILABLE')) {
 // Globals for backwards compatibility
 $session = $container->get('session');
 $gibbon->session = $session;
-$container->share(\Gibbon\Contracts\Services\Session::class, $session);
 
 // Setup global absoluteURL for all urls.
 if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
