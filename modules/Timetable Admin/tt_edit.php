@@ -129,6 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
 
             $table->addMetaData('bulkActions', $col);
 
+            $table->addHeaderAction('edit', __('Edit Timetable by Class'))
+                ->setURL('/modules/Timetable Admin/tt_edit_byClass.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->displayLabel()
+                ->append('&nbsp;&nbsp;|&nbsp;&nbsp;');
+
             $table->addHeaderAction('add', __('Add'))
                 ->setURL('/modules/Timetable Admin/tt_edit_day_add.php')
                 ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)

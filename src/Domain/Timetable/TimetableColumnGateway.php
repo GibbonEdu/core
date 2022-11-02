@@ -24,7 +24,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v21
+ * @version v25
  * @since   v16
  */
 class TimetableColumnGateway extends QueryableGateway
@@ -61,6 +61,20 @@ class TimetableColumnGateway extends QueryableGateway
                 ORDER BY gibbonTTColumn.name";
 
         return $this->db()->select($sql);
+    }
+
+    public function selectTTColumnsByTimetable($gibbonTTID)
+    {
+        $data = array('gibbonTTID' => $gibbonTTID);
+        $sql = "SELECT CONCAT(gibbonTTColumnRow.gibbonTTColumnRowID, '-', gibbonTTDay.gibbonTTDayID) as value, gibbonTTColumnRow.name, gibbonTTDay.gibbonTTDayID
+                FROM gibbonTTDay
+                JOIN gibbonTTColumnRow ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID)
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID
+                GROUP BY value
+                ORDER BY gibbonTTColumnRow.timeStart
+        ";
+
+        return $this->db()->select($sql, $data);
     }
 
     public function getTTColumnByID($gibbonTTColumnID)

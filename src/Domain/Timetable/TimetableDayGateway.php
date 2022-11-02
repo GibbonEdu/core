@@ -24,7 +24,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v21
+ * @version v25
  * @since   v16
  */
 class TimetableDayGateway extends QueryableGateway
@@ -64,6 +64,18 @@ class TimetableDayGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
+    public function selectTTDaysByTimetable($gibbonTTID)
+    {
+        $data = array('gibbonTTID' => $gibbonTTID);
+        $sql = "SELECT gibbonTTDayID as value, name
+                FROM gibbonTTDay
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID
+                ORDER BY gibbonTTDay.name
+        ";
+
+        return $this->db()->select($sql, $data);
+    }
+
     public function selectTTDayRowsByID($gibbonTTDayID)
     {
         $data = array('gibbonTTDayID' => $gibbonTTDayID);
@@ -92,6 +104,21 @@ class TimetableDayGateway extends QueryableGateway
                 }
                 $sql .= " ORDER BY courseName, className";
 
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectTTDayRowClassesByClass($gibbonTTID, $gibbonCourseClassID) {
+        $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID];
+        $sql = "SELECT gibbonTTDayRowClassID, gibbonTTDayRowClass.gibbonTTDayID, gibbonTTDayRowClass.gibbonTTColumnRowID, gibbonTTDayRowClass.gibbonSpaceID
+                FROM gibbonTTDayRowClass
+                JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID)
+                JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonTTDayRowClass.gibbonSpaceID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
+                ORDER BY gibbonTTDay.name, gibbonTTColumnRow.name";
+                
         return $this->db()->select($sql, $data);
     }
 
@@ -201,5 +228,18 @@ class TimetableDayGateway extends QueryableGateway
         $sql = "INSERT INTO gibbonTTDayRowClassException SET gibbonTTDayRowClassID=:gibbonTTDayRowClassID, gibbonPersonID=:gibbonPersonID ON DUPLICATE KEY UPDATE gibbonTTDayRowClassID=:gibbonTTDayRowClassID";
 
         return $this->db()->insert($sql, $data);
+    }
+
+    public function deleteTTDayRowClasses($gibbonTTID, $gibbonCourseClassID)
+    {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonTTID' => $gibbonTTID);
+        $sql = "DELETE gibbonTTDayRowClass
+                FROM gibbonTTDayRowClass
+                INNER JOIN gibbonTTDay ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID)
+                INNER JOIN gibbonTT ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID
+                AND gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID";
+
+        return $this->db()->delete($sql, $data);
     }
 }

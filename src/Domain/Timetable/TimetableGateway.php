@@ -19,14 +19,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Timetable;
 
-use Gibbon\Domain\Gateway;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v16
+ * @version v25
  * @since   v16
  */
-class TimetableGateway extends Gateway
+class TimetableGateway extends QueryableGateway
 {
+    use TableAware;
+
+    private static $tableName = 'gibbonTT';
+    private static $primaryKey = 'gibbonTTID';
+
     public function selectTimetablesBySchoolYear($gibbonSchoolYearID) 
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
