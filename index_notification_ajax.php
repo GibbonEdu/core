@@ -47,11 +47,12 @@ if ($session->has('gibbonPersonID')) {
     // Check for session timeout
     $sessionGateway = $container->get(SessionGateway::class);
     $sessionInfo = $sessionGateway->getByID(session_id());
-    if (\SESSION_TABLE_AVAILABLE && !empty($sessionInfo)) {
+    $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
+    if ($sessionTableHasSetup && !empty($sessionInfo)) {
         $sessionLastActive = strtotime($sessionInfo['timestampModified']);
         $sessionDuration = $session->get('sessionDuration');
         $timeDifference = time() - $sessionLastActive;
-        
+
         if (empty($sessionInfo['gibbonPersonID']) || (isset($sessionInfo['sessionStatus']) && empty($sessionInfo['sessionStatus']))) {
             $result['timeout'] = 'force';
         } elseif ($timeDifference > $sessionDuration) {

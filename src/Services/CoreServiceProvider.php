@@ -74,6 +74,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'page',
         'module',
         'theme',
+        'sessionTableHasSetup',
         PaymentInterface::class,
         MailerInterface::class,
         SMSInterface::class,
@@ -119,6 +120,17 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 return (new MySqlConnector())->connect($config);
             });
         }
+
+        // Define internal variable.
+        $container->add('sessionTableHasSetup', function () {
+            $container = $this->getContainer();
+            if (!$container->has(Connection::class)) {
+                return false;
+            }
+            $connection = $container->get(Connection::class);
+            $hasSessionTable = $connection->selectOne("SHOW TABLES LIKE 'gibbonSession'");
+            return !empty($hasSessionTable);
+        }, false);
     }
 
     /**
@@ -150,7 +162,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $this->getContainer()->get(SessionInterface::class);
         });
         $container->share(SessionInterface::class, function () {
-            return SessionFactory::create($this->getContainer());
+            $container = $this->getContainer();
+            $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
+            return SessionFactory::create($this->getContainer(), $sessionTableHasSetup);
         });
 
         $container->share('twig', function () use ($absolutePath) {

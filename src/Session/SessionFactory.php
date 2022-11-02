@@ -46,7 +46,10 @@ class SessionFactory
      *
      * @return \Gibbon\Session\Session The newly created session object.
      */
-    public static function create(ContainerInterface $container): SessionInterface {
+    public static function create(
+        ContainerInterface $container,
+        bool $sessionTableHasSetup = false
+    ): SessionInterface {
         global $guid;
 
         $config = $container->get('config')->getConfig();
@@ -56,9 +59,9 @@ class SessionFactory
 
         // Start the session (this should be the first time called)
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            
+
             // Check if the database exists, if not, use the built-in PHP session handler class
-            if (\SESSION_TABLE_AVAILABLE && $container->has(Connection::class)) {
+            if ($container->has(Connection::class) && $sessionTableHasSetup) {
                 $sessionGateway = $container->get(SessionGateway::class);
 
                 if (!empty($config['sessionHandler']) && $config['sessionHandler'] == 'database') {
@@ -69,7 +72,7 @@ class SessionFactory
             } else {
                 $handler = new SessionHandler();
             }
-        
+
             // Set the handler for the session, enabling non-default
             session_set_save_handler($handler, true);
 
