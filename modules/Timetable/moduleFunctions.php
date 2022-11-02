@@ -141,6 +141,7 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
             $return[$count][4] = $rowSpaceBooking['timeStart'];
             $return[$count][5] = $rowSpaceBooking['timeEnd'];
             $return[$count][6] = Format::name($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
+            $return[$count][7] = $rowSpaceBooking['reason'];
             ++$count;
         }
     }
@@ -169,6 +170,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
             $return[$count][4] = $rowSpaceBooking['timeStart'];
             $return[$count][5] = $rowSpaceBooking['timeEnd'];
             $return[$count][6] = Format::name($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
+            $return[$count][7] = $rowSpaceBooking['reason'];
             ++$count;
         }
     }
@@ -1744,8 +1746,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $title = "title='".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).' '.$event[6]."'";
                     } else {
                         $label = $event[1]."<br/><span style='font-weight: normal'>".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).'<br/>'.$event[6].'</span>';
-                        $title = "title='".($event[7] ?? '')."'";
+                        $title = '';
                     }
+
+                    if ($height > 56) {
+                        $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
+                    } 
+                    
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width:100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';
@@ -2515,6 +2522,10 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                         $label = $event[1]."<br/><span style='font-weight: normal'>(".substr($event[4], 0, 5).' - '.substr($event[5], 0, 5).')<br/>'.__('by').' '.$event[6].'</span>';
                         $title = '';
                     }
+
+                    if ($height > 56) {
+                        $label .= '<br/>'.Format::small(Format::truncate($event[7], 60));
+                    } 
                     $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: 100%; min-width: $width ; border: 1px solid #555; height: {$height}px; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
                     $output .= $label;
                     $output .= '</div>';

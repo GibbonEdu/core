@@ -699,4 +699,5 @@ ALTER TABLE `gibbonMessengerReceipt` ADD `nameListStudent` TEXT NULL AFTER `gibb
 UPDATE `gibbonMessengerReceipt` SET sent='Y';end
 UPDATE `gibbonAction` SET URLList='messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php,messenger_send.php' WHERE name LIKE 'Manage Messages_%' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Messenger');end
 ALTER TABLE gibbonMarkbookColumn MODIFY name VARCHAR(40);end
+ALTER TABLE `gibbonTTSpaceBooking` ADD `reason` VARCHAR(255) NOT NULL AFTER `timeEnd`;end
 ";

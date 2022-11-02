@@ -46,7 +46,7 @@ class FacilityBookingGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonSpace.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
+                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'reason', 'gibbonSpace.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
             ])
             ->innerJoin('gibbonSpace', 'gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID')
             ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')
@@ -62,7 +62,7 @@ class FacilityBookingGateway extends QueryableGateway
         $query->unionAll()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonLibraryItem.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
+                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'reason', 'gibbonLibraryItem.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
             ])
             ->innerJoin('gibbonLibraryItem', 'gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID')
             ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')
@@ -81,7 +81,7 @@ class FacilityBookingGateway extends QueryableGateway
     public function queryFacilityBookingsByDate($startDate, $endDate)
     {
         $data = array('startDate' => $startDate, 'endDate' => $endDate);
-        $sql = "SELECT gibbonTTSpaceBookingID, date, timeStart, timeEnd, gibbonSpace.name, gibbonSpace.gibbonSpaceID
+        $sql = "SELECT gibbonTTSpaceBookingID, date, timeStart, timeEnd, reason, gibbonSpace.name, gibbonSpace.gibbonSpaceID
             FROM gibbonTTSpaceBooking
                 INNER JOIN gibbonSpace ON gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID
             WHERE

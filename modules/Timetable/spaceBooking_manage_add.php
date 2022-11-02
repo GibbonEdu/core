@@ -85,6 +85,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 $row->addLabel('foreignKeyID', __('Facility'));
                 $row->addSelect('foreignKeyID')->fromArray($facilities)->required()->placeholder()->selected($foreignKeyID);
 
+            if ($highestAction == 'Manage Facility Bookings_allBookings') {
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPersonID', __('Booked For'));
+                    $row->addSelectStaff('gibbonPersonID')->selected($session->get('gibbonPersonID'))->photo(true, 'small')->required();
+            } else {
+                $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
+            }
+
+            $row = $form->addRow();
+                $row->addLabel('reason', __('Reason'));
+                $row->addTextField('reason');
+
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));
                 $row->addDate('date')->required()->setValue($date);
@@ -136,6 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $date = Format::dateConvert($_POST['date']);
             $timeStart = $_POST['timeStart'];
             $timeEnd = $_POST['timeEnd'];
+            $reason = $_POST['reason'];
             $repeat = $_POST['repeat'];
             $repeatDaily = null;
             $repeatWeekly = null;
@@ -186,6 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $form->addHiddenValue('date', $date);
                     $form->addHiddenValue('timeStart', $timeStart);
                     $form->addHiddenValue('timeEnd', $timeEnd);
+                    $form->addHiddenValue('reason', $reason);
                     $form->addHiddenValue('repeat', $repeat);
                     $form->addHiddenValue('repeatDaily', $repeatDaily);
                     $form->addHiddenValue('repeatWeekly', $repeatWeekly);

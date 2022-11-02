@@ -58,6 +58,8 @@ v25.0.00
         System Admin: added filename to Import History in Import From File page
         System Admin: added the option to configure phone number fields in Form Builder
         Timetable: enabled View Available Facilities for non-lesson periods
+        Timetable: enabled booking facilities for other users with Manage Facility Bookings_allBookings permission
+        Timetable: added an option to add a reason when booking facilities
         User Admin: added last login timestamp and IP address to password troubleshooting page
         User Admin: added the ability to search users by first name
 
