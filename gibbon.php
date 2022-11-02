@@ -64,6 +64,8 @@ $gibbon->locale = $container->get('locale');
 $guid = $gibbon->getConfig('guid');
 $caching = $gibbon->getConfig('caching');
 $version = $gibbon->getConfig('version');
+$session = $container->get('session');
+$gibbon->session = $session;
 
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
@@ -99,10 +101,6 @@ if ($gibbon->isInstalled()) {
         }
     }
 }
-
-// Globals for backwards compatibility
-$session = $container->get('session');
-$gibbon->session = $session;
 
 // Setup global absoluteURL for all urls.
 if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
