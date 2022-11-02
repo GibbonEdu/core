@@ -91,6 +91,7 @@ v25.0.00
         Planner: fixed CLI scripts attempting to users who are Left or have no email address
         Planner: fixed incorrect homework status when both teacher and student recorded homework are used
         Planner: fixed homework checkboxes not visible on students mobile view
+        Planner: fixed Concepts & Keywords tag counts in Add Unit and Edit Unit
         Reports: fixed error when milestones are empty in Manage Reporting Cycles
         Reports: fixed batch report bulk-action missing the two-sided option
         Reports: fixed HTML being removed from Rich Text template sections

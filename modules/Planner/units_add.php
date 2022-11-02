@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $tagsOutput = array();
                         foreach ($tags as $tag) {
                             if ($tag[0] > 0) {
-                                $tagsOutput[$tag[1]] = $tag[1] . " (".$tag[0].")";
+                                $tagsOutput[$tag[1]] = $tag[1] . " (".$tag[2].")";
                             }
                         }
                         $row = $form->addRow()->addClass('tags');

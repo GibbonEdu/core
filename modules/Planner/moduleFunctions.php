@@ -547,10 +547,8 @@ function makeBlockOutcome($guid,  $i, $type = '', $gibbonOutcomeID = '', $title 
 
 //Returns all tags, in the specified school year if one is specified
 function getTagList($connection2, $gibbonSchoolYearID = null) {
-    $tags = array();
-    $tagsTemp = array();
+    $tags = [];
 
-    $tagCount = 0 ;
     //Get all tags
     try {
         if (is_null($gibbonSchoolYearID)) {
@@ -569,36 +567,17 @@ function getTagList($connection2, $gibbonSchoolYearID = null) {
     while ($rowList = $resultList->fetch()) {
         $tagsInner = explode(',', $rowList['tags']);
         foreach ($tagsInner AS $tagInner) {
-            $tagInner = mb_strtolower(trim($tagInner));
-            $tagsTemp[$tagCount] = $tagInner ;
-            $tagCount ++;
+            $tags[] = mb_strtolower(trim($tagInner));
         }
     }
-    sort($tagsTemp, SORT_STRING) ;
+    sort($tags, SORT_STRING) ;
 
-    //Second pass through, to remove uniques, calculate counts, etc
-    $tagCount = 0 ;
+    $tagCounts = array_count_values($tags);
+    $tags = array_unique($tags);
 
-    foreach ($tagsTemp AS $tagInner) {
-        $unique = true ;
-        $nonUniqueTagCount = null;
-        foreach ($tags as $tag) {
-            if ($tag[1] == $tagInner) {
-                $unique = false ;
-                $nonUniqueTagCount = $tag[0];
-            }
-        }
-
-        if ($unique) { //If unique so far, then add it
-            $tags[$tagCount][0] = $tagCount;
-            $tags[$tagCount][1] = $tagInner;
-            $tags[$tagCount][2] = 1;
-            $tagCount ++;
-        }
-        else { //If not unique so far, then increment count
-            $tags[$nonUniqueTagCount][2] ++ ;
-        }
-    }
+    $tags = array_map(function($item, $key) use ($tagCounts) {
+        return [$key, $item, $tagCounts[$item] ?? 0];
+    }, $tags, array_keys($tags));
 
     return $tags;
 }
