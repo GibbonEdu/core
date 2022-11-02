@@ -74,14 +74,14 @@ if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
 
 // Initialize the database connection
 if ($gibbon->isInstalled()) {
-    $mysqlConnector = new Gibbon\Database\MySqlConnector();
 
     // Display a static error message for database connections after install.
-    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
-        // Add the database to the container
+    if ($container->has('db')) {
+        $pdo = $container->get('db');
+
+        // For legacy modules / functions compatibility.
+        // TODO: remove this.
         $connection2 = $pdo->getConnection();
-        $container->add('db', $pdo);
-        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
 
         // Add a feature flag here to prevent errors before updating
         // TODO: this can likely be removed in v24+
@@ -98,7 +98,7 @@ if ($gibbon->isInstalled()) {
             include __DIR__.'/error.php';
             exit;
         }
-        
+
     } else {
         if (!$gibbon->isInstalling()) {
             $message = sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), '', '');

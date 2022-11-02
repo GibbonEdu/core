@@ -120,7 +120,7 @@ class Page extends View
      * @param array $params Essential parameters for building a page.
      */
     public function __construct(ContainerInterface $container = null, array $params = [])
-    { 
+    {
         parent::__construct($container ? $container->get('twig') : null);
 
         $this->breadcrumbs = new Breadcrumbs();

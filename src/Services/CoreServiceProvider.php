@@ -36,9 +36,11 @@ use Gibbon\Services\Payment\Payment;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
 use Gibbon\Contracts\Services\Session as SessionInterface;
 use Gibbon\Data\PasswordPolicy;
+use Gibbon\Database\MySqlConnector;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -97,8 +99,26 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     {
         $container = $this->getLeagueContainer();
 
-        $container->share('config', new Core($this->absolutePath));
+        $core = new Core($this->absolutePath);
+        $container->share('config', $core);
         $container->share('locale', new Locale($this->absolutePath));
+
+        // If configuration exists, create and share the database connection.
+        $config = $core->getConfig();
+        if (!empty($config['databaseUsername']) && isset($config['databasePassword'])) {
+
+            // Tell others that we provide db.
+            array_push($this->provides, 'db', Connection::class);
+
+            // Recipe of creating db.
+            $container->share('db', function () {
+                return $this->getContainer()->get(Connection::class);
+            });
+            $container->share(Connection::class, function () use ($config) {
+                // Create connector to connect database.
+                return (new MySqlConnector())->connect($config);
+            });
+        }
     }
 
     /**
