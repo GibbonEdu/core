@@ -398,7 +398,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $returnExtra = '';
 
         if ($this->hasConfig('foreignTableID')) {
-            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.$this->getConfig('foreignTableID').'</b></u>.';
+            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number:').' <b><u>'.str_pad($this->getConfig('foreignTableID'),10,'0', STR_PAD_LEFT).'</b></u>.';
         }
 
         if ($this->session->has('organisationAdmissionsName') && $this->session->has('organisationAdmissionsEmail')) {
