@@ -39,7 +39,12 @@ class HookGateway extends QueryableGateway
     public function selectHooksByType($type)
     {
         $data = ['type' => $type];
-        $sql = "SELECT gibbonHook.name as groupBy, gibbonHook.* FROM gibbonHook WHERE type=:type ORDER BY name";
+        $sql = "SELECT gibbonHook.name as groupBy, gibbonHook.* 
+                FROM gibbonHook 
+                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonHook.gibbonModuleID)
+                WHERE gibbonHook.type=:type 
+                AND gibbonModule.active='Y'
+                ORDER BY gibbonHook.name";
 
         return $this->db()->select($sql, $data);
     }
@@ -60,5 +65,28 @@ class HookGateway extends QueryableGateway
             ORDER BY name";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getAccessibleHooksByType(string $type, string $gibbonRoleIDCurrent)
+    {
+        $hooksAvailable = $this->selectHooksByType($type)->fetchAll();
+        $hooks = [];
+
+        foreach ($hooksAvailable as $hook) {
+            $options = unserialize($hook['options']);
+
+            //Check for permission to hook
+            $hookPermission = $this->getHookPermission($hook['gibbonHookID'], $gibbonRoleIDCurrent, $options['sourceModuleName'] ?? '', $options['sourceModuleAction'] ?? '');
+
+            if (!empty($options) && !empty($hookPermission)) {
+                $hooks[] = [
+                    'name'                => $hook['name'],
+                    'sourceModuleName'    => $hookPermission['module'],
+                    'sourceModuleInclude' => $options['sourceModuleInclude'],
+                ];
+            }
+        }
+
+        return $hooks;
     }
 }

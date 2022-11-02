@@ -71,6 +71,7 @@ v25.0.00
         System: fixed My Classes list including Left classes in DatabaseFormFactory
         System: fixed links opening in new tab when using Url object in Format class
         System: fixed lesson plans not showing up on Staff Dashboard for multiple classes with a TT exception
+        System: fixed dashboard hooks displaying when modules are inactive
         Admissions: fixed application username check to include other applications
         Admissions: fixed database error when using Add Application to create a blank application form
         Attendance: fixed duplicate entries in Students Not Present and Students Not Onsite

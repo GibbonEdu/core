@@ -19,15 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\OutputableInterface;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
+use Gibbon\Data\Validator;
+use Gibbon\Forms\OutputableInterface;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Tables\Prefab\EnrolmentTable;
 use Gibbon\Tables\Prefab\FormGroupTable;
-use Gibbon\Data\Validator;
+use League\Container\ContainerAwareTrait;
+use League\Container\ContainerAwareInterface;
+use Gibbon\Domain\System\HookGateway;
 
 /**
  * Staff Dashboard View Composer
@@ -35,8 +38,10 @@ use Gibbon\Data\Validator;
  * @version  v18
  * @since    v18
  */
-class StaffDashboard implements OutputableInterface
+class StaffDashboard implements OutputableInterface, ContainerAwareInterface
 {
+    use ContainerAwareTrait;
+
     /**
      * @var \Gibbon\Contracts\Database\Connection
      */
@@ -443,31 +448,8 @@ class StaffDashboard implements OutputableInterface
             ++$formGroupCount;
         }
 
-        //GET HOOKS INTO DASHBOARD
-        $hooks = array();
-
-        $dataHooks = array();
-        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Staff Dashboard'";
-        $resultHooks = $connection2->prepare($sqlHooks);
-        $resultHooks->execute($dataHooks);
-        if ($resultHooks->rowCount() > 0) {
-            $count = 0;
-            while ($rowHooks = $resultHooks->fetch()) {
-                $options = unserialize($rowHooks['options']);
-                //Check for permission to hook
-                $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Staff Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
-                $resultHook = $connection2->prepare($sqlHook);
-                $resultHook->execute($dataHook);
-                if ($resultHook->rowCount() == 1) {
-                    $rowHook = $resultHook->fetch();
-                    $hooks[$count]['name'] = $rowHooks['name'];
-                    $hooks[$count]['sourceModuleName'] = $rowHook['module'];
-                    $hooks[$count]['sourceModuleInclude'] = $options['sourceModuleInclude'];
-                    ++$count;
-                }
-            }
-        }
+        // GET HOOKS INTO DASHBOARD
+        $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Staff Dashboard', $this->session->get('gibbonRoleIDCurrent'));
 
         if ($planner == false and $timetable == false and count($hooks) < 1) {
             $return .= "<div class='warning'>";

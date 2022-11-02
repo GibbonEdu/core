@@ -19,15 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
+use Gibbon\Http\Url;
+use Gibbon\Services\Format;
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Forms\OutputableInterface;
-use Gibbon\Http\Url;
-use Gibbon\Services\Format;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 
@@ -743,35 +744,8 @@ class ParentDashboard implements OutputableInterface, ContainerAwareInterface
             }
         }
 
-        //GET HOOKS INTO DASHBOARD
-        $hooks = array();
-        try {
-            $dataHooks = array();
-            $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Parental Dashboard'";
-            $resultHooks = $connection2->prepare($sqlHooks);
-            $resultHooks->execute($dataHooks);
-        } catch (\PDOException $e) {
-            $return .= "<div class='error'>".$e->getMessage().'</div>';
-        }
-        if ($resultHooks->rowCount() > 0) {
-            $count = 0;
-            while ($rowHooks = $resultHooks->fetch()) {
-                $options = unserialize($rowHooks['options']);
-                //Check for permission to hook
-
-                    $dataHook = array('gibbonRoleIDCurrent' => $this->session->get('gibbonRoleIDCurrent'), 'sourceModuleName' => $options['sourceModuleName'], 'sourceModuleAction' => $options['sourceModuleAction']);
-                    $sqlHook = "SELECT gibbonHook.name, gibbonModule.name AS module, gibbonAction.name AS action FROM gibbonHook JOIN gibbonModule ON (gibbonHook.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) WHERE gibbonAction.gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE gibbonPermission.gibbonRoleID=:gibbonRoleIDCurrent AND name=:sourceModuleName) AND gibbonHook.type='Parental Dashboard'  AND gibbonAction.name=:sourceModuleAction AND gibbonModule.name=:sourceModuleName ORDER BY name";
-                    $resultHook = $connection2->prepare($sqlHook);
-                    $resultHook->execute($dataHook);
-                if ($resultHook->rowCount() == 1) {
-                    $rowHook = $resultHook->fetch();
-                    $hooks[$count]['name'] = $rowHooks['name'];
-                    $hooks[$count]['sourceModuleName'] = $rowHook['module'];
-                    $hooks[$count]['sourceModuleInclude'] = $options['sourceModuleInclude'];
-                    ++$count;
-                }
-            }
-        }
+        // GET HOOKS INTO DASHBOARD
+        $hooks = $this->getContainer()->get(HookGateway::class)->getAccessibleHooksByType('Parental Dashboard', $this->session->get('gibbonRoleIDCurrent'));
 
         if ($classes == false and $grades == false and $deadlines == false and $timetable == false and $activities == false and count($hooks) < 1) {
             $return .= "<div class='warning'>";

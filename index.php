@@ -17,13 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\Messenger\MessengerGateway;
-use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Http\Url;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Domain\User\UserGateway;
-use Gibbon\Http\Url;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Messenger\MessengerGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 /**
  * BOOTSTRAP
@@ -604,8 +605,7 @@ if (!$session->has('address')) {
         ];
 
         // Get any elements hooked into public home page, checking if they are turned on
-        $sql = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
-        $hooks = $pdo->select($sql)->fetchAll();
+        $hooks = $container->get(HookGateway::class)->selectHooksByType('Public Home Page')->fetchAll();
 
         foreach ($hooks as $hook) {
             $options = unserialize(str_replace("'", "\'", $hook['options']));
