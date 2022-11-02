@@ -709,7 +709,7 @@ class MessageForm extends Form
 
             $row = $form->addRow('stickySubmit');
                 $col = $row->addColumn()->addClass('items-center');
-                    $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('rounded-sm w-24 mr-2');
+                    $col->addButton(__('Save Draft'))->onClick('saveDraft()')->addClass('rounded-sm w-auto mr-2');
                 $col = $row->addColumn()->addClass('items-center');
                     $col->addSubmit(__('Preview & Send'))->addClass('email');
                     $col->addSubmit()->addClass('noEmail');

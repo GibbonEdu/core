@@ -83,6 +83,10 @@ function saveDraft() {
 
     var form = LiveValidationForm.getInstance(document.getElementById('messengerMessage'));
     if (LiveValidation.massValidate(form.fields)) {
+        $('button[id="Save Draft"]').prop('disabled', true);
+        setTimeout(function() {
+            $('button[id="Save Draft"]').wrap('<span class="submitted"></span>');
+        }, 500);
         $('input[name="saveMode"]').val('Draft');
         document.getElementById('messengerMessage').submit();
     }
