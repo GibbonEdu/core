@@ -86,6 +86,7 @@ v25.0.00
         Data Updater: removed parent emails from Family Data Updater History when contact email is No
         Data Updater: fixed unable to remove all privacy settings via data update
         Data Updater: fixed Family Data Updates not checking student start and end dates
+        Library: fixed the Get Book Data From Google button in Manage Catalog
         Markbook: fixed Left teachers showing up in "Class taught by" list
         Markbook: fixed View Markbook breadcrumb when class name is blank
         Planner: fixed selected course resetting when navigating between school years

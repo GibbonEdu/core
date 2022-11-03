@@ -78,13 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         // Add Google Books data grabber
         if ($values['name'] == 'Print Publication') {
-            echo '<script type="text/javascript">';
-                echo 'document.onkeypress = stopRKey;';
-                echo '$(".gbooks").loadGoogleBookData({
-                    "notFound": "'.__('The specified record cannot be found.').'",
-                    "dataRequired": "'.__('Please enter an ISBN13 or ISBN10 value before trying to get data from Google Books.').'",
-                });';
-            echo '</script>';
             echo '<div style="text-align: right">';
             echo '<a class="gbooks" onclick="return false" href="#">'.__('Get Book Data From Google').'</a>';
             echo '</div>';

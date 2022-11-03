@@ -21,7 +21,8 @@ function stopRKey(evt) {
 }
 
 $.prototype.loadGoogleBookData = function (settings) {
-    $(this).click(function () {
+
+    $(document).on('click', '.gbooks', function () {
         var isbn = $("#fieldISBN10").val() ? $("#fieldISBN10").val() : $("#fieldISBN13").val();
 
         if (isbn) {
