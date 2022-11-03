@@ -491,7 +491,7 @@ class MessageTargets
                             if ($t=="Parent") {
                                 try {
                                     $dataEmail=array("category"=>$t);
-                                    $sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT email='' AND category=:category AND status='Full' AND contactEmail='Y'" ;
+                                    $sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)) WHERE NOT email='' AND category=:category AND status='Full' AND contactEmail='Y' AND (dateStart IS NULL OR dateStart<=CURRENT_DATE) AND (dateEnd IS NULL OR dateEnd>=CURRENT_DATE)" ;
                                     $resultEmail=$connection2->prepare($sqlEmail);
                                     $resultEmail->execute($dataEmail);
                                 }
