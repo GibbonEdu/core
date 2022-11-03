@@ -15,12 +15,12 @@
             "@test:phpunit"
         ],
         "test:codeception": [
-            "cd tests && codecept run install --env $CI_PLATFORM",
-            "cd tests && codecept run acceptance --env $CI_PLATFORM"
+            "cd tests && codecept run install",
+            "cd tests && codecept run acceptance"
         ],
         "test:codeceptiondebug": [
-            "cd tests && codecept run install --debug --env $CI_PLATFORM",
-            "cd tests && codecept run acceptance --debug --env $CI_PLATFORM"
+            "cd tests && codecept run install --debug",
+            "cd tests && codecept run acceptance --debug"
         ],
         "test:phpunit": [
             "cd tests && codecept run unit"

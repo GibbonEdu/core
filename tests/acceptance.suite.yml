@@ -5,9 +5,6 @@
 # If you need both WebDriver and PHPBrowser tests - create a separate suite.
 
 actor: AcceptanceTester
-params:
-    - env
-    - _envs/environment.php
 modules:
     enabled:
         - PhpBrowser:

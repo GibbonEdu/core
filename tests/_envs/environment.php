@@ -1,8 +1,21 @@
 <?php
+
+/**
+ * environment.php
+ *
+ * Load extra variables from config files into codeception environment.
+ */
+
 // Attempt to load the Gibbon config.php file
 $configPath = __DIR__ . '/../../config.php';
 if (!file_exists($configPath)) {
-    return ['DB_HOST' => '','DB_USERNAME' => '','DB_PASSWORD' => '','DB_NAME' => '','ABSOLUTE_PATH' => '','ABSOLUTE_URL' => ''];
+    // If no config file exists, still create empty database related variables.
+    return [
+        'DB_HOST' => '',
+        'DB_USERNAME' => '',
+        'DB_PASSWORD' => '',
+        'DB_NAME' => '',
+    ];
 }
 
 require $configPath;
@@ -13,11 +26,20 @@ if (getenv('TEST_ENV') != 'codeception' && (empty($testEnvironment) || $testEnvi
 }
 
 // Format config into Codeception params
-return [
-    'DB_HOST' => (isset($testDatabaseServer))? $testDatabaseServer : $databaseServer,
-    'DB_USERNAME' => (isset($testDatabaseUsername))? $testDatabaseUsername : $databaseUsername,
-    'DB_PASSWORD' => (isset($testDatabasePassword))? $testDatabasePassword: $databasePassword,
-    'DB_NAME' => (isset($testDatabaseName))? $testDatabaseName: $databaseName,
-    'ABSOLUTE_PATH' => (isset($testPath))? rtrim($testPath, '/') : 'localhost',
-    'ABSOLUTE_URL' => (isset($testURL))? rtrim($testURL, '/') : 'https://127.0.0.1:8888',
+$params = [
+    'DB_HOST' => $testDatabaseServer ?? $databaseServer ?? '',
+    'DB_USERNAME' => $testDatabaseUsername ?? $databaseUsername ?? '',
+    'DB_PASSWORD' => $testDatabasePassword ?? $databasePassword ?? '',
+    'DB_NAME' => $testDatabaseName ?? $databaseName ?? '',
 ];
+
+// Allow overrides of several environment variable only
+// if certain variable is in the config.
+if (isset($testPath)) {
+    $params['ABSOLUTE_PATH'] = rtrim($testPath, '/');
+}
+if (isset($testURL)) {
+    $params['ABSOLUTE_URL'] = rtrim($testURL, '/');
+}
+
+return $params;
