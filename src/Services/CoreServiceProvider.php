@@ -136,6 +136,16 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return !empty($hasSessionTable);
         }, false);
 
+        // Define how session can be created.
+        $container->share('session', function () {
+            return $this->getContainer()->get(SessionInterface::class);
+        });
+        $container->share(SessionInterface::class, function () {
+            $container = $this->getContainer();
+            $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
+            return SessionFactory::create($this->getContainer(), $sessionTableHasSetup);
+        });
+
         // Define locale object.
         $container->share('locale', function () {
             // Get dependencies.
@@ -154,6 +164,24 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $locale->setStringReplacementList($session, $db);
             }
             return $locale;
+        });
+
+        // Setup global absoluteURL of all URLs.
+        $container->share('absoluteURL', function () use ($core) {
+            $session = $this->getContainer()->get(SessionInterface::class);
+            if ($core->isInstalled() && $session->has('absoluteURL')) {
+                return $session->get('absoluteURL');
+            }
+
+            // Find out the base installation URL path.
+            $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
+            $baseDir = realpath(__DIR__ . '/../../') . '/';
+            $urlBasePath = substr($baseDir, $prefixLength);
+
+            // Construct the full URL to the base URL path.
+            $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+            return "{$protocol}://{$host}{$urlBasePath}";
         });
     }
 
@@ -181,15 +209,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         // });
 
         // $pdo->setLogger($container->get('mysql_logger'));
-
-        $container->share('session', function () {
-            return $this->getContainer()->get(SessionInterface::class);
-        });
-        $container->share(SessionInterface::class, function () {
-            $container = $this->getContainer();
-            $sessionTableHasSetup = $container->has('sessionTableHasSetup') && $container->get('sessionTableHasSetup');
-            return SessionFactory::create($this->getContainer(), $sessionTableHasSetup);
-        });
 
         $container->share('twig', function () use ($absolutePath) {
             $session = $this->getLeagueContainer()->get('session');

@@ -67,6 +67,9 @@ $version = $gibbon->getConfig('version');
 $session = $container->get('session');
 $gibbon->session = $session;
 
+// Setup global absoluteURL for all urls.
+Url::setBaseURL($container->get('absoluteURL'));
+
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
     header("Location: ./installer/install.php");
@@ -100,25 +103,6 @@ if ($gibbon->isInstalled()) {
             exit;
         }
     }
-}
-
-// Setup global absoluteURL for all urls.
-if ($gibbon->isInstalled() && $session->has('absoluteURL')) {
-    Url::setBaseUrl($session->get('absoluteURL'));
-} else {
-    // TODO: put this absoluteURL detection somewhere?
-    $absoluteURL = (function () {
-        // Find out the base installation URL path.
-        $prefixLength = strlen(realpath($_SERVER['DOCUMENT_ROOT']));
-        $baseDir = realpath(__DIR__) . '/';
-        $urlBasePath = substr($baseDir, $prefixLength);
-
-        // Construct the full URL to the base URL path.
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $protocol = !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-        return "{$protocol}://{$host}{$urlBasePath}";
-    })();
-    Url::setBaseUrl($absoluteURL);
 }
 
 // Autoload the current module namespace
