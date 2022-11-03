@@ -152,4 +152,5 @@ jobs:
             tests/_logs
             tests/_dump
             tests/_output
+            uploads/cache/templates
           retention-days: 5
