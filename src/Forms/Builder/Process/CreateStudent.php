@@ -237,6 +237,10 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
             $formData->set($prefix.'firstName', $formData->get($prefix.'preferredName'));
         }
 
+        if (!$formData->has($prefix.'preferredName')) {
+            $formData->set($prefix.'preferredName', $formData->get($prefix.'firstName'));
+        }
+
         if (!$formData->has($prefix.'officialName')) {
             $formData->set($prefix.'officialName', $formData->get($prefix.'firstName').' '.$formData->get($prefix.'surname'));
         }
