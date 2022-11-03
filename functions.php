@@ -739,7 +739,21 @@ function htmlPrep($str)
     return htmlentities($str, ENT_QUOTES, 'UTF-8');
 }
 
-//Returns the risk level of the highest-risk condition for an individual
+/**
+ * Get the risk level of the highest-risk condition for an individual.
+ *
+ * Deprecated. Use \Gibbon\Domain\Student\MedicalGateway::getHighestMedicalRisk() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param string  $guid            Obsoleted parameter.
+ * @param int     $gibbonPersonID  The person ID.
+ * @param \PDO    $connection2
+ *
+ * @return array  An array of fields in the medical alert information of the person,
+ *                or an empty array if none found.
+ */
 function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
 {
     $output = false;
