@@ -53,13 +53,13 @@ jobs:
       - name: Run PHP server for tests to run
         run: |
           # Start a PHP test server for codeception to run against
-          [ -d ./tests/log ] || mkdir ./tests/log
+          [ -d ./tests/_logs ] || mkdir ./tests/_logs
           php --server 127.0.0.1:8888 \
             --docroot ${{ github.workspace }} \
             --define display_startup_errors=1 \
             --define display_errors=1 \
             --define error_reporting=E_ALL \
-            >/dev/null 2>./tests/log/server_log &
+            >/dev/null 2>./tests/_logs/server_log &
 
       - name: Cache Composer dependencies
         uses: actions/cache@v3
@@ -90,48 +90,48 @@ jobs:
       - name: Check PHP warning and deprecated messages in server_log
         run: |
           # Check number of uncaught exceptions.
-          export NUM_EXCEPTION=$(grep --perl-regexp 'Uncaught Exception: ' ./tests/log/server_log | wc -l)
+          export NUM_EXCEPTION=$(grep --perl-regexp 'Uncaught Exception: ' ./tests/_logs/server_log | wc -l)
           if [ "$NUM_EXCEPTION" -eq 0 ]; then
             echo -e '\e[32mNo Uncaught exception.\e[0m'
             echo
           else
             echo -e "\e[1m\e[33mGot $NUM_EXCEPTION uncaught exceptions:\e[0m"
-            grep --line-number --color=always --perl-regexp 'Uncaught Exception: ' ./tests/log/server_log
+            grep --line-number --color=always --perl-regexp 'Uncaught Exception: ' ./tests/_logs/server_log
             echo
             (exit 1)
           fi
 
           # Check number of warning messages.
-          export NUM_WARNING=$(grep --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log | wc -l)
+          export NUM_WARNING=$(grep --perl-regexp '(?<!PHP )Warning: ' ./tests/_logs/server_log | wc -l)
           if [ "$NUM_WARNING" -eq 0 ]; then
             echo -e '\e[32mNo warning message.\e[0m'
             echo
           else
             echo -e "\e[1m\e[33mGot $NUM_WARNING warning messages:\e[0m"
-            grep --line-number --color=always --perl-regexp '(?<!PHP )Warning: ' ./tests/log/server_log || echo -e '\e[32mNo Warning message found in log.\e[0m'
+            grep --line-number --color=always --perl-regexp '(?<!PHP )Warning: ' ./tests/_logs/server_log || echo -e '\e[32mNo Warning message found in log.\e[0m'
             echo
             (exit 1)
           fi
 
           # Check number of PHP warning messages.
-          export NUM_PHP_WARNING=$(grep 'PHP Warning: ' ./tests/log/server_log | wc -l)
+          export NUM_PHP_WARNING=$(grep 'PHP Warning: ' ./tests/_logs/server_log | wc -l)
           if [ "$NUM_PHP_WARNING" -eq 0 ]; then
             echo -e '\e[32mNo PHP warning message.\e[0m'
             echo
           else
             echo -e "\e[1m\e[31mGot $NUM_PHP_WARNING PHP warning messages:\e[0m"
-            grep --line-number --color=always 'PHP Warning: ' ./tests/log/server_log || echo -e '\e[32mNo PHP Warning message found in log.\e[0m'
+            grep --line-number --color=always 'PHP Warning: ' ./tests/_logs/server_log || echo -e '\e[32mNo PHP Warning message found in log.\e[0m'
             echo
             (exit 1)
           fi
 
           # Check number of deprecated messages. Cause error if found.
-          export NUM_DEPRECATED=$(grep 'Deprecated: ' ./tests/log/server_log | wc -l)
+          export NUM_DEPRECATED=$(grep 'Deprecated: ' ./tests/_logs/server_log | wc -l)
           if [ "$NUM_DEPRECATED" -eq 0 ]; then
             echo -e '\e[32mNo deprecated message.\e[0m'
           else
             echo -e "\e[1m\e[31mGot $NUM_DEPRECATED deprecated messages:\e[0m"
-            grep --line-number --color=always 'Deprecated: ' ./tests/log/server_log || echo -e '\e[32mNo Deprecated message found in log.\e[0m'
+            grep --line-number --color=always 'Deprecated: ' ./tests/_logs/server_log || echo -e '\e[32mNo Deprecated message found in log.\e[0m'
             echo
             (exit 1)
           fi
@@ -140,7 +140,8 @@ jobs:
       - name: Export Database if Test Failed
         if: ${{ failure() }}
         run: |
-          mysqldump -u root --protocol=tcp --column-statistics=0 gibbon_test > ./tests/log/mysqldump.sql
+          mkdir -p ./tests/_dump
+          mysqldump -u root --protocol=tcp --column-statistics=0 gibbon_test > ./tests/_dump/mysqldump.sql
 
       - name: Save Test Artifacts
         uses: actions/upload-artifact@v3
@@ -148,6 +149,7 @@ jobs:
         with:
           name: Test Artifacts (PHP ${{ matrix.php-version }})
           path: |
-            tests/log
+            tests/_logs
+            tests/_dump
             tests/_output
           retention-days: 5
