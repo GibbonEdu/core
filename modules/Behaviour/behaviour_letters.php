@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
             $output = '';
             if (!empty($letter['body'])) {
                 $output .= '<b>'.__('Letter Body').'</b><br/>';
-                $output .= nl2brr($letter['body']).'<br/><br/>';
+                $output .= nl2br($letter['body']).'<br/><br/>';
             }
             if (!empty($letter['recipientList'])) {
                 $output .= '<b>'.__('Recipients').'</b><br/>';

@@ -106,22 +106,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/investiga
             ->format(function ($investigations) {
                 $output = '';
                 $output .= '<strong>'.__('Reason').'</strong><br/>';
-                $output .= nl2brr($investigations['reason']).'<br/>';
+                $output .= nl2br($investigations['reason']).'<br/>';
                 if (!empty($investigations['strategiesTried'])) {
                     $output .= '<br/><strong>'.__('Strategies Tried').'</strong><br/>';
-                    $output .= nl2brr($investigations['strategiesTried']).'<br/>';
+                    $output .= nl2br($investigations['strategiesTried']).'<br/>';
                 }
                 if ($investigations['parentsInformed'] == 'Y') {
                     $output .= '<br/><strong>'.__('Parents Informed?').'</strong><br/>';
                     $output .= Format::yesNo($investigations['parentsInformed']).'<br/>';
                     if (!empty($investigations['parentsResponse'])) {
                         $output .= '<br/><strong>'.__('Parent Response').'</strong><br/>';
-                        $output .= nl2brr($investigations['parentsResponse']).'<br/>';
+                        $output .= nl2br($investigations['parentsResponse']).'<br/>';
                     }
                 }
                 if (!empty($investigations['resolutionDetails'])) {
                     $output .= '<br/><strong>'.__('Resolution Details').'</strong><br/>';
-                    $output .= nl2brr($investigations['resolutionDetails']).'<br/>';
+                    $output .= nl2br($investigations['resolutionDetails']).'<br/>';
                 }
 
                 return $output;
