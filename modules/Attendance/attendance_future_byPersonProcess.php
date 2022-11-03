@@ -28,10 +28,21 @@ include __DIR__ . '/../../gibbon.php';
 include __DIR__ . '/moduleFunctions.php';
 
 $address = $_POST['address'] ?? '';
-$gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
-$scope = $_POST['scope'] ?? '';
-$absenceType = $_POST['absenceType'] ?? 'full';
-$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope&absenceType=$absenceType";
+
+$gibbonPersonID = $_POST['gibbonPersonIDList'] ?? '';
+
+$urlParams = [
+    'scope'            => $_POST['scope'] ?? '',
+    'absenceType'      => $_POST['absenceType'] ?? 'full',
+    'target'           => $_POST['target'] ?? '',
+    'gibbonActivityID' => $_POST['gibbonActivityID'] ?? '',
+    'gibbonGroupID'    => $_POST['gibbonGroupID'] ?? '',
+    'date'             => $_POST['date'] ?? '',
+    'timeStart'        => $_POST['timeStart'] ?? '',
+    'timeEnd'          => $_POST['timeEnd'] ?? '',
+];
+
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&".http_build_query($urlParams);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -39,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 } else {
     //Proceed!
     //Check if person specified
-    if ($gibbonPersonID == '' & $scope == '') {
+    if (empty($gibbonPersonID) || empty($urlParams['scope'])) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -74,6 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
             $type = $_POST['type'] ?? '';
             $reason = $_POST['reason'] ?? '';
             $comment = $_POST['comment'] ?? '';
+            $courseList = $_POST['courses'] ?? '';
 
             $attendanceCode = $attendance->getAttendanceCodeByType($type);
             $direction = $attendanceCode['direction'];
@@ -107,11 +119,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                 $partialFail = true;
                             }
 
-                            if ($result->rowCount() > 0 AND $absenceType == 'full') {
+                            if ($result->rowCount() > 0 AND $urlParams['absenceType'] == 'full') {
                                 $partialFail = true;
                             } else {
                                 // Handle full-day absenses normally
-                                if ($absenceType == 'full') {
+                                if ($urlParams['absenceType'] == 'full') {
                                     try {
                                         $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
                                         $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Future\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
@@ -122,9 +134,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                     }
 
                                 // Handle partial absenses per-class
-                                } else if ($absenceType == 'partial') {
+                                } else if ($urlParams['absenceType'] == 'partial') {
 
-                                    $courses = $_POST['courses'] ?? null;
+                                    $courses = $courseList[$gibbonPersonIDCurrent] ?? [];
                                     if (!empty($courses) && is_array($courses)) {
                                         foreach ($courses as $course) {
                                             try {
@@ -139,9 +151,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                                         $URL .= '&absenceType=partial&date=' . $_POST['dateStart'] ?? ''; //Redirect to exact state of submit form
                                     } else {
                                         // Return error if no courses selected for partial absence
-                                        $URL .= '&return=error1';
-                                        header("Location: {$URL}");
-                                        exit();
+                                        // $URL .= '&return=error1';
+                                        // header("Location: {$URL}");
+                                        // exit();
+                                        $partialFail = true;
                                     }
                                 }
 

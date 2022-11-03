@@ -33,6 +33,7 @@ class Checkbox extends Input
 
     protected $description;
     protected $checked = array();
+    protected $disabled = array();
     protected $checkall = false;
     protected $inline = false;
     protected $align = 'right';
@@ -87,7 +88,7 @@ class Checkbox extends Input
      * @param   string  $values
      * @return  self
      */
-    public function checked($values)
+    public function checked($values, $disabled = [])
     {
         if ($values === 1 || $values === true) $values = 'on';
 
@@ -98,6 +99,8 @@ class Checkbox extends Input
         } else {
             $this->checked = [trim($values ?? '')];
         }
+
+        $this->disabled = is_array($disabled) ? $disabled : [$disabled];
 
         return $this;
     }
@@ -189,10 +192,24 @@ class Checkbox extends Input
     protected function getIsChecked($value)
     {
         if (empty($value) || empty($this->checked)) {
-            return '';
+            return false;
         }
 
-        return (in_array($value, $this->checked))? 'checked' : '';
+        return in_array($value, $this->checked);
+    }
+
+    /**
+     * Return true if the passed value has been disabled.
+     * @param   mixed  $value
+     * @return  bool
+     */
+    protected function getIsDisabled($value)
+    {
+        if (empty($value) || empty($this->disabled)) {
+            return false;
+        }
+
+        return in_array($value, $this->disabled);
     }
 
     /**
@@ -252,6 +269,8 @@ class Checkbox extends Input
                     }
                     $this->setName($name);
                     $this->setAttribute('checked', $this->getIsChecked($value));
+                    $this->setAttribute('disabled', $this->getIsDisabled($value));
+
                     if ($value != 'on') $this->setValue($value);
 
                     if ($this->inline) {
