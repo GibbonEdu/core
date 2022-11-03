@@ -32,11 +32,46 @@ use Gibbon\Forms\Builder\Exception\FormProcessException;
 
 class CreateStudent extends AbstractFormProcess implements ViewableProcess
 {
+    /**
+     * An array of required fields.
+     *
+     * @var string[]
+     */
     protected $requiredFields = ['preferredName', 'surname'];
 
+    /**
+     * The UserGateway instance.
+     *
+     * @var UserGateway
+     */
     protected $userGateway;
+
+    /**
+     * The UserStatusLogGateway instance.
+     *
+     * @var UserStatusLogGateway
+     */
+    protected $userStatusLogGateway;
+
+    /**
+     * The UsernameGenerator instance.
+     *
+     * @var UsernameGenerator
+     */
     protected $usernameGenerator;
+
+    /**
+     * The CustomFieldGateway instance.
+     *
+     * @var CustomFieldGateway
+     */
     protected $customFieldGateway;
+
+    /**
+     * The PersonalDocumentGateway instance.
+     *
+     * @var PersonalDocumentGateway
+     */
     protected $personalDocumentGateway;
 
     public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
@@ -99,7 +134,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
         $foreignTableID = $builder->getConfig('foreignTableID');
 
         $this->personalDocumentGateway->updatePersonalDocumentOwnership('gibbonPerson', $formData->get('gibbonPersonIDStudent'), $foreignTable, $foreignTableID);
-        
+
         $formData->set('gibbonPersonIDStudent', null);
     }
 

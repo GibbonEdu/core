@@ -97,7 +97,7 @@ class Form implements OutputableInterface
 
     /**
      * Get the form title.
-     * @return  string 
+     * @return  string
      */
     public function getTitle()
     {
@@ -117,7 +117,7 @@ class Form implements OutputableInterface
 
     /**
      * Get the form description.
-     * @return  string 
+     * @return  string
      */
     public function getDescription()
     {
@@ -216,7 +216,7 @@ class Form implements OutputableInterface
     {
         $section = !empty($this->rows) ? end($this->rows)->getHeading() : '';
         $row = $this->factory->createRow($id)->setHeading($section);
-        
+
         $this->rows[] = $row;
 
         return $row;
@@ -246,7 +246,7 @@ class Form implements OutputableInterface
     {
         $rowCount = count($this->rows);
         return array_reduce($this->rows, function ($group, $row) use (&$rowCount) {
-            
+
             if (($row->getHeading() == 'submit' && $rowCount > 10) || $row->getID() == 'stickySubmit') {
                 $row->addClass('submitRow sticky -bottom-px bg-gray-100 border-t -mt-px mb-px z-50');
             }
@@ -315,7 +315,7 @@ class Form implements OutputableInterface
         if (is_bool($value)) {
             $value = $value? 'on' : 'off';
         }
-        
+
         $this->setAttribute('autocomplete', $value);
 
         return $this;
@@ -329,7 +329,7 @@ class Form implements OutputableInterface
     public function addConfirmation($message)
     {
         $this->setAttribute('onsubmit', "return confirm(\"".__($message)."\")");
-        
+
         return $this;
     }
 
@@ -356,11 +356,12 @@ class Form implements OutputableInterface
 
     /**
      * Clear all Trigger objects.
-     * @return  array
+     * @return  static
      */
     public function clearTriggers()
     {
         $this->triggers = [];
+        return $this;
     }
 
     /**

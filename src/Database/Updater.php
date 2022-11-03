@@ -53,9 +53,9 @@ class Updater implements ContainerAwareInterface
         $this->settingGateway = $settingGateway;
         $this->absolutePath = $this->settingGateway->getSettingByScope('System', 'absolutePath');
 
-        include $this->absolutePath.'/version.php';
+        require $this->absolutePath.'/version.php';
 
-        $this->versionCode = $version;
+        $this->versionCode = $version ?? 'version-not-found';
         $this->versionDB = $this->settingGateway->getSettingByScope('System', 'version');
         $this->cuttingEdgeCode = $this->settingGateway->getSettingByScope('System', 'cuttingEdgeCode');
         $this->cuttingEdgeCodeLine = $this->settingGateway->getSettingByScope('System', 'cuttingEdgeCodeLine');

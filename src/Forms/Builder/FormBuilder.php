@@ -53,6 +53,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
     protected $pages = [];
     protected $fields = [];
     protected $details = [];
+    protected $urlParams = [];
     protected $config = [];
     protected $type = '';
 
@@ -146,13 +147,13 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             return new NullFieldGroup();
         }
     }
-    
+
     public function populate(string $gibbonFormID, int $pageNumber = 1, array $urlParams = [])
     {
         $this->gibbonFormID = $gibbonFormID;
         $this->pageNumber = $pageNumber;
-        $this->urlParams = $urlParams;        
-        
+        $this->urlParams = $urlParams;
+
         // Load form details
         $this->details = array_merge($this->details, $this->formGateway->getByID($this->gibbonFormID));
         $this->config = json_decode($this->details['config'] ?? '', true);
@@ -168,7 +169,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
 
         // Load all field data
         $this->fields = $this->formGateway->selectFieldsByForm($this->gibbonFormID)->fetchGroupedUnique();
-    
+
         return $this;
     }
 
@@ -187,7 +188,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if (!is_null($fieldValue) || (!empty($field['type']) && $field['type'] == 'checkbox')) {
                 $data[$fieldName] = $fieldValue;
             }
-            
+
             if (!empty($fieldInfo['acquire'])) {
                 foreach ($fieldInfo['acquire'] as $subFieldName => $subFieldType) {
                     $fieldValue = $fieldGroup->getFieldDataFromPOST($subFieldName, ['fieldType' => $subFieldType]);
@@ -250,7 +251,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
         $form->addHiddenValue('page', $this->pageNumber);
         $form->addHiddenValue('direction', 'next');
         $form->addHiddenValues($this->urlParams);
-        
+
         // Add pages to the multi-part form
         if (count($this->pages) > 1) {
             $form->setCurrentPage($this->pageNumber);
@@ -359,7 +360,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
             if ($field['fieldType'] == 'layout' || $field['fieldName'] == 'secondParent') {
                 return;
             }
-            
+
             $fieldGroup = $this->getFieldGroup($field['fieldGroup']);
             $fieldOptions = $fieldGroup->getField($field['fieldName']) ?? [];
 
@@ -389,7 +390,7 @@ class FormBuilder implements ContainerAwareInterface, FormBuilderInterface
                 $addFieldToTable($field);
             }
         }
-        
+
         return $table;
     }
 

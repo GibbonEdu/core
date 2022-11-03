@@ -37,19 +37,19 @@ class MFAAdapter extends AuthenticationAdapter
     /**
      * Constructor
      *
-     * 
+     *
      */
     public function __construct()
     {
-       
+
     }
-    
-    
+
+
     public function login(array $input)
     {
         $this->session = $this->getContainer()->get(Session::class);
         $this->userGateway = $this->getContainer()->get(UserGateway::class);
-        
+
         // Validate that the username and password are both present
         $this->checkInput($input);
 
@@ -58,7 +58,7 @@ class MFAAdapter extends AuthenticationAdapter
         $mfaCheck = @$this->userGateway->getByID($userData['gibbonPersonID'], ['mfaSecret']);
 
         // Check that the MFA token is valid
-        $tfa = new \RobThree\Auth\TwoFactorAuth('Gibbon'); 
+        $tfa = new \RobThree\Auth\TwoFactorAuth('Gibbon');
         if ($tfa->verifyCode($mfaCheck['mfaSecret'], $this->getToken()) !== true) {
             $this->session->forget(['mfaToken', 'mfaTokenPass', 'mfaNonce']);
             throw new MFATokenInvalid;
@@ -82,12 +82,12 @@ class MFAAdapter extends AuthenticationAdapter
      * @param array $input
      *
      * @return bool
-     * 
+     *
      * @throws Aura\Auth\Exception\UsernameMissing
      * @throws Aura\Auth\Exception\PasswordMissing
      *
      */
-    protected function checkInput($input)
+    protected function checkInput($input): bool
     {
         if (!$this->session->has('mfaToken')) {
             throw new Exception\DatabaseLoginError;
@@ -96,24 +96,26 @@ class MFAAdapter extends AuthenticationAdapter
         if (empty($this->getToken())) {
             throw new Exception\DatabaseLoginError;
         }
+
+        return true;
     }
 
     /**
-     * Undocumented function
+     * Obtain user data from UserGateway.
      *
      * @param array $input
-     * @return void
-     * 
+     * @return array  An array of user data.
+     *
      * @throws Exception\DatabaseLoginError
      */
-    protected function getUserData(array $input)
+    protected function getUserData(array $input): array
     {
         if (empty($this->userGateway)) {
             throw new Exception\DatabaseLoginError;
         }
 
         $mfaRequest = $this->userGateway->selectBy(['mfaToken' => $this->session->get('mfaToken')], ['username', 'gibbonPersonID', 'mfaSecret']);
-        
+
         if ($mfaRequest->rowCount() != 1) {
             throw new Exception\DatabaseLoginError;
         }
@@ -124,7 +126,7 @@ class MFAAdapter extends AuthenticationAdapter
         if (empty($userDataCheck) || empty($userDataCheck['username']) || empty($userDataCheck['mfaSecret'])) {
             throw new Exception\DatabaseLoginError;
         }
-        
+
         //Unset the MFA Token Pass to prevent POST replay attacks
         $this->userGateway->update($userDataCheck['gibbonPersonID'], ['mfaToken' => NULL]);
 
@@ -161,7 +163,7 @@ class MFAAdapter extends AuthenticationAdapter
 
         $mfaTokenPass = $this->session->get('mfaTokenPass');
         $mfaDatabasePass = hash('sha256', $userDataCheck['mfaSecret'].$password);
-        
+
         // Check that this session value matches the password in the database
         if ($mfaTokenPass != $mfaDatabasePass) {
             $this->updateFailCount($userData, $userData['failCount'] + 1);
@@ -170,5 +172,5 @@ class MFAAdapter extends AuthenticationAdapter
 
         return $userData;
     }
-    
+
 }
