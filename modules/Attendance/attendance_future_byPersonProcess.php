@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 
 //Gibbon system-wide includes
 include __DIR__ . '/../../gibbon.php';
@@ -37,7 +39,7 @@ $urlParams = [
     'target'           => $_POST['target'] ?? '',
     'gibbonActivityID' => $_POST['gibbonActivityID'] ?? '',
     'gibbonGroupID'    => $_POST['gibbonGroupID'] ?? '',
-    'date'             => $_POST['date'] ?? '',
+    'date'             => $_POST['date'] ?? $_POST['dateStart'] ?? '',
     'timeStart'        => $_POST['timeStart'] ?? '',
     'timeEnd'          => $_POST['timeEnd'] ?? '',
 ];
@@ -54,19 +56,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $userGateway = $container->get(UserGateway::class);
+        $attendanceLogGateway = $container->get(AttendanceLogPersonGateway::class);
+
         $gibbonPersonID = explode(',', $gibbonPersonID);
 
         $personCheck = true ;
         foreach ($gibbonPersonID as $gibbonPersonIDCurrent) {
-            try {
-                $data = array('gibbonPersonID' => $gibbonPersonIDCurrent);
-                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $personCheck = false;
-            }
-            if ($result->rowCount() != 1) {
+            $person = $userGateway->getByID($gibbonPersonIDCurrent);
+            if (empty($person)) {
                 $personCheck = false;
             }
         }
@@ -74,110 +72,120 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if (!$personCheck) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-        } else {
-            //Write to database
-            require_once __DIR__ . '/src/AttendanceView.php';
-            $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
+            exit;
+        }
 
-            $partialFail = false;
-            $partialFailSchoolClosed = false;
+        require_once __DIR__ . '/src/AttendanceView.php';
+        $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
 
-            $type = $_POST['type'] ?? '';
-            $reason = $_POST['reason'] ?? '';
-            $comment = $_POST['comment'] ?? '';
-            $courseList = $_POST['courses'] ?? '';
+        $partialFail = false;
+        $partialFailSchoolClosed = false;
 
-            $attendanceCode = $attendance->getAttendanceCodeByType($type);
-            $direction = $attendanceCode['direction'];
+        $type = $_POST['type'] ?? '';
+        $reason = $_POST['reason'] ?? '';
+        $comment = $_POST['comment'] ?? '';
+        $courseList = $_POST['courses'] ?? '';
 
+        $attendanceCode = $attendance->getAttendanceCodeByType($type);
+        $direction = $attendanceCode['direction'];
 
-            $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
-            $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : $dateStart;
-            $today = date('Y-m-d');
+        $dateStart = !empty($_POST['dateStart']) ? Format::dateConvert($_POST['dateStart']) : null;
+        $dateEnd = !empty($_POST['dateEnd']) ? Format::dateConvert($_POST['dateEnd']) : $dateStart;
+        $today = date('Y-m-d');
 
-            //Check to see if date is in the future and is a school day.
-            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or $dateStart < $today) {
-                $URL .= '&return=error8';
-                header("Location: {$URL}");
-            } else {
-                //Scroll through days
+        // Check to see if date is in the future and is a school day.
+        if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart) or $dateStart < $today) {
+            $URL .= '&return=error8';
+            header("Location: {$URL}");
+            exit;
+        }
 
-                $dateStartStamp = Format::timestamp($dateStart);
-                $dateEndStamp = Format::timestamp($dateEnd);
-                for ($i = $dateStartStamp; $i <= $dateEndStamp; $i = ($i + 86400)) {
-                    $date = date('Y-m-d', $i);
+        // Loop through days
+        $dateStartStamp = Format::timestamp($dateStart);
+        $dateEndStamp = Format::timestamp($dateEnd);
+        for ($i = $dateStartStamp; $i <= $dateEndStamp; $i = ($i + 86400)) {
+            $date = date('Y-m-d', $i);
 
-                    if (isSchoolOpen($guid, $date, $connection2)) { //Only add if school is open on this day
-                        foreach ($gibbonPersonID as $gibbonPersonIDCurrent) {
-                            //Check for record on same day
-                            try {
-                                $data = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'date' => "$date%");
-                                $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID IS NULL AND date LIKE :date ORDER BY date DESC';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $partialFail = true;
-                            }
+            // Only add if school is open on this day
+            if (!isSchoolOpen($guid, $date, $connection2)) {
+                $partialFailSchoolClosed = true; 
+                continue;
+            }
 
-                            if ($result->rowCount() > 0 AND $urlParams['absenceType'] == 'full') {
-                                $partialFail = true;
-                            } else {
-                                // Handle full-day absenses normally
-                                if ($urlParams['absenceType'] == 'full') {
-                                    try {
-                                        $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                        $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Future\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
-                                        $resultUpdate = $connection2->prepare($sqlUpdate);
-                                        $resultUpdate->execute($dataUpdate);
-                                    } catch (PDOException $e) {
-                                        $partialFail = true;
-                                    }
+            foreach ($gibbonPersonID as $gibbonPersonIDCurrent) {
+                // Check for record on same day
+                $existingLog = $attendanceLogGateway->selectNonClassAttendanceLogsByPersonAndDate($gibbonPersonIDCurrent, $date)->fetchAll();
 
-                                // Handle partial absenses per-class
-                                } else if ($urlParams['absenceType'] == 'partial') {
-
-                                    $courses = $courseList[$gibbonPersonIDCurrent] ?? [];
-                                    if (!empty($courses) && is_array($courses)) {
-                                        foreach ($courses as $course) {
-                                            try {
-                                                $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $session->get('gibbonPersonID'), 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
-                                                $resultUpdate = $connection2->prepare($sqlUpdate);
-                                                $resultUpdate->execute($dataUpdate);
-                                            } catch (PDOException $e) {
-                                                $partialFail = true;
-                                            }
-                                        }
-                                        $URL .= '&absenceType=partial&date=' . $_POST['dateStart'] ?? ''; //Redirect to exact state of submit form
-                                    } else {
-                                        // Return error if no courses selected for partial absence
-                                        // $URL .= '&return=error1';
-                                        // header("Location: {$URL}");
-                                        // exit();
-                                        $partialFail = true;
-                                    }
-                                }
-
-                            }
-                        }
-
+                if (!empty($existingLog) AND $urlParams['absenceType'] == 'full') {
+                    if ($urlParams['scope'] == 'single') {
+                        $URL .= '&return=error7';
+                        header("Location: {$URL}");
+                        exit;
                     } else {
-                        $partialFailSchoolClosed = true;
+                        $partialFail = true;
+                        continue;
                     }
                 }
-            }
 
-            if ($partialFailSchoolClosed == true) {
-                $URL .= '&return=warning2';
-                header("Location: {$URL}");
-            }
-            else if ($partialFail == true) {
-                $URL .= '&return=warning1';
-                header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                // Handle full-day absenses normally
+                if ($urlParams['absenceType'] == 'full') {
+                    $data = [
+                        'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                        'gibbonPersonID' => $gibbonPersonIDCurrent,
+                        'context' => 'Future',
+                        'direction' => $direction,
+                        'type' => $type,
+                        'reason' => $reason,
+                        'comment' => $comment,
+                        'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                        'date' => $date,
+                        'timestampTaken' => date('Y-m-d H:i:s'),
+                    ];
+
+                    $gibbonAttendanceLogPersonID = $attendanceLogGateway->insert($data);
+                    if (empty($gibbonAttendanceLogPersonID)) $partialFail = true;
+
+                // Handle partial absences per-class
+                } else if ($urlParams['absenceType'] == 'partial') {
+
+                    $courses = $courseList[$gibbonPersonIDCurrent] ?? [];
+                    if (!empty($courses) && is_array($courses)) {
+
+                        foreach ($courses as $gibbonCourseClassID) {
+                            $data = [
+                                'gibbonAttendanceCodeID' => $attendanceCode['gibbonAttendanceCodeID'],
+                                'gibbonPersonID' => $gibbonPersonIDCurrent,
+                                'context' => 'Class',
+                                'direction' => $direction,
+                                'type' => $type,
+                                'reason' => $reason,
+                                'comment' => $comment,
+                                'gibbonPersonIDTaker' => $session->get('gibbonPersonID'),
+                                'date' => $date,
+                                'timestampTaken' => date('Y-m-d H:i:s'),
+                                'gibbonCourseClassID' => $gibbonCourseClassID,
+                            ];
+
+                            $gibbonAttendanceLogPersonID = $attendanceLogGateway->insert($data);
+                            if (empty($gibbonAttendanceLogPersonID)) $partialFail = true;
+                        }
+                    }
+                }
+                
             }
         }
+
+        if ($partialFailSchoolClosed == true) {
+            $URL .= '&return=warning2';
+            header("Location: {$URL}");
+        }
+        else if ($partialFail == true) {
+            $URL .= '&return=warning1';
+            header("Location: {$URL}");
+        } else {
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
+        }
     }
+
 }

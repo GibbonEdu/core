@@ -64,7 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $target = $_GET['target'] ?? '';
     $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
     $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
-
     $absenceType = $_GET['absenceType'] ?? 'full';
     $date = $_GET['date'] ?? '';
     $timeStart = $_GET['timeStart'] ?? '';
@@ -321,9 +320,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             return $group;
                         }, []);
 
-                        $disabled = array_reduce($classes, function ($group, $class) use (&$logs) {
+                        $disabled = array_reduce($classes, function ($group, $class) use (&$logs, $targetDate) {
                             foreach ($logs as $log) {
-                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID']) {
+                                if ($log['context'] == 'Class' && $class['gibbonCourseClassID'] == $log['gibbonCourseClassID'] && $log['date'] == $targetDate) {
                                     $group[] = $class['gibbonCourseClassID'];
                                 }
                             }
@@ -336,7 +335,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                             ->fromArray($classOptions)
                             ->setClass('')
                             ->alignLeft()
-                            ->checked($checked + $disabled, $disabled);
+                            ->checked($checked + $disabled)
+                            ->disabled($disabled);
                         
                     } else {
                         $col->addContent(Format::small(__('N/A')));

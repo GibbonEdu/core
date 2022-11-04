@@ -88,7 +88,7 @@ class Checkbox extends Input
      * @param   string  $values
      * @return  self
      */
-    public function checked($values, $disabled = [])
+    public function checked($values)
     {
         if ($values === 1 || $values === true) $values = 'on';
 
@@ -100,6 +100,16 @@ class Checkbox extends Input
             $this->checked = [trim($values ?? '')];
         }
 
+        return $this;
+    }
+
+    /**
+     * Set a value or array of values that are currently disabled.
+     * @param   string  $disabled
+     * @return  self
+     */
+    public function disabled($disabled = [])
+    {
         $this->disabled = is_array($disabled) ? $disabled : [$disabled];
 
         return $this;
