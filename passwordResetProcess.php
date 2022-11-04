@@ -180,7 +180,7 @@ else {
                         $passwordPolicies = $container->get(PasswordPolicy::class);
 
                         //Check strength of password
-                        if (!$passwordPolicies->validate($password)) {
+                        if (!$passwordPolicies->validate($passwordNew)) {
                             header("Location: {$URL->withReturn('error6')}");
                             exit();
                         } else {
