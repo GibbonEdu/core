@@ -29,7 +29,7 @@ $gibbonLogID = $_POST['gibbonLogID'] ?? '';
 if (empty($gibbonLogID)) return;
 if (!$session->has('username')) return;
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage'))) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_manage'))) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
     $data = unserialize($log['serialisedArray'] ?? '') ?? [];
 

@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_generate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

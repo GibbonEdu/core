@@ -32,7 +32,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit_contract_add')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit_contract_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

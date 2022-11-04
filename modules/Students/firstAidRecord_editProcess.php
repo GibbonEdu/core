@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/firstAidRecord_edit.php&gibbonFirstAidID=$gibbonFirstAidID&gibbonFormGroupID=".$_GET['gibbonFormGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'firstAidRecord_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'firstAidRecord_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

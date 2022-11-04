@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage
         return $row;
     });
 
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_absences_summary'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'report_absences_summary'))) {
         $table->addHeaderAction('view', __('View'))
             ->setIcon('planner')
             ->setURL('/modules/Staff/report_absences_summary.php')

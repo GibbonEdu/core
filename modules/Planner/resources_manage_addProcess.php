@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['html' => 'HTML'])
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/resources_manage_add.php&search='.$_GET['search'];
 $time = time();
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

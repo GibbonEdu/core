@@ -22,7 +22,7 @@ use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Module\Reports\Domain\ReportingCriteriaGateway;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_criteria_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_criteria_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

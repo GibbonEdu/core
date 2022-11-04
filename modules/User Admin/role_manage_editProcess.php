@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_edit.php&gibbonRoleID='.$gibbonRoleID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'role_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'role_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

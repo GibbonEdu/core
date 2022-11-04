@@ -26,7 +26,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/budgetCycles_manage_delete.php&gibbonFinanceBudgetCycleID='.$gibbonFinanceBudgetCycleID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/budgetCycles_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'budgetCycles_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'budgetCycles_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

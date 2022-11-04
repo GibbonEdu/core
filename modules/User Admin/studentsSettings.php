@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'studentsSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'studentsSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -27,7 +27,7 @@ $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'] ?? '
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$gibbonMessengerCannedResponseID;
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'cannedResponse_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

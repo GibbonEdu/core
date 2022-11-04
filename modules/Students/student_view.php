@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

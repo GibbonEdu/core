@@ -36,7 +36,7 @@ include '../../version.php';
 //Module includes
 include './moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Tracking', 'dataPoints')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Tracking', 'dataPoints')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

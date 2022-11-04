@@ -29,7 +29,7 @@ $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'budgets_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'budgets_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

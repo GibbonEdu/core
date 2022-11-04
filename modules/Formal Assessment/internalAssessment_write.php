@@ -32,7 +32,7 @@ $attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook',
 $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'internalAssessment_write')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'int
 
                         //Work out details for external assessment display
                         $externalAssessment = false;
-                        if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_details'))) {
+                        if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_details'))) {
                             $gibbonYearGroupIDListArray = (explode(',', $gibbonYearGroupIDList));
                             if (count($gibbonYearGroupIDListArray) == 1) {
                                 $primaryExternalAssessmentByYearGroup = unserialize($settingGateway->getSettingByScope('School Admin', 'primaryExternalAssessmentByYearGroup'));
@@ -318,7 +318,7 @@ if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'int
                                 echo " | <a 'title='".__('Download more information')."' href='".$session->get('absoluteURL').'/'.$row['attachment']."'>More info</a>";
                             }
                             echo '</span><br/>';
-                            if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit'))) {
+                            if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit'))) {
                                 echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__('Enter Data')."' src='./themes/".$session->get('gibbonThemeName')."/img/markbook.png'/></a> ";
                             }
                             echo '</th>';

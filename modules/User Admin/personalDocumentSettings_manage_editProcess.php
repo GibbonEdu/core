@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonalDocumentTypeID = $_POST['gibbonPersonalDocumentTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/personalDocumentSettings_manage_edit.php&gibbonPersonalDocumentTypeID='.$gibbonPersonalDocumentTypeID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

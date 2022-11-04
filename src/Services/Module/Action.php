@@ -26,17 +26,21 @@ class Action
     protected $actionName = '';
 
     /**
-     * Constructor.
+     * Create a capability instance out of route parameters.
      *
      * @param string $module     Relevant module name of the capability.
      * @param string $routePath  Route path of the module.
      * @param string $actionName Optional action name on the routePath. Default: ''.
+     *
+     * @return Action
      */
-    public function __construct(string $module, string $routePath, string $actionName = '')
+    public static function fromRoute(string $module, string $routePath, string $actionName = ''): Action
     {
-        $this->module = $module;
-        $this->routePath = $routePath;
-        $this->actionName = $actionName;
+        $instance = new Action();
+        $instance->module = $module;
+        $instance->routePath = $routePath;
+        $instance->actionName = $actionName;
+        return $instance;
     }
 
     /**
@@ -47,7 +51,7 @@ class Action
      */
     public static function fromLegacyPath(string $path): Action
     {
-        return new Action(
+        return Action::fromRoute(
             static::parseModuleName($path),
             static::parseRoutePath($path)
         );

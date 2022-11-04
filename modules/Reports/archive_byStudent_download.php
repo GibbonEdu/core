@@ -35,7 +35,7 @@ $gibbonPersonIDAccessed = $_GET['gibbonPersonIDAccessed'] ?? $gibbon->session->g
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byStudent_view.php&gibbonPersonID='.($_GET['gibbonPersonID'] ?? '');
 
-if (empty($accessToken) && isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byStudent_download')) == false) {
+if (empty($accessToken) && isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'archive_byStudent_download')) == false) {
     // Access denied
     header("location:$returnPath&return=error0");
     exit;

@@ -30,7 +30,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\CoverageCalendar;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_my')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_my')) 
         ->fromPOST('staffCoverageSelf');
 
     $coverage = $staffCoverageGateway->queryCoverageByPersonAbsent($criteria, $gibbonPersonID);
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) || $coverage->getResultCount() > 0) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) || $coverage->getResultCount() > 0) {
         $table = DataTable::createPaginated('staffCoverageSelf', $criteria);
         $table->setTitle(__('My Coverage'));
 

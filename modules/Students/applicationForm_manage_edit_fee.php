@@ -26,7 +26,7 @@ use Gibbon\Domain\Students\ApplicationFormGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     // Access denied
     echo Format::alert(__('You do not have access to this action.'));
 } else {

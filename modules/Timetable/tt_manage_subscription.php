@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt')) == false) {
         // Access denied
         $page->addError(__('You do not have access to this action.'));
     } else {

@@ -30,7 +30,7 @@ $settingGateway = $container->get(SettingGateway::class);
 $attainmentAlternativeName = $settingGateway->getSettingByScope('Markbook', 'attainmentAlternativeName');
 $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'internalAssessment_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -25,7 +25,7 @@ use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Module\Reports\Contexts\ContextFactory;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_generate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

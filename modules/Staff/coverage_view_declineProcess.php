@@ -34,7 +34,7 @@ $gibbonStaffCoverageID = $_POST['gibbonStaffCoverageID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_decline.php&gibbonStaffCoverageID='.$gibbonStaffCoverageID;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_my.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view_decline')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_decline')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

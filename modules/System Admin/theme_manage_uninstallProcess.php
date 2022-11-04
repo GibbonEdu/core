@@ -31,7 +31,7 @@ $orphaned = $_GET['orphaned'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage_uninstall.php&gibbonThemeID='.$gibbonThemeID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'theme_manage_uninstall')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'theme_manage_uninstall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -47,7 +47,7 @@ $urlParams = [
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_future_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -25,7 +25,7 @@ $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_delete.php&gibbonTTColumnID='.$gibbonTTColumnID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttColumn_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

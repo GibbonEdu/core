@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\ApplicationFormGateway;
 use Gibbon\Domain\User\FamilyGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationF
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Students/applicationForm_manage_edit.php');
 
-            if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage_delete'))) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_delete'))) {
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Students/applicationForm_manage_delete.php');
             }

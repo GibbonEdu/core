@@ -34,7 +34,7 @@ $currentDate = $_POST['currentDate'] ?? '';
 $today = date('Y-m-d');
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byFormGroup.php&gibbonFormGroupID=$gibbonFormGroupID&currentDate=".Format::date($currentDate);
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byFormGroup')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byFormGroup')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

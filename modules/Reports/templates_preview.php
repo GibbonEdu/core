@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Renderer\HtmlRenderer;
 use Gibbon\Module\Reports\Renderer\MpdfRenderer;
 use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_preview')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_preview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

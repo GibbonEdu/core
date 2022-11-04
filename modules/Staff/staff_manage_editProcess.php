@@ -31,7 +31,7 @@ $allStaff = $_GET['allStaff'] ?? '';
 $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search&allStaff=$allStaff";
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

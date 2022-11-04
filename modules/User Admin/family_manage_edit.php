@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'family_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'family_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

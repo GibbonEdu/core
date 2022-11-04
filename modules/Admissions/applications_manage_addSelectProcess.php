@@ -34,7 +34,7 @@ $email = $_POST['email'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_addSelect')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_add')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

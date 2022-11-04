@@ -22,7 +22,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'financeSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'financeSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

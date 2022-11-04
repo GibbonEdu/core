@@ -29,7 +29,7 @@ $gibbonGroupID = $_GET['gibbonGroupID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'groups_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'groups_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

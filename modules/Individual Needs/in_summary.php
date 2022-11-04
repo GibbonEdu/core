@@ -27,7 +27,7 @@ use Gibbon\Domain\IndividualNeeds\INGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'in_summary')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_summary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

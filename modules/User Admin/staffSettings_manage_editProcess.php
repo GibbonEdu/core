@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffAbsenceTypeID = $_POST['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings_manage_edit.php&gibbonStaffAbsenceTypeID='.$gibbonStaffAbsenceTypeID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -41,7 +41,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_personal_manage_edit.php&gibbonPersonUpdateID=$gibbonPersonUpdateID";
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_personal_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_personal_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

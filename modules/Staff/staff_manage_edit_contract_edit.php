@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit_contract_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit_contract_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

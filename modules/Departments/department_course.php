@@ -26,7 +26,7 @@ use Gibbon\Forms\CustomFieldHandler;
 require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = $container->get(SettingGateway::class)->getSettingByScope('Departments', 'makeDepartmentsPublic');
-if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course')) == false and $makeDepartmentsPublic != 'Y') {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'department_course')) == false and $makeDepartmentsPublic != 'Y') {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, new Action('Departments', 'departmen
             //Print sidebar
             $sidebarExtra = '';
 
-            if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course_class'))) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'department_course_class'))) {
                 //Print class list
 
                     $dataCourse = array('gibbonCourseID' => $gibbonCourseID);

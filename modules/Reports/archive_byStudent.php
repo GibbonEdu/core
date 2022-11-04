@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byStudent')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'archive_byStudent')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

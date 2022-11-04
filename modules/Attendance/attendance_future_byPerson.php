@@ -37,7 +37,7 @@ require_once __DIR__ . '/src/AttendanceView.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Set Future Absence'));
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_future_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance
         $select->source()->fromArray($studentList['students']['source'] ?? []);
         $select->destination()->fromArray($studentList['students']['destination'] ?? []);
 
-    if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byCourseClass'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byCourseClass'))) {
         $availableAbsenceTypes = [
             'full' => __('Full Day'),
             'partial' => __('Partial'),

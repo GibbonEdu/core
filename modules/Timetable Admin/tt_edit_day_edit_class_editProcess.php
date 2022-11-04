@@ -34,7 +34,7 @@ if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $g
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_edit_class_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_edit_class_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -53,7 +53,7 @@ function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 
     return $dates;
 }
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'report_graph_studentEnrolment')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_graph_studentEnrolment')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

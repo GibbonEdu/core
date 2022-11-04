@@ -32,7 +32,7 @@ $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('System Admin', 'formBuilder_preview')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier]);
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

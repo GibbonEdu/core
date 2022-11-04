@@ -25,7 +25,7 @@ $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_delete.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

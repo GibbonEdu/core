@@ -37,7 +37,7 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     if (empty($alarm)) return;
 
     $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
-    $canViewReport = isActionAccessible($guid, $connection2, new Action('System Admin', 'alarm'));
+    $canViewReport = isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'alarm'));
     $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
 
     // Check for staff absent today

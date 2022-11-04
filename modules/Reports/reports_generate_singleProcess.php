@@ -40,7 +40,7 @@ $action = $_POST['action'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_single.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_generate_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

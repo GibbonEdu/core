@@ -30,7 +30,7 @@ $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonINInvestigationID)) {

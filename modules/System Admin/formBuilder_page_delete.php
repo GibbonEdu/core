@@ -23,7 +23,7 @@ use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

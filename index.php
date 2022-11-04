@@ -126,7 +126,7 @@ if ($session->has('passwordForceReset')) {
 $upgrade = false;
 $versionDB = $settingGateway->getSettingByScope('System', 'version');
 $versionCode = $version;
-if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, new Action('System Admin', 'update'))) {
+if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'update'))) {
     if ($session->get('address') == '/modules/System Admin/update.php') {
         $upgrade = true;
     }
@@ -146,7 +146,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         // Are we a student?
         if ($roleCategory == 'Student') {
             // Can we self register?
-            if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_studentSelfRegister'))) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_studentSelfRegister'))) {
                 // Check to see if student is on site
                 $studentSelfRegistrationIPAddresses = $settingGateway->getSettingByScope(
                     'Attendance',
@@ -191,7 +191,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         // Deal with Data Updater redirect (if required updates are enabled)
         $requiredUpdates = $settingGateway->getSettingByScope('Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') {
-            if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_updates'))) { // Can we update data?
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_updates'))) { // Can we update data?
                 $redirectByRoleCategory = $settingGateway->getSettingByScope(
                     'Data Updater',
                     'redirectByRoleCategory'
@@ -627,7 +627,7 @@ if (!$session->has('address')) {
     } else {
         // Pinned Messages
         $pinnedMessagesOnHome = $settingGateway->getSettingByScope('Messenger', 'pinnedMessagesOnHome');
-        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, new Action('Messenger', 'messageWall_view'))) {
+        if ($pinnedMessagesOnHome == 'Y' && isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messageWall_view'))) {
             $pinnedMessages = array_reduce($session->get('messageWallArray', []), function ($group, $item) {
                 if ($item['messageWallPin'] == 'Y') {
                     $group[$item['gibbonMessengerID']] = $item;

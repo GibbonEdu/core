@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_edit.php&gibbonYearGroupID='.$gibbonYearGroupID;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'yearGroup_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'yearGroup_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

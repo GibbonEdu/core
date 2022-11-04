@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYear_manage_edit.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYear_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYear_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

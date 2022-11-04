@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_scopes_manage_add.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_scopes_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_scopes_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

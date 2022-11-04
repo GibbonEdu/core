@@ -29,7 +29,7 @@ use Gibbon\Domain\Departments\DepartmentGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = $container->get(SettingGateway::class)->getSettingByScope('Departments', 'makeDepartmentsPublic');
-if (isActionAccessible($guid, $connection2, new Action('Departments', 'departments')) == false and $makeDepartmentsPublic != 'Y') {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'departments')) == false and $makeDepartmentsPublic != 'Y') {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

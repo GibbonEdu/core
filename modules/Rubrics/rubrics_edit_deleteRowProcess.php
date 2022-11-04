@@ -33,7 +33,7 @@ $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $gibbonRubricRowID = $_GET['gibbonRubricRowID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_edit')) == false) {
     $URL .= '&&return=error0';
     header("Location: {$URL}");
 } else {

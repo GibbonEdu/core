@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

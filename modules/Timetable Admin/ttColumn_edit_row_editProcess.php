@@ -30,7 +30,7 @@ if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttColumn_edit_row_edit.php&gibbonTTColumnID=$gibbonTTColumnID&gibbonTTColumnRowID=$gibbonTTColumnRowID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn_edit_row_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttColumn_edit_row_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

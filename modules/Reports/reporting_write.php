@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Forms\ReportingSidebarForm;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_wri
         return;
     }
 
-    $gibbonPersonID = isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_cycles_manage'))
+    $gibbonPersonID = isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_cycles_manage'))
         ? $_REQUEST['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID')
         : $gibbon->session->get('gibbonPersonID');
 

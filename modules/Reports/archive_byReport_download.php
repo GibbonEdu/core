@@ -30,7 +30,7 @@ require_once '../../gibbon.php';
 
 $returnPath = $session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_byReport.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byReport_download')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'archive_byReport_download')) == false) {
     // Access denied
     header("location:$returnPath&return=error0");
 } else {

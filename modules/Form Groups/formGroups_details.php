@@ -25,7 +25,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\FormGroupTable;
 
-if (isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroups_details')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Form Groups', 'formGroups_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroup
                 $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'];
 
                 //Set up for foramtting
-                $linkStaff = isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details'));
+                $linkStaff = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details'));
 
                 $formatStaff = function (&$staff) use ($userGateway, $linkStaff) {
                     $staff = $userGateway->getByID($staff);

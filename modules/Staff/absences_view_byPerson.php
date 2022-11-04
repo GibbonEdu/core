@@ -29,7 +29,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\AbsenceCalendar;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_view_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -146,8 +146,8 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_b
         ->format([AbsenceFormats::class, 'createdOn']);
 
     // ACTIONS
-    $canManage = isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage'));
-    $canRequest = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request'));
+    $canManage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage'));
+    $canRequest = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request'));
 
     $table->addActionColumn()
         ->addParam('gibbonStaffAbsenceID')

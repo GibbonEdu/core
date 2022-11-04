@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'activitySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'activitySettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

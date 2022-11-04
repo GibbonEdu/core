@@ -35,7 +35,7 @@ $orders = $_POST['order'] ?? [];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_deploy')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_deploy')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

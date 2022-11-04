@@ -25,7 +25,7 @@ $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$gibbonSchoolYearSpecialDayID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

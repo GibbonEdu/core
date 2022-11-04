@@ -28,7 +28,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Classes Not Registered'));
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'report_courseClassesNotRegistered_byDate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_courseClassesNotRegistered_byDate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

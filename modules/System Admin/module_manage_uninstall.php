@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 
 $orphaned = $_GET['orphaned'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'module_manage_uninstall')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage_uninstall')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -36,7 +36,7 @@ $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage_uninstall.php&gibbonModuleID='.$gibbonModuleID;
 $URLDelete = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/module_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'module_manage_uninstall')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage_uninstall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -35,7 +35,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item_return.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
     $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
-    if (isActionAccessible($guid, $connection2, new Action('Library', 'library_lending_item_return')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_lending_item_return')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

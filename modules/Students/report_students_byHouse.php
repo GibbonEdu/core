@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\School\HouseGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'report_students_byHouse')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_students_byHouse')) == false) {
 	//Acess denied
 	echo "<div class='error'>" ;
 		echo __('You do not have access to this action.');

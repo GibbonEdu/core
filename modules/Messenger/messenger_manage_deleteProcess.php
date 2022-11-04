@@ -28,7 +28,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/messenger_manage_delete.php&search=$search&gibbonMessengerID=".$gibbonMessengerID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/messenger_manage.php&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Module\Reports\DataFactory;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

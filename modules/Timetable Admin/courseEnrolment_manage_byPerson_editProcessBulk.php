@@ -30,7 +30,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_byPerson_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&type=$type&allUsers=$allUsers&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else if ($gibbonPersonID == '' or $gibbonSchoolYearID == '' or $action == '') {

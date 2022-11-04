@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'progress_byProofReading')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progress_byProofReading')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

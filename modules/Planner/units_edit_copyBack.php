@@ -39,7 +39,7 @@ $page->breadcrumbs
     ->add(__('Edit Unit'), 'units_edit.php', $urlParams)
     ->add(__('Copy Unit Back'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_copyBack')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_copyBack')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

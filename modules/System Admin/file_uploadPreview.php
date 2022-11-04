@@ -28,7 +28,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'import_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'import_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'publicRegistrationSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'publicRegistrationSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

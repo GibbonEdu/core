@@ -33,7 +33,7 @@ $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTID=$gibbonTTID";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

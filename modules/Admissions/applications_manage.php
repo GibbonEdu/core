@@ -25,7 +25,7 @@ use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\FamilyGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applicatio
     $table = DataTable::createPaginated('applications', $criteria);
     $table->setTitle(__('Applications'));
 
-    if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder'))) {
         $table->addHeaderAction('forms', __('Form Builder'))
             ->setURL('/modules/System Admin/formBuilder.php')
             ->setIcon('markbook')

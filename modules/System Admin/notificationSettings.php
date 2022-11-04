@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\NotificationGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'notificationSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'notificationSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

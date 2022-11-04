@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\Action;
 use Gibbon\Services\Format;
+use Gibbon\Services\Module\Action as ModuleAction;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Forms\Builder\FormBuilder;
@@ -30,7 +30,7 @@ use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\MultiPartForm;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, ModuleAction::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuil
 
     $fields = $formFieldGateway->queryFieldsByPage($criteria, $gibbonFormPageID);
     $formBuilder = $container->get(FormBuilder::class);
-    
+
     // FORM FIELDS
     $formFields = MultiPartForm::create('formFields', '');
     $formFields->setTitle(__($values['name']));
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuil
             $formFields->addPage($formPage['sequenceNumber'], $formPage['name'], $pageUrl);
         }
     }
-    
+
     foreach ($fields as $field) {
         $fieldGroupClass = $formBuilder->getFieldGroup($field['fieldGroup']);
 

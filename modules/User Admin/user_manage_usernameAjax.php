@@ -23,7 +23,7 @@ use Gibbon\Data\UsernameGenerator;
 //Gibbon system-wide include
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_add')) == false) {
     die( __('Your request failed because you do not have access to this action.') );
 } else {
     $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '003';

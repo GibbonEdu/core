@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/in_archive.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'in_archive')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_archive')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

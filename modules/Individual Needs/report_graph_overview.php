@@ -23,7 +23,7 @@ use Gibbon\UI\Chart\Chart;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'report_graph_overview')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'report_graph_overview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

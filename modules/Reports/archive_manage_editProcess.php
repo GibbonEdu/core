@@ -30,7 +30,7 @@ $gibbonReportArchiveID = $_POST['gibbonReportArchiveID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/archive_manage_edit.php&gibbonReportArchiveID='.$gibbonReportArchiveID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'archive_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'archive_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

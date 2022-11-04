@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\MedicalGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medicalForm_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

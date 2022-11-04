@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit_copy')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_copy')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

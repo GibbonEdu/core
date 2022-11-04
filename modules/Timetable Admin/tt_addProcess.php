@@ -34,7 +34,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

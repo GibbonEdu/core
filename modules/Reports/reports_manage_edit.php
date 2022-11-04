@@ -27,7 +27,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

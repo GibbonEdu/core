@@ -23,7 +23,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 // Gibbon system-wide include
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings')) == false) {
     // Access denied
     die(__('Your request failed because you do not have access to this action.') );
 } else {

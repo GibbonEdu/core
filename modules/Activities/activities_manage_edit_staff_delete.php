@@ -23,7 +23,7 @@ use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Note: This is a modal page
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_edit')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {

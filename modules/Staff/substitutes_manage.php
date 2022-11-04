@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\SubstituteGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

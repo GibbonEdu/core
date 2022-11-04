@@ -40,7 +40,7 @@ if (!empty($_POST['override'])) {
     $URL .= '&override='.$_POST['override'];
 }
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_proofread')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_proofread')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

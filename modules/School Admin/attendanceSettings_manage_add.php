@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'attendanceSettings_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'attendanceSettings_manage_add')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');

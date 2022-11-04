@@ -24,7 +24,7 @@ $_POST['address'] = '/modules/System Admin/formBuilder_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     exit;
 } else {
     // Proceed!

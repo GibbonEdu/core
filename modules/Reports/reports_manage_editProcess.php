@@ -31,7 +31,7 @@ $gibbonReportID = $_POST['gibbonReportID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage_edit.php&gibbonReportID='.$gibbonReportID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

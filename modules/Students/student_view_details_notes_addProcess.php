@@ -34,7 +34,7 @@ $subpage = $_GET['subpage'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents";
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details_notes_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details_notes_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

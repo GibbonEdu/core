@@ -29,7 +29,7 @@ $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
 $search = $_GET['search'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medicalForm_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

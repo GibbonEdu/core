@@ -385,9 +385,9 @@ function getFastFinder($connection2, $guid)
 
     $templateData = [
         'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
-        'studentIsAccessible' => isActionAccessible($guid, $connection2, new Action('students', 'student_view')),
-        'staffIsAccessible'   => isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view')),
-        'classIsAccessible'   => isActionAccessible($guid, $connection2, new Action('Planner', 'planner')) && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+        'studentIsAccessible' => isActionAccessible($guid, $connection2, Action::fromRoute('students', 'student_view')),
+        'staffIsAccessible'   => isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view')),
+        'classIsAccessible'   => isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner')) && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
 
         'form'                => $form->getOutput(),
     ];
@@ -1200,7 +1200,7 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
  *
  * $accessManager = $container->get(AccessManager::class);
  * // For "modules/Module Name/entryPoint.php"
- * if ($accessManager->allow(new Action('Module Name', 'entryPoint'))) {
+ * if ($accessManager->allow(Action::fromRoute('Module Name', 'entryPoint'))) {
  *   // ...
  * }
  * </code>
@@ -1210,7 +1210,7 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
  * use Gibbon\Services\Module\Action;
  *
  * // For "modules/Module Name/entryPoint.php"
- * if ($accessManager->allow(new Action('Module Name', 'entryPoint'))) {
+ * if ($accessManager->allow(Action::fromRoute('Module Name', 'entryPoint'))) {
  *   // ...
  * }
  * </code>

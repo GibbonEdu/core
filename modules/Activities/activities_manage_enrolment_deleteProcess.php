@@ -34,7 +34,7 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment_delete.php&gibbonPersonID=$gibbonPersonID&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage_enrolment.php&gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'];
 
-    if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_enrolment_delete')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_enrolment_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

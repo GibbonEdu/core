@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/logs_view_purge.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'logs_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'logs_view')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

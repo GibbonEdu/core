@@ -37,7 +37,7 @@ $gibbonINInvestigationContributionID = $_POST['gibbonINInvestigationContribution
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit_detail.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
 $URLSuccess = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_submit.php&gibbonINInvestigationID=$gibbonINInvestigationID&gibbonINInvestigationContributionID=$gibbonINInvestigationContributionID";
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_submit_detail')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_submit_detail')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

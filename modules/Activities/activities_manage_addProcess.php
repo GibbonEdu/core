@@ -31,7 +31,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => '
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_manage_add.php&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID'];
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

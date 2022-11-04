@@ -33,7 +33,7 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_duplicate.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

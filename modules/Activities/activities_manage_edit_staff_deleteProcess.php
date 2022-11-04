@@ -29,7 +29,7 @@ $gibbonSchoolYearTermID = $_POST['gibbonSchoolYearTermID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL') . '/index.php?q=/modules/' . $gibbon->session->get('module') . "/activities_manage_edit.php&gibbonActivityID=$gibbonActivityID&search=$search&gibbonSchoolYearTermID=$gibbonSchoolYearTermID";
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

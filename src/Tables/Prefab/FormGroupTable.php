@@ -63,7 +63,7 @@ class FormGroupTable extends DataTable
             $canViewConfidential = false;
         }
 
-        if ($canPrint && isActionAccessible($guid, $connection2, new Action('Students', 'report_students_byFormGroup')) == false) {
+        if ($canPrint && isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_students_byFormGroup')) == false) {
             $canPrint = false;
         }
 

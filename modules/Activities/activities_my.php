@@ -26,14 +26,14 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_my')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     $page->breadcrumbs->add(__('My Activities')); 
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
-    $canAccessEnrolment = isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_enrolment'));
+    $canAccessEnrolment = isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_enrolment'));
 
     $activityGateway = $container->get(ActivityGateway::class);
     

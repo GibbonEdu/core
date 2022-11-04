@@ -35,7 +35,7 @@ if ($gibbonStudentEnrolmentID == '' or $gibbonSchoolYearID == '') { echo 'Fatal 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage_edit.php&gibbonStudentEnrolmentID=$gibbonStudentEnrolmentID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Admissions', 'studentEnrolment_manage_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'studentEnrolment_manage_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

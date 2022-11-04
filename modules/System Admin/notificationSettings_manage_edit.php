@@ -24,7 +24,7 @@ use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'notificationSettings_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'notificationSettings_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

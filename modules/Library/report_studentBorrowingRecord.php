@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Student Borrowing Record'));
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'report_studentBorrowingRecord')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'report_studentBorrowingRecord')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

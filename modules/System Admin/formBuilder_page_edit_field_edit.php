@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Forms\FormFieldGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

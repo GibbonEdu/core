@@ -31,7 +31,7 @@ $tab = $_POST['tab'] ?? 0;
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_edit')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search, 'tab' => $tab]);
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

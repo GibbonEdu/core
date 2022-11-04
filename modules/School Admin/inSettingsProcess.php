@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['targetsTemplate' 
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'inSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'inSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

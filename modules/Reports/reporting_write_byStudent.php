@@ -31,7 +31,7 @@ use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Domain\User\UserGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write_byStudent')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write_byStudent')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_wri
     }
 
     $gibbonPersonIDStudent = $_REQUEST['gibbonPersonIDStudent'] ?? '';
-    $gibbonPersonID = isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_cycles_manage'))
+    $gibbonPersonID = isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_cycles_manage'))
         ? $_REQUEST['gibbonPersonID'] ?? $gibbon->session->get('gibbonPersonID')
         : $gibbon->session->get('gibbonPersonID');
     $urlParams = [

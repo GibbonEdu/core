@@ -30,7 +30,7 @@ use Gibbon\Domain\Activities\ActivityGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_activityType_formGroup')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'report_activityType_formGroup')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

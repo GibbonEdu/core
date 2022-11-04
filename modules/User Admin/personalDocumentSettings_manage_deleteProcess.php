@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 $gibbonPersonalDocumentTypeID = $_GET['gibbonPersonalDocumentTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/personalDocumentSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'personalDocumentSettings_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'personalDocumentSettings_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

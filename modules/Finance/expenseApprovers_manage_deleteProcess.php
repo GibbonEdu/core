@@ -26,7 +26,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage_delete.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenseApprovers_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenseApprovers_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -28,7 +28,7 @@ $gibbonFormPageID = $_GET['gibbonFormPageID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_edit.php&gibbonFormID='.$gibbonFormID;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

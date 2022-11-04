@@ -26,7 +26,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'report_student_personalDocumentSummary')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_student_personalDocumentSummary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

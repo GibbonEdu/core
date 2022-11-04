@@ -30,7 +30,7 @@ $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage_add.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

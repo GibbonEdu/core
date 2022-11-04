@@ -25,7 +25,7 @@ $action = $_POST['action'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/activities_payment.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_payment')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_payment')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

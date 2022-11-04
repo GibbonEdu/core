@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/alarm.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'alarm')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'alarm')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

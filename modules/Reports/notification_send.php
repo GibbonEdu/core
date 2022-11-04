@@ -24,7 +24,7 @@ use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'notification_send')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'notification_send')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

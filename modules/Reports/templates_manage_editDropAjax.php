@@ -26,7 +26,7 @@ $_POST['address'] = '/modules/Reports/templates_manage_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_manage_edit')) == false) {
     exit;
 } else {
     // Proceed!

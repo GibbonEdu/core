@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML'])
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/cannedResponse_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'cannedResponse_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

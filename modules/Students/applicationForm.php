@@ -44,7 +44,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm')) != false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
@@ -66,7 +66,7 @@ if ($proceed == false) {
         echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $session->get('organisationNameShort'), $session->get('systemName')).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $session->get('organisationNameShort'), $session->get('systemName')).'</div>';
     } else {
         // Application Manager
-        if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage'))) {
             $applicationType = (isset($_POST['applicationType']))? $_POST['applicationType'] : '';
 
             if ($applicationType == 'blank') {
@@ -904,7 +904,7 @@ if ($proceed == false) {
     }
 
     // OFFICE ONLY
-    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage'))) {
         $form->addRow()->addHeading('For Office Use', __('For Office Use'));
 
         $row = $form->addRow();

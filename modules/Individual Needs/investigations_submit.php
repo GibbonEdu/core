@@ -25,7 +25,7 @@ use Gibbon\Domain\IndividualNeeds\INInvestigationContributionGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_submit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_submit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'studentEnrolment_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'studentEnrolment_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

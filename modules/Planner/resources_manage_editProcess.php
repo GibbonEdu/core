@@ -27,7 +27,7 @@ $gibbonResourceID = $_GET['gibbonResourceID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/resources_manage_edit.php&gibbonResourceID=$gibbonResourceID&search=".$_GET['search'];
 $time = time();
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

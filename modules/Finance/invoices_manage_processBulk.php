@@ -48,7 +48,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
         $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
     }
 
-    if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoices_manage')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoices_manage')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

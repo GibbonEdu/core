@@ -24,7 +24,7 @@ $page->breadcrumbs
     ->add(__('Manage Canned Responses'), 'cannedResponse_manage.php')
     ->add(__('Edit Canned Response'));
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'cannedResponse_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

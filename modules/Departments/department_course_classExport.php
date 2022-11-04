@@ -28,7 +28,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
-if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_course_class')) == false || empty($highestAction)) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'department_course_class')) == false || empty($highestAction)) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

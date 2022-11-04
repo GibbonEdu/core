@@ -58,7 +58,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm')) != false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm')) != false) {
         $proceed = true;
     }
 }

@@ -28,7 +28,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffContractGateway;
 use Gibbon\Domain\Staff\StaffFacilityGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

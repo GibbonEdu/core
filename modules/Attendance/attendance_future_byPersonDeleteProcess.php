@@ -31,7 +31,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_future_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

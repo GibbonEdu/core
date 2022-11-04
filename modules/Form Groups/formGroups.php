@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroups')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Form Groups', 'formGroups')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

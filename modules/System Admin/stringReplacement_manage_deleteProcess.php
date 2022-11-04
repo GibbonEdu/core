@@ -26,7 +26,7 @@ $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/stringReplacement_manage_delete.php&gibbonStringID=$gibbonStringID&search=$search";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/stringReplacement_manage.php&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'stringReplacement_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'stringReplacement_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

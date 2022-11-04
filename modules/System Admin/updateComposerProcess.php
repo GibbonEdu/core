@@ -34,7 +34,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/update.php';
 $partialFail = false;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'update')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'update')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

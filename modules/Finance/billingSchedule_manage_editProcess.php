@@ -33,7 +33,7 @@ if ($gibbonFinanceBillingScheduleID == '' or $gibbonSchoolYearID == '') { echo '
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Finance', 'billingSchedule_manage_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'billingSchedule_manage_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

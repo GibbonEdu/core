@@ -91,7 +91,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         //GET PLANNER
         $planner = false;
 
-        if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner'))) {
             $date = date('Y-m-d');
             try {
                 $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
@@ -220,7 +220,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         //GET TIMETABLE
         $timetable = false;
         if (
-            isActionAccessible($guid, $connection2, new Action('Timetable', 'tt'))
+            isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt'))
             and $this->session->get('username') != ''
             and $this->session->get('gibbonRoleIDCurrentCategory')
         ) {

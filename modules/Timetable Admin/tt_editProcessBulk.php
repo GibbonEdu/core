@@ -28,7 +28,7 @@ $action = $_POST['action'];
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else if ($action == '') {

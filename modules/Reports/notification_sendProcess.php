@@ -32,7 +32,7 @@ $notificationText = $_POST['notificationText'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/notification_send.php&type='.$type;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'notification_send')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'notification_send')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

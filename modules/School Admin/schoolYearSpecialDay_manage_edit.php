@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearSpecialDayGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

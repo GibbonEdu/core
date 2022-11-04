@@ -30,7 +30,7 @@ $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
-if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'department_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

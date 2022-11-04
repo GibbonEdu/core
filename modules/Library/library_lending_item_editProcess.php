@@ -37,7 +37,7 @@ if ($gibbonLibraryItemID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryItemEventID=$gibbonLibraryItemEventID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
-    if (isActionAccessible($guid, $connection2, new Action('Library', 'library_lending_item_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_lending_item_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -28,7 +28,7 @@ $gibbonRoleID = $_POST['gibbonRoleID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'permission_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'permission_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

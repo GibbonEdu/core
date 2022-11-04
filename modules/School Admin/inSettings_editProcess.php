@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/inSettings_edit.php&gibbonINDescriptorID=$gibbonINDescriptorID";
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'inSettings_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'inSettings_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

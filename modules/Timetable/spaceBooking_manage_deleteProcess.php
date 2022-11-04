@@ -25,7 +25,7 @@ $gibbonTTSpaceBookingID = $_GET['gibbonTTSpaceBookingID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceBooking_manage_delete.php&gibbonTTSpaceBookingID='.$gibbonTTSpaceBookingID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceBooking_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceBooking_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spaceBooking_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

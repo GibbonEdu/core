@@ -24,7 +24,7 @@ include '../../gibbon.php';
 $gibbonUsernameFormatID = isset($_POST['gibbonUsernameFormatID'])? $_POST['gibbonUsernameFormatID'] : '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userSettings.php&gibbonUsernameFormatID='.$gibbonUsernameFormatID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'userSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'userSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

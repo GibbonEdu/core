@@ -56,7 +56,7 @@ class CoverageDates
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
-        $canManage = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage'));
+        $canManage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage'));
 
         $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
         $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();

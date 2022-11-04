@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'house_manage_assign')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'house_manage_assign')) == false) {
 	//Acess denied
 	echo "<div class='error'>" ;
 		echo __('You do not have access to this action.');

@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

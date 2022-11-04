@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['staffApplicationF
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffApplicationFormSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffApplicationFormSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffApplicationFormSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

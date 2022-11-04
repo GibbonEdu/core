@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Consecutive Absences'));
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'consecutiveAbsences')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'consecutiveAbsences')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

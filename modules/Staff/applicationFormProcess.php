@@ -52,7 +52,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'applicationForm')) != false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm')) != false) {
         $proceed = true;
     }
 }

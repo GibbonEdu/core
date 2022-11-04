@@ -37,7 +37,7 @@ if (!$session->has('username')) {
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applicationForm')) != false) {
+} else if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applicationForm')) != false) {
     $proceed = true;
 }
 

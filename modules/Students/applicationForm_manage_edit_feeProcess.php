@@ -34,7 +34,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonApplicationFormID) or empty($gibbonSchoolYearID)) {

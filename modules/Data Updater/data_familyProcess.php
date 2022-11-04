@@ -29,7 +29,7 @@ $gibbonFamilyID = $_GET['gibbonFamilyID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_family')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_family')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -30,7 +30,7 @@ if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') { ech
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search";
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/medicalForm_manage_edit.php&gibbonPersonMedicalID=$gibbonPersonMedicalID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage_condition_delete')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medicalForm_manage_condition_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

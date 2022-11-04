@@ -29,7 +29,7 @@ $gibbonReportTemplateFontID = $_POST['gibbonReportTemplateFontID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_fonts_edit.php&gibbonReportTemplateFontID='.$gibbonReportTemplateFontID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_fonts_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_fonts_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

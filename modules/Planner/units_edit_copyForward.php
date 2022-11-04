@@ -43,7 +43,7 @@ $page->breadcrumbs
     ])
     ->add(__('Copy Unit Forward'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_copyForward')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_copyForward')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

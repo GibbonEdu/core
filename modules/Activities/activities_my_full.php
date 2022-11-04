@@ -25,7 +25,7 @@ use Gibbon\Services\Module\Action;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_my_full')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_my_full')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

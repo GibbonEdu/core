@@ -28,7 +28,7 @@ $nameShort = $_POST['nameShort'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_add.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttColumn_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

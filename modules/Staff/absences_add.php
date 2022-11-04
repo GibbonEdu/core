@@ -27,7 +27,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_add'))
         $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request'))) {
         $form->addRow()->addHeading('Coverage', __('Coverage'))->addClass('approvalNotRequired');
 
         $row = $form->addRow()->addClass('approvalNotRequired');

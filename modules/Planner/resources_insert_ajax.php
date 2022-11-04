@@ -41,7 +41,7 @@ $purpose = isset($_POST['purpose'.$id])? $_POST['purpose'.$id] : (isset($_GET['p
 $gibbonYearGroupID = isset($_POST['gibbonYearGroupID'.$id])? $_POST['gibbonYearGroupID'.$id] : (isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : '');
 $tags = isset($_POST['tags'.$id])? $_POST['tags'.$id] : (isset($_GET['tags'])? $_GET['tags'] : null);
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_view')) == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __('Your request failed because you do not have access to this action.');

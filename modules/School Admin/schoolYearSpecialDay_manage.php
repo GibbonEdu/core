@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Module\Action;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

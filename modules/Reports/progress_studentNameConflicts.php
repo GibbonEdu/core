@@ -26,7 +26,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'progress_studentNameConflicts')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progress_studentNameConflicts')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, new Action('Reports', 'progress_stud
             return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
         });
 
-    if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write_byStudent'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write_byStudent'))) {
         $table->addActionColumn()
             ->addParam('gibbonReportingCycleID', $gibbonReportingCycleID)
             ->addParam('gibbonReportingScopeID')

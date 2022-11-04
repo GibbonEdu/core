@@ -30,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/thirdPartySettings.php';
 $URLPayment = $session->get('absoluteURL').'/modules/System Admin/thirdPartySettings_paymentProcess.php?test=true';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'thirdPartySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'thirdPartySettings')) == false) {
     // Access denied
     $URL .= '&return=error0';
     header("Location: {$URL}");

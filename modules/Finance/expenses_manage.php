@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenses_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenses_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

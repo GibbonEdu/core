@@ -27,7 +27,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'weighting_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'weighting_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

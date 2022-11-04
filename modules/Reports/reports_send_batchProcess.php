@@ -35,7 +35,7 @@ $identifiers = $_POST['identifier'] ?? [];
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_send_batch.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_send_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_send_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

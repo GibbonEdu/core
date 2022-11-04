@@ -28,7 +28,7 @@ use Gibbon\Contracts\Comms\SMS;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_post')) == FALSE) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_post')) == FALSE) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {

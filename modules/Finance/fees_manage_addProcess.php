@@ -30,7 +30,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/fees_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Finance', 'fees_manage_add')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'fees_manage_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -30,7 +30,7 @@ $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$gibbonSchoolYearSpecialDayID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

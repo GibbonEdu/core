@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/School Admin/house_manage_assign.php';
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Students/report_students_byHouse.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'house_manage_assign')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'house_manage_assign')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

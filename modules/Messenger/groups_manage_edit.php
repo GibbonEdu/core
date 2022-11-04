@@ -28,7 +28,7 @@ $page->breadcrumbs
     ->add(__('Manage Groups'), 'groups_manage.php')
     ->add(__('Edit Group'));
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'groups_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'groups_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

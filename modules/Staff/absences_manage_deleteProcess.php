@@ -31,7 +31,7 @@ require_once '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonStaffAbsenceID)) {

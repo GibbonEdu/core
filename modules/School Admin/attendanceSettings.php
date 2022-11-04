@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'attendanceSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'attendanceSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');

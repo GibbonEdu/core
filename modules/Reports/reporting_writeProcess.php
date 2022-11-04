@@ -41,7 +41,7 @@ $urlParams = [
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write.php&'.http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_write')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

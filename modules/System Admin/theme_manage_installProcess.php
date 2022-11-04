@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 //Get URL from calling page, and set returning URL
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'theme_manage_install')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'theme_manage_install')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

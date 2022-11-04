@@ -27,7 +27,7 @@ $gibbonReportID = $_GET['gibbonReportID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reports_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -30,7 +30,7 @@ if ($gibbonScaleID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/gradeScales_manage_edit_grade_edit.php&gibbonScaleID=$gibbonScaleID&gibbonScaleGradeID=$gibbonScaleGradeID";
 
-    if (isActionAccessible($guid, $connection2, new Action('School Admin', 'gradeScales_manage_edit_grade_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'gradeScales_manage_edit_grade_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -39,14 +39,14 @@ if (!isset($_SESSION[$guid]) or !$session->exists('gibbonPersonID')) {
     if (empty($searchTerm)) die('[]');
 
     // Check access levels
-    $studentIsAccessible = isActionAccessible($guid, $connection2, new Action('students', 'student_view'));
+    $studentIsAccessible = isActionAccessible($guid, $connection2, Action::fromRoute('students', 'student_view'));
     $highestActionStudent = getHighestGroupedAction($guid, '/modules/students/student_view.php', $connection2);
 
-    $staffIsAccessible = isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view'));
+    $staffIsAccessible = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view'));
     $classIsAccessible = false;
-    $alarmIsAccessible = isActionAccessible($guid, $connection2, new Action('System Admin', 'alarm'));
+    $alarmIsAccessible = isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'alarm'));
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-    if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner')) and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner')) and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
         $classIsAccessible = true;
     }
 

@@ -34,7 +34,7 @@ $subView = $_GET['subView'] ?? '';
 $search = $_POST['search'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&date=$date&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_view_full')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_view_full')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

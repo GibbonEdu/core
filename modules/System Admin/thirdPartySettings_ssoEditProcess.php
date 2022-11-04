@@ -29,7 +29,7 @@ $sso = $_POST['sso'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/thirdPartySettings_ssoEdit.php&sso=$sso";
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'thirdPartySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'thirdPartySettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

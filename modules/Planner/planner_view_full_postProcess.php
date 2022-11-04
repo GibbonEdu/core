@@ -32,7 +32,7 @@ include './moduleFunctions.php';
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=".$_POST['search'].$_POST['params'];
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_view_full')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_view_full')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

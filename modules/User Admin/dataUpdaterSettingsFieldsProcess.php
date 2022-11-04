@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataUpdaterSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'dataUpdaterSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'dataUpdaterSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

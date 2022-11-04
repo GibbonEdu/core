@@ -24,7 +24,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messageWall_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messageWall_view')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

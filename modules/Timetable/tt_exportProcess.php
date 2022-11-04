@@ -22,7 +22,7 @@ use Gibbon\Domain\System\NotificationGateway;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

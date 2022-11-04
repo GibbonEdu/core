@@ -32,7 +32,7 @@ $status = $_POST['status'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_approval_action.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_approval.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_approval_action')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_approval_action')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonStaffAbsenceID) || empty($status)) {

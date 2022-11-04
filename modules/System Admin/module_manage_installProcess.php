@@ -30,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
 $gibbon->session->set('moduleInstallError', '');
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'module_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

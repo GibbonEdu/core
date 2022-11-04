@@ -42,7 +42,7 @@ echo "<script type='text/javascript'>";
     echo '});';
 echo '</script>';
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write_data')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'internalAssessment_write_data')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

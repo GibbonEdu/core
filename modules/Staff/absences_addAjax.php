@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_add')) == false) {
     die();
 } else {
     // Proceed!

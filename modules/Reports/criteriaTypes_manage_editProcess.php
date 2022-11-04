@@ -30,7 +30,7 @@ $gibbonReportingCriteriaTypeID = $_POST['gibbonReportingCriteriaTypeID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/criteriaTypes_manage_edit.php&gibbonReportingCriteriaTypeID='.$gibbonReportingCriteriaTypeID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'criteriaTypes_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'criteriaTypes_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

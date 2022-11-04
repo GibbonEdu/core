@@ -29,7 +29,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/customFields_edit.php&gibbonCustomFieldID=$gibbonCustomFieldID";
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'customFields_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'customFields_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -44,7 +44,7 @@ $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $type = $_GET['type'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/behaviour_manage_edit.php&gibbonBehaviourID=$gibbonBehaviourID&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type";
 
-if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

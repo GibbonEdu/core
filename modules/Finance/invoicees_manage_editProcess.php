@@ -31,7 +31,7 @@ $search = $_GET['search'] ?? '';
 $allUsers = $_GET['allUsers'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&search=$search&allUsers=$allUsers";
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoicees_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoicees_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -33,7 +33,7 @@ $gibbonUnitClassID = $_POST['gibbonUnitClassID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_smartBlockify.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLCopy = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_smartBlockify')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_smartBlockify')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

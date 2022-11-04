@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Comms\EmailTemplate;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'emailTemplates_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'emailTemplates_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

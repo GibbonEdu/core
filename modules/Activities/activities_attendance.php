@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_attendance')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_attendance')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
         
-        if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_attendanceExport'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'report_attendanceExport'))) {
             $form->addHeaderAction('download', __('Export to Excel'))
                 ->setURL('/modules/Activities/report_attendanceExport.php')
                 ->addParams(['gibbonActivityID' => $gibbonActivityID])

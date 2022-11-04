@@ -33,7 +33,7 @@ if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];
 }
 
-if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_edit_editRowsColumns')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_edit_editRowsColumns')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

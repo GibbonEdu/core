@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $table->setTitle(__('Notes'));
         $table->setDescription($notes);
 
-        if (isActionAccessible($guid, $connection2, new Action('System Admin', 'export_run'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'export_run'))) {
             $table->addHeaderAction('export', __('Export Columns'))
                 ->setURL('/modules/System Admin/export_run.php')
                 ->addParam('type', $type)

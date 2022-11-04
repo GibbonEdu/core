@@ -109,7 +109,7 @@ echo "<script type='text/javascript'>";
     <?php
 echo '</script>';
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit_data')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_data')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

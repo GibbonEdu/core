@@ -29,7 +29,7 @@ $gibbonFinanceExpenseApproverID = $_GET['gibbonFinanceExpenseApproverID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/expenseApprovers_manage_edit.php&gibbonFinanceExpenseApproverID='.$gibbonFinanceExpenseApproverID;
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenseApprovers_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenseApprovers_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

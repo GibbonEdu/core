@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_sync_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_sync_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

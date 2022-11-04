@@ -37,7 +37,7 @@ $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'in_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

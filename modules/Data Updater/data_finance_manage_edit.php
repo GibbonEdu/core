@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_finance_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_finance_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_fin
             $newValues = $newResult->fetch();
 
             // Provide a link back to edit the associated record
-            if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoicees_manage_edit')) == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoicees_manage_edit')) == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
                 $params = [
                     'gibbonFinanceInvoiceeID' => $oldValues['gibbonFinanceInvoiceeID'], 
                     'search' => '', 

@@ -29,7 +29,7 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

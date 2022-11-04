@@ -25,7 +25,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Module\Staff\Tables\CoverageMiniCalendar;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_subs_availability')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'report_subs_availability')) == false) {
     // Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_subs_ava
             ->isRequired()
             ->setValue($timeEnd);
 
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage'))) {
         $row = $form->addRow();
             $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
             $row->addCheckbox('allStaff')->checked($allStaff);
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'report_subs_ava
         ->notSortable()
         ->format(Format::using('userPhoto', 'image_240'));
 
-    $canManageCoverage = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage'));
+    $canManageCoverage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage'));
     $table->addColumn('fullName', __('Name'))
         ->context('primary')
         ->description(__('Priority'))

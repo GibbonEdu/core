@@ -34,7 +34,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff.php&gibbonStaffID=$gibbonStaffID&gibbonPersonID=$gibbonPersonID";
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_staff')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_staff')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

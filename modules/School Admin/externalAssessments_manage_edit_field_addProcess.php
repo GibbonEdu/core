@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonExternalAssessmentID = $_POST['gibbonExternalAssessmentID'];
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessments_manage_edit_field_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID";
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'externalAssessments_manage_edit_field_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'externalAssessments_manage_edit_field_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

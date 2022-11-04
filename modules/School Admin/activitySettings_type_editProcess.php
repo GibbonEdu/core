@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonActivityTypeID = $_GET['gibbonActivityTypeID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/School Admin/activitySettings_type_edit.php&gibbonActivityTypeID=".$gibbonActivityTypeID;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'activitySettings_type_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'activitySettings_type_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

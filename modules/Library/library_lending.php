@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 
 $page->breadcrumbs->add(__('Lending & Activity Log'));
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'library_lending')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_lending')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $time = time();
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage_add')) == false) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __('Your request failed because you do not have access to this action.');
     echo '</span>';

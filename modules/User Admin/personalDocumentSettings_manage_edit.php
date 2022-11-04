@@ -23,7 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\PersonalDocumentHandler;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

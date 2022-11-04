@@ -29,7 +29,7 @@ $gibbonTTColumnID = $_POST['gibbonTTColumnID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/ttColumn_edit.php&gibbonTTColumnID='.$gibbonTTColumnID;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttColumn_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

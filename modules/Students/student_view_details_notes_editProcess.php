@@ -33,7 +33,7 @@ $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'] ?? '';
 $allStudents = $_GET['allStudents'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/student_view_details_notes_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=Notes&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents";
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details_notes_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details_notes_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

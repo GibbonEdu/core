@@ -28,7 +28,7 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -23,7 +23,7 @@ use Gibbon\Domain\Planner\PlannerEntryStudentHomeworkGateway;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_deadlines')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_deadlines')) == false) {
     die('error0');
 } else {
     $category = $session->get('gibbonRoleIDCurrentCategory');

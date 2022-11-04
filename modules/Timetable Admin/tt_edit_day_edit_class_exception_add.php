@@ -22,7 +22,7 @@ use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_edit_class_exception_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

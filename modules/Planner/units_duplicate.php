@@ -37,7 +37,7 @@ $page->breadcrumbs
     ])
     ->add(__('Duplicate Unit'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_duplicate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -26,7 +26,7 @@ include '../../gibbon.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceBooking_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spaceBooking_manage_add')) == false) {
     echo Format::alert(__('You do not have access to this action.'));
 } else {
     

@@ -24,7 +24,7 @@ $_POST['address'] = '/modules/User Admin/personalDocumentSettings_manage_edit.ph
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'personalDocumentSettings_manage_edit')) == false) {
     exit;
 } else {
     // Proceed!

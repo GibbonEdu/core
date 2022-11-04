@@ -29,7 +29,7 @@ $logGateway = $container->get(LogGateway::class);
 $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage_enrolment_edit')) == false) { 
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_enrolment_edit')) == false) { 
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -25,7 +25,7 @@ $gibbonPersonIDAssistant = $_GET['gibbonPersonIDAssistant'] ?? '';
 $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonIDStudent";
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'in_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

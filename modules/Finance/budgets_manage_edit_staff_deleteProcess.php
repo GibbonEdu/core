@@ -25,7 +25,7 @@ $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'] ?? '';
 $gibbonFinanceBudgetPersonID = $_GET['gibbonFinanceBudgetPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'department_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'department_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -30,7 +30,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_class_delete.php&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_edit.php&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_manage_class_delete')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage_class_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

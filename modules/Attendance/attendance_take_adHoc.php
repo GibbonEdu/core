@@ -32,7 +32,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/src/AttendanceView.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_adHoc')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

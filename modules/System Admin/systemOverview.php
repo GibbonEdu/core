@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'systemSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'systemSettings')) == false) {
     // Access denied
     echo Format::alert(__('You do not have access to this action.'));
 } else {

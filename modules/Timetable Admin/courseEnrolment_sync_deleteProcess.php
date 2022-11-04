@@ -25,7 +25,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_sync_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_sync_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -37,7 +37,7 @@ $pageNumber = $_REQUEST['page'] ?? 1;
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_add')->withQueryParams(['gibbonFormID' => $gibbonFormID, 'page' => $pageNumber, 'identifier' => $identifier, 'accessID' => $accessID]);
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_add')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

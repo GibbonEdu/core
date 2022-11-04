@@ -30,7 +30,7 @@ use Gibbon\Domain\Students\StudentReportGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'report_student_emergencySummary')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_student_emergencySummary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

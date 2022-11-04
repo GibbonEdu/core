@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Rubrics\RubricGateway;
 use Gibbon\Domain\Departments\DepartmentGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

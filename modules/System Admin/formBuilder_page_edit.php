@@ -17,20 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
-use Gibbon\Forms\Form;
-use Gibbon\Tables\Action;
-use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Forms\FormGateway;
-use Gibbon\Forms\Builder\FormBuilder;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Domain\Forms\FormFieldGateway;
-use Gibbon\Forms\MultiPartForm;
-use Gibbon\Http\Url;
+use Gibbon\Domain\Forms\FormGateway;
+use Gibbon\Domain\Forms\FormPageGateway;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Module\Action;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -65,7 +59,7 @@ if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuil
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
     $form->addHiddenValue('gibbonFormPageID', $gibbonFormPageID);

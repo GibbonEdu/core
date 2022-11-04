@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

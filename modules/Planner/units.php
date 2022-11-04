@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Unit Planner'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units')) == false) {
     //Acess denied
     $page->addError(__('Your request failed because you do not have access to this action.'));
 } else {

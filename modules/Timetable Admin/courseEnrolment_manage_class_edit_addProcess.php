@@ -32,7 +32,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID =
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/courseEnrolment_manage_class_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_class_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_manage_class_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

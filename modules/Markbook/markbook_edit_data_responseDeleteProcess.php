@@ -32,7 +32,7 @@ $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit_data')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_data')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -29,7 +29,7 @@ $gibbonEmailTemplateID = $_POST['gibbonEmailTemplateID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_duplicate.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'emailTemplates_manage_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'emailTemplates_manage_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -22,7 +22,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details_notes_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details_notes_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

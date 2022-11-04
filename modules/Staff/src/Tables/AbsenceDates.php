@@ -82,8 +82,8 @@ class AbsenceDates
         }
 
         // ACTIONS
-        $canRequestCoverage = isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) && $absence['status'] == 'Approved';
-        $canManage = isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage'));
+        $canRequestCoverage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) && $absence['status'] == 'Approved';
+        $canManage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage'));
         $canDelete = count($dates) > 1;
 
         if ($canManage || $absence['gibbonPersonID'] == $this->session->get('gibbonPersonID')) {

@@ -29,7 +29,7 @@ $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_finance.php&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID";
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_finance')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_finance')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

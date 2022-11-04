@@ -32,7 +32,7 @@ $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
-if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

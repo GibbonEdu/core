@@ -36,7 +36,7 @@ $request = [
 
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage_add')) == false) {
     die(Format::alert(__('Your request failed because you do not have access to this action.')));
 } elseif (empty($request['dateStart']) || empty($request['dateEnd'])|| $gibbonPersonIDCoverage == 'Please select...') {
     die();

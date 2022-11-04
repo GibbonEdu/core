@@ -31,7 +31,7 @@ $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? ''
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

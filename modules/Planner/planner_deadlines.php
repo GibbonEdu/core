@@ -30,7 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $style = '';
 
 $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_deadlines')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_deadlines')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

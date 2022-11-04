@@ -26,7 +26,7 @@ $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/substitutes_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonSubstituteID)) {

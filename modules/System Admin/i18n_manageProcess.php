@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibboni18nID = $_POST['gibboni18nID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/i18n_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'i18n_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i18n_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

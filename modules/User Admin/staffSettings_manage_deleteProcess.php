@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

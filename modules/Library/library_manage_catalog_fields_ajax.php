@@ -30,7 +30,7 @@ include $session->get('absolutePath').'/modules/Library/moduleFunctions.php';
 $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'] ?? '';
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'library_manage_catalog_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_manage_catalog_add')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

@@ -34,7 +34,7 @@ $filter2 = $_GET['filter2'] ?? '';
 $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_duplicate.php&gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

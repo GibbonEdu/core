@@ -24,7 +24,7 @@ $_POST['address'] = '/modules/Reports/reporting_scopes_manage_edit.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_scopes_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_scopes_manage_edit')) == false) {
     exit;
 } else {
     // Proceed!

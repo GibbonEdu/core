@@ -27,7 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Work Summary by Form Group'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'report_workSummary_byFormGroup')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report_workSummary_byFormGroup')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

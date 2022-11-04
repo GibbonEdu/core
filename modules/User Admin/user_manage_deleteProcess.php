@@ -26,7 +26,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage_delete.php&gibbonPersonID='.$gibbonPersonID.'&search='.$_GET['search'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/user_manage.php&search='.$_GET['search'];
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

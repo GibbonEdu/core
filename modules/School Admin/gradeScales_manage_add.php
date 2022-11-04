@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'gradeScales_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'gradeScales_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

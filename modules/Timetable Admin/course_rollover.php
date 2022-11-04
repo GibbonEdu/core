@@ -24,7 +24,7 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_rollover')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_rollover')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -29,7 +29,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_manage.php&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_manage')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

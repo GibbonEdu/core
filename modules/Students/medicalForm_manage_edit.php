@@ -27,7 +27,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\MedicalGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'medicalForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medicalForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

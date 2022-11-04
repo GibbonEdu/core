@@ -29,7 +29,7 @@ $gibbonTTDayID = $_POST['gibbonTTDayID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$dateStamp;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttDates_edit_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttDates_edit_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

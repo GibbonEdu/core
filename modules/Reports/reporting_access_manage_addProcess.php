@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_access_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_access_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

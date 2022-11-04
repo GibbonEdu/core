@@ -27,7 +27,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'report_classEnrolment_byFormGroup')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'report_classEnrolment_byFormGroup')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

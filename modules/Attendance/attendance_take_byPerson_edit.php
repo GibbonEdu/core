@@ -33,7 +33,7 @@ $page->breadcrumbs
 	->add(__('Take Attendance by Person'), 'attendance_take_byPerson.php', $urlParams)
 	->add(__('Edit Attendance by Person'));
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byPerson_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -43,7 +43,7 @@ $today = date('Y-m-d');
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_adHoc.php&currentDate=".Format::date($currentDate)."&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_adHoc')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -35,7 +35,7 @@ echo "<link rel='stylesheet' type='text/css' href='".$session->get('absoluteURL'
 	<div id="content-wrap">
 		<div id="content">
 			<?php
-            if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_view_full')) == false) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_view_full')) == false) {
                 //Acess denied
                 echo "<div class='error'>";
                 echo __('Your request failed because Gibbon\Services\Module\Action;

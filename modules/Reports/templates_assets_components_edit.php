@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_duplicate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -27,7 +27,7 @@ use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Tables\DataTable;
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'admissions_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'admissions_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

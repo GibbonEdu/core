@@ -32,7 +32,7 @@ $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ??
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=$gibbonInternalAssessmentColumnID";
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'internalAssessment_write_data')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'internalAssessment_write_data')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

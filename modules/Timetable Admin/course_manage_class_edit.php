@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_manage_class_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage_class_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

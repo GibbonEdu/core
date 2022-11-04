@@ -33,7 +33,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_section_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&gibbonReportTemplateSectionID='.$gibbonReportTemplateSectionID.'&search='.$search;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_manage_section_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_manage_section_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

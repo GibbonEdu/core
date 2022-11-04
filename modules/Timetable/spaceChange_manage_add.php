@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceChange_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spaceChange_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

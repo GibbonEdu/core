@@ -25,7 +25,7 @@ use Gibbon\Domain\Planner\OutcomeGateway;
 
 $page->breadcrumbs->add(__('Manage Outcomes'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'outcomes')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'outcomes')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

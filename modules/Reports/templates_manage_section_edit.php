@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Module\Reports\Domain\ReportTemplateSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_manage_section_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_manage_section_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

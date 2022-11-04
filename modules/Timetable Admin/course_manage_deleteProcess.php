@@ -25,7 +25,7 @@ $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_delete.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&search='.$_POST['search'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&search='.$_POST['search'];
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

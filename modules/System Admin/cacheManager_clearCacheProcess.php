@@ -31,7 +31,7 @@ include './moduleFunctions.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/cacheManager.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'cacheManager')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'cacheManager')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -24,7 +24,7 @@ use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Renderer\HtmlRenderer;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets_components_preview')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_preview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

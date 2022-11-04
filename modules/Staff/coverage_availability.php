@@ -27,12 +27,12 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\CoverageCalendar;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_availability')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_availability')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage'))) {
         $page->breadcrumbs
             ->add(__('Manage Substitutes'), 'substitutes_manage.php')
             ->add(__('Edit Availability'));

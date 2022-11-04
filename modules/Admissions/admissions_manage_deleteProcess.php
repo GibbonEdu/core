@@ -27,7 +27,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Admissions/admissions_manage.php&search=$search";
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'admissions_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'admissions_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonAdmissionsAccountID)) {

@@ -27,7 +27,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -24,7 +24,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_family_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_family_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

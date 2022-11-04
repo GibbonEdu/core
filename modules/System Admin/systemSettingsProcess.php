@@ -32,7 +32,7 @@ include './moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'systemSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'systemSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

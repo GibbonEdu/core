@@ -41,7 +41,7 @@ $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleNam
 
 $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_view_register')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_view_register')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

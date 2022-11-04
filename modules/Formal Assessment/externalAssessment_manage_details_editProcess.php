@@ -35,7 +35,7 @@ if ($gibbonPersonID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=$gibbonExternalAssessmentStudentID&search=$search&allStudents=$allStudents";
 
-    if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_manage_details_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

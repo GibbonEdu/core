@@ -32,7 +32,7 @@ include './moduleFunctions.php';
 $gibbonThemeID = $_POST['gibbonThemeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/theme_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'theme_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'theme_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

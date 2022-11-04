@@ -34,7 +34,7 @@ $currentDate = $_POST['currentDate'] ?? Format::date(date('Y-m-d'));
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byPerson_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 }

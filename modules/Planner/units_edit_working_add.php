@@ -44,7 +44,7 @@ $page->breadcrumbs
     ->add(__('Edit Working Copy'), 'units_edit_working.php', $urlParams)
     ->add(__('Add Lessons'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_working_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_working_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

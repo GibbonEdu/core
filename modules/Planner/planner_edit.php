@@ -27,7 +27,7 @@ use Gibbon\Forms\CustomFieldHandler;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_edit'
                     $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
                     $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
-                if (isActionAccessible($guid, $connection2, new Action('Crowd Assessment', 'crowdAssess'))) {
+                if (isActionAccessible($guid, $connection2, Action::fromRoute('Crowd Assessment', 'crowdAssess'))) {
                     $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
                     $row = $form->addRow()->addClass('homeworkSubmission');
                         $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));

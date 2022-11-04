@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_access_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_access_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -25,7 +25,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('New Quick Wall Message'));
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_postQuickWall')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_postQuickWall')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

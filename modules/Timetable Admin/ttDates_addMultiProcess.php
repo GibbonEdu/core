@@ -34,7 +34,7 @@ $overwrite = $_POST['overwrite'] ?? 'N';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttDates_edit_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttDates_edit_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

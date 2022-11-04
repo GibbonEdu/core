@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'dashboardSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'dashboardSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');

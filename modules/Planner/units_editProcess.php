@@ -31,7 +31,7 @@ $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 $classCount = $_POST['classCount'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

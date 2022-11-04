@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['template' => 'HTM
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentsSettings_noteCategory_edit.php&gibbonStudentNoteCategoryID=$gibbonStudentNoteCategoryID";
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'studentsSettings_noteCategory_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'studentsSettings_noteCategory_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

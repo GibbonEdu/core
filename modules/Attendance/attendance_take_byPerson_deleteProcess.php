@@ -31,7 +31,7 @@ $currentDate = $_GET['currentDate'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byPerson_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 }

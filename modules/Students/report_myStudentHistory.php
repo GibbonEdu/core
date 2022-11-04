@@ -24,7 +24,7 @@ use Gibbon\Tables\View\GridView;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'report_myStudentHistory')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_myStudentHistory')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {

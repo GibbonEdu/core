@@ -31,7 +31,7 @@ if ($gibbonTTID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit.php&gibbonTTID=$gibbonTTID&gibbonTTDayID=$gibbonTTDayID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'tt_edit_day_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

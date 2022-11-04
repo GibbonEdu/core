@@ -26,7 +26,7 @@ $action = $_POST['action'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/ttColumn.php";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttColumn')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttColumn')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else if ($action == '') {

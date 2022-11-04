@@ -75,10 +75,10 @@ class StaffCard
         $page->writeFromTemplate('staffCard.twig.html', [
             'staff'             => $this->staffGateway->selectStaffByID($this->gibbonPersonID ?? '')->fetch(),
             'formGroup'         => $this->formGroupGateway->selectFormGroupsByTutor($this->gibbonPersonID ?? '')->fetch(),
-            'canViewProfile'    => isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details')),
+            'canViewProfile'    => isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details')),
             'canViewAbsences'   => isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any'),
-            'canViewTimetable'  => isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')),
-            'canViewFormGroups' => isActionAccessible($guid, $connection2, new Action('Form Groups', 'formGroups')),
+            'canViewTimetable'  => isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_view')),
+            'canViewFormGroups' => isActionAccessible($guid, $connection2, Action::fromRoute('Form Groups', 'formGroups')),
             'status'            => $this->status,
             'tag'               => $this->tag,
         ]);

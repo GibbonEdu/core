@@ -25,7 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'services_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'services_manage')) == false) {
     // Access denied
     echo Format::alert(__('You do not have access to this action.'));
 } else {

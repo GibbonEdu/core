@@ -24,7 +24,7 @@ use Gibbon\Module\Reports\Domain\ReportingCriteriaTypeGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_criteria_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_criteria_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

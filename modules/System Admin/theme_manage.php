@@ -26,7 +26,7 @@ use Gibbon\Domain\System\ThemeGateway;
 
 include './modules/System Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'theme_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'theme_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

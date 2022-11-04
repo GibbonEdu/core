@@ -28,7 +28,7 @@ $gibbonReportTemplateSectionID = $_POST['gibbonReportTemplateSectionID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_edit.php&gibbonReportTemplateID='.$gibbonReportTemplateID.'&sidebar=false';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_manage_section_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_manage_section_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

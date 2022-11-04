@@ -28,7 +28,7 @@ $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? '';
 $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

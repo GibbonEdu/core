@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Browse The Library'));
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'library_browse')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_browse')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -23,7 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'billingSchedule_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'billingSchedule_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

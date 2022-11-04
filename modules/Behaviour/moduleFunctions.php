@@ -63,7 +63,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
             $table->setTitle($schoolYear['name']);
 
             if ($schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
-                if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage'))) {
+                if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage'))) {
                     $table->addHeaderAction('add', __('Add'))
                         ->setURL('/modules/Behaviour/behaviour_manage_add.php')
                         ->addParam('gibbonPersonID', $gibbonPersonID)
@@ -136,7 +136,7 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                     return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
                 });
 
-            if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_manage')) && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage')) && $schoolYear['gibbonSchoolYearID'] == $session->get('gibbonSchoolYearID')) {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
 
                 $table->addActionColumn()

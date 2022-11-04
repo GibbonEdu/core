@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'services_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'services_manage')) == false) {
     return;
 } else {
     // Proceed!

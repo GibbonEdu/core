@@ -28,7 +28,7 @@ use Gibbon\Services\Module\Action;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'rollover')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'rollover')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

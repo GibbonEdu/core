@@ -26,7 +26,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');

@@ -38,7 +38,7 @@ if (isset($_GET['search'])) {
 }
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

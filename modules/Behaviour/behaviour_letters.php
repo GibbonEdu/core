@@ -27,7 +27,7 @@ use Gibbon\Domain\Behaviour\BehaviourGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Behaviour', 'behaviour_letters')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_letters')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');

@@ -31,7 +31,7 @@ if ($gibbonStaffID == '' or $gibbonPersonID == '') { echo 'Fatal error loading t
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage_edit_facility_add')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit_facility_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -31,7 +31,7 @@ use Gibbon\Domain\User\RoleGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
-if (isActionAccessible($guid, $connection2, new Action('Data Updater', 'data_personal')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_personal')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

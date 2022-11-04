@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoices_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoices_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

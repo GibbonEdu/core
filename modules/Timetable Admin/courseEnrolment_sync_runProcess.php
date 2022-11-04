@@ -29,7 +29,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? null;
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_sync_run')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_sync_run')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

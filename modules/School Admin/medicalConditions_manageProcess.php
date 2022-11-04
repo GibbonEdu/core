@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['medicalConditionI
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/medicalConditions_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'medicalConditions_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'medicalConditions_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

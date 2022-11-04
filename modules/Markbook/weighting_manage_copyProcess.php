@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'weighting_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'weighting_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

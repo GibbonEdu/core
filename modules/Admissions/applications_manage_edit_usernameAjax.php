@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide include
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_edit')) == false) {
     die(__('Your request failed because Gibbon\Services\Module\Action;
 use you do not have access to this action.'));
 } else {

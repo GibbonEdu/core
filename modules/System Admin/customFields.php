@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\CustomFieldGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'customFields')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'customFields')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -27,7 +27,7 @@ use Gibbon\Module\Finance\Tables\ExpenseLog;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenses_manage_approve')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenses_manage_approve')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

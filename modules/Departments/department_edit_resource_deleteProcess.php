@@ -28,7 +28,7 @@ $gibbonDepartmentID = $_GET['gibbonDepartmentID'] ?? '';
 $gibbonDepartmentResourceID = $_GET['gibbonDepartmentResourceID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID";
 
-if (isActionAccessible($guid, $connection2, new Action('Departments', 'department_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Departments', 'department_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

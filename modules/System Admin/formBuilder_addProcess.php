@@ -26,7 +26,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_add.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

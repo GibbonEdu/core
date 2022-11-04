@@ -35,7 +35,7 @@ $nameTarget = $_POST['nameTarget'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit_copyForward.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_copyForward')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_copyForward')) == false) {
     $URL .= '&copyForwardReturn=error0';
     header("Location: {$URL}");
 } else {

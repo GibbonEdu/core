@@ -31,7 +31,7 @@ if ($gibbonFamilyID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search";
 
-    if (isActionAccessible($guid, $connection2, new Action('User Admin', 'family_manage_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'family_manage_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -26,7 +26,7 @@ $gibbonTTSpaceChangeID = $_GET['gibbonTTSpaceChangeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceChange_manage_delete.php&gibbonTTSpaceChangeID='.$gibbonTTSpaceChangeID.'&gibbonCourseClassID='.$gibbonCourseClassID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceChange_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'spaceChange_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spaceChange_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

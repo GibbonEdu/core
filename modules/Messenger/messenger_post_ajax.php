@@ -24,7 +24,7 @@ include '../../gibbon.php';
 
 $output = '';
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_post'))) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_post'))) {
     if ($session->exists('username')) {
         if (isset($_GET['gibbonMessengerCannedResponseID'])) {
             $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];

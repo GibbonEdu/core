@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/services_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'services_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'services_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

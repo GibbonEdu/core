@@ -28,7 +28,7 @@ use Gibbon\Forms\Builder\FormData;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\FormBuilder;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'formBuilder_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

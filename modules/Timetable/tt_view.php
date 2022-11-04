@@ -26,7 +26,7 @@ use Gibbon\Tables\DataTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt_view')) 
                 ->add(__('View Timetable by Person'), 'tt.php', ['allUsers' => $allUsers])
                 ->add(Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
-            $canEdit = isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_byPerson_edit'));
+            $canEdit = isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit'));
 
             /** @var RoleGateway */
             $roleGateway = $container->get(RoleGateway::class);

@@ -24,7 +24,7 @@ $_POST['address'] = '/modules/School Admin/department_manage.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'department_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'department_manage')) == false) {
     exit;
 } else {
     // Proceed!

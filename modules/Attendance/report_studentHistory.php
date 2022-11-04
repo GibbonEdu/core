@@ -29,7 +29,7 @@ use Gibbon\Module\Attendance\StudentHistoryView;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'report_studentHistory')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_studentHistory')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, new Action('Attendance', 'report_stu
         echo '</div>';
     } else {
         $viewMode = $_REQUEST['viewMode'] ?? '';
-        $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, new Action('Attendance', 'attendance_take_byPerson'));
+        $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson'));
         $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
         if ($highestAction == 'Student History_all') {

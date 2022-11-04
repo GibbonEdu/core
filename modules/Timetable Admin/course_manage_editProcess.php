@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['description' => '
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_edit.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_POST['gibbonSchoolYearID'];
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

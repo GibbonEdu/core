@@ -33,7 +33,7 @@ require_once __DIR__.'/moduleFunctions.php';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'templates_assets')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

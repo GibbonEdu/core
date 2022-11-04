@@ -35,7 +35,7 @@ $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, new Action('Individual Needs', 'investigations_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -29,7 +29,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes for Timetable module
 include './modules/Timetable/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'courseEnrolment_manage_byPerson_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

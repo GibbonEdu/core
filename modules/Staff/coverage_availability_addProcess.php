@@ -31,7 +31,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$gibbonPersonID;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_availability')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_availability')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonPersonID) || empty($_POST['dateStart'])) {

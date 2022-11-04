@@ -38,7 +38,7 @@ if (!empty($session->get('i18n')['code']) && function_exists('gettext')) {
 $output = '';
 $id = $_POST['gibbonTTID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'tt')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt')) == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __('Your request failed because you do not have access to this action.');

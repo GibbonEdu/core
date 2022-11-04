@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_attendance')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'report_attendance')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_att
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-        if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_attendanceExport'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'report_attendanceExport'))) {
             echo "<div class='linkTop'>";
             echo "<a href='".$session->get('absoluteURL').'/modules/'.$session->get('module').'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$session->get('gibbonThemeName')."/img/download.png'/></a>";
             echo '</div>';

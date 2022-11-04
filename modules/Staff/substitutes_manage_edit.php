@@ -24,9 +24,8 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Services\Format;
-use Gibbon\Tables\Action;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,8 +65,8 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_man
 
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonSubstituteID', $gibbonSubstituteID);
-    
-    $canEdit = (isActionAccessible($guid, $connection2, new Action('User Admin', 'user_manage_edit')));
+
+    $canEdit = (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_edit')));
     if ($canEdit) {
         $form->addHeaderAction('edit', __('Edit User'))
             ->setURL('/modules/User Admin/user_manage_edit.php')
@@ -107,7 +106,7 @@ if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_man
     $row = $form->addRow();
         $row->addLabel('priority', __('Priority'))->description(__('Higher priority substitutes appear first when booking coverage.'));
         $row->addSelect('priority')->fromArray(range(-9, 9))->required()->selected(0);
-        
+
     $row = $form->addRow();
         $row->addLabel('details', __('Details'))->description(__('Additional information such as year group preference, language preference, etc.'));
         $row->addTextArea('details')->setRows(2)->maxlength(255);
@@ -152,7 +151,7 @@ $(document).ready(function() {
             $.ajax({
                 url: './modules/Staff/substitutes_manage_edit_smsAjax.php',
                 data: {
-                    from: "<?php echo $session->get('preferredName').' '.$session->get('surname'); ?>",    
+                    from: "<?php echo $session->get('preferredName').' '.$session->get('surname'); ?>",
                     phoneNumber: "<?php echo $person['phone1CountryCode'].$person['phone1']; ?>"
                 },
                 type: 'POST',

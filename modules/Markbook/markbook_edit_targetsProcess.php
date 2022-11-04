@@ -27,7 +27,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit_targets')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_targets')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

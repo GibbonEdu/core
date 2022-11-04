@@ -25,7 +25,7 @@ use Gibbon\Domain\School\FacilityGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable', 'report_viewAvailableSpaces')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'report_viewAvailableSpaces')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

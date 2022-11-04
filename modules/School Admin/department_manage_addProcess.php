@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['blurb' => 'HTML']
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/department_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'department_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'department_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit();

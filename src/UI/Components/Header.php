@@ -61,7 +61,7 @@ class Header
         $connection2 = $this->db->getConnection();
 
         // Message Wall
-        if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messageWall_view'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messageWall_view'))) {
             $tray['messageWall'] = [
                 'url'      => Url::fromModuleRoute('Messenger', 'messageWall_view'),
                 'messages' => count($this->session->get('messageWallArray', [])),
@@ -159,12 +159,12 @@ class Header
         $connection2 = $this->db->getConnection();
         $roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
 
-        if ($roleCategory == 'Student' && isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details'))) {
+        if ($roleCategory == 'Student' && isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details'))) {
             $profileURL = Url::fromModuleRoute('Students', 'student_view_details')
                 ->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'));
         }
 
-        if ($roleCategory == 'Staff' && isActionAccessible($guid, $connection2, new Action('Staff', 'staff_view_details'))) {
+        if ($roleCategory == 'Staff' && isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details'))) {
             $profileURL = Url::fromModuleRoute('Staff', 'staff_view_details')
                 ->withQueryParam('gibbonPersonID', $this->session->get('gibbonPersonID'));
         }

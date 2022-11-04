@@ -25,7 +25,7 @@ use Gibbon\Domain\Messenger\MessengerGateway;
 
 $page->breadcrumbs->add(__('Manage Messages'));
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_m
     $table = DataTable::createPaginated('messages', $criteria);
     $table->setTitle(__('Messages'));
 
-    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_post'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_post'))) {
         $table->addHeaderAction('new', __('New Message'))
             ->setURL('/modules/Messenger/messenger_post.php')
             ->setIcon('page_new')
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_m
             ->displayLabel();
     }
 
-    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_postQuickWall'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_postQuickWall'))) {
         $table->addHeaderAction('newWall', __('New Quick Wall Message'))
             ->setURL('/modules/Messenger/messenger_postQuickWall.php')
             ->setIcon('page_new')

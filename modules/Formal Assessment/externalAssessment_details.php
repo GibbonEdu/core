@@ -26,7 +26,7 @@ use Gibbon\Tables\DataTable;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_details')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

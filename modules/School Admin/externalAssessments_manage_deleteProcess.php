@@ -25,7 +25,7 @@ $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/externalAssessments_manage_delete.php&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/externalAssessments_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'externalAssessments_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'externalAssessments_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

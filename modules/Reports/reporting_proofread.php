@@ -25,7 +25,7 @@ use Gibbon\Module\Reports\TextDiff;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_proofread')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_proofread')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

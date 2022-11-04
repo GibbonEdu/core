@@ -26,7 +26,7 @@ use Gibbon\Domain\Planner\PlannerEntryGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

@@ -30,7 +30,7 @@ if ($gibbonCourseID == '' or $gibbonCourseIDCopyTo == '' or $gibbonSchoolYearID 
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units.php&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Planner', 'units')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

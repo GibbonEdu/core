@@ -39,7 +39,7 @@ if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'planner_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_delete')) == false) {
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {

@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['absenceCommentTem
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staffSettings.php';
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'staffSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

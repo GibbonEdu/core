@@ -25,7 +25,7 @@ include '../../gibbon.php';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage.php";
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'groups_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'groups_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

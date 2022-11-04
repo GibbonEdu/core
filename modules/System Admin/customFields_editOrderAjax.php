@@ -24,7 +24,7 @@ $_POST['address'] = '/modules/System Admin/customFields.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'customFields')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'customFields')) == false) {
     exit;
 } else {
     // Proceed!

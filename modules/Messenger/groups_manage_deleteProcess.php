@@ -31,7 +31,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'groups_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'groups_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

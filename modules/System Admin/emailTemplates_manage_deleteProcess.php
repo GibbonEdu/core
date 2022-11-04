@@ -26,7 +26,7 @@ $gibbonEmailTemplateID = $_GET['gibbonEmailTemplateID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/emailTemplates_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'emailTemplates_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'emailTemplates_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

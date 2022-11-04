@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

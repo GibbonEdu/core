@@ -28,7 +28,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Manage Resources'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'resources_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {

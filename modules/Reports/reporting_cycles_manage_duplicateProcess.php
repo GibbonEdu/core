@@ -34,7 +34,7 @@ $gibbonReportingCycleID = $_POST['gibbonReportingCycleID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_cycles_manage_duplicate.php&gibbonReportingCycleID='.$gibbonReportingCycleID;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_cycles_manage_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_cycles_manage_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

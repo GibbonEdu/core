@@ -35,7 +35,7 @@ $gibbonPersonIDOwnership = $_GET['gibbonPersonIDOwnership'] ?? '';
 $typeSpecificFields = $_GET['typeSpecificFields'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_manage_catalog_duplicate.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=$typeSpecificFields";
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'library_manage_catalog_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_manage_catalog_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

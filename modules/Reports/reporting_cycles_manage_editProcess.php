@@ -33,7 +33,7 @@ $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'] ?? '';
 $URL = Url::fromModuleRoute('Reports', 'reporting_cycles_manage_edit')
     ->withQueryParam('gibbonReportingCycleID', $gibbonReportingCycleID);
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'reporting_cycles_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_cycles_manage_edit')) == false) {
     header("Location: {$URL->withReturn('error0')}");
     exit;
 } else {

@@ -38,7 +38,7 @@ if ($gibbonFinanceBudgetCycleID == '' or $gibbonFinanceBudgetID == '' or $status
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/expenseRequest_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2&status2=$status2";
 
-    if (isActionAccessible($guid, $connection2, new Action('Finance', 'expenseRequest_manage_add')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenseRequest_manage_add')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

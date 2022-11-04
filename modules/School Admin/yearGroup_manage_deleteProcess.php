@@ -25,7 +25,7 @@ $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_delete.php&gibbonYearGroupID='.$gibbonYearGroupID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'yearGroup_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'yearGroup_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

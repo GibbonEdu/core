@@ -24,7 +24,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'staff_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

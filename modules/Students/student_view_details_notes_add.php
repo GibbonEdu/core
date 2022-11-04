@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'student_view_details_notes_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details_notes_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

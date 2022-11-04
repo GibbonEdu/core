@@ -33,7 +33,7 @@ $dateStamp = $_POST['dateStamp'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/School Admin/schoolYearSpecialDay_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'schoolYearSpecialDay_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

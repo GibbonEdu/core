@@ -37,7 +37,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Admissions/student_withdraw.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'student_withdraw')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'student_withdraw')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

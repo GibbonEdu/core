@@ -26,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Scope And Sequence'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'scopeAndSequence')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'scopeAndSequence')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

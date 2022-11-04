@@ -35,7 +35,7 @@ $status = $_GET['status'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item_signOut.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status";
 
-if (isActionAccessible($guid, $connection2, new Action('Library', 'library_lending_item_signOut')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_lending_item_signOut')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

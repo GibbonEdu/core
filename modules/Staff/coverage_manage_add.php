@@ -23,7 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

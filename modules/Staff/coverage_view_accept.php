@@ -26,7 +26,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_view_accept')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_accept')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

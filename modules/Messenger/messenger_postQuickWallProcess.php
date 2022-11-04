@@ -32,7 +32,7 @@ $address = $_GET['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/messenger_postQuickWall.php';
 $time = time();
 
-if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_postQuickWall')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_postQuickWall')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

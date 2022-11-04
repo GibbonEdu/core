@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'report_attendance')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'report_attendance')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -33,7 +33,7 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
 } else {
     $URL = $session->get('absoluteURL')."/index.php?q=/modules/Messenger/messenger_manage_report.php&search=$search&gibbonMessengerID=$gibbonMessengerID&sidebar=true";
 
-    if (isActionAccessible($guid, $connection2, new Action('Messenger', 'messenger_manage_report')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_manage_report')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

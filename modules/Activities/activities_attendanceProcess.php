@@ -27,7 +27,7 @@ $address = $_POST['address'] ?? '';
 $gibbonActivityID = $_GET['gibbonActivityID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 
-if (isActionAccessible($guid, $connection2, new Action('Activities', 'activities_attendanceProcess')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_attendanceProcess')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

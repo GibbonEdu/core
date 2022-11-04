@@ -28,7 +28,7 @@ $gibbonUnitID = $_POST['gibbonUnitID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_delete.php&gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

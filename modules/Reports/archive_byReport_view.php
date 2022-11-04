@@ -25,7 +25,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, new Action('Reports', 'archive_byReport_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'archive_byReport_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

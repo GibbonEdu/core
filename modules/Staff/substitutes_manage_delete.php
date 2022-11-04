@@ -21,7 +21,7 @@ use Gibbon\Services\Module\Action;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Staff\SubstituteGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'substitutes_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

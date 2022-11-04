@@ -34,7 +34,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

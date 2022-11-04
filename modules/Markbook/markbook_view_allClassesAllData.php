@@ -49,7 +49,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
    //Check for access to multiple column add
     $multiAdd = false;
     //Add multiple columns
-    if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit'))) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit'))) {
         if ($highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_multipleClassesInDepartment' or $highestAction2 == 'Edit Markbook_everything') {
             //Check highest role in any department
             $isCoordinator = isDepartmentCoordinator( $pdo, $gibbon->session->get('gibbonPersonID') );
@@ -186,10 +186,10 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit')) and $canEditThisClass) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a>";
 			if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-	            if (isActionAccessible($guid, $connection2, new Action('Markbook', 'weighting_manage')) == true) {
+	            if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'weighting_manage')) == true) {
 	                echo " | <a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a>";
 	            }
 	        }
@@ -210,7 +210,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         // Work out details for external assessment display
         // TODO: Test this more?
-        if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_details'))) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_details'))) {
             $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
@@ -236,7 +236,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
         // Display Pagination
         echo "<div class='linkTop'>";
-        if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_view')) ) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_view')) ) {
 
         	echo "<div style='padding-top: 16px; margin-right: 10px; text-align: left; width: 300px; float: left;'>";
 
@@ -265,7 +265,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
         }
 
         // Display the Top Links
-        if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit')) and $canEditThisClass) {
+        if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/page_new.png'/></a> | ";
 			echo '<script>
 					function resetOrder(){
@@ -287,7 +287,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/reincarnate.png'/></a> | ";
             echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/target.png'/></a> | ";
             if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
-                if (isActionAccessible($guid, $connection2, new Action('Markbook', 'weighting_manage')) == true) {
+                if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'weighting_manage')) == true) {
                     echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Weightings')."<img title='".__('Weightings')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/run.png'/></a> | ";
                 }
             }
@@ -457,7 +457,7 @@ require_once __DIR__ . '/src/MarkbookColumn.php';
 
 
             echo '</span>';
-            if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_edit')) and $canEditThisClass) {
+            if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit')) and $canEditThisClass) {
                 echo '<div class="columnActions">';
                 echo "<a href='".$gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.$gibbon->session->get('module')."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__('Edit')."' src='./themes/".$gibbon->session->get('gibbonThemeName')."/img/config.png'/></a> ";
 

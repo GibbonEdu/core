@@ -30,7 +30,7 @@ require_once '../../gibbon.php';
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 $gibbonPersonIDCoverage = $_POST['gibbonPersonIDCoverage'] ?? '';
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'coverage_request')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) == false) {
     die(Format::alert(__('You do not have access to this action.')));
 } elseif (empty($gibbonStaffAbsenceID) || empty($gibbonPersonIDCoverage)|| $gibbonPersonIDCoverage == 'Please select...') {
     die();

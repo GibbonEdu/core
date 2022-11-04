@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonDistrictID = $_GET['gibbonDistrictID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/district_manage_edit.php&gibbonDistrictID='.$gibbonDistrictID;
 
-if (isActionAccessible($guid, $connection2, new Action('User Admin', 'district_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'district_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

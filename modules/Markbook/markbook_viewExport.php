@@ -26,7 +26,7 @@ $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $return = $_GET['return'];
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/$return";
 
-if (isActionAccessible($guid, $connection2, new Action('Markbook', 'markbook_view')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_view')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -27,7 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Students', 'applicationForm_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

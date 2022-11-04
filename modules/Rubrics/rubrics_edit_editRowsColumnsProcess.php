@@ -35,7 +35,7 @@ $gibbonRubricID = $_GET['gibbonRubricID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit_editRowsColumns.php&gibbonRubricID=$gibbonRubricID&sidebar=true&search=$search&filter2=$filter2";
 $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/rubrics_edit.php&gibbonRubricID=$gibbonRubricID&sidebar=false&search=$search&filter2=$filter2";
 
-if (isActionAccessible($guid, $connection2, new Action('Rubrics', 'rubrics_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

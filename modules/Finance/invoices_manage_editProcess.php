@@ -44,7 +44,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/invoices_manage_edit.php&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 
-    if (isActionAccessible($guid, $connection2, new Action('Finance', 'invoices_manage_edit')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoices_manage_edit')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

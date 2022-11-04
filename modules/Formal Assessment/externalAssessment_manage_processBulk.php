@@ -29,7 +29,7 @@ $search = $_POST['search'] ?? '';
 $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Formal Assessment/externalAssessment.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($action) || empty($gibbonPersonID)) {

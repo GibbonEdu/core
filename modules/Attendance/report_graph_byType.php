@@ -28,7 +28,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new Action('Attendance', 'report_graph_byType')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_graph_byType')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

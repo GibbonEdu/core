@@ -25,7 +25,7 @@ $gibbonDepartmentID = $_POST['gibbonDepartmentID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/department_manage_delete.php&gibbonDepartmentID=$gibbonDepartmentID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/department_manage.php';
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'department_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'department_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

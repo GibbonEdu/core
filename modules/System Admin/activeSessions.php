@@ -25,7 +25,7 @@ use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 
-if (isActionAccessible($guid, $connection2, new Action('System Admin', 'activeSessions')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'activeSessions')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

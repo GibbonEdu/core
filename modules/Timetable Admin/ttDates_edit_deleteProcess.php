@@ -29,7 +29,7 @@ if ($gibbonSchoolYearID == '' or $dateStamp == '') { echo 'Fatal error loading t
 } else {
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp";
 
-    if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'ttDates_edit_delete')) == false) {
+    if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttDates_edit_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

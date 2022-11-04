@@ -37,7 +37,7 @@ $allStudents = $_GET['allStudents'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/externalAssessment_manage_details_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&gibbonPersonID=$gibbonPersonID&step=2&search=$search&allStudents=$allStudents";
 
-if (isActionAccessible($guid, $connection2, new Action('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Formal Assessment', 'externalAssessment_manage_details_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

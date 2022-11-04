@@ -23,7 +23,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\AbsenceView;
 use Gibbon\Module\Staff\Tables\AbsenceDates;
 
-if (isActionAccessible($guid, $connection2, new Action('Staff', 'absences_view_details')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_view_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -36,7 +36,7 @@ $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList'] ?? []);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, new Action('Timetable Admin', 'course_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

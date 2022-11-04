@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonFileExtensionID = $_GET['gibbonFileExtensionID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fileExtensions_manage_edit.php&gibbonFileExtensionID='.$gibbonFileExtensionID;
 
-if (isActionAccessible($guid, $connection2, new Action('School Admin', 'fileExtensions_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'fileExtensions_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

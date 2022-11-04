@@ -29,7 +29,7 @@ $page->breadcrumbs
     ->add(__('Manage Outcomes'), 'outcomes.php')
     ->add(__('Edit Outcome'));
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'outcomes_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'outcomes_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

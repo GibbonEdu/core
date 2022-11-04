@@ -33,7 +33,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage_accept')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, new Action('Admissions', 'applications_manage_accept')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_accept')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

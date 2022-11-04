@@ -35,7 +35,7 @@ $gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID";
 
-if (isActionAccessible($guid, $connection2, new Action('Planner', 'units_edit_working_copyback')) == false) {
+if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_working_copyback')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
