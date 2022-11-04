@@ -95,6 +95,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
             'emailReceipt'     => $_POST['emailReceipt'] ?? 'N',
             'emailReceiptText' => $_POST['emailReceiptText'] ?? '',
         ];
+    } else {
+        $data['email'] = $values['email'];
+        $data['emailReceipt'] = $values['emailReceipt'];
     }
 
     $data['messageWallPin'] = ($data['messageWall'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage.php', 'Manage Messages_all')) ? $data['messageWallPin'] : 'N';
