@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Builder\Process;
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\UsernameGenerator;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
@@ -74,13 +75,28 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
      */
     protected $personalDocumentGateway;
 
-    public function __construct(UserGateway $userGateway, UserStatusLogGateway $userStatusLogGateway, UsernameGenerator $usernameGenerator, CustomFieldGateway $customFieldGateway, PersonalDocumentGateway $personalDocumentGateway)
+    /**
+     * The PasswordPolicy instance to generate password with.
+     *
+     * @var PasswordPolicy
+     */
+    protected $passwordPolicy;
+
+    public function __construct(
+        UserGateway $userGateway,
+        UserStatusLogGateway $userStatusLogGateway,
+        UsernameGenerator $usernameGenerator,
+        CustomFieldGateway $customFieldGateway,
+        PersonalDocumentGateway $personalDocumentGateway,
+        PasswordPolicy $passwordPolicy
+    )
     {
         $this->userGateway = $userGateway;
         $this->userStatusLogGateway = $userStatusLogGateway;
         $this->usernameGenerator = $usernameGenerator;
         $this->customFieldGateway = $customFieldGateway;
         $this->personalDocumentGateway = $personalDocumentGateway;
+        $this->passwordPolicy = $passwordPolicy;
     }
 
     public function getViewClass() : string
@@ -207,7 +223,7 @@ class CreateStudent extends AbstractFormProcess implements ViewableProcess
     protected function generatePassword(FormDataInterface $formData, $prefix = '')
     {
         $salt = getSalt();
-        $password = randomPassword(8);
+        $password = $this->passwordPolicy->generate();
 
         $formData->set($prefix.'password', $password);
         $formData->set($prefix.'passwordStrongSalt', $salt);

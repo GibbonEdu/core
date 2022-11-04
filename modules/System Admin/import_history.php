@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Data\ImportType;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
@@ -33,7 +34,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->add(__('Import History'));
 
     // Get a list of available import options
-    $importTypeList = ImportType::loadImportTypeList($container->get(SettingGateway::class), $pdo, false);
+    $importTypeList = ImportType::loadImportTypeList(
+        $container->get(SettingGateway::class),
+        $container->get(PasswordPolicy::class),
+        $pdo,
+        false
+    );
 
     $logGateway = $container->get(LogGateway::class);
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchAll();
@@ -68,7 +74,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
         ->format(function ($log) {
             return $log['data']['results']['filename'] ?? '';
         });
-        
+
     $table->addColumn('details', __('Details'))
         ->format(function ($log) {
             return !empty($log['data']['success']) ? Format::tag(__('Success'), 'success') : Format::tag(__('Failed'), 'error');

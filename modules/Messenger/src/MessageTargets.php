@@ -22,6 +22,7 @@ namespace Gibbon\Module\Messenger;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\System\LogGateway;
 
@@ -2218,6 +2219,10 @@ class MessageTargets
             $count = 0;
             $unique = true;
             $uniqueCount = 0;
+
+            // Use password policy to generate random string
+            $randStrGenerator = new PasswordPolicy(true, true, false, 40);
+
             foreach ($this->report as $reportEntry) {
                 if ($reportEntry[4] == $contactDetail && $unique) {
                     $unique = false;
@@ -2225,7 +2230,7 @@ class MessageTargets
                 }
                 $count ++;
             }
-    
+
             if ($unique) { //Entry is unique, so create
                 $count = count($this->report);
                 $this->report[$count][0] = $gibbonPersonID;
@@ -2234,7 +2239,7 @@ class MessageTargets
                 $this->report[$count][3] = $contactType;
                 $this->report[$count][4] = $contactDetail;
                 if ($contactType == 'Email' and $emailReceipt == 'Y') {
-                    $this->report[$count][5] = randomPassword(40);
+                    $this->report[$count][5] = $randStrGenerator->generate();
                 }
                 else {
                     $this->report[$count][5] = null;
@@ -2244,7 +2249,7 @@ class MessageTargets
             }
             else { //Entry is not unique, so apend student details
                 $this->report[$uniqueCount][6] = (empty($this->report[$uniqueCount][6])) ? $gibbonPersonIDListStudent : (!empty($gibbonPersonIDListStudent) ? $this->report[$uniqueCount][6].','.$gibbonPersonIDListStudent : $this->report[$uniqueCount][6]);
-    
+
                 if (empty($this->report[$uniqueCount][7])) {
                     $this->report[$uniqueCount][7] = [$nameStudent];
                 } else {
