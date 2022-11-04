@@ -1128,7 +1128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 } else {
                                     $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://docs.gibbonedu.org/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $session->get('systemName'), $session->get('organisationNameShort'), $session->get('absoluteURL'), $informParentsEntry['username'], $informParentsEntry['password'], $session->get('systemName')).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $session->get('organisationAdmissionsName'), $session->get('systemName'));
                                 }
-                                $bodyPlain = Format::emailBodyToPlain($body);
 
                                 $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($session->get('organisationAdmissionsEmail'), $session->get('organisationAdmissionsName'));

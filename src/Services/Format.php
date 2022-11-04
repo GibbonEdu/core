@@ -983,24 +983,4 @@ class Format
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
     }
-
-    /**
-     * Convert an HTML email body into a plain text email body.
-     *
-     * @param string $body  The supposed HTML email body.
-     *
-     * @return string  The sanitized plain text version of the body.
-     */
-    public static function emailBodyToPlain(string $body): string
-    {
-        $return = $body;
-
-        $return = preg_replace('#<br\s*/?>#i', "\n", $return);
-        $return = str_replace('</p>', "\n\n", $return);
-        $return = str_replace('</div>', "\n\n", $return);
-        $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
-        $return = strip_tags($return, '<a>');
-
-        return $return;
-    }
 }

@@ -51,7 +51,8 @@ function getIPAddress() {
 /**
  * Convert an HTML email body into a plain text email body.
  *
- * Deprecated. Use \Gibbon\Services\Format::emailBodyToPlain() instead.
+ * Deprecated. Use \Gibbon\Comms\Mailer::renderBody() instead, which internally
+ * handles the HTML and non-HTML rendered messages.
  *
  * @deprecated v25
  * @version v12
