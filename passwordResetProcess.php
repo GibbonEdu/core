@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
 use Gibbon\Http\Url;
 
@@ -175,10 +176,11 @@ else {
                         header("Location: {$URL->withReturn('error7')}");
                         exit();
                     } else {
-                        //Check strength of password
-                        $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+                        /** @var PasswordPolicy */
+                        $passwordPolicies = $container->get(PasswordPolicy::class);
 
-                        if ($passwordMatch == false) {
+                        //Check strength of password
+                        if (!$passwordPolicies->validate($password)) {
                             header("Location: {$URL->withReturn('error6')}");
                             exit();
                         } else {

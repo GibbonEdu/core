@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Http\Url;
 use Gibbon\Domain\User\UserGateway;
 
@@ -56,10 +57,11 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
     if ($password == $passwordNew) {
         header("Location: {$URL->withReturn('error7')}");
     } else {
-        //Check strength of password
-        $passwordMatch = doesPasswordMatchPolicy($connection2, $passwordNew);
+        /** @var PasswordPolicy */
+        $passwordPolicies = $container->get(PasswordPolicy::class);
 
-        if ($passwordMatch == false) {
+        //Check strength of password
+        if (!$passwordPolicies->validate($password)) {
             header("Location: {$URL->withReturn('error6')}");
         } else {
             //Check new passwords match

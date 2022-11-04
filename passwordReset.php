@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
 
@@ -73,7 +74,7 @@ else {
     $urlParams = compact('input', 'key', 'gibbonPersonResetID', 'step');
 
     //Verify authenticity of this request and check it is fresh (within 48 hours)
-    
+
         $data = array('key' => $key, 'gibbonPersonResetID' => $gibbonPersonResetID);
         $sql = "SELECT * FROM gibbonPersonReset WHERE `key`=:key AND gibbonPersonResetID=:gibbonPersonResetID AND (timestamp > DATE_SUB(now(), INTERVAL 2 DAY))";
         $result = $connection2->prepare($sql);
@@ -95,9 +96,10 @@ else {
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
-        $policy = getPasswordPolicy($guid, $connection2);
-        if ($policy != false) {
-            $form->addRow()->addAlert($policy, 'warning');
+        /** @var PasswordPolicy */
+        $policies = $container->get(PasswordPolicy::class);
+        if (($policiesHTML = $policies->describeHTML()) !== '') {
+            $form->addRow()->addAlert($policiesHTML, 'warning');
         }
 
         $row = $form->addRow();

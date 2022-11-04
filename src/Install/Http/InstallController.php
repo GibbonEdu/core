@@ -516,8 +516,8 @@ class InstallController
             $row->addTextField('username')->setValue($data['username'] ?? '')->required()->maxLength(20);
 
         try {
-            $message = static::renderPasswordPolicies(
-                $installer->getPasswordPolicies()
+            $message = static::renderPasswordPolicy(
+                $installer->getPasswordPolicy()
             );
             if (!empty($message)) {
                 $form->addRow()->addAlert($message, 'warning');
@@ -1088,7 +1088,7 @@ class InstallController
      *
      * @return string HTML list.
      */
-    public static function renderPasswordPolicies(array $policies): string
+    public static function renderPasswordPolicy(array $policies): string
     {
         $html = implode("\n", array_map(function ($policy) {
             return "<li>{$policy}</li>";

@@ -21,6 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
@@ -296,83 +297,51 @@ function is_leap_year($year)
     return (($year % 4) == 0) && ((($year % 100) != 0) || (($year % 400) == 0));
 }
 
+/**
+ * Check if a password matches the password policy in the
+ * settings.
+ *
+ * Deprecated. Use \Gibbon\Data\PasswordPolicy::validate() instead.
+ *
+ * @deprecated v25
+ * @version v25
+ * @since   v12
+ *
+ * @param \PDO   $connection2
+ * @param string $passwordNew
+ *
+ * @return bool
+ */
 function doesPasswordMatchPolicy($connection2, $passwordNew)
 {
     global $container;
-
-    $output = true;
-
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
-
-    if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
-        $output = false;
-    } else {
-        if ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-            if ($alpha == 'Y') {
-                if (preg_match('`[A-Z]`', $passwordNew) == false or preg_match('`[a-z]`', $passwordNew) == false) {
-                    $output = false;
-                }
-            }
-            if ($numeric == 'Y') {
-                if (preg_match('`[0-9]`', $passwordNew) == false) {
-                    $output = false;
-                }
-            }
-            if ($punctuation == 'Y') {
-                if (preg_match('/[^a-zA-Z0-9]/', $passwordNew) == false and strpos($passwordNew, ' ') == false) {
-                    $output = false;
-                }
-            }
-            if ($minLength > 0) {
-                if (strLen($passwordNew) < $minLength) {
-                    $output = false;
-                }
-            }
-        }
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
+    try {
+        return $passwordPolicies->validate($passwordNew);
+    } catch (\Exception $e) {
+        return false;
     }
-
-    return $output;
 }
 
+/**
+ * Get an HTML list of all password policies.
+ *
+ * @deprecated v25
+ * @version v25
+ * @since   v12
+ *
+ * @param string $guid
+ * @param \PDO $connection2
+ *
+ * @return string  An unorder HTML list.
+ */
 function getPasswordPolicy($guid, $connection2)
 {
     global $container;
-
-    $output = false;
-
-    $settingGateway = $container->get(SettingGateway::class);
-
-    $alpha = $settingGateway->getSettingByScope('System', 'passwordPolicyAlpha');
-    $numeric = $settingGateway->getSettingByScope('System', 'passwordPolicyNumeric');
-    $punctuation = $settingGateway->getSettingByScope('System', 'passwordPolicyNonAlphaNumeric');
-    $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
-
-    if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
-        $output .= __('An error occurred.');
-    } elseif ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-        $output .= __('The password policy stipulates that passwords must:').'<br/>';
-        $output .= '<ul>';
-        if ($alpha == 'Y') {
-            $output .= '<li>'.__('Contain at least one lowercase letter, and one uppercase letter.').'</li>';
-        }
-        if ($numeric == 'Y') {
-            $output .= '<li>'.__('Contain at least one number.').'</li>';
-        }
-        if ($punctuation == 'Y') {
-            $output .= '<li>'.__('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).').'</li>';
-        }
-        if ($minLength >= 0) {
-            $output .= '<li>'.sprintf(__('Must be at least %1$s characters in length.'), $minLength).'</li>';
-        }
-        $output .= '</ul>';
-    }
-
-    return $output;
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
+    return $passwordPolicies->describeHTML();
 }
 
 function getFastFinder($connection2, $guid)

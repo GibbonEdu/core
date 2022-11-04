@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     }
 
     echo Format::alert(__('Note that certain fields are available depending on the role categories (Staff, Student, Parent) that a user is assigned to. These fields, such as personal documents and custom fields, will be editable after the user has been created.'), 'message');
-    
+
     $form = Form::create('addUser', $session->get('absoluteURL').'/modules/'.$session->get('module').'/user_manage_addProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -143,9 +144,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->required()
             ->addGenerateUsernameButton($form);
 
-    $policy = getPasswordPolicy($guid, $connection2);
-    if ($policy != false) {
-        $form->addRow()->addAlert($policy, 'warning');
+    /** @var PasswordPolicy */
+    $policies = $container->get(PasswordPolicy::class);
+    if (($policiesHTML = $policies->describeHTML()) !== '') {
+        $form->addRow()->addAlert($policiesHTML, 'warning');
     }
     $row = $form->addRow();
         $row->addLabel('passwordNew', __('Password'));

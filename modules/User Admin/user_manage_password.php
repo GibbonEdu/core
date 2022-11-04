@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $userRoles = $roleGateway->selectAllRolesByPerson($session->get('gibbonPersonID'))->fetchGroupedUnique();
 
             // Acess denied for users changing a password if they do not have system access to this role
-            if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) ) 
+            if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) )
               || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) && !isset($userRoles['001']) )) {
                 echo "<div class='error'>";
                 echo __('You do not have access to this action.');
@@ -67,10 +68,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('User Admin', 'user_manage.php')->withQueryParam('search', $search));
             }
 
-            $policy = getPasswordPolicy($guid, $connection2);
-            if ($policy != false) {
+            /** @var PasswordPolicy */
+            $policies = $container->get(PasswordPolicy::class);
+            if (($policiesHTML = $policies->describeHTML()) !== '') {
                 echo "<div class='warning'>";
-                echo $policy;
+                echo $policiesHTML;
                 echo '</div>';
             }
 
