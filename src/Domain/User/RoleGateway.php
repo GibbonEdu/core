@@ -169,9 +169,19 @@ class RoleGateway extends QueryableGateway
     public function getRoleCategory($gibbonRoleID)
     {
         $sql = 'SELECT category FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
-        $result = $this->db()->select($sql, ['gibbonRoleID' => $gibbonRoleID]);
-        return $result->isNotEmpty()
-            ? $result->fetchColumn()
-            : false;
+
+        return $this->db()->selectOne($sql, ['gibbonRoleID' => $gibbonRoleID]);
+    }
+
+    public function getAvailableUserRoleByID($gibbonPersonID, $gibbonRoleID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID, 'gibbonRoleID' => $gibbonRoleID];
+        $sql = "SELECT gibbonRole.*
+                FROM gibbonPerson 
+                JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE (gibbonPerson.gibbonPersonID=:gibbonPersonID) 
+                AND gibbonRole.gibbonRoleID=:gibbonRoleID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }
