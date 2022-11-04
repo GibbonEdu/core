@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $form->addHiddenValue('q', '/modules/Attendance/attendance_take_adHoc.php');
 
     $targetOptions = [
-        'Activity' => __('Activity Enrolment'),
         'Messenger'    => __('Messenger Group'),
+        'Activity' => __('Activity Enrolment'),
         'Select'   => __('Select Students'),
     ];
     $row = $form->addRow();
