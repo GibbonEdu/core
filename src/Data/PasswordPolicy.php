@@ -133,6 +133,50 @@ class PasswordPolicy
     }
 
     /**
+     * Generates a random password based on the policy rules.
+     *
+     * @return string  Password generated
+     *
+     * @throws \Exception  If for some reason, unable to generate a valid password in
+     *                     reasonable time.
+     */
+    public function generate(): string
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyz';
+        if ($this->alpha) {
+            $chars .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        }
+        if ($this->numeric) {
+            $chars .= '0123456789';
+        }
+        if ($this->punctuation) {
+            $chars .= '!@#$%^&*?';
+        }
+
+        // Make sure: 8 <= password length <= 255
+        $length = ($this->minLength < 8) ? 8 : (($this->minLength > 255) ? 255 : $this->minLength);
+
+        // Randomize password until the password matches its own rules
+        // or ran out of grace in trying.
+        $grace = 100; // Just to be safe, usually works with the first trial
+        $c = $grace;
+        $max = strlen($chars) - 1;
+        do {
+            $password = '';
+            for ($i=0; $i<$length; ++$i) {
+                $password .= substr($chars, rand(0, $max), 1);
+            }
+        } while (!empty($this->evaluate($password)) && --$c > 0);
+
+        // Final check.
+        if (!empty($this->evaluate($password))) {
+            throw new \Exception(sprintf('Failed to generate password within %d trial', $grace));
+        }
+
+        return $password;
+    }
+
+    /**
      * Returns an array of human-readable strings explaining the rules this
      * policy is enforcing. All rule descriptions are translated by __().
      *
