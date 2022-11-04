@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\PasswordPolicies;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Validator;
 
@@ -96,8 +96,8 @@ else {
 
         $form->addRow()->addHeading('Reset Password', __('Reset Password'));
 
-        /** @var PasswordPolicies */
-        $policies = $container->get(PasswordPolicies::class);
+        /** @var PasswordPolicy */
+        $policies = $container->get(PasswordPolicy::class);
         if (($policiesHTML = $policies->describeHTML()) !== '') {
             $form->addRow()->addAlert($policiesHTML, 'warning');
         }

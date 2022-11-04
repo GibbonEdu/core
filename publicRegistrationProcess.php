@@ -21,7 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Data\PasswordPolicies;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Forms\CustomFieldHandler;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserStatusLogGateway;
@@ -106,8 +106,8 @@ if ($proceed == false) {
         exit;
     }
 
-    /** @var PasswordPolicies */
-    $passwordPolicies = $container->get(PasswordPolicies::class);
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
 
     // Check strength of password
     if (!$passwordPolicies->validate($password)) {

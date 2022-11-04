@@ -304,7 +304,7 @@ class Installer
      *
      * @return array
      */
-    public function getPasswordPolicies(): array
+    public function getPasswordPolicy(): array
     {
         $policies = [];
 

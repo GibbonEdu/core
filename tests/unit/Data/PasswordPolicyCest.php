@@ -1,7 +1,7 @@
 <?php
 namespace Gibbon\Data;
 
-class PasswordPoliciesCest
+class PasswordPolicyCest
 {
 
     private static $perfectPassword = 'abcdABCD1234!@#$';
@@ -12,7 +12,7 @@ class PasswordPoliciesCest
 
     public function testNilPolicy(\UnitTester $I)
     {
-        $policy = PasswordPolicies::createNilPolicy();
+        $policy = PasswordPolicy::createNilPolicy();
 
         $I->expectThrowable(\Exception::class, function () use ($policy) {
             $policy->validate(static::$perfectPassword);
@@ -25,7 +25,7 @@ class PasswordPoliciesCest
 
     public function testPolicyWithAlphaRule(\UnitTester $I)
     {
-        $policy = new PasswordPolicies(
+        $policy = new PasswordPolicy(
             true,
             false,
             false,
@@ -68,7 +68,7 @@ class PasswordPoliciesCest
 
     public function testPolicyWithNumericRule(\UnitTester $I)
     {
-        $policy = new PasswordPolicies(
+        $policy = new PasswordPolicy(
             false,
             true,
             false,
@@ -102,7 +102,7 @@ class PasswordPoliciesCest
 
     public function testPolicyWithPuntuationRule(\UnitTester $I)
     {
-        $policy = new PasswordPolicies(
+        $policy = new PasswordPolicy(
             false,
             false,
             true,
@@ -139,7 +139,7 @@ class PasswordPoliciesCest
     public function testPolicyWithMinlength(\UnitTester $I)
     {
         $minLength = 14;
-        $policy = new PasswordPolicies(
+        $policy = new PasswordPolicy(
             false,
             false,
             false,

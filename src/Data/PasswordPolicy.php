@@ -2,7 +2,7 @@
 
 namespace Gibbon\Data;
 
-class PasswordPolicies
+class PasswordPolicy
 {
 
     /**

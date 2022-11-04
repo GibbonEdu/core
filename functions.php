@@ -21,7 +21,7 @@ use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\Mailer;
-use Gibbon\Data\PasswordPolicies;
+use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\System\AlertLevelGateway;
 use Gibbon\Domain\System\LogGateway;
@@ -301,7 +301,7 @@ function is_leap_year($year)
  * Check if a password matches the password policy in the
  * settings.
  *
- * Deprecated. Use \Gibbon\Data\PasswordPolicies::validate() instead.
+ * Deprecated. Use \Gibbon\Data\PasswordPolicy::validate() instead.
  *
  * @deprecated v25
  * @version v25
@@ -315,8 +315,8 @@ function is_leap_year($year)
 function doesPasswordMatchPolicy($connection2, $passwordNew)
 {
     global $container;
-    /** @var PasswordPolicies */
-    $passwordPolicies = $container->get(PasswordPolicies::class);
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
     try {
         return $passwordPolicies->validate($passwordNew);
     } catch (\Exception $e) {
@@ -339,8 +339,8 @@ function doesPasswordMatchPolicy($connection2, $passwordNew)
 function getPasswordPolicy($guid, $connection2)
 {
     global $container;
-    /** @var PasswordPolicies */
-    $passwordPolicies = $container->get(PasswordPolicies::class);
+    /** @var PasswordPolicy */
+    $passwordPolicies = $container->get(PasswordPolicy::class);
     return $passwordPolicies->describeHTML();
 }
 

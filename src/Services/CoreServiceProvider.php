@@ -36,7 +36,7 @@ use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Services\Payment as PaymentInterface;
 use Gibbon\Contracts\Services\Session as SessionInterface;
-use Gibbon\Data\PasswordPolicies;
+use Gibbon\Data\PasswordPolicy;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -77,7 +77,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'gibbon_logger',
         'mysql_logger',
         Validator::class,
-        PasswordPolicies::class,
+        PasswordPolicy::class,
     ];
 
     /**
@@ -279,17 +279,17 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return new Validator($this->getLeagueContainer()->get('session')->get('allowableHTML', ''));
         });
 
-        $container->add(PasswordPolicies::class, function () use ($container) {
+        $container->add(PasswordPolicy::class, function () use ($container) {
 
             // If for some reason, setting gateway is not managed.
             if (!$container->has(SettingGateway::class)) {
-                return PasswordPolicies::createNilPolicy();
+                return PasswordPolicy::createNilPolicy();
             }
 
             // If for some reason, setting gateway is not loaded.
             $settingGateway = $container->get(SettingGateway::class);
             if (!($settingGateway instanceof SettingGateway)) {
-                return PasswordPolicies::createNilPolicy();
+                return PasswordPolicy::createNilPolicy();
             }
 
             // Load password policy from settings.
@@ -299,10 +299,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $minLength = $settingGateway->getSettingByScope('System', 'passwordPolicyMinLength');
             if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
                 // If for some reason, password policy is mis-configured.
-                return PasswordPolicies::createNilPolicy();
+                return PasswordPolicy::createNilPolicy();
             }
 
-            return new PasswordPolicies(
+            return new PasswordPolicy(
                 $alpha === 'Y',
                 $numeric === 'Y',
                 $punctuation === 'Y',
