@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         }
                         $body .= __('Job Type').': '.__($values['type'])."<br/>";
                         $body .= __('Job Title').': '.__($values['jobTitle'])."<br/>";
-                        $bodyPlain = emailBodyConvert($body);
+                        $bodyPlain = Format::emailBodyToPlain($body);
 
                         $mail = $container->get(Mailer::class);
                         $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     } else {
                                         $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$session->get('systemName').', '.$session->get('organisationNameShort')."'s system for managing school information. You can access the system by going to ".$session->get('absoluteURL').' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$session->get('organisationHRName').",<br/><br/>".$session->get('systemName').' Administrator';
                                     }
-                                    $bodyPlain = emailBodyConvert($body);
+                                    $bodyPlain = Format::emailBodyToPlain($body);
 
                                     $mail = $container->get(Mailer::class);
                                     $mail->SetFrom($session->get('organisationHREmail'), $session->get('organisationHRName'));
