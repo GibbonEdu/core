@@ -360,9 +360,8 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    global $session, $container;
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
+    global $session;
+    
     $form = Form::create('fastFinder', Url::fromHandlerRoute('indexFindRedirect.php'), 'get');
     $form->setClass('blank fullWidth');
 
@@ -384,7 +383,7 @@ function getFastFinder($connection2, $guid)
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
     $templateData = [
-        'roleCategory'        => $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent')),
+        'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
         'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
         'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
         'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',

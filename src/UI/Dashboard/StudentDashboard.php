@@ -29,7 +29,6 @@ use Gibbon\Contracts\Services\Session;
 use League\Container\ContainerAwareInterface;
 use League\Container\ContainerAwareTrait;
 use Gibbon\Domain\System\HookGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Student Dashboard View Composer
@@ -45,24 +44,15 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
     protected $session;
     protected $settingGateway;
 
-    /**
-     * Role gateway
-     *
-     * @var RoleGateway
-     */
-    protected $roleGateway;
-
     public function __construct(
         Connection $db,
         Session $session,
-        SettingGateway $settingGateway,
-        RoleGateway $roleGateway
+        SettingGateway $settingGateway
     )
     {
         $this->db = $db;
         $this->session = $session;
         $this->settingGateway = $settingGateway;
-        $this->roleGateway = $roleGateway;
     }
 
     public function getOutput()
@@ -230,7 +220,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         $timetable = false;
         if (
             isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != ''
-            && $this->roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent'))
+            && $this->session->get('gibbonRoleIDCurrentCategory')
         ) {
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $_POST = (new Validator(''))->sanitize($_POST);

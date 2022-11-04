@@ -24,7 +24,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_view.php') == false) {
@@ -103,13 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent_
         ->sortBy(['timestampCreated'])
         ->fromPOST();
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
-
     // QUERY
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
-    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 

@@ -23,7 +23,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -43,11 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         $page->return->addReturns(['success0' => __('Registration was successful.'), 'success1' => __('Unregistration was successful.'), 'success2' => __('Registration was successful, but the activity is full, so you are on the waiting list.')]);
 
-        /** @var RoleGateway */
-        $roleGateway = $container->get(RoleGateway::class);
-
         //Get current role category
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
         //Check access controls
         $settingGateway = $container->get(SettingGateway::class);

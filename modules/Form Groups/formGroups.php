@@ -21,7 +21,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php') == false) {
     // Access denied
@@ -50,16 +49,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
             return Format::nameList($tutors, 'Staff', false, true);
         };
 
-        /** @var RoleGateway */
-        $roleGateway = $container->get(RoleGateway::class);
-
         $table = DataTable::create('formGroups');
         $table->setTitle(__('Form Groups'));
 
         $table->addColumn('name', __('Name'));
         $table->addColumn('tutors', __('Form Tutors'))->format($formatTutorsList);
         $table->addColumn('space', __('Room'));
-        if ($roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent')) == "Staff") {
+        if ($session->get('gibbonRoleIDCurrentCategory') == "Staff") {
             $table->addColumn('students', __('Students'));
         }
         $table->addColumn('website', __('Website'))->format(Format::using('link', 'website'));
@@ -71,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Form Groups/formGroups.php
         echo $table->render($formGroups->toDataSet());
 
         //Display year group table for staff
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
         if ($roleCategory == 'Staff') {
             $yearGroupGateway = $container->get(YearGroupGateway::class);
 

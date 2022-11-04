@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\School\YearGroupGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportGateway;
@@ -60,11 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_d
         exit;
     }
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
-
     // Check access by role category
-    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
     $roleAccess = false;
     if ($roleCategory == 'Staff' && $archive['viewableStaff'] == 'Y') {
         $roleAccess = true;

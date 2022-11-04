@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -77,12 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport_v
 
     echo $form->getOutput();
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
-
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
-    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $criteria = $reportGateway->newQueryCriteria(true)
         ->sortBy($gibbonFormGroupID ? ['surname', 'preferredName'] : ['sequenceNumber', 'name'])

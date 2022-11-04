@@ -1431,7 +1431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                  */
                                 $alertLevelGateway = $container->get(AlertLevelGateway::class);
                                 $alert = $alertLevelGateway->getByID(AlertLevelGateway::LEVEL_MEDIUM);
-                                $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+                                $role = $session->get('gibbonRoleIDCurrentCategory');
                                 if ($role == 'Parent') {
                                     $showParentAttainmentWarning = $settingGateway->getSettingByScope('Markbook', 'showParentAttainmentWarning');
                                     $showParentEffortWarning = $settingGateway->getSettingByScope('Markbook', 'showParentEffortWarning');
@@ -1963,7 +1963,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             // QUERY
                             $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
                             $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
-                            $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+                            $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
                             $reports = $reportArchiveEntryGateway->queryArchiveByStudent($criteria, $gibbonPersonID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 
@@ -2289,7 +2289,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+                            $role = $session->get('gibbonRoleIDCurrentCategory');
                             $plannerGateway = $container->get(PlannerEntryGateway::class);
 
                             // DEADLINES

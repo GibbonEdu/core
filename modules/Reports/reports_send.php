@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportGateway;
@@ -36,12 +35,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send.php')
     $gibbonReportID = $_GET['gibbonReportID'] ?? '';
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveGateway = $container->get(ReportArchiveGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
-    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     if (empty($gibbonReportID)) {
         // QUERY

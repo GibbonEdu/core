@@ -31,7 +31,6 @@ use Gibbon\Tables\Prefab\FormGroupTable;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\System\HookGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Staff Dashboard View Composer
@@ -68,25 +67,18 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
      */
     private $settingGateway;
 
-    /**
-     * @var RoleGateway
-     */
-    private $roleGateway;
-
     public function __construct(
         Connection $db,
         Session $session,
         FormGroupTable $formGroupTable,
         EnrolmentTable $enrolmentTable,
-        SettingGateway $settingGateway,
-        RoleGateway $roleGateway
+        SettingGateway $settingGateway
     ) {
         $this->db = $db;
         $this->session = $session;
         $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
         $this->settingGateway = $settingGateway;
-        $this->roleGateway = $roleGateway;
     }
 
     public function getOutput()
@@ -262,7 +254,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         $timetable = false;
         if (
             isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != ''
-            && $this->roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Staff'
+            && $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'
         ) {
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $_POST = (new Validator(''))->sanitize($_POST);

@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 
 //Rubric includes
@@ -30,9 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo '</div>';
 } else {
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
-
     //Proceed!
     //Check if gibbonCourseClassID and gibbonMarkbookColumnID and gibbonPersonID and gibbonRubricID specified
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
@@ -42,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '' or $gibbonPersonID == '' or $gibbonRubricID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDPrimary'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
         $contextDBTableGibbonRubricIDField = 'gibbonRubricID';
         if ($_GET['type'] == 'attainment') {
             $contextDBTableGibbonRubricIDField = 'gibbonRubricIDAttainment';

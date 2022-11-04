@@ -32,7 +32,6 @@ use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\School\SchoolYearGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Sidebar View Composer
@@ -66,12 +65,11 @@ class Sidebar implements OutputableInterface, ContainerAwareInterface
         Connection $db,
         Session $session,
         SettingGateway $settingGateway,
-        SchoolYearGateway $schoolYearGateway,
-        RoleGateway $roleGateway
+        SchoolYearGateway $schoolYearGateway
     ) {
         $this->db = $db;
         $this->session = $session;
-        $this->category = $roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent'));
+        $this->category = $this->session->get('gibbonRoleIDCurrentCategory');
         $this->settingGateway = $settingGateway;
         $this->schoolYearGateway = $schoolYearGateway;
     }

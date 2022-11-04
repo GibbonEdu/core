@@ -1096,10 +1096,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $edit = false)
 {
-    global $session, $container;
-
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
+    global $session;
 
     $schoolCalendarAlpha = 0.90;
     $ttAlpha = 1.0;
@@ -1113,7 +1110,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $self = false;
     if ($gibbonPersonID == $session->get('gibbonPersonID') and $edit == false) {
         $self = true;
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
     } else {
         $dataRole = ['gibbonPersonID' => $gibbonPersonID];
         $sqlRole = "SELECT gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
@@ -1138,7 +1135,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
         $resultEnrolment->execute($dataEnrolment);
 
         $enrolment = $resultEnrolment && $resultEnrolment->rowCount() > 0 ? $resultEnrolment->fetch() : [];
-        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
+        if (!empty($specialDay) && $specialDay['type'] == 'Off Timetable' && !empty($enrolment) && in_array($enrolment['gibbonYearGroupID'], $specialDay['gibbonYearGroupIDList'] ?? [])) {
             $offTimetable = true;
         }
     } elseif ($roleCategory == 'Staff') {

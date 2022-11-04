@@ -51,14 +51,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
         header("Location: {$URL}");
         exit;
     } else {
-
-        /** @var RoleGateway */
-        $roleGateway = $container->get(RoleGateway::class);
         $settingGateway = $container->get(SettingGateway::class);
         $activityGateway = $container->get(ActivityGateway::class);
 
         //Get current role category
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
         //Check access controls
         $access = $settingGateway->getSettingByScope('Activities', 'access');

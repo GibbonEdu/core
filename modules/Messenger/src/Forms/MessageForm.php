@@ -48,7 +48,7 @@ class MessageForm extends Form
         $this->settingGateway = $settingGateway;
         $this->roleGateway = $roleGateway;
 
-        $this->roleCategory = $roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent'));
+        $this->roleCategory = $this->session->get('gibbonRoleIDCurrentCategory');
 
         $this->defaultSendStaff = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendStudents = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';

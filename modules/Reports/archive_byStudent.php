@@ -22,7 +22,6 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php') == false) {
@@ -77,13 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.
 
     echo $form->getOutput();
 
-    /** @var RoleGateway */
-    $roleGateway = $container->get(RoleGateway::class);
-
     // QUERY
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byStudent.php', 'View Past Reports');
-    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
+    $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
     $reports = $reportArchiveEntryGateway->queryArchiveBySchoolYear($criteria, $gibbonSchoolYearID, $gibbonYearGroupID, $gibbonFormGroupID, $roleCategory, $canViewDraftReports, $canViewPastReports);
 

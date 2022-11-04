@@ -23,7 +23,6 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Http\Url;
 
@@ -49,9 +48,6 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 $settingGateway = $container->get(SettingGateway::class);
-
-/** @var RoleGateway */
-$roleGateway = $container->get(RoleGateway::class);
 
 /**
  * USER ROLES
@@ -141,7 +137,7 @@ if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, 
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
 
     if ($session->has('username')) { // Are we logged in?
-        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $roleCategory = $session->get('gibbonRoleIDCurrentCategory');
 
         // Deal with attendance self-registration redirect
         // Are we a student?
@@ -657,7 +653,7 @@ if (!$session->has('address')) {
         }
 
         // DASHBOARDS!
-        $category = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $category = $session->get('gibbonRoleIDCurrentCategory');
 
         switch ($category) {
             case 'Parent':

@@ -22,7 +22,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
-use Gibbon\Domain\User\RoleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -84,10 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo '</h2>';
 
         if ($highestAction == 'View Timetable by Person_my') {
-            /** @var RoleGateway */
-            $roleGateway = $container->get(RoleGateway::class);
-
-            $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDPrimary'));
+            $role = $session->get('gibbonRoleIDCurrentCategory');
             if ($role == 'Student') {
                 $result = $studentGateway->selectActiveStudentByPerson($session->get('gibbonSchoolYearID'), $session->get('gibbonPersonID'));
             } else {

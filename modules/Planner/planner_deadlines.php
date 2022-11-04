@@ -21,7 +21,6 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Planner\PlannerEntryGateway;
-use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Planner\Tables\HomeworkTable;
 
 //Module includes
@@ -229,9 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         }
     } elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewOnly') {
         //Get current role category
-        /** @var RoleGateway */
-        $roleGateway = $container->get(RoleGateway::class);
-        $category = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
+        $category = $session->get('gibbonRoleIDCurrentCategory');
 
         $page->breadcrumbs
             ->add(__('Planner'), 'planner.php', $params)
