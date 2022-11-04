@@ -1328,7 +1328,7 @@ function getModuleCategory($address, $connection2)
  *
  * @deprecated v25
  *             This happens in SessionFactory::setCurrentSchoolYear instead,
- *             which is called by Core::initializeCore, so shouldn't need to 
+ *             which is called by Core::initializeCore, so shouldn't need to
  *             be called manually.
  *
  * @version v23
@@ -1365,6 +1365,17 @@ function setCurrentSchoolYear($guid,  $connection2)
     }
 }
 
+/**
+ * Convert linebreaks into <br/> tags.
+ * Deprecated. Use nl2br() instead.
+ *
+ * @deprecated v25
+ * @version v12
+ *
+ * @param string $string
+ *
+ * @return string
+ */
 function nl2brr($string)
 {
     return preg_replace("/\r\n|\n|\r/", '<br/>', $string);

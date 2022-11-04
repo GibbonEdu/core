@@ -137,11 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $output = '';
                 if (!empty($beahviour['comment'])) {
                     $output .= '<strong>'.__('Incident').'</strong><br/>';
-                    $output .= nl2brr($beahviour['comment']).'<br/>';
+                    $output .= nl2br($beahviour['comment']).'<br/>';
                 }
                 if (!empty($beahviour['followup'])) {
                     $output .= '<br/><strong>'.__('Follow Up').'</strong><br/>';
-                    $output .= nl2brr($beahviour['followup']).'<br/>';
+                    $output .= nl2br($beahviour['followup']).'<br/>';
                 }
                 return $output;
             });
