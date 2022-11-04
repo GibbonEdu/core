@@ -681,7 +681,8 @@ class ImportType
      * @param   string  Field Name
      * @param   string  Key to retrieve
      * @param   string  Default value to return if key doesn't exist
-     * @return  var
+     *
+     * @return  mixed
      */
     public function getField($fieldName, $key, $default = "")
     {
@@ -938,7 +939,7 @@ class ImportType
      * Compares the value type, legth and properties with the expected values for the table column
      *
      * @param   string  Field name
-     * @param   var     Value to validate
+     * @param   mixed   Value to validate
      * @return  bool    true if the value checks out
      */
     public function validateFieldValue($fieldName, $value)
@@ -983,7 +984,7 @@ class ImportType
             } break;
 
             default:            if (mb_substr($filter, 0, 1) == '/') {
-                if (preg_match($filter, $value) == false) {
+                if (preg_match((string) $filter, $value) == false) {
                     return false;
                 }
             };
@@ -1034,7 +1035,7 @@ class ImportType
                             break;
 
             case 'enum':    $elements = $this->getField($fieldName, 'elements');
-                            $elements = array_map('trim', $elements);
+                            $elements = array_map('trim', (array) $elements);
                             if (!in_array($value, $elements)) {
                                 return false;
                             }
@@ -1145,12 +1146,12 @@ class ImportType
      */
     public function readableFieldType($fieldName)
     {
-        $filter = $this->getField($fieldName, 'filter');
-        $kind = $this->getField($fieldName, 'kind');
-        $length = $this->getField($fieldName, 'length');
+        $filter = (string) $this->getField($fieldName, 'filter');
+        $kind = (string) $this->getField($fieldName, 'kind');
+        $length = (int) $this->getField($fieldName, 'length');
 
         if ($this->isFieldRelational($fieldName)) {
-            extract($this->getField($fieldName, 'relationship'));
+            extract((array) $this->getField($fieldName, 'relationship'));
             $field = is_array($field) ? current($field) : $field;
 
             $helpText = __('Each {name} value should match an existing {field} in {table}.', [
@@ -1184,7 +1185,7 @@ class ImportType
                 return __('Number ({number} digits)', ['number' => $length]);
 
             case 'decimal':
-                $scale = $this->getField($fieldName, 'scale');
+                $scale = (int) $this->getField($fieldName, 'scale');
                 $format = str_repeat('0', $length) .".". str_repeat('0', $scale);
                 return __('Decimal ({number} format)', ['number' => $format]);
 
@@ -1198,7 +1199,7 @@ class ImportType
                 return __('True or False');
 
             case 'enum':
-                $options = implode('<br/>', $this->getField($fieldName, 'elements'));
+                $options = implode('<br/>', (array) $this->getField($fieldName, 'elements'));
                 return '<abbr title="'.$options.'">'.__('Options').'</abbr>';
 
             default:
