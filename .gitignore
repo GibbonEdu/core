@@ -14,7 +14,8 @@ themes/*
 !themes/2021
 
 # Test generated temporary files
-tests/log/*
+tests/_logs/*
+tests/_dump/*
 tests/_support/_generated/*
 tests/_output
 .phpunit.result.cache
