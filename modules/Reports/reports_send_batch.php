@@ -21,6 +21,7 @@ use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
@@ -40,7 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/reports_send_batch
         ->add(__('Send Reports'), 'reports_send.php')
         ->add(__('Select Reports'));
 
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
+
+    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
 
     $familyGateway = $container->get(FamilyGateway::class);
     $reportGateway = $container->get(ReportGateway::class);

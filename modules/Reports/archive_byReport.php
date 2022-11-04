@@ -20,12 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
+
     // Proceed!
     $page->breadcrumbs->add(__('View by Report'));
 
@@ -33,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.p
 
     $canViewDraftReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Draft Reports');
     $canViewPastReports = isActionAccessible($guid, $connection2, '/modules/Reports/archive_byReport.php', 'View Past Reports');
-    $roleCategory = getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'), $connection2);
+    $roleCategory = $roleGateway->getRoleCategory($gibbon->session->get('gibbonRoleIDCurrent'));
 
     $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? $gibbon->session->get('gibbonSchoolYearID');
 

@@ -18,11 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide include
+
+use Gibbon\Domain\User\RoleGateway;
+
 include '../../gibbon.php';
+
+/** @var RoleGateway */
+$roleGateway = $container->get(RoleGateway::class);
 
 if (empty($session->get('gibbonPersonID')) || empty($session->get('gibbonRoleIDPrimary'))) {
     die(__('Your request failed because you do not have access to this action.'));
-} elseif (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) != 'Staff') {
+} elseif ($roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent')) != 'Staff') {
     die(__('Your request failed because you do not have access to this action.'));
 } else {
     $data = array('gibbonPersonID' => $_POST['gibbonPersonID'] ?? '');

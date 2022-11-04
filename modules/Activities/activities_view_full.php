@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -224,7 +225,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '<i>'.__('None').'</i>';
                     }
 
-                    $role = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+                    /** @var RoleGateway */
+                    $roleGateway = $container->get(RoleGateway::class);
+                    $role = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
                     if ($role == 'Staff') {
                         echo '<h3>'.__('Participants').'</h3>';
 

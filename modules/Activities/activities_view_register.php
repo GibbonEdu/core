@@ -22,6 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\School\SchoolYearTermGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -47,11 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo __('You do not have access to this action.');
             echo '</div>';
         } else {
-            //Get current role category
-            $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
+            /** @var RoleGateway */
+            $roleGateway = $container->get(RoleGateway::class);
             $settingGateway = $container->get(SettingGateway::class);
             $activityGateway = $container->get(ActivityGateway::class);
+
+            //Get current role category
+            $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
 
             //Check access controls
             $access = $settingGateway->getSettingByScope('Activities', 'access');

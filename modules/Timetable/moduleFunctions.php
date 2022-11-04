@@ -193,7 +193,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
         // Create a Graph client
         $oauthProvider = $container->get('Microsoft_Auth');
         if (empty($oauthProvider)) return;
-        
+
         $graph = new Graph();
         $graph->setAccessToken($session->get('microsoftAPIAccessToken'));
 
@@ -653,7 +653,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
 
                 }
-                
+
             }
 
             //Get personal calendar array
@@ -1059,7 +1059,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         //Check for school closure day
                         $dateCheck = date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection)));
                         $rowClosure = $specialDays[$dateCheck] ?? '';
-                        
+
                         if (!empty($rowClosure)) {
                             $rowClosure['gibbonYearGroupIDList'] = explode(',', $rowClosure['gibbonYearGroupIDList'] ?? '');
                             $rowClosure['gibbonFormGroupIDList'] = explode(',', $rowClosure['gibbonFormGroupIDList'] ?? '');
@@ -1096,7 +1096,10 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
 
 function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $gibbonPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $activities, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $specialDay = [], $edit = false)
 {
-    global $session;
+    global $session, $container;
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
 
     $schoolCalendarAlpha = 0.90;
     $ttAlpha = 1.0;
@@ -1110,7 +1113,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $self = false;
     if ($gibbonPersonID == $session->get('gibbonPersonID') and $edit == false) {
         $self = true;
-        $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
     } else {
         $dataRole = ['gibbonPersonID' => $gibbonPersonID];
         $sqlRole = "SELECT gibbonRole.category FROM gibbonPerson JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary) WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
@@ -1626,7 +1629,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         }
 
                         $output .= "<a class='thickbox' style='text-decoration: none; font-weight: bold; ' href='".$event[5]."'>".$label.'</a><br/>';
-                        
+
                         if (!empty($event[6]) && $event[6]['cancelActivities'] == 'Y') {
                             $output .= '<i>'.__('Cancelled').'</i><br/>';
                         } elseif (($height >= 55 && $charCut <= 20) || ($height >= 68 && $charCut >= 40)) {
@@ -1635,7 +1638,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
                         $output .= '</div>';
                     }
                     ++$zCount;
-                    
+
                 }
             }
 
@@ -1772,7 +1775,7 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
     global $session;
-    
+
     $output = '';
 
     $blank = true;
@@ -2197,7 +2200,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                             $output .= "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultClosure->rowCount() == 1) {
-                            
+
                             $rowClosure = $resultClosure->fetch();
                             if ($rowClosure['type'] == 'School Closure') {
                                 $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";

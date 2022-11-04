@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -111,8 +112,12 @@ if (!$session->exists("username")) {
 
     if ($forceReset != 'Y') {
         $staff = false;
+
+        /** @var RoleGateway */
+        $roleGateway = $container->get(RoleGateway::class);
+
         foreach ($session->get('gibbonRoleIDAll') as $role) {
-            $roleCategory = getRoleCategory($role[0], $connection2);
+            $roleCategory = $roleGateway->getRoleCategory($role[0]);
             $staff = $staff || ($roleCategory == 'Staff');
         }
 

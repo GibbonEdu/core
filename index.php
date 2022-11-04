@@ -17,14 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Http\Url;
-use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\System\HookGateway;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Messenger\MessengerGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\Domain\User\RoleGateway;
+use Gibbon\Domain\User\UserGateway;
+use Gibbon\Http\Url;
 
 /**
  * BOOTSTRAP
@@ -48,6 +49,9 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 $settingGateway = $container->get(SettingGateway::class);
+
+/** @var RoleGateway */
+$roleGateway = $container->get(RoleGateway::class);
 
 /**
  * USER ROLES
@@ -137,7 +141,7 @@ if (version_compare($versionDB, $versionCode, '<') && isActionAccessible($guid, 
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
 
     if ($session->has('username')) { // Are we logged in?
-        $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $roleCategory = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
 
         // Deal with attendance self-registration redirect
         // Are we a student?
@@ -653,7 +657,7 @@ if (!$session->has('address')) {
         }
 
         // DASHBOARDS!
-        $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
+        $category = $roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent'));
 
         switch ($category) {
             case 'Parent':

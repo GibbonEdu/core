@@ -48,7 +48,7 @@ class MessageForm extends Form
         $this->settingGateway = $settingGateway;
         $this->roleGateway = $roleGateway;
 
-        $this->roleCategory = getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $this->db->getConnection());
+        $this->roleCategory = $roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent'));
 
         $this->defaultSendStaff = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
         $this->defaultSendStudents = ($this->roleCategory == 'Staff' || $this->roleCategory == 'Student')? 'Y' : 'N';
@@ -168,7 +168,7 @@ class MessageForm extends Form
         $cannedResponse = isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php', 'New Message_cannedResponse');
         if (!$sent && $cannedResponse) {
             $cannedResponses = $this->cannedResponseGateway->selectCannedResponses()->fetchAll();
-            
+
             if (!empty($cannedResponses)) {
                 $this->getCannedResponseJS($cannedResponses, $signature);
                 $cans = array_combine(array_column($cannedResponses, 'gibbonMessengerCannedResponseID'), array_column($cannedResponses, 'subject'));
@@ -211,7 +211,7 @@ class MessageForm extends Form
                 $form->addRow()->addClass('emailReceipt')
                     ->addContent(__('With read receipts enabled, the text [confirmLink] can be included in a message to add a unique, login-free read receipt link. If [confirmLink] is not included, the link will be appended to the end of the message.'));
             }
-    
+
             $row = $form->addRow()->addClass('emailReceipt');
                 $row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
                 $row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue($values['emailReceiptText'] ?? __('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly($sent);
@@ -364,7 +364,7 @@ class MessageForm extends Form
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
             $selectedByRole = [];
             $selected = $this->getSelectedTargets($targets, 'Course', $selectedByRole);
-            
+
             $row = $form->addRow();
                 $row->addLabel('course', __('Course'))->description(__('Members of a course of study.'));
                 $row->addYesNoRadio('course')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -406,7 +406,7 @@ class MessageForm extends Form
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
             $selectedByRole = [];
             $selected = $this->getSelectedTargets($targets, 'Class', $selectedByRole);
-            
+
             $row = $form->addRow();
                 $row->addLabel('class', __('Class'))->description(__('Members of a class within a course.'));
                 $row->addYesNoRadio('class')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -536,7 +536,7 @@ class MessageForm extends Form
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_any")) {
             $selectedByRole = [];
             $selected = $this->getSelectedTargets($targets, 'Transport', $selectedByRole);
-            
+
             $row = $form->addRow();
                 $row->addLabel('transport', __('Transport'))->description(__('Applies to all staff and students who have transport set.'));
                 $row->addYesNoRadio('transport')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -575,7 +575,7 @@ class MessageForm extends Form
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_attendance")) {
             $selectedByRole = [];
             $selected = $this->getSelectedTargets($targets, 'Attendance', $selectedByRole);
-            
+
             $row = $form->addRow();
                 $row->addLabel('attendance', __('Attendance Status'))->description(__('Students matching the given attendance status.'));
                 $row->addYesNoRadio('attendance')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -615,7 +615,7 @@ class MessageForm extends Form
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
             $selectedByRole = [];
             $selected = $this->getSelectedTargets($targets, 'Group', $selectedByRole);
-            
+
             $row = $form->addRow();
                 $row->addLabel('group', __('Group'))->description(__('Members of a Messenger module group.'));
                 $row->addYesNoRadio('group')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -656,7 +656,7 @@ class MessageForm extends Form
         // Individuals
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
             $selected = $this->getSelectedTargets($targets, 'Individuals');
-            
+
             $row = $form->addRow();
                 $row->addLabel('individuals', __('Individuals'))->description(__('Individuals from the whole school.'));
                 $row->addYesNoRadio('individuals')->checked(!empty($selected)? 'Y' : 'N')->required();
@@ -672,7 +672,7 @@ class MessageForm extends Form
                     LEFT JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID)
                     WHERE gibbonPerson.status='Full'
                     ORDER BY surname, preferredName";
-            
+
             $individuals = $pdo->select($sql, $data)->fetchAll();
             $individuals = array_reduce($individuals, function($group, $item){
                 $name = Format::name("", $item['preferredName'], $item['surname'], 'Student', true).' (';
@@ -722,7 +722,7 @@ class MessageForm extends Form
     {
         $selectedByRole = ['staff' => $this->defaultSendStaff, 'students' => $this->defaultSendStudents, 'parents' => $this->defaultSendParents];
         if (empty($targets)) return [];
-        
+
         return array_reduce($targets, function($group, $item) use (&$type, &$selectedByRole) {
             if ($item['type'] == $type) {
                 $group[] = $item['id'];
@@ -763,7 +763,7 @@ class MessageForm extends Form
     private function getSMSSignatureJS($signature)
     {
         echo "<script>
-        
+
         document.addEventListener('DOMContentLoaded', function () {
             var smsRadio = document.querySelectorAll('input[name=\"sms\"]');
             if (smsRadio == undefined || smsRadio.length == 0) return;
@@ -771,7 +771,7 @@ class MessageForm extends Form
             smsRadio.forEach(function (element) {
                 element.addEventListener('click', function(event) {
                     tinymce.triggerSave();
-    
+
                     if (element.value == 'Y') {
                         alert('".__('SMS sending has been enabled. Your signature has automatically been removed from the message body. Please note that the subject line is not included in SMS messages.')."');
                         var contents = $('#body').val().replace('" . addSlashes($signature) . "', ' ');

@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Services\Format;
 
 function getLessons($guid, $connection2, $and = '')
@@ -91,10 +92,13 @@ function getLessons($guid, $connection2, $and = '')
 
 function getCARole($guid, $connection2, $gibbonCourseClassID)
 {
-    global $session;
+    global $session, $container;
+
+    /** @var RoleGateway */
+    $roleGateway = $container->get(RoleGateway::class);
 
     $role = '';
-    if (getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2) == 'Parent') {
+    if ($roleGateway->getRoleCategory($session->get('gibbonRoleIDCurrent')) == 'Parent') {
         $role = 'Parent';
         $childInClass = false;
 

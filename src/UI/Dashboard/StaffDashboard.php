@@ -31,6 +31,7 @@ use Gibbon\Tables\Prefab\FormGroupTable;
 use League\Container\ContainerAwareTrait;
 use League\Container\ContainerAwareInterface;
 use Gibbon\Domain\System\HookGateway;
+use Gibbon\Domain\User\RoleGateway;
 
 /**
  * Staff Dashboard View Composer
@@ -67,18 +68,25 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
      */
     private $settingGateway;
 
+    /**
+     * @var RoleGateway
+     */
+    private $roleGateway;
+
     public function __construct(
         Connection $db,
         Session $session,
         FormGroupTable $formGroupTable,
         EnrolmentTable $enrolmentTable,
-        SettingGateway $settingGateway
+        SettingGateway $settingGateway,
+        RoleGateway $roleGateway
     ) {
         $this->db = $db;
         $this->session = $session;
         $this->formGroupTable = $formGroupTable;
         $this->enrolmentTable = $enrolmentTable;
         $this->settingGateway = $settingGateway;
+        $this->roleGateway = $roleGateway;
     }
 
     public function getOutput()
@@ -126,7 +134,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
             LEFT JOIN gibbonPlannerEntryStudentHomework ON (gibbonPlannerEntryStudentHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID AND gibbonPlannerEntryStudentHomework.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
 
             LEFT JOIN (
-                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) WHERE gibbonTTDayDate.date=:date) 
+                SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID, gibbonTTColumnRow.timeStart, gibbonTTColumnRow.timeEnd FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnRowID=gibbonTTDayRowClass.gibbonTTColumnRowID) WHERE gibbonTTDayDate.date=:date)
                 AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonTTDayRowClassSubset.timeStart=gibbonPlannerEntry.timeStart AND gibbonTTDayRowClassSubset.timeEnd=gibbonPlannerEntry.timeEnd)
             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
 
@@ -252,7 +260,10 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
 
         //GET TIMETABLE
         $timetable = false;
-        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != '' and getRoleCategory($this->session->get('gibbonRoleIDCurrent'), $connection2) == 'Staff') {
+        if (
+            isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $this->session->get('username') != ''
+            && $this->roleGateway->getRoleCategory($this->session->get('gibbonRoleIDCurrent')) == 'Staff'
+        ) {
             $apiEndpoint = (string)Url::fromHandlerRoute('index_tt_ajax.php');
             $_POST = (new Validator(''))->sanitize($_POST);
             $jsonQuery = [
