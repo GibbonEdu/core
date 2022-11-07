@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -27,12 +27,12 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\CoverageCalendar;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_availability')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_availability')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage'))) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'substitutes_manage'))) {
         $page->breadcrumbs
             ->add(__('Manage Substitutes'), 'substitutes_manage.php')
             ->add(__('Edit Availability'));
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
         ->fromPOST();
 
     $dates = $substituteGateway->queryUnavailableDatesBySub($criteria, $session->get('gibbonSchoolYearID'), $gibbonPersonID);
-    
+
     $bulkActions = array(
         'Delete' => __('Delete'),
     );
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
 
     echo $form->getOutput();
 
-    
+
     $form = Form::create('staffAvailability', $session->get('absoluteURL').'/modules/Staff/coverage_availability_addProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));

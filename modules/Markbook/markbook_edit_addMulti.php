@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
@@ -38,7 +38,7 @@ $attainmentAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook',
 $effortAlternativeName = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeName');
 $effortAlternativeNameAbrev = $settingGateway->getSettingByScope('Markbook', 'effortAlternativeNameAbrev');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_addMulti')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit_addMulti')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

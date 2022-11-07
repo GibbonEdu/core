@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'tt_edit_day_edit_class_exception_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

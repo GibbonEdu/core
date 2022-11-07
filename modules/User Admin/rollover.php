@@ -23,12 +23,12 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'rollover')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'rollover')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\ModuleGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage_update')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'module_manage_update')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
         ->add(__('Update Module'));
 
     $page->return->addReturns(['warning1' => __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:')]);
-    
+
     if (!empty($gibbon->session->get('moduleUpdateError'))) {
         $page->addError(__('The following SQL statements caused errors:').' '.$gibbon->session->get('moduleUpdateError'));
     }
@@ -39,13 +39,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
 
     // Check if module specified
     $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
-    
+
     if (empty($gibbonModuleID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $moduleGateway = $container->get(ModuleGateway::class);
         $module = $moduleGateway->getByID($gibbonModuleID);
-        
+
         if (empty($module)) {
             $page->addError(__('The specified record cannot be found.'));
         } else {
@@ -77,16 +77,16 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
                 // Time to update
                 $page->addMessage(sprintf(__('This page allows you to semi-automatically update the %1$s module to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.'), htmlPrep($module['name'])));
                 $form = Form::create('action', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/module_manage_updateProcess.php?&gibbonModuleID='.$module['gibbonModuleID']);
-                
+
                 $form->setTitle(__('Database Update'))
                     ->setDescription(sprintf(__('It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($module['name']), $versionDB, $versionCode).'</b>');
-                
+
                 $form->addHiddenValue('versionDB', $versionDB);
                 $form->addHiddenValue('versionCode', $versionCode);
                 $form->addHiddenValue('address', $gibbon->session->get('address'));
 
                 $form->addRow()->addSubmit();
-                echo $form->getOutput(); 
+                echo $form->getOutput();
             }
         }
     }

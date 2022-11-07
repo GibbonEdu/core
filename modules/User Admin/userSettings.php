@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UsernameFormatGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'userSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'userSettings')) == false) {
     //Access denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -37,9 +37,9 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'use
     $usernameFormats = $gateway->selectUsernameFormats();
 
     $table = DataTable::create('usernameFormats');
-    
+
     $table->setTitle(__('Username Formats'));
-    
+
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/userSettings_usernameFormat_add.php')
         ->setIcon('page_new')
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'use
     $form = Form::create('userSettings', $session->get('absoluteURL').'/modules/'.$session->get('module').'/userSettingsProcess.php');
 
     $form->setTitle(__('Settings'));
-     
+
     $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading('Field Values', __('Field Values'));

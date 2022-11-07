@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicat
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         //Proceed!
-        
+
             $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
             $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
             $result = $connection2->prepare($sql);

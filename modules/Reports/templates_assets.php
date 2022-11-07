@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
         ->setURL('/modules/Reports/templates_assets_scanProcess.php')
         ->directLink(true)
         ->displayLabel();
-        
+
     $table->addColumn('name', __('Name'))
         ->format(function ($template) {
             return Format::tooltip(__($template['name']), $template['templateFile']);
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
                     ->setURL('/modules/Reports/templates_assets_components_preview.php')
                     ->addParam('TB_iframe', 'true')
                     ->modalWindow(900, 500);
-            
+
             if ($template['type'] == 'Additional') {
                 $actions->addAction('edit', __('Edit'))
                         ->addParam('sidebar', 'false')
@@ -137,12 +137,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
     $table = DataTable::createPaginated('manageFonts', $criteria);
     $table->setTitle(__('Fonts'));
     $table->setDescription(__('Place TTF font files in your Custom Asset Path at {path} and scan the directory to generate font files.', ['path' => '<b><u>'.$customAssetPath.'/fonts</u></b>']));
-        
+
     $table->addColumn('fontName', __('Name'))
         ->format(function ($font) {
             return Format::tooltip($font['fontName'], $font['fontPath']);
         });
-        
+
     $table->addColumn('tcpdf', __('Status'))
         ->width('20%')
         ->format(function ($font) use ($absolutePath) {

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -32,7 +32,7 @@ $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_view_details')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Behaviour', 'behaviour_view_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

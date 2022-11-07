@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
 
 require_once '../../gibbon.php';
@@ -30,7 +30,7 @@ $gibbonINInvestigationID = $_GET['gibbonINInvestigationID'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Individual Needs', 'investigations_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonINInvestigationID)) {

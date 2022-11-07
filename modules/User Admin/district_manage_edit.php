@@ -17,24 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'district_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'district_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Districts'), 'district_manage.php')
-        ->add(__('Edit District'));        
+        ->add(__('Edit District'));
 
     //Check if gibbonDistrictID specified
     $gibbonDistrictID = $_GET['gibbonDistrictID'];
     if ($gibbonDistrictID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonDistrictID' => $gibbonDistrictID);
             $sql = 'SELECT * FROM gibbonDistrict WHERE gibbonDistrictID=:gibbonDistrictID';
             $result = $connection2->prepare($sql);

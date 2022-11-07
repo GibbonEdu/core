@@ -17,17 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoices_manage_print')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'invoices_manage_print')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
     $status = $_GET['status'];
@@ -37,12 +37,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'invoic
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
     //Proceed!
-    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
+    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID');
 
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Invoices'), 'invoices_manage.php', $urlParams)
-        ->add(__('Print Invoices, Receipts & Reminders'));    
+        ->add(__('Print Invoices, Receipts & Reminders'));
 
     //Check if gibbonFinanceInvoiceID and gibbonSchoolYearID specified
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {

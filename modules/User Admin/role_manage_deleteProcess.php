@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -25,7 +25,7 @@ $gibbonRoleID = $_GET['gibbonRoleID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage_delete.php&gibbonRoleID='.$gibbonRoleID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/role_manage.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'role_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'role_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

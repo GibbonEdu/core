@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // Gibbon system-wide includes
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -35,7 +35,7 @@ $contextID = $_POST['contextID'] ?? '';
 if (empty($gibbonLogID)) return;
 if (!$session->has('username')) return;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate'))) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate'))) {
     $log = $container->get(LogGateway::class)->getByID($gibbonLogID);
     if (empty($log)) return;
 

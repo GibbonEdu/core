@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
@@ -27,7 +27,7 @@ use Gibbon\Forms\CustomFieldHandler;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planne
                 $form->setFactory(PlannerFormFactory::create($pdo));
 
                 $form->addHiddenValue('address', $session->get('address'));
-                
+
                 $params["gibbonPlannerEntryID"] = $gibbonPlannerEntryID;
                 $form->addHeaderAction('view', __('View'))
                     ->setURL('/modules/Planner/planner_view_full.php')
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planne
                     $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
                     $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Required' => __('Required')))->required();
 
-                if (isActionAccessible($guid, $connection2, Action::fromRoute('Crowd Assessment', 'crowdAssess'))) {
+                if (isActionAccessible($guid, $connection2, Resource::fromRoute('Crowd Assessment', 'crowdAssess'))) {
                     $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
                     $row = $form->addRow()->addClass('homeworkSubmission');
                         $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));

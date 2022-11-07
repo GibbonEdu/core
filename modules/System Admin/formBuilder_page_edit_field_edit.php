@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Forms\FormFieldGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
     }
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_page_edit_field_editProcess.php');
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValues($urlParams);
 

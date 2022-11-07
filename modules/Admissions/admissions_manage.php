@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Services\Format;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'admissions_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'admissions_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'adm
                 ->withQueryParams(['gibbonFamilyID' => $values['gibbonFamilyID']])
                 ->withAbsoluteUrl();
             return !empty($values['familyName'])
-                ? Format::link($url, $values['familyName']) 
+                ? Format::link($url, $values['familyName'])
                 : Format::small(__('N/A'));
         });
 

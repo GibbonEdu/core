@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Markbook/markbook_edit.php&gibbonCourseClassID=$gibbonCourseClassID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_copy')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit_copy')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

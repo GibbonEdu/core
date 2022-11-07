@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Forms\FormFieldGateway;
 use Gibbon\Forms\Builder\FormBuilder;
 
@@ -30,7 +30,7 @@ $urlParams = [
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder_page_design.php&sidebar=false&'.http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
     $formFieldGateway = $container->get(FormFieldGateway::class);
     $partialFail = false;
     $duplicateFail = [];
-    
+
     // Validate the required values are present
     if (empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID'])) {
         $URL .= '&return=error1';
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
     } else {
         $sequenceNumber = $formFieldGateway->getNextSequenceNumberByPage($urlParams['gibbonFormPageID']) ?? 1;
     }
-    
+
     foreach ($fields as $fieldGroup => $fieldGroupFields) {
         $fieldGroupClass = $formBuilder->getFieldGroup($fieldGroup);
 

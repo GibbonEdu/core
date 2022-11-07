@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -25,7 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'services_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'services_manage')) == false) {
     // Access denied
     echo Format::alert(__('You do not have access to this action.'));
 } else {
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 's
         if (orgName && orgKey) {
             $('#servicesCheck').load(path, {
                 'address': '<?php echo $gibbon->session->get('address'); ?>',
-                'gibboneduComOrganisationName': orgName, 
+                'gibboneduComOrganisationName': orgName,
                 'gibboneduComOrganisationKey': orgKey
             });
         }

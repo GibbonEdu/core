@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\School\GradeScaleGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -29,7 +29,7 @@ use Gibbon\Module\Reports\Domain\ReportingCriteriaTypeGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_criteria_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_criteria_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
     }
 
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
- 
+
     $values = $reportingCriteriaGateway->getByID($gibbonReportingCriteriaID);
     if (empty($values)) {
         $page->addError(__('The specified record cannot be found.'));
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
     }
 
     $form = Form::create('reportCriteriaManage', $gibbon->session->get('absoluteURL').'/modules/Reports/reporting_criteria_manage_editProcess.php');
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('gibbonReportingCriteriaID', $gibbonReportingCriteriaID);
     $form->addHiddenValue('gibbonReportingScopeID', $gibbonReportingScopeID);

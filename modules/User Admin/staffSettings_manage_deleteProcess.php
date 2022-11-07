@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
 require_once '../../gibbon.php';
@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 $gibbonStaffAbsenceTypeID = $_GET['gibbonStaffAbsenceTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/staffSettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'staffSettings_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'staffSettings_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

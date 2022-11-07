@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progress_studentNameConflicts')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'progress_studentNameConflicts')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progre
         $page->addMessage(__('There are no active reporting cycles.'));
         return;
     }
-    
+
     // FORM
     $form = Form::create('archiveByReport', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
@@ -64,14 +64,14 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progre
     echo $form->getOutput();
 
     if (empty($gibbonReportingCycleID)) return;
-    
+
     // Get all student preferred names
     $names = $container->get(StudentGateway::class)->selectActiveStudentNames($session->get('gibbonSchoolYearID'))->fetchAll(\PDO::FETCH_COLUMN, 0);
     sort($names);
     $names = array_unique($names);
 
     // Get all student comments in the selected reporting cycle
-    $reportingValues = $reportingValueGateway->selectReportingCommentsByCycle($gibbonReportingCycleID)->fetchAll();    
+    $reportingValues = $reportingValueGateway->selectReportingCommentsByCycle($gibbonReportingCycleID)->fetchAll();
     $foundNames = [];
 
     // Check all comments for names that don't match this student's name
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progre
 
     $table->addColumn('name', __('Name'))
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true, true]));
-    
+
     $table->addColumn('scopeType', __('Scope Type'))
         ->format(function ($values) {
             return $values['scopeType'].'<br/>'.Format::small($values['criteriaName']);
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progre
             return Format::tag(implode(', ', $values['foundNames'] ?? []), 'warning');
         });
 
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write_byStudent'))) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_write_byStudent'))) {
         $table->addActionColumn()
             ->addParam('gibbonReportingCycleID', $gibbonReportingCycleID)
             ->addParam('gibbonReportingScopeID')

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
@@ -31,7 +31,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_availability.php&gibbonPersonID='.$gibbonPersonID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_availability')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_availability')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } elseif (empty($gibbonPersonID) || empty($_POST['dateStart'])) {

@@ -17,17 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Staff\SubstituteGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'substitutes_manage_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $gibbonSubstituteID = $_GET['gibbonSubstituteID'] ?? '';
-    
+
     if (empty($gibbonSubstituteID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

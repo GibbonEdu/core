@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_courseClassesNotRegistered_byDate_print')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'report_courseClassesNotRegistered_byDate_print')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Planner\PlannerEntryStudentTrackerGateway;
 use Gibbon\Domain\Planner\PlannerEntryStudentHomeworkGateway;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_deadlines')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_deadlines')) == false) {
     die('error0');
 } else {
     $category = $session->get('gibbonRoleIDCurrentCategory');

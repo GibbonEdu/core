@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
@@ -45,7 +45,7 @@ $name = $_GET['name'] ?? null;
 $summary = $_GET['summary'] ?? null;
 $date = $_GET['date'] ?? date('Y-m-d');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Markbook', 'markbook_edit_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Markbook', 'markbook_edit_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

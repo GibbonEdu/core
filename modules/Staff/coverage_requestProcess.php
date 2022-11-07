@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
@@ -34,11 +34,11 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonStaffAbsenceID = $_POST['gibbonStaffAbsenceID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_request.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
-$URLSuccess = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_edit'))
+$URLSuccess = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_edit'))
     ? $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_edit.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID
     : $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/coverage_view_details.php&gibbonStaffAbsenceID='.$gibbonStaffAbsenceID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_request')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
         header("Location: {$URL}");
         exit;
     }
-    
+
     if ($data['requestType'] == 'Individual') {
         // Return a custom error message if no dates have been selected
         if (empty($requestDates)) {
@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
 
             $timeDiff = $end->getTimestamp() - $start->getTimestamp();
             $hoursCovered = abs($timeDiff / 3600);
-            
+
             if ($hoursCovered > $fullDayThreshold) {
                 $dateData['value'] = 1.0;
             } else {
@@ -164,7 +164,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     } else {
         $process->startIndividualRequest($gibbonStaffCoverageID);
     }
-    
+
     $URLSuccess .= $partialFail
         ? "&return=warning1"
         : "&return=success0";

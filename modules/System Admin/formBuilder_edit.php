@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -28,7 +28,7 @@ use Gibbon\Forms\Builder\FormData;
 use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Forms\Builder\FormBuilder;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
                 ->setClass('mx-1')
                 ->addParam('sidebar', 'false')
                 ->setURL('/modules/System Admin/formBuilder_page_design.php');
-                
+
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/System Admin/formBuilder_page_edit.php');
 
@@ -165,15 +165,15 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
     $inactiveProcesses = array_filter(array_diff_key($processes, $activeProcesses), function ($process) {
         return !empty($process->getRequiredFields());
     });
-    
+
     // Configure active functionality
     if (!empty($activeProcesses)) {
         $form = Form::create('formsFunctionality', $session->get('absoluteURL').'/modules/System Admin/formBuilder_editConfigProcess.php');
         $form->setFactory(DatabaseFormFactory::create($pdo));
-        
+
         $form->setTitle(__('Active Features'));
         $form->setDescription(__('Forms can have different functionality, depending on the type of form and the fields that have been added to the form. You can toggle and configure the available functionality below.'));
-        
+
         $form->addHiddenValue('address', $session->get('address'));
         $form->addHiddenValue('gibbonFormID', $gibbonFormID);
 

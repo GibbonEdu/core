@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportingAccessGateway;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -30,7 +30,7 @@ $gibbonReportingAccessID = $_POST['gibbonReportingAccessID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_access_manage_edit.php&gibbonReportingAccessID='.$gibbonReportingAccessID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_access_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_access_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

@@ -17,24 +17,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Finance\FinanceGateway;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'budgets_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'budgets_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Manage Budgets'));
-    
+
     $gateway = $container->get(FinanceGateway::class);
     $criteria = $gateway
       ->newQueryCriteria(true)
       ->sortBy('gibbonFinanceBudget.active', 'DESC')
       ->fromPOST();
-    
+
     $budgets = $gateway->queryFinanceBudget($criteria);
     $table = DataTable::createPaginated('budgets', $criteria);
     $table->setDescription(__('Budgets are used within purchase requisitions and expense records in order to segregate records into different areas.'));
@@ -46,13 +46,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'budget
     $table->addHeaderAction('add', __('Add'))
       ->setURL('/modules/Finance/budgets_manage_add.php')
       ->displayLabel();
-    
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('category', __('Category'));
     $table->addColumn('active', __('Active'))
       ->format(Format::using('yesNo', 'active'));
-    
+
     $table
       ->addActionColumn()
       ->addParam('gibbonFinanceBudgetID')

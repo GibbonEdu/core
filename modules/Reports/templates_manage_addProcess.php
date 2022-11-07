@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
 use Gibbon\Data\Validator;
 
@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

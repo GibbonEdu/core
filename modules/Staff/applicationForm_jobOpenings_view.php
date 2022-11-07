@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes from User Admin (for custom fields)
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 
 include './modules/User Admin/moduleFunctions.php';
@@ -33,7 +33,7 @@ if (!$session->has('username')) {
         $proceed = true;
     }
 } else {
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm')) != false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm')) != false) {
         $proceed = true;
     }
 }
@@ -70,7 +70,7 @@ if ($proceed == false) {
             ->setURL('/modules/Staff/applicationForm.php')
             ->setIcon('plus')
             ->displayLabel();
-    
+
         echo $page->fetchFromTemplate('jobOpenings.twig.html', [
             'jobOpenings' => $jobOpenings,
         ]);

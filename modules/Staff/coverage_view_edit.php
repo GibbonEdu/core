@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     // Coverage View Composer
     $coverageView = $container->get(CoverageView::class);
     $coverageView->setCoverage($gibbonStaffCoverageID)->compose($page);
-    
+
     // FORM
     $form = Form::create('staffCoverageFile', $session->get('absoluteURL').'/modules/Staff/coverage_view_editProcess.php');
 
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
 
     $form->addRow()->addHeading('Attachment', __('Attachment'));
-    
+
     $types = array('File' => __('File'),  'Link' => __('Link'), 'Text' => __('Text'));
     $row = $form->addRow();
         $row->addLabel('attachmentType', __('Type'));
@@ -117,6 +117,6 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 }

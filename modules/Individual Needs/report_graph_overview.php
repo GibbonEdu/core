@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\UI\Chart\Chart;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'report_graph_overview')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Individual Needs', 'report_graph_overview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

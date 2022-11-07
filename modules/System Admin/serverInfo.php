@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'serverInfo')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'serverInfo')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 's
         $row->addLabel('logs', __('Display Errors'));
         $row->addContent(__(is_array($displayErrors) ? $displayErrors[0] : $displayErrors))
             ->wrap('<div class="text-left w-full">', '</div>');
-        
+
     $logErrors = $info['Core']['log_errors'] ?? 'Off';
     $row = $form->addRow();
         $row->addLabel('logs', __('Log Errors'));
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 's
     // Display the full contents of the phpinfo function
     foreach ($info as $section => $vars) {
         $form->addRow()->addHeading($section);
-        
+
         foreach ($vars as $name => $value) {
             $value = is_array($value) ? current($value) : $value;
 
@@ -69,6 +69,6 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 's
             $row->addContent($value)->wrap('<div class="text-left w-full">', '</div>');
         }
     }
-    
+
     echo $form->getOutput();
 }

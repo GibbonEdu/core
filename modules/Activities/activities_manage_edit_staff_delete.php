@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Domain\Activities\ActivityStaffGateway;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Note: This is a modal page
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_edit')) == false) {
     //Acess denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
 
     $activityGateway = $container->get(ActivityGateway::class);
     $activityStaffGateway = $container->get(ActivityStaffGateway::class);
-    
+
     if (!$activityGateway->exists($gibbonActivityID) || !$activityStaffGateway->exists($gibbonActivityStaffID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {

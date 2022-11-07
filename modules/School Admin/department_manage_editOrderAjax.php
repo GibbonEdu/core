@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Departments\DepartmentGateway;
 
 $_POST['address'] = '/modules/School Admin/department_manage.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'department_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'department_manage')) == false) {
     exit;
 } else {
     // Proceed!

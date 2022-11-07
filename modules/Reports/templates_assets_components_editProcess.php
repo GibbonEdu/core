@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -31,7 +31,7 @@ $gibbonReportPrototypeSectionID = $_POST['gibbonReportPrototypeSectionID'] ?? ''
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets_components_edit.php&gibbonReportPrototypeSectionID='.$gibbonReportPrototypeSectionID.'&sidebar=false';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
     // Proceed!
     $partialFail = false;
     $prototypeGateway = $container->get(ReportPrototypeSectionGateway::class);
-    
+
     if (empty($gibbonReportPrototypeSectionID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Update file contents
     $absolutePath = $gibbon->session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
         include $gibbon->session->get('absolutePath').'/modules/System Admin/moduleFunctions.php';
         removeDirectoryContents($gibbon->session->get('absolutePath').'/uploads/cache/reports');
     }
-    
+
     $URL .= !$updated
         ? "&return=error2"
         : "&return=success0";

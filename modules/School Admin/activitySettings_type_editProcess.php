@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Activities\ActivityTypeGateway;
 use Gibbon\Data\Validator;
 
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonActivityTypeID = $_GET['gibbonActivityTypeID'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/School Admin/activitySettings_type_edit.php&gibbonActivityTypeID=".$gibbonActivityTypeID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'activitySettings_type_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'activitySettings_type_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

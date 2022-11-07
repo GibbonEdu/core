@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
@@ -26,7 +26,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Reports\Domain\ReportingProofGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_my')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

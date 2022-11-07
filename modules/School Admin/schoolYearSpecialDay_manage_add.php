@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearSpecialDay_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'schoolYearSpecialDay_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 's
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
     }
-    
+
     $schoolYear = $container->get(SchoolYearGateway::class)->getByID($gibbonSchoolYearID);
 
     if (empty($schoolYear)) {

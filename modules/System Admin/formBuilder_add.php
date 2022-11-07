@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -38,14 +38,14 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
 
     $form = Form::create('formsManage', $session->get('absoluteURL').'/modules/System Admin/formBuilder_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading(__('Basic Information'));
 
     $types = [
         'Application'      => __('Application'),
-    
+
         // These aren't unavailable until v25
         // 'Post-application' => __('Post-application'),
         // 'Student'          => __('Student'),
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
         // 'Family'           => __('Family'),
         // 'Staff'            => __('Staff'),
     ];
-    
+
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->required()->placeholder();

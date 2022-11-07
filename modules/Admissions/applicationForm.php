@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -43,7 +43,7 @@ if (!$session->has('username')) {
     if ($publicApplications == 'Y') {
         $proceed = true;
     }
-} else if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applicationForm')) != false) {
+} else if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applicationForm')) != false) {
     $proceed = true;
 }
 
@@ -70,7 +70,7 @@ if ($proceed == false) {
             ->add(__('Admissions Welcome'), '/modules/Admissions/applicationFormSelect.php')
             ->add(__('Application Form'));
     }
-    
+
     $accountType = $_REQUEST['accountType'] ?? '';
     $gibbonFormID = $_REQUEST['gibbonFormID'] ?? '';
     $identifier = $_REQUEST['identifier'] ?? null;
@@ -107,7 +107,7 @@ if ($proceed == false) {
     // Setup the form builder & data
     $formBuilder = $container->get(ApplicationBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
-    
+
     $formData->load($identifier);
     $formBuilder->addConfig([
         'foreignTableID' => $formData->identify($identifier),
@@ -160,14 +160,14 @@ if ($proceed == false) {
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();
-        
+
     } else {
         // Display the results
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
-                        
+
         $processes = $formProcessor->getViewableProcesses();
-        
+
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);

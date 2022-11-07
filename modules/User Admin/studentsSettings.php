@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Students\StudentNoteGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'studentsSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'studentsSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'stu
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
-        
+
     $form->addRow()->addHeading('Miscellaneous', __('Miscellaneous'));
 
     $setting = $settingGateway->getSettingByScope('School Admin', 'studentAgreementOptions', true);

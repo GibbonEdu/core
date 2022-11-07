@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -28,7 +28,7 @@ $gibbonRoleID = $_POST['gibbonRoleID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/permission_manage.php&gibbonModuleID='.$gibbonModuleID.'&gibbonRoleID='.$gibbonRoleID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'permission_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'permission_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

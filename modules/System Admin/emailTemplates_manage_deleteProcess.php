@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
 include '../../gibbon.php';
@@ -26,13 +26,13 @@ $gibbonEmailTemplateID = $_GET['gibbonEmailTemplateID'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/emailTemplates_manage.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'emailTemplates_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'emailTemplates_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
     $emailTemplateGateway = $container->get(EmailTemplateGateway::class);
-    
+
     // Validate the required values are present
     if (empty($gibbonEmailTemplateID)) {
         $URL .= '&return=error1';

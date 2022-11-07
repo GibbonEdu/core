@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Domain\Timetable\CourseClassGateway;
@@ -29,17 +29,17 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonSchoolYearIDNext = $_GET['gibbonSchoolYearIDNext'] ?? '';
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Timetable Admin/course_manage.php&gibbonSchoolYearID=$gibbonSchoolYearIDNext";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'course_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'course_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    
+
     // Check if school years specified (current and next)
     if (empty($gibbonSchoolYearID) || empty($gibbonSchoolYearIDNext)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } 
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
     $courseClassGateway = $container->get(CourseClassGateway::class);
@@ -73,12 +73,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin',
 
         // Insert course into database
         $gibbonCourseIDNew = $courseGateway->insert($data);
-            
+
         if (empty($gibbonCourseIDNew)) {
             $partialFail = true;
             continue;
         }
-        
+
         $classes = $courseClassGateway->selectBy(['gibbonCourseID' => $course['gibbonCourseID']])->fetchAll();
 
         foreach ($classes as $class) {

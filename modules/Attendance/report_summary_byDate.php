@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Attendance Summary by Date'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_summary_byDate')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'report_summary_byDate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -220,11 +220,11 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'rep
                 $sql = "SELECT nameShort, name FROM gibbonDaysOfWeek where schoolDay='Y'";
                 $daysOfWeek = $pdo->select($sql)->fetchKeyPair();
             }
-    
+
             if (empty($schoolClosures)) {
                 $data = ['dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID')];
-                $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name 
-                        FROM gibbonSchoolYear 
+                $sql = "SELECT gibbonSchoolYearSpecialDay.date, gibbonSchoolYearSpecialDay.name
+                        FROM gibbonSchoolYear
                         JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                         JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearTerm.gibbonSchoolYearTermID=gibbonSchoolYearSpecialDay.gibbonSchoolYearTermID)
                         WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonSchoolYearSpecialDay.type='School Closure' AND gibbonSchoolYearSpecialDay.date BETWEEN :dateStart AND :dateEnd
@@ -260,11 +260,11 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'rep
 
                 foreach ($dateRange as $date) {
                     if ($date->format('Y-m-d') > date('Y-m-d')) continue;
-    
+
                     // Skip non-school days and school closures
                     if (!isset($daysOfWeek[$date->format('D')])) continue;
                     if (isset($schoolClosures[$date->format('Y-m-d')])) continue;
-    
+
                     $logs = $values[$date->format('Y-m-d')] ?? [];
 
                     if (empty($logs)) continue;

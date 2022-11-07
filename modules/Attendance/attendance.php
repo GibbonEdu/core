@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\DataSet;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
@@ -33,7 +33,7 @@ $session = $container->get('session');
 $page->breadcrumbs->add(__('View Daily Attendance'));
 
 // show access denied message, if needed
-if (!isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance'))) {
+if (!isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance'))) {
     $page->addError(__("You do not have access to this action."));
     return;
 }
@@ -60,7 +60,7 @@ $row = $form->addRow();
 $row->addLabel('currentDate', __('Date'));
 $row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_formGroupsNotRegistered_byDate'))) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'report_formGroupsNotRegistered_byDate'))) {
     $row = $form->addRow();
     $row->addLabel('gibbonPersonID', __('Staff'));
     $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->required();

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\CrowdAssessment\CrowdAssessDiscussGateway;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Planner\PlannerEntryHomeworkGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Crowd Assessment', 'crowdAssess_view')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Crowd Assessment', 'crowdAssess_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Crowd Assessment'
             }
         });
     $table->addColumn('comments', __('Comments'));
-    
+
     $table->addActionColumn()
         ->addParam('gibbonPersonID')
         ->addParam('gibbonPlannerEntryID', $gibbonPlannerEntryID)

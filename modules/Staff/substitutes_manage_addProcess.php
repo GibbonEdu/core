@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Data\Validator;
@@ -30,7 +30,7 @@ $search = $_GET['search'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/Staff/substitutes_manage_add.php&search='.$search;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'substitutes_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

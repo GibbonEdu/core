@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;
@@ -43,7 +43,7 @@ $page->breadcrumbs
     ])
     ->add(__('Copy Unit Forward'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_copyForward')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_edit_copyForward')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\EmailTemplateGateway;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
@@ -27,7 +27,7 @@ use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_send_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_send_batch')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

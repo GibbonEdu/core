@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYearTerm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'schoolYearTerm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 's
     if ($gibbonSchoolYearTermID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonSchoolYearTermID' => $gibbonSchoolYearTermID);
             $sql = 'SELECT * FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearTermID=:gibbonSchoolYearTermID';
             $result = $connection2->prepare($sql);

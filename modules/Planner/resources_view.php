@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -30,7 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('View Resources'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_view')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'resources_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resour
         ->filterBy('gibbonYearGroupID', $gibbonYearGroupID)
         ->sortBy('timestamp', 'DESC')
         ->fromPOST();
-    
+
     $resources = $resourceGateway->queryResources($criteria);
     // TABLE
     $table = DataTable::createPaginated('resources', $criteria);
@@ -100,14 +100,14 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resour
         $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/' .$gibbon->session->get('module') . '/resources_manage_add.php')
         ->displayLabel();
-        
+
     $table->addColumn('name', __('Name'))
         ->description(__('Contributor'))
         ->format(function ($resource) use ($guid) {
-            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content']) 
+            return getResourceLink($guid, $resource['gibbonResourceID'], $resource['type'], $resource['name'], $resource['content'])
                 . Format::small(Format::name($resource['title'], $resource['preferredName'], $resource['surname'], 'Staff'));
         });
-    
+
     $table->addColumn('type', __('Type'));
 
     $table->addColumn('category', __('Category'))
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resour
             }
             return substr($output, 0, -2);
         });
-    
+
     $table->addColumn('yearGroupList', __('Year Groups'))
         ->format(function ($resource) {
             return $resource['yearGroups'] >= $resource['totalYearGroups']

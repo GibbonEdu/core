@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -25,7 +25,7 @@ $gibbonPersonIDAssistant = $_GET['gibbonPersonIDAssistant'] ?? '';
 $gibbonPersonIDStudent = $_GET['gibbonPersonIDStudent'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonIDStudent";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Individual Needs', 'in_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

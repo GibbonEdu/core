@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -29,14 +29,14 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonCustomFieldID = $_GET['gibbonCustomFieldID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/customFields_edit.php&gibbonCustomFieldID=$gibbonCustomFieldID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'customFields_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'customFields_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     // Proceed!
     $enablePublicRegistration = $container->get(SettingGateway::class)->getSettingByScope('User Admin', 'enablePublicRegistration');
     $customFieldGateway = $container->get(CustomFieldGateway::class);
-    
+
     $data = [
         'context'                  => $_POST['context'] ?? '',
         'name'                     => $_POST['name'] ?? '',
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'c
         'activeApplicationForm'    => $_POST['activeApplicationForm'] ?? '0',
         'activePublicRegistration' => $enablePublicRegistration == 'Y' ? ($_POST['activePublicRegistration'] ?? '0') : '0',
     ];
-    
+
     if ($data['type'] == 'varchar') $data['options'] = min(max(0, intval($data['options'])), 255);
     if ($data['type'] == 'text') $data['options'] = max(0, intval($data['options']));
 
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'c
     $data['activePersonStaff'] = in_array('activePersonStaff', $roleCategories);
     $data['activePersonParent'] = in_array('activePersonParent', $roleCategories);
     $data['activePersonOther'] = in_array('activePersonOther', $roleCategories);
-    
+
     // Validate the required values are present
     if (empty($gibbonCustomFieldID) || empty($data['name']) || empty($data['active']) || empty($data['type']) || empty($data['required'])) {
         $URL .= '&return=error1';

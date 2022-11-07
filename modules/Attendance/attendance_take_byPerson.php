@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -33,7 +33,7 @@ require_once __DIR__ . '/src/AttendanceView.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Take Attendance by Person'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
                     ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Staff', false, true]));
 
                 // ACTIONS
-                if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson_edit'))) {
+                if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_byPerson_edit'))) {
                     $table->addActionColumn()
                         ->addParam('gibbonAttendanceLogPersonID')
                         ->addParam('gibbonPersonID', $gibbonPersonID)

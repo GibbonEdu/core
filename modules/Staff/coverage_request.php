@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_request')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
         $page->addError(__('Coverage may only be requested for an absence after it has been approved.'));
         return;
     }
-    
+
     // Look for available subs
     $criteria = $substituteGateway->newQueryCriteria(true)
         ->sortBy('gibbonSubstitute.priority', 'DESC')
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $form->toggleVisibilityByClass('individualOptions')->onSelect('requestType')->when('Individual');
     $form->toggleVisibilityByClass('broadcastOptions')->onSelect('requestType')->when('Broadcast');
 
-        
+
     // Broadcast
     $row = $form->addRow()->addClass('broadcastOptions');
     if (!empty($availableSubs)) {

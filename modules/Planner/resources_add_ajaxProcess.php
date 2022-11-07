@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -25,7 +25,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $time = time();
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'resources_manage_add')) == false) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
     echo __('Your request failed because you do not have access to this action.');
     echo '</span>';

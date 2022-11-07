@@ -17,27 +17,27 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'role_manage_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'role_manage_duplicate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Get action with highest precendence
     $page->breadcrumbs
         ->add(__('Manage Roles'),'role_manage.php')
-        ->add(__('Duplicate Role')); 
+        ->add(__('Duplicate Role'));
 
     //Check if courseschool year specified
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonRoleID' => $gibbonRoleID);
             $sql = 'SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID';
             $result = $connection2->prepare($sql);

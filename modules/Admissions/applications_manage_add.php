@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -29,7 +29,7 @@ use Gibbon\Forms\Builder\Processor\FormProcessorFactory;
 use Gibbon\Domain\Admissions\AdmissionsAccountGateway;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'app
     // Setup the form builder & data
     $formBuilder = $container->get(FormBuilder::class)->populate($gibbonFormID, $pageNumber, ['identifier' => $identifier, 'accessID' => $accessID]);
     $formData = $container->get(ApplicationFormStorage::class)->setContext($formBuilder->getFormID(), $formBuilder->getPageID(), 'gibbonAdmissionsAccount', $account['gibbonAdmissionsAccountID'], $account['email']);
-    
+
     $formData->load($identifier);
     $formBuilder->addConfig([
         'foreignTableID' => $formData->identify($identifier),
@@ -113,14 +113,14 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'app
         $form->loadAllValuesFrom($values);
 
         echo $form->getOutput();
-        
+
     } else {
         // Display the results
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
-                        
+
         $processes = $formProcessor->getViewableProcesses();
-        
+
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {
                 $view = $container->get($viewClass);

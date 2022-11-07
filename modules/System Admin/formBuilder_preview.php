@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Builder\FormBuilder;
 use Gibbon\Forms\Builder\Storage\FormSessionStorage;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Forms\FormSubmissionGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Http\Url;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
         // Display the results
         $form = Form::create('formBuilder', '');
         $form->setTitle(__('Results'));
-                        
+
         $processes = $formProcessor->getViewableProcesses(true, false, false);
         foreach ($processes as $process) {
             if ($viewClass = $process->getViewClass()) {

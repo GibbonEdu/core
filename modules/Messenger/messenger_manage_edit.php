@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Messenger\Forms\MessageForm;
 use Gibbon\Domain\Messenger\MessengerGateway;
 
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
     } else {
         $page->addWarning('<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.'));
     }
-    
+
     $form = $container->get(MessageForm::class)->createForm('messenger_manage_editProcess.php', $gibbonMessengerID);
     echo $form->getOutput();
 }

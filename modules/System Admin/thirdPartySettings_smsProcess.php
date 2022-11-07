@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Data\Validator;
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/thirdPartySettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'thirdPartySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'thirdPartySettings')) == false) {
     // Access denied
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 't
     // Proceed!
     $name = $session->get('preferredName').' '.$session->get('surname');
     $phoneNumber = $_GET['phoneNumber'] ?? '';
-    
+
     $body = __('{name} sent you a test SMS via {system}', ['name' => $name, 'system' => $session->get('systemName')]);
 
     $smsSender = $container->get(SMS::class);
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 't
         $session->set('testSMSRecipient', $phoneNumber);
     }
 
-    $URL .= empty($result) 
+    $URL .= empty($result)
         ? '&return=error11'
         : '&return=success0';
     header("Location: " . $URL);

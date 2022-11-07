@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -27,7 +27,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         $row->addTextArea('comment')->setRows(5)->setValue($commentTemplate);
 
     // COVERAGE
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request'))) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_request'))) {
         $form->addRow()->addHeading('Coverage', __('Coverage'))->addClass('approvalNotRequired');
 
         $row = $form->addRow()->addClass('approvalNotRequired');

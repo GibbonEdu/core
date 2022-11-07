@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 
@@ -34,7 +34,7 @@ $currentDate = $_POST['currentDate'] ?? Format::date(date('Y-m-d'));
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byPerson_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_byPerson_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 }

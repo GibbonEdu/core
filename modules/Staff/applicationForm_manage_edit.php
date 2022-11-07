@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\CustomFieldHandler;
@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicat
     if ($gibbonStaffApplicationFormID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
         $data = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID);
         $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle, gibbonStaffJobOpening.type FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID';
         $result = $connection2->prepare($sql);
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicat
                 $column->addTextArea('notes')->setRows(5)->setClass('fullWidth');
 
             $form->addRow()->addHeading('Job Related Information', __('Job Related Information'));
-            
+
             $form->addHiddenValue('type', $values['type']);
 
             $row = $form->addRow();
@@ -286,7 +286,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicat
                     $row = $form->addRow();
                         $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
 
-                    
+
                         $dataFile = array('gibbonStaffApplicationFormID' => $gibbonStaffApplicationFormID, 'name' => $requiredDocumentsList[$i]);
                         $sqlFile = 'SELECT * FROM gibbonStaffApplicationFormFile WHERE gibbonStaffApplicationFormID=:gibbonStaffApplicationFormID AND name=:name ORDER BY name';
                         $resultFile = $connection2->prepare($sqlFile);

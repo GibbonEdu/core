@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -91,7 +91,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         //GET PLANNER
         $planner = false;
 
-        if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner'))) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner'))) {
             $date = date('Y-m-d');
             try {
                 $data = array('gibbonSchoolYearID' => $this->session->get('gibbonSchoolYearID'), 'date' => $date, 'gibbonPersonID' => $this->session->get('gibbonPersonID'), 'gibbonSchoolYearID2' => $this->session->get('gibbonSchoolYearID'), 'date2' => $date, 'gibbonPersonID2' => $this->session->get('gibbonPersonID'));
@@ -220,7 +220,7 @@ class StudentDashboard implements OutputableInterface, ContainerAwareInterface
         //GET TIMETABLE
         $timetable = false;
         if (
-            isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt'))
+            isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'tt'))
             and $this->session->get('username') != ''
             and $this->session->get('gibbonRoleIDCurrentCategory')
         ) {

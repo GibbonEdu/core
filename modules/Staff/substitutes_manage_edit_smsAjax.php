@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Contracts\Comms\SMS;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -27,7 +27,7 @@ $from = $_POST['from'] ?? '';
 $phoneNumber = $_POST['phoneNumber'] ?? '';
 $smsGateway = $container->get(SettingGateway::class)->getSettingByScope('Messenger', 'smsGateway');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'substitutes_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'substitutes_manage_edit')) == false) {
     die(__('Your request failed because you do not have access to this action.'));
 } elseif (empty($from) || empty($phoneNumber)) {
     die(__('You have not specified one or more required parameters.'));

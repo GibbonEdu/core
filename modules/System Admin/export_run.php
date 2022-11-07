@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\ImportType;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
@@ -124,11 +124,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
             if ($importType->isFieldHidden($fieldName)) {
                 continue; // Skip hidden fields
             }
-            
+
             if ($importType->isFieldReadOnly($fieldName) && $dataExport == true) {
                 continue;  // Skip readonly fields when exporting data
             }
-            
+
             $queryFields[$tableName][] = $fieldName;
         }
 
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
             $queryFields[$tableName] = array_merge(array($primaryKey), $queryFields[$tableName]);
             // $columnFields = array_merge(array($primaryKey), $columnFields);
         }
-        
+
         if ($dataExport) {
             // Get the data
             $data = [];
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
             if ($dataExportAll == false) {
                 // Optionally limit all exports to the current school year by default, to avoid massive files
                 $gibbonSchoolYearID = $importType->getField('gibbonSchoolYearID', 'name', null);
-                
+
                 if ($gibbonSchoolYearID != null && $importType->isFieldReadOnly('gibbonSchoolYearID') == false) {
                     $data['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
                     $sql .= " WHERE gibbonSchoolYearID=:gibbonSchoolYearID ";
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
                     // Work backwards, so we can potentially fill in any relational read-only fields
                     for ($i=count($columnFields)-1; $i >= 0; $i--) {
                         $fieldName = $columnFields[$i];
-                    
+
                         $value = (isset($row[ $fieldName ]))? $row[ $fieldName ] : null;
 
                         // Handle relational fields
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
                                     }
                                 }
                             }
-                            
+
                             // Replace the relational ID value with the actual value
                             $value = implode(',', $relationalValue);
                         }

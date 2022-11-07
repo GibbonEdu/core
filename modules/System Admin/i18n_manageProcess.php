@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\I18nGateway;
 use Gibbon\Data\Validator;
 
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibboni18nID = $_POST['gibboni18nID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/i18n_manage.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i18n_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'i18n_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
             //Activate selected languages
             $i18nGateway->update($gibboni18nID, ['systemDefault' => 'Y']);
 
-            //Update session variables            
+            //Update session variables
             setLanguageSession($guid, $i18n);
 
             $URL .= '&return=success0';

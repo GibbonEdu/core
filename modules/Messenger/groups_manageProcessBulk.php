@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Messenger\GroupGateway;
 
 include '../../gibbon.php';
@@ -25,7 +25,7 @@ include '../../gibbon.php';
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/groups_manage.php";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'groups_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'groups_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

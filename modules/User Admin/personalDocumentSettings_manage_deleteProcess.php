@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
 require_once '../../gibbon.php';
@@ -25,7 +25,7 @@ require_once '../../gibbon.php';
 $gibbonPersonalDocumentTypeID = $_GET['gibbonPersonalDocumentTypeID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/User Admin/personalDocumentSettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'personalDocumentSettings_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'personalDocumentSettings_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

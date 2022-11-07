@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -26,7 +26,7 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
     $page->return->setEditLink($editLink);
 
     $search = $_GET['search'] ?? '';
-    
+
     $activityGateway = $container->get(ActivityGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
 
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
         $row = $slotBlock->addRow();
             $row->addLabel('timeStart', __('Slot Start Time'));
             $row->addTime('timeStart');
-        
+
             $row->addLabel('timeEnd', __('Slot End Time'));
             $row->addTime('timeEnd')
                 ->chainedTo('timeStart');
@@ -264,7 +264,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
                 'Organiser' => __('Organiser'),
                 'Coach'     => __('Coach'),
                 'Assistant' => __('Assistant'),
-                'Other'     => __('Other'), 
+                'Other'     => __('Other'),
             ]);
 
     $row = $form->addRow();

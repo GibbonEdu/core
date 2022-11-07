@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
@@ -33,7 +33,7 @@ if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];
 }
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Rubrics', 'rubrics_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

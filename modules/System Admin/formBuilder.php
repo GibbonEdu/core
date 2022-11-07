@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Forms\FormGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
                     ->setClass('mx-1')
                     ->addParam('sidebar', 'false')
                     ->setURL('/modules/System Admin/formBuilder_page_design.php');
-            
+
                 $actions->addAction('copy', __('Duplicate'))
                     ->setIcon('copy')
                     ->setURL('/modules/System Admin/formBuilder_duplicate.php');

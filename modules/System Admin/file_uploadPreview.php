@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -28,7 +28,7 @@ use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\User\PersonalDocumentGateway;
 use Gibbon\Domain\User\PersonalDocumentTypeGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'import_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'import_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -88,10 +88,10 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
 
     for ($i = 0; $i < $zip->numFiles; ++$i) {
         if (substr($zip->getNameIndex($i), 0, 8) == '__MACOSX') continue;
-        
+
         $filename = basename($zip->getNameIndex($i));
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
-        
+
         if (!in_array($extension, $allowedExtensions)) continue;
 
         // Optionally split the filenames by a separator character
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
 
         if (!empty($identifierValue) && !empty($userData)) {
             $userData['filename'] = $filename;
-            
+
             if ($type == 'customFields') {
                 $fields = $customFieldGateway->getCustomFieldDataByUser($gibbonCustomFieldID, $userData['gibbonPersonID']);
                 $userData['exists'] = !empty($fields[$gibbonCustomFieldID]);
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
             } else {
                 $validFiles++;
             }
-            
+
             if ($userData['exists']) {
                 $existingFiles[] = $filename;
             }
@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
     $form = Form::create('fileUpload', $gibbon->session->get('absoluteURL').'/modules/System Admin/file_uploadProcess.php');
     $form->setTitle(__('Step 2 - Data Check & Confirm'));
     $form->setMultiPartForm($steps, $step);
-    
+
     $form->addHiddenValue('address', $gibbon->session->get('address'));
     $form->addHiddenValue('type', $type);
     $form->addHiddenValue('gibbonPersonalDocumentTypeID', $gibbonPersonalDocumentTypeID);
@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'i
         $table->addColumn('status', __('Status'))
             ->format(function ($values)  {
                 if (empty($values['surname']) || !empty($values['statusText'])) {
-                    return !empty($values['statusText']) 
+                    return !empty($values['statusText'])
                         ? Format::tag($values['statusText'], 'error')
                         : Format::tag(__('Unknown'), 'dull');
                 }

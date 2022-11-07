@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\FormFactory;
 
 //Gibbon system-wide include
@@ -30,7 +30,7 @@ include $session->get('absolutePath').'/modules/Library/moduleFunctions.php';
 $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'] ?? '';
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'] ?? '';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_manage_catalog_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'library_manage_catalog_add')) == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');

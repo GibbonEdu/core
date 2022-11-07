@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Forms\CustomFieldHandler;
@@ -27,7 +27,7 @@ use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_staff_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_staff_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -77,15 +77,15 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'd
     $form->addHiddenValue('gibbonStaffID', $oldValues['gibbonStaffID']);
 
     // Provide links back to edit the associated records
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_edit')) == true) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_edit')) == true) {
         $page->navigator->addHeaderAction('edit', __('Edit User'))
             ->setURL('/modules/User Admin/user_manage_edit.php')
             ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
             ->setIcon('config')
             ->displayLabel();
     }
-    
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit')) == true) {
+
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_manage_edit')) == true) {
         $page->navigator->addHeaderAction('editStaff', __('Edit Staff'))
             ->setURL('/modules/Staff/staff_manage_edit.php')
             ->addParam('gibbonStaffID', $oldValues['gibbonStaffID'])
@@ -93,13 +93,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'd
             ->displayLabel();
     }
 
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details')) == true) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view_details')) == true) {
         $page->navigator->addHeaderAction('view', __('View Staff'))
             ->setURL('/modules/Staff/staff_view_details.php')
             ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
             ->addParam('gibbonStaffID', $oldValues['gibbonStaffID'])
             ->setIcon('plus')
-            ->displayLabel();    
+            ->displayLabel();
      }
 
     $row = $form->addRow()->setClass('head heading');

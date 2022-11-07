@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 
 include '../../gibbon.php';
@@ -26,7 +26,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['body' => 'HTML'])
 $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/cannedResponse_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'cannedResponse_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

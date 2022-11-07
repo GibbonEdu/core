@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\Timetable\FacilityBookingGateway;
@@ -31,7 +31,7 @@ include './moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/spaceBooking_manage_add.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spaceBooking_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'spaceBooking_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'spac
             'reason'         => $_POST['reason'] ?? '',
             'gibbonPersonID' => $_POST['gibbonPersonID'] ?? $session->get('gibbonPersonID'),
         ];
-        
+
         $dates = $_POST['dates'] ?? '';
         $repeat = $_POST['repeat'] ?? '';
         $repeatDaily = $repeat == 'Daily' ? $_POST['repeatDaily'] : null;

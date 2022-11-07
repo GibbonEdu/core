@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Forms\FormFieldGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
         'gibbonFormFieldID' => $_GET['gibbonFormFieldID'] ?? '',
         'fieldGroup'        => $_GET['fieldGroup'] ?? '',
     ];
-    
+
     if (empty($urlParams['gibbonFormID']) || empty($urlParams['gibbonFormPageID']) || empty($urlParams['gibbonFormFieldID'])) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

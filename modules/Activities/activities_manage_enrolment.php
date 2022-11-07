@@ -21,13 +21,13 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_enrolment')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_enrolment')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
                 echo '</th>';
                 echo '</tr>';
 
-                $canViewStudentDetails = isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details'));
+                $canViewStudentDetails = isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'student_view_details'));
 
                 $count = 0;
                 $rowNum = 'odd';

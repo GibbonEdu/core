@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\Prefab\ReportTable;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Students\StudentReportGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'report_privacy_student')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'report_privacy_student')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'repor
             ->notSortable()
             ->format(function ($student) use ($privacyOption, $session) {
                 $studentPrivacy = array_map('trim', explode(',', $student['privacy']));
-                return in_array($privacyOption, $studentPrivacy) 
+                return in_array($privacyOption, $studentPrivacy)
                     ? "<img src='./themes/".$session->get('gibbonThemeName')."/img/iconTick.png'/> ".__('Required')
                     : '';
             });

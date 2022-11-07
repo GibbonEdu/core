@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
@@ -26,7 +26,7 @@ use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Domain\Students\StudentReportGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_students_left')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_students_left')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

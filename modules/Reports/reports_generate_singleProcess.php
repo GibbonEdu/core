@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Module\Reports\ArchiveFile;
 use Gibbon\Module\Reports\ReportBuilder;
@@ -40,7 +40,7 @@ $action = $_POST['action'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_single.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
     $partialFail = false;
 
     ini_set('error_reporting', E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED);
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
     $studentGateway = $container->get(StudentGateway::class);
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
         $reportBuilder = $container->get(ReportBuilder::class);
         $archive = $container->get(ReportArchiveGateway::class)->getByID($report['gibbonReportArchiveID']);
         $archiveFile = $container->get(ArchiveFile::class);
-        
+
         $template = $reportBuilder->buildTemplate($report['gibbonReportTemplateID'], $status == 'Draft');
         $renderer = $container->get($template->getData('flags') == 1 ? MpdfRenderer::class : TcpdfRenderer::class);
 
@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
                     if (!empty($archive) && file_exists($path)) {
                         unlink($path);
                     }
-                    
+
                     // Then remove the archive entry
                     $deleted = $reportArchiveEntryGateway->delete($entry['gibbonReportArchiveEntryID']);
                     $partialFail &= !$deleted;

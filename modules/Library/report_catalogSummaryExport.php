@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -26,7 +26,7 @@ include './moduleFunctions.php';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address']).'/report_catalogSummary.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'report_catalogSummary')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'report_catalogSummary')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

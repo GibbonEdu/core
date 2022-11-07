@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -35,7 +35,7 @@ if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];
 }
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubrics_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Rubrics', 'rubrics_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubric
                 ];
                 $page->navigator->addSearchResultsAction(Url::fromModuleRoute('Rubrics', 'rubrics.php')->withQueryParams($params));
             }
-            
+
             $scopes = array(
                 'School' => __('School'),
                 'Learning Area' => __('Learning Area'),
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubric
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             $form->addRow()->addHeading('Rubric Basics', __('Rubric Basics'));
 
             $row = $form->addRow();
@@ -136,11 +136,11 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Rubrics', 'rubric
             $row = $form->addRow();
                 $row->addLabel('columns', __('Initial Columns'))->description(__('Columns store assessment levels.'));
                 $row->addSelect('columns')->fromArray(range(1, 10))->required();
-            
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
         }
     }

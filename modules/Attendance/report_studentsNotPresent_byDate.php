@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -29,7 +29,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'report_studentsNotPresent_byDate')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'report_studentsNotPresent_byDate')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

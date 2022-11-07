@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -30,7 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $style = '';
 
 $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_deadlines')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_deadlines')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

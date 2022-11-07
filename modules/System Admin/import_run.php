@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Data\Importer;
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     if ($step==1) {
         $data = array('type' => $type);
         $sql = "SELECT gibbonLog.gibbonLogID
-                FROM gibbonLog WHERE gibbonLog.title = CONCAT('Import - ', :type) 
+                FROM gibbonLog WHERE gibbonLog.title = CONCAT('Import - ', :type)
                 ORDER BY gibbonLog.timestamp DESC LIMIT 1" ;
         $importLog = $pdo->selectOne($sql, $data);
 
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             }
             return $group;
         }, []);
-    
+
         $notes = '<ol>';
         $notes .= '<li style="color: #c00; font-weight: bold">'.__('Always include a header row in the uploaded file.').'</li>';
         $notes .= '<li>'.__('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).').'</li>';
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $table->setTitle(__('Notes'));
         $table->setDescription($notes);
 
-        if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'export_run'))) {
+        if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'export_run'))) {
             $table->addHeaderAction('export', __('Export Columns'))
                 ->setURL('/modules/System Admin/export_run.php')
                 ->addParam('type', $type)
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
             if ($columnOrder == 'last') {
                 $data = array('type' => $type);
-                $sql = "SELECT * FROM gibbonLog WHERE gibbonLog.title = CONCAT('Import - ', :type) 
+                $sql = "SELECT * FROM gibbonLog WHERE gibbonLog.title = CONCAT('Import - ', :type)
                         ORDER BY gibbonLog.timestamp DESC LIMIT 1" ;
 
                 $importLog = $pdo->selectOne($sql, $data);
@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             echo "var columnDataCustom = " . Importer::COLUMN_DATA_CUSTOM .";";
             echo "var columnDataFunction = " . Importer::COLUMN_DATA_FUNCTION .";";
             echo "</script>";
-            
+
             $form = Form::create('importStep2', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/import_run.php&type='.$type.'&step=3');
             $form->setClass('w-full blank');
 
@@ -286,7 +286,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
                 $defaultColumns = function ($fieldName) use (&$importType, $mode) {
                     $columns = [];
-                    
+
                     if ($importType->isFieldRequired($fieldName) == false || ($mode == 'update' && !$importType->isFieldUniqueKey($fieldName))) {
                         $columns[Importer::COLUMN_DATA_SKIP] = '[ '.__('Skip this Column').' ]';
                     }
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         $count++;
                         continue;
                     }
-                    
+
                     $selectedColumn = '';
                     if ($columnOrder == 'linear' || $columnOrder == 'linearplus') {
                         $selectedColumn = ($columnOrder == 'linearplus')? $count+1 : $count;
@@ -431,7 +431,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             $importer->fieldDelimiter = (!empty($fieldDelimiter))? stripslashes($fieldDelimiter) : ',';
             $importer->stringEnclosure = (!empty($stringEnclosure))? stripslashes($stringEnclosure) : '"';
 
-            
+
             $importSuccess = $buildSuccess = $databaseSuccess = true;
             $importSuccess = $importer->readCSVString($csvData);
 
@@ -482,8 +482,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             }
 
             $executionTime = mb_substr(microtime(true) - $timeStart, 0, 6).' sec';
-            $memoryUsage = Format::filesize(max(0, memory_get_usage() - $memoryStart)); 
-            
+            $memoryUsage = Format::filesize(max(0, memory_get_usage() - $memoryStart));
+
             $results = array(
                 'step'            => $step,
                 'importSuccess'   => $importSuccess,
@@ -504,7 +504,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             );
 
             echo $page->fetchFromTemplate('importer.twig.html', $results);
-            
+
             if ($step==3) {
                 $form = Form::create('importStep2', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/import_run.php&type='.$type.'&step=4');
                 $form->setClass('w-full blank');
@@ -529,13 +529,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $row = $table->addRow();
                 $row->onlyIf(!$overallSuccess)->addCheckbox('ignoreErrors')->description(__('Ignore Errors? (Expert Only!)'))->setValue($ignoreErrors)->setClass('');
                 $row->onlyIf($overallSuccess)->addContent('');
-                
+
                 if (!$overallSuccess && !$ignoreErrors) {
                     $row->addButton(__('Failed'))->setID('submitStep3')->disabled()->addClass('right');
                 } else {
                     $row->addSubmit()->setID('submitStep3');
                 }
-                    
+
                 echo $form->getOutput();
             }
 

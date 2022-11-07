@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 
 $page->breadcrumbs
     ->add(__('Manage Canned Responses'), 'cannedResponse_manage.php')
     ->add(__('Add Canned Response'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'cannedResponse_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,9 +35,9 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cann
     }
     $page->return->setEditLink($editLink);
 
-	
+
 	$form = Form::create('canneResponse', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cannedResponse_manage_addProcess.php');
-                
+
 	$form->addHiddenValue('address', $session->get('address'));
 
 	$row = $form->addRow();

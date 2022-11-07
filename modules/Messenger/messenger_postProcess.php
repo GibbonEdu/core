@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 use Gibbon\Module\Messenger\MessageProcess;
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
     // Insert the message and get the ID
     $gibbonMessengerID = $messengerGateway->insert($data);
-    
+
     $URLEdit .= "&gibbonMessengerID={$gibbonMessengerID}";
     $URLSend .= "&gibbonMessengerID={$gibbonMessengerID}";
 

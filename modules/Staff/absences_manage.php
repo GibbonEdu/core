@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\Staff\StaffAbsenceDateGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    
+
     $form = Form::create('filter', $session->get('absoluteURL').'/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
 
     $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
     $types = array_combine(array_column($types, 'gibbonStaffAbsenceTypeID'), array_column($types, 'name'));
-    
+
     $row = $form->addRow();
         $row->addLabel('gibbonStaffAbsenceTypeID', __('Type'));
         $row->addSelect('gibbonStaffAbsenceTypeID')
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         return $row;
     });
 
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'report_absences_summary'))) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_absences_summary'))) {
         $table->addHeaderAction('view', __('View'))
             ->setIcon('planner')
             ->setURL('/modules/Staff/report_absences_summary.php')
@@ -119,12 +119,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         ->addParam('gibbonPersonID', '')
         ->addParam('date', $dateStart)
         ->displayLabel();
-    
+
     $table->addMetaData('filterOptions', [
         'date:upcoming'    => __('Upcoming'),
         'date:today'       => __('Today'),
         'date:past'        => __('Past'),
-        
+
         'status:pending approval' => __('Status').': '.__('Pending Approval'),
         'status:approved'         => __('Status').': '.__('Approved'),
         'status:declined'         => __('Status').': '.__('Declined'),

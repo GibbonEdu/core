@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
@@ -57,7 +57,7 @@ if (isset($_GET['alpha'])) {
     $alpha = $_GET['alpha'];
 }
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'resources_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'resources_manage_add')) == false) {
     //Acess denied
     $output .= "<div class='error'>";
     $output .= __('Your request failed because you do not have access to this action.');

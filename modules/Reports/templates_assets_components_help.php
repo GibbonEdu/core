@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\DataFactory;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets_components_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -64,12 +64,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
     $dataFactory->setAssetPath($gibbon->session->get('absolutePath').$customAssetPath);
 
     $coreSources = glob(__DIR__ . '/src/Sources/*.php');
-    
+
     if (!empty($coreSources)) {
         echo '<h2>';
         echo __('Core');
         echo '</h2>';
-        
+
         foreach ($coreSources as $sourcePath) {
             $className = strchr(basename($sourcePath), '.', true);
             $source = $dataFactory->get($className);

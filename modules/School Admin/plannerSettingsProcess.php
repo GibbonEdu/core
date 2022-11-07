@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['lessonDetailsTemp
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/plannerSettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'plannerSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'plannerSettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

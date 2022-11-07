@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Form;
@@ -28,7 +28,7 @@ use Gibbon\Forms\PersonalDocumentHandler;
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_personal_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_personal_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'd
             $roleGateway = $container->get(RoleGateway::class);
 
             // Provide a link back to edit the associated record
-            if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_edit')) == true) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_edit')) == true) {
                 $page->navigator->addHeaderAction('edit', __('Edit User'))
                     ->setURL('/modules/User Admin/user_manage_edit.php')
                     ->addParam('gibbonPersonID', $oldValues['gibbonPersonID'])
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'd
                     ->displayLabel();
             }
             if (
-                isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'student_view_details')) == true
+                isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'student_view_details')) == true
                 && $roleGateway->getRoleCategory($oldValues['gibbonRoleIDPrimary']) == 'Student'
             ) {
                 $page->navigator->addHeaderAction('view', __('View Student'))

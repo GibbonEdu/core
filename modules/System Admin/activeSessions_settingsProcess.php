@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/activeSessions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'activeSessions')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'activeSessions')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'a
     if (!empty($_POST['maintenanceMode']) && $_POST['maintenanceMode'] == 'Y') {
         $sessionGateway->logoutAllNonAdministratorUsers();
     }
-   
+
     $URL .= $partialFail
         ? '&return=error2'
         : '&return=success0';

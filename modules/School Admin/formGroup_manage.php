@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'formGroup_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'formGroup_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'f
     if (!empty($gibbonSchoolYearID)) {
         $page->navigator->addSchoolYearNavigation($gibbonSchoolYearID);
     }
-        
+
     $formGroupGateway = $container->get(FormGroupGateway::class);
 
     // QUERY
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'f
     $table->addColumn('space', __('Location'));
     $table->addColumn('website', __('Website'))
             ->format(Format::using('link', ['website']));
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonFormGroupID')

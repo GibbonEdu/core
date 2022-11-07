@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Services\BackgroundProcessor;
 use Gibbon\Data\Validator;
@@ -31,7 +31,7 @@ $processID = $_POST['processID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_generate_batch.php&gibbonReportID='.$gibbonReportID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
         header("Location: {$URL}");
         exit;
     }
-    
+
     $processor = $container->get(BackgroundProcessor::class);
     $success = $processor->killProcess($processID);
-    
+
     sleep(0.5);
 
     $URL .= !$success

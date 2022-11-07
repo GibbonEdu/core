@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\FinanceUpdateGateway;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_finance_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_finance_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'd
     $table->addColumn('updater', __('Requesting User'))
         ->sortable(['updater.surname', 'updater.preferredName'])
         ->format(Format::using('nameLinked', ['gibbonPersonIDUpdater', 'updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
-        
+
     $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
     $table->addColumn('status', __('Status'))->translatable()->width('12%');
 

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
@@ -28,7 +28,7 @@ use Gibbon\Domain\Staff\StaffAbsenceTypeGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'report_absences_summary')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'report_absences_summary')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'report_a
 
         $table->addColumn('name', '')->notSortable();
 
-        $baseURL = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage'))
+        $baseURL = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_manage'))
             ? $session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_manage.php'
             : $session->get('absoluteURL').'/index.php?q=/modules/Staff/report_absences.php';
 

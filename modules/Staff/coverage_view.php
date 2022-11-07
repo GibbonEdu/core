@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -26,7 +26,7 @@ use Gibbon\Domain\Staff\SubstituteGateway;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
 
     $gibbonPersonID = $session->get('gibbonPersonID');
     $gibbonSchoolYearID = $session->get('gibbonSchoolYearID');
-    
+
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
 
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $table = DataTable::createPaginated('staffCoverageAvailable', $criteria);
 
     $table->addMetaData('hidePagination', true);
-    
+
     $table->modifyRows(function ($coverage, $row) {
         if ($coverage['status'] == 'Accepted') $row->addClass('current');
         if ($coverage['status'] == 'Declined') $row->addClass('error');

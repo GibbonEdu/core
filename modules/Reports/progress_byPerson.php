@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -26,7 +26,7 @@ use Gibbon\Module\Reports\Domain\ReportingProgressGateway;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progress_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'progress_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'progre
     $reportingScopes = $reportingScopeGateway->selectReportingScopesBySchoolYear($gibbonSchoolYearID)->fetchAll();
     $scopesChained = array_combine(array_column($reportingScopes, 'value'), array_column($reportingScopes, 'chained'));
     $scopesOptions = array_combine(array_column($reportingScopes, 'value'), array_column($reportingScopes, 'name'));
-    
+
     $row = $form->addRow();
         $row->addLabel('gibbonReportingScopeID', __('Scope'));
         $row->addSelect('gibbonReportingScopeID')

@@ -23,9 +23,9 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_password')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_password')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

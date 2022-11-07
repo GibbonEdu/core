@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use GuzzleHttp\Client;
 use Gibbon\Forms\Form;
 use Gibbon\View\View;
@@ -25,7 +25,7 @@ use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'services_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'services_manage')) == false) {
     return;
 } else {
     // Proceed!

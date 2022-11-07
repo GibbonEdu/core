@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Data\Validator;
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/logs_view_purge.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'logs_view')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'logs_view')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'l
 
     if (empty($title) || empty($cutoffDate)) {
         $URL .= '&return=error1';
-        header("Location: {$URL}");  
+        header("Location: {$URL}");
     }
 
     $logGateway = $container->get(LogGateway::class);

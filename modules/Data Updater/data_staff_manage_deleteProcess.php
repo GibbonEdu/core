@@ -1,6 +1,6 @@
 <?php
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 /*
 Gibbon, Flexible & Open School System
@@ -28,7 +28,7 @@ $address = $_POST['address'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/data_staff_manage_delete.php&gibbonStaffUpdateID=$gibbonStaffUpdateID&gibbonSchoolYearID=$gibbonSchoolYearID";
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address).'/data_staff_manage.php&gibbonSchoolYearID='.$gibbonSchoolYearID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Data Updater', 'data_staff_manage_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_staff_manage_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

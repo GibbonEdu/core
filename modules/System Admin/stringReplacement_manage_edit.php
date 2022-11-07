@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'stringReplacement_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'stringReplacement_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,11 +34,11 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 's
 
     //Check if StringID specified
     $gibbonStringID = $_GET['gibbonStringID'] ?? '';
-    
+
     if ($gibbonStringID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonStringID' => $gibbonStringID);
             $sql = 'SELECT * FROM gibbonString WHERE gibbonStringID=:gibbonStringID';
             $result = $connection2->prepare($sql);

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\CustomFieldGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/customFields_add.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'customFields_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'customFields_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

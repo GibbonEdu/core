@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Messenger\GroupGateway;
@@ -43,7 +43,7 @@ $today = date('Y-m-d');
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Attendance/attendance_take_adHoc.php&currentDate=".Format::date($currentDate)."&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
         header("Location: {$URL}");
         exit;
     }
-    
+
     // Setup attendance class
     require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo, $container->get(SettingGateway::class));
@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
         // Check for last record on same day
         $data = ['gibbonPersonID' => $gibbonPersonID, 'date' => $currentDate.'%'];
         $sql = "SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonAttendanceLogPersonID DESC";
-        
+
         $recentLog = $pdo->selectOne($sql, $data);
 
         // Check context and type, updating only if not a match

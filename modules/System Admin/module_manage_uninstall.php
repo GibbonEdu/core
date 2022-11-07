@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Services\Format;
 
 $orphaned = $_GET['orphaned'] ?? '';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage_uninstall')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'module_manage_uninstall')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -36,9 +36,9 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
     $deleteReturn = $_GET['deleteReturn'] ?? '';
 
     $deleteReturnMessage = '';
-    
+
     if (!empty($deleteReturn)) {
-        
+
         switch ($deleteReturn){
             case 'fail0':
                 $deleteReturnMessage = __('Your request failed because you do not have access to this action.');
@@ -58,19 +58,19 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
 
     // Check if module specified
     $gibbonModuleID = $_GET['gibbonModuleID'] ?? '';
-    
+
     if (empty($gibbonModuleID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
         $moduleGateway = $container->get(ModuleGateway::class);
         $module = $moduleGateway->getByID($gibbonModuleID);
-        
+
         if (empty($module)) {
             $page->addError(__('You have not specified one or more required parameters.'));
         } else {
             // Let's go!
             $form = DeleteForm::createForm($gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module')."/module_manage_uninstallProcess.php?gibbonModuleID=$gibbonModuleID&orphaned=$orphaned", false, false);
-            
+
             $manifestFile = $gibbon->session->get('absolutePath').'/modules/'.$module['name'].'/manifest.php';
             if (file_exists($manifestFile)) {
                 include $manifestFile;
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
                         $name = str_replace('`', '', $tokens[2]);
                         $group[$type.'-'.$name] = Format::bold(__($type)).': '.$name;
                     }
-        
+
                     return $group;
                 }, array());
 
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
             }
 
             $form->addRow()->addConfirmSubmit();
-            
+
             echo $form->getOutput();
         }
     }

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // set page breadcrumb
 $page->breadcrumbs->add(__('Consecutive Absences'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'consecutiveAbsences')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'consecutiveAbsences')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

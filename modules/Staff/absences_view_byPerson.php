@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -29,7 +29,7 @@ use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 use Gibbon\Module\Staff\Tables\AbsenceCalendar;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_view_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_view_byPerson')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         $gibbonPersonID = $session->get('gibbonPersonID');
     }
 
-    
+
     $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($gibbonSchoolYearID, $gibbonPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
@@ -133,11 +133,11 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
     // COLUMNS
     $table->addColumn('date', __('Date'))
         ->format([AbsenceFormats::class, 'dateDetails']);
-    
+
     $table->addColumn('type', __('Type'))
         ->description(__('Reason'))
         ->format([AbsenceFormats::class, 'typeAndReason']);
-    
+
     $table->addColumn('coverage', __('Coverage'))
         ->format([AbsenceFormats::class, 'coverageList']);
 
@@ -146,14 +146,14 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         ->format([AbsenceFormats::class, 'createdOn']);
 
     // ACTIONS
-    $canManage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_manage'));
-    $canRequest = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_request'));
+    $canManage = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_manage'));
+    $canRequest = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_request'));
 
     $table->addActionColumn()
         ->addParam('gibbonStaffAbsenceID')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($absence, $actions) use ($canManage, $canRequest) {
-            if ($canRequest && $absence['status'] == 'Approved' 
+            if ($canRequest && $absence['status'] == 'Approved'
                 && empty($absence['coverage']) && $absence['dateEnd'] >= date('Y-m-d')) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')

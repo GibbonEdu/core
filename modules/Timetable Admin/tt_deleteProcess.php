@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -25,7 +25,7 @@ $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt_delete.php&gibbonTTID='.$gibbonTTID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'tt_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

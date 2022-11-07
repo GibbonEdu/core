@@ -22,7 +22,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 //Gibbon system-wide includes
 include __DIR__ . '/../../gibbon.php';
@@ -47,7 +47,7 @@ $urlParams = [
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($address)."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&".http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_future_byPerson')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

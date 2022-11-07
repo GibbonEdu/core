@@ -17,20 +17,20 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Forms\Prefab\DeleteForm;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_page_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $gibbonFormID = $_GET['gibbonFormID'] ?? '';
     $gibbonFormPageID = $_GET['gibbonFormPageID'] ?? '';
-    
+
     if (empty($gibbonFormPageID)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;

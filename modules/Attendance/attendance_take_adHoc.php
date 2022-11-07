@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -32,7 +32,7 @@ use Gibbon\Domain\Attendance\AttendanceLogPersonGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/src/AttendanceView.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_adHoc')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
     $studentList = $studentGateway->queryStudentsBySchoolYear($studentCriteria, $session->get('gibbonSchoolYearID'));
     $studentList = array_reduce($studentList->toArray(), function ($group, $student) use ($gibbonPersonIDList) {
         $list = in_array($student['gibbonPersonID'], $gibbonPersonIDList) ? 'destination' : 'source';
-        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup']; 
+        $group['students'][$list][$student['gibbonPersonID']] = Format::name($student['title'], $student['preferredName'], $student['surname'], 'Student', true) . ' - ' . $student['formGroup'];
         $group['form'][$student['gibbonPersonID']] = $student['formGroup'];
         return $group;
     });
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
 
     $defaultAttendanceType = $settingGateway->getSettingByScope('Attendance', 'defaultFormGroupAttendanceType');
     $countClassAsSchool = $settingGateway->getSettingByScope('Attendance', 'countClassAsSchool');
-    
+
     // Get list of students for selected target
     $targetID = $target == 'Activity' ? $gibbonActivityID : ($target == 'Messenger' ? $gibbonGroupID : $gibbonPersonIDList);
     $students = $attendanceLogGateway->selectAdHocAttendanceStudents($session->get('gibbonSchoolYearID'), $target, $targetID, $currentDate)->fetchAll();
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'att
     if (empty($students)) {
         echo Format::alert(__('There are no records to display.'));
         return;
-    } 
+    }
 
     $count = 0;
     $countPresent = 0;

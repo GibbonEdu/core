@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'dataUpdaterSettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'dataUpdaterSettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -68,18 +68,18 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'dat
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
-    
+
 
     echo '<h2>'.__('Required Fields for Personal Updates').'</h2>';
     echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
     $form = Form::createTable('dataUpdaterSettingsFields', $session->get('absoluteURL').'/modules/'.$session->get('module').'/dataUpdaterSettingsFieldsProcess.php');
-    
+
     $form->setClass('fullWidth rowHighlight');
     $form->addHiddenValue('address', $session->get('address'));
-    
+
     // Default settings
     $settingDefaults = [
         'title'                  => ['label' => __('Title'), 'default' => 'required'],
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'dat
         $row->addContent(__('Student'));
         $row->addContent(__('Parent'));
         $row->addContent(__('Other'));
-    
+
     foreach ($settingDefaults as $id => $field) {
         $row = $form->addRow();
         $row->addLabel($id, $field['label'])->description($field['default'] == 'non-required' ? __('This field cannot be required') : '');
@@ -162,12 +162,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'dat
         $row->addSelect("settings[Student][{$id}]")->fromArray($options)->selected($settings['Student'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Student'));
         $row->addSelect("settings[Parent][{$id}]")->fromArray($options)->selected($settings['Parent'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Parent'));
         $row->addSelect("settings[Other][{$id}]")->fromArray($options)->selected($settings['Other'][$id] ??  $field['default'])->setClass('w-24 float-none')->setTitle(__('Other'));
-        
+
     }
 
     $row = $form->addRow();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 
 }

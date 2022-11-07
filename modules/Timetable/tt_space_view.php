@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_space_view')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'tt_space_view')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_s
         $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
         $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
 
-        
+
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
             $sql = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
             $result = $connection2->prepare($sql);

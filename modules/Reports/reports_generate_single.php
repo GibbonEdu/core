@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\Reports\Domain\ReportGateway;
@@ -28,7 +28,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_generate_single')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_generate_single')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
         ->add(__('Run'), 'reports_generate_batch.php', ['gibbonReportID' => $gibbonReportID])
         ->add(__('Single'));
 
-    
+
     $reportGateway = $container->get(ReportGateway::class);
     $reportArchiveEntryGateway = $container->get(ReportArchiveEntryGateway::class);
 
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
 
             return '';
         });
-    
+
     $debugMode = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'debugMode');
 
     $table->addActionColumn()
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
                         ->addParam('gibbonPersonID', $report['gibbonPersonID'] ?? '')
                         ->addParam('gibbonReportArchiveEntryID', $report['archive']['gibbonReportArchiveEntryID'] ?? '')
                         ->setURL('/modules/Reports/archive_byStudent_download.php');
-                        
+
                 $actions->addAction('download', __('Download'))
                         ->directLink()
                         ->setIcon('download')

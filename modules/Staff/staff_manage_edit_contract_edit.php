@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_manage_edit_contract_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_manage_edit_contract_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_ma
     if ($gibbonStaffID == '' or $gibbonStaffContractID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonStaffID' => $gibbonStaffID, 'gibbonStaffContractID' => $gibbonStaffContractID);
             $sql = 'SELECT gibbonStaffContract.*, surname, preferredName FROM gibbonStaffContract JOIN gibbonStaff ON (gibbonStaffContract.gibbonStaffID=gibbonStaff.gibbonStaffID) JOIN gibbonPerson ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStaffContract.gibbonStaffID=:gibbonStaffID AND gibbonStaffContractID=:gibbonStaffContractID';
             $result = $connection2->prepare($sql);
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_ma
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $session->get('address'));
-            
+
             if ($search != '') {
                 $params = [
                     "search" => $search,

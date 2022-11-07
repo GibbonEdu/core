@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportingScopeGateway;
 
 $_POST['address'] = '/modules/Reports/reporting_scopes_manage.php';
 
 require_once '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_scopes_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_scopes_manage')) == false) {
     exit;
 } else {
     // Proceed!

@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
 $output = '';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'messenger_post'))) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'messenger_post'))) {
     if ($session->exists('username')) {
         if (isset($_GET['gibbonMessengerCannedResponseID'])) {
             $gibbonMessengerCannedResponseID = $_GET['gibbonMessengerCannedResponseID'];

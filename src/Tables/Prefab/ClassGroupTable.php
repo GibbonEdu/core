@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
@@ -57,7 +57,7 @@ class ClassGroupTable extends DataTable
 
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
-        $canViewStaff = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details'));
+        $canViewStaff = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view_details'));
 
         $canViewStudents = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')
             || ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes' || $highestAction == 'View Student Profile_fullEditAllNotes');

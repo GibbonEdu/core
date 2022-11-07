@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -25,7 +25,7 @@ use Gibbon\Domain\User\UserGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\FormGroupTable;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Form Groups', 'formGroups_details')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Form Groups', 'formGroups_details')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Form Groups', 'fo
                 $primaryTutor240 = $userGateway->getByID($row['gibbonPersonIDTutor'])['image_240'];
 
                 //Set up for foramtting
-                $linkStaff = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view_details'));
+                $linkStaff = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view_details'));
 
                 $formatStaff = function (&$staff) use ($userGateway, $linkStaff) {
                     $staff = $userGateway->getByID($staff);

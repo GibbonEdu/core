@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\UI\Chart\Chart;
@@ -53,7 +53,7 @@ function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 
     return $dates;
 }
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_graph_studentEnrolment')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_graph_studentEnrolment')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'rep
     $row = $form->addRow();
         $row->addLabel('excludeLeft', __('Exclude Left Students'));
         $row->addCheckbox('excludeLeft')->setValue('Y')->checked($excludeLeft);
-                
+
     $form->addRow()->addSubmit();
     echo $form->getOutput();
 

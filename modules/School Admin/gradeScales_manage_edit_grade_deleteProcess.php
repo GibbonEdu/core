@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -29,7 +29,7 @@ if ($gibbonScaleID == '') { echo 'Fatal error loading this page!';
     $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/gradeScales_manage_edit_grade_delete.php&gibbonScaleID=$gibbonScaleID&gibbonScaleGradeID=$gibbonScaleGradeID";
     $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID&gibbonScaleGradeID=$gibbonScaleGradeID";
 
-    if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'gradeScales_manage_edit_grade_delete')) == false) {
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'gradeScales_manage_edit_grade_delete')) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -25,7 +25,7 @@ $gibbonINDescriptorID = $_GET['gibbonINDescriptorID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings_delete.php&gibbonINDescriptorID='.$gibbonINDescriptorID;
 $URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/inSettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'inSettings_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'inSettings_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

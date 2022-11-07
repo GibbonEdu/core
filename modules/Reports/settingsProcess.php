@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Data\Validator;
 
@@ -27,7 +27,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST, ['archiveInformatio
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/settings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'settings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'settings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'settin
             $partialFail &= !$updated;
         }
     }
-   
+
     $URL .= $partialFail
         ? '&return=error2'
         : '&return=success0';

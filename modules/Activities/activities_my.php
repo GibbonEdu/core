@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityGateway;
@@ -26,17 +26,17 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_my')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_my')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    $page->breadcrumbs->add(__('My Activities')); 
+    $page->breadcrumbs->add(__('My Activities'));
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
-    $canAccessEnrolment = isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_manage_enrolment'));
+    $canAccessEnrolment = isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_manage_enrolment'));
 
     $activityGateway = $container->get(ActivityGateway::class);
-    
+
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria()
         ->sortBy('name')
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'act
                 ->isModal(1000, 550)
                 ->setURL('/modules/Activities/activities_my_full.php');
 
-            if ($highestAction == "Enter Activity Attendance" || 
+            if ($highestAction == "Enter Activity Attendance" ||
                ($highestAction == "Enter Activity Attendance_leader" && ($activity['role'] == 'Organiser' || $activity['role'] == 'Assistant' || $activity['role'] == 'Coach'))) {
                 $actions->addAction('attendance', __('Attendance'))
                     ->setIcon('attendance')

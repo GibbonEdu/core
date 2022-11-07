@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\ScrubbableGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -32,7 +32,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $logGateway = $container->get(LogGateway::class);
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataRetention.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'dataRetention')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'dataRetention')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'd
         $URL .= '&return=error3';
         header("Location: {$URL}");
         return;
-    } 
+    }
 
     // Ensure table selection persists
     $container->get(SettingGateway::class)->updateSettingByScope('System', 'dataRetentionDomains', implode(',', $data['domains']));
@@ -118,5 +118,5 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'd
         ?'&return=warning2'
         : '&return=success0&count='.count($scrubbedList, COUNT_RECURSIVE);
     header("Location: {$URL}");
-    
+
 }

@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 
 $page->breadcrumbs
     ->add(__('Manage Canned Responses'), 'cannedResponse_manage.php')
     ->add(__('Edit Canned Response'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cannedResponse_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Messenger', 'cannedResponse_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cann
     if ($gibbonMessengerCannedResponseID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonMessengerCannedResponseID' => $gibbonMessengerCannedResponseID);
             $sql = 'SELECT * FROM gibbonMessengerCannedResponse WHERE gibbonMessengerCannedResponseID=:gibbonMessengerCannedResponseID';
             $result = $connection2->prepare($sql);
@@ -44,10 +44,10 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Messenger', 'cann
             $page->addError(__('The specified record cannot be found.'));
         } else {
             //Let's go!
-            $values = $result->fetch(); 
-            
+            $values = $result->fetch();
+
             $form = Form::create('canneResponse', $session->get('absoluteURL').'/modules/'.$session->get('module').'/cannedResponse_manage_editProcess.php?gibbonMessengerCannedResponseID='.$gibbonMessengerCannedResponseID);
-                
+
             $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();

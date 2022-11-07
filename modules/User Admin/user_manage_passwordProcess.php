@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 require_once '../../gibbon.php';
 
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/user_manage_password.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_password')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_password')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

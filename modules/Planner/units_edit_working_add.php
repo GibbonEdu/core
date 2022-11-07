@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
 use Gibbon\Services\Format;
@@ -44,7 +44,7 @@ $page->breadcrumbs
     ->add(__('Edit Working Copy'), 'units_edit_working.php', $urlParams)
     ->add(__('Add Lessons'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_working_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_edit_working_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -54,13 +54,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_
         $page->addError(__('The highest grouped action cannot be determined.'));
         return;
     }
-    
+
     // Proceed!
     // Check if course & school year specified
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
+    }
 
     $courseGateway = $container->get(CourseGateway::class);
 
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_
     if ($result->rowCount() != 1) {
         $page->addError(__('The selected record does not exist, or you do not have access to it.'));
         return;
-    } 
+    }
 
     $values = $result->fetch();
 
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_
     $table->addColumn('schoolYear', __('School Year'));
     $table->addColumn('course', __('Class'))->format(Format::using('courseClassName', ['course', 'class']));
     $table->addColumn('unit', __('Unit'));
-    
+
     echo $table->render([$values]);
 
     $plannerEntryGateway = $container->get(PlannerEntryGateway::class);

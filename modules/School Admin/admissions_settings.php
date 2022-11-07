@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'admissions_settings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'admissions_settings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

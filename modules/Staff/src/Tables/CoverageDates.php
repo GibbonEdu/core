@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\Tables;
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
@@ -56,7 +56,7 @@ class CoverageDates
         $guid = $this->session->get('guid');
         $connection2 = $this->db->getConnection();
 
-        $canManage = isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage'));
+        $canManage = isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage'));
 
         $coverage = $this->staffCoverageGateway->getByID($gibbonStaffCoverageID);
         $dates = $this->staffCoverageDateGateway->selectDatesByCoverage($gibbonStaffCoverageID)->toDataSet();

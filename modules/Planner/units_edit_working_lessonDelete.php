@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Timetable\CourseGateway;
 
 include '../../gibbon.php';
@@ -31,7 +31,7 @@ $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_edit_working')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'units_edit_working')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'units_
             } elseif ($highestAction == 'Unit Planner_learningAreas') {
                 $result = $courseGateway->selectCourseDetailsByClassAndPerson($gibbonCourseClassID, $gibbon->session->get('gibbonPersonID'));
             }
-            
+
             if ($result->rowCount() != 1) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");

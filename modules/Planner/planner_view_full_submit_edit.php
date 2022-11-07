@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_view_full_submit_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_view_full_submit_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planne
                             echo __('Update Submission');
                             echo '</h2>';
 
-                            
+
                                 $dataSubmission = array('gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID);
                                 $sqlSubmission = 'SELECT gibbonPlannerEntryHomework.*, surname, preferredName FROM gibbonPlannerEntryHomework JOIN gibbonPerson ON (gibbonPlannerEntryHomework.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPlannerEntryHomeworkID=:gibbonPlannerEntryHomeworkID';
                                 $resultSubmission = $connection2->prepare($sqlSubmission);
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planne
                             echo __('Add Submission');
                             echo '</h2>';
 
-                            
+
                                 $dataSubmission = array('gibbonPersonID' => $gibbonPersonID);
                                 $sqlSubmission = 'SELECT surname, preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                                 $resultSubmission = $connection2->prepare($sqlSubmission);
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planne
                                 $rowSubmission = $resultSubmission->fetch();
 
                                 $count = 0;
-                                
+
                                     $dataVersion = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID);
                                     $sqlVersion = 'SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPersonID=:gibbonPersonID AND gibbonPlannerEntryID=:gibbonPlannerEntryID';
                                     $resultVersion = $connection2->prepare($sqlVersion);

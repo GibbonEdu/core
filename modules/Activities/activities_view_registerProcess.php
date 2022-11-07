@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -41,7 +41,7 @@ $URLSuccess = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleNam
 
 $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Activities', 'activities_view_register')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Activities', 'activities_view_register')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;

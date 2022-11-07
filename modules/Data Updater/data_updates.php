@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action as ModuleAction;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\DataTable;
@@ -28,7 +28,7 @@ use Gibbon\Forms\Layout\Element;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_updates')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_updates')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -52,11 +52,11 @@ if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'da
 
     // Get the active data types based on this user's permissions
     $updatableDataTypes = [];
-    if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_family'))) $updatableDataTypes[] = 'Family';
-    if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_personal'))) $updatableDataTypes[] = 'Personal';
-    if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_medical'))) $updatableDataTypes[] = 'Medical';
-    if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_finance'))) $updatableDataTypes[] = 'Finance';
-    if (isActionAccessible($guid, $connection2, new ModuleAction('Data Updater', 'data_staff'))) $updatableDataTypes[] = 'Staff';
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_family'))) $updatableDataTypes[] = 'Family';
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_personal'))) $updatableDataTypes[] = 'Personal';
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_medical'))) $updatableDataTypes[] = 'Medical';
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_finance'))) $updatableDataTypes[] = 'Finance';
+    if (isActionAccessible($guid, $connection2, Resource::fromRoute('Data Updater', 'data_staff'))) $updatableDataTypes[] = 'Staff';
 
     echo '<p>';
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');

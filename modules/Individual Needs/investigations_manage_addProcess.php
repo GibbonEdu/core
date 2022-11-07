@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 use Gibbon\Domain\IndividualNeeds\INInvestigationGateway;
@@ -35,7 +35,7 @@ $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Individual Needs/investigations_manage_add.php&gibbonPersonID=$gibbonPersonID&gibbonFormGroupID=$gibbonFormGroupID&gibbonYearGroupID=$gibbonYearGroupID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'investigations_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Individual Needs', 'investigations_manage_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs'
 
         $event->pushNotifications($notificationGateway, $notificationSender);
     }
-    
+
 
     // Send all notifications
     $sendReport = $notificationSender->sendNotifications();

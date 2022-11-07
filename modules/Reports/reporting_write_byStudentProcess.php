@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Module\Reports\Domain\ReportingCycleGateway;
 use Gibbon\Module\Reports\Domain\ReportingValueGateway;
@@ -44,7 +44,7 @@ $urlParams = [
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reporting_write_byStudent.php&'.http_build_query($urlParams);
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reporting_write_byStudent')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reporting_write_byStudent')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
     $reportingProgressGateway = $container->get(ReportingProgressGateway::class);
     $reportingCriteriaGateway = $container->get(ReportingCriteriaGateway::class);
     $reportingAccessGateway = $container->get(ReportingAccessGateway::class);
-    
+
     $values = $_POST['value'] ?? [];
 
     // Validate the required values are present
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
         'gibbonPersonIDStudent'     => $gibbonPersonIDStudent,
         'gibbonPersonIDCreated'     => $gibbon->session->get('gibbonPersonID'),
     ];
-    
+
     // Insert or update each record
     foreach ($values as $gibbonReportingCriteriaID => $value) {
         $data['gibbonReportingCriteriaID'] = $gibbonReportingCriteriaID;

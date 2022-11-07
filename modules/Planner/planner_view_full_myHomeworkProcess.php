@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Services\Format;
 
@@ -41,7 +41,7 @@ if (isset($_GET['gibbonCourseClassID'])) {
 }
 $URL = $session->get('absoluteURL')."/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID$params";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_view_full')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_view_full')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

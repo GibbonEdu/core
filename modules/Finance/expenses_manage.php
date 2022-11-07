@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
@@ -26,7 +26,7 @@ use Gibbon\Services\Format;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expenses_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Finance', 'expenses_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expens
                         $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
                     }
                     if ($gibbonFinanceBudgetCycleID == '') {
-                        
+
                             $data = array();
                             $sql = "SELECT * FROM gibbonFinanceBudgetCycle WHERE status='Current'";
                             $result = $connection2->prepare($sql);
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Finance', 'expens
                         }
                     }
                     if ($gibbonFinanceBudgetCycleID != '') {
-                        
+
                             $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
                             $sql = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
                             $result = $connection2->prepare($sql);

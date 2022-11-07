@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\System\ActionGateway;
 use Gibbon\Data\Validator;
@@ -30,7 +30,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/System Admin/module_manage.php';
 $gibbon->session->set('moduleInstallError', '');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'module_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'module_manage')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
                 header("Location: {$URL}");
             } else {
                 $moduleGateway = $container->get(ModuleGateway::class);
-                
+
                 // Lock module table
                 try {
                     $sql = 'LOCK TABLES gibbonModule WRITE';
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'm
 
                     // Create module actions
                     if (!empty($actionRows)) {
-  
+
                         for ($i = 0;$i < count($actionRows);++$i) {
                             $categoryPermissionStaff = 'Y';
                             $categoryPermissionStudent = 'Y';

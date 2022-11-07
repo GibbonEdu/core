@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\UserGateway;
@@ -34,7 +34,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_add.php';
 $URLSuccess = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Staff/absences_view_details.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
 
             $timeDiff = $end->getTimestamp() - $start->getTimestamp();
             $hoursAbsent = abs($timeDiff / 3600);
-            
+
             if ($hoursAbsent < $halfDayThreshold) {
                 $dateData['value'] = 0.0;
             } elseif ($hoursAbsent < $fullDayThreshold) {

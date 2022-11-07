@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffAbsenceGateway;
 use Gibbon\Module\Staff\Tables\AbsenceFormats;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences_approval')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'absences_approval')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'absences
         if ($absence['status'] == 'Declined') $row->addClass('error');
         return $row;
     });
-    
+
     $table->addMetaData('filterOptions', [
         'date:upcoming'           => __('Upcoming'),
         'date:today'              => __('Today'),

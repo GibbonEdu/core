@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $form->addHiddenValue('address', $session->get('address'));
     $form->addHiddenValue('gibbonStaffCoverageID', $gibbonStaffCoverageID);
     $form->addHiddenValue('gibbonStaffCoverageDateID', $gibbonStaffCoverageDateID);
-   
+
     $row = $form->addRow();
         $row->addLabel('dateLabel', __('Date'));
         $row->addTextField('dateLabel')->readonly()->setValue(Format::date($values['date']));

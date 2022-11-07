@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 include '../../gibbon.php';
 
@@ -39,7 +39,7 @@ if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
 }
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner_delete')) == false) {
     $URL .= "&return=error0$params";
     header("Location: {$URL}");
 } else {

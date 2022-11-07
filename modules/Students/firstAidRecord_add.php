@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -27,7 +27,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'firstAidRecord_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'firstAidRecord_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'first
             $column->addTextArea('actionTaken')->setRows(8)->setClass('fullWidth');
 
         $row = $form->addRow()->addHeading('Follow Up', __('Follow Up'));
-        
+
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('followUp', __('Follow Up'));

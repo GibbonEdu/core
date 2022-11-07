@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Domain\Forms\FormFieldGateway;
@@ -30,7 +30,7 @@ $type = $_POST['type'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/formBuilder.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'formBuilder_duplicate')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_duplicate')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'f
             $partialFail &= !$gibbonFormFieldIDCopy;
         }
     }
-    
+
     $URL .= $partialFail
         ? '&return=warning1'
         : '&return=success0';

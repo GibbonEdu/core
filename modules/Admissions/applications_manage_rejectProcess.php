@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Domain\Admissions\AdmissionsApplicationGateway;
 
@@ -29,7 +29,7 @@ $search = $_REQUEST['search'] ?? '';
 
 $URL = Url::fromModuleRoute('Admissions', 'applications_manage')->withQueryParams(['gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonAdmissionsApplicationID' => $gibbonAdmissionsApplicationID, 'search' => $search]);
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'applications_manage_reject')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'applications_manage_reject')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

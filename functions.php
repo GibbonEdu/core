@@ -29,7 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 
 function getIPAddress() {
     $return = false;
@@ -385,9 +385,9 @@ function getFastFinder($connection2, $guid)
 
     $templateData = [
         'roleCategory'        => $session->get('gibbonRoleIDCurrentCategory'),
-        'studentIsAccessible' => isActionAccessible($guid, $connection2, Action::fromRoute('students', 'student_view')),
-        'staffIsAccessible'   => isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'staff_view')),
-        'classIsAccessible'   => isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'planner')) && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+        'studentIsAccessible' => isActionAccessible($guid, $connection2, Resource::fromRoute('students', 'student_view')),
+        'staffIsAccessible'   => isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'staff_view')),
+        'classIsAccessible'   => isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'planner')) && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
 
         'form'                => $form->getOutput(),
     ];
@@ -1221,7 +1221,7 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
  *
  * @param string        $guid
  * @param \PDO          $connection2
- * @param string|Action $action
+ * @param string|Resource $action
  * @param string        $sub
  * @return boolean
  */
@@ -1234,8 +1234,8 @@ function isActionAccessible($guid, $connection2, $action, $sub = '')
     if ($session->has('username')) {
         //Check user has a current role set
         if ($session->get('gibbonRoleIDCurrent') != '') {
-            if (!($action instanceof Action)) {
-                $action = Action::fromLegacyPath($action);
+            if (!($action instanceof Resource)) {
+                $action = Resource::fromLegacyPath($action);
             }
 
             //Check module ready

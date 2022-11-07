@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\PersonalDocumentGateway;
@@ -25,7 +25,7 @@ use Gibbon\Domain\User\PersonalDocumentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
     } else {
         //Proceed!
         $settingGateway = $container->get(SettingGateway::class);
-        
+
         $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
         $sql = "SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
         $result = $connection2->prepare($sql);
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year of Entry').'</span><br/>';
-            
+
                 $dataSelect = array('gibbonSchoolYearIDEntry' => $row['gibbonSchoolYearIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry';
                 $resultSelect = $connection2->prepare($sqlSelect);
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group at Entry').'</span><br/>';
-            
+
                 $dataSelect = array('gibbonYearGroupIDEntry' => $row['gibbonYearGroupIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupIDEntry';
                 $resultSelect = $connection2->prepare($sqlSelect);
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Form Group at Entry').'</span><br/>';
-            
+
                 $dataSelect = array('gibbonFormGroupID' => $row['gibbonFormGroupID']);
                 $sqlSelect = 'SELECT name FROM gibbonFormGroup WHERE gibbonFormGroupID=:gibbonFormGroupID';
                 $resultSelect = $connection2->prepare($sqlSelect);
@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                     $start = 2;
 
                     //Spit out parent 1 data from Gibbon
-                    
+
                         $dataMember = array('gibbonPersonID' => $row['parent1gibbonPersonID']);
                         $sqlMember = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
                         $resultMember = $connection2->prepare($sqlMember);
@@ -450,7 +450,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
             //Yes family
             else {
                 //Spit out parent1/parent2 data from Gibbon
-                
+
                     $dataFamily = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                     $resultFamily = $connection2->prepare($sqlFamily);
@@ -497,7 +497,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                         echo '</table>';
 
                         //Get adults
-                        
+
                             $dataMember = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
                             $sqlMember = 'SELECT * FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
                             $resultMember = $connection2->prepare($sqlMember);
@@ -612,7 +612,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                 }
                 //Get siblings from Gibbon family
                 if ($row['gibbonFamilyID'] != '') {
-                    
+
                         $dataMember = array('gibbonFamilyID' => $row['gibbonFamilyID']);
                         $sqlMember = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName';
                         $resultMember = $connection2->prepare($sqlMember);

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Domain\System\EmailTemplateGateway;
@@ -32,7 +32,7 @@ $sendTest = $_POST['sendTest'] ?? 'N';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/System Admin/emailTemplates_manage_edit.php&gibbonEmailTemplateID='.$gibbonEmailTemplateID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'emailTemplates_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'emailTemplates_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'e
     // Send a test email
     if ($sendTest == 'Y') {
         $variables = json_decode($values['variables'] ?? '', true);
-        
+
         // Render the templates for this email
         $template = $container->get(EmailTemplate::class)->setTemplate($values['templateName']);
         $data = $template->generateFakeData($variables);

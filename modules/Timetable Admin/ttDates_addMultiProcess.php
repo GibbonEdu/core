@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 use Gibbon\Domain\Timetable\TimetableDayDateGateway;
@@ -34,7 +34,7 @@ $overwrite = $_POST['overwrite'] ?? 'N';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['q'])."/ttDates.php&gibbonSchoolYearID=$gibbonSchoolYearID";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'ttDates_edit_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'ttDates_edit_add')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -59,12 +59,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin',
         header("Location: {$URL}");
         exit();
     }
-    
+
     foreach ($dates as $date) {
         if (!isSchoolOpen($guid, date('Y-m-d', $date), $connection2, true)) {
             $partialFail = true;
             continue;
-        } 
+        }
 
         // Remove existing TT Day Dates if overwriting
         if ($overwrite == 'Y') {
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin',
             $inserted = $timetableDayDateGateway->insert($data);
             $partialFail &= !$inserted;
         }
-        
+
     }
 
     $URL .= $partialFail

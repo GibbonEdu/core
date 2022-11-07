@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
@@ -27,7 +27,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('Work Summary by Form Group'));
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report_workSummary_byFormGroup')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Planner', 'report_workSummary_byFormGroup')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
         echo __('Report Data');
         echo '</h2>';
 
-        
+
             $data = array('gibbonFormGroupID' => $gibbonFormGroupID);
             $sql = "SELECT surname, preferredName, name, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonFormGroup ON (gibbonStudentEnrolment.gibbonFormGroupID=gibbonFormGroup.gibbonFormGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonFormGroupID=:gibbonFormGroupID ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonID']."&subpage=Homework'>".Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
             echo '</td>';
             echo "<td style='width:15%'>";
-            
+
                 $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID  AND (attainmentConcern='N' OR attainmentConcern IS NULL) AND (effortConcern='N' OR effortConcern IS NULL) AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
                 $resultData = $connection2->prepare($sqlData);
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             echo '</td>';
             echo "<td style='width:15%'>";
             //Count up unsatisfactory from markbook
-            
+
                 $dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
                 $sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentConcern='Y' OR effortConcern='Y') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
                 $resultData = $connection2->prepare($sqlData);
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             }
 
 			//Count up unsatisfactory from behaviour, counting out $sqlWhere
-			
+
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData2 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Unacceptable' OR descriptor='Homework - Unacceptable') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere";
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
 
             echo "<td style='width:15%'>";
 			//Count up on time in planner
-            
+
 				$dataData['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='On Time' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required'";
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
 
             echo "<td style='width:15%'>";
 			//Count up lates in markbook
-			
+
 				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 				$sqlData = "SELECT DISTINCT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentValue='Late' OR effortValue='Late') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
 				$resultData = $connection2->prepare($sqlData);
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             }
 
 			//Count up lates in planner, counting out $sqlWhere
-			
+
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData2 = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework JOIN gibbonPlannerEntry ON (gibbonPlannerEntryHomework.gibbonPlannerEntryID=gibbonPlannerEntry.gibbonPlannerEntryID) JOIN gibbonCourseClass ON (gibbonPlannerEntry.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPlannerEntryHomework.gibbonPersonID=:gibbonPersonID AND status='Late' AND gibbonSchoolYearID=:gibbonSchoolYearID AND homeworkSubmissionRequired='Required' $sqlWhere";
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             }
 
 			//Count up lates from behaviour, counting out $sqlWhere2 and $sqlWhere3
-			
+
 				$dataData3['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData3['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData3 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Late' OR descriptor='Homework - Late') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere2 $sqlWhere3";
@@ -258,7 +258,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             echo '</td>';
             echo "<td style='width:15%'>";
 			//Count up incompletes in markbook
-			
+
 				$dataData = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'));
 				$sqlData = "SELECT * FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND (attainmentValue='Incomplete' OR effortValue='Incomplete') AND gibbonSchoolYearID=:gibbonSchoolYearID AND complete='Y'";
 				$resultData = $connection2->prepare($sqlData);
@@ -291,7 +291,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             }
 
 			//Count up incompletes in planner, counting out $sqlWhere
-			
+
 				$dataData2['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData2['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$dataData2['homeworkDueDateTime'] = date('Y-m-d H:i:s');
@@ -304,7 +304,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             $sqlWhere3 = ' AND (';
             $countWhere = 0;
             while ($rowData2 = $resultData2->fetch()) {
-                
+
                     $dataData3['gibbonPersonID'] = $row['gibbonPersonID'];
                     $dataData3['gibbonPlannerEntryID'] = $rowData2['gibbonPlannerEntryID'];
                     $sqlData3 = "SELECT DISTINCT gibbonPlannerEntryHomework.gibbonPlannerEntryID FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID AND version='Final'";
@@ -332,7 +332,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Planner', 'report
             }
 
 			//Count up incompletes from behaviour, counting out $sqlWhere2 and $sqlWhere3
-			
+
 				$dataData4['gibbonPersonID'] = $row['gibbonPersonID'];
 				$dataData4['gibbonSchoolYearID'] = $session->get('gibbonSchoolYearID');
 				$sqlData4 = "SELECT * FROM gibbonBehaviour WHERE gibbonBehaviour.gibbonPersonID=:gibbonPersonID AND type='Negative' AND (descriptor='Classwork - Incomplete' OR descriptor='Homework - Incomplete') AND gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere2 $sqlWhere3";

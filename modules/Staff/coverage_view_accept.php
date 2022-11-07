@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
@@ -26,7 +26,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_accept')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_accept')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
 
                 foreach ($times as $time) {
                     // Handle full day and partial day unavailability
-                    if ($time['allDay'] == 'Y' 
+                    if ($time['allDay'] == 'Y'
                     || ($time['allDay'] == 'N' && $coverage['allDay'] == 'Y')
                     || ($time['allDay'] == 'N' && $coverage['allDay'] == 'N'
                         && $time['timeStart'] <= $coverage['timeEnd']

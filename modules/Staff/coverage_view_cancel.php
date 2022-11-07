@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Staff\StaffCoverageGateway;
@@ -25,7 +25,7 @@ use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\View\CoverageView;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_view_cancel')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_view_cancel')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     // Coverage Dates
     $table = $container->get(CoverageDates::class)->create($gibbonStaffCoverageID);
     $page->write($table->getOutput());
-    
+
     // Coverage View Composer
     $coverageView = $container->get(CoverageView::class);
     $coverageView->setCoverage($gibbonStaffCoverageID)->compose($page);
@@ -88,6 +88,6 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
 
     $row = $form->addRow();
         $row->addSubmit();
-    
+
     echo $form->getOutput();
 }

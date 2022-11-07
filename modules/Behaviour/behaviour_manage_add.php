@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -32,7 +32,7 @@ $settingGateway = $container->get(SettingGateway::class);
 $enableDescriptors = $settingGateway->getSettingByScope('Behaviour', 'enableDescriptors');
 $enableLevels = $settingGateway->getSettingByScope('Behaviour', 'enableLevels');
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Behaviour', 'behaviour_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'beha
         if ($step == 1 or $gibbonBehaviourID == null) {
             $form = Form::create('addform', $session->get('absoluteURL').'/modules/Behaviour/behaviour_manage_addProcess.php?step=1&gibbonPersonID='.$gibbonPersonID.'&gibbonFormGroupID='.$gibbonFormGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type);
             $form->setFactory(DatabaseFormFactory::create($pdo));
-            
+
             $policyLink = $settingGateway->getSettingByScope('Behaviour', 'policyLink');
             if (!empty($policyLink)) {
                 $form->addHeaderAction('viewPolicy', __('View Behaviour Policy'))
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'beha
                     ->addParam('type', $_GET['type'])
                     ->prepend((!empty($policyLink)) ? ' | ' : '');
             }
-            
+
             $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
             $form->addRow()->addHeading('Step 1', __('Step 1'));
 

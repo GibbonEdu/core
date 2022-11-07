@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\UsernameGenerator;
 
 //Gibbon system-wide include
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'user_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_add')) == false) {
     die( __('Your request failed because you do not have access to this action.') );
 } else {
     $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '003';

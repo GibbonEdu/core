@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -28,7 +28,7 @@ $search = $_GET['search'] ?? '';
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_reject.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search";
 $URLReject = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage.php&search=$search";
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'applicationForm_manage_reject')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'applicationForm_manage_reject')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

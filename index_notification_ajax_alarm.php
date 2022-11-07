@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\View\View;
 use Gibbon\Domain\System\AlarmGateway;
 use Gibbon\Domain\System\SettingGateway;
@@ -37,7 +37,7 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
     if (empty($alarm)) return;
 
     $confirmed =  $alarmGateway->getAlarmConfirmationByPerson($alarm['gibbonAlarmID'], $session->get('gibbonPersonID'));
-    $canViewReport = isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'alarm'));
+    $canViewReport = isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'alarm'));
     $confirmationReport = $alarmGateway->selectAlarmConfirmation($alarm['gibbonAlarmID'])->fetchAll();
 
     // Check for staff absent today
@@ -49,7 +49,7 @@ if (!$session->has('gibbonPersonID') || $session->get('gibbonRoleIDCurrentCatego
         $group[] = $item['gibbonPersonID'];
         return $group;
     }, []);
-    
+
     echo $container->get(View::class)->fetchFromTemplate('ui/alarmOverlay.twig.html', [
         'alarm'              => $alarm,
         'confirmed'          => $confirmed,

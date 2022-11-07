@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
@@ -25,7 +25,7 @@ use Gibbon\Domain\System\SettingGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'alarm')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'alarm')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'a
     );
 
     $form = Form::create('alarmSettings', $gibbon->session->get('absoluteURL').'/modules/'.$gibbon->session->get('module').'/alarmProcess.php');
-    
+
     $settingGateway = $container->get(SettingGateway::class);
-    
+
     $settingAlarmSound = $settingGateway->getSettingByScope('System Admin', 'customAlarmSound', true);
 
     $form->addHiddenValue('address', $gibbon->session->get('address'));
-    
+
     $row = $form->addRow();
         $label = $row->addLabel('file', __($settingAlarmSound['nameDisplay']))->description(__($settingAlarmSound['description']));
         if (!empty($settingAlarmSound['value'])) $label->append(__('Will overwrite existing attachment.'));

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\DataSet;
@@ -32,7 +32,7 @@ use Gibbon\Domain\IndividualNeeds\INAssistantGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs', 'in_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Individual Needs', 'in_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Individual Needs'
             $gibbonFormGroupID = $_GET['gibbonFormGroupID'] ?? null;
             $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? null;
 
-            
+
             if ($search != '' and $source == '') {
                 $params = [
                     "search" => $search,

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
@@ -32,7 +32,7 @@ use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'applicationForm_manage_accept')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'applicationForm_manage_accept')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
             $sql = "SELECT * FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND (status='Pending' OR status='Waiting List')";
             $result = $connection2->prepare($sql);
@@ -227,7 +227,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
 
                 //CREATE STUDENT
                 $failStudent = true;
-                
+
                 // Generate a unique username for the new student, or use the pre-defined one.
                 if (!empty($values['username'])) {
                     $username = $values['username'];
@@ -280,7 +280,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                 $resultSchoolYear->execute($dataSchoolYear);
                 $schoolYearEntry = $resultSchoolYear->fetch();
                 $schoolYearName = $schoolYearEntry['name'] ?? '';
-                $status = $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full'; 
+                $status = $schoolYearEntry['status'] == 'Upcoming' && $informStudent != 'Y' ? 'Expected' : 'Full';
 
                 // Get student's year group info
                 $dataYearGroup = array('gibbonYearGroupID' => $values['gibbonYearGroupIDEntry']);
@@ -405,7 +405,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                     }
                     if ($insertOK == true) {
                         $gibbonPersonID = $connection2->lastInsertID();
-                    
+
                         $failStudent = false;
 
                         //Populate informStudent array
@@ -441,7 +441,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                     echo '</ul>';
 
                     //Move documents to student notes
-                    
+
                         $dataDoc = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
                         $sqlDoc = 'SELECT * FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID';
                         $resultDoc = $connection2->prepare($sqlDoc);
@@ -452,7 +452,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             $note .= "<a href='".$session->get('absoluteURL').'/'.$rowDoc['path']."'>".$rowDoc['name'].'</a><br/>';
                         }
                         $note .= '</p>';
-                        
+
                             $data = array('gibbonPersonID' => $gibbonPersonID, 'title' => __('Application Documents'), 'note' => $note, 'gibbonPersonIDCreator' => $session->get('gibbonPersonID'), 'timestamp' => date('Y-m-d H:i:s'));
                             $sql = 'INSERT INTO gibbonStudentNote SET gibbonPersonID=:gibbonPersonID, gibbonStudentNoteCategoryID=NULL, title=:title, note=:note, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
                             $result = $connection2->prepare($sql);
@@ -571,7 +571,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                         }
 
                         //CONNECT STUDENT TO FAMILY
-                        
+
                             $dataFamily = array('gibbonFamilyID' => $values['gibbonFamilyID']);
                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                             $resultFamily = $connection2->prepare($sqlFamily);
@@ -628,7 +628,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             }
                         }
 
-                        
+
                             $dataParents = array('gibbonFamilyID' => $values['gibbonFamilyID']);
                             $sqlParents = 'SELECT gibbonFamilyAdult.*, gibbonPerson.gibbonRoleIDAll FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID';
                             $resultParents = $connection2->prepare($sqlParents);
@@ -636,7 +636,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                         while ($rowParents = $resultParents->fetch()) {
                             //Update parent roles
                             if (strpos($rowParents['gibbonRoleIDAll'], '004') === false) {
-                                
+
                                     $dataRoleUpdate = array('gibbonPersonID' => $rowParents['gibbonPersonID']);
                                     $sqlRoleUpdate = "UPDATE gibbonPerson SET gibbonRoleIDAll=concat(gibbonRoleIDAll, ',004') WHERE gibbonPersonID=:gibbonPersonID";
                                     $resultRoleUpdate = $connection2->prepare($sqlRoleUpdate);
@@ -644,7 +644,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             }
 
                             //Add relationship record for each parent
-                            
+
                                 $dataRelationship = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $rowParents['gibbonPersonID']);
                                 $sqlRelationship = 'SELECT * FROM gibbonApplicationFormRelationship WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonPersonID=:gibbonPersonID';
                                 $resultRelationship = $connection2->prepare($sqlRelationship);
@@ -652,13 +652,13 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             if ($resultRelationship->rowCount() == 1) {
                                 $rowRelationship = $resultRelationship->fetch();
                                 $relationship = $rowRelationship['relationship'];
-                                
+
                                     $data = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonPersonID1' => $rowParents['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID);
                                     $sql = 'SELECT * FROM gibbonFamilyRelationship WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2';
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
                                 if ($result->rowCount() == 0) {
-                                    
+
                                         $data = array('gibbonFamilyID' => $values['gibbonFamilyID'], 'gibbonPersonID1' => $rowParents['gibbonPersonID'], 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $relationship);
                                         $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                         $result = $connection2->prepare($sql);
@@ -667,7 +667,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                     $existingRelationship = $result->fetch();
 
                                     if ($existingRelationship['relationship'] != $relationship) {
-                                        
+
                                             $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $existingRelationship['gibbonFamilyRelationshipID']);
                                             $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
                                             $result = $connection2->prepare($sql);
@@ -697,7 +697,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                     } else {
                         //CREATE A NEW FAMILY
                         $failFamily = true;
-                        
+
                         $familyName = $values['parent1preferredName'].' '.$values['parent1surname'];
                         if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
                             $familyName .= ' & '.$values['parent2preferredName'].' '.$values['parent2surname'];
@@ -732,7 +732,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
 
                         if ($insertOK == true) {
                             $failFamily = false;
-                            
+
                             $gibbonFamilyID = $connection2->lastInsertID();
                         }
 
@@ -753,7 +753,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             //LINK STUDENT INTO FAMILY
                             $failFamily = true;
                             if ($gibbonFamilyID != '') {
-                                
+
                                     $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                     $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                     $resultFamily = $connection2->prepare($sqlFamily);
@@ -808,7 +808,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                 //LINK PARENT 1 INTO FAMILY
                                 $failFamily = true;
                                 if ($gibbonFamilyID != '') {
-                                    
+
                                         $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                         $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                         $resultFamily = $connection2->prepare($sqlFamily);
@@ -842,7 +842,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                 }
 
                                 //Set parent relationship
-                                
+
                                     $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent1, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent1relationship']);
                                     $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                     $result = $connection2->prepare($sql);
@@ -855,7 +855,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                 $generator->addToken('surname', $values['parent1surname']);
 
                                 $username = $generator->generateByRole('004');
-                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full'; 
+                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full';
 
                                 // Generate a random password
                                 $password = randomPassword(8);
@@ -877,7 +877,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                     }
                                     if ($insertOK == true) {
                                         $failParent1 = false;
-                                        
+
                                         $gibbonPersonIDParent1 = $connection2->lastInsertID();
 
                                         //Populate parent1 in informParent array
@@ -913,7 +913,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                     //LINK PARENT 1 INTO FAMILY
                                     $failFamily = true;
                                     if ($gibbonFamilyID != '') {
-                                        
+
                                             $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
@@ -946,7 +946,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                         }
 
                                         //Set parent relationship
-                                        
+
                                             $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent1, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent1relationship']);
                                             $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $result = $connection2->prepare($sql);
@@ -958,7 +958,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                             //CREATE PARENT 2
                             if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
                                 $failParent2 = true;
-                               
+
                                 // Generate a unique username for parent 2
                                 $generator = new UsernameGenerator($pdo);
                                 $generator->addToken('preferredName', $values['parent2preferredName']);
@@ -966,7 +966,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                 $generator->addToken('surname', $values['parent2surname']);
 
                                 $username = $generator->generateByRole('004');
-                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full'; 
+                                $status = $schoolYearEntry['status'] == 'Upcoming' && $informParents != 'Y' ? 'Expected' : 'Full';
 
                                 // Generate a random password
                                 $password = randomPassword(8);
@@ -988,7 +988,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                     }
                                     if ($insertOK == true) {
                                         $failParent2 = false;
-                                        
+
                                         $gibbonPersonIDParent2 = $connection2->lastInsertID();
 
                                         //Populate parent2 in informParents array
@@ -1024,7 +1024,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                     //LINK PARENT 2 INTO FAMILY
                                     $failFamily = true;
                                     if ($gibbonFamilyID != '') {
-                                        
+
                                             $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
                                             $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
                                             $resultFamily = $connection2->prepare($sqlFamily);
@@ -1057,7 +1057,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                                         }
 
                                         //Set parent relationship
-                                        
+
                                             $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent2, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent2relationship']);
                                             $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
                                             $result = $connection2->prepare($sql);
@@ -1217,7 +1217,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'appli
                         echo __('Student status could not be updated: student is in the system, but acceptance has failed.');
                         echo '</div>';
 
-                        
+
                     } else {
                         echo '<h4>';
                         echo __('Application Status');

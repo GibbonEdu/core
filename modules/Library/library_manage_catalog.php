@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -25,7 +25,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Library\LibraryGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Library', 'library_manage_catalog')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Library', 'library_manage_catalog')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {

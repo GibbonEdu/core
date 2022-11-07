@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\SendReportsProcess;
 use Gibbon\Module\Reports\Domain\ReportGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;
@@ -35,7 +35,7 @@ $identifiers = $_POST['identifier'] ?? [];
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/reports_send_batch.php&gibbonReportID='.$gibbonReportID.'&contextData='.$contextData;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'reports_send_batch')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'reports_send_batch')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'report
     foreach ($identifiers as $gibbonReportArchiveEntryID) {
         $reportArchiveEntryGateway->update($gibbonReportArchiveEntryID, ['timestampSent' => '0000-00-00 00:00:00']);
     }
-    
+
     if ($action == 'Send Reports to Parents') {
         $process = $container->get(SendReportsProcess::class);
         $success = $process->startSendReportsToParents($gibbonReportID, $templateName, $identifiers);

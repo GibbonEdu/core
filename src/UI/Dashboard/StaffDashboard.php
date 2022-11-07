@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UI\Dashboard;
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Data\Validator;
@@ -254,7 +254,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         //GET TIMETABLE
         $timetable = false;
         if (
-            isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt'))
+            isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'tt'))
             and $this->session->get('username') != ''
             and $this->session->get('gibbonRoleIDCurrentCategory') == 'Staff'
         ) {
@@ -290,7 +290,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
         $sqlFormGroups = 'SELECT * FROM gibbonFormGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonSchoolYearID=:gibbonSchoolYearID';
         $resultFormGroups = $this->db->select($sqlFormGroups, $dataFormGroups);
 
-        $attendanceAccess = isActionAccessible($guid, $connection2, Action::fromRoute('Attendance', 'attendance_take_byFormGroup'));
+        $attendanceAccess = isActionAccessible($guid, $connection2, Resource::fromRoute('Attendance', 'attendance_take_byFormGroup'));
 
         while ($rowFormGroups = $resultFormGroups->fetch()) {
             $formGroups[$count][0] = $rowFormGroups['gibbonFormGroupID'];
@@ -319,7 +319,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
 
             $formGroups[$count][2] = $formGroupTable->getOutput();
 
-            $behaviourView = isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_view'));
+            $behaviourView = isActionAccessible($guid, $connection2, Resource::fromRoute('Behaviour', 'behaviour_view'));
             if ($behaviourView) {
                 //Behaviour
                 $formGroups[$count][3] = '';
@@ -336,7 +336,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                     $formGroups[$count][3] .= "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                if (isActionAccessible($guid, $connection2, Action::fromRoute('Behaviour', 'behaviour_manage_add'))) {
+                if (isActionAccessible($guid, $connection2, Resource::fromRoute('Behaviour', 'behaviour_manage_add'))) {
                     $formGroups[$count][3] .= "<div class='linkTop'>";
                     $formGroups[$count][3] .= "<a href='".Url::fromModuleRoute('Behaviour', 'behaviour_manage_add')->withQueryParams([
                         'gibbonPersonID' => '',
@@ -484,7 +484,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_students_left')) || isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_students_new'))) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_students_left')) || isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_students_new'))) {
                 $return .= "<li><a href='#tabs".$tabCount."'>".__('Enrolment').'</a></li>';
                 if ($staffDashboardDefaultTab == 'Enrolment') {
                     $staffDashboardDefaultTabCount = $tabCount;
@@ -526,7 +526,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
             }
 
             // Enrolment tab
-            if (isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_students_left')) || isActionAccessible($guid, $connection2, Action::fromRoute('Admissions', 'report_students_new'))) {
+            if (isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_students_left')) || isActionAccessible($guid, $connection2, Resource::fromRoute('Admissions', 'report_students_new'))) {
                 $return .= "<div id='tabs".$tabCount."'>";
                 $return .= $this->enrolmentTable->getOutput();
                 $return .= '</div>';

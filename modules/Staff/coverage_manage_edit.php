@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
@@ -28,7 +28,7 @@ use Gibbon\Domain\Staff\StaffCoverageDateGateway;
 use Gibbon\Module\Staff\View\StaffCard;
 use Gibbon\Module\Staff\Tables\CoverageDates;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Staff', 'coverage_manage_edit')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
             $row->addLabel('typeLabel', __('Type'));
             $row->addTextField('type')->readonly()->setValue($coverage['reason'] ? "{$coverage['type']} ({$coverage['reason']})" : $coverage['type']);
     }
-    
+
     $row = $form->addRow();
         $row->addLabel('timestamp', __('Requested'));
         $row->addTextField('timestampValue')
@@ -84,12 +84,12 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
             ->setValue(Format::relativeTime($coverage['timestampStatus'], false))
             ->setTitle($coverage['timestampStatus']);
 
-    
+
     $row = $form->addRow();
         $row->addLabel('notesStatusLabel', __('Notes'));
         $row->addTextArea('notesStatus')->setRows(3)->setValue($coverage['notesStatus']);
-    
-    
+
+
     $form->addRow()->addHeading('Substitute', __('Substitute'));
 
     if ($coverage['requestType'] == 'Individual') {
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Staff', 'coverage
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
-    
+
     $form->loadAllValuesFrom($coverage);
 
     echo $form->getOutput();

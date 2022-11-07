@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\SchoolYearGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'schoolYear_manage')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'schoolYear_manage')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 's
           ->format(Format::using('dateRange', ['firstDay', 'lastDay']))
           ->sortable(['firstDay', 'lastDay']);
     $table->addColumn('status', __('Status'))->translatable();
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('gibbonSchoolYearID')

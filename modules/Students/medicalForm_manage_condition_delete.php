@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Prefab\DeleteForm;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medicalForm_manage_condition_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Students', 'medicalForm_manage_condition_delete')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Students', 'medic
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
         $page->addError(__('You have not specified one or more required parameters.'));
     } else {
-        
+
             $data = array('gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID);
             $sql = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID';
             $result = $connection2->prepare($sql);

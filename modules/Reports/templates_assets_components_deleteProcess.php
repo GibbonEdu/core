@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Gibbon\Domain\System\SettingGateway;
 
@@ -27,7 +27,7 @@ $gibbonReportPrototypeSectionID = $_GET['gibbonReportPrototypeSectionID'] ?? '';
 
 $URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/Reports/templates_assets.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_assets_components_delete')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_assets_components_delete')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
     exit;
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
 
     $absolutePath = $gibbon->session->get('absolutePath');
     $customAssetPath = $container->get(SettingGateway::class)->getSettingByScope('Reports', 'customAssetPath');
-    
+
     $partialFail &= !unlink($absolutePath.$customAssetPath.'/templates/'.$values['templateFile']);
 
     $deleted = $templateGateway->delete($gibbonReportPrototypeSectionID);

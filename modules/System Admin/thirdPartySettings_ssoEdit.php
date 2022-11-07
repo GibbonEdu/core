@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\System\SettingGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'thirdPartySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'thirdPartySettings')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -32,19 +32,19 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 't
 
     //Check if StringID specified
     $sso = $_GET['sso'] ?? '';
-    
+
     if (empty($sso)) {
         $page->addError(__('You have not specified one or more required parameters.'));
         return;
-    } 
-        
+    }
+
     $settingGateway = $container->get(SettingGateway::class);
     $ssoSetting = $settingGateway->getSettingByScope('System Admin', 'sso'.$sso);
 
     if (empty($ssoSetting)) {
         $page->addError(__('The specified record cannot be found.'));
         return;
-    } 
+    }
 
     //Let's go!
     $values = json_decode($ssoSetting, true);
@@ -66,15 +66,15 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 't
         $row = $form->addRow()->addClass('googleActive');
             $row->addLabel('clientName', __('Google Developers Client Name'))->description(__('Name of Google Project in Developers Console.'));
             $row->addTextArea('clientName')->setRows(2)->required();
-            
+
         $row = $form->addRow()->addClass('googleActive');
             $row->addLabel('clientID', __('Google Developers Client ID'))->description(__('Client ID for Google Project In Developers Console.'));
             $row->addTextArea('clientID')->setRows(2)->required();
-            
+
         $row = $form->addRow()->addClass('googleActive');
             $row->addLabel('clientSecret', __('Google Developers Client Secret'))->description(__('Client Secret for Google Project In Developers Console.'));
             $row->addTextArea('clientSecret')->setRows(2)->required();
-            
+
         $row = $form->addRow()->addClass('googleActive');
             $row->addLabel('developerKey', __('Google Developers Developer Key'))->description(__('Google project Developer Key.'));
             $row->addTextArea('developerKey')->setRows(2)->required();

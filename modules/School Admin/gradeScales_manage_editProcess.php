@@ -16,7 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Data\Validator;
 
 require_once '../../gibbon.php';
@@ -33,7 +33,7 @@ $lowestAcceptable = $_POST['lowestAcceptable'] ?? '';
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/gradeScales_manage_edit.php&gibbonScaleID='.$gibbonScaleID;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('School Admin', 'gradeScales_manage_edit')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('School Admin', 'gradeScales_manage_edit')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

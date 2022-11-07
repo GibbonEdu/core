@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\ReportBuilder;
 use Gibbon\Module\Reports\Domain\ReportTemplateGateway;
@@ -26,13 +26,13 @@ use Gibbon\Module\Reports\Renderer\HtmlRenderer;
 use Gibbon\Module\Reports\Renderer\MpdfRenderer;
 use Gibbon\Module\Reports\Renderer\TcpdfRenderer;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templates_preview')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Reports', 'templates_preview')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     // Proceed!
     $mode = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
-    
+
     if (isset($page) && $mode != 'export') {
         $page->breadcrumbs->add(__('Template Preview'));
 
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Reports', 'templa
         $filename = preg_replace('/[^a-zA-Z0-9-_]/', '', $values['name']).__('Preview').'.pdf';
         $file = tmpfile();
         $path = stream_get_meta_data($file)['uri'];
-        
+
         $renderer = $container->get($template->getData('flags') == 1 ? MpdfRenderer::class : TcpdfRenderer::class);
         $renderer->render($template, $reports, $path);
 

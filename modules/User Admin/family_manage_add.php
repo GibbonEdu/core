@@ -17,19 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Http\Url;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'family_manage_add')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'family_manage_add')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Families'), 'family_manage.php')
-        ->add(__('Add Family'));    
+        ->add(__('Add Family'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('User Admin', 'fam
 
     $form = Form::create('action', $session->get('absoluteURL').'/modules/'.$session->get('module')."/family_manage_addProcess.php?search=$search");
     $form->setFactory(DatabaseFormFactory::create($pdo));
-    
+
     $form->addHiddenValue('address', $session->get('address'));
 
     $form->addRow()->addHeading('General Information', __('General Information'));

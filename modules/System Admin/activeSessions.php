@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -25,7 +25,7 @@ use Gibbon\Domain\System\SessionGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'activeSessions')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'activeSessions')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'a
     $sessionGateway = $container->get(SessionGateway::class);
     $settingGateway = $container->get(SettingGateway::class);
     $primaryRole = $container->get(RoleGateway::class)->selectBy(['gibbonRoleID' => $session->get('gibbonRoleIDPrimary')], ['name'])->fetch();
-   
+
     // FORM - Administrator only (to prevent themselves from removing their own access)
     if (!empty($primaryRole['name']) && $primaryRole['name'] == 'Administrator') {
         $form = Form::create('sessionSettings', $session->get('absoluteURL').'/modules/System Admin/activeSessions_settingsProcess.php');
@@ -103,6 +103,6 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'a
 
     $table->addColumn('timestampModified', __('Last Updated'))
         ->format(Format::using('dateTime', 'timestampModified'));
-        
+
     echo $table->render($sessions);
 }

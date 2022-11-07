@@ -1,6 +1,6 @@
 <?php
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
 /*
@@ -28,7 +28,7 @@ $_POST = $container->get(Validator::class)->sanitize($_POST);
 
 $URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/displaySettings.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'displaySettings')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'displaySettings')) == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('System Admin', 'd
             'themeColour'            => '',
             'organisationLogo'       => 'requiredFile',
             'organisationBackground' => '',
-           
+
         ],
     ];
 

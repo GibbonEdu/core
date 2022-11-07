@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
@@ -27,7 +27,7 @@ use Gibbon\Domain\Timetable\TimetableDayGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_master')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable', 'tt_master')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_m
         $gibbonTTID = $_GET['gibbonTTID'];
     }
     if ($gibbonTTID == null) { //If TT not set, get the first timetable in the current year, and display that
-        
+
             $dataSelect = array();
             $sqlSelect = "SELECT gibbonTTID FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonSchoolYear.status='Current' ORDER BY gibbonTT.name LIMIT 0, 1";
             $resultSelect = $connection2->prepare($sqlSelect);
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_m
 
         $timetableGateway = $container->get(TimetableGateway::class);
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
-        
+
         $values = $timetableGateway->getTTByID($gibbonTTID);
         $ttDays = $timetableDayGateway->selectTTDaysByID($gibbonTTID)->fetchAll();
 
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable', 'tt_m
                 echo '</h2>';
 
                 $ttDayRows = $timetableDayGateway->selectTTDayRowsByID($ttDay['gibbonTTDayID'])->fetchAll();
-                
+
                 foreach ($ttDayRows as $ttDayRow) {
                     echo '<h5 style="margin-top: 25px">';
                     echo __($ttDayRow['name']).'<span style=\'font-weight: normal\'> ('.Format::timeRange($ttDayRow['timeStart'], $ttDayRow['timeEnd']).')</span>';

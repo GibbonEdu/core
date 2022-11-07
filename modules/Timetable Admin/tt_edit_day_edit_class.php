@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Action;
+use Gibbon\Services\Module\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
-if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin', 'tt_edit_day_edit_class')) == false) {
+if (isActionAccessible($guid, $connection2, Resource::fromRoute('Timetable Admin', 'tt_edit_day_edit_class')) == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, Action::fromRoute('Timetable Admin',
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_edit.php');
-                        
+
                     $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_delete.php');
 
