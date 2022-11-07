@@ -2,7 +2,7 @@
 
 namespace Gibbon\Services\Module;
 
-class Action
+class Resource
 {
     /**
      * Relevant module name of the capability.
@@ -19,7 +19,7 @@ class Action
     protected $routePath = '';
 
     /**
-     * Action name of the action.
+     * Name of an action on the resource, if any.
      *
      * @var string
      */
@@ -32,11 +32,11 @@ class Action
      * @param string $routePath  Route path of the module.
      * @param string $actionName Optional action name on the routePath. Default: ''.
      *
-     * @return Action
+     * @return Resource
      */
-    public static function fromRoute(string $module, string $routePath, string $actionName = ''): Action
+    public static function fromRoute(string $module, string $routePath, string $actionName = ''): Resource
     {
-        $instance = new Action();
+        $instance = new Resource();
         $instance->module = $module;
         $instance->routePath = $routePath;
         $instance->actionName = $actionName;
@@ -47,11 +47,11 @@ class Action
      * Create a capability instance out of the legacy path name
      * of a module action.
      *
-     * @return Action
+     * @return Resource
      */
-    public static function fromLegacyPath(string $path): Action
+    public static function fromLegacyPath(string $path): Resource
     {
-        return Action::fromRoute(
+        return Resource::fromRoute(
             static::parseModuleName($path),
             static::parseRoutePath($path)
         );

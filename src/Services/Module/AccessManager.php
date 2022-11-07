@@ -38,11 +38,11 @@ class AccessManager
     /**
      * Check if an action is allowed for the current session.
      *
-     * @param Action $action
+     * @param Resource $resource
      *
      * @return boolean
      */
-    public function allow(Action $action): bool
+    public function allow(Resource $resource): bool
     {
         // Check user is logged in and currently has a role set.
         if (!$this->session->has('username') || empty($this->session->get('gibbonRoleIDCurrent'))) {
@@ -50,16 +50,16 @@ class AccessManager
         }
 
         // Check module ready.
-        if (empty($action->getModule())) {
+        if (empty($resource->getModule())) {
             return false;
         }
 
         // Check if the specified user role has access to the module action specified.
         return $this->moduleGateway->selectRoleModuleActionNames(
             $this->session->get('gibbonRoleIDCurrent'),
-            $action->getModule(),
-            $action->getRoutePath(),
-            $action->getActionName(),
+            $resource->getModule(),
+            $resource->getRoutePath(),
+            $resource->getActionName(),
         )->isNotEmpty();
     }
 }
