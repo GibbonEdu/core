@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     $timeStart = $_GET['timeStart'] ?? '';
     $timeEnd = $_GET['timeEnd'] ?? '';
 
-    $targetDate = Format::dateConvert($date);
+    $targetDate = !empty($date) ? Format::dateConvert($date) : date('Y-m-d');
     $effectiveStart = strtotime($targetDate.' '.$timeStart);
     $effectiveEnd = strtotime($targetDate.' '.$timeEnd);
 
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     // Get list of students for selected target
     if (!empty($target)) {
         $targetID = $target == 'Activity' ? $gibbonActivityID : ($target == 'Messenger' ? $gibbonGroupID : $gibbonPersonIDList);
-        $students = $attendanceLogGateway->selectAdHocAttendanceStudents($session->get('gibbonSchoolYearID'), $target, $targetID, Format::dateConvert($date))->fetchAll();
+        $students = $attendanceLogGateway->selectAdHocAttendanceStudents($session->get('gibbonSchoolYearID'), $target, $targetID, $targetDate)->fetchAll();
         $gibbonPersonIDList = empty($gibbonPersonIDList) ? array_column($students, 'gibbonPersonID') : $gibbonPersonIDList;
     }
 
@@ -201,10 +201,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         if ($scope == 'single') {
             // Get attendance logs
-            $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($gibbonPersonIDList[0], $today)->fetchAll();
+            $logs = $attendanceLogGateway->selectFutureAttendanceLogsByPersonAndDate($gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             //Get classes for partial attendance
-            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], !empty($date) ? Format::dateConvert($date) : date('Y-m-d'))->fetchAll();
+            $classes = $courseEnrolmentGateway->selectClassesByPersonAndDate($gibbon->session->get('gibbonSchoolYearID'), $gibbonPersonIDList[0], $targetDate)->fetchAll();
 
             if ($absenceType == 'partial' && empty($classes)) {
                 echo Format::alert(__('Cannot record a partial absence. This student does not have timetabled classes for this day.'));
