@@ -36,7 +36,45 @@ class AccessManager
     }
 
     /**
+     * Load the access descriptor of a certain resource of the current
+     * session user.
+     *
+     * @param Resource $resource
+     *
+     * @return Access
+     */
+    public function getAccessOf(Resource $resource): Access
+    {
+        // Check user is logged in and currently has a role set.
+        if (!$this->session->has('username') || empty($this->session->get('gibbonRoleIDCurrent'))) {
+            return new Access($resource); // access of no action.
+        }
+
+        // Check module ready.
+        if (empty($resource->getModule())) {
+            return new Access($resource); // access of no action.
+        }
+
+        // Get all the available access of actions.
+        $results = $this->moduleGateway->selectRoleModuleActionNames(
+            $this->session->get('gibbonRoleIDCurrent'),
+            $resource->getModule(),
+            $resource->getRoutePath(),
+            $resource->getActionName(),
+        )->fetchAll();
+        $actions = array_map(function ($row) {
+            return $row['actionName'];
+        }, $results);
+        return new Access($resource, $actions);
+    }
+
+    /**
      * Check if an action is allowed for the current session.
+     *
+     * A short hand of:
+     * ```php
+     * $accessManager->getAccessOf($resource)->allow();
+     * ```
      *
      * @param Resource $resource
      *
@@ -44,22 +82,6 @@ class AccessManager
      */
     public function allow(Resource $resource): bool
     {
-        // Check user is logged in and currently has a role set.
-        if (!$this->session->has('username') || empty($this->session->get('gibbonRoleIDCurrent'))) {
-            return false;
-        }
-
-        // Check module ready.
-        if (empty($resource->getModule())) {
-            return false;
-        }
-
-        // Check if the specified user role has access to the module action specified.
-        return $this->moduleGateway->selectRoleModuleActionNames(
-            $this->session->get('gibbonRoleIDCurrent'),
-            $resource->getModule(),
-            $resource->getRoutePath(),
-            $resource->getActionName(),
-        )->isNotEmpty();
+        return $this->getAccessOf($resource)->allow();
     }
 }
