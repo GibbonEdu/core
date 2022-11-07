@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // Gibbon system-wide includes
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\LogGateway;
 use Gibbon\Module\Reports\Domain\ReportArchiveEntryGateway;

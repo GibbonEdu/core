@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\EmailTemplateGateway;
 
 include '../../gibbon.php';

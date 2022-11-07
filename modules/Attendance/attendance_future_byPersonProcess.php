@@ -22,7 +22,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\UserGateway;
 use Gibbon\Module\Attendance\AttendanceView;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 //Gibbon system-wide includes
 include __DIR__ . '/../../gibbon.php';

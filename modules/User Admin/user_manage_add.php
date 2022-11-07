@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 if (isActionAccessible($guid, $connection2, Resource::fromRoute('User Admin', 'user_manage_add')) == false) {
     // Access denied

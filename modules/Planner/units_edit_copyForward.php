@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\CourseGateway;
 use Gibbon\Module\Planner\Forms\PlannerFormFactory;

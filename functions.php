@@ -29,7 +29,7 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\Input\Editor;
 use Gibbon\Locale;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 function getIPAddress() {
     $return = false;

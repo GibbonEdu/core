@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 include '../../gibbon.php';
 

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes from User Admin (for custom fields)
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\System\SettingGateway;
 
 include './modules/User Admin/moduleFunctions.php';

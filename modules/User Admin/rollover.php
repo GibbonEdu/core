@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\User\UserStatusLogGateway;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

@@ -22,7 +22,7 @@ use Gibbon\Domain\Forms\FormGateway;
 use Gibbon\Domain\Forms\FormPageGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 if (isActionAccessible($guid, $connection2, Resource::fromRoute('System Admin', 'formBuilder_page_edit')) == false) {
     // Access denied

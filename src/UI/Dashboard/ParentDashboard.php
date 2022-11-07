@@ -22,7 +22,7 @@ namespace Gibbon\UI\Dashboard;
 use Gibbon\Http\Url;
 use Gibbon\Services\Format;
 use Gibbon\Forms\OutputableInterface;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\HookGateway;

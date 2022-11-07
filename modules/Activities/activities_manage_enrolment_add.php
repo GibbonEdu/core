@@ -21,7 +21,7 @@ use Gibbon\Domain\School\SchoolYearTermGateway;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

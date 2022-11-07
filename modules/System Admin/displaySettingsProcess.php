@@ -1,6 +1,6 @@
 <?php
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\FileUploader;
 use Gibbon\Domain\System\SettingGateway;
 /*

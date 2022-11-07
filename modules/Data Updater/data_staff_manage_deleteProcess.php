@@ -1,6 +1,6 @@
 <?php
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\DataUpdater\StaffUpdateGateway;
 /*
 Gibbon, Flexible & Open School System

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Data\PasswordPolicy;
 use Gibbon\Data\Validator;
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 
 require_once '../../gibbon.php';
 

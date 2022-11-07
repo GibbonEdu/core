@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Module\Staff\View;
 
-use Gibbon\Services\Module\Resource;
+use Gibbon\Auth\Access\Resource;
 use Gibbon\Domain\Staff\StaffGateway;
 use Gibbon\Domain\FormGroups\FormGroupGateway;
 use Gibbon\Contracts\Services\Session;
