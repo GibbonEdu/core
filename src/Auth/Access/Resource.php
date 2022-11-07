@@ -1,6 +1,6 @@
 <?php
 
-namespace Gibbon\Services\Module;
+namespace Gibbon\Auth\Access;
 
 class Resource
 {

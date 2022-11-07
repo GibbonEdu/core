@@ -1,6 +1,6 @@
 <?php
 
-namespace Gibbon\Services\Module;
+namespace Gibbon\Auth\Access;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\ModuleGateway;
