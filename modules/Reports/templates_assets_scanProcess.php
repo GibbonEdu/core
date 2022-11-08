@@ -21,7 +21,6 @@ use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Module\Reports\Domain\ReportTemplateFontGateway;
 use Gibbon\Module\Reports\Domain\ReportPrototypeSectionGateway;
 use Symfony\Component\Yaml\Yaml;
-use TCPDF_FONTS;
 
 $_POST['address'] = '/modules/Reports/templates_assets.php';
 use Gibbon\Data\Validator;
