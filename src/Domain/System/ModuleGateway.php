@@ -183,11 +183,13 @@ class ModuleGateway extends QueryableGateway
      * Get the names of all actions available for the given role to the
      * specified module and route path.
      *
-     * @param int          $gibbonRoleID  The role ID.
-     * @param string       $moduleName    The module name.
-     * @param string       $routePath     Route path of the entry point in the module.
-     * @param string|null  $actionName    Specific action name string, or null if unspecified.
-     *                                    Default: null.
+     * @param int          $gibbonRoleID      The role ID.
+     * @param string       $moduleName        The module name.
+     * @param string       $routePath         Route path of the entry point in the module.
+     * @param string|null  $actionName        Specific action name string, or null if unspecified.
+     *                                        Default: null.
+     * @param bool         $activeModuleOnly  Only select the active modules or not.
+     *                                        Default: true.
      *
      * @return Result
      */
@@ -195,7 +197,8 @@ class ModuleGateway extends QueryableGateway
         $gibbonRoleID,
         string $moduleName,
         string $routePath,
-        ?string $actionName = null
+        ?string $actionName = null,
+        bool $activeModuleOnly = true
     ): Result {
         $data = [
             'gibbonRoleID' => $gibbonRoleID,
@@ -215,6 +218,11 @@ class ModuleGateway extends QueryableGateway
         if (!empty($actionName)) {
             $data['actionName'] = $actionName;
             $sql .= ' AND gibbonAction.name=:actionName';
+        }
+
+        if ($activeModuleOnly) {
+            $data['moduleIsActive'] = 'Y';
+            $sql .= ' AND gibbonModule.active=:moduleIsActive';
         }
 
         return $this->db()->select($sql, $data);

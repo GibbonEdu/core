@@ -50,17 +50,13 @@ class AccessManager
             return new Access($resource); // access of no action.
         }
 
-        // Check module ready.
-        if (empty($resource->getModule())) {
-            return new Access($resource); // access of no action.
-        }
-
-        // Get all the available access of actions.
+        // Get all the available access of actions on active modules.
         $results = $this->moduleGateway->selectRoleModuleActionNames(
             $this->session->get('gibbonRoleIDCurrent'),
             $resource->getModule(),
             $resource->getRoutePath(),
             $resource->getActionName(),
+            true
         )->fetchAll();
         $actions = array_map(function ($row) {
             return $row['actionName'];
