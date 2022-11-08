@@ -482,7 +482,7 @@ class StaffDashboard implements OutputableInterface, ContainerAwareInterface
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php')) {
+            if (isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_left.php') || isActionAccessible($guid, $connection2, '/modules/Admissions/report_students_new.php')) {
                 $return .= "<li><a href='#tabs".$tabCount."'>".__('Enrolment').'</a></li>';
                 if ($staffDashboardDefaultTab == 'Enrolment') {
                     $staffDashboardDefaultTabCount = $tabCount;
