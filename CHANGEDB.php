@@ -671,3 +671,8 @@ UPDATE `gibbonAction` SET URLList='formBuilder.php,formBuilder_preview.php,formB
 DELETE FROM `gibbonPermission` WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Admissions' AND gibbonAction.name='Manage Other Forms');end
 
 ";
+
+//v24.0.01
+++$count;
+$sql[$count][0] = '24.0.01';
+$sql[$count][1] = "";

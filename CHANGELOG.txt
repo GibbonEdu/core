@@ -102,6 +102,11 @@ v24.0.00
         User Admin: fixed Force Password Reset not redirecting users
         User Admin: fixed users able to change roles for Student username format
 
+v24.0.01
+--------
+    Security
+        System: fixed character encoding conversion when sanitizing input from rich text fields
+
 v23.0.02
 --------
 
