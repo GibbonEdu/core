@@ -5,6 +5,10 @@ namespace Gibbon\Auth\Access;
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\ModuleGateway;
 
+/**
+ * Service to get load access decsriptor of the current session to
+ * certain Gibbon resource.
+ */
 class AccessManager
 {
     /**

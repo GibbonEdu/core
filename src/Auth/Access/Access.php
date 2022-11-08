@@ -2,6 +2,11 @@
 
 namespace Gibbon\Auth\Access;
 
+/**
+ * A descriptor of access of a session user to certain resource.
+ *
+ * Includes a Resource instance and a list of allowed actions.
+ */
 class Access
 {
     /**
@@ -22,7 +27,7 @@ class Access
      * Constructor
      *
      * @param Resource $resource  The resource this access instance is concerning.
-     * @param array    $actions   An array of strings.
+     * @param array    $actions   An array of actions allowed for the resource.
      */
     public function __construct(Resource $resource, array $actions = [])
     {
