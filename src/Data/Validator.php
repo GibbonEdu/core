@@ -212,6 +212,9 @@ class Validator
                         if (!in_array($attribute->name, $allowableTags[$node->nodeName])) {
                             $node->removeAttributeNode($attribute);
                         }
+                        if (mb_stripos($attribute->value, 'javascript:') !== false) {
+                            $node->removeAttributeNode($attribute);
+                        }
                     }
                 }
             }
@@ -219,8 +222,8 @@ class Validator
             // Unwrap the body element, required because libxml needs an outer element (otherwise it adds one)
             $value = str_replace(['<body>', '</body>', '<!--?xml encoding="utf-8" ?-->', '<?xml encoding="utf-8" ?>'], '', $dom->saveHTML());
         }
-
-        $value = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
+        
+        $value = mb_decode_numericentity($value, [0x80, 0xfffffff, 0, 0xfffffff], 'UTF-8');
 
         libxml_clear_errors();
 
