@@ -33,42 +33,9 @@ use Gibbon\Services\Format;
 class FinanceFormFactory extends DatabaseFormFactory
 {
 
-    /**
-     * Formatter to format a timestamp / DateTime as 2 digit month number.
-     *
-     * @var \IntlDateFormatter
-     */
-    private $monthDigitsFormatter;
-
-    /**
-     * Formatter to format a timestamp / DateTime as abbrivated month name in current locale.
-     *
-     * @var \IntlDateFormatter
-     */
-    private $monthNameFormatter;
-
-    public function __construct(
-        Connection $pdo = null,
-        ?\IntlDateFormatter $monthDigitsFormatter = null,
-        ?\IntlDateFormatter $monthNameFormatter = null
-    ) {
+    public function __construct(Connection $pdo = null)
+    {
         parent::__construct($pdo);
-        $this->monthDigitsFormatter = $monthDigitsFormatter ?? new \IntlDateFormatter(
-            null,
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            null,
-            null,
-            'MM' // 2 digits (zero-lead) month representation, 01 - 12.
-        );
-        $this->monthNameFormatter = $monthNameFormatter ?? new \IntlDateFormatter(
-            null,
-            \IntlDateFormatter::FULL,
-            \IntlDateFormatter::FULL,
-            null,
-            null,
-            'MMM' // Abbrivated month name in the locale (e.g. Sep)
-        );
     }
 
     /**
@@ -271,8 +238,8 @@ class FinanceFormFactory extends DatabaseFormFactory
     {
         $months = array_reduce(range(1,12), function($group, $item) {
             $monthTimestamp = mktime(0, 0, 0, $item, 1, 0);
-            $month = $this->monthDigitsFormatter->format($monthTimestamp);
-            $group[$month] = $month.' - '.$this->monthNameFormatter->format($monthTimestamp);
+            $month = Format::monthDigits($monthTimestamp);
+            $group[$month] = $month.' - '.Format::monthName($monthTimestamp);
             return $group;
         }, array());
 

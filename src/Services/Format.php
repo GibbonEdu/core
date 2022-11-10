@@ -948,4 +948,75 @@ class Format
             ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
             : new DateTime($dateOriginal, $timezone);
     }
+
+    /**
+     * Format a given datetime / timestamp into localized day of week name.
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function dayOfWeekName($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'EEEE'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into abbrivated localized month name.
+     * (i.e. from Jan to Sep).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthName($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MMM'
+            );
+        }
+        return $formatter->format($datetime);
+    }
+
+    /**
+     * Format a given datetime / timestamp into a 2 digits representation
+     * of the month (i.e. from 01 to 12).
+     *
+     * @param IntlCalendar|DateTimeInterface|array|string|int|float $datetime
+     *
+     * @return string|false
+     */
+    public static function monthDigits($datetime)
+    {
+        static $formatter;
+        if (!isset($formatter)) {
+            $formatter = new \IntlDateFormatter(
+                null,
+                \IntlDateFormatter::FULL,
+                \IntlDateFormatter::FULL,
+                null,
+                null,
+                'MM'
+            );
+        }
+        return $formatter->format($datetime);
+    }
 }

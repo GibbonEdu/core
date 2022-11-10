@@ -2055,10 +2055,6 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
             $output .= '</th>';
             $count = 0;
 
-            // Formatter to format date as day of week (full name based on locale).
-            $dayOfWeekNameFormatter = new \IntlDateFormatter(null);
-            $dayOfWeekNameFormatter->setPattern("EEEE");
-
             foreach ($days as $day) {
                 if ($day['schoolDay'] == 'Y') {
                     if ($count == 0) {
@@ -2089,7 +2085,7 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                         $output .= __($day['nameShort']).'<br/>';
                     }
                     else {
-                        $output .= ($rowDay['nameShort'] ?? $dayOfWeekNameFormatter->format($startDayStamp + (86400 * $dateCorrection))).'<br/>';
+                        $output .= ($rowDay['nameShort'] ?? Format::dayOfWeekName($startDayStamp + (86400 * $dateCorrection))).'<br/>';
                     }
                     $output .= "<span style='font-size: 80%; font-style: italic'>".date($session->get('i18n')['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                     try {
