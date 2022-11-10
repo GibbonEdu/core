@@ -72,7 +72,7 @@ class AttendanceByCycle extends DataSource
                 AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, gibbonReport.gibbonYearGroupIDList)
                 AND gibbonAttendanceLogPerson.date>=gibbonSchoolYear.firstDay
                 AND gibbonAttendanceLogPerson.date<=CURDATE()
-                AND gibbonReportingCycle.dateStart<=gibbonReport.accessDate
+                AND (gibbonReport.accessDate IS NULL OR gibbonReportingCycle.dateStart<=gibbonReport.accessDate)
                 GROUP BY gibbonAttendanceLogPerson.gibbonAttendanceLogPersonID
                 ORDER BY gibbonAttendanceLogPerson.date, gibbonAttendanceLogPerson.timestampTaken";
 
